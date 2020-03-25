@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+﻿using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies auto-assigned object declarations.
@@ -18,7 +15,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Auto-assigned objects are automatically re-created as soon as they are referenced. It is therefore impossible to set one such reference 
     /// to 'Nothing' and then verifying whether the object 'Is Nothing': it will never be. This behavior is potentially confusing and bug-prone.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim c As New Collection
@@ -29,8 +27,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     Debug.Print c Is Nothing ' False
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim c As Collection
@@ -42,25 +42,28 @@ namespace Rubberduck.Inspections.Concrete
     ///     Debug.Print c Is Nothing ' True
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class SelfAssignedDeclarationInspection : InspectionBase
+    internal sealed class SelfAssignedDeclarationInspection : DeclarationInspectionBase
     {
-        public SelfAssignedDeclarationInspection(RubberduckParserState state)
-            : base(state) { }
+        public SelfAssignedDeclarationInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Variable)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            return State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(declaration => declaration.IsSelfAssigned 
-                    && declaration.IsTypeSpecified
-                    && !SymbolList.ValueTypes.Contains(declaration.AsTypeName)
-                    && (declaration.AsTypeDeclaration == null
-                        || declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)
-                    && declaration.ParentScopeDeclaration != null
-                    && declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
-                .Select(issue => new DeclarationInspectionResult(this,
-                                                      string.Format(InspectionResults.SelfAssignedDeclarationInspection, issue.IdentifierName),
-                                                      issue));
+            return declaration.IsSelfAssigned
+                   && declaration.IsTypeSpecified
+                   && !SymbolList.ValueTypes.Contains(declaration.AsTypeName)
+                   && (declaration.AsTypeDeclaration == null
+                       || declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)
+                   && declaration.ParentScopeDeclaration != null
+                   && declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.SelfAssignedDeclarationInspection, declaration.IdentifierName);
         }
     }
 }

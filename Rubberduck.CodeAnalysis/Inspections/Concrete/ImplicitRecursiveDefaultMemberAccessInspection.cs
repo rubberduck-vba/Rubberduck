@@ -1,11 +1,11 @@
-﻿using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Parsing.Inspections;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies the use of indexed default member accesses that require a recursive default member resolution.
@@ -66,15 +66,15 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </module>
     /// </example>
-    public sealed class ImplicitRecursiveDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
+    internal sealed class ImplicitRecursiveDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
     {
-        public ImplicitRecursiveDefaultMemberAccessInspection(RubberduckParserState state)
-            : base(state)
+        public ImplicitRecursiveDefaultMemberAccessInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        protected override bool IsResultReference(IdentifierReference reference)
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             return reference.IsNonIndexedDefaultMemberAccess
                    && reference.DefaultMemberRecursionDepth > 1

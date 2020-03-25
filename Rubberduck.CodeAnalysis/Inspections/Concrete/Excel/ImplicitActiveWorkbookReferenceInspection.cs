@@ -1,15 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
 {
     /// <summary>
     /// Locates unqualified Workbook.Worksheets/Sheets/Names member calls that implicitly refer to ActiveWorkbook.
@@ -21,27 +19,32 @@ namespace Rubberduck.Inspections.Concrete
     /// is more robust, and will be less likely to throw run-time error 1004 or produce unexpected results
     /// when the active workbook isn't the expected one.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim summarySheet As Worksheet
     ///     Set summarySheet = Worksheets("Summary") ' unqualified Worksheets is implicitly querying the active workbook's Worksheets collection.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example(ByVal book As Workbook)
     ///     Dim summarySheet As Worksheet
     ///     Set summarySheet = book.Worksheets("Summary")
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
-    public sealed class ImplicitActiveWorkbookReferenceInspection : InspectionBase
+    internal sealed class ImplicitActiveWorkbookReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        public ImplicitActiveWorkbookReferenceInspection(RubberduckParserState state)
-            : base(state) { }
+        public ImplicitActiveWorkbookReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         private static readonly string[] InterestingMembers =
         {
@@ -53,27 +56,31 @@ namespace Rubberduck.Inspections.Concrete
             "_Global", "_Application", "Global", "Application"
         };
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
+            var excel = finder.Projects
+                .SingleOrDefault(project => project.IdentifierName == "Excel" && !project.IsUserDefined);
             if (excel == null)
             {
-                return Enumerable.Empty<IInspectionResult>();
+                return Enumerable.Empty<Declaration>();
             }
 
-            var targetProperties = BuiltInDeclarations
+            var relevantClasses = InterestingClasses
+                .Select(className => finder.FindClassModule(className, excel, true))
+                .OfType<ModuleDeclaration>();
+
+            var relevantProperties = relevantClasses
+                .SelectMany(classDeclaration => classDeclaration.Members)
                 .OfType<PropertyGetDeclaration>()
-                .Where(x => InterestingMembers.Contains(x.IdentifierName) && InterestingClasses.Contains(x.ParentDeclaration?.IdentifierName))
-                .ToList();
+                .Where(member => InterestingMembers.Contains(member.IdentifierName));
 
-            // only inspects references, must filter ignores manually, because default filtering doesn't work here
-            var members = targetProperties.SelectMany(item =>
-                item.References.Where(reference => !reference.IsIgnoringInspectionResultFor(AnnotationName)));
+            return relevantProperties;
+        }
 
-            return members.Select(issue => new IdentifierReferenceInspectionResult(this,
-                                                                string.Format(InspectionResults.ImplicitActiveWorkbookReferenceInspection, issue.Context.GetText()),
-                                                                State,
-                                                                issue));
+        protected override string ResultDescription(IdentifierReference reference)
+        {
+            var referenceText = reference.Context.GetText();
+            return string.Format(InspectionResults.ImplicitActiveWorkbookReferenceInspection, referenceText);
         }
     }
 }

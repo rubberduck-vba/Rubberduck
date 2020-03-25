@@ -1,17 +1,16 @@
-using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
+using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about variables that are never referenced.
@@ -19,7 +18,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// A variable can be declared and even assigned, but if its value is never referenced, it's effectively an unused variable.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long ' declared
@@ -27,8 +27,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ... but never rerenced
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long
@@ -36,31 +38,49 @@ namespace Rubberduck.Inspections.Concrete
     ///     Debug.Print value
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class VariableNotUsedInspection : InspectionBase
+    internal sealed class VariableNotUsedInspection : DeclarationInspectionBase
     {
         /// <summary>
         /// Inspection results for variables that are never referenced.
         /// </summary>
         /// <returns></returns>
-        public VariableNotUsedInspection(RubberduckParserState state) : base(state) { }
+        public VariableNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Variable)
+        {}
 
-        /// <summary>
-        /// VariableNotUsedInspection override of InspectionBase.DoGetInspectionResults()
-        /// </summary>
-        /// <returns>Enumerable IInspectionResults</returns>
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var declarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(declaration =>
-                    !declaration.IsWithEvents
-                    && declaration.References.All(rf => rf.IsAssignment));
+            return !declaration.IsWithEvents
+                   && declaration.References
+                       .All(reference => reference.IsAssignment);
+        }
 
-            return declarations.Select(issue => 
-                new DeclarationInspectionResult(this,
-                                     string.Format(InspectionResults.IdentifierNotUsedInspection, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
-                                     issue,
-                                     new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, ((dynamic)issue.Context).identifier())));
+        protected override IInspectionResult InspectionResult(Declaration declaration)
+        {
+            return new DeclarationInspectionResult(
+                this,
+                ResultDescription(declaration),
+                declaration,
+                Context(declaration));
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType.ToLocalizedString();
+            var declarationName = declaration.IdentifierName;
+            return string.Format(
+                InspectionResults.IdentifierNotUsedInspection, 
+                declarationType, 
+                declarationName);
+        }
+
+        private QualifiedContext Context(Declaration declaration)
+        {
+            var module = declaration.QualifiedModuleName;
+            var context = declaration.Context.GetDescendent<VBAParser.IdentifierContext>();
+            return new QualifiedContext<ParserRuleContext>(module, context);
         }
     }
 }

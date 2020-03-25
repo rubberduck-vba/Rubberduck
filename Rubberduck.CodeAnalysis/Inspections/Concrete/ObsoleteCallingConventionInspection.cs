@@ -1,17 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
-using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about 'Declare' statements that are using the obsolete/unsupported 'CDecl' calling convention on Windows.
@@ -20,51 +14,48 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// The CDecl calling convention is only implemented in VBA for Mac; if Rubberduck can see it (Rubberduck only runs on Windows),
     /// then the declaration is using an unsupported (no-op) calling convention on Windows.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Declare Sub Beep CDecl Lib "kernel32" (dwFreq As Any, dwDuration As Any)
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Declare Sub Beep Lib "kernel32" (dwFreq As Any, dwDuration As Any)
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ObsoleteCallingConventionInspection : ParseTreeInspectionBase
+    internal sealed class ObsoleteCallingConventionInspection : ParseTreeInspectionBase<VBAParser.DeclareStmtContext>
     {
-        public ObsoleteCallingConventionInspection(RubberduckParserState state)
-            : base(state)
+        public ObsoleteCallingConventionInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            Listener = new ObsoleteCallingConventionListener();
+            ContextListener = new ObsoleteCallingConventionListener();
         }
 
-        public override IInspectionListener Listener { get; }
+        protected override IInspectionListener<VBAParser.DeclareStmtContext> ContextListener { get; }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<VBAParser.DeclareStmtContext> context)
         {
-            return Listener.Contexts
-                .Where(context => ((VBAParser.DeclareStmtContext) context.Context).CDECL() != null)
-                .Select(context => new QualifiedContextInspectionResult(this,
-                    string.Format(InspectionResults.ObsoleteCallingConventionInspection,
-                        ((VBAParser.DeclareStmtContext) context.Context).identifier().GetText()), context));
+            var identifierName = ((VBAParser.DeclareStmtContext) context.Context).identifier().GetText();
+            return string.Format(
+                InspectionResults.ObsoleteCallingConventionInspection,
+                identifierName);
         }
 
-        public class ObsoleteCallingConventionListener : VBAParserBaseListener, IInspectionListener
+        protected override bool IsResultContext(QualifiedContext<VBAParser.DeclareStmtContext> context, DeclarationFinder finder)
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
+            return ((VBAParser.DeclareStmtContext)context.Context).CDECL() != null;
+        }
 
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
+        private class ObsoleteCallingConventionListener : InspectionListenerBase<VBAParser.DeclareStmtContext>
+        {
             public override void ExitDeclareStmt(VBAParser.DeclareStmtContext context)
             {
-                _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
-                base.ExitDeclareStmt(context);
+                SaveContext(context);
             }
         }
     }

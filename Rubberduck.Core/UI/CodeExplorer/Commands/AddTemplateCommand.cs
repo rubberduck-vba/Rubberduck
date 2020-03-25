@@ -6,6 +6,7 @@ using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Templates;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -30,15 +31,18 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly ITemplateProvider _provider;
         private readonly ICodeExplorerAddComponentService _addComponentService;
+        private readonly IProjectsProvider _projectsProvider;
 
         public AddTemplateCommand(
                 ICodeExplorerAddComponentService addComponentService, 
                 ITemplateProvider provider, 
-                IVbeEvents vbeEvents) 
+                IVbeEvents vbeEvents,
+                IProjectsProvider projectsProvider) 
                 : base(vbeEvents)
         {
             _provider = provider;
             _addComponentService = addComponentService;
+            _projectsProvider = projectsProvider;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
@@ -75,8 +79,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return false;
             }
 
-            var project = node.Declaration.Project;
-            return AllowableProjectTypes.Contains(project.Type);
+            var project = _projectsProvider.Project(node.Declaration.ProjectId);
+            return project != null 
+                   && AllowableProjectTypes.Contains(project.Type);
         }
 
         protected override void OnExecute(object parameter)

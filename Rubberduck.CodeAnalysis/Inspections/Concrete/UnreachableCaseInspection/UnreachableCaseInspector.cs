@@ -1,196 +1,269 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IUnreachableCaseInspector
+    internal interface IUnreachableCaseInspector
     {
-        void InspectForUnreachableCases();
-        string SelectExpressionTypeName { get; }
-        Func<string, ParserRuleContext, string> GetVariableDeclarationTypeName { set; get; }
-        List<ParserRuleContext> UnreachableCases { get; }
-        List<ParserRuleContext> InherentlyUnreachableCases { get; }
-        List<ParserRuleContext> MismatchTypeCases { get; }
-        List<ParserRuleContext> OverflowCases { get; }
-        List<ParserRuleContext> UnreachableCaseElseCases { get; }
+        ICollection<(UnreachableCaseInspection.CaseInspectionResultType resultType, ParserRuleContext context)> InspectForUnreachableCases(
+            QualifiedModuleName module, 
+            VBAParser.SelectCaseStmtContext selectCaseContext, 
+            IParseTreeVisitorResults parseTreeValues,
+            DeclarationFinder finder);
+        string SelectExpressionTypeName(
+            VBAParser.SelectCaseStmtContext selectCaseContext, 
+            IParseTreeVisitorResults parseTreeValues);
     }
 
-    public class UnreachableCaseInspector : IUnreachableCaseInspector
+    internal class UnreachableCaseInspector : IUnreachableCaseInspector
     {
-        private readonly IEnumerable<VBAParser.CaseClauseContext> _caseClauses;
-        private readonly ParserRuleContext _caseElseContext;
         private readonly IParseTreeValueFactory _valueFactory;
-        private IParseTreeValue _selectExpressionValue;
 
-        public UnreachableCaseInspector(VBAParser.SelectCaseStmtContext selectCaseContext, 
-            IParseTreeVisitorResults inspValues, 
-            IParseTreeValueFactory valueFactory,
-            Func<string,ParserRuleContext,string> GetVariableTypeName = null)
+        public UnreachableCaseInspector(
+            IParseTreeValueFactory valueFactory)
         {
             _valueFactory = valueFactory;
-            _caseClauses = selectCaseContext.caseClause();
-            _caseElseContext = selectCaseContext.caseElseClause();
-            GetVariableDeclarationTypeName = GetVariableTypeName;
-            ParseTreeValueResults = inspValues;
-            SetSelectExpressionTypeName(selectCaseContext as ParserRuleContext, inspValues);
         }
 
-        public Func<string, ParserRuleContext, string> GetVariableDeclarationTypeName { set; get; }
-
-        public List<ParserRuleContext> UnreachableCases { set; get; } = new List<ParserRuleContext>();
-
-        public List<ParserRuleContext> MismatchTypeCases { set; get; } = new List<ParserRuleContext>();
-
-        public List<ParserRuleContext> OverflowCases { set; get; } = new List<ParserRuleContext>();
-
-        public List<ParserRuleContext> InherentlyUnreachableCases { set; get; } = new List<ParserRuleContext>();
-
-        public List<ParserRuleContext> UnreachableCaseElseCases { set; get; } = new List<ParserRuleContext>();
-
-        public string SelectExpressionTypeName { private set; get; } = string.Empty;
-
-        private IParseTreeVisitorResults ParseTreeValueResults { set; get; }
-
-        public void InspectForUnreachableCases()
+        public ICollection<(UnreachableCaseInspection.CaseInspectionResultType resultType, ParserRuleContext context)> InspectForUnreachableCases(
+            QualifiedModuleName module,
+            VBAParser.SelectCaseStmtContext selectCaseContext,
+            IParseTreeVisitorResults parseTreeValues,
+            DeclarationFinder finder)
         {
-            if (!InspectableTypes.Contains(SelectExpressionTypeName))
+            var (selectExpressionTypeName, selectExpressionValue) = SelectExpressionTypeNameAndValue(selectCaseContext, parseTreeValues);
+
+            if (!InspectableTypes.Contains(selectExpressionTypeName))
             {
-                return;
+                return new List<(UnreachableCaseInspection.CaseInspectionResultType resultType, ParserRuleContext context)>();
             }
 
-            var remainingCasesToInspect = new List<VBAParser.CaseClauseContext>();
+            var results = new List<(UnreachableCaseInspection.CaseInspectionResultType resultType, ParserRuleContext context)>();
+            
+            var caseClausesWithInvalidTypeMarker = selectCaseContext.caseClause()
+                .Select(caseClause => WithInvalidValueType(caseClause, parseTreeValues))
+                .ToList();
 
-            foreach (var caseClause in _caseClauses)
-            {
-                var containsMismatch = false;
-                var containsOverflow = false;
-                foreach ( var range in caseClause.rangeClause())
-                {
-                    var childResults = ParseTreeValueResults.GetChildResults(range);
-                    var childValues = childResults.Select(ch => ParseTreeValueResults.GetValue(ch));
-                    if (childValues.Any(chr => chr.IsMismatchExpression))
-                    {
-                        containsMismatch = true;
-                    }
-                    if (childValues.Any(chr => chr.IsOverflowExpression))
-                    {
-                        containsOverflow = true;
-                    }
-                }
-                if (containsMismatch)
-                {
-                    MismatchTypeCases.Add(caseClause);
-                }
-                else if (containsOverflow)
-                {
-                    OverflowCases.Add(caseClause);
-                }
-                else
-                {
-                    remainingCasesToInspect.Add(caseClause);
-                }
-            }
+            var invalidCaseClausesWithInvalidTypeMarker = caseClausesWithInvalidTypeMarker
+                .Where(tpl => tpl.invalidValueType.HasValue)
+                .Select(tpl => (tpl.invalidValueType.Value, (ParserRuleContext)tpl.caseClause));
 
-            var rangeClauseFilter = BuildRangeClauseFilter(remainingCasesToInspect);
-            if (!(_selectExpressionValue is null) && _selectExpressionValue.ParsesToConstantValue)
+            results.AddRange(invalidCaseClausesWithInvalidTypeMarker);
+
+            var remainingCasesToInspect = caseClausesWithInvalidTypeMarker
+                .Where(tpl => tpl.invalidValueType == null)
+                .Select(tpl => tpl.caseClause)
+                .ToList();
+
+            var rangeClauseFilter = BuildRangeClauseFilter(module, remainingCasesToInspect, selectExpressionTypeName, parseTreeValues, finder);
+            if (!(selectExpressionValue is null) && selectExpressionValue.ParsesToConstantValue)
             {
-                rangeClauseFilter.SelectExpressionValue = _selectExpressionValue;
+                rangeClauseFilter.SelectExpressionValue = selectExpressionValue;
             }
 
             foreach (var caseClause in remainingCasesToInspect)
             {
-                var rangeClauseExpressions = (from range in caseClause.rangeClause()
-                                              select GetRangeClauseExpression(range)).ToList();
+                var rangeClauseExpressions = caseClause.rangeClause()
+                    .Select(range =>  GetRangeClauseExpression(range, parseTreeValues))
+                    .ToList();
 
-                rangeClauseExpressions.ForEach(expr => rangeClauseFilter.AddExpression(expr));
+                foreach (var expression in rangeClauseExpressions)
+                {
+                    rangeClauseFilter.CheckAndAddExpression(expression);
+                }
 
-                if (rangeClauseExpressions.Any(expr => expr.IsMismatch))
+                var invalidRangeType = InvalidRangeExpressionsType(rangeClauseExpressions);
+                if (invalidRangeType.HasValue)
                 {
-                    MismatchTypeCases.Add(caseClause);
-                }
-                else if (rangeClauseExpressions.Any(expr => expr.IsOverflow))
-                {
-                    OverflowCases.Add(caseClause);
-                }
-                else if (rangeClauseExpressions.All(expr => expr.IsInherentlyUnreachable))
-                {
-                    InherentlyUnreachableCases.Add(caseClause);
-                }
-                else if (rangeClauseExpressions.All(expr => expr.IsUnreachable || expr.IsMismatch || expr.IsOverflow || expr.IsInherentlyUnreachable))
-                {
-                    UnreachableCases.Add(caseClause);
+                    results.Add((invalidRangeType.Value, caseClause));
                 }
             }
 
-            if (_caseElseContext != null && rangeClauseFilter.FiltersAllValues)
+            var caseElseClause = selectCaseContext.caseElseClause();
+            if (caseElseClause != null && rangeClauseFilter.FiltersAllValues)
             {
-                UnreachableCaseElseCases.Add(_caseElseContext);
+                results.Add((UnreachableCaseInspection.CaseInspectionResultType.CaseElse, caseElseClause));
             }
+
+            return results;
         }
 
-        private IExpressionFilter BuildRangeClauseFilter(IEnumerable<VBAParser.CaseClauseContext> caseClauses)
+        private UnreachableCaseInspection.CaseInspectionResultType? InvalidRangeExpressionsType(ICollection<IRangeClauseExpression> rangeClauseExpressions)
         {
-            var rangeClauseFilter = ExpressionFilterFactory.Create(SelectExpressionTypeName);
-
-            if (!(GetVariableDeclarationTypeName is null))
+            if (rangeClauseExpressions.Any(expr => expr.IsMismatch))
             {
-                foreach (var caseClause in caseClauses)
+                return UnreachableCaseInspection.CaseInspectionResultType.MismatchType;
+            }
+
+            if (rangeClauseExpressions.Any(expr => expr.IsOverflow))
+            {
+                return UnreachableCaseInspection.CaseInspectionResultType.Overflow;
+            }
+
+            if (rangeClauseExpressions.All(expr => expr.IsInherentlyUnreachable))
+            {
+                return UnreachableCaseInspection.CaseInspectionResultType.InherentlyUnreachable;
+            }
+
+            if (rangeClauseExpressions.All(expr =>
+                expr.IsUnreachable || expr.IsMismatch || expr.IsOverflow || expr.IsInherentlyUnreachable))
+            {
+                return UnreachableCaseInspection.CaseInspectionResultType.Unreachable;
+            }
+
+            return null;
+        }
+
+        private (UnreachableCaseInspection.CaseInspectionResultType? invalidValueType, VBAParser.CaseClauseContext caseClause) WithInvalidValueType(VBAParser.CaseClauseContext caseClause, IParseTreeVisitorResults parseTreeValues)
+        {
+            return (InvalidValueType(caseClause, parseTreeValues), caseClause);
+        }
+
+        private UnreachableCaseInspection.CaseInspectionResultType? InvalidValueType(VBAParser.CaseClauseContext caseClause, IParseTreeVisitorResults parseTreeValues)
+        {
+            var rangeClauseChildValues = caseClause
+                .rangeClause()
+                .SelectMany(parseTreeValues.GetChildResults)
+                .Select(parseTreeValues.GetValue)
+                .ToList();
+
+            if (rangeClauseChildValues.Any(value => value.IsMismatchExpression))
+            {
+                return UnreachableCaseInspection.CaseInspectionResultType.MismatchType;
+            }
+
+            if (rangeClauseChildValues.Any(value => value.IsOverflowExpression))
+            {
+                return UnreachableCaseInspection.CaseInspectionResultType.Overflow;
+            }
+
+            return null;
+        }
+
+        private IExpressionFilter BuildRangeClauseFilter(QualifiedModuleName module, IEnumerable<VBAParser.CaseClauseContext> caseClauses, string selectExpressionTypeName, IParseTreeVisitorResults parseTreeValues, DeclarationFinder finder)
+        {
+            var rangeClauseFilter = ExpressionFilterFactory.Create(selectExpressionTypeName);
+
+            var rangeClauses = caseClauses.SelectMany(caseClause => caseClause.rangeClause());
+            foreach (var rangeClause in rangeClauses)
+            {
+                var expression = GetRangeClauseExpression(rangeClause, parseTreeValues);
+                if (!expression?.LHS?.ParsesToConstantValue ?? false)
                 {
-                    foreach (var rangeClause in caseClause.rangeClause())
-                    {
-                        var expression = GetRangeClauseExpression(rangeClause);
-                        if (!expression.LHS.ParsesToConstantValue)
-                        {
-                            var typeName = GetVariableDeclarationTypeName(expression.LHS.Token, rangeClause);
-                            rangeClauseFilter.AddComparablePredicateFilter(expression.LHS.Token, typeName);
-                        }
-                    }
+                    var typeName = GetVariableTypeName(module, expression.LHS.Token, rangeClause, finder);
+                    rangeClauseFilter.AddComparablePredicateFilter(expression.LHS.Token, typeName);
                 }
             }
+
             return rangeClauseFilter;
         }
 
-        private void SetSelectExpressionTypeName(ParserRuleContext context, IParseTreeVisitorResults inspValues)
+        private string GetVariableTypeName(QualifiedModuleName module, string variableName, ParserRuleContext ancestor, DeclarationFinder finder)
         {
-            var selectStmt = (VBAParser.SelectCaseStmtContext)context;
-            if (TryDetectTypeHint(selectStmt.selectExpression().GetText(), out string typeName)
-                && InspectableTypes.Contains(typeName))
+            if (ancestor == null)
             {
-                SelectExpressionTypeName = typeName;
+                return string.Empty;
             }
-            else if (inspValues.TryGetValue(selectStmt.selectExpression(), out IParseTreeValue result)
-                && InspectableTypes.Contains(result.ValueType))
+
+            var descendents = ancestor.GetDescendents<VBAParser.SimpleNameExprContext>()
+                .Where(desc => desc.GetText().Equals(variableName))
+                .ToList();
+            if (!descendents.Any())
             {
-                _selectExpressionValue = result;
-                SelectExpressionTypeName = result.ValueType;
+                return string.Empty;
             }
-            else
-            {
-                SelectExpressionTypeName = DeriveTypeFromCaseClauses(inspValues, selectStmt);
-            }
+
+            var firstDescendent = descendents.First();
+            var (success, reference) = GetIdentifierReferenceForContext(module, firstDescendent, finder);
+            return success ?
+                GetBaseTypeForDeclaration(reference.Declaration)
+                : string.Empty;
         }
 
-        private string DeriveTypeFromCaseClauses(IParseTreeVisitorResults inspValues, VBAParser.SelectCaseStmtContext selectStmt)
+        private static (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(QualifiedModuleName module, ParserRuleContext context, DeclarationFinder finder)
+        {
+            if (context == null)
+            {
+                return (false, null);
+            }
+
+            var qualifiedSelection = new QualifiedSelection(module, context.GetSelection());
+
+            var identifierReferences =
+                finder
+                    .IdentifierReferences(qualifiedSelection)
+                    .Where(reference => reference.Context == context)
+                    .ToList();
+
+            return identifierReferences.Count == 1
+                ? (true, identifierReferences.First())
+                : (false, null);
+        }
+
+        private string GetBaseTypeForDeclaration(Declaration declaration)
+        {
+            var localDeclaration = declaration;
+            var iterationGuard = 0;
+            while (!(localDeclaration is null)
+                   && !localDeclaration.AsTypeIsBaseType
+                   && iterationGuard++ < 5)
+            {
+                localDeclaration = localDeclaration.AsTypeDeclaration;
+            }
+            return localDeclaration is null ? declaration.AsTypeName : localDeclaration.AsTypeName;
+        }
+
+        public string SelectExpressionTypeName(
+            VBAParser.SelectCaseStmtContext selectStmt,
+            IParseTreeVisitorResults parseTreeValues)
+        {
+            var (typeName, value) = SelectExpressionTypeNameAndValue(selectStmt, parseTreeValues);
+            return typeName;
+        }
+
+        private (string typeName, IParseTreeValue value) SelectExpressionTypeNameAndValue(
+            VBAParser.SelectCaseStmtContext selectStmt,
+            IParseTreeVisitorResults parseTreeValues)
+        {
+            if (TryDetectTypeHint(selectStmt.selectExpression().GetText(), out var typeName)
+                && InspectableTypes.Contains(typeName))
+            {
+                return (typeName, null);
+            }
+
+            if (parseTreeValues.TryGetValue(selectStmt.selectExpression(), out var result)
+                && InspectableTypes.Contains(result.ValueType))
+            {
+                return (result.ValueType, result);
+            }
+
+            return (DeriveTypeFromCaseClauses(parseTreeValues, selectStmt), null);
+        }
+
+        private string DeriveTypeFromCaseClauses(IParseTreeVisitorResults parseTreeValues, VBAParser.SelectCaseStmtContext selectStmt)
         {
             var caseClauseTypeNames = new List<string>();
             foreach (var caseClause in selectStmt.caseClause())
             {
                 foreach (var range in caseClause.rangeClause())
                 {
-                    if (TryDetectTypeHint(range.GetText(), out string hintTypeName))
+                    if (TryDetectTypeHint(range.GetText(), out var hintTypeName))
                     {
                         caseClauseTypeNames.Add(hintTypeName);
                     }
                     else
                     {
-                        var typeNames = from context in range.children
-                                where context is ParserRuleContext 
-                                    && IsResultContext(context)
-                                select inspValues.GetValueType(context as ParserRuleContext);
+                        var typeNames = range.children
+                            .OfType<ParserRuleContext>()
+                            .Where(IsResultContext)
+                            .Select(parseTreeValues.GetValueType);
 
                         caseClauseTypeNames.AddRange(typeNames);
                         caseClauseTypeNames.RemoveAll(tp => !InspectableTypes.Contains(tp));
@@ -198,17 +271,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
             }
 
-            if (TryGetSelectExpressionTypeNameFromTypes(caseClauseTypeNames, out string evalTypeName))
+            if (TryGetSelectExpressionTypeNameFromTypes(caseClauseTypeNames, out var evalTypeName))
             {
                 return evalTypeName;
             }
+
             return string.Empty;
         }
 
-        private static bool TryGetSelectExpressionTypeNameFromTypes(IEnumerable<string> typeNames, out string typeName)
+        private static bool TryGetSelectExpressionTypeNameFromTypes(ICollection<string> typeNames, out string typeName)
         {
             typeName = string.Empty;
-            if (!typeNames.Any()) { return false; }
+            if (!typeNames.Any())
+            {
+                return false;
+            }
 
             //If everything is declared as a Variant , we do not attempt to inspect the selectStatement
             if (typeNames.All(tn => tn.Equals(Tokens.Variant)))
@@ -229,7 +306,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return true;
             }
 
-            //Mix of Integertypes and rational number types will be evaluated using Double or Currency
+            //Mix of Integer types and rational number types will be evaluated using Double or Currency
             if (typeNames.All(tn => new List<string>() { Tokens.Long, Tokens.Integer, Tokens.Byte, Tokens.Single, Tokens.Double, Tokens.Currency }.Contains(tn)))
             {
                 typeName = typeNames.Any(tk => tk.Equals(Tokens.Currency)) ? Tokens.Currency : Tokens.Double;
@@ -246,7 +323,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return false;
             }
 
-            if (SymbolList.TypeHintToTypeName.Keys.Any(th => content.EndsWith(th)))
+            if (SymbolList.TypeHintToTypeName.Keys.Any(content.EndsWith))
             {
                 var lastChar = content.Substring(content.Length - 1);
                 typeName = SymbolList.TypeHintToTypeName[lastChar];
@@ -255,11 +332,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        private IRangeClauseExpression GetRangeClauseExpression(VBAParser.RangeClauseContext rangeClause)
+        private IRangeClauseExpression GetRangeClauseExpression(VBAParser.RangeClauseContext rangeClause, IParseTreeVisitorResults parseTreeValues)
         {
-            var resultContexts = from ctxt in rangeClause.children
-                             where ctxt is ParserRuleContext && IsResultContext(ctxt)
-                             select ctxt as ParserRuleContext;
+            var resultContexts = rangeClause.children
+                .OfType<ParserRuleContext>()
+                .Where(IsResultContext)
+                .ToList();
 
             if (!resultContexts.Any())
             {
@@ -268,45 +346,47 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (rangeClause.TO() != null)
             {
-                var rangeStartValue = ParseTreeValueResults.GetValue(rangeClause.GetChild<VBAParser.SelectStartValueContext>());
-                var rangeEndValue = ParseTreeValueResults.GetValue(rangeClause.GetChild<VBAParser.SelectEndValueContext>());
+                var rangeStartValue = parseTreeValues.GetValue(rangeClause.GetChild<VBAParser.SelectStartValueContext>());
+                var rangeEndValue = parseTreeValues.GetValue(rangeClause.GetChild<VBAParser.SelectEndValueContext>());
                 return new RangeOfValuesExpression((rangeStartValue, rangeEndValue));
             }
-            else if (rangeClause.IS() != null)
-            {
-                var clauseValue = ParseTreeValueResults.GetValue(resultContexts.First());
-                var opSymbol = rangeClause.GetChild<VBAParser.ComparisonOperatorContext>().GetText();
-                return new IsClauseExpression(clauseValue, opSymbol);
-            }
-            else if (TryGetLogicSymbol(resultContexts.First(), out string symbol))
-            {
-                var resultContext = resultContexts.First();
-                var clauseValue = ParseTreeValueResults.GetValue(resultContext);
-                if (clauseValue.ParsesToConstantValue)
-                {
-                    return new ValueExpression(clauseValue);
-                }
 
-                if (resultContext is VBAParser.LogicalNotOpContext)
-                {
+            if (rangeClause.IS() != null)
+            {
+                var isClauseValue = parseTreeValues.GetValue(resultContexts.First());
+                var opSymbol = rangeClause.GetChild<VBAParser.ComparisonOperatorContext>().GetText();
+                return new IsClauseExpression(isClauseValue, opSymbol);
+            }
+
+            if (!TryGetLogicSymbol(resultContexts.First(), out string symbol))
+            {
+                return new ValueExpression(parseTreeValues.GetValue(resultContexts.First()));
+            }
+
+            var resultContext = resultContexts.First();
+            var clauseValue = parseTreeValues.GetValue(resultContext);
+            if (clauseValue.ParsesToConstantValue)
+            {
+                return new ValueExpression(clauseValue);
+            }
+
+            switch (resultContext)
+            {
+                case VBAParser.LogicalNotOpContext _:
                     return new UnaryExpression(clauseValue, symbol);
-                }
-                else if (resultContext is VBAParser.RelationalOpContext
-                        || resultContext is VBAParser.LogicalEqvOpContext
-                        || resultContext is VBAParser.LogicalImpOpContext)
+                case VBAParser.RelationalOpContext _:
+                case VBAParser.LogicalEqvOpContext _:
+                case VBAParser.LogicalImpOpContext _:
                 {
-                    (IParseTreeValue lhs, IParseTreeValue rhs) = CreateLogicPair(clauseValue, symbol, _valueFactory);
+                    var (lhs, rhs) = CreateLogicPair(clauseValue, symbol, _valueFactory);
                     if (symbol.Equals(Tokens.Like))
                     {
                         return new LikeExpression(lhs, rhs);
                     }
                     return new BinaryExpression(lhs, rhs, symbol);
                 }
-                return null;
-            }
-            else
-            {
-                return new ValueExpression(ParseTreeValueResults.GetValue(resultContexts.First()));
+                default:
+                    return null;
             }
         }
 
@@ -320,11 +400,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        private static (IParseTreeValue lhs, IParseTreeValue rhs)
-            CreateLogicPair(IParseTreeValue value, string opSymbol, IParseTreeValueFactory factory)
+        private static (IParseTreeValue lhs, IParseTreeValue rhs) CreateLogicPair(IParseTreeValue value, string opSymbol, IParseTreeValueFactory factory)
         {
-            var operands = value.Token.Split(new string[] { opSymbol }, StringSplitOptions.None);
-            if (operands.Count() == 2)
+            var operands = value.Token.Split(new [] { opSymbol }, StringSplitOptions.None);
+            if (operands.Length == 2)
             {
                 var lhs = factory.Create(operands[0].Trim());
                 var rhs = factory.Create(operands[1].Trim());
@@ -335,7 +414,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return (lhs, rhs);
             }
 
-            if (operands.Count() == 1)
+            if (operands.Length == 1)
             {
                 var lhs = factory.Create(operands[0].Trim());
                 return (lhs, null);
@@ -358,7 +437,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     || context is VBAParser.SelectEndValueContext;
         }
 
-        private static List<string> InspectableTypes = new List<string>()
+        private static readonly IReadOnlyList<string> InspectableTypes = new List<string>
         {
             Tokens.Byte,
             Tokens.Integer,

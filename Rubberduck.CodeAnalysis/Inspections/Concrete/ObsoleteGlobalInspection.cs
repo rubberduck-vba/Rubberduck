@@ -1,15 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Locates legacy 'Global' declaration statements.
@@ -17,29 +13,43 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// The legacy syntax is obsolete; use the 'Public' keyword instead.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Global Foo As Long
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Public Foo As Long
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ObsoleteGlobalInspection : InspectionBase
+    internal sealed class ObsoleteGlobalInspection : DeclarationInspectionBase
     {
-        public ObsoleteGlobalInspection(RubberduckParserState state)
-            : base(state) { }
+        public ObsoleteGlobalInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            return from item in UserDeclarations
-                   where item.Accessibility == Accessibility.Global && item.Context != null
-                   select new DeclarationInspectionResult(this,
-                       string.Format(InspectionResults.ObsoleteGlobalInspection, item.DeclarationType.ToLocalizedString(), item.IdentifierName), item);
+            return declaration.Accessibility == Accessibility.Global 
+                   && declaration.Context != null
+                   && declaration.DeclarationType != DeclarationType.BracketedExpression;
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType.ToLocalizedString();
+            var declarationName = declaration.IdentifierName;
+            return string.Format(
+                    InspectionResults.ObsoleteGlobalInspection,
+                    declarationType,
+                    declarationName);
         }
     }
 }

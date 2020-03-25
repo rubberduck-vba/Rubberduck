@@ -1,19 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Extensions;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies redundant ByRef modifiers.
@@ -22,7 +13,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Out of convention or preference, explicit ByRef modifiers could be considered redundant since they are the implicit default. 
     /// This inspection can ensure the consistency of the convention.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -31,8 +23,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     Debug.Print foo
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Public Sub DoSomething(foo As Long)
@@ -40,59 +34,41 @@ namespace Rubberduck.Inspections.Concrete
     ///     Debug.Print foo
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class RedundantByRefModifierInspection : ParseTreeInspectionBase
+    internal sealed class RedundantByRefModifierInspection : DeclarationInspectionBase
     {
-        public RedundantByRefModifierInspection(RubberduckParserState state)
-            : base(state)
+        public RedundantByRefModifierInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Parameter)
+        {}
+
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-        }
-
-        public override IInspectionListener Listener { get; } = new RedundantByRefModifierListener();
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
-        {
-            var builtInEventHandlerContexts = State.DeclarationFinder.FindEventHandlers().Select(handler => handler.Context).ToHashSet();
-            var interfaceImplementationMemberContexts = State.DeclarationFinder.FindAllInterfaceImplementingMembers().Select(member => member.Context).ToHashSet();
-
-            var issues = Listener.Contexts.Where(context =>
-                !builtInEventHandlerContexts.Contains(context.Context.Parent.Parent) &&
-                !interfaceImplementationMemberContexts.Contains(context.Context.Parent.Parent));
-
-            return issues.Select(issue =>
+            if (!(declaration is ParameterDeclaration parameter)
+                || parameter.IsImplicitByRef
+                || !parameter.IsByRef
+                || parameter.IsParamArray)
             {
-                var identifier = ((VBAParser.ArgContext) issue.Context)
-                    .unrestrictedIdentifier()
-                    .identifier();
-
-                return new QualifiedContextInspectionResult(this,
-                    string.Format(InspectionResults.RedundantByRefModifierInspection,
-                        identifier.untypedIdentifier() != null
-                            ? identifier.untypedIdentifier().identifierValue().GetText()
-                            : identifier.typedIdentifier().untypedIdentifier().identifierValue().GetText()), issue);
-            });
-        }
-
-        public class RedundantByRefModifierListener : VBAParserBaseListener, IInspectionListener
-        {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts  => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
+                return false;
             }
 
-            public override void ExitArg(VBAParser.ArgContext context)
+            var parentDeclaration = parameter.ParentDeclaration;
+
+            if (parentDeclaration is ModuleBodyElementDeclaration enclosingMethod)
             {
-                if (context.BYREF() != null)
-                {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
-                }
+                return !enclosingMethod.IsInterfaceImplementation
+                       && !finder.FindEventHandlers().Contains(enclosingMethod);
             }
+
+            return parentDeclaration.DeclarationType != DeclarationType.LibraryFunction
+                   && parentDeclaration.DeclarationType != DeclarationType.LibraryProcedure;
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(
+                InspectionResults.RedundantByRefModifierInspection,
+                declaration.IdentifierName);
         }
     }
 }

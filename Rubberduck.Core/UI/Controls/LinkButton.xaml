@@ -5,6 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="20" d:DesignWidth="50">
+    <Button.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Button.Resources>
     <Button.Style>
         <Style TargetType="Button">
             <Setter Property="Width" Value="Auto"/>
@@ -25,14 +32,14 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Setter Property="Foreground" Value="Blue" />
+            <Setter Property="Foreground" Value="{StaticResource CaptionHyperlinkBrush}" />
             <Setter Property="Cursor" Value="Hand" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="true">
-                    <Setter Property="Foreground" Value="Red" />
+                    <Setter Property="Foreground" Value="{StaticResource CaptionHyperlinkVisitedBrush}" />
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="false">
-                    <Setter Property="Foreground" Value="Gray" />
+                    <Setter Property="Foreground" Value="{StaticResource CaptionDisabledBrush}" />
                 </Trigger>
             </Style.Triggers>
         </Style>

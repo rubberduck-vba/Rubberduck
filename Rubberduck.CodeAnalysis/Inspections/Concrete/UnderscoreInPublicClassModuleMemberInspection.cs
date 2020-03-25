@@ -1,13 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about public class members with an underscore in their names.
@@ -16,41 +13,45 @@ namespace Rubberduck.Inspections.Concrete
     /// The public interface of any class module can be implemented by any other class module; if the public interface 
     /// contains names with underscores, other classes cannot implement it - the code will not compile. Avoid underscores; prefer PascalCase names.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Class Module">
     /// <![CDATA[
     /// '@Interface
     /// 
     /// Public Sub Do_Something() ' underscore in name makes the interface non-implementable.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Class Module">
     /// <![CDATA[
     /// '@Interface
     /// 
     /// Public Sub DoSomething() ' PascalCase identifiers are never a problem.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class UnderscoreInPublicClassModuleMemberInspection : InspectionBase
+    internal sealed class UnderscoreInPublicClassModuleMemberInspection : DeclarationInspectionBase
     {
-        public UnderscoreInPublicClassModuleMemberInspection(RubberduckParserState state)
-            : base(state) { }
+        public UnderscoreInPublicClassModuleMemberInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Member)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var interfaceMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers().ToList();
-            var eventHandlers = State.DeclarationFinder.FindEventHandlers().ToList();
+            return declaration.IdentifierName.Contains("_") 
+                   && (declaration.Accessibility == Accessibility.Public 
+                       || declaration.Accessibility == Accessibility.Implicit) 
+                   && declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
+                   && !finder.FindEventHandlers().Contains(declaration)
+                   && !(declaration is ModuleBodyElementDeclaration member && member.IsInterfaceImplementation);
+        }
 
-            var names = State.DeclarationFinder.UserDeclarations(Parsing.Symbols.DeclarationType.Member)
-                .Where(w => w.ParentDeclaration.DeclarationType.HasFlag(Parsing.Symbols.DeclarationType.ClassModule))
-                .Where(w => !interfaceMembers.Contains(w) && !eventHandlers.Contains(w))
-                .Where(w => w.Accessibility == Parsing.Symbols.Accessibility.Public || w.Accessibility == Parsing.Symbols.Accessibility.Implicit)
-                .Where(w => w.IdentifierName.Contains('_'))
-                .ToList();
-
-            return names.Select(issue =>
-                new DeclarationInspectionResult(this, string.Format(InspectionResults.UnderscoreInPublicClassModuleMemberInspection, issue.IdentifierName), issue));
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.UnderscoreInPublicClassModuleMemberInspection, declaration.IdentifierName);
         }
     }
 }

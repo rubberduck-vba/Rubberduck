@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
-    public struct Limit<T> where T : IComparable<T>
+    internal struct Limit<T> where T : IComparable<T>
     {
         public bool HasValue;
         public T Value;
@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
     }
 
-    public class FilterLimits<T> where T : IComparable<T>
+    internal class FilterLimits<T> where T : IComparable<T>
     {
         private Limit<T> _min;
         private Limit<T> _max;

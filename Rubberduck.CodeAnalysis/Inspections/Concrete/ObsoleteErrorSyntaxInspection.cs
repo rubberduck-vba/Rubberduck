@@ -1,17 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Locates legacy 'Error' statements.
@@ -19,51 +12,44 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// The legacy syntax is obsolete; prefer 'Err.Raise' instead.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Error 5 ' raises run-time error 5
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Err.Raise 5 ' raises run-time error 5
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ObsoleteErrorSyntaxInspection : ParseTreeInspectionBase
+    internal sealed class ObsoleteErrorSyntaxInspection : ParseTreeInspectionBase<VBAParser.ErrorStmtContext>
     {
-        public ObsoleteErrorSyntaxInspection(RubberduckParserState state)
-            : base(state)
+        public ObsoleteErrorSyntaxInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            Listener = new ObsoleteErrorSyntaxListener();
+            ContextListener = new ObsoleteErrorSyntaxListener();
         }
 
-        public override IInspectionListener Listener { get; }
+        protected override IInspectionListener<VBAParser.ErrorStmtContext> ContextListener { get; }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<VBAParser.ErrorStmtContext> context)
         {
-            return Listener.Contexts
-                .Select(context => new QualifiedContextInspectionResult(this, InspectionResults.ObsoleteErrorSyntaxInspection, context));
+            return InspectionResults.ObsoleteErrorSyntaxInspection;
         }
 
-        public class ObsoleteErrorSyntaxListener : VBAParserBaseListener, IInspectionListener
+        private class ObsoleteErrorSyntaxListener : InspectionListenerBase<VBAParser.ErrorStmtContext>
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
             public override void ExitErrorStmt(VBAParser.ErrorStmtContext context)
             {
-                _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                SaveContext(context);
             }
         }
     }

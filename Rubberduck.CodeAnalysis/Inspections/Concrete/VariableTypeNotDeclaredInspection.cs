@@ -1,14 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about variables declared without an explicit data type.
@@ -16,7 +13,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// A variable declared without an explicit data type is implicitly a Variant/Empty until it is assigned.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value ' implicit Variant
@@ -24,8 +22,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long
@@ -33,22 +33,30 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class VariableTypeNotDeclaredInspection : InspectionBase
+    internal sealed class VariableTypeNotDeclaredInspection : ImplicitTypeInspectionBase
     {
-        public VariableTypeNotDeclaredInspection(RubberduckParserState state)
-            : base(state) { }
+        public VariableTypeNotDeclaredInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, new []{DeclarationType.Parameter, DeclarationType.Variable}, new[]{DeclarationType.Control})
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var issues = from item in State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                         .Union(State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter))
-                         where (item.DeclarationType != DeclarationType.Parameter || (item.DeclarationType == DeclarationType.Parameter && !item.IsArray))
-                         && item.DeclarationType != DeclarationType.Control
-                         && !item.IsTypeSpecified
-                         && !item.IsUndeclared
-                         select new DeclarationInspectionResult(this, string.Format(InspectionResults.ImplicitVariantDeclarationInspection, item.DeclarationType, item.IdentifierName), item);
-            return issues;
+            return base.IsResultDeclaration(declaration, finder)
+                   && !declaration.IsUndeclared
+                   && (declaration.DeclarationType != DeclarationType.Parameter 
+                       || declaration is ParameterDeclaration parameter && !parameter.IsParamArray);
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType.ToLocalizedString();
+            var declarationName = declaration.IdentifierName;
+            return string.Format(
+                InspectionResults.ImplicitVariantDeclarationInspection,
+                declarationType,
+                declarationName);
         }
     }
 }

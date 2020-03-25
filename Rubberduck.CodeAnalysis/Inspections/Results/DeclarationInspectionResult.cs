@@ -1,25 +1,28 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Results
+namespace Rubberduck.CodeAnalysis.Inspections.Results
 {
-    public class DeclarationInspectionResult : InspectionResultBase
+    internal class DeclarationInspectionResult : InspectionResultBase
     {
-        public DeclarationInspectionResult(IInspection inspection, string description, Declaration target, QualifiedContext context = null, dynamic properties = null) :
-            base(inspection,
+        public DeclarationInspectionResult(
+            IInspection inspection, 
+            string description, 
+            Declaration target, 
+            QualifiedContext context = null,
+            ICollection<string> disabledQuickFixes = null) 
+            : base(inspection,
                  description,
                  context == null ? target.QualifiedName.QualifiedModuleName : context.ModuleName,
                  context == null ? target.Context : context.Context,
                  target,
                  target.QualifiedSelection,
                  GetQualifiedMemberName(target),
-                 (object)properties)
-        {
-        }
+                 disabledQuickFixes)
+        {}
         
         private static QualifiedMemberName? GetQualifiedMemberName(Declaration target)
         {
@@ -38,5 +41,27 @@ namespace Rubberduck.Inspections.Results
             return modifiedModules.Contains(Target.QualifiedModuleName)
                    || base.ChangesInvalidateResult(modifiedModules);
         }
+    }
+
+    internal class DeclarationInspectionResult<T> : DeclarationInspectionResult, IWithInspectionResultProperties<T>
+    {
+        public DeclarationInspectionResult(
+            IInspection inspection, 
+            string description, 
+            Declaration target,
+            T properties, 
+            QualifiedContext context = null,
+            ICollection<string> disabledQuickFixes = null) :
+            base(
+                inspection,
+                description,
+                target,
+                context,
+                disabledQuickFixes)
+        {
+            Properties = properties;
+        }
+
+        public T Properties { get; }
     }
 }

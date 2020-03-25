@@ -20,9 +20,8 @@ If you like this project and would like to thank its contributors, you are welco
 [![Chat on stackexchange](https://img.shields.io/badge/chat-on%20stackexchange-blue.svg)](https://chat.stackexchange.com/rooms/14929/vba-rubberducking)
 [![License](https://img.shields.io/github/license/rubberduck-vba/Rubberduck.svg)](https://github.com/rubberduck-vba/Rubberduck/blob/next/LICENSE)
 
-> **[rubberduckvba.com](http://rubberduckvba.com)** [Wiki](https://github.com/rubberduck-vba/Rubberduck/wiki) [Rubberduck News](https://rubberduckvba.wordpress.com/) 
-> devs@rubberduckvba.com  
-> Follow [@rubberduckvba](https://twitter.com/rubberduckvba) on Twitter 
+> **[rubberduckvba.com](http://rubberduckvba.com)** | **[Rubberduck News](https://rubberduckvba.wordpress.com/)** 
+| **[Twitter (@rubberduckvba)](https://twitter.com/rubberduckvba)** | **[Wiki](https://github.com/rubberduck-vba/Rubberduck/wiki)**  
 
 ---
 

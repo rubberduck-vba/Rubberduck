@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Attributes;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
 {
     /// <summary>
     /// Locates unqualified Worksheet.Range/Cells/Columns/Rows member calls that implicitly refer to ActiveSheet.
@@ -20,15 +19,18 @@ namespace Rubberduck.Inspections.Concrete
     /// is more robust, and will be less likely to throw run-time error 1004 or produce unexpected results
     /// when the active sheet isn't the expected one.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
     ///     Set foo = Sheet1.Range(Cells(1, 1), Cells(1, 10)) ' Worksheet.Cells implicitly from ActiveSheet; error 1004 if that isn't Sheet1.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
@@ -37,40 +39,51 @@ namespace Rubberduck.Inspections.Concrete
     ///     End With
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
-    public sealed class ImplicitActiveSheetReferenceInspection : InspectionBase
+    internal sealed class ImplicitActiveSheetReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        public ImplicitActiveSheetReferenceInspection(RubberduckParserState state)
-            : base(state) { }
+        public ImplicitActiveSheetReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
-        private static readonly string[] Targets = 
+        protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
+        {
+            var excel = finder.Projects
+                .SingleOrDefault(item => !item.IsUserDefined
+                                         && item.IdentifierName == "Excel");
+            if (excel == null)
+            {
+                return Enumerable.Empty<Declaration>();
+            }
+
+            var globalModules = GlobalObjectClassNames
+                .Select(className => finder.FindClassModule(className, excel, true))
+                .OfType<ModuleDeclaration>();
+
+            return globalModules
+                .SelectMany(moduleClass => moduleClass.Members)
+                .Where(declaration => TargetMemberNames.Contains(declaration.IdentifierName) 
+                                      && declaration.DeclarationType.HasFlag(DeclarationType.Member)
+                                      && declaration.AsTypeName == "Range");
+        }
+
+        private static readonly string[] GlobalObjectClassNames =
+        {
+            "Global", "_Global"
+        };
+
+        private static readonly string[] TargetMemberNames =
         {
             "Cells", "Range", "Columns", "Rows"
         };
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(IdentifierReference reference)
         {
-            var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
-            if (excel == null) { return Enumerable.Empty<IInspectionResult>(); }
-
-            var globalModules = new[]
-            {
-                State.DeclarationFinder.FindClassModule("Global", excel, true),
-                State.DeclarationFinder.FindClassModule("_Global", excel, true)
-            };
-
-            var members = Targets
-                .SelectMany(target => globalModules.SelectMany(global =>
-                    State.DeclarationFinder.FindMemberMatches(global, target))
-                .Where(member => member.AsTypeName == "Range" && member.References.Any()));
-
-            return members
-                .SelectMany(declaration => declaration.References)
-                .Select(issue => new IdentifierReferenceInspectionResult(this,
-                                                      string.Format(InspectionResults.ImplicitActiveSheetReferenceInspection, issue.Declaration.IdentifierName),
-                                                      State,
-                                                      issue));
+            return string.Format(
+                InspectionResults.ImplicitActiveSheetReferenceInspection,
+                reference.Declaration.IdentifierName);
         }
     }
 }

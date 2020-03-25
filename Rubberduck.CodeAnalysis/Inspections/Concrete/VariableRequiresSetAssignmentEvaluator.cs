@@ -1,14 +1,14 @@
-﻿using Rubberduck.Parsing;
+﻿using System.Diagnostics;
+using System.Linq;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using System.Diagnostics;
-using System.Linq;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
-    public static class VariableRequiresSetAssignmentEvaluator
+    internal static class VariableRequiresSetAssignmentEvaluator
     {
         /// <summary>
         /// Determines whether the 'Set' keyword is required (whether it's present or not) for the specified identifier reference.

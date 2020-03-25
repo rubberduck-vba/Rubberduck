@@ -1,17 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies places in which an object is used but a procedure is required and a default member exists on the object.
@@ -54,37 +51,23 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </module>
     /// </example>
-    public sealed class ObjectWhereProcedureIsRequiredInspection : InspectionBase
+    internal sealed class ObjectWhereProcedureIsRequiredInspection : InspectionBase
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
-
-        public ObjectWhereProcedureIsRequiredInspection(RubberduckParserState state)
-            : base(state)
+        public ObjectWhereProcedureIsRequiredInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            _declarationFinderProvider = state;
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
-            var results = new List<IInspectionResult>();
-            foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
-            {
-                if (moduleDeclaration == null)
-                {
-                    continue;
-                }
-
-                var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module));
-            }
-
-            return results;
+            return finder.UserDeclarations(DeclarationType.Module)
+                .Where(module => module != null)
+                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder));
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var finder = _declarationFinderProvider.DeclarationFinder;
             return BoundInspectionResults(module, finder)
                 .Concat(UnboundInspectionResults(module, finder));
         }
@@ -96,25 +79,25 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(IsResultReference);
 
             return objectionableReferences
-                .Select(reference => BoundInspectionResult(reference, _declarationFinderProvider))
+                .Select(reference => BoundInspectionResult(reference, finder))
                 .ToList();
         }
 
-        private bool IsResultReference(IdentifierReference reference)
+        private static bool IsResultReference(IdentifierReference reference)
         {
             return reference.IsProcedureCoercion;
         }
 
-        private IInspectionResult BoundInspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
+        private IInspectionResult BoundInspectionResult(IdentifierReference reference, DeclarationFinder finder)
         {
             return new IdentifierReferenceInspectionResult(
                 this,
                 BoundResultDescription(reference),
-                declarationFinderProvider,
+                finder,
                 reference);
         }
 
-        private string BoundResultDescription(IdentifierReference reference)
+        private static string BoundResultDescription(IdentifierReference reference)
         {
             var expression = reference.IdentifierName;
             var defaultMember = reference.Declaration.QualifiedName.ToString();
@@ -128,22 +111,22 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(IsResultReference);
 
             return objectionableReferences
-                .Select(reference => UnboundInspectionResult(reference, _declarationFinderProvider))
+                .Select(reference => UnboundInspectionResult(reference, finder))
                 .ToList();
         }
 
-        private IInspectionResult UnboundInspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
+        private IInspectionResult UnboundInspectionResult(IdentifierReference reference, DeclarationFinder finder)
         {
-            var result = new IdentifierReferenceInspectionResult(
+            var disabledQuickFixes = new List<string>{ "ExpandDefaultMemberQuickFix" };
+            return new IdentifierReferenceInspectionResult(
                 this,
                 UnboundResultDescription(reference),
-                declarationFinderProvider,
-                reference);
-            result.Properties.DisableFixes = "ExpandDefaultMemberQuickFix";
-            return result;
+                finder,
+                reference,
+                disabledQuickFixes);
         }
 
-        private string UnboundResultDescription(IdentifierReference reference)
+        private static string UnboundResultDescription(IdentifierReference reference)
         {
             var expression = reference.IdentifierName;
             return string.Format(InspectionResults.ObjectWhereProcedureIsRequiredInspection_Unbound, expression);

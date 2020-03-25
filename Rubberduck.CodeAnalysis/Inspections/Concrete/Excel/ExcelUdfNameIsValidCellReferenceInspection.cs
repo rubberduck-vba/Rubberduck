@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
 
-namespace Rubberduck.Inspections.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
 {
     /// <summary>
     /// Locates public User-Defined Function procedures accidentally named after a cell reference.
@@ -21,22 +21,70 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// Another good reason to avoid numeric suffixes: if the function is meant to be used as a UDF in a cell formula,
     /// the worksheet cell by the same name takes precedence and gets the reference, and the function is never invoked.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function FOO1234()
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function Foo()
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
-    public class ExcelUdfNameIsValidCellReferenceInspection : InspectionBase
+    internal class ExcelUdfNameIsValidCellReferenceInspection : DeclarationInspectionUsingGlobalInformationBase<bool>
     {
-        public ExcelUdfNameIsValidCellReferenceInspection(RubberduckParserState state) : base(state) { }
+        public ExcelUdfNameIsValidCellReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, new []{DeclarationType.Function}, new []{DeclarationType.PropertyGet, DeclarationType.LibraryFunction})
+        {}
+
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder, bool excelIsReferenced)
+        {
+            if (!excelIsReferenced || module.ComponentType != ComponentType.StandardModule)
+            {
+                return Enumerable.Empty<IInspectionResult>();
+            }
+
+            var proceduralModuleDeclaration = finder.Members(module, DeclarationType.ProceduralModule)
+                        .SingleOrDefault() as ProceduralModuleDeclaration;
+
+            if (proceduralModuleDeclaration == null
+                || proceduralModuleDeclaration.IsPrivateModule)
+            {
+                return Enumerable.Empty<IInspectionResult>();
+            }
+
+            return base.DoGetInspectionResults(module, finder, excelIsReferenced);
+        }
+
+        protected override bool GlobalInformation(DeclarationFinder finder)
+        {
+            return finder.Projects.Any(project => !project.IsUserDefined
+                                                            && project.IdentifierName == "Excel");
+        }
+
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder, bool globalInfo)
+        {
+            if (!VisibleAsUdf.Contains(declaration.Accessibility))
+            {
+                return false;
+            }
+
+            var cellIdMatch = ValidCellIdRegex.Match(declaration.IdentifierName);
+            if (!cellIdMatch.Success)
+            {
+                return false;
+            }
+
+            var row = Convert.ToUInt32(cellIdMatch.Groups["Row"].Value);
+            return row > 0 && row <= MaximumExcelRows;
+        }
 
         private static readonly Regex ValidCellIdRegex =
             new Regex(@"^([a-z]|[a-z]{2}|[a-w][a-z]{2}|x([a-e][a-z]|f[a-d]))(?<Row>\d+)$",
@@ -46,25 +94,9 @@ namespace Rubberduck.Inspections.Inspections.Concrete
 
         private const uint MaximumExcelRows = 1048576;
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(Declaration declaration)
         {
-            var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
-            if (excel == null)
-            {
-                return Enumerable.Empty<IInspectionResult>();
-            }
-
-            var candidates = UserDeclarations.OfType<FunctionDeclaration>().Where(decl =>
-                decl.ParentScopeDeclaration.DeclarationType == DeclarationType.ProceduralModule &&
-                VisibleAsUdf.Contains(decl.Accessibility));
-
-            return (from function in candidates.Where(decl => ValidCellIdRegex.IsMatch(decl.IdentifierName))
-                    let row = Convert.ToUInt32(ValidCellIdRegex.Matches(function.IdentifierName)[0].Groups["Row"].Value)
-                    where row > 0 && row <= MaximumExcelRows
-                    select new DeclarationInspectionResult(this,
-                        string.Format(InspectionResults.ExcelUdfNameIsValidCellReferenceInspection, function.IdentifierName),
-                        function))
-                .Cast<IInspectionResult>().ToList();
+            return string.Format(InspectionResults.ExcelUdfNameIsValidCellReferenceInspection, declaration.IdentifierName);
         }
     }
 }

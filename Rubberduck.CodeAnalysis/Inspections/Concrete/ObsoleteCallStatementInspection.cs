@@ -1,18 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Extensions;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Locates explicit 'Call' statements.
@@ -20,7 +13,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// The 'Call' keyword is obsolete and redundant, since call statements are legal and generally more consistent without it.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub Test()
     ///     Call DoSomething(42)
@@ -30,8 +24,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub Test()
     ///     DoSomething 42
@@ -41,67 +37,47 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ObsoleteCallStatementInspection : ParseTreeInspectionBase
+    internal sealed class ObsoleteCallStatementInspection : ParseTreeInspectionBase<VBAParser.CallStmtContext>
     {
-        public ObsoleteCallStatementInspection(RubberduckParserState state)
-            : base(state)
+        public ObsoleteCallStatementInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            Listener = new ObsoleteCallStatementListener();
+            ContextListener = new ObsoleteCallStatementListener();
         }
 
-        public override IInspectionListener Listener { get; }
+        protected override IInspectionListener<VBAParser.CallStmtContext> ContextListener { get; }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<VBAParser.CallStmtContext> context)
         {
-            var results = new List<IInspectionResult>();
-            // do prefiltering to reduce searchspace
-            var prefilteredContexts = Listener.Contexts.Where(context => !context.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName));
-            foreach (var context in prefilteredContexts)
-            {
-                string lines;
-                var component = State.ProjectsProvider.Component(context.ModuleName);
-                using (var module = component.CodeModule)
-                {
-                    lines = module.GetLines(context.Context.Start.Line,
-                        context.Context.Stop.Line - context.Context.Start.Line + 1);
-                }
-
-                var stringStrippedLines = string.Join(string.Empty, lines).StripStringLiterals();
-
-                if (stringStrippedLines.HasComment(out var commentIndex))
-                {
-                    stringStrippedLines = stringStrippedLines.Remove(commentIndex);
-                }
-
-                if (!stringStrippedLines.Contains(":"))
-                {
-                    results.Add(new QualifiedContextInspectionResult(this,
-                                                     InspectionResults.ObsoleteCallStatementInspection,
-                                                     context));
-                }
-            }
-
-            return results;
+            return InspectionResults.ObsoleteCallStatementInspection;
         }
 
-        public class ObsoleteCallStatementListener : VBAParserBaseListener, IInspectionListener
+        protected override bool IsResultContext(QualifiedContext<VBAParser.CallStmtContext> context, DeclarationFinder finder)
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
+            if (!context.Context.TryGetFollowingContext(out VBAParser.IndividualNonEOFEndOfStatementContext followingEndOfStatement)
+                || followingEndOfStatement.COLON() == null)
             {
-                _contexts.Clear();
+                return true;
             }
 
+            if (!context.Context.TryGetPrecedingContext(out VBAParser.IndividualNonEOFEndOfStatementContext precedingEndOfStatement)
+                || precedingEndOfStatement.endOfLine() == null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private class ObsoleteCallStatementListener : InspectionListenerBase<VBAParser.CallStmtContext>
+        {
             public override void ExitCallStmt(VBAParser.CallStmtContext context)
             {
                 if (context.CALL() != null)
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    SaveContext(context);
                 }
             }
         }
