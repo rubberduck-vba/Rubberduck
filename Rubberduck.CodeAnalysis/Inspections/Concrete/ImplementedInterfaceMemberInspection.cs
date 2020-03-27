@@ -1,14 +1,14 @@
 ﻿using System.Linq;
+using System.Collections.Generic;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Common;
-using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.CodeAnalysis.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete 
 {
     /// <summary>
     /// Identifies class modules that define an interface with one or more members containing a concrete implementation.
@@ -40,49 +40,57 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// ]]>
     /// </module>
     /// </example>
-    internal sealed class ImplementedInterfaceMemberInspection : DeclarationInspectionBase
+    internal sealed class ImplementedInterfaceMemberInspection : DeclarationInspectionBase<IEnumerable<ModuleBodyElementDeclaration>>
     {
         public ImplementedInterfaceMemberInspection(IDeclarationFinderProvider declarationFinderProvider)
-            : base(declarationFinderProvider, DeclarationType.ClassModule)
+            : base(declarationFinderProvider, DeclarationType.ClassModule) 
         {}
 
-        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
+        protected override (bool, IEnumerable<ModuleBodyElementDeclaration>) IsResultDeclarationWithAdditionalProperties(Declaration declaration, DeclarationFinder finder)
         {
-            if (!IsInterfaceDeclaration(declaration))
+            if (!(declaration is ClassModuleDeclaration classModule && classModule.IsInterface)) 
             {
-                return false;
+                return (false, null);
             }
 
+            var implementedMembers = HasImplementedMembers(declaration, finder);
+            return (implementedMembers.Count() > 0, implementedMembers);
+        }
+
+        private IEnumerable<ModuleBodyElementDeclaration> HasImplementedMembers(Declaration declaration, DeclarationFinder finder) 
+        {
             var moduleBodyElements = finder.Members(declaration, DeclarationType.Member)
                 .OfType<ModuleBodyElementDeclaration>();
 
             return moduleBodyElements
-                .Any(member => member.Block.ContainsExecutableStatements(true));
+                .Where(member => member.Block.ContainsExecutableStatements(true));
         }
 
-        private static bool IsInterfaceDeclaration(Declaration declaration)
+        protected override string ResultDescription(Declaration declaration, IEnumerable<ModuleBodyElementDeclaration> results)
         {
-            if (!(declaration is ClassModuleDeclaration classModule))
-            {
-                return false;
-            }
-            return classModule.IsInterface
-                || declaration.Annotations.Any(an => an.Annotation is InterfaceAnnotation);
-        }
-
-        protected override string ResultDescription(Declaration declaration)
-        {
-            var qualifiedName = declaration.QualifiedModuleName.ToString();
-            var declarationType = Resources.RubberduckUI.ResourceManager
-                .GetString("DeclarationType_" + declaration.DeclarationType)
-                .Capitalize();
             var identifierName = declaration.IdentifierName;
+            var memberResultsString = FormatResults(results);
 
             return string.Format(
                 InspectionResults.ImplementedInterfaceMemberInspection,
-                qualifiedName,
-                declarationType,
-                identifierName);
+                identifierName,
+                memberResultsString);
+        }
+
+        private static string FormatResults(IEnumerable<ModuleBodyElementDeclaration> results)
+        {
+            List<string> items = new List<string>();
+
+            foreach (ModuleBodyElementDeclaration elem in results)
+            {
+                var memberType = Resources.RubberduckUI.ResourceManager
+                    .GetString("DeclarationType_" + elem.DeclarationType)
+                    .Capitalize();
+
+                items.Add($"{elem.IdentifierName} ({memberType})");
+            }
+
+            return string.Join(", ", items);
         }
     }
 }

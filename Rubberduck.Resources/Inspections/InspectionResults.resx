@@ -435,8 +435,8 @@ In memoriam, 1972-2018</value>
     <comment>{0} Method kind, {1} Method name</comment>
   </data>
   <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
-    <value>Interface class module '{2}' contains a concrete implementation for {0} '{1}'.</value>
-    <comment>{0} Method kind, {1} Method name, {2} interface class module name</comment>
+    <value>Interface '{0}' contains a concrete implementation for the following member(s): {1}</value>
+    <comment>{0} interface class name; {1} formatted string of results</comment>
   </data>
   <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
     <value>The argument '{2}' of type '{3}' is passed to the parameter '{0}' of the incompatible type '{1}'.</value>
@@ -512,5 +512,9 @@ In memoriam, 1972-2018</value>
   <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
     <value>The annotation '{0}' was expected to have less arguments.</value>
     <comment>{0} annotation name</comment>
+  </data>
+  <data name="ExcessiveInterfaceMembersInspection" xml:space="preserve">
+    <value>Class/interface '{0}' has too many public members ({1}).</value>
+    <comment>{0} class name; {1} public member count</comment>
   </data>
 </root>

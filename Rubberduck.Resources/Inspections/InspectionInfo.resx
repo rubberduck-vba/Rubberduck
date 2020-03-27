@@ -442,4 +442,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
     <value>An annotation has more arguments than allowed; superfluous arguments are ignored.</value>
   </data>
+  <data name="ExcessiveInterfaceMembersInspection" xml:space="preserve">
+    <value>Interfaces should be designed to be small, specific, and specialized. Reducing the number of public members makes a more straightforward API that is easier to work with, and adheres to the Interface Segregation Principle.</value>
+  </data>
 </root>

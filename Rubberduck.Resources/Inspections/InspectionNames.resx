@@ -446,4 +446,7 @@
   <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
     <value>Superfluous annotation arguments</value>
   </data>
+  <data name="ExcessiveInterfaceMembersInspection" xml:space="preserve">
+    <value>Interface has too many public members.</value>
+  </data>
 </root>

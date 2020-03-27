@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Inspections {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InspectionInfo {
@@ -273,6 +273,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ExcelUdfNameIsValidCellReferenceInspection {
             get {
                 return ResourceManager.GetString("ExcelUdfNameIsValidCellReferenceInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interfaces should be designed to be small, specific, and specialized. Reducing the number of public members makes a more straightforward API that is easier to work with, and adheres to the Interface Segregation Principle..
+        /// </summary>
+        public static string ExcessiveInterfaceMembersInspection {
+            get {
+                return ResourceManager.GetString("ExcessiveInterfaceMembersInspection", resourceCulture);
             }
         }
         

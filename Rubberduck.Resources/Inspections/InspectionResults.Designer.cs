@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Inspections {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InspectionResults {
@@ -277,6 +277,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Class/interface &apos;{0}&apos; has too many public members ({1})..
+        /// </summary>
+        public static string ExcessiveInterfaceMembersInspection {
+            get {
+                return ResourceManager.GetString("ExcessiveInterfaceMembersInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Return value of function &apos;{0}&apos; is never used..
         /// </summary>
         public static string FunctionReturnValueAlwaysDiscardedInspection {
@@ -331,7 +340,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Interface class module &apos;{2}&apos; contains a concrete implementation for {0} &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Interface &apos;{0}&apos; contains a concrete implementation for the following member(s): {1}.
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
             get {
