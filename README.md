@@ -1,12 +1,20 @@
 <img alt="Rubberduck Open-Source VBE Add-In - VBA6 | VBA7 x86/x64 | VB6" src="https://user-images.githubusercontent.com/5751684/48656196-a507af80-e9ef-11e8-9c09-1ce3c619c019.png" />
-    
-<!-- campaign is no longer accepting donations
-### Donate!
 
-If you like this project and would like to thank its contributors, you are welcome to support our GoFundMe campaign to finance Rubberduck swag and international shipping - contributors will be getting t-shirts, mugs, and other cool things.
+---
 
-[![GoFundMe campaign](https://user-images.githubusercontent.com/5751684/29191799-e3d20b72-7dec-11e7-8ec6-0c69da4a3135.png)](https://www.gofundme.com/rubberduckvba)
--->
+Rubberduck is free, but making it isn't. Donate to help us pay for hosting and keep the blog free of ads!
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_donations" />
+<input type="hidden" name="business" value="UY5K5X36B7T2S" />
+<input type="hidden" name="currency_code" value="CAD" />
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+<img alt="" border="0" src="https://www.paypal.com/en_CA/i/scr/pixel.gif" width="1" height="1" />
+</form>
+
+As agreed with core contributors, donations in excess of what's needed to cover our fees for a year, will be donated to the [Multiple Sclerosis Society of Canada](https://mssociety.ca/).
+
+---
 
 |Branch     | Description | Build Status | Download link |
 |------------|---|--------------|-|
