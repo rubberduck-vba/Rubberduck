@@ -5,6 +5,11 @@ using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.Inspections;
+using Rubberduck.SettingsProvider;
+
+//todo:
+//finish implementing settings
+//implement quickfix
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete 
 {
@@ -51,12 +56,19 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// 
     internal sealed class ExcessiveInterfaceMembersInspection : DeclarationInspectionBase<int>
     {
-        private const int PublicMemberLimit = 10; //todo: make setting rather than constant
+        private static int PublicMemberLimit;
 
-        public ExcessiveInterfaceMembersInspection(IDeclarationFinderProvider declarationFinderProvider)
+        public ExcessiveInterfaceMembersInspection(IDeclarationFinderProvider declarationFinderProvider) //constructor for actual inspection that does not allow for changing from the default limit of 10; this should be removed when settings is fully implemented
             : base(declarationFinderProvider, DeclarationType.ClassModule)
-        {}
+        {
+            PublicMemberLimit = 10;
+        }
 
+        public ExcessiveInterfaceMembersInspection(IDeclarationFinderProvider declarationFinderProvider, IConfigurationService<int> settings) //constructor only for unit test; should become only constructor once settings is fully implemented
+            : base (declarationFinderProvider, DeclarationType.ClassModule) 
+        {
+            PublicMemberLimit = settings.Read();
+        }
         protected override (bool isResult, int properties) IsResultDeclarationWithAdditionalProperties(Declaration declaration, DeclarationFinder finder)
         {
             if (!(declaration is ClassModuleDeclaration classModule && classModule.IsInterface))
