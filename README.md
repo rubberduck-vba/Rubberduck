@@ -2,14 +2,6 @@
 
 ---
 
-Rubberduck is free, but keeping it visible online isn't. Donate to help us pay for hosting and keep the blog free of ads!
-
-[![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=UY5K5X36B7T2S&currency_code=CAD&source=url)
-
-As agreed with core contributors, donations in excess of what's needed to cover our fees for a year, will be donated to the [Multiple Sclerosis Society of Canada](https://mssociety.ca/).
-
----
-
 |Branch     | Description | Build Status | Download link |
 |------------|---|--------------|-|
 | **master** | The last released build | ![master branch build status][masterBuildStatus] | [stable](https://github.com/rubberduck-vba/Rubberduck/releases/latest) |
@@ -22,8 +14,15 @@ As agreed with core contributors, donations in excess of what's needed to cover 
 [![Chat on stackexchange](https://img.shields.io/badge/chat-on%20stackexchange-blue.svg)](https://chat.stackexchange.com/rooms/14929/vba-rubberducking)
 [![License](https://img.shields.io/github/license/rubberduck-vba/Rubberduck.svg)](https://github.com/rubberduck-vba/Rubberduck/blob/next/LICENSE)
 
+
 > **[rubberduckvba.com](http://rubberduckvba.com)** | **[Rubberduck News](https://rubberduckvba.wordpress.com/)** 
 | **[Twitter (@rubberduckvba)](https://twitter.com/rubberduckvba)** | **[Wiki](https://github.com/rubberduck-vba/Rubberduck/wiki)**  
+
+Rubberduck is free, but keeping it visible online isn't. Donate to help us pay for hosting and keep the blog free of ads!
+
+|Donate|Note |
+|:------:|-|
+|<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=UY5K5X36B7T2S&currency_code=CAD&source=url"><img alt="Donate via PayPal" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a><sub>via PayPal</sub>|Donations in excess of what's needed to cover our fees will be donated to the <a href="https://mssociety.ca/">Multiple Sclerosis Society of Canada</a>.|
 
 ---
 
