@@ -436,7 +436,7 @@ In memoriam, 1972-2018</value>
   </data>
   <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
     <value>Interface '{0}' contains a concrete implementation for the following member(s): {1}</value>
-    <comment>{0} interface class name; {1} formatted string of results</comment>
+    <comment>{0} interface class name; {1} formatted list of members with concrete implementations</comment>
   </data>
   <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
     <value>The argument '{2}' of type '{3}' is passed to the parameter '{0}' of the incompatible type '{1}'.</value>

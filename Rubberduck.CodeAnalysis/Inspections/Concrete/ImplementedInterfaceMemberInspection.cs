@@ -53,11 +53,11 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 return (false, null);
             }
 
-            var implementedMembers = HasImplementedMembers(declaration, finder);
+            var implementedMembers = FindImplementedMembers(declaration, finder);
             return (implementedMembers.Count() > 0, implementedMembers);
         }
 
-        private IEnumerable<ModuleBodyElementDeclaration> HasImplementedMembers(Declaration declaration, DeclarationFinder finder) 
+        private IEnumerable<ModuleBodyElementDeclaration> FindImplementedMembers(Declaration declaration, DeclarationFinder finder) 
         {
             var moduleBodyElements = finder.Members(declaration, DeclarationType.Member)
                 .OfType<ModuleBodyElementDeclaration>();
@@ -69,7 +69,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected override string ResultDescription(Declaration declaration, IEnumerable<ModuleBodyElementDeclaration> results)
         {
             var identifierName = declaration.IdentifierName;
-            var memberResultsString = FormatResults(results);
+            var memberResultsString = FormatConcreteImplementationsList(results);
 
             return string.Format(
                 InspectionResults.ImplementedInterfaceMemberInspection,
@@ -77,19 +77,9 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 memberResultsString);
         }
 
-        private static string FormatResults(IEnumerable<ModuleBodyElementDeclaration> results)
+        private static string FormatConcreteImplementationsList(IEnumerable<ModuleBodyElementDeclaration> results)
         {
-            List<string> items = new List<string>();
-
-            foreach (ModuleBodyElementDeclaration elem in results)
-            {
-                var memberType = Resources.RubberduckUI.ResourceManager
-                    .GetString("DeclarationType_" + elem.DeclarationType)
-                    .Capitalize();
-
-                items.Add($"{elem.IdentifierName} ({memberType})");
-            }
-
+            var items = results.Select(result => $"{result.IdentifierName} ({Resources.RubberduckUI.ResourceManager.GetString("DeclarationType_" + result.DeclarationType).Capitalize()})");
             return string.Join(", ", items);
         }
     }

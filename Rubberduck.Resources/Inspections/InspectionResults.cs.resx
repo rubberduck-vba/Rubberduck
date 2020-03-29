@@ -400,7 +400,8 @@ In memoriam, 1972-2018</value>
     <value>{0} '{1}' neobsahuje žádné spustitelné příkazy.</value>
   </data>
   <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
-    <value>Modul třídy rozhraní '{2}' obsahuje konkrétní implementaci pro {0} '{1}'.</value>
+    <value>Rozhraní  '{0}' obsahuje konkrétní implementaci pro: {1}</value>
+    <comment>I tried...  English =&gt; Interface '{0}' contains a concrete implementation for the following member(s): {1}</comment>
   </data>
   <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
     <value>Argument '{2}' typu '{3}' je předán parametru '{0}' jako nekompatibilní typ '{1}'.</value>

@@ -406,7 +406,8 @@ In memoriam, 1972-2018</value>
     <value>{0} '{1}' ne contient aucune instruction exécutable.</value>
   </data>
   <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
-    <value>L'interface abstraite définie par '{2}' contient une implémentation concrète pour {0} '{1}'.</value>
+    <value>L'interface '{0}' contient une implémentation concrète pour ces membres: {1}</value>
+    <comment>I tried... English =&gt; Interface '{0}' contains a concrete implementation for the following member(s): {1}</comment>
   </data>
   <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
     <value>L'argument '{2}', de type '{3}', est passé au paramètre '{0}', du type incompatible '{1}'.</value>

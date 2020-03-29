@@ -375,4 +375,7 @@ En memoria, 1972-2018</value>
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>En error GoTo -1 encontrado</value>
   </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>La interfaz '{0}' contiene una implementación concreta por estos miembros: {1}</value>
+  </data>
 </root>

@@ -13,13 +13,12 @@ namespace RubberduckTests.Inspections
 {
     class ExcessiveInterfaceMembersInspectionTests : InspectionTestsBase 
     {
-        private static List<(string, string, ComponentType)> modules = new List<(string, string, ComponentType)> {
-            (null, null, ComponentType.ClassModule),
-            ("Class2","Implements Class1", ComponentType.ClassModule) };
-
         private int AssessCode(string testCode) 
         {
-            modules[0] = ("Class1", testCode, ComponentType.ClassModule);
+            var modules = new List<(string, string, ComponentType)> {
+                ("Class1", testCode, ComponentType.ClassModule),
+                ("Class2", "Implements Class1", ComponentType.ClassModule) };
+
             return InspectionResultsForModules(modules, ReferenceLibrary.Scripting).Count();
         }
 
@@ -96,7 +95,7 @@ namespace RubberduckTests.Inspections
 
         [Test]
         [Category("Inspections")]
-        public void ExcessiveInterfaceMembers_ReadWriteProperty()
+        public void ExcessiveInterfaceMembers_ReadWritePropertyStandard()
         {
             const string testCode =
 
@@ -105,6 +104,43 @@ namespace RubberduckTests.Inspections
 
                 Public Property Get Foo1() As Variant
                 End Property
+
+                Public Function Foo2()
+                End Function";
+
+            Assert.AreEqual(0, AssessCode(testCode));
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ExcessiveInterfaceMembers_ReadWritePropertyDoubleSetter() 
+        {
+            const string testCode =
+
+                @"Public Property Let Foo1(bar1 As Variant)
+                End Property
+
+                Public Property Set Foo1(bar1 As Variant)
+                End Property
+
+                Public Property Get Foo1() As Variant
+                End Property
+
+                Public Function Foo2()
+                End Function";
+
+            Assert.AreEqual(0, AssessCode(testCode));
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ExcessiveInterfaceMembers_Field() 
+        {
+            const string testCode =
+
+                @"Public Event Event1()
+                
+                Public Foo1 As Integer
 
                 Public Function Foo2()
                 End Function";

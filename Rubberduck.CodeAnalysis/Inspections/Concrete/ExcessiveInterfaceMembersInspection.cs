@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -58,17 +59,20 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     {
         private static int PublicMemberLimit;
 
-        public ExcessiveInterfaceMembersInspection(IDeclarationFinderProvider declarationFinderProvider) //constructor for actual inspection that does not allow for changing from the default limit of 10; this should be removed when settings is fully implemented
+        //constructor for actual inspection that does not allow for changing from the default limit of 10; this should be removed when settings is fully implemented
+        public ExcessiveInterfaceMembersInspection(IDeclarationFinderProvider declarationFinderProvider) 
             : base(declarationFinderProvider, DeclarationType.ClassModule)
         {
             PublicMemberLimit = 10;
         }
 
-        public ExcessiveInterfaceMembersInspection(IDeclarationFinderProvider declarationFinderProvider, IConfigurationService<int> settings) //constructor only for unit test; should become only constructor once settings is fully implemented
+        //constructor only for unit test; should become only constructor once settings is fully implemented
+        public ExcessiveInterfaceMembersInspection(IDeclarationFinderProvider declarationFinderProvider, IConfigurationService<int> settings) 
             : base (declarationFinderProvider, DeclarationType.ClassModule) 
         {
             PublicMemberLimit = settings.Read();
         }
+
         protected override (bool isResult, int properties) IsResultDeclarationWithAdditionalProperties(Declaration declaration, DeclarationFinder finder)
         {
             if (!(declaration is ClassModuleDeclaration classModule && classModule.IsInterface))
@@ -81,21 +85,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         private static (bool, int) HasExcessiveMembers(ClassModuleDeclaration declaration)
         {
-            var _publicmembers = declaration.Members.Where(member =>
-            {
-                int acc = (int)member.Accessibility;
-                return acc >= (int)Accessibility.Implicit && acc <= (int)Accessibility.Global;
-            });
+            var publicMembers = declaration.Members.Where(member =>
+                (member.Accessibility == Accessibility.Public) ||
+                (member.Accessibility == Accessibility.Global) ||
+                (member.Accessibility == Accessibility.Implicit));
 
-            var count = _publicmembers.Where(member => member.DeclarationType != DeclarationType.Event)
-                                  .Where(member => member.DeclarationType != DeclarationType.PropertyGet || NoMatchingSetter(member, _publicmembers))
-                                  .Count();
+            var count = publicMembers.Where(member => member.DeclarationType != DeclarationType.Event)
+                            .GroupBy(member => member.IdentifierName)
+                            .Select(grouping => grouping.First()).Count();
 
             return (count > PublicMemberLimit, count);
         }
-
-        private static bool NoMatchingSetter(Declaration property, IEnumerable<Declaration> members) =>
-            !members.Any(member => (member.IdentifierName == property.IdentifierName) && (member != property));
 
         protected override string ResultDescription(Declaration declaration, int memberCount) 
         {

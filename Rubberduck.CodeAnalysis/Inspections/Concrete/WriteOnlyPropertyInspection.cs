@@ -51,7 +51,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         {
             var setters = RelevantDeclarationsInModule(module, finder)
                 .Where(declaration => IsResultDeclaration(declaration, finder))
-                .GroupBy(declaration => declaration.DeclarationType)
+                .GroupBy(declaration => declaration.QualifiedName)
                 .Select(grouping => grouping.First()); // don't get both Let and Set accessors
 
             return setters

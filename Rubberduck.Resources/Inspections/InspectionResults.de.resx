@@ -393,7 +393,8 @@ In Memoriam, 1972-2018</value>
     <value>{0} '{1}'  enthält keine ausführbaren Anweisungen.</value>
   </data>
   <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
-    <value>Die Interface-Klasse '{2}' enthält eine Implementierung für die  {0} '{1}'.</value>
+    <value>Die Interface-Klasse '{0}' enthält eine Implementierung für diese Mitglieder: {1}</value>
+    <comment>I tried... English =&gt; Interface '{0}' contains a concrete implementation for the following member(s): {1}</comment>
   </data>
   <data name="ValueRequiredInspection" xml:space="preserve">
     <value>An einer Stelle, die einen Wert verlangt, wird der Ausdruck '{0}' vom Objekttyp '{1}'  verwendet, der keinen passendes Standardmember hat.</value>
