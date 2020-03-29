@@ -22,7 +22,7 @@ Rubberduck is free, but keeping it visible online isn't. Donate to help us pay f
 
 |Donate|Note |
 |:------:|-|
-|<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=UY5K5X36B7T2S&currency_code=CAD&source=url"><img alt="Donate via PayPal" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a> <sub>via PayPal</sub>|Donations in excess of what's needed to cover our fees will be donated to the <a href="https://mssociety.ca/">Multiple Sclerosis Society of Canada</a>.|
+|<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=UY5K5X36B7T2S&currency_code=CAD&source=url"><img alt="Donate via PayPal" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a><p><sub>via PayPal</sub></p>|Donations in excess of what's needed to cover our fees will be donated to the <a href="https://mssociety.ca/">Multiple Sclerosis Society of Canada</a>.|
 
 ---
 
