@@ -29,8 +29,7 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             var target = GetTarget();
 
-            return target != null
-                   && target is ModuleDeclaration
+            return target is ModuleDeclaration
                    && !_state.IsNewOrModified(target.QualifiedModuleName);
         }
 

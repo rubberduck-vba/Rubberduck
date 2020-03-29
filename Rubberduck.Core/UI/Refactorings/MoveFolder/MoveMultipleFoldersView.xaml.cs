@@ -1,4 +1,5 @@
-﻿using Rubberduck.Refactorings;
+﻿using System.Windows;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveFolder;
 
 namespace Rubberduck.UI.Refactorings.MoveFolder
@@ -9,11 +10,14 @@ namespace Rubberduck.UI.Refactorings.MoveFolder
         {
             InitializeComponent();
 
-            Loaded += (o, e) =>
-                {
-                    MoveToFolderTextBox.Focus();
-                    MoveToFolderTextBox.SelectAll();
-                };
+            Loaded += AfterLoadHandler;
+        }
+
+        private void AfterLoadHandler(object sender, RoutedEventArgs e)
+        {
+            MoveToFolderTextBox.Focus();
+            MoveToFolderTextBox.SelectAll();
+            Loaded -= AfterLoadHandler;
         }
     }
 }
