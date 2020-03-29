@@ -26,16 +26,16 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void ExcessiveInterfaceMembers_Standard() 
         {
-            const string testCode =
+            const string testCode = @"
 
-                @"Public Sub Foo1()
-                End Sub
+Public Sub Foo1()
+End Sub
 
-                Public Sub Foo2()
-                End Sub
+Public Sub Foo2()
+End Sub
 
-                Public Function Foo3()
-                End Function";
+Public Function Foo3()
+End Function";
 
             Assert.AreEqual(1, AssessCode(testCode));
         }
@@ -44,15 +44,15 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void ExcessiveInterfaceMembers_IgnoreEvent() 
         {
-            const string testCode =
+            const string testCode = @"
 
-                @"Public Event Event1()
+Public Event Event1()
 
-                Public Sub Foo1()
-                End Sub
+Public Sub Foo1()
+End Sub
 
-                Public Function Foo2()
-                End Function";
+Public Function Foo2()
+End Function";
 
             Assert.AreEqual(0, AssessCode(testCode));
         }
@@ -61,16 +61,16 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void ExcessiveInterfaceMembers_OnlySetters() 
         {
-            const string testCode =
+            const string testCode = @"
 
-                @"Public Property Let Foo1(bar1 As Integer)
-                End Property
+Public Property Let Foo1(bar1 As Integer)
+End Property
 
-                Public Property Set Foo2(bar2 As Object)
-                End Property
+Public Property Set Foo2(bar2 As Object)
+End Property
 
-                Public Function Foo3()
-                End Function";
+Public Function Foo3()
+End Function";
 
             Assert.AreEqual(1, AssessCode(testCode));
         }
@@ -79,16 +79,16 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void ExcessiveInterfaceMembers_OnlyGetter()
         {
-            const string testCode =
+            const string testCode = @"
 
-                @"Public Property Get Foo1() As Integer
-                End Property
+Public Property Get Foo1() As Integer
+End Property
 
-                Public Sub Foo2()
-                End Sub
+Public Sub Foo2()
+End Sub
 
-                Public Function Foo3()
-                End Function";
+Public Function Foo3()
+End Function";
 
             Assert.AreEqual(1, AssessCode(testCode));
         }
@@ -97,16 +97,16 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void ExcessiveInterfaceMembers_ReadWritePropertyStandard()
         {
-            const string testCode =
+            const string testCode = @"
 
-                @"Public Property Let Foo1(bar1 As Variant)
-                End Property
+Public Property Let Foo1(bar1 As Variant)
+End Property
 
-                Public Property Get Foo1() As Variant
-                End Property
+Public Property Get Foo1() As Variant
+End Property
 
-                Public Function Foo2()
-                End Function";
+Public Function Foo2()
+End Function";
 
             Assert.AreEqual(0, AssessCode(testCode));
         }
@@ -115,19 +115,19 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void ExcessiveInterfaceMembers_ReadWritePropertyDoubleSetter() 
         {
-            const string testCode =
+            const string testCode = @"
 
-                @"Public Property Let Foo1(bar1 As Variant)
-                End Property
+Public Property Let Foo1(bar1 As Variant)
+End Property
 
-                Public Property Set Foo1(bar1 As Variant)
-                End Property
+Public Property Set Foo1(bar1 As Variant)
+End Property
 
-                Public Property Get Foo1() As Variant
-                End Property
+Public Property Get Foo1() As Variant
+End Property
 
-                Public Function Foo2()
-                End Function";
+Public Function Foo2()
+End Function";
 
             Assert.AreEqual(0, AssessCode(testCode));
         }
@@ -136,14 +136,14 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void ExcessiveInterfaceMembers_Field() 
         {
-            const string testCode =
+            const string testCode = @"
 
-                @"Public Event Event1()
+Public Event Event1()
                 
-                Public Foo1 As Integer
+Public Foo1 As Integer
 
-                Public Function Foo2()
-                End Function";
+Public Function Foo2()
+End Function";
 
             Assert.AreEqual(0, AssessCode(testCode));
         }

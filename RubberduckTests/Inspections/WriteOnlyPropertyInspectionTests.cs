@@ -43,7 +43,7 @@ End Property
 Property Set Foo(value)
 End Property";
 
-            Assert.AreEqual(2, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule)).Count());
+            Assert.AreEqual(1, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule)).Count());
         }
 
         [Test]

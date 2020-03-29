@@ -76,7 +76,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected override (bool isResult, int properties) IsResultDeclarationWithAdditionalProperties(Declaration declaration, DeclarationFinder finder)
         {
             if (!(declaration is ClassModuleDeclaration classModule && classModule.IsInterface))
-        {
+            {
                 return (false, 0);
             }
 
