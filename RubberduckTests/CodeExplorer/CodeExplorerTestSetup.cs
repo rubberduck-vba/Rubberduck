@@ -5,6 +5,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.ComManagement;
 using RubberduckTests.AddRemoveReferences;
@@ -128,7 +129,7 @@ namespace RubberduckTests.CodeExplorer
             {
                 var code = string.IsNullOrEmpty(folder)
                     ? CodeByModuleName[name]
-                    : string.Join(Environment.NewLine, $"'@Folder(\"{folder}\")", CodeByModuleName[name]);
+                    : string.Join(Environment.NewLine, $"'@Folder({folder.ToVbaStringLiteral()})", CodeByModuleName[name]);
 
                 var type = ComponentTypeByModuleName[name];
                 if (type == ComponentType.UserForm)

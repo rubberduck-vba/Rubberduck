@@ -51,7 +51,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         {
             var setters = RelevantDeclarationsInModule(module, finder)
                 .Where(declaration => IsResultDeclaration(declaration, finder))
-                .GroupBy(declaration => declaration.DeclarationType)
+                .GroupBy(declaration => declaration.QualifiedName)
                 .Select(grouping => grouping.First()); // don't get both Let and Set accessors
 
             return setters
@@ -62,9 +62,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             return (declaration.Accessibility == Accessibility.Implicit
-                    || declaration.Accessibility == Accessibility.Public
-                    || declaration.Accessibility == Accessibility.Global)
+                       || declaration.Accessibility == Accessibility.Public
+                       || declaration.Accessibility == Accessibility.Global)
                    && finder.MatchName(declaration.IdentifierName)
+                       .Where(otherDeclaration => otherDeclaration.QualifiedModuleName.Equals(declaration.QualifiedModuleName))
                        .All(accessor => accessor.DeclarationType != DeclarationType.PropertyGet);
         }
 

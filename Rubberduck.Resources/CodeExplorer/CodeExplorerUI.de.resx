@@ -250,7 +250,7 @@
     <value>Formular (.frm)</value>
   </data>
   <data name="CodeExplorer_Rename" xml:space="preserve">
-    <value>Umbenennen</value>
+    <value>Umbenennen...</value>
   </data>
   <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
     <value>Als Startprojekt festlegen</value>
@@ -320,9 +320,12 @@ Fortfahren?</value>
     <value>Projektinhalt durch Dateiinhalt ersetzen... </value>
   </data>
   <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
-    <value>Interface extrahieren</value>
+    <value>Interface extrahieren...</value>
   </data>
   <data name="CodeExplorer_AppendHeader" xml:space="preserve">
     <value>Rubberduck: Benutzerdefinierte Deklarationen - {0}</value>
+  </data>
+  <data name="CodeExplorer_MoveToFolder" xml:space="preserve">
+    <value>In Ordner verschieben...</value>
   </data>
 </root>

@@ -16,6 +16,7 @@ using System.Windows;
 using System.Windows.Input;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Templates;
+using Rubberduck.UI.CodeExplorer.Commands.DragAndDrop;
 using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -379,6 +380,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public OpenProjectPropertiesCommand OpenProjectPropertiesCommand { get; set; }
         public SetAsStartupProjectCommand SetAsStartupProjectCommand { get; set; }
         public RenameCommand RenameCommand { get; set; }
+        public CodeExplorerMoveToFolderCommand MoveToFolderCommand { get; set; }
         public IndentCommand IndenterCommand { get; set; }
         public CodeExplorerFindAllReferencesCommand FindAllReferencesCommand { get; set; }
         public CodeExplorerFindAllImplementationsCommand FindAllImplementationsCommand { get; set; }
@@ -398,7 +400,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase SyncCodePaneCommand { get; }
         public CodeExplorerExtractInterfaceCommand CodeExplorerExtractInterfaceCommand { get; set; }
 
-        public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
+        public CodeExplorerMoveToFolderDragAndDropCommand MoveToFolderDragAndDropCommand { get; set; }
+
+    public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
         {
             if (declaration == null)
             {

@@ -7,11 +7,10 @@ using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.Rename;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Utility;
-using Rubberduck.Parsing.UIContext;
 
 namespace Rubberduck.Refactorings.Rename
 {
-    public class RenameRefactoring : InteractiveRefactoringBase<IRenamePresenter, RenameModel>
+    public class RenameRefactoring : InteractiveRefactoringBase<RenameModel>
     {
         private readonly IRefactoringAction<RenameModel> _refactoringAction;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
@@ -20,13 +19,12 @@ namespace Rubberduck.Refactorings.Rename
 
         public RenameRefactoring(
             RenameRefactoringAction refactoringAction,
-            IRefactoringPresenterFactory factory, 
+            RefactoringUserInteraction<IRenamePresenter, RenameModel> userInteraction,
             IDeclarationFinderProvider declarationFinderProvider,
             IProjectsProvider projectsProvider, 
             ISelectionProvider selectionProvider,
-            ISelectedDeclarationProvider selectedDeclarationProvider,
-            IUiDispatcher uiDispatcher)
-            : base(selectionProvider, factory, uiDispatcher)
+            ISelectedDeclarationProvider selectedDeclarationProvider)
+            : base(selectionProvider, userInteraction)
         {
             _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;
