@@ -17,20 +17,11 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public ExtractInterfaceRefactoring(
             ExtractInterfaceRefactoringAction refactoringAction,
-//<<<<<<< HEAD
-//            IDeclarationFinderProvider declarationFinderProvider, 
-//            IRefactoringPresenterFactory factory, 
-//            ISelectionProvider selectionProvider,
-//            IUiDispatcher uiDispatcher,
-//            ICodeBuilder codeBuilder)
-//        :base(selectionProvider, factory, uiDispatcher)
-//=======
             IDeclarationFinderProvider declarationFinderProvider,
             RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel> userInteraction,
             ISelectionProvider selectionProvider,
             ICodeBuilder codeBuilder)
         :base(selectionProvider, userInteraction)
-//>>>>>>> rubberduck-vba/next
         {
             _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;

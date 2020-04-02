@@ -309,21 +309,10 @@ End Sub
             RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel> userInteraction, 
             ISelectionService selectionService)
         {
-//<<<<<<< HEAD
-//            var uiDispatcherMock = new Mock<IUiDispatcher>();
-//            uiDispatcherMock
-//                .Setup(m => m.Invoke(It.IsAny<Action>()))
-//                .Callback((Action action) => action.Invoke());
-//            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager, new CodeBuilder());
-//            var addComponentService = TestAddComponentService(state?.ProjectsProvider);
-//            var baseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, state, state, rewritingManager, state?.ProjectsProvider, addComponentService);
-//            return new ExtractInterfaceRefactoring(baseRefactoring, state, factory, selectionService, uiDispatcherMock.Object, new CodeBuilder());
-//=======
             var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager, new CodeBuilder());
             var addComponentService = TestAddComponentService(state?.ProjectsProvider);
             var baseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, state, state, rewritingManager, state?.ProjectsProvider, addComponentService);
             return new ExtractInterfaceRefactoring(baseRefactoring, state, userInteraction, selectionService, new CodeBuilder());
-//>>>>>>> rubberduck-vba/next
         }
 
         private static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)

@@ -4,10 +4,7 @@ using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-//<<<<<<< HEAD
-//=======
-//using Rubberduck.Refactorings.Common;
-//>>>>>>> rubberduck-vba/next
+
 
 namespace Rubberduck.Refactorings.AddInterfaceImplementations
 {

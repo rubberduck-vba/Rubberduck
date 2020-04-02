@@ -30,16 +30,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
                 IRewritingManager rewritingManager,
                 ISelectionProvider selectionProvider,
-//<<<<<<< HEAD
-//                ISelectedDeclarationProvider selectedDeclarationProvider,
-//                IUiDispatcher uiDispatcher,
-//                ICodeBuilder codeBuilder)
-//            :base(selectionProvider, factory, uiDispatcher)
-//=======
                 ISelectedDeclarationProvider selectedDeclarationProvider,
                 ICodeBuilder codeBuilder)
             :base(selectionProvider, userInteraction)
-//>>>>>>> rubberduck-vba/next
         {
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;

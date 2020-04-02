@@ -510,11 +510,7 @@ namespace RubberduckTests.CodeExplorer
             var extractInterfaceBaseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, State, State, null, State.ProjectsProvider, addComponentService);
             var userInteraction = new RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel>(null, _uiDispatcher.Object);
             ViewModel.CodeExplorerExtractInterfaceCommand = new CodeExplorerExtractInterfaceCommand(
-//<<<<<<< HEAD
-//                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, null, null, _uiDispatcher.Object, new CodeBuilder()),
-//=======
                 new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, userInteraction, null, new CodeBuilder()),
-//>>>>>>> rubberduck-vba/next
                 State, null, VbeEvents.Object);
             return this;
         }
