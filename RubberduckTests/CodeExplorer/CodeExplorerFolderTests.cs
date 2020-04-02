@@ -186,7 +186,7 @@ End Sub";
                 var added = folder.Children.OfType<CodeExplorerComponentViewModel>().Single();
 
                 Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
-                Assert.AreEqual("\"First\"", added.Declaration.CustomFolder);
+                Assert.AreEqual("First", added.Declaration.CustomFolder);
             }
         }
 
@@ -215,7 +215,7 @@ End Sub";
                 var added = subfolder.Children.OfType<CodeExplorerComponentViewModel>().Single();
 
                 Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
-                Assert.AreEqual("\"First.Second\"", added.Declaration.CustomFolder);
+                Assert.AreEqual("First.Second", added.Declaration.CustomFolder);
             }
         }
 
@@ -247,7 +247,7 @@ End Sub";
                     .SingleOrDefault(node => node.Declaration.DeclarationType == DeclarationType.ClassModule);
 
                 Assert.IsNotNull(added);
-                Assert.AreEqual("\"First.Second.Third\"", added.Declaration.CustomFolder);
+                Assert.AreEqual("First.Second.Third", added.Declaration.CustomFolder);
             }
         }
 

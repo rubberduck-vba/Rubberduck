@@ -171,7 +171,8 @@ End Property";
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
             var baseRefactoring = new RemoveParameterRefactoringAction(state, rewritingManager);
-            var refactoring = new RemoveParametersRefactoring(baseRefactoring, state, factory, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
+            var userInteraction = new RefactoringUserInteraction<IRemoveParametersPresenter, RemoveParametersModel>(factory, uiDispatcherMock.Object);
+            var refactoring = new RemoveParametersRefactoring(baseRefactoring, state, userInteraction, selectionService, selectedDeclarationProvider);
             var notifier = new RemoveParameterFailedNotifier(msgBox);
             return new RefactorRemoveParametersCommand(refactoring, notifier, state, selectionService, selectedDeclarationProvider);
         }

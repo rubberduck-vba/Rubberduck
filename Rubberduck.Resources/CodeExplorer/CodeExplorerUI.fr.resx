@@ -256,7 +256,7 @@
     <value>Formulaire (.frm)</value>
   </data>
   <data name="CodeExplorer_Rename" xml:space="preserve">
-    <value>Renommer</value>
+    <value>Renommer...</value>
   </data>
   <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
     <value>Lancer au démarrage</value>
@@ -317,7 +317,7 @@ Continuer?</value>
     <value>Remplacer le contenu des fichiers...</value>
   </data>
   <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
-    <value>Extraire une interface</value>
+    <value>Extraire une interface...</value>
   </data>
   <data name="UpdateFromFiles" xml:space="preserve">
     <value>Remplacer le contenu du projet...</value>

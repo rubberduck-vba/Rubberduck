@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.RemoveParameter;
@@ -9,7 +8,7 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
-    public class RemoveParametersRefactoring : InteractiveRefactoringBase<IRemoveParametersPresenter, RemoveParametersModel>
+    public class RemoveParametersRefactoring : InteractiveRefactoringBase<RemoveParametersModel>
     {
         private readonly IRefactoringAction<RemoveParametersModel> _refactoringAction;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
@@ -17,12 +16,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public RemoveParametersRefactoring(
             RemoveParameterRefactoringAction refactoringAction,
-            IDeclarationFinderProvider declarationFinderProvider, 
-            IRefactoringPresenterFactory factory, 
+            IDeclarationFinderProvider declarationFinderProvider,
+            RefactoringUserInteraction<IRemoveParametersPresenter, RemoveParametersModel> userInteraction,
             ISelectionProvider selectionProvider,
-            ISelectedDeclarationProvider selectedDeclarationProvider,
-            IUiDispatcher uiDispatcher)
-        :base(selectionProvider, factory, uiDispatcher)
+            ISelectedDeclarationProvider selectedDeclarationProvider)
+        :base(selectionProvider, userInteraction)
         {
             _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;
