@@ -2,7 +2,6 @@
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor;
@@ -10,7 +9,7 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
-    public class ExtractInterfaceRefactoring : InteractiveRefactoringBase<IExtractInterfacePresenter, ExtractInterfaceModel>
+    public class ExtractInterfaceRefactoring : InteractiveRefactoringBase<ExtractInterfaceModel>
     {
         private readonly IRefactoringAction<ExtractInterfaceModel> _refactoringAction;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
@@ -18,12 +17,20 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public ExtractInterfaceRefactoring(
             ExtractInterfaceRefactoringAction refactoringAction,
-            IDeclarationFinderProvider declarationFinderProvider, 
-            IRefactoringPresenterFactory factory, 
+//<<<<<<< HEAD
+//            IDeclarationFinderProvider declarationFinderProvider, 
+//            IRefactoringPresenterFactory factory, 
+//            ISelectionProvider selectionProvider,
+//            IUiDispatcher uiDispatcher,
+//            ICodeBuilder codeBuilder)
+//        :base(selectionProvider, factory, uiDispatcher)
+//=======
+            IDeclarationFinderProvider declarationFinderProvider,
+            RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel> userInteraction,
             ISelectionProvider selectionProvider,
-            IUiDispatcher uiDispatcher,
             ICodeBuilder codeBuilder)
-        :base(selectionProvider, factory, uiDispatcher)
+        :base(selectionProvider, userInteraction)
+//>>>>>>> rubberduck-vba/next
         {
             _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;

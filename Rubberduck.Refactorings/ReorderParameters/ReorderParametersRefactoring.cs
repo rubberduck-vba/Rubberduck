@@ -1,14 +1,13 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using System.Linq;
-using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
-    public class ReorderParametersRefactoring : InteractiveRefactoringBase<IReorderParametersPresenter, ReorderParametersModel>
+    public class ReorderParametersRefactoring : InteractiveRefactoringBase<ReorderParametersModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
@@ -16,12 +15,11 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public ReorderParametersRefactoring(
             ReorderParameterRefactoringAction refactoringAction,
-            IDeclarationFinderProvider declarationFinderProvider, 
-            IRefactoringPresenterFactory factory, 
+            IDeclarationFinderProvider declarationFinderProvider,
+            RefactoringUserInteraction<IReorderParametersPresenter, ReorderParametersModel> userInteraction,
             ISelectionProvider selectionProvider,
-            ISelectedDeclarationProvider selectedDeclarationProvider,
-            IUiDispatcher uiDispatcher)
-        :base(selectionProvider, factory, uiDispatcher)
+            ISelectedDeclarationProvider selectedDeclarationProvider)
+        :base(selectionProvider, userInteraction)
         {
             _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;

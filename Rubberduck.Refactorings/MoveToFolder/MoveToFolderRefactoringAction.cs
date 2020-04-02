@@ -22,13 +22,13 @@ namespace Rubberduck.Refactorings.MoveToFolder
         public override void Refactor(MoveToFolderModel model, IRewriteSession rewriteSession)
         {
             var oldFolderAnnotation = model.Target.Annotations.FirstOrDefault(pta => pta.Annotation is FolderAnnotation);
-            if (oldFolderAnnotation != null)
-            {
-                UpdateFolderAnnotation(model, oldFolderAnnotation, rewriteSession);
-            }
-            else
+            if (oldFolderAnnotation == null)
             {
                 AddFolderAnnotation(model, rewriteSession);
+            }
+            else if(!model.TargetFolder.Equals(model.Target.CustomFolder))
+            {
+                UpdateFolderAnnotation(model, oldFolderAnnotation, rewriteSession);
             }
         }
 

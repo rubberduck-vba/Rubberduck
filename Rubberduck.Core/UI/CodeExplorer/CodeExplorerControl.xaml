@@ -210,6 +210,12 @@
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <EventSetter Event="MouseDoubleClick" Handler="TreeView_OnMouseDoubleClick" />
                 <EventSetter Event="MouseRightButtonDown" Handler="TreeView_OnMouseRightButtonDown" />
+                <EventSetter Event="DragOver" Handler="TreeView_OnDragOver" />
+                <EventSetter Event="Drop" Handler="TreeView_OnDrop" />
+                <EventSetter Event="PreviewQueryContinueDrag" Handler="TreeView_PreviewContinueDrag" />
+                <EventSetter Event="PreviewMouseLeftButtonDown" Handler="TreeView_PreviewMouseLeftButtonDown" />
+                <EventSetter Event="PreviewMouseMove" Handler="TreeView_PreviewMouseMove" />
+
                 <Style.Triggers>
                     <Trigger Property="IsSelected" Value="True">
                         <Setter Property="BorderBrush" Value="{StaticResource HighlightBorderActiveBrush}"/>
@@ -395,7 +401,8 @@
                   FontSize="{Binding FontSize, Mode=OneWay}"
                   BorderThickness="0,1"
                   VirtualizingPanel.IsVirtualizing="False"
-                  KeyDown="ProjectTree_KeyDown">
+                  KeyDown="ProjectTree_KeyDown"
+                  AllowDrop="True">
             <TreeView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Open}"
@@ -417,9 +424,12 @@
                             <Image Source="{StaticResource RefreshImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Rename}"
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Rename}"
                       Command="{Binding RenameCommand}"
                       CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_MoveToFolder}"
+                              Command="{Binding MoveToFolderCommand}"
+                              CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_ExtractInterfaceText}"
                           Command="{Binding CodeExplorerExtractInterfaceCommand}"
                           CommandParameter="{Binding SelectedItem, Mode=OneWay}">

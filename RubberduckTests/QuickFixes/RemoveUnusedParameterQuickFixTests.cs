@@ -48,7 +48,8 @@ End Sub";
                     .Setup(m => m.Invoke(It.IsAny<Action>()))
                     .Callback((Action action) => action.Invoke());
                 var baseRefactoring = new RemoveParameterRefactoringAction(state, rewritingManager);
-                var refactoring = new RemoveParametersRefactoring(baseRefactoring, state, factory, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
+                var userInteraction = new RefactoringUserInteraction<IRemoveParametersPresenter, RemoveParametersModel>(factory, uiDispatcherMock.Object);
+                var refactoring = new RemoveParametersRefactoring(baseRefactoring, state, userInteraction, selectionService, selectedDeclarationProvider);
                 new RemoveUnusedParameterQuickFix(refactoring)
                     .Fix(inspectionResults.First(), rewriteSession);
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());

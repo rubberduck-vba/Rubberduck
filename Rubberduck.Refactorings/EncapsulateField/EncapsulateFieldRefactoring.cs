@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor;
@@ -17,12 +16,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         ConvertFieldsToUDTMembers
     }
 
-    public interface IEncapsulateFieldRefactoringTestAccess
-    {
-        EncapsulateFieldModel TestUserInteractionOnly(Declaration target, Func<EncapsulateFieldModel, EncapsulateFieldModel> userInteraction);
-    }
-
-    public class EncapsulateFieldRefactoring : InteractiveRefactoringBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>, IEncapsulateFieldRefactoringTestAccess
+    public class EncapsulateFieldRefactoring : InteractiveRefactoringBase<EncapsulateFieldModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
@@ -33,25 +27,25 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public EncapsulateFieldRefactoring(
                 IDeclarationFinderProvider declarationFinderProvider,
                 IIndenter indenter,
-                IRefactoringPresenterFactory factory,
+                RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
                 IRewritingManager rewritingManager,
                 ISelectionProvider selectionProvider,
+//<<<<<<< HEAD
+//                ISelectedDeclarationProvider selectedDeclarationProvider,
+//                IUiDispatcher uiDispatcher,
+//                ICodeBuilder codeBuilder)
+//            :base(selectionProvider, factory, uiDispatcher)
+//=======
                 ISelectedDeclarationProvider selectedDeclarationProvider,
-                IUiDispatcher uiDispatcher,
                 ICodeBuilder codeBuilder)
-            :base(selectionProvider, factory, uiDispatcher)
+            :base(selectionProvider, userInteraction)
+//>>>>>>> rubberduck-vba/next
         {
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _indenter = indenter;
             _codeBuilder = codeBuilder;
             _rewritingManager = rewritingManager;
-        }
-
-        public EncapsulateFieldModel TestUserInteractionOnly(Declaration target, Func<EncapsulateFieldModel, EncapsulateFieldModel> userInteraction)
-        {
-            var model = InitializeModel(target);
-            return userInteraction(model);
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
