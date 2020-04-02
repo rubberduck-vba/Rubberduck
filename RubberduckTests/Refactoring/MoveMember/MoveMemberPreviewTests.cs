@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
@@ -175,8 +172,7 @@ End Property
             var sourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
             return new AddComponentService(projectsProvider, sourceCodeHandler, sourceCodeHandler);
         }
-        //RefactoringUserInteraction<IMoveMemberPresenter, MoveMemberModel>
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, RefactoringUserInteraction<IMoveMemberPresenter, MoveMemberModel> userInteraction /*IRefactoringPresenterFactory factory*/, ISelectionService selectionService)
+        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, RefactoringUserInteraction<IMoveMemberPresenter, MoveMemberModel> userInteraction, ISelectionService selectionService)
         {
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
             var uiDispatcherMock = new Mock<IUiDispatcher>();

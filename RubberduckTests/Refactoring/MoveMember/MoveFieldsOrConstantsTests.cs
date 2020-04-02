@@ -3,12 +3,10 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Refactorings.MoveMember;
-using RubberduckTests.Mocks;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using System.Collections.Generic;
 using System;
 
 namespace RubberduckTests.Refactoring.MoveMember

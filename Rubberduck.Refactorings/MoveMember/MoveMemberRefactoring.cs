@@ -20,7 +20,7 @@ namespace Rubberduck.Refactorings.MoveMember
         string PreviewModuleContent(MoveMemberModel model, PreviewModule previewModule);
     }
 
-    public class MoveMemberRefactoring : InteractiveRefactoringBase</*IMoveMemberPresenter, */MoveMemberModel>, IMoveMemberRefactoringTestAccess
+    public class MoveMemberRefactoring : InteractiveRefactoringBase<MoveMemberModel>, IMoveMemberRefactoringTestAccess
     {
         private readonly MoveMemberRefactoringAction _refactoringAction;
         private readonly RenameCodeDefinedIdentifierRefactoringAction _renameAction;
@@ -33,12 +33,11 @@ namespace Rubberduck.Refactorings.MoveMember
             RefactoringUserInteraction<IMoveMemberPresenter, MoveMemberModel> userInteraction,
             RenameCodeDefinedIdentifierRefactoringAction renameAction,
             IDeclarationFinderProvider declarationFinderProvider,
-            //IRefactoringPresenterFactory factory,
             IRewritingManager rewritingManager,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider,
             IUiDispatcher uiDispatcher)
-                : base(selectionProvider, userInteraction) // factory, uiDispatcher)
+                : base(selectionProvider, userInteraction)
 
         {
             _refactoringAction = refactoringAction;

@@ -5,7 +5,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.Refactorings.MoveMember.Extensions;
-using Rubberduck.UI.Refactorings.MoveMember;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;

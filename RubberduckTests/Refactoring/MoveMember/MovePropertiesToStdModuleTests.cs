@@ -3,11 +3,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.MoveMember;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Support = RubberduckTests.Refactoring.MoveMember.MoveMemberTestSupport;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {

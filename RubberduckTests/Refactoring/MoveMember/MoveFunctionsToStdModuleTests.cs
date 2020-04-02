@@ -1,13 +1,9 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System;
-using System.Linq;
 using Support = RubberduckTests.Refactoring.MoveMember.MoveMemberTestSupport;
 
 namespace RubberduckTests.Refactoring.MoveMember

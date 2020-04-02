@@ -1,23 +1,11 @@
-﻿using Moq;
-using NUnit.Framework;
-using Rubberduck.Interaction;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.UIContext;
+﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
-using RubberduckTests.Mocks;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace RubberduckTests.Refactoring.MoveMember
