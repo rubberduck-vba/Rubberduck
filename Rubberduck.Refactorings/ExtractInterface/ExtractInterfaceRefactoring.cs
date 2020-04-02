@@ -14,17 +14,20 @@ namespace Rubberduck.Refactorings.ExtractInterface
     {
         private readonly IRefactoringAction<ExtractInterfaceModel> _refactoringAction;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ICodeBuilder _codeBuilder;
 
         public ExtractInterfaceRefactoring(
             ExtractInterfaceRefactoringAction refactoringAction,
             IDeclarationFinderProvider declarationFinderProvider, 
             IRefactoringPresenterFactory factory, 
             ISelectionProvider selectionProvider,
-            IUiDispatcher uiDispatcher)
+            IUiDispatcher uiDispatcher,
+            ICodeBuilder codeBuilder)
         :base(selectionProvider, factory, uiDispatcher)
         {
             _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;
+            _codeBuilder = codeBuilder;
         }
 
         private static readonly DeclarationType[] ModuleTypes =
@@ -57,7 +60,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 throw new InvalidDeclarationTypeException(target);
             }
 
-            return new ExtractInterfaceModel(_declarationFinderProvider, targetClass);
+            return new ExtractInterfaceModel(_declarationFinderProvider, targetClass, _codeBuilder);
         }
 
         protected override void RefactorImpl(ExtractInterfaceModel model)

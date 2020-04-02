@@ -32,6 +32,7 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Settings;
+using Rubberduck.Refactorings;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -503,11 +504,11 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementExtractInterfaceCommand()
         {
-            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(null);
+            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(null, new CodeBuilder());
             var addComponentService = TestAddComponentService(State.ProjectsProvider);
             var extractInterfaceBaseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, State, State, null, State.ProjectsProvider, addComponentService);
             ViewModel.CodeExplorerExtractInterfaceCommand = new CodeExplorerExtractInterfaceCommand(
-                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, null, null, _uiDispatcher.Object),
+                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, null, null, _uiDispatcher.Object, new CodeBuilder()),
                 State, null, VbeEvents.Object);
             return this;
         }

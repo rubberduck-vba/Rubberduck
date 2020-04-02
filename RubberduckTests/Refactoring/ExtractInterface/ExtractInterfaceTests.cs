@@ -150,7 +150,7 @@ End Sub";
                     .First();
 
                 //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, target);
+                var model = new ExtractInterfaceModel(state, target, new CodeBuilder());
                 Assert.AreEqual(0, model.Members.Count);
             }
         }
@@ -178,7 +178,7 @@ End Sub";
                     .First();
 
                 //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, target);
+                var model = new ExtractInterfaceModel(state, target, new CodeBuilder());
                 Assert.AreEqual(ClassInstancing.Public, model.InterfaceInstancing);
             }
         }
@@ -204,7 +204,7 @@ End Sub";
                     .First();
 
                 //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, target);
+                var model = new ExtractInterfaceModel(state, target, new CodeBuilder());
                 Assert.AreEqual(ClassInstancing.Private, model.InterfaceInstancing);
             }
         }
@@ -309,10 +309,10 @@ End Sub
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager);
+            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager, new CodeBuilder());
             var addComponentService = TestAddComponentService(state?.ProjectsProvider);
             var baseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, state, state, rewritingManager, state?.ProjectsProvider, addComponentService);
-            return new ExtractInterfaceRefactoring(baseRefactoring, state, factory, selectionService, uiDispatcherMock.Object);
+            return new ExtractInterfaceRefactoring(baseRefactoring, state, factory, selectionService, uiDispatcherMock.Object, new CodeBuilder());
         }
 
         private static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)

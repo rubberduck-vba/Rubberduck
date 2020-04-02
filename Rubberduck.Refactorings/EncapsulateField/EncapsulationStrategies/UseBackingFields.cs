@@ -16,8 +16,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class UseBackingFields : EncapsulateFieldStrategyBase
     {
-        public UseBackingFields(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
-            : base(declarationFinderProvider, model, indenter){ }
+        public UseBackingFields(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter, ICodeBuilder codeBuilder)
+            : base(declarationFinderProvider, model, indenter, codeBuilder) { }
 
         protected override void ModifyFields(IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
