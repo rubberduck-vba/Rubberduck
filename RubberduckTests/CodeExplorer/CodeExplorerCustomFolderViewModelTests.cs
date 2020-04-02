@@ -2,8 +2,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NUnit.Framework;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.Navigation.Folders;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -74,8 +74,7 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out _, out var state);
             using (state)
             {
-                var folder =
-                    new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref declarations);
+                var folder = new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref declarations);
 
                 foreach (var _ in path)
                 {
@@ -87,9 +86,9 @@ namespace RubberduckTests.CodeExplorer
 
         [Test]
         [Category("Code Explorer")]
-        [TestCase(new object[] { CodeExplorerTestSetup.TestModuleName, "Foo" }, TestName = "Constructor_PanelTitleIsFullPath_RootFolder")]
-        [TestCase(new object[] { CodeExplorerTestSetup.TestModuleName, "Foo.Bar" }, TestName = "Constructor_PanelTitleIsFullPath_SubFolder")]
-        [TestCase(new object[] { CodeExplorerTestSetup.TestModuleName, "Foo.Bar.Baz" }, TestName = "Constructor_PanelTitleIsFullPath_SubSubFolder")]
+        [TestCase(new object[] { CodeExplorerTestSetup.TestModuleName, "Foo" }, TestName = "Constructor_FolderAttributeIsCorrect_RootFolder")]
+        [TestCase(new object[] { CodeExplorerTestSetup.TestModuleName, "Foo.Bar" }, TestName = "Constructor_FolderAttributeIsCorrect_SubFolder")]
+        [TestCase(new object[] { CodeExplorerTestSetup.TestModuleName, "Foo.Bar.Baz" }, TestName = "Constructor_FolderAttributeIsCorrect_SubSubFolder")]
         public void Constructor_FolderAttributeIsCorrect(object[] parameters)
         {
             var structure = ToFolderStructure(parameters.Cast<string>());

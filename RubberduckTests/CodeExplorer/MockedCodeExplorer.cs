@@ -18,6 +18,7 @@ using RubberduckTests.Mocks;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Interaction;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.AddInterfaceImplementations;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command.ComCommands;
@@ -506,8 +507,9 @@ namespace RubberduckTests.CodeExplorer
             var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(null);
             var addComponentService = TestAddComponentService(State.ProjectsProvider);
             var extractInterfaceBaseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, State, State, null, State.ProjectsProvider, addComponentService);
+            var userInteraction = new RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel>(null, _uiDispatcher.Object);
             ViewModel.CodeExplorerExtractInterfaceCommand = new CodeExplorerExtractInterfaceCommand(
-                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, null, null, _uiDispatcher.Object),
+                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, userInteraction, null),
                 State, null, VbeEvents.Object);
             return this;
         }

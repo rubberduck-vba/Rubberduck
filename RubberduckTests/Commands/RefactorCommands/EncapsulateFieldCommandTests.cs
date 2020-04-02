@@ -63,7 +63,8 @@ End Sub";
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            var refactoring = new EncapsulateFieldRefactoring(state, null, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
+            var userInteraction = new RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel>(factory, uiDispatcherMock.Object);
+            var refactoring = new EncapsulateFieldRefactoring(state, null, userInteraction, rewritingManager, selectionService, selectedDeclarationProvider);
             var notifier = new EncapsulateFieldFailedNotifier(msgBox);
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
             return new RefactorEncapsulateFieldCommand(refactoring, notifier, state, selectionService, selectedDeclarationService);

@@ -175,8 +175,8 @@ End Property
             var sourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
             return new AddComponentService(projectsProvider, sourceCodeHandler, sourceCodeHandler);
         }
-
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        //RefactoringUserInteraction<IMoveMemberPresenter, MoveMemberModel>
+        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, RefactoringUserInteraction<IMoveMemberPresenter, MoveMemberModel> userInteraction /*IRefactoringPresenterFactory factory*/, ISelectionService selectionService)
         {
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
             var uiDispatcherMock = new Mock<IUiDispatcher>();
@@ -189,7 +189,7 @@ End Property
             var existingDestinationModuleRefactoring = new MoveMemberExistingModulesRefactoringAction(renameAction, state, rewritingManager);
             var newDestinationModuleRefactoring = new MoveMemberToNewModuleRefactoringAction(existingDestinationModuleRefactoring, renameAction, state, rewritingManager, addComponentService);
             var refactoringAction = new MoveMemberRefactoringAction(newDestinationModuleRefactoring, existingDestinationModuleRefactoring);
-            return new MoveMemberRefactoring(refactoringAction, renameAction, state, factory, rewritingManager, selectionService, selectedDeclarationService, uiDispatcherMock.Object);
+            return new MoveMemberRefactoring(refactoringAction, userInteraction, renameAction, state, /*factory,*/ rewritingManager, selectionService, selectedDeclarationService, uiDispatcherMock.Object);
         }
     }
 }

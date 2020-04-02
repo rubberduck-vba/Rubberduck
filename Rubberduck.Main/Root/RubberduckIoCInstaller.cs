@@ -670,7 +670,9 @@ namespace Rubberduck.Root
                 typeof(RefactorMoveCloserToUsageCommandMenuItem),
                 typeof(RefactorExtractInterfaceCommandMenuItem),
                 typeof(RefactorImplementInterfaceCommandMenuItem),
-                typeof(RefactorMoveMemberCommandMenuItem)
+                typeof(RefactorMoveMemberCommandMenuItem),
+                typeof(CodePaneRefactorMoveToFolderCommandMenuItem),
+                typeof(CodePaneRefactorMoveContainingFolderCommandMenuItem)
             };
         }
 

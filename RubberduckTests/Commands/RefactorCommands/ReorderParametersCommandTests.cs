@@ -171,7 +171,8 @@ End Property";
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
             var baseRefactoring = new ReorderParameterRefactoringAction(state, rewritingManager);
-            var refactoring = new ReorderParametersRefactoring(baseRefactoring, state, factory, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
+            var userInteraction = new RefactoringUserInteraction<IReorderParametersPresenter, ReorderParametersModel>(factory, uiDispatcherMock.Object);
+            var refactoring = new ReorderParametersRefactoring(baseRefactoring, state, userInteraction, selectionService, selectedDeclarationProvider);
             var notifier = new ReorderParametersFailedNotifier(msgBox);
             return new RefactorReorderParametersCommand(refactoring, notifier, state, selectionService, selectedDeclarationProvider);
         }
