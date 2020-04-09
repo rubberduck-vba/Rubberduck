@@ -95,7 +95,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public bool TryGetPreview(IMoveMemberEndpoint endpoint, out string preview)
         {
-            var previewer = PreviewerFactory?.Create(endpoint);
+            var previewer = PreviewerFactory?.Create(endpoint); //, this);
             preview = previewer?.PreviewMove(this) ?? string.Empty;
             return previewer != null;
         }

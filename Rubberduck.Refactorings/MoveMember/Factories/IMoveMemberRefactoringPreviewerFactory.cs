@@ -3,6 +3,11 @@ using Rubberduck.Refactorings.MoveMember;
 
 namespace Rubberduck.Refactorings
 {
+    public interface IMoveMemberRefactoringPreviewer
+    {
+        string PreviewMove(MoveMemberModel model);
+    }
+
     public interface IMoveMemberRefactoringPreviewerFactory
     {
         IMoveMemberRefactoringPreviewer Create(IMoveMemberEndpoint module);
@@ -15,8 +20,8 @@ namespace Rubberduck.Refactorings
         private readonly IMovedContentProviderFactory _movedContentProviderFactory;
 
         public MoveMemberRefactoringPreviewerFactory(MoveMemberExistingModulesRefactoringAction refactoringAction, 
-            IRewritingManager rewritingManager,
-            IMovedContentProviderFactory movedContentProviderFactory)
+                                                IRewritingManager rewritingManager,
+                                                IMovedContentProviderFactory movedContentProviderFactory)
         {
             _refactoringAction = refactoringAction;
             _rewritingManager = rewritingManager;
@@ -25,15 +30,9 @@ namespace Rubberduck.Refactorings
 
         public IMoveMemberRefactoringPreviewer Create(IMoveMemberEndpoint module)
         {
-            if (module is IMoveDestinationEndpoint destination)
-            {
-                if (destination.IsExistingModule(out var destinationModule))
-                {
-                    return new MoveMemberRefactoringPreviewerDestination(_refactoringAction, _rewritingManager, _movedContentProviderFactory);
-                }
-                return new MoveMemberNullDestinationPreviewer(_refactoringAction, _rewritingManager, _movedContentProviderFactory);
-            }
-            return new MoveMemberRefactoringPreviewerSource(_refactoringAction, _rewritingManager);
+            return module is IMoveDestinationEndpoint
+                ? new MoveMemberRefactoringDestinationPreviewer(_rewritingManager, _movedContentProviderFactory) as IMoveMemberRefactoringPreviewer
+                : new MoveMemberRefactoringSourcePreviewer(_rewritingManager, _movedContentProviderFactory) as IMoveMemberRefactoringPreviewer;
         }
     }
 }
