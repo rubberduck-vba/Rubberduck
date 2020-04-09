@@ -377,6 +377,7 @@ namespace Rubberduck.Root
                 .ImplementedBy<AddRemoveReferencesPresenterFactory>()
                 .LifestyleSingleton());
             RegisterUnreachableCaseFactories(container);
+            RegisterMoveMemberRefactoringFactories(container);
         }
 
         private void RegisterUnreachableCaseFactories(IWindsorContainer container)
@@ -386,6 +387,27 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
         }
 
+        private void RegisterMoveMemberRefactoringFactories(IWindsorContainer container)
+        {
+            container.Register(Component.For<IMoveMemberStrategyFactory>()
+                .ImplementedBy<MoveMemberStrategyFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IMoveMemberEndpointFactory>()
+                .ImplementedBy<MoveMemberEndpointFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IMoveMemberRefactoringPreviewerFactory>()
+                .ImplementedBy<MoveMemberRefactoringPreviewerFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IMovedContentProviderFactory>()
+                .ImplementedBy<MovedContentProviderFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IMoveableMemberSetsFactory>()
+                .ImplementedBy<MoveableMemberSetsFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IMoveableMemberSetFactory>()
+                .ImplementedBy<MoveableMemberSetFactory>()
+                .LifestyleSingleton());
+        }
 
         private void RegisterQuickFixes(IWindsorContainer container, Assembly[] assembliesToRegister)
         {

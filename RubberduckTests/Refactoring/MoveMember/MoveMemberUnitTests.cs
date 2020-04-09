@@ -248,7 +248,7 @@ End Property
             {
                 var target = state.DeclarationFinder.MatchName(member);
 
-                var model = new MoveMemberModel(target.First(), state as IDeclarationFinderProvider);
+                var model = MoveMemberTestSupport.CreateRefactoringModel(target.First(), state, rewritingManager);
                 return model.MoveableMembers;
             }
 

@@ -83,7 +83,7 @@ End Property
             {
                 var target = state.DeclarationFinder.MatchName(member);
 
-                var model = new MoveMemberModel(target.First(), state as IDeclarationFinderProvider);
+                var model = MoveMemberTestSupport.CreateRefactoringModel(target.First(), state, rewritingManager);
                 var viewModel = new MoveableMemberSetViewModel(new MoveMemberViewModel(model), model.MoveableMemberSetByName(target.First().IdentifierName));
                 return viewModel.ToDisplayString;
             }
@@ -133,7 +133,7 @@ End Function
             {
                 var target = state.DeclarationFinder.MatchName(member);
 
-                var model = new MoveMemberModel(target.First(), state as IDeclarationFinderProvider);
+                var model = MoveMemberTestSupport.CreateRefactoringModel(target.First(), state, rewritingManager);
                 var viewModel = new MoveableMemberSetViewModel(new MoveMemberViewModel(model), model.MoveableMemberSetByName(target.First().IdentifierName));
                 return viewModel.ToDisplayString;
             }

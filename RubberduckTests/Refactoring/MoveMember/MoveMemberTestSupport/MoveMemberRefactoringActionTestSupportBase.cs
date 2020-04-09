@@ -14,14 +14,11 @@ namespace RubberduckTests.Refactoring.MoveMember
     {
         protected override IRefactoringAction<MoveMemberModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            var addComponentService = TestAddComponentService(state?.ProjectsProvider);
-            var renameAction = new RenameCodeDefinedIdentifierRefactoringAction(state, state?.ProjectsProvider, rewritingManager);
-            var existingDestinationModuleRefactoring = new MoveMemberExistingModulesRefactoringAction(renameAction, state, rewritingManager);
-            var newDestinationModuleRefactoring = new MoveMemberToNewModuleRefactoringAction(existingDestinationModuleRefactoring, renameAction, state, rewritingManager, addComponentService);
-            return new MoveMemberRefactoringAction(newDestinationModuleRefactoring, existingDestinationModuleRefactoring);
+            MoveMemberTestsDI.Initialize(state, rewritingManager);
+            return new MoveMemberRefactoringAction(MoveMemberTestsDI.Resolve<MoveMemberToNewModuleRefactoringAction>(), MoveMemberTestsDI.Resolve<MoveMemberExistingModulesRefactoringAction>());
         }
 
-        private static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)
+        public static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)
         {
             var sourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
             return new AddComponentService(projectsProvider, sourceCodeHandler, sourceCodeHandler);

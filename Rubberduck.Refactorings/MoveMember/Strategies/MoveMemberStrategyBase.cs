@@ -14,16 +14,14 @@ namespace Rubberduck.Refactorings.MoveMember
 {
     public interface IMoveMemberRefactoringStrategy
     {
-        void RefactorRewrite(MoveMemberModel model, IRewriteSession rewriteSession, IRewritingManager rewritingManager, bool asPreview = false);
-        IMovedContentProvider NewDestinationModuleContent(MoveMemberModel model, IRewritingManager rewritingManager, IMovedContentProvider contentToMove);
+        void RefactorRewrite(MoveMemberModel model, IRewriteSession rewriteSession, IRewritingManager rewritingManager, IMovedContentProvider contentProvider, out string newModuleContent);
         bool IsApplicable(MoveMemberModel model);
         bool IsExecutableModel(MoveMemberModel model, out string nonExecutableMessage);
     }
 
     public abstract class MoveMemberStrategyBase : IMoveMemberRefactoringStrategy
     {
-        public abstract void RefactorRewrite(MoveMemberModel model, IRewriteSession rewriteSession, IRewritingManager rewritingManager, bool asPreview = false);
-        public abstract IMovedContentProvider NewDestinationModuleContent(MoveMemberModel model, IRewritingManager rewritingManager, IMovedContentProvider contentToMove);
+        public abstract void RefactorRewrite(MoveMemberModel model, IRewriteSession rewriteSession, IRewritingManager rewritingManager, IMovedContentProvider contentProvider, out string newModuleContent);
         public abstract bool IsApplicable(MoveMemberModel model);
         public abstract bool IsExecutableModel(MoveMemberModel model, out string nonExecutableMessage);
 
@@ -97,7 +95,7 @@ namespace Rubberduck.Refactorings.MoveMember
             }
         }
 
-        protected static IEnumerable<IdentifierReference> ReferencesInConstantDeclarationExpressions(MoveGroupsProvider moveGroups, Declaration declaration)
+        protected static IEnumerable<IdentifierReference> ReferencesInConstantDeclarationExpressions(IMoveMemberGroupsProvider moveGroups, Declaration declaration)
         {
             var references = new List<IdentifierReference>();
 
@@ -116,7 +114,6 @@ namespace Rubberduck.Refactorings.MoveMember
             }
             return references;
         }
-
 
         protected static bool DeclarationMoveCreatesNameConflict(Declaration entity, IEnumerable<Declaration> existingModuleDeclarations, IEnumerable<Declaration> declarationMembers = null)
         {

@@ -15,8 +15,11 @@ using System.Linq;
 
 namespace Rubberduck.UI.Refactorings.MoveMember
 {
+
     public class MoveMemberViewModel : RefactoringViewModelBase<MoveMemberModel>
     {
+        public enum PreviewModule { Source, Destination }
+
         private List<MoveableMemberSetViewModel> _moveableMemberViewModels;
         private List<string> _existingModuleNames;
         public MoveMemberViewModel(MoveMemberModel model)
@@ -31,7 +34,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
             foreach (var mm in moveableMembers)
             {
                 if ((mm.Member.IsVariable() && mm.Member.HasPrivateAccessibility())
-                    || mm.IsUserDefinedType 
+                    || mm.IsUserDefinedType
                     || mm.IsEnumeration
                     || mm.Member.IsLifeCycleHandler())
                 {
@@ -54,14 +57,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
         {
             get
             {
-                var result = false;
-                if (IsValidModuleName && MoveMemberObjectsFactory.TryCreateStrategy(Model, out var strategy))
-                {
-                    if (strategy.IsExecutableModel(Model, out _))
-                    {
-                        result = true;
-                    }
-                }
+                var result = IsValidModuleName && Model.IsExecutable;
                 OnPropertyChanged(nameof(IsValidModuleName));
                 OnPropertyChanged(nameof(DestinationNameFailureCriteria));
                 return result;
@@ -73,9 +69,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
         {
             get
             {
-                return string.IsNullOrEmpty(_destinationNameFailureCriteria)
-                    ? string.Empty
-                    : _destinationNameFailureCriteria;
+                return _destinationNameFailureCriteria ?? string.Empty;
             }
         }
 
@@ -201,7 +195,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
                 default:
                     return string.Empty;
             }
-       }
+        }
 
         private ObservableCollection<MoveableMemberSetViewModel> _moveableMembers;
         public ObservableCollection<MoveableMemberSetViewModel> MoveCandidates
@@ -237,8 +231,14 @@ namespace Rubberduck.UI.Refactorings.MoveMember
         {
             get
             {
-                return Model.PreviewModuleContent(_previewSelection);
-            }
+                var endpointToPreview = _previewSelection.Equals(PreviewModule.Destination)
+                    ? Model.Destination as IMoveMemberEndpoint
+                    : Model.Source as IMoveMemberEndpoint;
+
+                return Model.TryGetPreview(endpointToPreview, out var preview)
+                    ? preview
+                    : string.Empty;
+             }
         }
 
         private void SetAllSelections(bool value)
@@ -251,5 +251,6 @@ namespace Rubberduck.UI.Refactorings.MoveMember
 
         public CommandBase SelectAllCommand { get; }
         public CommandBase DeselectAllCommand { get; }
+
     }
 }

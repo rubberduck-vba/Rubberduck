@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveMember;
@@ -48,15 +49,17 @@ namespace RubberduckTests.Refactoring.MoveMember
             }
         }
 
-        public MoveMemberModel ModelBuilder(IDeclarationFinderProvider declarationFinderProvider)
+        public IRewritingManager RewritingManager { set; get; }
+
+        public MoveMemberModel ModelBuilder(RubberduckParserState state)
         {
             var sourceModuleName = SourceModuleName;
             var selectedElement = SelectedElement;
-            var target = declarationFinderProvider.DeclarationFinder.DeclarationsWithType(SelectedDeclarationType)
+            var target = state.DeclarationFinder.DeclarationsWithType(SelectedDeclarationType)
                 .Where(t => t.ParentDeclaration.IdentifierName == sourceModuleName)
                 .Single(declaration => declaration.IdentifierName == selectedElement);
 
-            var model = new MoveMemberModel(target, declarationFinderProvider);
+            var model = Support.CreateRefactoringModel(target, state, RewritingManager);
             foreach ((string ID, DeclarationType decType) in _otherSelectedElements)
             {
                 var moveableMemberSet = model.MoveableMemberSetByName(ID);
@@ -69,23 +72,20 @@ namespace RubberduckTests.Refactoring.MoveMember
                 destination = model.DeclarationFinderProvider.DeclarationFinder.DeclarationsWithType(DeclarationType.Module)
                     .Single(t => t.IdentifierName == DestinationModuleName);
                 model.ChangeDestination(destination);
-                SetTestStrategyName(model);
+                StrategyName = RetrieveStrategyName(model);
                 return model;
             }
 
             model.ChangeDestination(DestinationModuleName, DestinationComponentType);
 
-            SetTestStrategyName(model);
+            StrategyName = RetrieveStrategyName(model);
             return model;
         }
 
-        private void SetTestStrategyName(MoveMemberModel model)
+        private string RetrieveStrategyName(MoveMemberModel model)
         {
-            StrategyName = null;
-            if (MoveMemberObjectsFactory.TryCreateStrategy(model, out var strategy))
-            {
-                StrategyName = strategy.GetType().Name;
-            }
+            model.TryFindApplicableStrategy(out var strategy);
+            return strategy?.GetType().Name;
         }
 
         public string StrategyName { set; get; }

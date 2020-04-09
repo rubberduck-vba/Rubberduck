@@ -1,9 +1,13 @@
-﻿using Rubberduck.Parsing.Rewriter;
+﻿using Moq;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveMember;
+using Rubberduck.Refactorings.Rename;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
@@ -53,16 +57,42 @@ namespace RubberduckTests.Refactoring.MoveMember
             return result;
         }
 
-        public static IEnumerable<IMoveMemberRefactoringStrategy> RetrieveStrategies(IDeclarationFinderProvider declarationFinderProvider, string declarationName, DeclarationType declarationType, IRewritingManager rewritingManager)
+        public static MoveMemberRefactoring CreateRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, RefactoringUserInteraction<IMoveMemberPresenter, MoveMemberModel> userInteraction, ISelectionService selectionService)
         {
-            var target = declarationFinderProvider.DeclarationFinder.DeclarationsWithType(declarationType)
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
+
+            MoveMemberTestsDI.Initialize(state, rewritingManager);
+            return new MoveMemberRefactoring(MoveMemberTestsDI.Resolve<MoveMemberRefactoringAction>(),
+                                                userInteraction, 
+                                                state, 
+                                                selectionService, 
+                                                selectedDeclarationService, 
+                                                MoveMemberTestsDI.Resolve<MoveMemberStrategyFactory>(),
+                                                MoveMemberTestsDI.Resolve<MoveMemberEndpointFactory>(),
+                                                MoveMemberTestsDI.Resolve<MoveMemberRefactoringPreviewerFactory>()
+                                                );
+        }
+
+        public static MoveMemberModel CreateRefactoringModel(Declaration target, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            MoveMemberTestsDI.Initialize(state, rewritingManager);
+            return new MoveMemberModel(target, 
+                                        state, 
+                                        MoveMemberTestsDI.Resolve<MoveMemberStrategyFactory>(), 
+                                        MoveMemberTestsDI.Resolve<MoveMemberEndpointFactory>()
+                                        );
+        }
+
+        public static IEnumerable<IMoveMemberRefactoringStrategy> RetrieveStrategies(RubberduckParserState state, string declarationName, DeclarationType declarationType, IRewritingManager rewritingManager)
+        {
+            var target = state.DeclarationFinder.DeclarationsWithType(declarationType)
                  .Single(declaration => declaration.IdentifierName == declarationName);
 
-            var model = new MoveMemberModel(target, declarationFinderProvider);
+            var model = CreateRefactoringModel(target, state, rewritingManager);
 
             model.ChangeDestination(DEFAULT_DESTINATION_MODULE_NAME);
 
-            if (MoveMemberObjectsFactory.TryCreateStrategy(model, out var strategy))
+            if (model.TryFindApplicableStrategy(out var strategy))
             {
                 return new IMoveMemberRefactoringStrategy[] { strategy };
             }
@@ -127,5 +157,6 @@ End Sub
 ";
             return $"{declaration}{Environment.NewLine}{instantiation}";
         }
+
     }
 }

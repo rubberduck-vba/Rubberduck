@@ -17,15 +17,31 @@ namespace Rubberduck.Refactorings.MoveMember
         void AddFieldOrConstantDeclaration(string content);
         void AddTypeDeclaration(string content);
         string AsSingleBlock { get; }
-        string AsSingleBlockWithinDemarcationComments();
     }
 
-    public class MovedContentProvider : IMovedContentProvider
+    public interface IMovedContentPreviewProvider : IMovedContentProvider
+    { }
+
+    public class MovedContentProvider : MovedContentProviderBase, IMovedContentProvider
+    {
+        public MovedContentProvider()
+               : base(false) { }
+    }
+
+    public class MovedContentPreviewProvider : MovedContentProviderBase, IMovedContentPreviewProvider
+    {
+        public MovedContentPreviewProvider()
+            : base(true) { }
+    }
+
+    public class MovedContentProviderBase
     {
         private Dictionary<ContentTypes, List<string>> _movedContent;
+        private readonly bool _applyPreviewAnnotations;
 
-        public MovedContentProvider()
+        public MovedContentProviderBase(bool applyPreviewAnnotations)
         {
+            _applyPreviewAnnotations = applyPreviewAnnotations;
             _movedContent = new Dictionary<ContentTypes, List<string>>
             {
                 { ContentTypes.DeclarationBlock, new List<string>() },
@@ -52,17 +68,18 @@ namespace Rubberduck.Refactorings.MoveMember
         {
             get
             {
-                return string.Join($"{ Environment.NewLine}{ Environment.NewLine}",
+                var result = string.Join($"{ Environment.NewLine}{ Environment.NewLine}",
                                 (_movedContent[ContentTypes.TypeDeclarationBlock])
                                 .Concat(_movedContent[ContentTypes.DeclarationBlock])
                                 .Concat(_movedContent[ContentTypes.MethodBlock]))
                                 .Trim();
-            }
-        }
 
-        public string AsSingleBlockWithinDemarcationComments()
-        {
-            return $"'*****  {Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine}  *****{Environment.NewLine}{Environment.NewLine}{AsSingleBlock}{Environment.NewLine}{Environment.NewLine}'****  {Resources.RubberduckUI.MoveMember_MovedContentAboveThisLine}  ****{Environment.NewLine}";
+                if (_applyPreviewAnnotations)
+                {
+                    return $"'*****  {Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine}  *****{Environment.NewLine}{Environment.NewLine}{result}{Environment.NewLine}{Environment.NewLine}'****  {Resources.RubberduckUI.MoveMember_MovedContentAboveThisLine}  ****{Environment.NewLine}";
+                }
+                return result;
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.Rename;
 using Rubberduck.VBEditor.Utility;
 using System;
 
@@ -15,7 +14,6 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public MoveMemberToNewModuleRefactoringAction(
                         MoveMemberExistingModulesRefactoringAction refactoring,
-                        RenameCodeDefinedIdentifierRefactoringAction renameAction,
                         IParseManager parseManager,
                         IRewritingManager rewritingManager,
                         IAddComponentService addComponentService)
@@ -28,17 +26,15 @@ namespace Rubberduck.Refactorings.MoveMember
 
         protected override void Refactor(MoveMemberModel model, IRewriteSession rewriteSession)
         {
-            if (!MoveMemberObjectsFactory.TryCreateStrategy(model, out var strategy) 
+            if (!model.TryFindApplicableStrategy(out var strategy)
                 || !strategy.IsExecutableModel(model, out _))
             {
                 return;
             }
 
+            var newContent = _refactoring.NewModuleContent(model, rewriteSession);
+
             var optionExplicit = $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}";
-
-            var newContent = strategy.NewDestinationModuleContent(model, _rewritingManager, new MovedContentProvider()).AsSingleBlock;
-
-            _refactoring.Refactor(model, rewriteSession);
 
             _addComponentService.AddComponentWithAttributes(
                                         model.Source.Module.ProjectId,

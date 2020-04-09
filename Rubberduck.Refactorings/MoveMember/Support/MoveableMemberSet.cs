@@ -82,8 +82,7 @@ namespace Rubberduck.Refactorings.MoveMember
     /// MoveableMemberSet is a set of declarations with the same Identifier.
     /// It binds together all Properties of the same identifier as a single 
     /// element to assist with logic and moves.  MemberMoves are based on the
-    /// IsSelected property and enforces an 'all or none' selection
-    /// rule for property members.
+    /// IsSelected property and enforces an 'all or none' selection rule for property members.
     /// All other declarations are a MoveableMemberSet with a single declaration
     /// </summary>
     public class MoveableMemberSet : IMoveableMemberSet

@@ -21,7 +21,17 @@ namespace Rubberduck.Refactorings.MoveMember
         Support_NonExclusive
     }
 
-    public class MoveGroupsProvider
+    public interface IMoveMemberGroupsProvider
+    {
+        IReadOnlyCollection<IMoveableMemberSet> MoveableMemberSets(MoveGroup moveGroup);
+        IReadOnlyCollection<Declaration> Declarations(MoveGroup moveGroup);
+        IReadOnlyCollection<Declaration> Dependencies(MoveGroup moveGroup);
+        IReadOnlyCollection<Declaration> DirectDependencies(MoveGroup moveGroup);
+        IReadOnlyCollection<IMoveableMemberSet> ToMoveableMemberSets(IEnumerable<Declaration> declarations);
+    }
+
+
+    public class MoveMemberGroupsProvider : IMoveMemberGroupsProvider
     {
         private readonly IDeclarationFinderProvider _declarationProvider;
         private List<IMoveableMemberSet> _allMoveableMemberSets;
@@ -32,7 +42,7 @@ namespace Rubberduck.Refactorings.MoveMember
         private Dictionary<MoveGroup, List<Declaration>> _dependenciesByMoveGroup;
         private Dictionary<string, IMoveableMemberSet> _moveableMembersByName;
 
-        public MoveGroupsProvider(IEnumerable<IMoveableMemberSet> moveableMemberSets, IDeclarationFinderProvider declarationFinderProvider)
+        public MoveMemberGroupsProvider(IEnumerable<IMoveableMemberSet> moveableMemberSets, IDeclarationFinderProvider declarationFinderProvider)
         {
             _declarationProvider = declarationFinderProvider;
             _allMoveableMemberSets = moveableMemberSets.ToList();

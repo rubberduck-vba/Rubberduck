@@ -1,7 +1,6 @@
-﻿using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System;
 using System.Collections.Generic;
@@ -10,94 +9,117 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
-    public enum PreviewModule { Source, Destination}
-
     public class MoveMemberModel : IRefactoringModel
     {
-        private readonly IMoveMemberObjectsFactory _moveMemberFactory;
-        private Dictionary<string, IMoveableMemberSet> _moveablesByName;
+        private readonly IMoveMemberStrategyFactory _strategyFactory;
+        private readonly IMoveMemberEndpointFactory _moveEndpointFactory;
+
+        private IMoveMemberRefactoringStrategy _strategyMoveToStandardModule;
+
         public IDeclarationFinderProvider DeclarationFinderProvider { get; }
 
-        public MoveMemberModel(Declaration target, IDeclarationFinderProvider declarationFinderProvider)
+        public MoveMemberModel(Declaration target, 
+                                IDeclarationFinderProvider declarationFinderProvider, 
+                                IMoveMemberStrategyFactory strategyFactory, 
+                                IMoveMemberEndpointFactory moveEndpointFactory)
         {
             DeclarationFinderProvider = declarationFinderProvider;
 
-            _moveMemberFactory = new MoveMemberObjectsFactory(declarationFinderProvider);
+            _moveEndpointFactory = moveEndpointFactory;
 
-            Source = _moveMemberFactory.CreateMoveSourceProxy(target);
+            _strategyFactory = strategyFactory;
 
-            Destination = _moveMemberFactory.CreateMoveDestinationProxy(null);
+            Source = _moveEndpointFactory.CreateSourceEndpoint(target) as IMoveSourceEndpoint;
 
-            _moveablesByName = _moveMemberFactory.CreateMoveables(target).ToDictionary(mm => mm.IdentifierName);
+            var destinationModuleName = DetermineInitialDestinationModuleName(declarationFinderProvider, Source.ModuleName);
+            Destination = _moveEndpointFactory.CreateDestinationEndpoint(destinationModuleName, ComponentType.StandardModule) as IMoveDestinationEndpoint;
 
-            _previewDelegate = null;
+            _strategyMoveToStandardModule = _strategyFactory.Create(MoveMemberStrategy.MoveToStandardModule);
         }
 
-        public IMoveSourceModuleProxy Source { private set; get; }
+        public IMoveSourceEndpoint Source { private set; get; }
 
-        public IMoveDestinationModuleProxy Destination { private set; get; }
+        public IMoveDestinationEndpoint Destination { private set; get; }
 
-        public IReadOnlyCollection<IMoveableMemberSet> MoveableMembers => _moveablesByName.Values;
+        public IReadOnlyCollection<IMoveableMemberSet> MoveableMembers
+            => Source.MoveableMembers;
 
-        public IMoveableMemberSet MoveableMemberSetByName(string identifier) => _moveablesByName[identifier];
+        public IMoveableMemberSet MoveableMemberSetByName(string identifier)
+            => Source.MoveableMemberSetByName(identifier);
 
         public IEnumerable<Declaration> SelectedDeclarations => MoveableMembers
                                             .Where(mc => mc.IsSelected)
                                             .SelectMany(selected => selected.Members);
 
-        public IMoveMemberObjectsFactory MoveMemberFactory => _moveMemberFactory;
-
         public void ChangeDestination(string destinationModuleName, ComponentType componentType = ComponentType.StandardModule)
         {
-            Destination = _moveMemberFactory.CreateMoveDestination(destinationModuleName, componentType);
+            Destination = _moveEndpointFactory.CreateDestinationEndpoint(destinationModuleName, componentType) as IMoveDestinationEndpoint;
         }
 
         public void ChangeDestination(Declaration destinationModule)
         {
-            Destination = _moveMemberFactory.CreateMoveDestinationProxy(destinationModule);
-        }
-
-        public string PreviewModuleContent(PreviewModule previewModule)
-        {
-            if (_previewDelegate is null)
+            if (destinationModule != null)
             {
-                return string.Empty;
+                Destination = _moveEndpointFactory.CreateDestinationEndpoint(destinationModule.QualifiedModuleName) as IMoveDestinationEndpoint;
+                return;
             }
-
-            return _previewDelegate(this, previewModule);
+            Destination = _moveEndpointFactory.CreateDestinationEndpoint(null, ComponentType.StandardModule) as IMoveDestinationEndpoint;
         }
 
-        private Action<Declaration, string, IRewriteSession> _renameAction;
-        public Action<Declaration, string, IRewriteSession> RenameService
-        {
-            set => _renameAction = value;
-            get => _renameAction;
-        }
-
-        private Func<MoveMemberModel, PreviewModule, string> _previewDelegate;
-        public Func<MoveMemberModel, PreviewModule, string> PreviewBuilder
-        {
-            set => _previewDelegate = value;
-            get => _previewDelegate;
-        }
-
-        public bool HasValidDestination
+        public bool IsExecutable
         {
             get
             {
-                return !(Destination.ModuleName.Equals(Source.ModuleName)
-                    || IsInvalidDestinationModuleName());
+                var result = false;
+                if (TryFindApplicableStrategy(out var strategy))
+                {
+                    result = strategy.IsExecutableModel(this, out _);
+                }
+                return result;
             }
         }
 
-        private bool IsInvalidDestinationModuleName()
+        public bool TryFindApplicableStrategy(out IMoveMemberRefactoringStrategy strategy)
         {
-            if (string.IsNullOrEmpty(Destination.ModuleName))
+            //The default strategy when the Destination is undefined
+            if (_strategyMoveToStandardModule.IsApplicable(this))
             {
-                return false;
+                strategy = _strategyMoveToStandardModule;
+                return true;
             }
+            strategy = null;
+            return false;
+        }
 
-            return VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(Destination.ModuleName, DeclarationType.Module, out var criteriaMatchMessage);
+        public IMoveMemberRefactoringPreviewerFactory PreviewerFactory { set; get; }
+
+        public bool TryGetPreview(IMoveMemberEndpoint endpoint, out string preview)
+        {
+            var previewer = PreviewerFactory?.Create(endpoint);
+            preview = previewer?.PreviewMove(this) ?? string.Empty;
+            return previewer != null;
+        }
+
+        //public bool TryGetPreviewerFactory(out IMoveMemberRefactoringPreviewerFactory factory)
+        //{
+        //    factory = PreviewerFactory;
+        //    return factory != null;
+        //}
+
+        private static string DetermineInitialDestinationModuleName(IDeclarationFinderProvider declarationFinderProvider, string sourceModuleName)
+        {
+            var allModuleIdentifiers = declarationFinderProvider.DeclarationFinder.AllModules.Select(m => m.ComponentName);
+            var destinationModuleName = sourceModuleName;
+            var hasNameConflict = true;
+            for (var idx = 0; hasNameConflict && idx < 100; idx++)
+            {
+                destinationModuleName = destinationModuleName.IncrementIdentifier();
+                if (allModuleIdentifiers.All(name => !destinationModuleName.IsEquivalentVBAIdentifierTo(name)))
+                {
+                    hasNameConflict = false;
+                }
+            }
+            return destinationModuleName;
         }
     }
 }
