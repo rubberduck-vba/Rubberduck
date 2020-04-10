@@ -115,7 +115,8 @@ namespace Rubberduck.Refactorings.MoveMember
 
             if (_declarationsByMoveGroup[MoveGroup.AllParticipants].Intersect(_declarationsByMoveGroup[MoveGroup.NonParticipants]).Any())
             {
-                throw new MoveMemberUnsupportedMoveException(moveableMemberSets.Select(mm => mm.Member).FirstOrDefault());
+                var identifier = moveableMemberSets.Select(mm => mm.Member).FirstOrDefault().IdentifierName;
+                throw new MoveMemberUnsupportedMoveException($"Unable to resolve name conflict: {identifier}");
             }
 
             _dependenciesByMoveGroup = new Dictionary<MoveGroup, List<Declaration>>();

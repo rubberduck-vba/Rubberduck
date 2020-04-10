@@ -7,8 +7,8 @@ namespace Rubberduck.Refactorings.MoveMember
         private readonly IRefactoringAction<MoveMemberModel> _moveMemberToNewModuleRefactoringAction;
         private readonly IRefactoringAction<MoveMemberModel> _moveMemberToExistingModuleRefactoringAction;
 
-        public MoveMemberRefactoringAction(MoveMemberToNewModuleRefactoringAction moveMemberToNewModuleRefactoring, 
-                                            MoveMemberExistingModulesRefactoringAction moveMemberToExistingModuleRefactoring)
+        public MoveMemberRefactoringAction(MoveMemberToNewStandardModuleRefactoringAction moveMemberToNewModuleRefactoring, 
+                                            MoveMemberToExistingStandardModuleRefactoringAction moveMemberToExistingModuleRefactoring)
         {
             _moveMemberToNewModuleRefactoringAction = moveMemberToNewModuleRefactoring;
             _moveMemberToExistingModuleRefactoringAction = moveMemberToExistingModuleRefactoring;
@@ -19,10 +19,11 @@ namespace Rubberduck.Refactorings.MoveMember
             if (model.Destination.IsExistingModule(out _))
             {
                 _moveMemberToExistingModuleRefactoringAction.Refactor(model);
-                return;
             }
-
-            _moveMemberToNewModuleRefactoringAction.Refactor(model);
+            else
+            {
+                _moveMemberToNewModuleRefactoringAction.Refactor(model);
+            }
         }
     }
 }

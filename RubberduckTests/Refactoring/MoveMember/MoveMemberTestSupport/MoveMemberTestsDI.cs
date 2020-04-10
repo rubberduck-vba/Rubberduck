@@ -11,53 +11,60 @@ namespace RubberduckTests.Refactoring.MoveMember
 
     public class MoveMemberTestsDI
     {
-        private static RubberduckParserState _state;
-        private static IRewritingManager _rewritingManager;
+        private RubberduckParserState _state;
+        private IRewritingManager _rewritingManager;
 
-        public static void Initialize(RubberduckParserState state, IRewritingManager rewritingManager)
+        public MoveMemberTestsDI(RubberduckParserState state, IRewritingManager rewritingManager)
         {
             _state = state;
             _rewritingManager = rewritingManager;
         }
 
-        public static T Resolve<T>() where T : class
+        public T Resolve<T>() where T : class
         {
             return Resolve<T>(typeof(T).Name);
         }
 
-        public static T Resolve<T>(string name) where T : class
+        public T Resolve<T>(string name) where T : class
         {
             switch (name)
             {
                 case nameof(MoveMemberRefactoringAction):
                     return new MoveMemberRefactoringAction(
-                            Resolve<MoveMemberToNewModuleRefactoringAction>(), 
-                            Resolve<MoveMemberExistingModulesRefactoringAction>()) as T;
-                case nameof(MoveMemberToNewModuleRefactoringAction):
-                    return new MoveMemberToNewModuleRefactoringAction(
-                            Resolve<MoveMemberExistingModulesRefactoringAction>(), 
+                            Resolve<MoveMemberToNewStandardModuleRefactoringAction>(), 
+                            Resolve<MoveMemberToExistingStandardModuleRefactoringAction>()) as T;
+                case nameof(MoveMemberToNewStandardModuleRefactoringAction):
+                    return new MoveMemberToNewStandardModuleRefactoringAction(
                             _state, 
-                            _rewritingManager, 
+                            _rewritingManager,
+                            Resolve<MovedContentProviderFactory>(),
+                            Resolve<IMoveMemberStrategyFactory>(),
                             Resolve<IAddComponentService>()) as T;
                 case nameof(IAddComponentService):
                     return MoveMemberRefactoringActionTestSupportBase.TestAddComponentService(_state?.ProjectsProvider) as T;
                 case nameof(IMoveMemberRefactoringPreviewerFactory):
                     return new MoveMemberRefactoringPreviewerFactory(
-                            Resolve<MoveMemberExistingModulesRefactoringAction>(),
+                            Resolve<MoveMemberToExistingStandardModuleRefactoringAction>(),
                             _rewritingManager,
                             Resolve<MovedContentProviderFactory>()) as T;
                 case nameof(MoveMemberRefactoringPreviewerFactory):
                     return new MoveMemberRefactoringPreviewerFactory(
-                            Resolve<MoveMemberExistingModulesRefactoringAction>(),
+                            Resolve<MoveMemberToExistingStandardModuleRefactoringAction>(),
                             _rewritingManager,
                             Resolve<MovedContentProviderFactory>()) as T;
-                case nameof(MoveMemberExistingModulesRefactoringAction):
-                    return new MoveMemberExistingModulesRefactoringAction(
+                case nameof(MoveMemberToExistingStandardModuleRefactoringAction):
+                    return new MoveMemberToExistingStandardModuleRefactoringAction(
                             _rewritingManager, 
-                            Resolve<MovedContentProviderFactory>()) as T;
+                            Resolve<MovedContentProviderFactory>(),
+                            Resolve<IMoveMemberStrategyFactory>()
+                            ) as T;
                 case nameof(MoveMemberStrategyFactory):
                     return new MoveMemberStrategyFactory(
-                            Resolve<RenameCodeDefinedIdentifierRefactoringAction>(), 
+                            Resolve<RenameCodeDefinedIdentifierRefactoringAction>(),
+                            Resolve<MoveMemberMoveGroupsProviderFactory>()) as T;
+                case nameof(IMoveMemberStrategyFactory):
+                    return new MoveMemberStrategyFactory(
+                            Resolve<RenameCodeDefinedIdentifierRefactoringAction>(),
                             Resolve<MoveMemberMoveGroupsProviderFactory>()) as T;
                 case nameof(RenameCodeDefinedIdentifierRefactoringAction):
                     return new RenameCodeDefinedIdentifierRefactoringAction(

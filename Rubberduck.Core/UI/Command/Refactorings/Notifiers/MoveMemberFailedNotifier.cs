@@ -24,7 +24,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
                         $"{DeclarationType.Variable}, {DeclarationType.Constant}, {DeclarationType.Member}");
                 case MoveMemberUnsupportedMoveException unsupportedMove:
                     Logger.Warn(unsupportedMove);
-                    return string.Format( Resources.RubberduckUI.MoveMember_UnsupportedMoveExceptionFormat, unsupportedMove.TargetDeclaration.IdentifierName);
+                    return string.Format( Resources.RubberduckUI.MoveMember_UnsupportedMoveExceptionFormat, unsupportedMove?.Message ?? string.Empty);
                 default:
                     return base.Message(exception);
             }

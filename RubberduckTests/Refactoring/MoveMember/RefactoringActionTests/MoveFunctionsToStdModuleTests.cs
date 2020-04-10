@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System;
@@ -33,10 +34,7 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
 
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(null, refactoredCode.StrategyName);
+            Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
         }
 
         [TestCase(MoveEndpoints.StdToStd, "Public", ThisStrategy)]
@@ -184,15 +182,15 @@ End Function";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
 
-            
+            if (expectedStrategy is null)
+            {
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
+                return;
+            }
+
             var refactoredCode = ExecuteTest(moveDefinition);
 
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
-
-            if (expectedStrategy is null)
-            {
-                return;
-            }
 
             StringAssert.DoesNotContain("Public Function CalculateVolumeFromDiameter(", refactoredCode.Source);
             StringAssert.Contains($"Public Function CalculateCircumferenceFromDiameter(", refactoredCode.Source);
@@ -223,11 +221,7 @@ Public Function CalculateCircumferenceFromDiameter(ByVal diameter As Single) As 
 End Function";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
-
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
+            Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
         }
 
         [TestCase(MoveEndpoints.StdToStd, "Public", ThisStrategy)]
@@ -260,15 +254,14 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
 
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
-
             if (expectedStrategy is null)
             {
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
                 return;
             }
+
+            var refactoredCode = ExecuteTest(moveDefinition);
+            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
             StringAssert.DoesNotContain("Public Function CalculateVolumeFromDiameter(", refactoredCode.Source);
             StringAssert.Contains($"{exclusiveFuncAccessibility} Function CalculateVolume(", refactoredCode.Source);
@@ -374,10 +367,7 @@ End Sub
             var referencingModuleName = "Module3";
             moveDefinition.Add(new ModuleDefinition(referencingModuleName, ComponentType.StandardModule, externalReferences));
 
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(null, refactoredCode.StrategyName);
+            Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
         }
 
         [TestCase(MoveEndpoints.StdToStd, "Public")]
@@ -639,10 +629,7 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
 
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(null, refactoredCode.StrategyName);
+            Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
         }
 
         [TestCase(MoveEndpoints.StdToStd, "Public")]
@@ -694,10 +681,7 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
 
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(null, refactoredCode.StrategyName);
+            Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
         }
 
         [TestCase(MoveEndpoints.StdToStd, "Public", ThisStrategy)]
@@ -746,15 +730,16 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
 
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
             if (expectedStrategy is null)
             {
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
                 return;
             }
+
+            var refactoredCode = ExecuteTest(moveDefinition);
+            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
+
 
             var sourceRefactored = refactoredCode.Source;
             StringAssert.DoesNotContain("Private Function Bar", sourceRefactored);
@@ -1100,13 +1085,14 @@ End Property
 ";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
             if (expectedStrategy is null)
             {
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
                 return;
             }
+
+            var refactoredCode = ExecuteTest(moveDefinition);
+            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
             StringAssert.DoesNotContain("Function Foo(arg1", refactoredCode.Source);
             StringAssert.Contains($"{accessibility} Function Foo(arg1", refactoredCode.Destination);
@@ -1146,13 +1132,14 @@ End Property
 ";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
             if (expectedStrategy is null)
             {
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
                 return;
             }
+
+            var refactoredCode = ExecuteTest(moveDefinition);
+            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
             StringAssert.Contains("Bar(", refactoredCode.Source);
             StringAssert.DoesNotContain("Function Foo(arg1", refactoredCode.Source);

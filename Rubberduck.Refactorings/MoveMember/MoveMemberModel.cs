@@ -2,7 +2,6 @@
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -95,16 +94,10 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public bool TryGetPreview(IMoveMemberEndpoint endpoint, out string preview)
         {
-            var previewer = PreviewerFactory?.Create(endpoint); //, this);
+            var previewer = PreviewerFactory?.Create(endpoint);
             preview = previewer?.PreviewMove(this) ?? string.Empty;
             return previewer != null;
         }
-
-        //public bool TryGetPreviewerFactory(out IMoveMemberRefactoringPreviewerFactory factory)
-        //{
-        //    factory = PreviewerFactory;
-        //    return factory != null;
-        //}
 
         private static string DetermineInitialDestinationModuleName(IDeclarationFinderProvider declarationFinderProvider, string sourceModuleName)
         {

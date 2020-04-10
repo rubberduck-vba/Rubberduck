@@ -8,11 +8,12 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System;
+using Rubberduck.Refactorings.Exceptions;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
     [TestFixture]
-    public class MoveFieldsOrConstantsTests : MoveMemberRefactoringActionTestSupportBase
+    public class MoveFieldsOrConstantsToStandardModuleTests : MoveMemberRefactoringActionTestSupportBase
     {
         [TestCase(MoveEndpoints.FormToStd, "Private")]
         [TestCase(MoveEndpoints.ClassToStd, "Private")]
@@ -124,14 +125,15 @@ End Function
                 moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
             }
 
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
-            StringAssert.AreEqualIgnoringCase(expectedStrategyName, refactoredCode.StrategyName);
 
             if (expectedStrategyName is null)
             {
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
                 return;
             }
+
+            var refactoredCode = ExecuteTest(moveDefinition);
+            StringAssert.AreEqualIgnoringCase(expectedStrategyName, refactoredCode.StrategyName);
 
             var destinationDeclaration = "Public mFoo As Long";
 
@@ -371,18 +373,17 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("FIZZ", DeclarationType.Constant), source);
 
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
-
             if (expectedStrategy is null)
             {
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
                 return;
             }
 
+            var refactoredCode = ExecuteTest(moveDefinition);
+            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
+
             StringAssert.Contains($"Public Const FIZZ As Long = {moveDefinition.SourceModuleName}.{expression}", refactoredCode.Destination);
         }
-
 
         [TestCase("PUB_VALUE * PUB_VALUE2", nameof(MoveMemberToStdModule))]
         [Category("Refactorings")]

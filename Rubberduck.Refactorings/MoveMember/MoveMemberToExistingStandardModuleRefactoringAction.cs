@@ -1,6 +1,5 @@
 ﻿using Microsoft.CSharp.RuntimeBinder;
 using NLog;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember;
@@ -9,51 +8,35 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.Refactorings
 {
-    public class MoveMemberExistingModulesRefactoringAction :  CodeOnlyRefactoringActionBase<MoveMemberModel>
+    public class MoveMemberToExistingStandardModuleRefactoringAction :  CodeOnlyRefactoringActionBase<MoveMemberModel>
     {
         private readonly IRewritingManager _rewritingManager;
         private readonly IMovedContentProviderFactory _contentProviderFactory;
+        private readonly IMoveMemberStrategyFactory _strategyFactory;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public MoveMemberExistingModulesRefactoringAction(
+        public MoveMemberToExistingStandardModuleRefactoringAction(
                         IRewritingManager rewritingManager,
-                        IMovedContentProviderFactory contentProviderFactory)
+                        IMovedContentProviderFactory contentProviderFactory,
+                        IMoveMemberStrategyFactory strategyFactory)
                 : base(rewritingManager)
         {
             _rewritingManager = rewritingManager;
             _contentProviderFactory = contentProviderFactory;
-            ContentProvider = _contentProviderFactory.CreateDefaultProvider();
+            _strategyFactory = strategyFactory;
         }
-
-        public IMovedContentProvider ContentProvider { set; get; }
 
         public override void Refactor(MoveMemberModel model, IRewriteSession rewriteSession)
         {
-            GetSingleUseContentProvider(out var singleUseContentProvider);
+            var strategy = _strategyFactory.Create(MoveMemberStrategy.MoveToStandardModule);
 
-            if (!model.TryFindApplicableStrategy(out var strategy)
-                || !strategy.IsExecutableModel(model, out _))
+            if (!strategy.IsExecutableModel(model, out var msg))
             {
-                return;
+                throw new MoveMemberUnsupportedMoveException(msg);
             }
 
-            MoveMembers(model, strategy, rewriteSession, singleUseContentProvider);
-        }
-
-        public string NewModuleContent(MoveMemberModel model, IRewriteSession rewriteSession)
-        {
-            GetSingleUseContentProvider(out var singleUseContentProvider);
-
-            if (!model.TryFindApplicableStrategy(out var strategy))
-            {
-                return Resources.RubberduckUI.MoveMember_ApplicableStrategyNotFound;
-            }
-
-
-            strategy.RefactorRewrite(model, rewriteSession, _rewritingManager, singleUseContentProvider, out var newContent);
-
-            return $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}{Environment.NewLine}{newContent}";
+            MoveMembers(model, strategy, rewriteSession, _contentProviderFactory.CreateDefaultProvider());
         }
 
         private void MoveMembers(MoveMemberModel model, IMoveMemberRefactoringStrategy strategy, IRewriteSession rewriteSession, IMovedContentProvider contentProvider)
@@ -85,14 +68,6 @@ namespace Rubberduck.Refactorings
             {
                 _logger.Warn($"{nameof(MoveMembers)} {nameof(Exception)} {unhandledEx.Message}");
             }
-        }
-
-        //Property ContentProvider may have had a 'preview' version Property Injected.  Always
-        //restore the default ContentProvider after using the currently set reference.
-        private void GetSingleUseContentProvider(out IMovedContentProvider singleUseContentProvider)
-        {
-            singleUseContentProvider = ContentProvider;
-            ContentProvider = _contentProviderFactory.CreateDefaultProvider();
         }
     }
 }

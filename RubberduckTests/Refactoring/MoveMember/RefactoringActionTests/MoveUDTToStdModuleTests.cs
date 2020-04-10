@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -10,7 +11,7 @@ using System.Linq;
 namespace RubberduckTests.Refactoring.MoveMember
 {
     [TestFixture]
-    public class MoveMemberUDTTests : MoveMemberRefactoringActionTestSupportBase
+    public class MoveUDTToStdModuleTests : MoveMemberRefactoringActionTestSupportBase
     {
         [Test]
         [Category("Refactorings")]
@@ -196,9 +197,7 @@ End Property
 
             var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, member, source);
 
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            Assert.IsNull(refactoredCode.StrategyName);
+            Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
         }
 
         [TestCase(MoveEndpoints.StdToStd)]
@@ -301,13 +300,13 @@ End Sub
 
             var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, member, source);
 
-            var refactoredCode = ExecuteTest(moveDefinition);
-
             if (expectedStrategy is null)
             {
-                Assert.IsNull(refactoredCode.StrategyName);
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
                 return;
             }
+
+            var refactoredCode = ExecuteTest(moveDefinition);
 
             StringAssert.DoesNotContain($"Sub {memberToMove}(arg1 As Long, arg2 As String)", refactoredCode.Source);
             StringAssert.Contains("Test2Value", refactoredCode.Source);

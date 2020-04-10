@@ -74,6 +74,12 @@ namespace Rubberduck.Refactorings.MoveMember
                 nonExecutableMessage = Resources.RubberduckUI.MoveMember_UndefinedDestinationModule;
                 return false;
             }
+
+            if (!IsApplicable(model))
+            {
+                nonExecutableMessage = Resources.RubberduckUI.MoveMember_ApplicableStrategyNotFound;
+                return false;
+            }
             return true;
         }
 
@@ -358,7 +364,7 @@ namespace Rubberduck.Refactorings.MoveMember
             {
                 if (!TryCreateNonConflictIdentifier(conflictMoveable.IdentifierName, allPotentialConflictNames, out var identifier))
                 {
-                    throw new MoveMemberUnsupportedMoveException(conflictMoveable?.Member);
+                    throw new MoveMemberUnsupportedMoveException($"Unable to resolve name conflict: {conflictMoveable?.Member.IdentifierName}");
                 }
 
                 conflictMoveable.MovedIdentifierName = identifier;

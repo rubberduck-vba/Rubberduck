@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System;
@@ -30,10 +31,7 @@ End Sub";
 
             var moveDefinition = new TestMoveDefinition(endpoints, ("Log", ThisDeclarationType), sourceContent: source);
 
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            Assert.AreEqual(null, refactoredCode.StrategyName);
+            Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
         }
 
         [TestCase(MoveEndpoints.StdToStd, "Public", ThisStrategy)]
@@ -132,15 +130,15 @@ End Function";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
 
-            
+            if (expectedStrategy is null)
+            {
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
+                return;
+            }
+
             var refactoredCode = ExecuteTest(moveDefinition);
 
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
-
-            if (expectedStrategy is null)
-            {
-                return;
-            }
 
             StringAssert.DoesNotContain("Public Sub CalculateVolumeFromDiameter(", refactoredCode.Source);
             StringAssert.Contains($"Public Function CalculateCircumferenceFromDiameter(", refactoredCode.Source);
@@ -172,10 +170,7 @@ End Sub";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
 
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
+            Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
         }
 
         [TestCase("Public", MoveEndpoints.StdToStd, ThisStrategy)]
@@ -204,16 +199,17 @@ End Sub
 End Sub";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
 
             if (expectedStrategyName is null)
             {
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
                 return;
             }
 
-            StringAssert.DoesNotContain("Public Sub Foo(arg1 As Long)", refactoredCode.Source);
+            var refactoredCode = ExecuteTest(moveDefinition);
 
+            StringAssert.AreEqualIgnoringCase(expectedStrategyName, refactoredCode.StrategyName);
+            StringAssert.DoesNotContain("Public Sub Foo(arg1 As Long)", refactoredCode.Source);
             StringAssert.Contains("Public Sub Foo(arg1 As Long)", refactoredCode.Destination);
             StringAssert.Contains($"{moveDefinition.SourceModuleName}.Log", refactoredCode.Destination);
         }
@@ -315,10 +311,7 @@ End Sub
             var referencingModuleName = "Module3";
             moveDefinition.Add(new ModuleDefinition(referencingModuleName, ComponentType.StandardModule, externalReferences));
 
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(null, refactoredCode.StrategyName);
+            Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
         }
 
         [TestCase(MoveEndpoints.StdToStd, "Public")]
@@ -530,10 +523,7 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
 
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(null, refactoredCode.StrategyName);
+            Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
         }
 
 
@@ -654,10 +644,7 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
 
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(null, refactoredCode.StrategyName);
+            Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
         }
 
 
@@ -706,15 +693,15 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
 
-            
+            if (expectedStrategy is null)
+            {
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
+                return;
+            }
+
             var refactoredCode = ExecuteTest(moveDefinition);
 
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
-
-            if (expectedStrategy is null)
-            {
-                return;
-            }
 
             var sourceRefactored = refactoredCode.Source;
             StringAssert.DoesNotContain("Private Function Bar", sourceRefactored);
@@ -967,14 +954,16 @@ End Property
 ";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
-            
+
+            if (expectedStrategy is null)
+            {
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
+                return;
+            }
+
             var refactoredCode = ExecuteTest(moveDefinition);
 
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
-            if (expectedStrategy is null)
-            {
-                return;
-            }
 
             StringAssert.DoesNotContain("Sub Foo(arg1", refactoredCode.Source);
             StringAssert.Contains($"{accessibility} Sub Foo(arg1", refactoredCode.Destination);
@@ -1013,14 +1002,16 @@ End Property
 ";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
-            
+
+            if (expectedStrategy is null)
+            {
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
+                return;
+            }
+
             var refactoredCode = ExecuteTest(moveDefinition);
 
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
-            if (expectedStrategy is null)
-            {
-                return;
-            }
 
             StringAssert.Contains("Bar(", refactoredCode.Source);
             StringAssert.DoesNotContain("Sub Foo(arg1", refactoredCode.Source);
@@ -1067,14 +1058,16 @@ End Property
 ";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType), sourceContent: source);
-            
+
+            if (expectedStrategy is null)
+            {
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
+                return;
+            }
+
             var refactoredCode = ExecuteTest(moveDefinition);
 
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
-            if (expectedStrategy is null)
-            {
-                return;
-            }
 
             StringAssert.Contains("Bar(", refactoredCode.Source);
             StringAssert.DoesNotContain("Sub Foo(arg1", refactoredCode.Source);
@@ -1265,9 +1258,7 @@ End Sub
             var moveDefinition = new TestMoveDefinition(MoveEndpoints.ClassToStd, memberToMove, source);
             moveDefinition.Add(new ModuleDefinition(eventSinkName, ComponentType.ClassModule, eventSinkContent));
 
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            Assert.IsNull(refactoredCode.StrategyName);
+            Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
         }
 
 
@@ -1300,9 +1291,7 @@ End Sub";
             var moveDefinition = new TestMoveDefinition(MoveEndpoints.ClassToStd, memberToMove, source);
             moveDefinition.Add(new ModuleDefinition(eventSourceName, ComponentType.ClassModule, eventSourceContent));
 
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            Assert.IsNull(refactoredCode.StrategyName);
+            Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
         }
 
         [Test]
@@ -1335,9 +1324,7 @@ End Property
             var moveDefinition = new TestMoveDefinition(MoveEndpoints.ClassToStd, memberToMove, source);
             moveDefinition.Add(new ModuleDefinition(interfaceDeclarationClass, ComponentType.ClassModule, interfaceContent));
 
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            Assert.IsNull(refactoredCode.StrategyName);
+            Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
         }
 
     }

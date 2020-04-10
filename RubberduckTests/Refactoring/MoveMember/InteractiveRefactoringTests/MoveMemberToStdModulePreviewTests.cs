@@ -13,7 +13,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Refactoring.MoveMember
 {
     [TestFixture]
-    public class MoveMemberPreviewTests : InteractiveRefactoringTestBase<IMoveMemberPresenter, MoveMemberModel>
+    public class MoveMemberToStdModulePreviewTests : InteractiveRefactoringTestBase<IMoveMemberPresenter, MoveMemberModel>
     {
         [TestCase(MoveEndpoints.StdToStd, true)]
         [TestCase(MoveEndpoints.ClassToStd, true)]
@@ -451,8 +451,8 @@ End Sub
 
         private static void InitializeThePreviewerFactory(MoveMemberModel model, RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            MoveMemberTestsDI.Initialize(state, rewritingManager);
-            var previewer = MoveMemberTestsDI.Resolve<IMoveMemberRefactoringPreviewerFactory>();
+            var tdi = new MoveMemberTestsDI(state, rewritingManager);
+            var previewer = tdi.Resolve<IMoveMemberRefactoringPreviewerFactory>();
             model.PreviewerFactory = previewer;
         }
 

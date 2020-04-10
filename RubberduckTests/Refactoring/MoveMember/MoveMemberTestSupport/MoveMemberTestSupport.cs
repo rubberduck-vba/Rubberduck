@@ -60,26 +60,25 @@ namespace RubberduckTests.Refactoring.MoveMember
         public static MoveMemberRefactoring CreateRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, RefactoringUserInteraction<IMoveMemberPresenter, MoveMemberModel> userInteraction, ISelectionService selectionService)
         {
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
-
-            MoveMemberTestsDI.Initialize(state, rewritingManager);
-            return new MoveMemberRefactoring(MoveMemberTestsDI.Resolve<MoveMemberRefactoringAction>(),
+            var tdi = new MoveMemberTestsDI(state, rewritingManager);
+            return new MoveMemberRefactoring(tdi.Resolve<MoveMemberRefactoringAction>(),
                                                 userInteraction, 
                                                 state, 
                                                 selectionService, 
-                                                selectedDeclarationService, 
-                                                MoveMemberTestsDI.Resolve<MoveMemberStrategyFactory>(),
-                                                MoveMemberTestsDI.Resolve<MoveMemberEndpointFactory>(),
-                                                MoveMemberTestsDI.Resolve<MoveMemberRefactoringPreviewerFactory>()
+                                                selectedDeclarationService,
+                                                tdi.Resolve<MoveMemberStrategyFactory>(),
+                                                tdi.Resolve<MoveMemberEndpointFactory>(),
+                                                tdi.Resolve<MoveMemberRefactoringPreviewerFactory>()
                                                 );
         }
 
         public static MoveMemberModel CreateRefactoringModel(Declaration target, RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            MoveMemberTestsDI.Initialize(state, rewritingManager);
+            var tdi = new MoveMemberTestsDI(state, rewritingManager);
             return new MoveMemberModel(target, 
-                                        state, 
-                                        MoveMemberTestsDI.Resolve<MoveMemberStrategyFactory>(), 
-                                        MoveMemberTestsDI.Resolve<MoveMemberEndpointFactory>()
+                                        state,
+                                        tdi.Resolve<MoveMemberStrategyFactory>(),
+                                        tdi.Resolve<MoveMemberEndpointFactory>()
                                         );
         }
 
