@@ -1,4 +1,5 @@
-﻿using Rubberduck.Refactorings.MoveMember;
+﻿using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.Refactorings.Rename;
 using System;
 
@@ -18,13 +19,16 @@ namespace Rubberduck.Refactorings
     {
         private readonly RenameCodeDefinedIdentifierRefactoringAction _renameAction;
         private readonly IMoveMemberMoveGroupsProviderFactory _moveGroupsProviderFactory;
+        private readonly INameConflictFinder _nameConflictFinder;
 
         public MoveMemberStrategyFactory(
                 RenameCodeDefinedIdentifierRefactoringAction renameAction,
-                IMoveMemberMoveGroupsProviderFactory moveGroupsProviderFactory)
+                IMoveMemberMoveGroupsProviderFactory moveGroupsProviderFactory,
+                INameConflictFinder nameConflictFinder)
         {
             _renameAction = renameAction;
             _moveGroupsProviderFactory = moveGroupsProviderFactory;
+            _nameConflictFinder = nameConflictFinder;
         }
 
         public IMoveMemberRefactoringStrategy Create(MoveMemberStrategy strategyID)
@@ -32,7 +36,7 @@ namespace Rubberduck.Refactorings
             switch (strategyID)
             {
                 case MoveMemberStrategy.MoveToStandardModule:
-                    return new MoveMemberToStdModule(_renameAction, _moveGroupsProviderFactory);
+                    return new MoveMemberToStdModule(_renameAction, _moveGroupsProviderFactory, _nameConflictFinder);
                 default:
                     throw new ArgumentException();
             }

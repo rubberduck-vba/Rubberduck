@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System;
 using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.Refactorings.Common;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
@@ -638,6 +639,7 @@ End Function
         }
 
         [Test]
+        [Category(nameof(NameConflictFinder))]
         [Category("Refactorings")]
         [Category("MoveMember")]
         public void CorrectsFieldNameCollisionInDestination()
@@ -789,6 +791,7 @@ End Sub
         }
 
         [Test]
+        [Category(nameof(NameConflictFinder))]
         [Category("Refactorings")]
         [Category("MoveMember")]
         public void CorrectsConstantNameCollisionInDestination()

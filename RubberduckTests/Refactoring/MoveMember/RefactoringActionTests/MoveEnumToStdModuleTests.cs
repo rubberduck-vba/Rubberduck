@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -308,6 +309,7 @@ End Function
         [TestCase("KeyOne", null)]
         [TestCase("KeyValues", nameof(MoveMemberToStdModule))]
         [Category("Refactorings")]
+        [Category(nameof(NameConflictFinder))]
         [Category("MoveMember")]
         public void MovePrivateEnumRespectsDestinationNameCollision(string memberName, string expectedStrategy)
         {

@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.VBEditor.Utility;
@@ -61,11 +62,13 @@ namespace RubberduckTests.Refactoring.MoveMember
                 case nameof(MoveMemberStrategyFactory):
                     return new MoveMemberStrategyFactory(
                             Resolve<RenameCodeDefinedIdentifierRefactoringAction>(),
-                            Resolve<MoveMemberMoveGroupsProviderFactory>()) as T;
+                            Resolve<MoveMemberMoveGroupsProviderFactory>(),
+                            Resolve<INameConflictFinder>()) as T;
                 case nameof(IMoveMemberStrategyFactory):
                     return new MoveMemberStrategyFactory(
                             Resolve<RenameCodeDefinedIdentifierRefactoringAction>(),
-                            Resolve<MoveMemberMoveGroupsProviderFactory>()) as T;
+                            Resolve<MoveMemberMoveGroupsProviderFactory>(),
+                            Resolve<INameConflictFinder>()) as T;
                 case nameof(RenameCodeDefinedIdentifierRefactoringAction):
                     return new RenameCodeDefinedIdentifierRefactoringAction(
                             _state, 
@@ -87,6 +90,8 @@ namespace RubberduckTests.Refactoring.MoveMember
                             _state, Resolve<MoveableMemberSetFactory>()) as T;
                 case nameof(MoveableMemberSetFactory):
                     return new MoveableMemberSetFactory() as T;
+                case nameof(INameConflictFinder):
+                    return new NameConflictFinder(_state) as T;
                 default:
                     throw new ArgumentException();
             }

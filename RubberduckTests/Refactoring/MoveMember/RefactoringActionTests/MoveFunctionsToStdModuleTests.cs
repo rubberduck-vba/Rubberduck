@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -1268,6 +1269,7 @@ End Sub
         }
 
         [Test]
+        [Category(nameof(NameConflictFinder))]
         [Category("Refactorings")]
         [Category("MoveMember")]
         public void CorrectsMemberNameCollisionInDestination()

@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing;
+﻿using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -14,7 +15,14 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
-    public class MoveMemberToStdModule : MoveMemberStrategyBase
+    public interface IMoveMemberRefactoringStrategy
+    {
+        void RefactorRewrite(MoveMemberModel model, IRewriteSession rewriteSession, IRewritingManager rewritingManager, IMovedContentProvider contentProvider, out string newModuleContent);
+        bool IsApplicable(MoveMemberModel model);
+        bool IsExecutableModel(MoveMemberModel model, out string nonExecutableMessage);
+    }
+
+    public class MoveMemberToStdModule : IMoveMemberRefactoringStrategy
     {
         private enum RequiredGroup
         {
@@ -32,14 +40,19 @@ namespace Rubberduck.Refactorings.MoveMember
 
         private readonly RenameCodeDefinedIdentifierRefactoringAction _renameAction;
         private readonly IMoveMemberMoveGroupsProviderFactory _moveGroupsProviderFactory;
+
+        private static INameConflictFinder _nameConflictFinder;
+
         public MoveMemberToStdModule(RenameCodeDefinedIdentifierRefactoringAction renameAction, 
-                                        IMoveMemberMoveGroupsProviderFactory moveGroupsProviderFactory)
+                                        IMoveMemberMoveGroupsProviderFactory moveGroupsProviderFactory,
+                                        INameConflictFinder nameConflictFinder)
         {
             _renameAction = renameAction;
             _moveGroupsProviderFactory = moveGroupsProviderFactory;
+            _nameConflictFinder = nameConflictFinder;
         }
 
-        public override bool IsApplicable(MoveMemberModel model)
+        public bool IsApplicable(MoveMemberModel model)
         {
             //Note: A StandardModule is the default
             //model.Destination.IsStandardModule returns true for non-specified destinations
@@ -59,7 +72,7 @@ namespace Rubberduck.Refactorings.MoveMember
             return TrySetDispositionGroupsForClassModuleSource(model, moveGroups, out _);
         }
 
-        public override bool IsExecutableModel(MoveMemberModel model, out string nonExecutableMessage)
+        public bool IsExecutableModel(MoveMemberModel model, out string nonExecutableMessage)
         {
             nonExecutableMessage = string.Empty;
 
@@ -83,7 +96,7 @@ namespace Rubberduck.Refactorings.MoveMember
             return true;
         }
 
-        public override void RefactorRewrite(MoveMemberModel model, IRewriteSession moveMemberRewriteSession, IRewritingManager rewritingManager, IMovedContentProvider contentProvider, out string newModuleContent)
+        public void RefactorRewrite(MoveMemberModel model, IRewriteSession moveMemberRewriteSession, IRewritingManager rewritingManager, IMovedContentProvider contentProvider, out string newModuleContent)
         {
             newModuleContent = string.Empty;
 
@@ -93,12 +106,10 @@ namespace Rubberduck.Refactorings.MoveMember
 
             var scratchPadSession = rewritingManager.CheckOutCodePaneSession();
 
-            ClearMoveNameConflicts(model, _renameAction, moveMemberRewriteSession, scratchPadSession, dispositions);
-
-            RemoveDeclarations(moveMemberRewriteSession, dispositions[MoveDisposition.Move]);
-
             if (model.Destination.IsExistingModule(out var destinationModule))
             {
+                ClearMoveNameConflicts(model, _renameAction, _nameConflictFinder, moveMemberRewriteSession, scratchPadSession, dispositions);
+
                 ModifyExistingReferencesToMovedMembersInDestination(destinationModule, moveMemberRewriteSession, dispositions);
 
                 newModuleContent = InsertDestinationContent(model, moveGroups, moveMemberRewriteSession, scratchPadSession, dispositions, contentProvider);
@@ -108,6 +119,8 @@ namespace Rubberduck.Refactorings.MoveMember
                 contentProvider = LoadMovedContentProvider(contentProvider, model, moveGroups, scratchPadSession, dispositions);
                 newModuleContent = contentProvider.AsSingleBlock;
             }
+
+            RemoveDeclarations(moveMemberRewriteSession, dispositions[MoveDisposition.Move]);
 
             ModifyRetainedReferencesToMovedMembers(moveMemberRewriteSession, model, dispositions);
 
@@ -278,16 +291,16 @@ namespace Rubberduck.Refactorings.MoveMember
 
          //ClearMoveNameConflicts renames members that, when moved to the Destination module as-is, will
         //result in a name conflict.  The renaming occurs in both the moveMemberRewriteSession and
-        //in the scratchPadSession so that moved blocks of code generated from the scrathpad already have
-        //the new names loaded to the rewriter.
-        private static void ClearMoveNameConflicts(MoveMemberModel model, RenameCodeDefinedIdentifierRefactoringAction renameAction, IRewriteSession moveMemberRewriteSession, IRewriteSession scratchPadSession, Dictionary<MoveDisposition, List<Declaration>> dispositions)
+        //in the scratchPadSession so that moved blocks of code generated from the scrathpad yields
+        //the new names.
+        private static void ClearMoveNameConflicts(MoveMemberModel model, RenameCodeDefinedIdentifierRefactoringAction renameAction, INameConflictFinder nameConflictFinder, IRewriteSession moveMemberRewriteSession, IRewriteSession scratchPadSession, Dictionary<MoveDisposition, List<Declaration>> dispositions)
         {
             foreach (var moveable in model.MoveableMembers)
             {
                 moveable.MovedIdentifierName = moveable.IdentifierName;
             }
 
-            SetNonConflictIdentifierNames(model, dispositions[MoveDisposition.Move]);
+            SetNonConflictIdentifierNames(model, nameConflictFinder, dispositions[MoveDisposition.Move]);
 
             foreach (var moveable in model.MoveableMembers)
             {
@@ -340,8 +353,13 @@ namespace Rubberduck.Refactorings.MoveMember
             return contentProvider;
         }
 
-        private static void SetNonConflictIdentifierNames(MoveMemberModel model, IEnumerable<Declaration> membersToMove)
+        private static void SetNonConflictIdentifierNames(MoveMemberModel model, INameConflictFinder nameConflictFinder, IEnumerable<Declaration> membersToMove)
         {
+            if (!model.Destination.IsExistingModule(out var destinationModule))
+            {
+                return;
+            }
+
             var conflictingMoveables = new List<IMoveableMemberSet>();
             var moveableMembers = membersToMove.Select(mtm => model.MoveableMemberSetByName(mtm.IdentifierName)).Distinct();
 
@@ -351,7 +369,7 @@ namespace Rubberduck.Refactorings.MoveMember
                     ? model.Source.ModuleDeclarations.Where(d => d.DeclarationType.Equals(DeclarationType.EnumerationMember) && moveableMember.Member.Equals(d.ParentDeclaration))
                     : null;
 
-                if (DeclarationMoveCreatesNameConflict(moveableMember.Member, model.Destination.ModuleDeclarations, movingEnumMembers))
+                if (nameConflictFinder.MoveCreatesNameConflict(moveableMember.Member, destinationModule.IdentifierName, moveableMember.Member.Accessibility, out _))
                 {
                     conflictingMoveables.Add(moveableMember);
                 }
@@ -378,7 +396,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
             var guard = 0;
             var maxIterations = 50;
-            while (guard++ < maxIterations && allPotentialConflictNames.Contains(identifier))
+            while (guard++ < maxIterations && allPotentialConflictNames.Contains(identifier, StringComparer.InvariantCultureIgnoreCase))
             {
                 identifier = identifier.IncrementIdentifier();
             }
@@ -698,6 +716,10 @@ namespace Rubberduck.Refactorings.MoveMember
 
         private static bool CreatesEnumOrEnumMemberNameConflict(MoveMemberModel model, IEnumerable<Declaration> moveDeclarations)
         {
+            if (!model.Destination.IsExistingModule(out var declarationModule))
+            {
+                return false;
+            }
             //Since these are existing declarations we are moving around, we only need to check
             //moved Private Enumerations and their Members for conflicts
             var privateMoveDeclarations = moveDeclarations.Where(d => d.HasPrivateAccessibility());
@@ -708,13 +730,102 @@ namespace Rubberduck.Refactorings.MoveMember
 
             foreach (var movingEnum in movingEnums)
             {
-                var movingEnumMembers = model.Source.ModuleDeclarations.Where(d => d.DeclarationType.Equals(DeclarationType.EnumerationMember) && movingEnum.Equals(d.ParentDeclaration));
-                if (DeclarationMoveCreatesNameConflict(movingEnum, model.Destination.ModuleDeclarations, movingEnumMembers))
+                if (_nameConflictFinder.MoveCreatesNameConflict(movingEnum, declarationModule.IdentifierName, movingEnum.Accessibility, out _))
                 {
                     return true;
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Clears entire VariableStmtContext or ConstantStmtContext
+        /// when all the variables or constants declared in the list are removed.
+        /// </summary>
+        /// <param name="rewriteSession"></param>
+        /// <param name="declarations"></param>
+        private static void RemoveDeclarations(IRewriteSession rewriteSession, IEnumerable<Declaration> declarations)
+        {
+            var removedVariables = new Dictionary<VBAParser.VariableListStmtContext, HashSet<Declaration>>();
+            var removedConstants = new Dictionary<VBAParser.ConstStmtContext, HashSet<Declaration>>();
+
+            foreach (var declaration in declarations)
+            {
+                if (declaration.DeclarationType.Equals(DeclarationType.Variable))
+                {
+                    CacheListDeclaredElement<VBAParser.VariableListStmtContext, VBAParser.VariableSubStmtContext>(rewriteSession, declaration, removedVariables);
+                    continue;
+                }
+
+                if (declaration.DeclarationType.Equals(DeclarationType.Constant))
+                {
+                    CacheListDeclaredElement<VBAParser.ConstStmtContext, VBAParser.ConstSubStmtContext>(rewriteSession, declaration, removedConstants);
+                    continue;
+                }
+
+                var rewriter = rewriteSession.CheckOutModuleRewriter(declaration.QualifiedModuleName);
+                rewriter.Remove(declaration);
+            }
+
+            ExecuteCachedRemoveRequests<VBAParser.VariableListStmtContext, VBAParser.VariableSubStmtContext>(rewriteSession, removedVariables);
+            ExecuteCachedRemoveRequests<VBAParser.ConstStmtContext, VBAParser.ConstSubStmtContext>(rewriteSession, removedConstants);
+        }
+
+        private static void CacheListDeclaredElement<T, K>(IRewriteSession rewriteSession, Declaration target, Dictionary<T, HashSet<Declaration>> dictionary) where T : ParserRuleContext where K : ParserRuleContext
+        {
+            var declarationList = target.Context.GetAncestor<T>();
+
+            if ((declarationList?.children.OfType<K>().Count() ?? 1) == 1)
+            {
+                var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
+                rewriter.Remove(target);
+                return;
+            }
+
+            if (!dictionary.ContainsKey(declarationList))
+            {
+                dictionary.Add(declarationList, new HashSet<Declaration>());
+            }
+            dictionary[declarationList].Add(target);
+        }
+
+        private static void ExecuteCachedRemoveRequests<T, K>(IRewriteSession rewriteSession, Dictionary<T, HashSet<Declaration>> dictionary) where T : ParserRuleContext where K : ParserRuleContext
+        {
+            foreach (var key in dictionary.Keys.Where(k => dictionary[k].Any()))
+            {
+                var rewriter = rewriteSession.CheckOutModuleRewriter(dictionary[key].First().QualifiedModuleName);
+
+                if (key.children.OfType<K>().Count() == dictionary[key].Count)
+                {
+                    rewriter.Remove(key.Parent);
+                    continue;
+                }
+
+                foreach (var dec in dictionary[key])
+                {
+                    rewriter.Remove(dec);
+                }
+            }
+        }
+
+        private static IEnumerable<IdentifierReference> ReferencesInConstantDeclarationExpressions(IMoveMemberGroupsProvider moveGroups, Declaration declaration)
+        {
+            var references = new List<IdentifierReference>();
+
+            if (!declaration.IsConstant()) { return Enumerable.Empty<IdentifierReference>(); }
+
+            var allModuleConstants = moveGroups.Declarations(MoveGroup.AllParticipants).Concat(moveGroups.Declarations(MoveGroup.NonParticipants))
+                .Where(d => d.IsConstant() && d != declaration);
+
+            foreach (var constant in allModuleConstants)
+            {
+                var lExprContexts = constant.Context.GetDescendents<VBAParser.LExprContext>();
+                if (lExprContexts.Any())
+                {
+                    references.AddRange(declaration.References.Where(rf => lExprContexts.Contains(rf.Context.Parent)));
+                }
+            }
+            return references;
         }
 
         private static List<DeclarationType> NeverAddMemberAccessTypes = new List<DeclarationType>()
