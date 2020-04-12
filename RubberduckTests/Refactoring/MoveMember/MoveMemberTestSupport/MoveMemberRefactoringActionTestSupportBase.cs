@@ -13,9 +13,8 @@ namespace RubberduckTests.Refactoring.MoveMember
     {
         protected override IRefactoringAction<MoveMemberModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            var tdi = new MoveMemberTestsDI(state, rewritingManager);
-            return new MoveMemberRefactoringAction(tdi.Resolve<MoveMemberToNewStandardModuleRefactoringAction>(), 
-                                                        tdi.Resolve<MoveMemberToExistingStandardModuleRefactoringAction>());
+            return new MoveMemberRefactoringAction(MoveMemberTestsDI.Resolve<MoveMemberToNewStandardModuleRefactoringAction>(state, rewritingManager),
+                                                        MoveMemberTestsDI.Resolve<MoveMemberToExistingStandardModuleRefactoringAction>(state, rewritingManager));
         }
 
         public static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)

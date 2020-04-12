@@ -13,94 +13,44 @@ namespace RubberduckTests.Refactoring
     [TestFixture]
     public class NameConflictFinderMoveTests
     {
-        [TestCase("ConflictModule.", false)]
-        [TestCase("", true)]
-        [Category(nameof(NameConflictFinder))]
-        public void MovedPrivateToPublicConstant(string moduleQualification, bool isConflict)
-        {
-            var containingModuleContent =
-$@"
-Option Explicit
-
-Private Const THE_CONST As Long = 4
-
-Public Property Get TheConst() As Long
-    TheConst = THE_CONST
-End Property
-";
-            var destinationModuleCode =
-$@"
-Option Explicit
-";
-
-            var conflictModuleCode =
-$@"
-Option Explicit
-
-Public Const THE_CONST As Long = 6
-
-Public Function TimesSix(arg As Long) As Long
-    TimesSix = arg * THE_CONST
-End Function
-";
-            var conflictReferenceModuleCode =
-$@"
-Option Explicit
-
-Public Function TimesSixty(arg As Long) As Long
-    TimesSix = arg * {moduleQualification}THE_CONST * 10
-End Function
-";
-            var renameTargetModuleName = MockVbeBuilder.TestModuleName;
-            var destinationModuleName = "DestinationModule";
-            var conflictModuleName = "ConflictModule";
-            var conflictReferenceModuleName = "ConflictRefernceModule";
-
-            var vbe = MockVbeBuilder.BuildFromModules(
-                (renameTargetModuleName, containingModuleContent, ComponentType.StandardModule),
-                (destinationModuleName, destinationModuleCode, ComponentType.StandardModule),
-                (conflictModuleName, conflictModuleCode, ComponentType.StandardModule),
-                (conflictReferenceModuleName, conflictReferenceModuleCode, ComponentType.StandardModule)
-                );
-
-            var state = MockParser.CreateAndParse(vbe.Object);
-            using (state)
-            {
-                var target = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Constant)
-                    .Where(d => d.QualifiedModuleName.ComponentName.Equals(MockVbeBuilder.TestModuleName)).Single();
-
-                var destinationModule = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Module)
-                    .Where(d => d.IdentifierName.Equals(destinationModuleName)).Single();
-
-
-                var conflictFinder = new NameConflictFinder(state);
-                var hasConflict = conflictFinder.MoveCreatesNameConflict(target, destinationModule.IdentifierName, Accessibility.Public, out _);
-                Assert.AreEqual(isConflict, hasConflict);
-            }
-        }
-
         //MS_VBAL 5.3.1.6: each subroutine and Function name must be different than
         //any other module variable, module Constant, EnumerationMember, or Procedure
         //defined in the same module
-        [TestCase("mFazz", true)]
-        [TestCase("constFazz", true)]
-        [TestCase("Bazz", true)]
-        [TestCase("Fazz", true)]
-        [TestCase("Fizz", true)]
-        [TestCase("SecondValue", true)]
-        [TestCase("Gazz", false)]
-        [TestCase("ETest", false)]
+        [TestCase("mFazz", DeclarationType.Function, true)]
+        [TestCase("constFazz", DeclarationType.Function, true)]
+        [TestCase("Bazz", DeclarationType.Function, true)]
+        [TestCase("Fazz", DeclarationType.Function, true)]
+        [TestCase("Fizz", DeclarationType.Function, true)]
+        [TestCase("SecondValue", DeclarationType.Function, true)]
+        [TestCase("Gazz", DeclarationType.Function, false)]
+        [TestCase("ETest", DeclarationType.Function, false)]
+        [TestCase("mFazz", DeclarationType.Procedure, true)]
+        [TestCase("constFazz", DeclarationType.Procedure, true)]
+        [TestCase("Bazz", DeclarationType.Procedure, true)]
+        [TestCase("Fazz", DeclarationType.Procedure, true)]
+        [TestCase("Fizz", DeclarationType.Procedure, true)]
+        [TestCase("SecondValue", DeclarationType.Procedure, true)]
+        [TestCase("Gazz", DeclarationType.Procedure, false)]
+        [TestCase("ETest", DeclarationType.Procedure, false)]
         [Category("Refactoring")]
         [Category(nameof(NameConflictFinder))]
-        public void FunctionMoveConflicts(string functionName, bool expected)
+        public void MethodMoveConflicts(string functionName, DeclarationType declarationType, bool expected)
         {
-            var selection = (functionName, DeclarationType.Function);
+            var methodType = declarationType.HasFlag(DeclarationType.Function)
+                ? $"Function"
+                : "Sub";
+
+            var signature = declarationType.HasFlag(DeclarationType.Function)
+                ? $"{functionName}() As Long"
+                : $"{functionName}()";
+
+            var selection = (functionName, declarationType);
             var sourceContent =
 $@"
 Option Explicit
 
-Public Function {functionName}(arg As Long) As Long
-End Function
+Public {methodType} {signature}
+End {methodType}
 ";
 
             var destinationCode =
@@ -136,89 +86,36 @@ End Property
             Assert.AreEqual(expected, TestForMoveConflict(sourceContent, selection, destinationCode));
         }
 
-        //MS_VBAL 5.3.1.6:
-        [TestCase("mFazz", true)]
-        [TestCase("constFazz", true)]
-        [TestCase("Bazz", true)]
-        [TestCase("Fazz", true)]
-        [TestCase("Fizz", true)]
-        [TestCase("SecondValue", true)]
-        [TestCase("Gazz", false)]
-        [TestCase("ETest", false)]
+        [TestCase("mFazz", DeclarationType.Variable, true)]
+        [TestCase("constFazz", DeclarationType.Variable, true)]
+        [TestCase("Bazz", DeclarationType.Variable, true)]
+        [TestCase("Fazz", DeclarationType.Variable, true)]
+        [TestCase("Fizz", DeclarationType.Variable, true)]
+        [TestCase("SecondValue", DeclarationType.Variable, true)]
+        [TestCase("Gazz", DeclarationType.Variable, false)]
+        [TestCase("ETest", DeclarationType.Variable, false)]
+        [TestCase("mFazz", DeclarationType.Constant, true)]
+        [TestCase("constFazz", DeclarationType.Constant, true)]
+        [TestCase("Bazz", DeclarationType.Constant, true)]
+        [TestCase("Fazz", DeclarationType.Constant, true)]
+        [TestCase("Fizz", DeclarationType.Constant, true)]
+        [TestCase("SecondValue", DeclarationType.Constant, true)]
+        [TestCase("Gazz", DeclarationType.Constant, false)]
+        [TestCase("ETest", DeclarationType.Constant, false)]
         [Category("Refactoring")]
         [Category(nameof(NameConflictFinder))]
-        public void SubroutineMoveConflicts(string subroutineName, bool expected)
+        public void VariableAndConstantMoveConflicts(string identifier, DeclarationType decType, bool expected)
         {
-            var selection = (subroutineName, DeclarationType.Procedure);
-            var sourceContent =
-$@"
-Option Explicit
+            var declaration = decType.HasFlag(DeclarationType.Variable)
+                ? $"{identifier} As Long"
+                : $"Const {identifier} As Long = 6";
 
-Public Sub {subroutineName}(arg As Long)
-End Sub
-";
-
-            var destinationCode =
-$@"
-Option Explicit
-
-Public Enum ETest
-    FirstValue = 0
-    SecondValue
-End Enum
-
-Private mFazz As String
-
-Private Const constFazz As Long = 7
-
-Private mFizz As Long
-
-Public Function Fizz() As Long
-    Fizz = mFizz
-End Function
-
-Public Sub Bazz() 
-End Sub
-
-Public Property Get Fazz() As Long
-    Fazz = mFazz
-End Property
-
-Public Property Let Fazz(value As Long)
-    mFazz =  value
-End Property
-";
-            Assert.AreEqual(expected, TestForMoveConflict(sourceContent, selection, destinationCode));
-        }
-
-
-        //MS_VBAL 5.3.1.6:
-        [TestCase("mFazz", "Public", "", DeclarationType.Variable, true)]
-        [TestCase("constFazz", "Public", "", DeclarationType.Variable, true)]
-        [TestCase("Bazz", "Public", "", DeclarationType.Variable, true)]
-        [TestCase("Fazz", "Public", "", DeclarationType.Variable, true)]
-        [TestCase("Fizz", "Public", "", DeclarationType.Variable, true)]
-        [TestCase("SecondValue", "Public", "", DeclarationType.Variable, true)]
-        [TestCase("Gazz", "Public", "", DeclarationType.Variable, false)]
-        [TestCase("ETest", "Public", "", DeclarationType.Variable, false)]
-        [TestCase("mFazz", "Public Const", "= 6", DeclarationType.Constant, true)]
-        [TestCase("constFazz", "Public Const", "= 6", DeclarationType.Constant, true)]
-        [TestCase("Bazz", "Public Const", "= 6", DeclarationType.Constant, true)]
-        [TestCase("Fazz", "Public Const", "= 6", DeclarationType.Constant, true)]
-        [TestCase("Fizz", "Public Const", "= 6", DeclarationType.Constant, true)]
-        [TestCase("SecondValue", "Public Const", "= 6", DeclarationType.Constant, true)]
-        [TestCase("Gazz", "Public Const", "= 6", DeclarationType.Constant, false)]
-        [TestCase("ETest", "Public Const", "= 6", DeclarationType.Constant, false)]
-        [Category("Refactoring")]
-        [Category(nameof(NameConflictFinder))]
-        public void VariableAndConstantMoveConflicts(string identifier, string declarationPrefix, string declarationSuffix, DeclarationType decType, bool expected)
-        {
             var selection = (identifier, decType);
             var sourceContent =
 $@"
 Option Explicit
 
-{declarationPrefix} {identifier} As Long {declarationSuffix}
+Public {declaration}
 ";
 
             var destinationCode =
@@ -297,10 +194,10 @@ $@"
 Option Explicit
 
 
-Private mFizz As Variant
+Private mFizz As Long
 Private mFuzz As Variant
 
-Public Property Let Fizz(value As Variant)
+Public Property Let Fizz(value As Long)
     mFizz =  value
 End Property
 
@@ -313,6 +210,36 @@ Public Property Get Fuzz() As Variant
 End Property
 ";
             Assert.AreEqual(expected, TestForMoveConflict(sourceContent, selection, destinationCode));
+        }
+
+        //MS_VBAL 5.3.1.7: 
+        //Each shared name must have the same asType, parameters, etc
+        [TestCase("(value As Long)", "()", false)]
+        [TestCase("(value As Variant)", "()", true)] //Inconsistent AsTypeName
+        [TestCase("(value As Long)", "(arg1 As String)", true)] //Inconsistent parameters (quantity)
+        [TestCase("(arg1 As Boolean, value As Long)", "(arg1 As String)", true)] //Inconsistent parameters (type)
+        [TestCase("(ByVal arg1 As String, value As Long)", "(arg1 As String)", true)] //Inconsistent parameters (parameter mechanism)
+        [TestCase("(arg1 As String, arg2 As Long, value As Long)", "(arg1 As String, arg22 As Long)", true)] //Inconsistent parameters (parameter name)
+        [TestCase("(arg1 As String, arg2 As Variant, value As Long)", "(arg1 As String, ParamArray arg2() As Variant)", true)] //Inconsistent parameters (ParamArray)
+        [Category("Refactoring")]
+        [Category(nameof(NameConflictFinder))]
+        public void MovedPropertyInconsistentSignatures(string letParameters, string getParameters, bool expected)
+        {
+            var sourceContent =
+$@"
+Option Explicit
+
+Public Property Let Fi|zz{letParameters}
+End Property
+";
+            var destinationCode =
+$@"
+Option Explicit
+
+Public Property Get Fizz{getParameters} As Long
+End Property
+";
+            Assert.AreEqual(expected, TestForMoveConflict(sourceContent, destinationCode));
         }
 
         //MS_VBAL 5.3.1.6:
@@ -418,7 +345,110 @@ End Type
             Assert.AreEqual(true, TestForMoveConflict(sourceCode, selection, destinationCode));
         }
 
-        private bool TestForMoveConflict(string inputCode, (string identifier, DeclarationType declarationType) selection, string destinationCode, string destinationModuleName = "DestinationDefault")
+        [TestCase("Bizz", false)]
+        [TestCase("mfizZ", true)]
+        [TestCase("Fizz", true)]
+        [Category("Refactoring")]
+        [Category(nameof(NameConflictFinder))]
+        public void MoveChangedNameHasConflicts(string newName, bool expected)
+        {
+            var selection = ("Bazz", DeclarationType.Procedure);
+
+            var sourceCode =
+$@"
+Public Sub Bazz() 
+End Sub
+";
+
+            var destinationCode =
+$@"
+Option Explicit
+
+Private mFizz As Long
+
+Public Function Fizz() As Long
+    Fizz = mFizz
+End Function
+";
+            Assert.AreEqual(expected, TestForMoveConflict(sourceCode, selection, destinationCode, newName: newName));
+        }
+
+        [TestCase("ConflictModule.", false)]
+        [TestCase("", true)]
+        [Category(nameof(NameConflictFinder))]
+        public void MovedPrivateToPublicConstant(string moduleQualification, bool isConflict)
+        {
+            var containingModuleContent =
+$@"
+Option Explicit
+
+Private Const THE_CONST As Long = 4
+
+Public Property Get TheConst() As Long
+    TheConst = THE_CONST
+End Property
+";
+            var destinationModuleCode =
+$@"
+Option Explicit
+";
+
+            var conflictModuleCode =
+$@"
+Option Explicit
+
+Public Const THE_CONST As Long = 6
+
+Public Function TimesSix(arg As Long) As Long
+    TimesSix = arg * THE_CONST
+End Function
+";
+            var conflictReferenceModuleCode =
+$@"
+Option Explicit
+
+Public Function TimesSixty(arg As Long) As Long
+    TimesSix = arg * {moduleQualification}THE_CONST * 10
+End Function
+";
+            var renameTargetModuleName = MockVbeBuilder.TestModuleName;
+            var destinationModuleName = "DestinationModule";
+            var conflictModuleName = "ConflictModule";
+            var conflictReferenceModuleName = "ConflictRefernceModule";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                (renameTargetModuleName, containingModuleContent, ComponentType.StandardModule),
+                (destinationModuleName, destinationModuleCode, ComponentType.StandardModule),
+                (conflictModuleName, conflictModuleCode, ComponentType.StandardModule),
+                (conflictReferenceModuleName, conflictReferenceModuleCode, ComponentType.StandardModule)
+                );
+
+            var state = MockParser.CreateAndParse(vbe.Object);
+            using (state)
+            {
+                var target = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Constant)
+                    .Where(d => d.QualifiedModuleName.ComponentName.Equals(MockVbeBuilder.TestModuleName)).Single();
+
+                var destinationModule = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Module)
+                    .Where(d => d.IdentifierName.Equals(destinationModuleName)).Single();
+
+
+                var conflictFinder = new NameConflictFinder(state);
+                var hasConflict = conflictFinder.MoveCreatesNameConflict(target, destinationModule.IdentifierName, Accessibility.Public, out _);
+                Assert.AreEqual(isConflict, hasConflict);
+            }
+        }
+
+        private bool TestForMoveConflict(string sourceContent, string destinationCode, string destinationModuleName = "DestinationDefault")
+        {
+            (string code, Selection selection) = ToCodeAndSelectionTuple(sourceContent);
+
+            return TestForMoveConflict(MockVbeBuilder.TestModuleName, selection, 
+                (MockVbeBuilder.TestModuleName, ComponentType.StandardModule, code),
+                (destinationModuleName, ComponentType.StandardModule, destinationCode));
+        }
+
+        private bool TestForMoveConflict(string inputCode, (string identifier, DeclarationType declarationType) selection, string destinationCode, string destinationModuleName = "DestinationDefault", string newName = null)
         {
             var result = false;
             var vbe = MockVbeBuilder.BuildFromStdModules((MockVbeBuilder.TestModuleName, inputCode), (destinationModuleName, destinationCode)).Object;
@@ -429,10 +459,45 @@ End Type
                                 .Single(d => d.IdentifierName == selection.identifier && d.QualifiedModuleName.ComponentName == MockVbeBuilder.TestModuleName);
 
                 var conflictFinder = new NameConflictFinder(state);
-                result = conflictFinder.MoveCreatesNameConflict(target, destinationModuleName, target.Accessibility, out _);
+                result = conflictFinder.MoveCreatesNameConflict(target, destinationModuleName, target.Accessibility, out _, newName);
             }
 
             return result;
+        }
+
+        private bool TestForMoveConflict(string selectionModuleName, Selection selection, params (string moduleName, ComponentType componentType, string inputCode)[] modules)
+        {
+            var builder = new MockVbeBuilder()
+                            .ProjectBuilder(MockVbeBuilder.TestProjectName, ProjectProtection.Unprotected);
+
+            foreach ((string moduleName, ComponentType componentType, string inputCode) in modules)
+            {
+                builder = builder.AddComponent(moduleName, componentType, inputCode);
+            }
+
+            var vbe = builder.AddProjectToVbeBuilder()
+                            .Build();
+
+            var result = false;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName.Equals(selectionModuleName));
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var target = state.DeclarationFinder.AllDeclarations
+                                .Where(item => item.IsUserDefined)
+                                .FirstOrDefault(item => item.IsSelected(qualifiedSelection) || item.References.Any(r => r.IsSelected(qualifiedSelection)));
+
+
+                var conflictFinder = new NameConflictFinder(state);
+                result = conflictFinder.MoveCreatesNameConflict(target, "DestinationDefault", target.Accessibility, out _);
+            }
+            return result;
+        }
+
+        private (string code, Selection selection) ToCodeAndSelectionTuple(string input)
+        {
+            var codeString = input.ToCodeString();
+            return (codeString.Code, codeString.CaretPosition.ToOneBased());
         }
     }
 }

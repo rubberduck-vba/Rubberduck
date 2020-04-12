@@ -4,8 +4,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.VBEditor;
-using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Rubberduck.Refactorings.Common
@@ -14,7 +14,7 @@ namespace Rubberduck.Refactorings.Common
     {
         bool RenameCreatesNameConflict(Declaration entity, string newName, out List<Declaration> conflicts);
         bool NewDeclarationCreatesNameConflict(string identifier, DeclarationType declarationType, Declaration parentDeclaration, out List<Declaration> conflicts, Accessibility accessibility = Accessibility.Private);
-        bool MoveCreatesNameConflict(Declaration entity, string targetModuleName, Accessibility targetAccessibility, out List<Declaration> conflicts);
+        bool MoveCreatesNameConflict(Declaration entity, string targetModuleName, Accessibility targetAccessibility, out List<Declaration> conflict, string movedName = null);
     }
 
     public class NameConflictFinder : INameConflictFinder
@@ -29,15 +29,15 @@ namespace Rubberduck.Refactorings.Common
 
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        private delegate bool Finder(DeclarationProxy proxy, RefactoringAction actionType, out List<Declaration> conflicts);
+        private delegate bool ConflictFinder(DeclarationProxy proxy, RefactoringAction actionType, out List<Declaration> conflicts);
 
-        private Dictionary<DeclarationType, Finder> Finders;
+        private Dictionary<DeclarationType, ConflictFinder> ConflictFinders;
 
         public NameConflictFinder(IDeclarationFinderProvider declarationFinderProvider)
         {
             _declarationFinderProvider = declarationFinderProvider;
 
-            Finders = new Dictionary<DeclarationType, Finder>()
+            ConflictFinders = new Dictionary<DeclarationType, ConflictFinder>()
             {
                 [DeclarationType.Project] = TryFindProjectNameConflict,
                 [DeclarationType.ProceduralModule] = TryFindModuleNameConflict,
@@ -57,9 +57,21 @@ namespace Rubberduck.Refactorings.Common
                 [DeclarationType.Enumeration] = TryFindEnumerationNameConflict,
                 [DeclarationType.EnumerationMember] = TryFindEnumerationMemberNameConflict,
             };
-    }
+        }
 
-    public bool RenameCreatesNameConflict(Declaration entity, string newName, out List<Declaration> conflicts)
+        private static string IncrementIdentifier(string identifier)
+        {
+            var numeric = string.Concat(identifier.Reverse().TakeWhile(c => char.IsDigit(c)).Reverse());
+            if (!int.TryParse(numeric, out var currentNum))
+            {
+                currentNum = 0;
+            }
+            var identifierSansNumericSuffix = identifier.Substring(0, identifier.Length - numeric.Length);
+            return $"{identifierSansNumericSuffix}{++currentNum}";
+        }
+
+
+        public bool RenameCreatesNameConflict(Declaration entity, string newName, out List<Declaration> conflicts)
         {
             conflicts = new List<Declaration>();
             if (entity.IdentifierName.IsEquivalentVBAIdentifierTo(newName))
@@ -67,16 +79,16 @@ namespace Rubberduck.Refactorings.Common
                 return false;
             }
 
-            if (!IsPotentialProjectNameConflictType(entity.DeclarationType)
-                && !IdentifierIsUsedElsewhereInProject(entity, newName))
-            {
-                    return false;
-            }
-
             var proxy = new DeclarationProxy(entity)
             {
                 IdentifierName = newName
             };
+
+            if (!IsPotentialProjectNameConflictType(entity.DeclarationType)
+                && !IdentifierIsUsedElsewhereInProject(proxy, newName))
+            {
+                    return false;
+            }
 
             return EvaluateOperationNameConflict(proxy, RefactoringAction.Rename, out conflicts);
         }
@@ -98,22 +110,24 @@ namespace Rubberduck.Refactorings.Common
             return EvaluateOperationNameConflict(proxy, RefactoringAction.New, out conflicts);
         }
 
-        public bool MoveCreatesNameConflict(Declaration entity, string moduleName, Accessibility targetAccessibility, out List<Declaration> conflicts)
+        public bool MoveCreatesNameConflict(Declaration entity, string targetModuleName, Accessibility targetAccessibility, out List<Declaration> conflicts, string movedName = null)
         {
             conflicts = new List<Declaration>();
-            if (!entity.DeclarationType.Equals(DeclarationType.Enumeration) && !IdentifierIsUsedElsewhereInProject(entity, entity.IdentifierName))
-            {
-                return false;
-            }
 
             var targetModule = _declarationFinderProvider.DeclarationFinder.DeclarationsWithType(DeclarationType.Module)
-                .Where(mod => mod.IdentifierName.IsEquivalentVBAIdentifierTo(moduleName) && mod.ProjectId == entity.ProjectId).Single();
+                .Where(mod => mod.IdentifierName.IsEquivalentVBAIdentifierTo(targetModuleName) && mod.ProjectId == entity.ProjectId).Single();
 
             var proxy = new DeclarationProxy(entity)
             {
+                IdentifierName = movedName ?? entity.IdentifierName,
                 HasPrivateAccessibility = targetAccessibility == Accessibility.Private,
-                TargetModuleIdentifier = moduleName
+                TargetModuleIdentifier = targetModuleName
             };
+
+            if (!proxy.DeclarationType.Equals(DeclarationType.Enumeration) && !IdentifierIsUsedElsewhereInProject(proxy, proxy.IdentifierName))
+            {
+                return false;
+            }
 
             return EvaluateOperationNameConflict(proxy, RefactoringAction.Move, out conflicts);
         }
@@ -122,7 +136,7 @@ namespace Rubberduck.Refactorings.Common
         {
             conflicts = new List<Declaration>();
 
-            if (Finders.TryGetValue(proxy.DeclarationType, out var finder))
+            if (ConflictFinders.TryGetValue(proxy.DeclarationType, out var finder))
             {
                 return finder(proxy, namingType, out conflicts);
             }
@@ -181,6 +195,10 @@ namespace Rubberduck.Refactorings.Common
             return conflicts.Any();
         }
 
+        //MS-VBAL 5.3.1.7
+        //Each property declaration must have a procedure name that is different from the 
+        //name of any other module variable, module constant, enum member name, 
+        //external procedure, function, or subroutine that is defined within the same module.
         private bool TryFindPropertyNameConflict(DeclarationProxy memberProxy, RefactoringAction namingType, out List<Declaration> conflicts)
         {
             conflicts = new List<Declaration>();
@@ -192,20 +210,33 @@ namespace Rubberduck.Refactorings.Common
 
             (IEnumerable<Declaration> targetMatches, IEnumerable<Declaration> allMatches) = RelevantIdentifierMatches(memberProxy);
 
-            var propertyIdentifierMatches = targetMatches.Where(idm => idm.DeclarationType.HasFlag(DeclarationType.Property));
-            foreach (var property in propertyIdentifierMatches)
+            var inTargetPropertyIdentifierMatches = targetMatches.Where(idm => idm.DeclarationType.HasFlag(DeclarationType.Property));
+            if (inTargetPropertyIdentifierMatches.Any())
             {
+                if (!memberProxy.IsExistingDeclaration(out var proxyDeclaration))
+                {
+                    conflicts.AddRange(inTargetPropertyIdentifierMatches);
+                    return true;
+                }
+
                 //5.3.1.7 
                 //Each property Get must have a unique name
                 //Each property Let must have a unique name
                 //Each property Set must have a unique name
-                if (property.DeclarationType.Equals(memberProxy.DeclarationType))
+                if (inTargetPropertyIdentifierMatches.Any(p => p.DeclarationType == memberProxy.DeclarationType))
                 {
-                    conflicts.Add(property);
+                    conflicts.AddRange(inTargetPropertyIdentifierMatches.Where(p => p.DeclarationType == memberProxy.DeclarationType));
+                    return true;
+                }
+
+                //5.3.1.7 each property that shares a common name must have equivalent parameter lists
+                if (!HaveEquivalentParameterLists(proxyDeclaration, inTargetPropertyIdentifierMatches.First()))
+                {
+                    conflicts.AddRange(inTargetPropertyIdentifierMatches);
                 }
             }
 
-            if (TryFindMemberConflictChecksCommon(memberProxy, targetMatches.Except(propertyIdentifierMatches), out var commonChecks))
+            if (TryFindMemberConflictChecksCommon(memberProxy, targetMatches.Except(inTargetPropertyIdentifierMatches), out var commonChecks))
             {
                 conflicts.AddRange(commonChecks);
             }
@@ -603,10 +634,102 @@ namespace Rubberduck.Refactorings.Common
             return conflicts.Any();
         }
 
-        private bool IdentifierIsUsedElsewhereInProject(Declaration entity, string newName)
+        private static bool HaveEquivalentParameterLists(Declaration proxyDeclaration, Declaration existingProperty)
         {
+            var propertyAsType = GetPropertyAsTypeName(existingProperty);
+            var proxyAsType = GetPropertyAsTypeName(proxyDeclaration);
+
+            if (!propertyAsType.Equals(proxyAsType))
+            {
+                return false;
+            }
+
+            var propertyParamsToEvaluate = GetPropertyParameters(existingProperty);
+
+            var proxyParamsToEvaluate = GetPropertyParameters(proxyDeclaration);
+
+            if (propertyParamsToEvaluate.Count() != proxyParamsToEvaluate.Count())
+            {
+                return false;
+            }
+
+            for (var idx = 0; idx < propertyParamsToEvaluate.Count(); idx++)
+            {
+                var propertyParam = propertyParamsToEvaluate.ElementAt(idx);
+                var proxyParam = proxyParamsToEvaluate.ElementAt(idx);
+
+                if (proxyParam.AsTypeName != propertyParam.AsTypeName)
+                {
+                    return false;
+                }
+
+                if (!UsesEquivalentParameterMechanism(propertyParam, proxyParam))
+                {
+                    return false;
+                }
+
+                if (propertyParam.IdentifierName != proxyParam.IdentifierName)
+                {
+                    return false;
+                }
+                //Note: MS-VBAL indicates that the number of Optional parameters must match.  
+                //However, no scenario was found that could get the VBE to complain.
+                //So, no checks are added for that condition.
+
+                //This can only be the last parameter (except the RHS value of a Get) - but there is no harm in checking them all
+                if (propertyParam.IsParamArray != proxyParam.IsParamArray)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static string GetPropertyAsTypeName(Declaration declaration)
+        {
+            Debug.Assert(declaration.DeclarationType.HasFlag(DeclarationType.Property));
+
+            if (declaration is IParameterizedDeclaration pDec
+                && !declaration.DeclarationType.Equals(DeclarationType.PropertyGet))
+            {
+                return pDec.Parameters.Last().AsTypeName;
+            }
+            return declaration.AsTypeName;
+        }
+
+        private static IReadOnlyList<ParameterDeclaration> GetPropertyParameters(Declaration declaration)
+        {
+            Debug.Assert(declaration.DeclarationType.HasFlag(DeclarationType.Property));
+
+            if (declaration is IParameterizedDeclaration pDec)
+            {
+                return !declaration.DeclarationType.Equals(DeclarationType.PropertyGet)
+                    ? pDec.Parameters.Take(pDec.Parameters.Count - 1).ToList()
+                    : pDec.Parameters;
+            }
+            return new List<ParameterDeclaration>();
+        }
+
+        private static bool UsesEquivalentParameterMechanism(ParameterDeclaration existingParam, ParameterDeclaration proxyParam)
+        {
+            var proxyIsByRef = (proxyParam.IsImplicitByRef || proxyParam.IsImplicitByRef);
+            if (existingParam.IsImplicitByRef || existingParam.IsByRef)
+            {
+                return proxyIsByRef;
+            }
+            //The existing parameter is ByVal
+            return !proxyIsByRef;
+        }
+
+        private bool IdentifierIsUsedElsewhereInProject(IDeclarationProxy proxy, string newName)
+        {
+            if (proxy.IsExistingDeclaration(out var declaration))
+            {
+                return _declarationFinderProvider.DeclarationFinder.MatchName(newName)
+                                .Any(matchedName => matchedName != declaration && matchedName.ProjectId == proxy.ProjectId);
+            }
             return _declarationFinderProvider.DeclarationFinder.MatchName(newName)
-                            .Any(matchedName => matchedName != entity && matchedName.ProjectId == entity.ProjectId);
+                            .Any(matchedName => matchedName.ProjectId == proxy.ProjectId);
         }
 
         private bool IdentifierIsUsedElsewhereInProject(string identifier, string projectID)
@@ -694,14 +817,12 @@ namespace Rubberduck.Refactorings.Common
             DeclarationType DeclarationType { set; get; }
             Accessibility Accessibility { set; get; }
             string TargetModuleIdentifier { set; get; }
-            bool IsTarget { set;  get; }
             bool IsExistingDeclaration(out Declaration declaration);
         }
 
         private class DeclarationProxy : IDeclarationProxy
         {
             private readonly Declaration _declaration;
-            private List<Declaration> _declarationWhiteList;
             public DeclarationProxy(Declaration declaration)
                 : this(declaration.IdentifierName, declaration.DeclarationType, declaration.ParentDeclaration)
             {
@@ -716,7 +837,6 @@ namespace Rubberduck.Refactorings.Common
                 IdentifierName = identifier;
                 DeclarationType = declarationType;
                 HasPrivateAccessibility = accessibility == Accessibility.Private;
-                _declarationWhiteList = new List<Declaration>();
             }
 
             public Declaration Template => _declaration;
@@ -726,11 +846,8 @@ namespace Rubberduck.Refactorings.Common
             public bool HasPrivateAccessibility { set; get; }
             public IEnumerable<IdentifierReference> References => _declaration?.References ?? Enumerable.Empty<IdentifierReference>();
             public string ProjectId => _declaration?.ProjectId ?? ParentDeclaration?.ProjectId ?? string.Empty;
-            public IEnumerable<Declaration> NeverConflictWhiteList => _declarationWhiteList;
-            public void AddNoConflictDeclaration(Declaration declaration) { _declarationWhiteList.Add(declaration); }
             public Accessibility Accessibility { set; get; }
             public string TargetModuleIdentifier { set; get; }
-            public bool IsTarget { set; get; }
             public bool IsExistingDeclaration(out Declaration declaration)
             {
                 declaration = _declaration;

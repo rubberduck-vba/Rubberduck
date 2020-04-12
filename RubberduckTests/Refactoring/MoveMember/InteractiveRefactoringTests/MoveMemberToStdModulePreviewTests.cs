@@ -295,7 +295,8 @@ End Sub
                var  model = moveDefinition.ModelBuilder(state);
 
                 //Show a preview that should have renamed a couple declarations
-                InitializeThePreviewerFactory(model, state, rewritingManager);
+                model.PreviewerFactory = MoveMemberTestsDI.Resolve<IMoveMemberRefactoringPreviewerFactory>(state, rewritingManager);
+
                 model.TryGetPreview(model.Destination, out preview);
                 StringAssert.Contains("mFizz1", preview);
                 StringAssert.Contains("Public Function Fizz1", preview);
@@ -358,7 +359,7 @@ End Property
                     model.ChangeDestination(null);
                 }
 
-                InitializeThePreviewerFactory(model, state, rewritingManager);
+                model.PreviewerFactory = MoveMemberTestsDI.Resolve<IMoveMemberRefactoringPreviewerFactory>(state, rewritingManager);
                 model.TryGetPreview(model.Source, out var source);
                 model.TryGetPreview(model.Destination, out var destination);
 
@@ -417,7 +418,7 @@ End Sub
                 {
                     moveable.IsSelected = false;
                 }
-                InitializeThePreviewerFactory(model, state, rewritingManager);
+                model.PreviewerFactory = MoveMemberTestsDI.Resolve<IMoveMemberRefactoringPreviewerFactory>(state, rewritingManager);
                 model.TryGetPreview(model.Source, out var source);
                 model.TryGetPreview(model.Destination, out var destination);
 
@@ -441,19 +442,11 @@ End Sub
 
                 var model = moveDefinition.ModelBuilder(state);
 
-                InitializeThePreviewerFactory(model, state, rewritingManager);
-
+                model.PreviewerFactory = MoveMemberTestsDI.Resolve<IMoveMemberRefactoringPreviewerFactory>(state, rewritingManager);
                 model.TryGetPreview(model.Source, out var source);
                 model.TryGetPreview(model.Destination, out var destination);
                 return (source, destination);
             }
-        }
-
-        private static void InitializeThePreviewerFactory(MoveMemberModel model, RubberduckParserState state, IRewritingManager rewritingManager)
-        {
-            var tdi = new MoveMemberTestsDI(state, rewritingManager);
-            var previewer = tdi.Resolve<IMoveMemberRefactoringPreviewerFactory>();
-            model.PreviewerFactory = previewer;
         }
 
         private static IVBE BuildVBEStub(TestMoveDefinition moveDefinition, string sourceContent)

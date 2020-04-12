@@ -278,7 +278,7 @@ Public Property Let Fizz(value As Variant)
     mFizz =  value
 End Property
 
-Public Property Get Fuzz() As Variant)
+Public Property Get Fuzz() As Variant
     If IsObject(mFuzz) Then
         Set Fuzz = mFuzz
     Else
@@ -287,6 +287,37 @@ Public Property Get Fuzz() As Variant)
 End Property
 ";
             Assert.AreEqual(expected, TestForRenameConflict(inputCode, selection, newName));
+        }
+
+        //MS_VBAL 5.3.1.7: 
+        //Each shared name must have the same asType, parameters, etc
+        [TestCase("(value As Long)", "()", false)]
+        [TestCase("(value As Variant)", "()", true)]  //Inconsistent AsTypeName
+        [TestCase("(value As Long)", "(arg1 As String)", true)] //Inconsistent parameters (quantity)
+        [TestCase("(arg1 As Boolean, value As Long)", "(arg1 As String)", true)] //Inconsistent parameters (type)
+        [TestCase("(ByVal arg1 As String, value As Long)", "(arg1 As String)", true)] //Inconsistent parameters (parameter mechanism)
+        [TestCase("(arg1 As String, arg2 As Long, value As Long)", "(arg1 As String, arg22 As Long)", true)] //Inconsistent parameters (parameter name)
+        [TestCase("(arg1 As String, arg2 As Variant, value As Long)", "(arg1 As String, ParamArray arg2() As Variant)", true)] //Inconsistent parameters (ParamArray)
+        [Category("Refactoring")]
+        [Category(nameof(NameConflictFinder))]
+        public void RenamePropertyInconsistentSignatures(string letParameters, string getParameters, bool expected)
+        {
+            var sourceContent =
+$@"
+Option Explicit
+
+Private mFizz As Long
+Private mFazz As Long
+
+Public Property Let Fi|zz{letParameters}
+    mFizz =  value
+End Property
+
+Public Property Get Fazz{getParameters} As Long
+    mFazz =  value
+End Property
+";
+            Assert.AreEqual(expected, TestForRenameConflict("Fazz", sourceContent));
         }
 
         [TestCase("multiplier", true)]

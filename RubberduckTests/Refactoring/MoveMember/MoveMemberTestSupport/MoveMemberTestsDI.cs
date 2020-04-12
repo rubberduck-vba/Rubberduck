@@ -12,63 +12,54 @@ namespace RubberduckTests.Refactoring.MoveMember
 
     public class MoveMemberTestsDI
     {
-        private RubberduckParserState _state;
-        private IRewritingManager _rewritingManager;
-
-        public MoveMemberTestsDI(RubberduckParserState state, IRewritingManager rewritingManager)
+        public static T Resolve<T>(RubberduckParserState state, IRewritingManager rewritingManager) where T: class
         {
-            _state = state;
-            _rewritingManager = rewritingManager;
+            return Resolve<T>(state, rewritingManager, typeof(T).Name);
         }
 
-        public T Resolve<T>() where T : class
-        {
-            return Resolve<T>(typeof(T).Name);
-        }
-
-        public T Resolve<T>(string name) where T : class
+        private static T Resolve<T>(RubberduckParserState _state, IRewritingManager _rewritingManager, string name) where T : class
         {
             switch (name)
             {
                 case nameof(MoveMemberRefactoringAction):
                     return new MoveMemberRefactoringAction(
-                            Resolve<MoveMemberToNewStandardModuleRefactoringAction>(), 
-                            Resolve<MoveMemberToExistingStandardModuleRefactoringAction>()) as T;
+                            Resolve<MoveMemberToNewStandardModuleRefactoringAction>(_state, _rewritingManager), 
+                            Resolve<MoveMemberToExistingStandardModuleRefactoringAction>(_state, _rewritingManager)) as T;
                 case nameof(MoveMemberToNewStandardModuleRefactoringAction):
                     return new MoveMemberToNewStandardModuleRefactoringAction(
                             _state, 
                             _rewritingManager,
-                            Resolve<MovedContentProviderFactory>(),
-                            Resolve<IMoveMemberStrategyFactory>(),
-                            Resolve<IAddComponentService>()) as T;
+                            Resolve<MovedContentProviderFactory>(_state, _rewritingManager),
+                            Resolve<IMoveMemberStrategyFactory>(_state, _rewritingManager),
+                            Resolve<IAddComponentService>(_state, _rewritingManager)) as T;
                 case nameof(IAddComponentService):
                     return MoveMemberRefactoringActionTestSupportBase.TestAddComponentService(_state?.ProjectsProvider) as T;
                 case nameof(IMoveMemberRefactoringPreviewerFactory):
                     return new MoveMemberRefactoringPreviewerFactory(
-                            Resolve<MoveMemberToExistingStandardModuleRefactoringAction>(),
+                            Resolve<MoveMemberToExistingStandardModuleRefactoringAction>(_state, _rewritingManager),
                             _rewritingManager,
-                            Resolve<MovedContentProviderFactory>()) as T;
+                            Resolve<MovedContentProviderFactory>(_state, _rewritingManager)) as T;
                 case nameof(MoveMemberRefactoringPreviewerFactory):
                     return new MoveMemberRefactoringPreviewerFactory(
-                            Resolve<MoveMemberToExistingStandardModuleRefactoringAction>(),
+                            Resolve<MoveMemberToExistingStandardModuleRefactoringAction>(_state, _rewritingManager),
                             _rewritingManager,
-                            Resolve<MovedContentProviderFactory>()) as T;
+                            Resolve<MovedContentProviderFactory>(_state, _rewritingManager)) as T;
                 case nameof(MoveMemberToExistingStandardModuleRefactoringAction):
                     return new MoveMemberToExistingStandardModuleRefactoringAction(
                             _rewritingManager, 
-                            Resolve<MovedContentProviderFactory>(),
-                            Resolve<IMoveMemberStrategyFactory>()
+                            Resolve<MovedContentProviderFactory>(_state, _rewritingManager),
+                            Resolve<IMoveMemberStrategyFactory>(_state, _rewritingManager)
                             ) as T;
                 case nameof(MoveMemberStrategyFactory):
                     return new MoveMemberStrategyFactory(
-                            Resolve<RenameCodeDefinedIdentifierRefactoringAction>(),
-                            Resolve<MoveMemberMoveGroupsProviderFactory>(),
-                            Resolve<INameConflictFinder>()) as T;
+                            Resolve<RenameCodeDefinedIdentifierRefactoringAction>(_state, _rewritingManager),
+                            Resolve<MoveMemberMoveGroupsProviderFactory>(_state, _rewritingManager),
+                            Resolve<INameConflictFinder>(_state, _rewritingManager)) as T;
                 case nameof(IMoveMemberStrategyFactory):
                     return new MoveMemberStrategyFactory(
-                            Resolve<RenameCodeDefinedIdentifierRefactoringAction>(),
-                            Resolve<MoveMemberMoveGroupsProviderFactory>(),
-                            Resolve<INameConflictFinder>()) as T;
+                            Resolve<RenameCodeDefinedIdentifierRefactoringAction>(_state, _rewritingManager),
+                            Resolve<MoveMemberMoveGroupsProviderFactory>(_state, _rewritingManager),
+                            Resolve<INameConflictFinder>(_state, _rewritingManager)) as T;
                 case nameof(RenameCodeDefinedIdentifierRefactoringAction):
                     return new RenameCodeDefinedIdentifierRefactoringAction(
                             _state, 
@@ -76,7 +67,7 @@ namespace RubberduckTests.Refactoring.MoveMember
                             _rewritingManager) as T;
                 case nameof(MoveMemberEndpointFactory):
                     return new MoveMemberEndpointFactory(
-                            _state, Resolve<MoveableMemberSetsFactory>()) as T;
+                            _state, Resolve<MoveableMemberSetsFactory>(_state, _rewritingManager)) as T;
                 case nameof(MoveMemberMoveGroupsProviderFactory):
                     return new MoveMemberMoveGroupsProviderFactory(_state) as T;
                 case nameof(MovedContentPreviewProvider):
@@ -85,9 +76,12 @@ namespace RubberduckTests.Refactoring.MoveMember
                     return new MovedContentProvider() as T;
                 case nameof(MovedContentProviderFactory):
                     return new MovedContentProviderFactory() as T;
+                case nameof(IMoveableMemberSetsFactory):
+                    return new MoveableMemberSetsFactory(
+                            _state, Resolve<MoveableMemberSetFactory>(_state, _rewritingManager)) as T;
                 case nameof(MoveableMemberSetsFactory):
                     return new MoveableMemberSetsFactory(
-                            _state, Resolve<MoveableMemberSetFactory>()) as T;
+                            _state, Resolve<MoveableMemberSetFactory>(_state, _rewritingManager)) as T;
                 case nameof(MoveableMemberSetFactory):
                     return new MoveableMemberSetFactory() as T;
                 case nameof(INameConflictFinder):

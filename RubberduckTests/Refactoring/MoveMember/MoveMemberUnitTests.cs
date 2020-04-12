@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.Refactorings.MoveMember.Extensions;
@@ -215,7 +216,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MoveCandidatesPropertiesGroupedTogether()
+        public void GroupsMoveCandidatesPropertiesTogether()
         {
             var member = "Fizz";
             var source =
@@ -246,10 +247,11 @@ End Property
 
             IEnumerable<IMoveableMemberSet> ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
             {
-                var target = state.DeclarationFinder.MatchName(member);
+                var targets = state.DeclarationFinder.MatchName(member);
 
-                var model = MoveMemberTestSupport.CreateRefactoringModel(target.First(), state, rewritingManager);
-                return model.MoveableMembers;
+                var factory = MoveMemberTestsDI.Resolve<IMoveableMemberSetsFactory>(state, rewritingManager);
+
+                return factory.Create(targets.First()).ToDictionary(key => key.IdentifierName).Values;
             }
 
             Assert.AreEqual(3, moveCandidates.Count());
