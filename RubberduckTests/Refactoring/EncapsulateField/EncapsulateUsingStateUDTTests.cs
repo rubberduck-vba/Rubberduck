@@ -8,10 +8,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -707,9 +704,13 @@ End Sub
             StringAssert.Contains("TheTarget As Variant", actualCode);
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        protected override IRefactoring TestRefactoring(
+            IRewritingManager rewritingManager,
+            RubberduckParserState state,
+            RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
+            ISelectionService selectionService)
         {
-            return Support.SupportTestRefactoring(rewritingManager, state, factory, selectionService);
+            return Support.SupportTestRefactoring(rewritingManager, state, userInteraction, selectionService);
         }
     }
 }

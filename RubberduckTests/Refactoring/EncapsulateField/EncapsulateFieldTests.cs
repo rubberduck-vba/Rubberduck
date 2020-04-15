@@ -16,7 +16,6 @@ using System.Linq;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
-
     [TestFixture]
     public class EncapsulateFieldTests : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
@@ -616,7 +615,13 @@ End Sub
             StringAssert.Contains($"  .MyProperty = bar", referencingClassCode);
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService) 
-            => Support.SupportTestRefactoring(rewritingManager, state, factory, selectionService);
+        protected override IRefactoring TestRefactoring(
+            IRewritingManager rewritingManager,
+            RubberduckParserState state,
+            RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
+            ISelectionService selectionService)
+        {
+            return Support.SupportTestRefactoring(rewritingManager, state, userInteraction, selectionService);
+        }
     }
 }

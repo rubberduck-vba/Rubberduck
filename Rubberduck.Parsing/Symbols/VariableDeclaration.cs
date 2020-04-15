@@ -2,7 +2,6 @@
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols

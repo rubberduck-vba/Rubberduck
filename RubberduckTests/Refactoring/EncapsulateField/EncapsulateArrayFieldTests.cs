@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -8,11 +9,6 @@ using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -215,7 +211,13 @@ End Sub
             StringAssert.AreEqualIgnoringCase(expectedError, errorMessage);
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
-            => Support.SupportTestRefactoring(rewritingManager, state, factory, selectionService);
+        protected override IRefactoring TestRefactoring(
+            IRewritingManager rewritingManager,
+            RubberduckParserState state,
+            RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
+            ISelectionService selectionService)
+        {
+            return Support.SupportTestRefactoring(rewritingManager, state, userInteraction, selectionService);
+        }
     }
 }
