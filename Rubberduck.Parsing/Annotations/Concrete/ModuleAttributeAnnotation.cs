@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
-
-namespace Rubberduck.Parsing.Annotations
+﻿namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
     /// This annotation allows specifying arbitrary VB_Attribute entries.
@@ -10,7 +6,13 @@ namespace Rubberduck.Parsing.Annotations
     public class ModuleAttributeAnnotation : FlexibleAttributeAnnotationBase
     {
         public ModuleAttributeAnnotation() 
-        : base("ModuleAttribute", AnnotationTarget.Module)
+        : base("ModuleAttribute", AnnotationTarget.Module, _argumentTypes)
         {}
+
+        private static AnnotationArgumentType[] _argumentTypes = new[]
+        {
+            AnnotationArgumentType.Attribute,
+            AnnotationArgumentType.Text | AnnotationArgumentType.Number | AnnotationArgumentType.Boolean
+        };
     }
 }
