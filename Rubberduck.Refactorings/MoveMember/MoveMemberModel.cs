@@ -15,15 +15,11 @@ namespace Rubberduck.Refactorings.MoveMember
 
         private IMoveMemberRefactoringStrategy _strategyMoveToStandardModule;
 
-        public IDeclarationFinderProvider DeclarationFinderProvider { get; }
-
         public MoveMemberModel(Declaration target, 
                                 IDeclarationFinderProvider declarationFinderProvider, 
                                 IMoveMemberStrategyFactory strategyFactory, 
                                 IMoveMemberEndpointFactory moveEndpointFactory)
         {
-            DeclarationFinderProvider = declarationFinderProvider;
-
             _moveEndpointFactory = moveEndpointFactory;
 
             _strategyFactory = strategyFactory;
@@ -40,13 +36,13 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public IMoveDestinationEndpoint Destination { private set; get; }
 
-        public IReadOnlyCollection<IMoveableMemberSet> MoveableMembers
+        public IReadOnlyCollection<IMoveableMemberSet> MoveableMemberSets
             => Source.MoveableMembers;
 
         public IMoveableMemberSet MoveableMemberSetByName(string identifier)
             => Source.MoveableMemberSetByName(identifier);
 
-        public IEnumerable<Declaration> SelectedDeclarations => MoveableMembers
+        public IEnumerable<Declaration> SelectedDeclarations => MoveableMemberSets
                                             .Where(mc => mc.IsSelected)
                                             .SelectMany(selected => selected.Members);
 
@@ -88,15 +84,6 @@ namespace Rubberduck.Refactorings.MoveMember
             }
             strategy = null;
             return false;
-        }
-
-        public IMoveMemberRefactoringPreviewerFactory PreviewerFactory { set; get; }
-
-        public bool TryGetPreview(IMoveMemberEndpoint endpoint, out string preview)
-        {
-            var previewer = PreviewerFactory?.Create(endpoint);
-            preview = previewer?.PreviewMove(this) ?? string.Empty;
-            return previewer != null;
         }
 
         private static string DetermineInitialDestinationModuleName(IDeclarationFinderProvider declarationFinderProvider, string sourceModuleName)

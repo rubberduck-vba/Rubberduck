@@ -3,6 +3,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
@@ -38,17 +39,23 @@ namespace Rubberduck.Refactorings.MoveMember
             Retain
         }
 
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly RenameCodeDefinedIdentifierRefactoringAction _renameAction;
         private readonly IMoveMemberMoveGroupsProviderFactory _moveGroupsProviderFactory;
 
-        private static INameConflictFinder _nameConflictFinder;
+        private readonly INameConflictFinder _nameConflictFinder;
+        private readonly IDeclarationProxyFactory _declarationProxyFactory;
 
-        public MoveMemberToStdModule(RenameCodeDefinedIdentifierRefactoringAction renameAction, 
+        public MoveMemberToStdModule(IDeclarationFinderProvider declarationFinderProvider,
+                                        RenameCodeDefinedIdentifierRefactoringAction renameAction, 
                                         IMoveMemberMoveGroupsProviderFactory moveGroupsProviderFactory,
-                                        INameConflictFinder nameConflictFinder)
+                                        INameConflictFinder nameConflictFinder, 
+                                        IDeclarationProxyFactory declarationProxyFactory)
         {
+            _declarationFinderProvider = declarationFinderProvider;
             _renameAction = renameAction;
             _moveGroupsProviderFactory = moveGroupsProviderFactory;
+            _declarationProxyFactory = declarationProxyFactory;
             _nameConflictFinder = nameConflictFinder;
         }
 
@@ -62,7 +69,7 @@ namespace Rubberduck.Refactorings.MoveMember
             if (model.SelectedDeclarations.Any(sd => sd.DeclarationType.HasFlag(DeclarationType.Variable)
                                     && sd.HasPrivateAccessibility())) { return false; }
 
-            var moveGroups = _moveGroupsProviderFactory.Create(model.MoveableMembers);
+            var moveGroups = _moveGroupsProviderFactory.Create(model.MoveableMemberSets);
 
             if (model.Source.IsStandardModule)
             {
@@ -100,7 +107,7 @@ namespace Rubberduck.Refactorings.MoveMember
         {
             newModuleContent = string.Empty;
 
-            var moveGroups = _moveGroupsProviderFactory.Create(model.MoveableMembers);
+            var moveGroups = _moveGroupsProviderFactory.Create(model.MoveableMemberSets);
 
             var dispositions = DetermineDispositionGroups(model, moveGroups);
 
@@ -108,7 +115,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
             if (model.Destination.IsExistingModule(out var destinationModule))
             {
-                ClearMoveNameConflicts(model, _renameAction, _nameConflictFinder, moveMemberRewriteSession, scratchPadSession, dispositions);
+                ClearMoveNameConflicts(model, _renameAction, moveMemberRewriteSession, scratchPadSession, dispositions);
 
                 ModifyExistingReferencesToMovedMembersInDestination(destinationModule, moveMemberRewriteSession, dispositions);
 
@@ -127,7 +134,7 @@ namespace Rubberduck.Refactorings.MoveMember
             UpdateReferencesToMovedMembersInNonEndpointModules(model, moveMemberRewriteSession, dispositions);
         }
 
-        private static Dictionary<MoveDisposition, List<Declaration>> DetermineDispositionGroups(MoveMemberModel model, IMoveMemberGroupsProvider moveGroups)
+        private Dictionary<MoveDisposition, List<Declaration>> DetermineDispositionGroups(MoveMemberModel model, IMoveMemberGroupsProvider moveGroups)
         {
             var dispositions = EmptyDispositions();
             if (model.Source.IsStandardModule
@@ -144,7 +151,7 @@ namespace Rubberduck.Refactorings.MoveMember
             throw new MoveMemberUnsupportedMoveException();
         }
 
-        private static bool TrySetDispositionGroupsForStandardModuleSource(MoveMemberModel model, IMoveMemberGroupsProvider moveGroups, out Dictionary<MoveDisposition, List<Declaration>> dispositions )
+        private bool TrySetDispositionGroupsForStandardModuleSource(MoveMemberModel model, IMoveMemberGroupsProvider moveGroups, out Dictionary<MoveDisposition, List<Declaration>> dispositions )
         {
             dispositions = EmptyDispositions();
 
@@ -254,7 +261,7 @@ namespace Rubberduck.Refactorings.MoveMember
             return true;
         }
 
-        private static bool TrySetDispositionGroupsForClassModuleSource(MoveMemberModel model, IMoveMemberGroupsProvider moveGroups, out Dictionary<MoveDisposition, List<Declaration>> dispositions)
+        private bool TrySetDispositionGroupsForClassModuleSource(MoveMemberModel model, IMoveMemberGroupsProvider moveGroups, out Dictionary<MoveDisposition, List<Declaration>> dispositions)
         {
             dispositions = EmptyDispositions();
 
@@ -279,7 +286,10 @@ namespace Rubberduck.Refactorings.MoveMember
 
             //If there are external references to the selected element(s) and the source is a 
             //ClassModule or  UserForm, then they are not be supported by this strategy.
-            if (model.SelectedDeclarations.AllReferences().Any(rf => rf.QualifiedModuleName != model.Source.QualifiedModuleName)) { return false; }
+            if (model.SelectedDeclarations.AllReferences().Any(rf => rf.QualifiedModuleName != model.Source.QualifiedModuleName))
+            {
+                return false;
+            }
 
             dispositions[MoveDisposition.Move] = (moveGroups.Declarations(MoveGroup.Selected)
                 .Concat(moveGroups.Declarations(MoveGroup.Support_Exclusive))).ToList();
@@ -293,16 +303,16 @@ namespace Rubberduck.Refactorings.MoveMember
         //result in a name conflict.  The renaming occurs in both the moveMemberRewriteSession and
         //in the scratchPadSession so that moved blocks of code generated from the scrathpad yields
         //the new names.
-        private static void ClearMoveNameConflicts(MoveMemberModel model, RenameCodeDefinedIdentifierRefactoringAction renameAction, INameConflictFinder nameConflictFinder, IRewriteSession moveMemberRewriteSession, IRewriteSession scratchPadSession, Dictionary<MoveDisposition, List<Declaration>> dispositions)
+        private void ClearMoveNameConflicts(MoveMemberModel model, RenameCodeDefinedIdentifierRefactoringAction renameAction, IRewriteSession moveMemberRewriteSession, IRewriteSession scratchPadSession, Dictionary<MoveDisposition, List<Declaration>> dispositions)
         {
-            foreach (var moveable in model.MoveableMembers)
+            foreach (var moveable in model.MoveableMemberSets)
             {
                 moveable.MovedIdentifierName = moveable.IdentifierName;
             }
 
-            SetNonConflictIdentifierNames(model, nameConflictFinder, dispositions[MoveDisposition.Move]);
+            SetNonConflictIdentifierNames(model, dispositions[MoveDisposition.Move]);
 
-            foreach (var moveable in model.MoveableMembers)
+            foreach (var moveable in model.MoveableMemberSets)
             {
                 RenameMoveableMemberSet(moveable, renameAction, moveMemberRewriteSession);
                 RenameMoveableMemberSet(moveable, renameAction, scratchPadSession);
@@ -353,7 +363,7 @@ namespace Rubberduck.Refactorings.MoveMember
             return contentProvider;
         }
 
-        private static void SetNonConflictIdentifierNames(MoveMemberModel model, INameConflictFinder nameConflictFinder, IEnumerable<Declaration> membersToMove)
+        private void SetNonConflictIdentifierNames(MoveMemberModel model, IEnumerable<Declaration> membersToMove)
         {
             if (!model.Destination.IsExistingModule(out var destinationModule))
             {
@@ -369,7 +379,9 @@ namespace Rubberduck.Refactorings.MoveMember
                     ? model.Source.ModuleDeclarations.Where(d => d.DeclarationType.Equals(DeclarationType.EnumerationMember) && moveableMember.Member.Equals(d.ParentDeclaration))
                     : null;
 
-                if (nameConflictFinder.MoveCreatesNameConflict(moveableMember.Member, destinationModule.IdentifierName, moveableMember.Member.Accessibility, out _))
+                var proxy = _declarationProxyFactory.Create(moveableMember.Member, moveableMember.IdentifierName, destinationModule as ModuleDeclaration);
+
+                if (_nameConflictFinder.ProposedDeclarationCreatesConflict(proxy, out _))
                 {
                     conflictingMoveables.Add(moveableMember);
                 }
@@ -408,7 +420,7 @@ namespace Rubberduck.Refactorings.MoveMember
             var renamableReferences = RenameableReferences(dispositions[MoveDisposition.Move], model.Source.QualifiedModuleName);
             var retainedReferencesToModuleQualify = renamableReferences.Where(rf => !dispositions[MoveDisposition.Move].Contains(rf.ParentScoping));
 
-            var moveableConstants = model.MoveableMembers.Where(mm => mm.Member.IsConstant());
+            var moveableConstants = model.MoveableMemberSets.Where(mm => mm.Member.IsConstant());
             var directReferencesOfMovedConstants = new List<IdentifierReference>();
             foreach (var constant in moveableConstants)
             {
@@ -419,7 +431,7 @@ namespace Rubberduck.Refactorings.MoveMember
                 }
             }
 
-            var moveableFields = model.MoveableMembers.Where(mm => mm.Member.IsMemberVariable());
+            var moveableFields = model.MoveableMemberSets.Where(mm => mm.Member.IsMemberVariable());
             var directReferencesOfMovedFields = new List<IdentifierReference>();
             foreach (var field in moveableFields)
             {
@@ -498,7 +510,7 @@ namespace Rubberduck.Refactorings.MoveMember
             if (moveGroups.Declarations(MoveGroup.Selected).Contains(member))
             {
                 var accessibility = IsOnlyReferencedByMovedMethods(member, dispositions[MoveDisposition.Move])
-                    ? member.Accessibility.TokenString()
+                    ? member.Accessibility == Accessibility.Implicit ? Tokens.Public : member.Accessibility.TokenString()
                     : Tokens.Public;
 
                 rewriter.SetMemberAccessibility(member, accessibility);
@@ -656,9 +668,9 @@ namespace Rubberduck.Refactorings.MoveMember
             return false;
         }
 
-        private static bool ParticipantsIncludeAnInterfaceImplementingMember(IEnumerable<Declaration> participatingMembers, MoveMemberModel model)
+        private bool ParticipantsIncludeAnInterfaceImplementingMember(IEnumerable<Declaration> participatingMembers, MoveMemberModel model)
         {
-            var interfaceImplementingMembers = model.DeclarationFinderProvider.DeclarationFinder.FindAllInterfaceImplementingMembers()
+            var interfaceImplementingMembers = _declarationFinderProvider.DeclarationFinder.FindAllInterfaceImplementingMembers()
                 .Where(ifm => ifm.QualifiedModuleName == model.Source.QualifiedModuleName);
 
             return participatingMembers.Intersect(interfaceImplementingMembers).Any();
@@ -667,9 +679,9 @@ namespace Rubberduck.Refactorings.MoveMember
         private static bool ParticipantsRaiseAnEvent(IEnumerable<Declaration> participatingMembers)
                     => participatingMembers.Where(m => m.Context.GetDescendent<VBAParser.RaiseEventStmtContext>() != null).Any();
 
-        private static bool ParticipantsIncludeAnEventHandler(IEnumerable<Declaration> participatingMembers, MoveMemberModel model)
+        private bool ParticipantsIncludeAnEventHandler(IEnumerable<Declaration> participatingMembers, MoveMemberModel model)
         {
-            var eventHandlers = model.DeclarationFinderProvider.DeclarationFinder.FindEventHandlers()
+            var eventHandlers = _declarationFinderProvider.DeclarationFinder.FindEventHandlers()
                 .Where(evh => evh.QualifiedModuleName == model.Source.QualifiedModuleName);
 
             return participatingMembers.Intersect(eventHandlers).Any();
@@ -714,23 +726,24 @@ namespace Rubberduck.Refactorings.MoveMember
             return renamableReferencesByQMN;
         }
 
-        private static bool CreatesEnumOrEnumMemberNameConflict(MoveMemberModel model, IEnumerable<Declaration> moveDeclarations)
+        private bool CreatesEnumOrEnumMemberNameConflict(MoveMemberModel model, IEnumerable<Declaration> moveDeclarations)
         {
-            if (!model.Destination.IsExistingModule(out var declarationModule))
+            if (!model.Destination.IsExistingModule(out var destinationModule))
             {
                 return false;
             }
             //Since these are existing declarations we are moving around, we only need to check
             //moved Private Enumerations and their Members for conflicts
-            var privateMoveDeclarations = moveDeclarations.Where(d => d.HasPrivateAccessibility());
+            var movingPrivateEnums = moveDeclarations.Where(d => d.HasPrivateAccessibility() && d.DeclarationType.Equals(DeclarationType.Enumeration));
 
-            var movingEnums = privateMoveDeclarations.Where(d => d.DeclarationType.Equals(DeclarationType.Enumeration));
+            //var movingEnums = privateMoveDeclarations.Where(d => d.DeclarationType.Equals(DeclarationType.Enumeration));
 
-            if (!movingEnums.Any()) { return false; }
+            if (!movingPrivateEnums.Any()) { return false; }
 
-            foreach (var movingEnum in movingEnums)
+            foreach (var movingEnum in movingPrivateEnums)
             {
-                if (_nameConflictFinder.MoveCreatesNameConflict(movingEnum, declarationModule.IdentifierName, movingEnum.Accessibility, out _))
+                var proxy = _declarationProxyFactory.Create(movingEnum, movingEnum.IdentifierName, destinationModule as ModuleDeclaration);
+                if (_nameConflictFinder.ProposedDeclarationCreatesConflict(proxy, out _))
                 {
                     return true;
                 }

@@ -1,5 +1,7 @@
 ﻿using NLog;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.Refactorings.MoveMember.Extensions;
@@ -20,33 +22,38 @@ namespace Rubberduck.UI.Refactorings.MoveMember
     {
         public enum PreviewModule { Source, Destination }
 
-        private List<MoveableMemberSetViewModel> _moveableMemberViewModels;
+        private List<MoveableMemberSetViewModel> _moveableMemberSetViewModels;
         private List<string> _existingModuleNames;
-        public MoveMemberViewModel(MoveMemberModel model)
+
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly IMoveMemberRefactoringPreviewerFactory _previewerFactory;
+        public MoveMemberViewModel(MoveMemberModel model, 
+                                    IDeclarationFinderProvider declarationFinderProvider,
+                                    IMoveMemberRefactoringPreviewerFactory previewerFactory)
             : base(model)
         {
+            _declarationFinderProvider = declarationFinderProvider;
+            _previewerFactory = previewerFactory;
             SelectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => SetAllSelections(true));
             DeselectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => SetAllSelections(false));
 
-            var moveableMembers = model.MoveableMembers;
-
-            _moveableMemberViewModels = new List<MoveableMemberSetViewModel>();
-            foreach (var mm in moveableMembers)
+            _moveableMemberSetViewModels = new List<MoveableMemberSetViewModel>();
+            foreach (var moveableMemberSet in model.MoveableMemberSets)
             {
-                if ((mm.Member.IsVariable() && mm.Member.HasPrivateAccessibility())
-                    || mm.IsUserDefinedType
-                    || mm.IsEnumeration
-                    || mm.Member.IsLifeCycleHandler())
+                if ((moveableMemberSet.Member.IsVariable() && moveableMemberSet.Member.HasPrivateAccessibility())
+                    || moveableMemberSet.IsUserDefinedType
+                    || moveableMemberSet.IsEnumeration
+                    || moveableMemberSet.Member.IsLifeCycleHandler())
                 {
                     continue;
                 }
-                var moveableMemberViewModel = new MoveableMemberSetViewModel(this, mm);
-                _moveableMemberViewModels.Add(moveableMemberViewModel);
+                var moveableMemberViewModel = new MoveableMemberSetViewModel(RefreshPreview, moveableMemberSet);
+                _moveableMemberSetViewModels.Add(moveableMemberViewModel);
             }
             _moveableMembers = new ObservableCollection<MoveableMemberSetViewModel>(OrderedMemberSets());
 
-            _existingModuleNames = Model.DeclarationFinderProvider.DeclarationFinder.AllUserDeclarations
-                .Where(ud => ud.DeclarationType.HasFlag(DeclarationType.Module))
+            _existingModuleNames = _declarationFinderProvider.DeclarationFinder.AllUserDeclarations
+                .OfType<ModuleDeclaration>()
                 .Select(m => m.IdentifierName).ToList();
 
             _previewSelection = PreviewModule.Destination;
@@ -170,9 +177,9 @@ namespace Rubberduck.UI.Refactorings.MoveMember
         public IEnumerable<KeyValuePair<Declaration, string>> DestinationModules
             => Modules(DeclarationType.ProceduralModule).Where(mod => mod.Key != Model.Source.Module);
 
-        private IEnumerable<KeyValuePair<Declaration, string>> Modules(Enum typeFlag)
+        private IEnumerable<KeyValuePair<Declaration, string>> Modules(DeclarationType typeFlag)
         {
-            return Model.DeclarationFinderProvider.DeclarationFinder.AllUserDeclarations
+            return _declarationFinderProvider.DeclarationFinder.AllUserDeclarations
                             .Where(ud => ud.DeclarationType.HasFlag(typeFlag))
                             .OrderBy(ud => ud.IdentifierName)
                             .Select(mod => new KeyValuePair<Declaration, string>(mod, mod.IdentifierName));
@@ -210,7 +217,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
 
         private IEnumerable<MoveableMemberSetViewModel> OrderedMemberSets()
         {
-            return _moveableMemberViewModels
+            return _moveableMemberSetViewModels
                 .OrderByDescending(mm => mm.IsSelected)
                 .ThenByDescending(mm => mm.IsPublicMember)
                 .ThenByDescending(mm => mm.IsPrivateMember)
@@ -235,9 +242,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
                     ? Model.Destination as IMoveMemberEndpoint
                     : Model.Source as IMoveMemberEndpoint;
 
-                return Model.TryGetPreview(endpointToPreview, out var preview)
-                    ? preview
-                    : string.Empty;
+                return _previewerFactory.Create(endpointToPreview).PreviewMove(Model);
              }
         }
 

@@ -15,11 +15,11 @@ namespace Rubberduck.UI.Refactorings.MoveMember
     public class MoveableMemberSetViewModel : INotifyPropertyChanged
     {
         private IMoveableMemberSet _moveable;
-        private MoveMemberViewModel _parentModel;
+        private Action<MoveableMemberSetViewModel> _isSelectedChangeAction;
 
-        public MoveableMemberSetViewModel(MoveMemberViewModel vmodel, IMoveableMemberSet moveable)
+        public MoveableMemberSetViewModel(Action<MoveableMemberSetViewModel> isSelectedChangeAction, IMoveableMemberSet moveable)
         {
-            _parentModel = vmodel;
+            _isSelectedChangeAction = isSelectedChangeAction;
             _moveable = moveable;
             ToDisplayString = BuildDisplaySignature(_moveable);
         }
@@ -45,7 +45,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
             {
                 _moveable.IsSelected = value;
                 OnPropertyChanged();
-                _parentModel.RefreshPreview(this);
+                _isSelectedChangeAction(this);
             }
         }
 

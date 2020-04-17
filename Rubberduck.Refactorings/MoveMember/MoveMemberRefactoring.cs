@@ -1,6 +1,4 @@
-﻿using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.UIContext;
+﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.Exceptions;
@@ -58,10 +56,7 @@ namespace Rubberduck.Refactorings.MoveMember
             return new MoveMemberModel(target,
                                         _declarationFinderProvider,
                                         _strategyFactory,
-                                        _endpointFactory)
-            {
-                PreviewerFactory = _previewerFactory
-            };
+                                        _endpointFactory);
         }
 
         protected override void RefactorImpl(MoveMemberModel model)

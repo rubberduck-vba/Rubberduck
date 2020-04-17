@@ -376,6 +376,10 @@ namespace Rubberduck.Root
             container.Register(Component.For<IAddRemoveReferencesPresenterFactory>()
                 .ImplementedBy<AddRemoveReferencesPresenterFactory>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IDeclarationProxyFactory>()
+                .ImplementedBy<DeclarationProxyFactory>()
+                .LifestyleSingleton());
+
             RegisterUnreachableCaseFactories(container);
             RegisterMoveMemberRefactoringFactories(container);
         }

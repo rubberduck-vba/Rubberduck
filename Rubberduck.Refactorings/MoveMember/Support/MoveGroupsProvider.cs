@@ -30,7 +30,14 @@ namespace Rubberduck.Refactorings.MoveMember
         IReadOnlyCollection<IMoveableMemberSet> ToMoveableMemberSets(IEnumerable<Declaration> declarations);
     }
 
-
+    /// <summary>
+    /// MoveMemberGroupsProvider presents the declarations of a module categorized by
+    /// their relationship to the 'Selected to Move' declarations.
+    /// The MoveMemberGroupsProvider does not evaluate 'how' to move the declarations
+    ///  - 'how/where to move is the responsibility of a move strategy.
+    /// This object's responsiblity is only to categorize the relationships 
+    /// between declarations in the context of a group of 'Selected' declarations.
+    /// </summary>
     public class MoveMemberGroupsProvider : IMoveMemberGroupsProvider
     {
         private readonly IDeclarationFinderProvider _declarationProvider;
