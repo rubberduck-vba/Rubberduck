@@ -77,6 +77,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RubberduckMenus.resx</DependentUpon>
     </Compile>
+    <Compile Update="Refactorings\Refactorings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Refactorings.resx</DependentUpon>
+    </Compile>
     <Compile Update="RegexAssistant\RegexAssistantUI.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -168,6 +173,10 @@
     <EmbeddedResource Update="Menus\RubberduckMenus.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckMenus.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Refactorings\Refactorings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Refactorings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="RegexAssistant\RegexAssistantUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
