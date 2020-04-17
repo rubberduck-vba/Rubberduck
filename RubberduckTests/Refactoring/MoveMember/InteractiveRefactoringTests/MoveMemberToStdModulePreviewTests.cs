@@ -6,15 +6,18 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveMember;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
+using Support = RubberduckTests.Refactoring.MoveMember.MoveMemberRefactoringActionTestSupportBase;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
     [TestFixture]
     public class MoveMemberToStdModulePreviewTests : InteractiveRefactoringTestBase<IMoveMemberPresenter, MoveMemberModel>
     {
+        private string OptionExplicitBlock = $"Option Explicit{Environment.NewLine}{Environment.NewLine}";
+
         [TestCase(MoveEndpoints.StdToStd, true)]
         [TestCase(MoveEndpoints.ClassToStd, true)]
         [TestCase(MoveEndpoints.FormToStd, true)]
@@ -37,16 +40,10 @@ Function Foo(arg1 As Long) As Long
     Foo = localConst + localVar + arg1
 End Function
 ";
+            var preview = RetrievePreviewsAfterUserInput(memberToMove, endpoints, source, createNewModule ? null : OptionExplicitBlock);
 
-            var moveDefinition = new TestMoveDefinition(endpoints, memberToMove)
-            {
-                CreateNewModule = createNewModule
-            };
-
-            var preview = RetrievePreviewsAfterUserInput(moveDefinition, source, memberToMove);
-
-            Assert.IsTrue(OccursOnce("Option Explicit", preview.Destination));
-            Assert.IsTrue(OccursOnce("Public Function Foo(", preview.Destination));
+            Assert.IsTrue(OptionExplicitBlock.Trim().OccursOnce( preview.Destination));
+            Assert.IsTrue("Public Function Foo(".OccursOnce(preview.Destination));
         }
 
         [TestCase(MoveEndpoints.StdToStd, true)]
@@ -68,16 +65,10 @@ Sub Foo(ByVal arg1 As Long, ByRef result As Long)
     result = 10 * arg1
 End Sub
 ";
+            var preview = RetrievePreviewsAfterUserInput(memberToMove, endpoints, source, createNewModule ? null : OptionExplicitBlock);
 
-            var moveDefinition = new TestMoveDefinition(endpoints, memberToMove)
-            {
-                CreateNewModule = createNewModule
-            };
-
-            var preview = RetrievePreviewsAfterUserInput(moveDefinition, source, memberToMove);
-
-            StringAssert.Contains("Option Explicit", preview.Destination);
-            Assert.IsTrue(OccursOnce("Public Sub Foo(", preview.Destination));
+            StringAssert.Contains(OptionExplicitBlock.Trim(), preview.Destination);
+            Assert.IsTrue("Public Sub Foo(".OccursOnce(preview.Destination));
         }
 
 
@@ -107,17 +98,11 @@ Public Property Let TheValue(ByVal value As Long)
     mTheValue = value
 End Property
 ";
+            var preview = RetrievePreviewsAfterUserInput(memberToMove, endpoints, source, createNewModule ? null : OptionExplicitBlock);
 
-            var moveDefinition = new TestMoveDefinition(endpoints, memberToMove)
-            {
-                CreateNewModule = createNewModule
-            };
-
-            var preview = RetrievePreviewsAfterUserInput(moveDefinition, source, memberToMove);
-
-            StringAssert.Contains("Option Explicit", preview.Destination);
-            Assert.IsTrue(OccursOnce("Property Get TheValue(", preview.Destination));
-            Assert.IsTrue(OccursOnce("Property Let TheValue(", preview.Destination));
+            StringAssert.Contains(OptionExplicitBlock.Trim(), preview.Destination);
+            Assert.IsTrue("Property Get TheValue(".OccursOnce(preview.Destination));
+            Assert.IsTrue("Property Let TheValue(".OccursOnce(preview.Destination));
         }
 
         [Test]
@@ -137,17 +122,13 @@ Function Foo(arg1 As Long) As Long
     Foo = localConst + localVar + arg1
 End Function
 ";
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, memberToMove)
-            {
-                CreateNewModule = true
-            };
+            var preview = RetrievePreviewsAfterUserInput(memberToMove, MoveEndpoints.StdToStd, source, OptionExplicitBlock);
 
-            var preview = RetrievePreviewsAfterUserInput(moveDefinition, source, memberToMove);
             var changesBelowMarker = Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine;
             var changesAboveMarker = Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentAboveThisLine;
 
-            Assert.IsTrue(OccursOnce("Option Explicit", preview.Destination));
-            Assert.IsTrue(OccursOnce("Public Function Foo(", preview.Destination));
+            Assert.IsTrue(OptionExplicitBlock.Trim().OccursOnce(preview.Destination));
+            Assert.IsTrue("Public Function Foo(".OccursOnce(preview.Destination));
 
             StringAssert.Contains(changesBelowMarker, preview.Destination);
             StringAssert.Contains(changesAboveMarker, preview.Destination);
@@ -171,7 +152,7 @@ Function Foo(arg1 As Long) As Long
 End Function
 ";
 
-            var existingContent =
+            var destination =
 $@"
 Option Explicit
 
@@ -181,17 +162,12 @@ Function Goo(arg1 As Long) As Long
     Goo = mTest * arg1
 End Function
 ";
-
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, memberToMove);
-            moveDefinition.SetEndpointContent(source, existingContent);
-
-            var preview = RetrievePreviewsAfterUserInput(moveDefinition, source, memberToMove);
+            var preview = RetrievePreviewsAfterUserInput(memberToMove, MoveEndpoints.StdToStd, source, destination);
             var changesBelowMarker = Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine;
             var changesAboveMarker = Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentAboveThisLine;
 
-            Assert.IsTrue(OccursOnce("Option Explicit", preview.Destination));
-            Assert.IsTrue(OccursOnce("Public Function Foo(", preview.Destination));
+            Assert.IsTrue(OptionExplicitBlock.Trim().OccursOnce(preview.Destination));
+            Assert.IsTrue("Public Function Foo(".OccursOnce(preview.Destination));
 
             StringAssert.Contains(changesBelowMarker, preview.Destination);
             StringAssert.Contains(changesAboveMarker, preview.Destination);
@@ -224,7 +200,7 @@ Public Function Fizz() As Long
 End Function
 ";
 
-            var existingContent =
+            var destination =
 $@"
 Option Explicit
 
@@ -236,12 +212,7 @@ Sub Fizz(arg1 As Long, ByRef outVal As Long)
     outVal = mTest * mFizz
 End Sub
 ";
-
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, memberToMove);
-            moveDefinition.SetEndpointContent(source, existingContent);
-
-            var preview = RetrievePreviewsAfterUserInput(moveDefinition, source, memberToMove);
+            var preview = RetrievePreviewsAfterUserInput(memberToMove, MoveEndpoints.StdToStd, source, destination);
 
             StringAssert.Contains("mFizz1", preview.Destination);
             StringAssert.Contains("Public Function Fizz1", preview.Destination);
@@ -265,7 +236,7 @@ Public Function Fizz() As Long
 End Function
 ";
 
-            var existingContent =
+            var destination =
 $@"
 Option Explicit
 
@@ -277,34 +248,27 @@ Sub Fizz(arg1 As Long, ByRef outVal As Long)
     outVal = mTest * mFizz
 End Sub
 ";
-
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, memberToMove);
-            moveDefinition.SetEndpointContent(source, existingContent);
-
-            var preview = string.Empty;
-            var vbe = BuildVBEStub(moveDefinition, source);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            var (state, rewritingManager) = CreateAndParseWithRewritingManager(MoveEndpoints.StdToStd, source, destination);
             using (state)
             {
-                moveDefinition.RewritingManager = rewritingManager;
-
                 var target = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Function)
                                     .Single(declaration => declaration.IdentifierName == memberToMove.Item1);
 
-               var  model = moveDefinition.ModelBuilder(state);
+                var model = MoveMemberTestsResolver.CreateRefactoringModel(target, state);
+                model.ChangeDestination(MoveEndpoints.StdToStd.DestinationModuleName(), ComponentType.StandardModule);
 
                 //Show a preview that should have renamed a couple declarations
-                model.PreviewerFactory = MoveMemberTestsDI.Resolve<IMoveMemberRefactoringPreviewerFactory>(state, rewritingManager);
 
-                model.TryGetPreview(model.Destination, out preview);
+                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
+                var previewerFactory = serviceLocator.Resolve<IMoveMemberRefactoringPreviewerFactory>();
+                var preview = previewerFactory.Create(model.Destination).PreviewMove(model);
+
                 StringAssert.Contains("mFizz1", preview);
                 StringAssert.Contains("Public Function Fizz1", preview);
 
                 model.ChangeDestination(null);
 
-                //The previously renamed no longer need renaming
-                model.TryGetPreview(model.Destination, out preview);
+                preview = previewerFactory.Create(model.Destination).PreviewMove(model);
                 StringAssert.DoesNotContain("mFizz1", preview);
                 StringAssert.DoesNotContain("Public Function Fizz1", preview);
             }
@@ -316,7 +280,6 @@ End Sub
         [Category("MoveMember")]
         public void PreviewEmptySelectionSetNullOrNewDestinationModule(bool createNewModule)
         {
-            var memberToMove = ("TheValue", DeclarationType.PropertyGet);
             var sourceContent =
 $@"
 Option Explicit
@@ -332,42 +295,32 @@ Public Property Let TheValue(ByVal value As Long)
     mTheValue = value
 End Property
 ";
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, memberToMove)
-            {
-                CreateNewModule = createNewModule
-            };
-
-            var vbe = BuildVBEStub(moveDefinition, sourceContent);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            var (state, rewritingManager) = CreateAndParseWithRewritingManager(MoveEndpoints.StdToStd, sourceContent, createNewModule ? null : OptionExplicitBlock);
             using (state)
             {
-                moveDefinition.RewritingManager = rewritingManager;
-
                 var target = state.DeclarationFinder.DeclarationsWithType(DeclarationType.PropertyGet)
                                     .Single(declaration => declaration.IdentifierName == "TheValue");
 
-                var model = moveDefinition.ModelBuilder(state);
+                var model = MoveMemberTestsResolver.CreateRefactoringModel(target, state);
+                if (!createNewModule)
+                {
+                    model.ChangeDestination(MoveEndpoints.StdToStd.DestinationModuleName(), ComponentType.StandardModule);
+                }
 
-                foreach (var moveable in model.MoveableMembers)
+                foreach (var moveable in model.MoveableMemberSets)
                 {
                     moveable.IsSelected = false;
                 }
 
-                if (!createNewModule)
-                {
-                    model.ChangeDestination(null);
-                }
+                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
+                var previewerFactory = serviceLocator.Resolve<IMoveMemberRefactoringPreviewerFactory>();
 
-                model.PreviewerFactory = MoveMemberTestsDI.Resolve<IMoveMemberRefactoringPreviewerFactory>(state, rewritingManager);
-                model.TryGetPreview(model.Source, out var source);
-                model.TryGetPreview(model.Destination, out var destination);
+                var destination = previewerFactory.Create(model.Destination).PreviewMove(model);
 
                 StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_NoDeclarationsSelectedToMove, destination);
                 StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine, destination);
                 StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentAboveThisLine, destination);
             }
-
         }
 
         [Test]
@@ -375,7 +328,6 @@ End Property
         [Category("MoveMember")]
         public void PreviewEmptySelectionSetExistingDestinationModule()
         {
-            var memberToMove = ("TheValue", DeclarationType.PropertyGet);
             var sourceContent =
 $@"
 Option Explicit
@@ -399,28 +351,24 @@ Option Explicit
 Public Sub Fizz()
 End Sub
 ";
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, memberToMove);
-            moveDefinition.SetEndpointContent(sourceContent, destinationContent);
-
-            var vbe = BuildVBEStub(moveDefinition, sourceContent);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            var (state, rewritingManager) = CreateAndParseWithRewritingManager(MoveEndpoints.StdToStd, sourceContent, destinationContent);
             using (state)
             {
-                moveDefinition.RewritingManager = rewritingManager;
-
                 var target = state.DeclarationFinder.DeclarationsWithType(DeclarationType.PropertyGet)
                                     .Single(declaration => declaration.IdentifierName == "TheValue");
 
-                var model = moveDefinition.ModelBuilder(state);
+                var model = MoveMemberTestsResolver.CreateRefactoringModel(target, state);
+                model.ChangeDestination(MoveEndpoints.StdToStd.DestinationModuleName(), ComponentType.StandardModule);
 
-                foreach (var moveable in model.MoveableMembers)
+                foreach (var moveable in model.MoveableMemberSets)
                 {
                     moveable.IsSelected = false;
                 }
-                model.PreviewerFactory = MoveMemberTestsDI.Resolve<IMoveMemberRefactoringPreviewerFactory>(state, rewritingManager);
-                model.TryGetPreview(model.Source, out var source);
-                model.TryGetPreview(model.Destination, out var destination);
+
+                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
+                var previewerFactory = serviceLocator.Resolve<IMoveMemberRefactoringPreviewerFactory>();
+
+                var destination = previewerFactory.Create(model.Destination).PreviewMove(model);
 
                 StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_NoDeclarationsSelectedToMove, destination);
                 StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine, destination);
@@ -429,47 +377,41 @@ End Sub
 
         }
 
-        private (string Source, string Destination) RetrievePreviewsAfterUserInput(TestMoveDefinition moveDefinition, string sourceContent, (string declarationName, DeclarationType declarationType) memberToMove)
+        private (string Source, string Destination) RetrievePreviewsAfterUserInput((string declarationName, DeclarationType declarationType) memberToMove, MoveEndpoints endpoints, string sourceContent, string destinationContent)
         {
-            var vbe = BuildVBEStub(moveDefinition, sourceContent);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            var (state, rewritingManager) = CreateAndParseWithRewritingManager(endpoints, sourceContent, destinationContent);
             using (state)
             {
-                moveDefinition.RewritingManager = rewritingManager;
-
                 var target = state.DeclarationFinder.DeclarationsWithType(memberToMove.declarationType)
                                     .Single(declaration => declaration.IdentifierName == memberToMove.declarationName);
 
-                var model = moveDefinition.ModelBuilder(state);
+                var model = MoveMemberTestsResolver.CreateRefactoringModel(target, state);
+                if (destinationContent != null)
+                {
+                    model.ChangeDestination(MoveEndpoints.StdToStd.DestinationModuleName(), ComponentType.StandardModule);
+                }
 
-                model.PreviewerFactory = MoveMemberTestsDI.Resolve<IMoveMemberRefactoringPreviewerFactory>(state, rewritingManager);
-                model.TryGetPreview(model.Source, out var source);
-                model.TryGetPreview(model.Destination, out var destination);
+                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
+                var previewerFactory = serviceLocator.Resolve<IMoveMemberRefactoringPreviewerFactory>();
+
+                var source = previewerFactory.Create(model.Source).PreviewMove(model);
+                var destination = previewerFactory.Create(model.Destination).PreviewMove(model);
+
                 return (source, destination);
             }
         }
 
-        private static IVBE BuildVBEStub(TestMoveDefinition moveDefinition, string sourceContent)
+        private (RubberduckParserState, IRewritingManager) CreateAndParseWithRewritingManager(MoveEndpoints endpoints, string sourceContent, string destinationContent)
         {
-            if (moveDefinition.CreateNewModule)
-            {
-                moveDefinition.SetEndpointContent(sourceContent);
-                return MockVbeBuilder.BuildFromModules(moveDefinition.ModuleDefinitions.Select(tc => tc.AsTuple)).Object;
-            }
-            moveDefinition.SetEndpointContent(sourceContent, null);
-            return MockVbeBuilder.BuildFromModules(moveDefinition.ModuleDefinitions.Select(tc => tc.AsTuple)).Object;
-        }
-
-        private static bool OccursOnce(string toFind, string content)
-        {
-            var firstIdx = content.IndexOf(toFind);
-            var lastIdx = content.LastIndexOf(toFind);
-            return firstIdx == lastIdx;
+            var modules = endpoints.ToModulesTuples(sourceContent, destinationContent);
+            var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
+            //var vbe = ToVBEStub(endpoints, sourceContent, destinationContent);
+            return MockParser.CreateAndParseWithRewritingManager(vbe);
         }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, RefactoringUserInteraction<IMoveMemberPresenter, MoveMemberModel> userInteraction, ISelectionService selectionService)
         {
-            return MoveMemberTestSupport.CreateRefactoring(rewritingManager, state, userInteraction, selectionService);
+            return MoveMemberTestsResolver.CreateRefactoring(rewritingManager, state, userInteraction, selectionService);
         }
     }
 }

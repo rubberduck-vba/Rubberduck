@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.MoveMember;
+using Rubberduck.VBEditor.SafeComWrappers;
 using System;
 
 namespace RubberduckTests.Refactoring.MoveMember
@@ -9,8 +10,6 @@ namespace RubberduckTests.Refactoring.MoveMember
     [TestFixture]
     public class MovePropertiesToStdModuleTests : MoveMemberRefactoringActionTestSupportBase
     {
-        private const string ThisStrategy = nameof(MoveMemberToStdModule);
-
         [TestCase(MoveEndpoints.StdToStd, "Public", "Private Const Pi As Single = 3.14")]
         [TestCase(MoveEndpoints.StdToStd, "Public", "Private Pi As Single")]
         [TestCase(MoveEndpoints.StdToStd, "Private", "Private Const Pi As Single = 3.14")]
@@ -27,14 +26,14 @@ namespace RubberduckTests.Refactoring.MoveMember
         [Category("MoveMember")]
         public void SupportFunctionsReferenceExclusiveSupportNonMember(MoveEndpoints endpoints, string exclusiveFuncAccessibility, string nonMemberDeclaration)
         {
-            //Using a global variable to isolate the test to the supporting constant 'Pi'
+            //Using a global variable in a separate module to isolate the test from the supporting constant 'Pi'
             var moduleRadius = "RadiusModule";
             var moduleRadiusContent =
 @"Option Explicit
 
 Public Radius As Single
 ";
-            var memberToMove = "Area";
+            var memberToMove = ("Area", DeclarationType.PropertyGet);
             var source =
 $@"
 Option Explicit
@@ -80,16 +79,12 @@ End Function
     ToArea = Pi * {moduleRadius}.Radius ^ 2
 End Function
 ";
+            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints,
+                endpoints.ToSourceTuple(source),
+                endpoints.ToDestinationTuple(string.Empty),
+                (moduleRadius, moduleRadiusContent, ComponentType.StandardModule));
 
-            var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, DeclarationType.PropertyGet), sourceContent: source);
-            moveDefinition.Add(new ModuleDefinition(moduleRadius, Rubberduck.VBEditor.SafeComWrappers.ComponentType.StandardModule, moduleRadiusContent));
-
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-
-            StringAssert.AreEqualIgnoringCase(ThisStrategy, refactoredCode.StrategyName);
-
-            if (!moveDefinition.IsStdModuleSource)
+            if (!endpoints.IsStdModuleSource())
             {
                 var refactoredLines = refactoredCode.Destination.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var line in refactoredLines)
@@ -129,8 +124,8 @@ End Function
                 StringAssert.DoesNotContain(nonMemberDeclaration, refactoredCode.Destination);
                 StringAssert.DoesNotContain($"{exclusiveFuncAccessibility} Function ToArea(", refactoredCode.Destination);
                 StringAssert.DoesNotContain($"{exclusiveFuncAccessibility} Function ToRadius(", refactoredCode.Destination);
-                StringAssert.Contains($"Area = {moveDefinition.SourceModuleName}.ToArea(", refactoredCode.Destination);
-                StringAssert.Contains($"{moduleRadius}.Radius = {moveDefinition.SourceModuleName}.ToRadius(", refactoredCode.Destination);
+                StringAssert.Contains($"Area = {endpoints.SourceModuleName()}.ToArea(", refactoredCode.Destination);
+                StringAssert.Contains($"{moduleRadius}.Radius = {endpoints.SourceModuleName()}.ToRadius(", refactoredCode.Destination);
             }
             StringAssert.Contains("Public Property Get Area(", refactoredCode.Destination);
             StringAssert.Contains("Public Property Let Area(", refactoredCode.Destination);
@@ -141,7 +136,8 @@ End Function
         [Category("MoveMember")]
         public void MultiplePropertyGroupsReferenceSameVariable()
         {
-            var member = "Foo";
+            var memberToMove = ("Foo", DeclarationType.PropertyGet);
+            var endpoints = MoveEndpoints.StdToStd;
             var source =
 $@"
 Option Explicit
@@ -157,11 +153,14 @@ Public Property Get FooTimes2() As Long
 End Property
 ";
 
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, (member, DeclarationType.PropertyGet), sourceContent: source);
+            MoveMemberModel modelAdjustment(MoveMemberModel model)
+            {
+                model.MoveableMemberSetByName("FooTimes2").IsSelected = true;
+                model.ChangeDestination(endpoints.DestinationModuleName(), ComponentType.StandardModule);
+                return model;
+            }
 
-            moveDefinition.AddSelectedDeclaration("FooTimes2", DeclarationType.PropertyGet);
-
-            var refactoredCode = ExecuteTest(moveDefinition);
+            var refactoredCode = RefactorTargets(memberToMove, endpoints, source, string.Empty, modelAdjustment);
 
             StringAssert.Contains("Get Foo()", refactoredCode.Destination);
             StringAssert.Contains("Get FooTimes2()", refactoredCode.Destination);

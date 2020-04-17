@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Rubberduck.Refactorings.MoveMember;
+using System.Collections.Generic;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
@@ -9,12 +10,16 @@ namespace RubberduckTests.Refactoring.MoveMember
         private readonly string _destinationModuleName;
         private readonly string _strategyName;
 
-        public MoveMemberRefactorResults(TestMoveDefinition moveDefinition, IDictionary<string, string> refactorResults, string strategy = null)
+        public MoveMemberRefactorResults(MoveEndpoints endpoints, IDictionary<string, string> refactorResults)
+            :this(endpoints.SourceModuleName(), endpoints.DestinationModuleName(), refactorResults)
+        {}
+
+        public MoveMemberRefactorResults(string sourceModuleName, string destinationModuleName, IDictionary<string, string> refactorResults)
         {
             _results = refactorResults;
-            _sourceModuleName = moveDefinition.SourceModuleName;
-            _destinationModuleName = moveDefinition.DestinationModuleName;
-            _strategyName = strategy;
+            _sourceModuleName = sourceModuleName;
+            _destinationModuleName = destinationModuleName;
+            _strategyName = nameof(MoveMemberToStdModule);
         }
 
         public string this[string moduleName]

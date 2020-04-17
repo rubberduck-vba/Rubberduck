@@ -7,6 +7,7 @@ using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TestDI = RubberduckTests.Refactoring.NameConflictFinderTestsDI;
 
 namespace RubberduckTests.Refactoring
 {
@@ -871,7 +872,7 @@ End Sub
                 var target = parser.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule)
                     .FirstOrDefault(item => item.IdentifierName.Equals(renameTargetModule));
 
-                var conflictFinder = new NameConflictFinder(parser);
+                var conflictFinder = TestDI.Resolve<INameConflictFinder>(parser);
                 var hasConflict = conflictFinder.RenameCreatesNameConflict(target, projectTwoModule, out _);
                 Assert.IsFalse(hasConflict);
             }
@@ -1120,7 +1121,7 @@ Option Explicit
                 var target = parser.DeclarationFinder.UserDeclarations(DeclarationType.Enumeration)
                     .FirstOrDefault(item => item.IdentifierName.Equals("ETest"));
 
-                var conflictFinder = new NameConflictFinder(parser);
+                var conflictFinder = TestDI.Resolve<INameConflictFinder>(parser);
                 var hasConflict = conflictFinder.RenameCreatesNameConflict(target, "ConflictProject", out _);
                 Assert.IsTrue(hasConflict);
             }
@@ -1180,7 +1181,7 @@ End Type
                 var target = parser.DeclarationFinder.UserDeclarations(DeclarationType.Enumeration)
                     .FirstOrDefault(item => item.IdentifierName.Equals("ETest"));
 
-                var conflictFinder = new NameConflictFinder(parser);
+                var conflictFinder = TestDI.Resolve<INameConflictFinder>(parser);
                 var hasConflict = conflictFinder.RenameCreatesNameConflict(target, newName, out _);
                 Assert.AreEqual(expected, hasConflict);
             }
@@ -1272,7 +1273,7 @@ Option Explicit
                 var target = parser.DeclarationFinder.UserDeclarations(DeclarationType.UserDefinedType)
                     .FirstOrDefault(item => item.IdentifierName.Equals("TTest"));
 
-                var conflictFinder = new NameConflictFinder(parser);
+                var conflictFinder = TestDI.Resolve<INameConflictFinder>(parser);
                 var hasConflict = conflictFinder.RenameCreatesNameConflict(target, "ConflictProject", out _);
                 Assert.IsTrue(hasConflict);
             }
@@ -1327,7 +1328,7 @@ End Type
                 var target = parser.DeclarationFinder.UserDeclarations(DeclarationType.UserDefinedType)
                     .FirstOrDefault(item => item.IdentifierName.Equals("TTest"));
 
-                var conflictFinder = new NameConflictFinder(parser);
+                var conflictFinder = TestDI.Resolve<INameConflictFinder>(parser);
                 var hasConflict = conflictFinder.RenameCreatesNameConflict(target, newName, out _);
                 Assert.AreEqual(expected, hasConflict);
             }
@@ -1375,7 +1376,7 @@ Option Explicit
             {
                 var target = parser.DeclarationFinder.Projects.Single(p => p.IdentifierName.Equals(otherProject));
 
-                var conflictFinder = new NameConflictFinder(parser);
+                var conflictFinder = TestDI.Resolve<INameConflictFinder>(parser);
                 var hasConflict = conflictFinder.RenameCreatesNameConflict(target, newName, out _);
                 Assert.IsTrue(hasConflict);
             }
@@ -1392,7 +1393,7 @@ Option Explicit
 
                 var target = targets.Single(d => d.IdentifierName == selection.identifier);
 
-                var conflictFinder = new NameConflictFinder(state);
+                var conflictFinder = TestDI.Resolve<INameConflictFinder>(state);
                 result = conflictFinder.RenameCreatesNameConflict(target, newName, out _);
             }
 
@@ -1429,7 +1430,7 @@ Option Explicit
                                 .FirstOrDefault(item => item.IsSelected(qualifiedSelection) || item.References.Any(r => r.IsSelected(qualifiedSelection)));
 
 
-                var conflictFinder = new NameConflictFinder(state);
+                var conflictFinder = TestDI.Resolve<INameConflictFinder>(state);
                 result = conflictFinder.RenameCreatesNameConflict(target, newName, out _);
             }
             return result;

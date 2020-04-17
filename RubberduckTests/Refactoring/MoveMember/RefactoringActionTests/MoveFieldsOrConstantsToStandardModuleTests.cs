@@ -3,13 +3,10 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Refactorings.MoveMember;
-using System.Linq;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.Rewriter;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System;
-using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings;
+using System.Collections.Generic;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
@@ -22,8 +19,9 @@ namespace RubberduckTests.Refactoring.MoveMember
         [TestCase(MoveEndpoints.StdToStd, "Private")]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MoveConstant_HasReferences(MoveEndpoints moveEndpoints, string accessibility)
+        public void MoveConstant_HasReferences(MoveEndpoints endpoints, string accessibility)
         {
+            var memberToMove = ("mFoo", DeclarationType.Constant);
             var source =
 $@"
 Option Explicit
@@ -35,22 +33,22 @@ Public Function FooMath(arg1 As Long) As Long
 End Function
 ";
 
-            var moveDefinition = new TestMoveDefinition(moveEndpoints, ("mFoo", DeclarationType.Constant), sourceContent: source);
+            var moduleTuples = new List<(string, string, ComponentType)>();
 
             var callSiteModuleName = "CallSiteModule";
-            if (moveDefinition.IsStdModuleSource && accessibility.Equals(Tokens.Public))
+            if (endpoints.IsStdModuleSource() && accessibility.Equals(Tokens.Public))
             {
                 var otherModuleReference =
     $@"
 Option Explicit
 
 Public Function MemberAccessFoo(arg1 As Long) As Long
-    MemberAccessFoo = arg1 * {moveDefinition.SourceModuleName}.mFoo * 2
+    MemberAccessFoo = arg1 * {endpoints.SourceModuleName()}.mFoo * 2
 End Function
 
 Public Function WithMemberAccessFoo(arg1 As Long) As Long
     Dim result As Long
-    With {moveDefinition.SourceModuleName}
+    With {endpoints.SourceModuleName()}
         result = (.mFoo + arg1) * 2
     End With
     WithMemberAccessFoo = result
@@ -60,22 +58,24 @@ Public Function NonQualifiedFoo(arg1 As Long) As Long
     NonQualifiedFoo = (mFoo + arg1) * 2
 End Function
 ";
-                moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
+                moduleTuples.Add((callSiteModuleName, otherModuleReference, ComponentType.StandardModule));
             }
 
             var destinationDeclaration = "Public Const mFoo As Long = 10";
 
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
+            moduleTuples.Add(endpoints.ToSourceTuple(source));
+            moduleTuples.Add(endpoints.ToDestinationTuple(string.Empty));
+
+            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, moduleTuples.ToArray());
 
             StringAssert.DoesNotContain("Const mFoo As Long = 10", refactoredCode.Source);
             StringAssert.Contains(destinationDeclaration, refactoredCode.Destination);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode.Source);
-            if (moveDefinition.IsStdModuleSource && accessibility.Equals(Tokens.Public))
+            StringAssert.Contains($"{endpoints.DestinationModuleName()}.mFoo", refactoredCode.Source);
+            if (endpoints.IsStdModuleSource() && accessibility.Equals(Tokens.Public))
             {
-                StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode[callSiteModuleName]);
-                StringAssert.Contains($"result = ({moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement} + arg1) * 2", refactoredCode[callSiteModuleName]);
-                StringAssert.Contains($"NonQualifiedFoo = ({moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement} + arg1) * 2", refactoredCode[callSiteModuleName]);
+                StringAssert.Contains($"{endpoints.DestinationModuleName()}.mFoo", refactoredCode[callSiteModuleName]);
+                StringAssert.Contains($"result = ({endpoints.DestinationModuleName()}.mFoo + arg1) * 2", refactoredCode[callSiteModuleName]);
+                StringAssert.Contains($"NonQualifiedFoo = ({endpoints.DestinationModuleName()}.mFoo + arg1) * 2", refactoredCode[callSiteModuleName]);
             }
         }
 
@@ -85,8 +85,9 @@ End Function
         [TestCase(MoveEndpoints.StdToStd, "Private", null)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MoveNonAggregateValueTypeField_HasReferences(MoveEndpoints moveEndpoints, string accessibility, string expectedStrategyName)
+        public void MoveNonAggregateValueTypeField_HasReferences(MoveEndpoints endpoints, string accessibility, string expectedStrategyName)
         {
+            var memberToMove = ("mFoo", DeclarationType.Variable);
             var source =
 $@"
 Option Explicit
@@ -97,23 +98,22 @@ Public Function FooMath(arg1 As Long) As Long
     FooMath = arg1 * mFoo * 2
 End Function
 ";
-
-            var moveDefinition = new TestMoveDefinition(moveEndpoints, ("mFoo", DeclarationType.Variable), sourceContent: source);
+            var moduleTuples = new List<(string, string, ComponentType)>();
 
             var callSiteModuleName = "CallSiteModule";
-            if (moveDefinition.IsStdModuleSource && accessibility.Equals(Tokens.Public))
+            if (endpoints.IsStdModuleSource() && accessibility.Equals(Tokens.Public))
             {
                 var otherModuleReference =
     $@"
 Option Explicit
 
 Public Function MemberAccessFoo(arg1 As Long) As Long
-    MemberAccessFoo = arg1 * {moveDefinition.SourceModuleName}.mFoo * 2
+    MemberAccessFoo = arg1 * {endpoints.SourceModuleName()}.mFoo * 2
 End Function
 
 Public Function WithMemberAccessFoo(arg1 As Long) As Long
     Dim result As Long
-    With {moveDefinition.SourceModuleName}
+    With {endpoints.SourceModuleName()}
         result = (.mFoo + arg1) * 2
     End With
     WithMemberAccessFoo = result
@@ -123,27 +123,29 @@ Public Function NonQualifiedFoo(arg1 As Long) As Long
     NonQualifiedFoo = (mFoo + arg1) * 2
 End Function
 ";
-                moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
+                moduleTuples.Add((callSiteModuleName, otherModuleReference, ComponentType.StandardModule));
             }
 
+            moduleTuples.Add(endpoints.ToSourceTuple(source));
+            moduleTuples.Add(endpoints.ToDestinationTuple(string.Empty));
 
             if (expectedStrategyName is null)
             {
-                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
+                ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, moduleTuples.ToArray());
                 return;
             }
 
-            var refactoredCode = ExecuteTest(moveDefinition);
+            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, moduleTuples.ToArray());
             StringAssert.AreEqualIgnoringCase(expectedStrategyName, refactoredCode.StrategyName);
 
             var destinationDeclaration = "Public mFoo As Long";
 
             StringAssert.DoesNotContain("mFoo As Long", refactoredCode.Source);
             StringAssert.Contains(destinationDeclaration, refactoredCode.Destination);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode.Source);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode[callSiteModuleName]);
-            StringAssert.Contains($"result = ({moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement} + arg1) * 2", refactoredCode[callSiteModuleName]);
-            StringAssert.Contains($"NonQualifiedFoo = ({moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement} + arg1) * 2", refactoredCode[callSiteModuleName]);
+            StringAssert.Contains($"{endpoints.DestinationModuleName()}.mFoo", refactoredCode.Source);
+            StringAssert.Contains($"{endpoints.DestinationModuleName()}.mFoo", refactoredCode[callSiteModuleName]);
+            StringAssert.Contains($"result = ({endpoints.DestinationModuleName()}.mFoo + arg1) * 2", refactoredCode[callSiteModuleName]);
+            StringAssert.Contains($"NonQualifiedFoo = ({endpoints.DestinationModuleName()}.mFoo + arg1) * 2", refactoredCode[callSiteModuleName]);
         }
 
         [Test]
@@ -151,6 +153,8 @@ End Function
         [Category("MoveMember")]
         public void MoveNonAggregateValueTypeFields_HasReferences()
         {
+            var endpoints = MoveEndpoints.StdToStd;
+            var memberToMove = ("mFoo", DeclarationType.Variable);
             var source =
 $@"
 Option Explicit
@@ -164,21 +168,18 @@ Public Function FooMath(arg1 As Long) As Long
     FooMath = arg1 * mFoo * mFoo2
 End Function
 ";
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("mFoo", DeclarationType.Variable), sourceContent: source);
-
             var callSiteModuleName = "CallSiteModule";
             var otherModuleReference =
     $@"
 Option Explicit
 
 Public Function MemberAccessFoo(arg1 As Long) As Long
-    MemberAccessFoo = arg1 * {moveDefinition.SourceModuleName}.mFoo * 2
+    MemberAccessFoo = arg1 * {endpoints.SourceModuleName()}.mFoo * 2
 End Function
 
 Public Function WithMemberAccessFoo(arg1 As Long) As Long
     Dim result As Long
-    With {moveDefinition.SourceModuleName}
+    With {endpoints.SourceModuleName()}
         result = (.mFoo + arg1) * 2
     End With
     WithMemberAccessFoo = result
@@ -188,14 +189,19 @@ Public Function NonQualifiedFoo(arg1 As Long) As Long
     NonQualifiedFoo = (mFoo2 + arg1) * 2
 End Function
 ";
-            moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
+            MoveMemberModel ModelAdjustment(MoveMemberModel model)
+            {
+                model.MoveableMemberSetByName("mFoo1").IsSelected = true;
+                model.MoveableMemberSetByName("mFoo2").IsSelected = true;
+                model.MoveableMemberSetByName("mFoo3").IsSelected = true;
+                model.ChangeDestination(endpoints.DestinationModuleName(), ComponentType.StandardModule);
+                return model;
+            }
 
-            var decType = DeclarationType.Variable;
-            moveDefinition.SetEndpointContent(source);
-            moveDefinition.AddSelectedDeclaration("mFoo1", decType);
-            moveDefinition.AddSelectedDeclaration("mFoo2", decType);
-            moveDefinition.AddSelectedDeclaration("mFoo3", decType);
-            var refactoredCode = ExecuteTest(moveDefinition);
+            var refactoredCode = RefactorTargets(memberToMove, endpoints, ModelAdjustment,
+                endpoints.ToSourceTuple(source),
+                endpoints.ToDestinationTuple(string.Empty),
+                (callSiteModuleName, otherModuleReference, ComponentType.StandardModule));
 
             var destinationDeclaration = "Public mFoo As Long";
 
@@ -204,11 +210,11 @@ End Function
             StringAssert.DoesNotContain("mFoo2 As Long", refactoredCode.Source);
             StringAssert.DoesNotContain("mFoo3 As Long", refactoredCode.Source);
             StringAssert.Contains(destinationDeclaration, refactoredCode.Destination);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode.Source);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.mFoo2", refactoredCode.Source);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode[callSiteModuleName]);
-            StringAssert.Contains($"result = ({moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement} + arg1) * 2", refactoredCode[callSiteModuleName]);
-            StringAssert.Contains($"NonQualifiedFoo = ({moveDefinition.DestinationModuleName}.mFoo2 + arg1) * 2", refactoredCode[callSiteModuleName]);
+            StringAssert.Contains($"{endpoints.DestinationModuleName()}.mFoo", refactoredCode.Source);
+            StringAssert.Contains($"{endpoints.DestinationModuleName()}.mFoo2", refactoredCode.Source);
+            StringAssert.Contains($"{endpoints.DestinationModuleName()}.mFoo", refactoredCode[callSiteModuleName]);
+            StringAssert.Contains($"result = ({endpoints.DestinationModuleName()}.mFoo + arg1) * 2", refactoredCode[callSiteModuleName]);
+            StringAssert.Contains($"NonQualifiedFoo = ({endpoints.DestinationModuleName()}.mFoo2 + arg1) * 2", refactoredCode[callSiteModuleName]);
         }
 
         [Test]
@@ -216,6 +222,8 @@ End Function
         [Category("MoveMember")]
         public void MoveNonAggregateValueTypeFieldsList_HasReference()
         {
+            var endpoints = MoveEndpoints.StdToStd;
+            var memberToMove = ("mFoo", DeclarationType.Variable);
             var source =
 $@"
 Option Explicit
@@ -226,21 +234,18 @@ Public Function FooMath(arg1 As Long) As Long
     FooMath = arg1 * mFoo * mFoo2
 End Function
 ";
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("mFoo", DeclarationType.Variable), sourceContent: source);
-
             var callSiteModuleName = "CallSiteModule";
             var otherModuleReference =
     $@"
 Option Explicit
 
 Public Function MemberAccessFoo(arg1 As Long) As Long
-    MemberAccessFoo = arg1 * {moveDefinition.SourceModuleName}.mFoo * 2
+    MemberAccessFoo = arg1 * {endpoints.SourceModuleName()}.mFoo * 2
 End Function
 
 Public Function WithMemberAccessFoo(arg1 As Long) As Long
     Dim result As Long
-    With {moveDefinition.SourceModuleName}
+    With {endpoints.SourceModuleName()}
         result = (.mFoo + arg1) * 2
     End With
     WithMemberAccessFoo = result
@@ -250,16 +255,21 @@ Public Function NonQualifiedFoo(arg1 As Long) As Long
     NonQualifiedFoo = (mFoo2 + arg1) * 2
 End Function
 ";
-            moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
+            MoveMemberModel ModelAdjustment(MoveMemberModel model)
+            {
+                model.MoveableMemberSetByName("mFoo1").IsSelected = true;
+                model.MoveableMemberSetByName("mFoo2").IsSelected = true;
+                model.MoveableMemberSetByName("mFoo3").IsSelected = true;
+                model.ChangeDestination(endpoints.DestinationModuleName(), ComponentType.StandardModule);
+                return model;
+            }
 
-            var decType = DeclarationType.Variable;
-            moveDefinition.SetEndpointContent(source);
-            moveDefinition.AddSelectedDeclaration("mFoo1", decType);
-            moveDefinition.AddSelectedDeclaration("mFoo2", decType);
-            moveDefinition.AddSelectedDeclaration("mFoo3", decType);
-            var refactoredCode = ExecuteTest(moveDefinition);
+            var refactoredCode = RefactorTargets(memberToMove, endpoints, ModelAdjustment,
+                endpoints.ToSourceTuple(source),
+                endpoints.ToDestinationTuple(string.Empty),
+                (callSiteModuleName, otherModuleReference, ComponentType.StandardModule));
 
-            Assert.IsTrue(MoveMemberTestSupport.OccursOnce("Public", refactoredCode.Source));
+            Assert.IsTrue(Tokens.Public.OccursOnce(refactoredCode.Source));
             StringAssert.DoesNotContain("mFoo As Long", refactoredCode.Source);
             StringAssert.DoesNotContain("mFoo1 As Long", refactoredCode.Source);
             StringAssert.DoesNotContain("mFoo2 As Long", refactoredCode.Source);
@@ -268,11 +278,11 @@ End Function
             StringAssert.Contains($"Public mFoo1 As Long", refactoredCode.Destination);
             StringAssert.Contains("Public mFoo2 As Long", refactoredCode.Destination);
             StringAssert.Contains($"Public mFoo3 As Long", refactoredCode.Destination);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode.Source);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.mFoo2", refactoredCode.Source);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode[callSiteModuleName]);
-            StringAssert.Contains($"result = ({moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement} + arg1) * 2", refactoredCode[callSiteModuleName]);
-            StringAssert.Contains($"NonQualifiedFoo = ({moveDefinition.DestinationModuleName}.mFoo2 + arg1) * 2", refactoredCode[callSiteModuleName]);
+            StringAssert.Contains($"{endpoints.DestinationModuleName()}.mFoo", refactoredCode.Source);
+            StringAssert.Contains($"{endpoints.DestinationModuleName()}.mFoo2", refactoredCode.Source);
+            StringAssert.Contains($"{endpoints.DestinationModuleName()}.mFoo", refactoredCode[callSiteModuleName]);
+            StringAssert.Contains($"result = ({endpoints.DestinationModuleName()}.mFoo + arg1) * 2", refactoredCode[callSiteModuleName]);
+            StringAssert.Contains($"NonQualifiedFoo = ({endpoints.DestinationModuleName()}.mFoo2 + arg1) * 2", refactoredCode[callSiteModuleName]);
         }
 
         [TestCase(MoveEndpoints.FormToStd, "Private")]
@@ -281,8 +291,9 @@ End Function
         [TestCase(MoveEndpoints.StdToStd, "Private")]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MoveNConstantsList_HasReferences(MoveEndpoints moveEndpoints, string accessibility)
+        public void MoveNConstantsList_HasReferences(MoveEndpoints endpoints, string accessibility)
         {
+            var memberToMove = ("mFoo", DeclarationType.Constant);
             var source =
 $@"
 Option Explicit
@@ -293,23 +304,21 @@ Public Function FooMath(arg1 As Long) As Long
     FooMath = arg1 * mFoo * mFoo2
 End Function
 ";
-
-            var moveDefinition = new TestMoveDefinition(moveEndpoints, ("mFoo", DeclarationType.Constant), sourceContent: source);
-
             var callSiteModuleName = "CallSiteModule";
-            if (moveDefinition.IsStdModuleSource && accessibility.Equals(Tokens.Public))
+            var modules = new List<(string, string, ComponentType)>();
+            if (endpoints.IsStdModuleSource() && accessibility.Equals(Tokens.Public))
             {
                 var otherModuleReference =
     $@"
 Option Explicit
 
 Public Function MemberAccessFoo(arg1 As Long) As Long
-    MemberAccessFoo = arg1 * {moveDefinition.SourceModuleName}.mFoo * 2
+    MemberAccessFoo = arg1 * {endpoints.SourceModuleName()}.mFoo * 2
 End Function
 
 Public Function WithMemberAccessFoo(arg1 As Long) As Long
     Dim result As Long
-    With {moveDefinition.SourceModuleName}
+    With {endpoints.SourceModuleName()}
         result = (.mFoo + arg1) * 2
     End With
     WithMemberAccessFoo = result
@@ -319,14 +328,22 @@ Public Function NonQualifiedFoo(arg1 As Long) As Long
     NonQualifiedFoo = (mFoo2 + arg1) * 2
 End Function
 ";
-                moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
+                modules.Add((callSiteModuleName, otherModuleReference, ComponentType.StandardModule));
             }
-            var decType = DeclarationType.Constant;
-            moveDefinition.SetEndpointContent(source);
-            moveDefinition.AddSelectedDeclaration("mFoo1", decType);
-            moveDefinition.AddSelectedDeclaration("mFoo2", decType);
-            moveDefinition.AddSelectedDeclaration("mFoo3", decType);
-            var refactoredCode = ExecuteTest(moveDefinition);
+
+            modules.Add(endpoints.ToSourceTuple(source));
+            modules.Add(endpoints.ToDestinationTuple(string.Empty));
+
+            MoveMemberModel ModelAdjustment(MoveMemberModel model)
+            {
+                model.MoveableMemberSetByName("mFoo1").IsSelected = true;
+                model.MoveableMemberSetByName("mFoo2").IsSelected = true;
+                model.MoveableMemberSetByName("mFoo3").IsSelected = true;
+                model.ChangeDestination(endpoints.DestinationModuleName(), ComponentType.StandardModule);
+                return model;
+            }
+
+            var refactoredCode = RefactorTargets(memberToMove, endpoints, ModelAdjustment, modules.ToArray());
 
             StringAssert.DoesNotContain($"{accessibility} Const", refactoredCode.Source);
             StringAssert.DoesNotContain("mFoo As Long", refactoredCode.Source);
@@ -337,13 +354,13 @@ End Function
             StringAssert.Contains($"{accessibility} Const mFoo1 As Long", refactoredCode.Destination);
             StringAssert.Contains("Public Const mFoo2 As Long", refactoredCode.Destination);
             StringAssert.Contains($"{accessibility} Const mFoo3 As Long", refactoredCode.Destination);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode.Source);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.mFoo2", refactoredCode.Source);
-            if (moveDefinition.IsStdModuleSource && accessibility.Equals(Tokens.Public))
+            StringAssert.Contains($"{endpoints.DestinationModuleName()}.mFoo", refactoredCode.Source);
+            StringAssert.Contains($"{endpoints.DestinationModuleName()}.mFoo2", refactoredCode.Source);
+            if (endpoints.IsStdModuleSource() && accessibility.Equals(Tokens.Public))
             {
-                StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode[callSiteModuleName]);
-                StringAssert.Contains($"result = ({moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement} + arg1) * 2", refactoredCode[callSiteModuleName]);
-                StringAssert.Contains($"NonQualifiedFoo = ({moveDefinition.DestinationModuleName}.mFoo2 + arg1) * 2", refactoredCode[callSiteModuleName]);
+                StringAssert.Contains($"{endpoints.DestinationModuleName()}.mFoo", refactoredCode[callSiteModuleName]);
+                StringAssert.Contains($"result = ({endpoints.DestinationModuleName()}.mFoo + arg1) * 2", refactoredCode[callSiteModuleName]);
+                StringAssert.Contains($"NonQualifiedFoo = ({endpoints.DestinationModuleName()}.mFoo2 + arg1) * 2", refactoredCode[callSiteModuleName]);
             }
         }
 
@@ -355,6 +372,8 @@ End Function
         [Category("MoveMember")]
         public void MoveConstantDeclarationReferencesOtherConstant(string expression, string expectedStrategy)
         {
+            var endpoints = MoveEndpoints.StdToStd;
+            var memberToMove = ("FIZZ", DeclarationType.Constant);
             var source =
 $@"
 Option Explicit
@@ -371,26 +390,24 @@ Private Function Bizz(arg As Long) As Long
     Bizz = arg + PVT_VALUE
 End Function
 ";
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("FIZZ", DeclarationType.Constant), source);
-
             if (expectedStrategy is null)
             {
-                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition));
+                ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source);
                 return;
             }
 
-            var refactoredCode = ExecuteTest(moveDefinition);
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
+            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
 
-            StringAssert.Contains($"Public Const FIZZ As Long = {moveDefinition.SourceModuleName}.{expression}", refactoredCode.Destination);
+            StringAssert.Contains($"Public Const FIZZ As Long = {endpoints.SourceModuleName()}.{expression}", refactoredCode.Destination);
         }
 
-        [TestCase("PUB_VALUE * PUB_VALUE2", nameof(MoveMemberToStdModule))]
+        [Test]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MoveConstantDeclarationReferencesOtherConstantMultiple(string expression, string expectedStrategy)
+        public void MoveConstantDeclarationReferencesOtherConstants()
         {
+            var endpoints = MoveEndpoints.StdToStd;
+            var memberToMove = ("FIZZ", DeclarationType.Constant);
             var source =
 $@"
 Option Explicit
@@ -401,19 +418,14 @@ Public Const PUB_VALUE As Long = 10
 
 Public Const PUB_VALUE2 As Long = 20
 
-Public Const FIZZ As Long = {expression}
+Public Const FIZZ As Long = PUB_VALUE * PUB_VALUE2
 
 Private Function Bizz(arg As Long) As Long
     Bizz = arg + PVT_VALUE
 End Function
 ";
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("FIZZ", DeclarationType.Constant), source);
-
-            var refactoredCode = ExecuteTest(moveDefinition);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
-            StringAssert.Contains($"Public Const FIZZ As Long = {moveDefinition.SourceModuleName}.PUB_VALUE * {moveDefinition.SourceModuleName}.PUB_VALUE2", refactoredCode.Destination);
+            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
+            StringAssert.Contains($"Public Const FIZZ As Long = {endpoints.SourceModuleName()}.PUB_VALUE * {endpoints.SourceModuleName()}.PUB_VALUE2", refactoredCode.Destination);
         }
 
         [Test]
@@ -421,6 +433,8 @@ End Function
         [Category("MoveMember")]
         public void MoveConstantDeclarationAndAllSupport()
         {
+            var endpoints = MoveEndpoints.StdToStd;
+            var memberToMove = ("FIZZ", DeclarationType.Constant);
             var source =
 $@"
 Option Explicit
@@ -438,11 +452,15 @@ Private Function Bizz(arg As Long) As Long
 End Function
 ";
 
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("FIZZ", DeclarationType.Constant), source);
-            moveDefinition.AddSelectedDeclaration("PVT_VALUE", DeclarationType.Constant);
-            moveDefinition.AddSelectedDeclaration("Bizz", DeclarationType.Function);
+            MoveMemberModel ModelAdjustment(MoveMemberModel model)
+            {
+                model.MoveableMemberSetByName("PVT_VALUE").IsSelected = true;
+                model.MoveableMemberSetByName("Bizz").IsSelected = true;
+                model.ChangeDestination(endpoints.DestinationModuleName(), ComponentType.StandardModule);
+                return model;
+            }
 
-            var refactoredCode = ExecuteTest(moveDefinition);
+            var refactoredCode = RefactorTargets(memberToMove, endpoints, source, string.Empty, ModelAdjustment);
             StringAssert.Contains("Public Type TestType", refactoredCode.Source);
 
             StringAssert.Contains("Private Const PVT_VALUE As Long = 75", refactoredCode.Destination);
@@ -455,6 +473,8 @@ End Function
         [Category("MoveMember")]
         public void MovePrivateConstantDeclarationWithSourceReferences()
         {
+            var endpoints = MoveEndpoints.StdToStd;
+            var memberToMove = ("PVT_VALUE", DeclarationType.Constant);
             var source =
 $@"
 Option Explicit
@@ -472,12 +492,11 @@ Private Function Bizz(arg As Long) As Long
 End Function
 ";
 
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("PVT_VALUE", DeclarationType.Constant), source);
+            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
 
-            var refactoredCode = ExecuteTest(moveDefinition);
-            StringAssert.Contains($"Public Const FIZZ As Long = {moveDefinition.DestinationModuleName}.PVT_VALUE", refactoredCode.Source);
+            StringAssert.Contains($"Public Const FIZZ As Long = {endpoints.DestinationModuleName()}.PVT_VALUE", refactoredCode.Source);
             StringAssert.Contains("Public Type TestType", refactoredCode.Source);
-            StringAssert.Contains($"Bizz = arg + {moveDefinition.DestinationModuleName}.PVT_VALUE", refactoredCode.Source);
+            StringAssert.Contains($"Bizz = arg + {endpoints.DestinationModuleName()}.PVT_VALUE", refactoredCode.Source);
 
             StringAssert.Contains("Public Const PVT_VALUE As Long = 75", refactoredCode.Destination);
             StringAssert.DoesNotContain("Public Const FIZZ As Long = PVT_VALUE", refactoredCode.Destination);
@@ -491,9 +510,8 @@ End Function
         [TestCase(MoveEndpoints.StdToStd, "Private")]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void ObjectField_NoStrategyFound(MoveEndpoints endpoints, string accessibility)
+        public void MoveObjectField_MoveToStdModuleStrategyNotApplicable(MoveEndpoints endpoints, string accessibility)
         {
-            var memberToMove = "mObj";
             var source =
 $@"
 Option Explicit
@@ -523,15 +541,15 @@ Public Property Get Value() As Long
     Value = mValue
 End Property
 ";
-            var sourceTuple = MoveMemberTestSupport.EndpointToSourceTuple(endpoints, source);
-            var destinationTuple = MoveMemberTestSupport.EndpointToDestinationTuple(endpoints, string.Empty);
-            var resultCount = MoveMemberTestSupport.ParseAndTest(ThisTest, sourceTuple, destinationTuple, ("ObjectClass", objectClass, ComponentType.ClassModule));
-            Assert.AreEqual(0, resultCount);
 
-            long ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
+            var state = CreateAndParse(endpoints, source, string.Empty);
+            using (state)
             {
-                var strategies = MoveMemberTestSupport.RetrieveStrategies(state, memberToMove, DeclarationType.Variable, rewritingManager);
-                return strategies.Count();
+                var resolver = new MoveMemberTestsResolver(state);
+                var strategyFactory = resolver.Resolve<IMoveMemberStrategyFactory>();
+                var strategy = strategyFactory.Create(MoveMemberStrategy.MoveToStandardModule);
+                var model = MoveMemberTestsResolver.CreateRefactoringModel("mObj", DeclarationType.Variable, state);
+                Assert.False(strategy.IsApplicable(model));
             }
         }
 
@@ -540,9 +558,10 @@ End Property
         [TestCase("Public mObj As New ObjectClass")]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void PublicObjectField(string declaration)
+        public void FunctionReferencesPublicObjectField(string declaration)
         {
-            var memberToMove = "mObj";
+            var memberToMove = ("mObj", DeclarationType.Variable);
+            var endpoints = MoveEndpoints.StdToStd;
             var source =
 $@"
 Option Explicit
@@ -572,14 +591,12 @@ Public Property Get Value() As Long
     Value = mValue
 End Property
 ";
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, (memberToMove, DeclarationType.Variable), sourceContent: source);
-            var refactoredCode = ExecuteTest(moveDefinition);
+            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
 
             StringAssert.DoesNotContain($"{declaration}", refactoredCode.Source);
-            StringAssert.Contains($"if {moveDefinition.DestinationModuleName}.mObj is Nothing Then", refactoredCode.Source);
-            StringAssert.Contains($"Set {moveDefinition.DestinationModuleName}.mObj = new ObjectClass", refactoredCode.Source);
-            StringAssert.Contains($"FooMath = arg1 * {moveDefinition.DestinationModuleName}.mObj.Value", refactoredCode.Source);
+            StringAssert.Contains($"if {endpoints.DestinationModuleName()}.mObj is Nothing Then", refactoredCode.Source);
+            StringAssert.Contains($"Set {endpoints.DestinationModuleName()}.mObj = new ObjectClass", refactoredCode.Source);
+            StringAssert.Contains($"FooMath = arg1 * {endpoints.DestinationModuleName()}.mObj.Value", refactoredCode.Source);
 
             StringAssert.Contains($"{declaration}", refactoredCode.Destination);
         }
@@ -588,6 +605,8 @@ End Property
         [Category("MoveMember")]
         public void StdToStdPublicArrayMoveFieldHasReferences()
         {
+            var endpoints = MoveEndpoints.StdToStd;
+            var memberToMove = ("mArray", DeclarationType.Variable);
             var source =
 $@"
 Option Explicit
@@ -598,9 +617,6 @@ Public Function FooMath(arg1 As Long) As Long
     FooMath = arg1 * mArray(2)
 End Function
 ";
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("mArray", DeclarationType.Variable), sourceContent: source);
-
             var callSiteModuleName = "CallSiteModule";
 
             var otherModuleReference =
@@ -608,12 +624,12 @@ End Function
 Option Explicit
 
 Public Function MemberAccessFoo(arg1 As Long) As Long
-    MemberAccessFoo = arg1 + {moveDefinition.SourceModuleName}.mArray(3) * 2
+    MemberAccessFoo = arg1 + {endpoints.SourceModuleName()}.mArray(3) * 2
 End Function
 
 Public Function WithMemberAccessFoo(arg1 As Long) As Long
     Dim result As Long
-    With {moveDefinition.SourceModuleName}
+    With {endpoints.SourceModuleName()}
         result = (.mArray(2) + arg1) * 2
     End With
     WithMemberAccessFoo = result
@@ -623,19 +639,19 @@ Public Function NonQualifiedFoo(arg1 As Long) As Long
     NonQualifiedFoo = (mArray(1) + arg1) * 2
 End Function
 ";
-            moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
-
-            
-            var refactoredCode = ExecuteTest(moveDefinition);
+            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints,
+                endpoints.ToSourceTuple(source),
+                endpoints.ToDestinationTuple(string.Empty),
+                (callSiteModuleName, otherModuleReference, ComponentType.StandardModule));
 
             var destinationDeclaration = "Public mArray(5) As Long";
 
             StringAssert.DoesNotContain("mArray(5) As Long", refactoredCode.Source);
             StringAssert.Contains(destinationDeclaration, refactoredCode.Destination);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.mArray(2)", refactoredCode.Source);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}(3)", refactoredCode[callSiteModuleName]);
-            StringAssert.Contains($"result = ({moveDefinition.DestinationModuleName}.mArray(2) + arg1) * 2", refactoredCode[callSiteModuleName]);
-            StringAssert.Contains($"NonQualifiedFoo = ({moveDefinition.DestinationModuleName}.mArray(1) + arg1) * 2", refactoredCode[callSiteModuleName]);
+            StringAssert.Contains($"{endpoints.DestinationModuleName()}.mArray(2)", refactoredCode.Source);
+            StringAssert.Contains($"{endpoints.DestinationModuleName()}.mArray(3)", refactoredCode[callSiteModuleName]);
+            StringAssert.Contains($"result = ({endpoints.DestinationModuleName()}.mArray(2) + arg1) * 2", refactoredCode[callSiteModuleName]);
+            StringAssert.Contains($"NonQualifiedFoo = ({endpoints.DestinationModuleName()}.mArray(1) + arg1) * 2", refactoredCode[callSiteModuleName]);
         }
 
         [Test]
@@ -644,9 +660,8 @@ End Function
         [Category("MoveMember")]
         public void CorrectsFieldNameCollisionInDestination()
         {
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("Goo", DeclarationType.PropertyLet));
-
-            var destinationModuleName = moveDefinition.DestinationModuleName;
+            var endpoints = MoveEndpoints.StdToStd;
+            var memberToMove = ("Goo", DeclarationType.PropertyLet);
             var source =
 $@"
 Option Explicit
@@ -679,9 +694,7 @@ Public Function Multiply(arg1 As Long)
     Multiply = mgoo * arg1
 End Function
 ";
-
-            moveDefinition.SetEndpointContent(source, destination);
-            var refactorResults = ExecuteTest(moveDefinition);
+            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source, destination);
 
             var destinationExpectedContent =
 $@"
@@ -706,7 +719,7 @@ End Function
             var expectedLines = destinationExpectedContent.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var line in expectedLines)
             {
-                StringAssert.Contains(line, refactorResults.Destination);
+                StringAssert.Contains(line, refactoredCode.Destination);
             }
         }
 
@@ -715,9 +728,10 @@ End Function
         [Category("MoveMember")]
         public void SetsNewFieldNameAtExternalReferences()
         {
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("mfoo", DeclarationType.Variable));
-
-            var destinationModuleName = moveDefinition.DestinationModuleName;
+            var destinationModuleName = MoveEndpoints.StdToStd.DestinationModuleName();
+            var sourceModuleName = MoveEndpoints.StdToStd.SourceModuleName();
+            var memberToMove = ("mfoo", DeclarationType.Variable);
+            var endpoints = MoveEndpoints.StdToStd;
             var source =
 $@"
 Option Explicit
@@ -745,11 +759,11 @@ Option Explicit
 Private mBar As Long
 
 Public Sub MemberAccess(arg1 As Long)
-    mBar = {moveDefinition.SourceModuleName}.mfoo + arg1
+    mBar = {sourceModuleName}.mfoo + arg1
 End Sub
 
 Public Sub WithMemberAccess(arg2 As Long)
-    With {moveDefinition.SourceModuleName}
+    With {sourceModuleName}
         mBar = .mfoo + arg2
     End With
 End Sub
@@ -758,8 +772,6 @@ Public Sub NonQualified(arg3 As Long)
     mBar = mfoo + arg3
 End Sub
 ";
-            moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, callSiteCode));
-
             var expectedCallSiteCode =
     $@"
 Option Explicit
@@ -767,26 +779,28 @@ Option Explicit
 Private mBar As Long
 
 Public Sub MemberAccess(arg1 As Long)
-    mBar = {moveDefinition.DestinationModuleName}.mfoo1 + arg1
+    mBar = {destinationModuleName}.mfoo1 + arg1
 End Sub
 
 Public Sub WithMemberAccess(arg2 As Long)
-    With {moveDefinition.SourceModuleName}
-        mBar = {moveDefinition.DestinationModuleName}.mfoo1 + arg2
+    With {sourceModuleName}
+        mBar = {destinationModuleName}.mfoo1 + arg2
     End With
 End Sub
 
 Public Sub NonQualified(arg3 As Long)
-    mBar = {moveDefinition.DestinationModuleName}.mfoo1 + arg3
+    mBar = {destinationModuleName}.mfoo1 + arg3
 End Sub
 ";
-            moveDefinition.SetEndpointContent(source, destination);
-            var refactorResults = ExecuteTest(moveDefinition);
+            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, endpoints.SourceModuleName(), 
+                endpoints.ToSourceTuple(source),
+                endpoints.ToDestinationTuple(destination),
+                (callSiteModuleName, callSiteCode, ComponentType.StandardModule));
 
             var expectedLines = expectedCallSiteCode.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var line in expectedLines)
             {
-                StringAssert.Contains(line, refactorResults[callSiteModuleName]);
+                StringAssert.Contains(line, refactoredCode[callSiteModuleName]);
             }
         }
 
@@ -796,9 +810,8 @@ End Sub
         [Category("MoveMember")]
         public void CorrectsConstantNameCollisionInDestination()
         {
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("Goo", DeclarationType.PropertyLet));
-
-            var destinationModuleName = moveDefinition.DestinationModuleName;
+            var memberToMove = ("Goo", DeclarationType.PropertyLet);
+            var endpoints = MoveEndpoints.StdToStd;
             var source =
 $@"
 Option Explicit
@@ -834,9 +847,8 @@ Public Function Multiply(arg1 As Long)
     Multiply = arg1 * multiplier
 End Function
 ";
+            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, endpoints.SourceModuleName(), source, destination);
 
-            moveDefinition.SetEndpointContent(source, destination);
-            var refactorResults = ExecuteTest(moveDefinition);
 
             var destinationExpectedContent =
 $@"
@@ -864,19 +876,20 @@ End Function
             var expectedLines = destinationExpectedContent.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var line in expectedLines)
             {
-                StringAssert.Contains(line, refactorResults.Destination);
+                StringAssert.Contains(line, refactoredCode.Destination);
             }
         }
 
-        [TestCase("mfoo", null)]
-        [TestCase("BigFoo", MoveMemberTestSupport.DEFAULT_DESTINATION_MODULE_NAME + ".")]
+        [TestCase("mfoo", false)]
+        [TestCase("BigFoo", true)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void SetsNewConstantNameAtExternalReferences(string selectedConstant, string expectedModuleQualification)
+        public void SetsNewConstantNameAtExternalReferences(string selectedConstant, bool useModuleQualification /*expectedModuleQualification*/)
         {
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, (selectedConstant, DeclarationType.Constant));
-
-            var destinationModuleName = moveDefinition.DestinationModuleName;
+            var memberToMove = (selectedConstant, DeclarationType.Constant);
+            var endpoints = MoveEndpoints.StdToStd;
+            var sourceModuleName = MoveEndpoints.StdToStd.SourceModuleName();
+            var destinationModuleName = MoveEndpoints.StdToStd.DestinationModuleName();
             var source =
 $@"
 Option Explicit
@@ -905,11 +918,11 @@ Option Explicit
 Private mBar As Long
 
 Public Sub MemberAccess(arg1 As Long)
-    mBar = {moveDefinition.SourceModuleName}.BigFoo + arg1
+    mBar = {sourceModuleName}.BigFoo + arg1
 End Sub
 
 Public Sub WithMemberAccess(arg2 As Long)
-    With {moveDefinition.SourceModuleName}
+    With {sourceModuleName}
         mBar = .BigFoo + arg2
     End With
 End Sub
@@ -918,7 +931,17 @@ Public Sub NonQualified(arg3 As Long)
     mBar = BigFoo + arg3
 End Sub
 ";
-            moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, callSiteCode));
+            var memberAccessQualification = useModuleQualification
+                ? $"{destinationModuleName}."
+                : $"{sourceModuleName}.";
+
+            var withMemberAccessQualification = useModuleQualification
+                ? $"{destinationModuleName}."
+                : ".";
+
+            var nonQualifiedAccess = useModuleQualification
+                ? $"{destinationModuleName}."
+                : string.Empty;
 
             var expectedCallSiteCode =
     $@"
@@ -927,26 +950,28 @@ Option Explicit
 Private mBar As Long
 
 Public Sub MemberAccess(arg1 As Long)
-    mBar = {expectedModuleQualification ?? moveDefinition.SourceModuleName + "."}BigFoo + arg1
+    mBar = {memberAccessQualification}BigFoo + arg1
 End Sub
 
 Public Sub WithMemberAccess(arg2 As Long)
-    With {moveDefinition.SourceModuleName}
-        mBar = {expectedModuleQualification ?? "."}BigFoo + arg2
+    With {sourceModuleName}
+        mBar = {withMemberAccessQualification}BigFoo + arg2
     End With
 End Sub
 
 Public Sub NonQualified(arg3 As Long)
-    mBar = {expectedModuleQualification ?? string.Empty}BigFoo + arg3
+    mBar = {nonQualifiedAccess}BigFoo + arg3
 End Sub
 ";
-            moveDefinition.SetEndpointContent(source, destination);
-            var refactorResults = ExecuteTest(moveDefinition);
+            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, 
+                    endpoints.ToSourceTuple(source),
+                    endpoints.ToDestinationTuple(string.Empty),
+                    (callSiteModuleName, callSiteCode, ComponentType.StandardModule));
 
             var expectedLines = expectedCallSiteCode.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var line in expectedLines)
             {
-                StringAssert.Contains(line, refactorResults[callSiteModuleName]);
+                StringAssert.Contains(line, refactoredCode[callSiteModuleName]);
             }
         }
     }

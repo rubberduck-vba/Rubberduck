@@ -1,5 +1,8 @@
 ﻿using NUnit.Framework;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -7,6 +10,7 @@ using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TestDI = RubberduckTests.Refactoring.NameConflictFinderTestsDI;
 
 namespace RubberduckTests.Refactoring
 {
@@ -433,8 +437,10 @@ End Function
                     .Where(d => d.IdentifierName.Equals(destinationModuleName)).Single();
 
 
-                var conflictFinder = new NameConflictFinder(state);
-                var hasConflict = conflictFinder.MoveCreatesNameConflict(target, destinationModule.IdentifierName, Accessibility.Public, out _);
+                var proxy = MemberProxy(target, destinationModuleName, state);
+                proxy.Accessibility = Accessibility.Public;
+                var conflictFinder = TestDI.Resolve<INameConflictFinder>(state);
+                var hasConflict = conflictFinder.ProposedDeclarationCreatesConflict(proxy, out _);
                 Assert.AreEqual(isConflict, hasConflict);
             }
         }
@@ -458,8 +464,10 @@ End Function
                 var target = state.DeclarationFinder.DeclarationsWithType(selection.declarationType)
                                 .Single(d => d.IdentifierName == selection.identifier && d.QualifiedModuleName.ComponentName == MockVbeBuilder.TestModuleName);
 
-                var conflictFinder = new NameConflictFinder(state);
-                result = conflictFinder.MoveCreatesNameConflict(target, destinationModuleName, target.Accessibility, out _, newName);
+                var proxy = MemberProxy(target, destinationModuleName, state);
+                proxy.IdentifierName = newName ?? target.IdentifierName;
+                var conflictFinder = TestDI.Resolve<INameConflictFinder>(state);
+                result = conflictFinder.ProposedDeclarationCreatesConflict(proxy, out _);
             }
 
             return result;
@@ -488,10 +496,22 @@ End Function
                                 .FirstOrDefault(item => item.IsSelected(qualifiedSelection) || item.References.Any(r => r.IsSelected(qualifiedSelection)));
 
 
-                var conflictFinder = new NameConflictFinder(state);
-                result = conflictFinder.MoveCreatesNameConflict(target, "DestinationDefault", target.Accessibility, out _);
+                var proxy = MemberProxy(target, "DestinationDefault", state);
+                var conflictFinder = TestDI.Resolve<INameConflictFinder>(state);
+                result = conflictFinder.ProposedDeclarationCreatesConflict(proxy, out _);
             }
             return result;
+        }
+
+        private IDeclarationProxy MemberProxy(Declaration target, string targetModuleName, RubberduckParserState state)
+        {
+            var targetModule = state.DeclarationFinder.MatchName(targetModuleName)
+                                                .OfType<ModuleDeclaration>()
+                                                .Single();
+
+            var proxyFactory = TestDI.Resolve<IDeclarationProxyFactory>(state);
+            var proxy = proxyFactory.Create(target, target.IdentifierName, targetModule);
+            return proxy;
         }
 
         private (string code, Selection selection) ToCodeAndSelectionTuple(string input)
@@ -500,4 +520,26 @@ End Function
             return (codeString.Code, codeString.CaretPosition.ToOneBased());
         }
     }
+
+    public class NameConflictFinderTestsDI
+    {
+        public static T Resolve<T>(RubberduckParserState state) where T : class
+        {
+            return Resolve<T>(state, typeof(T).Name);
+        }
+
+        private static T Resolve<T>(RubberduckParserState _state, string name) where T : class
+        {
+            switch (name)
+            {
+                case nameof(INameConflictFinder):
+                    return new NameConflictFinder(_state, Resolve<IDeclarationProxyFactory>(_state)) as T;
+                case nameof(IDeclarationProxyFactory):
+                    return new DeclarationProxyFactory(_state) as T;
+                default:
+                    throw new ArgumentException();
+            }
+        }
+    }
+
 }

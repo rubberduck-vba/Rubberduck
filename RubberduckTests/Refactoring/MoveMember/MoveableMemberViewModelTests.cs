@@ -1,11 +1,11 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.UI.Refactorings.MoveMember;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using System.Linq;
+using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
@@ -71,22 +71,9 @@ End Property
 Public Property Get ReadOnlyVariant() As Variant
 End Property
 ";
+            var result = GenerateDisplayString(member, (MoveEndpoints.StdToStd.SourceModuleName(), source, ComponentType.StandardModule)); // moveDefinition/*, source*/);
 
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, (member, DeclarationType.PropertyGet), sourceContent: source);
-            var vbeStub = MoveMemberTestSupport.BuildVBEStub(moveDefinition, source);
-
-            var displaySignature = MoveMemberTestSupport.ParseAndTest(vbeStub, ThisTest);
-
-            StringAssert.AreEqualIgnoringCase(expectedDisplay, displaySignature);
-
-            string ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
-            {
-                var target = state.DeclarationFinder.MatchName(member);
-
-                var model = MoveMemberTestSupport.CreateRefactoringModel(target.First(), state, rewritingManager);
-                var viewModel = new MoveableMemberSetViewModel(new MoveMemberViewModel(model), model.MoveableMemberSetByName(target.First().IdentifierName));
-                return viewModel.ToDisplayString;
-            }
+            StringAssert.AreEqualIgnoringCase(expectedDisplay, result);
         }
 
         [TestCase("Fizz", "Public Sub Fizz(arg1 As Long, arg2 As Collection)")]
@@ -98,7 +85,7 @@ End Property
         [TestCase("LIZZ", "Public Const LIZZ As Long = OtherVal")]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MoveableMemberSetNonPropertyDisplayNameX(string member, string expectedDisplay)
+        public void MoveableMemberSetNonPropertyDisplayNames(string member, string expectedDisplay)
         {
             var source =
 $@"
@@ -120,21 +107,24 @@ End Sub
 Public Function Bizz() As Long
 End Function
 ";
+            var result = GenerateDisplayString(member, MoveEndpoints.StdToStd.ToSourceTuple(source));
 
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, (member, DeclarationType.PropertyGet), sourceContent: source);
+            StringAssert.AreEqualIgnoringCase(expectedDisplay, result);
+        }
 
-            var vbeStub = MoveMemberTestSupport.BuildVBEStub(moveDefinition, source);
-            var displaySignature = MoveMemberTestSupport.ParseAndTest(vbeStub, ThisTest);
-
-            StringAssert.AreEqualIgnoringCase(expectedDisplay, displaySignature);
-
-
-            string ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
+        public static string GenerateDisplayString(string targetIdentifier, params (string, string, ComponentType)[] modules)
+        {
+            var vbeStub = MockVbeBuilder.BuildFromModules(modules).Object;
+            (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbeStub);
+            using (state)
             {
-                var target = state.DeclarationFinder.MatchName(member);
+                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
 
-                var model = MoveMemberTestSupport.CreateRefactoringModel(target.First(), state, rewritingManager);
-                var viewModel = new MoveableMemberSetViewModel(new MoveMemberViewModel(model), model.MoveableMemberSetByName(target.First().IdentifierName));
+                var targets = state.DeclarationFinder.MatchName(targetIdentifier);
+                var moveableMemberSet = serviceLocator.Resolve<MoveableMemberSetFactory>()
+                    .Create(targets);
+
+                var viewModel = new MoveableMemberSetViewModel(vm => { }, moveableMemberSet);
                 return viewModel.ToDisplayString;
             }
         }

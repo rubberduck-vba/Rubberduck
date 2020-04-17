@@ -1,15 +1,9 @@
 ﻿using NUnit.Framework;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Common;
-using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.Refactorings.MoveMember.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace RubberduckTests.Refactoring.MoveMember
@@ -38,17 +32,7 @@ Public Sub {input}
 End Sub
 ";
 
-            var vbeStub = MockVbeBuilder.BuildFromSingleModule(source, ComponentType.StandardModule, out _);
-            var result = MoveMemberTestSupport.ParseAndTest(vbeStub.Object, ThisTest);
-
-            string ThisTest(RubberduckParserState state)
-            {
-                var target = state.DeclarationFinder.MatchName(member).Single();
-                return target is ModuleBodyElementDeclaration mbed
-                                ? mbed.ImprovedArgumentList()
-                                : string.Empty;
-            }
-
+            var result = TestForImprovedArgumentList(source, member);
             StringAssert.Contains(expectedToContain, result);
         }
 
@@ -66,17 +50,7 @@ Public Property Get {input}
 End Property
 ";
 
-            var vbeStub = MockVbeBuilder.BuildFromSingleModule(source, ComponentType.StandardModule, out _);
-            var result = MoveMemberTestSupport.ParseAndTest(vbeStub.Object, ThisTest);
-
-            string ThisTest(RubberduckParserState state)
-            {
-                var target = state.DeclarationFinder.MatchName(member).Single();
-                return target is ModuleBodyElementDeclaration mbed
-                                ? mbed.ImprovedArgumentList()
-                                : string.Empty;
-            }
-
+            var result = TestForImprovedArgumentList(source, member);
             StringAssert.Contains(expectedToContain, result);
         }
 
@@ -100,17 +74,7 @@ Public Property Let {input}
 End Property
 ";
 
-            var vbeStub = MockVbeBuilder.BuildFromSingleModule(source, ComponentType.StandardModule, out _);
-            var result = MoveMemberTestSupport.ParseAndTest(vbeStub.Object, ThisTest);
-
-            string ThisTest(RubberduckParserState state)
-            {
-                var target = state.DeclarationFinder.MatchName(member).Single();
-                return target is ModuleBodyElementDeclaration mbed
-                                ? mbed.ImprovedArgumentList()
-                                : string.Empty;
-            }
-
+            var result = TestForImprovedArgumentList(source, member);
             foreach (var expected in expectedToContain)
             {
                 StringAssert.Contains(expected, result);
@@ -132,17 +96,7 @@ Public Property Let {input}
 End Property
 ";
 
-            var vbeStub = MockVbeBuilder.BuildFromSingleModule(source, ComponentType.StandardModule, out _);
-            var result = MoveMemberTestSupport.ParseAndTest(vbeStub.Object, ThisTest);
-
-            string ThisTest(RubberduckParserState state)
-            {
-                var target = state.DeclarationFinder.MatchName(member).Single();
-                return target is ModuleBodyElementDeclaration mbed
-                                ? mbed.ImprovedArgumentList()
-                                : string.Empty;
-            }
-
+            var result = TestForImprovedArgumentList(source, member);
             foreach (var expected in expectedToContain)
             {
                 StringAssert.Contains(expected, result);
@@ -162,21 +116,8 @@ Public Sub Fizz(arg1 As Long, Optional arg2 As Long = 4)
 End Sub
 ";
 
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, (member, DeclarationType.PropertyGet), sourceContent: source);
-
-            var vbeStub = MoveMemberTestSupport.BuildVBEStub(moveDefinition, source);
-            var displaySignature = MoveMemberTestSupport.ParseAndTest(vbeStub, ThisTest);
-
+            var displaySignature = TestForImprovedArgumentList(source, member);
             StringAssert.AreEqualIgnoringCase(expectedDisplay, displaySignature);
-
-
-            string ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
-            {
-                var target = state.DeclarationFinder.MatchName(member).Single();
-                return target is ModuleBodyElementDeclaration mbed
-                                ? mbed.ImprovedArgumentList()
-                                : string.Empty;
-            }
         }
 
         [TestCase("Fizz", "arg1 As Long, ParamArray moreArgs() As Variant")]
@@ -196,21 +137,8 @@ Public Sub Bizz(arg1 As Long, ParamArray moreArgs())
 End Sub
 ";
 
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, (member, DeclarationType.PropertyGet), sourceContent: source);
-
-            var vbeStub = MoveMemberTestSupport.BuildVBEStub(moveDefinition, source);
-            var displaySignature = MoveMemberTestSupport.ParseAndTest(vbeStub, ThisTest);
-
+            var displaySignature = TestForImprovedArgumentList(source, member);
             StringAssert.AreEqualIgnoringCase(expectedDisplay, displaySignature);
-
-
-            string ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
-            {
-                var target = state.DeclarationFinder.MatchName(member).Single();
-                return target is ModuleBodyElementDeclaration mbed
-                                ? mbed.ImprovedArgumentList()
-                                : string.Empty;
-            }
         }
 
         [Test]
@@ -239,22 +167,17 @@ Public Property Get Bazz() As Long
 End Property
 ";
 
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, (member, DeclarationType.PropertyGet), sourceContent: source);
-
-
-            var vbeStub = MoveMemberTestSupport.BuildVBEStub(moveDefinition, source);
-            var moveCandidates = MoveMemberTestSupport.ParseAndTest(vbeStub, ThisTest);
-
-            IEnumerable<IMoveableMemberSet> ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
+            var vbeStub = MockVbeBuilder.BuildFromSingleStandardModule(source, out _);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbeStub.Object);
+            using (state)
             {
                 var targets = state.DeclarationFinder.MatchName(member);
+                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
+                var factory = serviceLocator.Resolve<IMoveableMemberSetsFactory>();
 
-                var factory = MoveMemberTestsDI.Resolve<IMoveableMemberSetsFactory>(state, rewritingManager);
-
-                return factory.Create(targets.First()).ToDictionary(key => key.IdentifierName).Values;
+                var result =  factory.Create(targets.First()).ToDictionary(key => key.IdentifierName).Values;
+                Assert.AreEqual(3, result.Count());
             }
-
-            Assert.AreEqual(3, moveCandidates.Count());
         }
 
         [TestCase("fizz", "fizz1")]
@@ -269,6 +192,19 @@ End Property
         {
             var actual = input.IncrementIdentifier();
             Assert.AreEqual(expected, actual);
+        }
+
+        public static string TestForImprovedArgumentList(string targetID, string sourceContent)
+        {
+            var vbeStub = MockVbeBuilder.BuildFromSingleStandardModule(sourceContent, out _).Object;
+            var state = MockParser.CreateAndParse(vbeStub);
+            using (state)
+            {
+                var target = state.DeclarationFinder.MatchName(targetID).Single();
+                return target is ModuleBodyElementDeclaration mbed
+                                ? mbed.ImprovedArgumentList()
+                                : string.Empty;
+            }
         }
     }
 }
