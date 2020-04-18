@@ -547,8 +547,9 @@ End Property
             {
                 var resolver = new MoveMemberTestsResolver(state);
                 var strategyFactory = resolver.Resolve<IMoveMemberStrategyFactory>();
-                var strategy = strategyFactory.Create(MoveMemberStrategy.MoveToStandardModule);
                 var model = MoveMemberTestsResolver.CreateRefactoringModel("mObj", DeclarationType.Variable, state);
+
+                var strategy = strategyFactory.Create(model.MoveEndpoints);
                 Assert.False(strategy.IsApplicable(model));
             }
         }

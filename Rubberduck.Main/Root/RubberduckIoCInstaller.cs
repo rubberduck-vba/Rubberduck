@@ -411,6 +411,9 @@ namespace Rubberduck.Root
             container.Register(Component.For<IMoveableMemberSetFactory>()
                 .ImplementedBy<MoveableMemberSetFactory>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IMoveMemberModelFactory>()
+                .ImplementedBy<MoveMemberModelFactory>()
+                .LifestyleSingleton());
         }
 
         private void RegisterQuickFixes(IWindsorContainer container, Assembly[] assembliesToRegister)

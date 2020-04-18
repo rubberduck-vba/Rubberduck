@@ -166,5 +166,44 @@ End Property
             StringAssert.Contains("Get FooTimes2()", refactoredCode.Destination);
             StringAssert.Contains("Private Const mFoo As Long = 10", refactoredCode.Destination);
         }
+
+        [TestCase("Foo", "FooTimes2")]
+        [TestCase("FooTimes2", "Foo")]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void MovedPropertyAccessesRetainedProperty(string memberMoved, string memberRetained)
+        {
+            var memberToMove = (memberMoved, DeclarationType.PropertyGet);
+            var endpoints = MoveEndpoints.StdToStd;
+
+            var source =
+$@"
+Option Explicit
+
+Private Const mFoo As Long = 10
+
+Public Property Get Foo() As Long
+    Foo = mFoo
+End Property
+
+Public Property Get FooTimes2() As Long 
+    FooTimes2 = Foo * 2
+End Property
+";
+
+            MoveMemberModel modelAdjustment(MoveMemberModel model)
+            {
+                model.ChangeDestination(endpoints.DestinationModuleName(), ComponentType.StandardModule);
+                return model;
+            }
+
+            var refactoredCode = RefactorTargets(memberToMove, endpoints, source, string.Empty, modelAdjustment);
+
+            (string module, string expected) = memberMoved.Equals("Foo")
+                    ? (endpoints.SourceModuleName(), $"FooTimes2 = {endpoints.DestinationModuleName()}.Foo * 2")
+                    : (endpoints.DestinationModuleName(), $"FooTimes2 = {endpoints.SourceModuleName()}.Foo * 2");
+
+            StringAssert.Contains(expected, refactoredCode[module]);
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace Rubberduck.Refactorings.MoveMember
     public enum MoveGroup
     {
         AllParticipants,
-        Selected, 
+        Selected,
         Support,
         NonParticipants,
         Support_Public,
@@ -28,6 +28,7 @@ namespace Rubberduck.Refactorings.MoveMember
         IReadOnlyCollection<Declaration> Dependencies(MoveGroup moveGroup);
         IReadOnlyCollection<Declaration> DirectDependencies(MoveGroup moveGroup);
         IReadOnlyCollection<IMoveableMemberSet> ToMoveableMemberSets(IEnumerable<Declaration> declarations);
+        IReadOnlyCollection<Declaration> SelectedPrivateFields { get; }
     }
 
     /// <summary>
@@ -48,18 +49,31 @@ namespace Rubberduck.Refactorings.MoveMember
         private Dictionary<MoveGroup, List<IMoveableMemberSet>> _moveMemberSetsByMoveGroup;
         private Dictionary<MoveGroup, List<Declaration>> _dependenciesByMoveGroup;
         private Dictionary<string, IMoveableMemberSet> _moveableMembersByName;
+        private List<Declaration> _selectedPrivateVariables;
 
         public MoveMemberGroupsProvider(IEnumerable<IMoveableMemberSet> moveableMemberSets, IDeclarationFinderProvider declarationFinderProvider)
         {
             _declarationProvider = declarationFinderProvider;
             _allMoveableMemberSets = moveableMemberSets.ToList();
+            _selectedPrivateVariables = new List<Declaration>();
 
             var selectedMoveMemberSets = _allMoveableMemberSets.Where(mm => mm.IsSelected);
             var selectedDeclarations = selectedMoveMemberSets.SelectMany(mm => mm.Members);
+            _moveableMembersByName = _allMoveableMemberSets.ToDictionary(key => key.IdentifierName);
 
             if (!selectedDeclarations.Any()) { return; }
 
-            _moveableMembersByName = _allMoveableMemberSets.ToDictionary(key => key.IdentifierName);
+            //Moving Private fields (by themselves) is not supported - So, remove the IsSelected flag.
+            //If the selected Private fields show up in the Support_Private move group - they will be moved.
+            _selectedPrivateVariables.AddRange(selectedDeclarations.Where(d => d.IsMemberVariable() && d.HasPrivateAccessibility()));
+            foreach (var selectedPvtField in _selectedPrivateVariables)
+            {
+                _moveableMembersByName[selectedPvtField.IdentifierName].IsSelected = false;
+            }
+
+            //If Private Fields is all that was selected, nothing to group
+            if (!selectedDeclarations.Any()) { return; }
+
             _allParticipants = new List<Declaration>();
 
             CreateFlattenedDependencies(_allMoveableMemberSets);
@@ -180,10 +194,12 @@ namespace Rubberduck.Refactorings.MoveMember
             var moveables = new List<IMoveableMemberSet>();
             foreach (var identifier in uniqueIdentifiers)
             {
-                moveables.AddRange(_moveMemberSetsByMoveGroup[MoveGroup.AllParticipants].Where(mm => mm.IdentifierName.IsEquivalentVBAIdentifierTo(identifier)));
+                moveables.AddRange(_allMoveableMemberSets.Where(mm => mm.IdentifierName.IsEquivalentVBAIdentifierTo(identifier)));
             }
             return moveables;
         }
+
+        public IReadOnlyCollection<Declaration> SelectedPrivateFields => _selectedPrivateVariables;
 
         private IMoveableMemberSet MoveableMemberSet(Declaration declaration)
         {

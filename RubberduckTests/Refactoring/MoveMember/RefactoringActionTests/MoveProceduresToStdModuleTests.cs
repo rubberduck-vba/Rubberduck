@@ -17,7 +17,7 @@ namespace RubberduckTests.Refactoring.MoveMember
         [TestCase(MoveEndpoints.FormToClass)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void SimpleMoveToClassModuleMoveToStdModuleStrategyNA(MoveEndpoints endpoints)
+        public void SimpleMoveToClassModuleMoveThrow(MoveEndpoints endpoints)
         {
             var source = $@"
 Option Explicit
@@ -179,11 +179,8 @@ End Sub
 {subLogAccessibility} Sub Log()
 End Sub";
 
-            //var moveDefinition = new TestMoveDefinition(endpoints, memberToMove, sourceContent: source);
-
             if (throwsException)
             {
-                //Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition, moveDefinition.ModelBuilder));
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source);
                 return;
             }

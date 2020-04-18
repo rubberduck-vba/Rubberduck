@@ -7,14 +7,12 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
-using Support = RubberduckTests.Refactoring.MoveMember.MoveMemberRefactoringActionTestSupportBase;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
     [TestFixture]
-    public class MoveMemberToStdModulePreviewTests : InteractiveRefactoringTestBase<IMoveMemberPresenter, MoveMemberModel>
+    public class MoveMemberToStdModulePreviewTests
     {
         private string OptionExplicitBlock = $"Option Explicit{Environment.NewLine}{Environment.NewLine}";
 
@@ -405,13 +403,7 @@ End Sub
         {
             var modules = endpoints.ToModulesTuples(sourceContent, destinationContent);
             var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
-            //var vbe = ToVBEStub(endpoints, sourceContent, destinationContent);
             return MockParser.CreateAndParseWithRewritingManager(vbe);
-        }
-
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, RefactoringUserInteraction<IMoveMemberPresenter, MoveMemberModel> userInteraction, ISelectionService selectionService)
-        {
-            return MoveMemberTestsResolver.CreateRefactoring(rewritingManager, state, userInteraction, selectionService);
         }
     }
 }

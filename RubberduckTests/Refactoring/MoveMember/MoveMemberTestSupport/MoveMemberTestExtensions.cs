@@ -1,4 +1,6 @@
-﻿using Rubberduck.Refactorings.MoveMember;
+﻿using Rubberduck.Common;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System;
 
@@ -34,7 +36,7 @@ namespace RubberduckTests.Refactoring.MoveMember
 
         public static (string moduleName, string content, ComponentType componentType) ToSourceTuple(this MoveEndpoints endpoints, string content)
         {
-            var endpointAttributes = endpoints.EndpointsToSourceAttributes();
+            var endpointAttributes = endpoints.ToSourceAttributes();
             return (endpointAttributes.ModuleName, content, endpointAttributes.ComponentType);
         }
 
@@ -46,12 +48,27 @@ namespace RubberduckTests.Refactoring.MoveMember
 
         public static string SourceModuleName(this MoveEndpoints endpoints)
         {
-            return endpoints.EndpointsToSourceAttributes().ModuleName;
+            return endpoints.ToSourceAttributes().ModuleName;
+        }
+
+        public static string DestinationClassInstanceName(this MoveEndpoints endpoints)
+        {
+            return $"{endpoints.DestinationModuleName().ToLowerCaseFirstLetter()}1";
         }
 
         public static string DestinationModuleName(this MoveEndpoints endpoints)
         {
             return endpoints.ToDestinationAttributes().ModuleName;
+        }
+
+        public static ComponentType SourceComponentType(this MoveEndpoints endpoints)
+        {
+            return endpoints.ToDestinationAttributes().ComponentType;
+        }
+
+        public static ComponentType DestinationComponentType(this MoveEndpoints endpoints)
+        {
+            return endpoints.ToDestinationAttributes().ComponentType;
         }
 
         public static bool IsClassSource(this MoveEndpoints endpoints)
@@ -86,7 +103,7 @@ namespace RubberduckTests.Refactoring.MoveMember
             }
         }
 
-        private static (string ModuleName, ComponentType ComponentType) EndpointsToSourceAttributes(this MoveEndpoints endpoints)
+        private static (string ModuleName, ComponentType ComponentType) ToSourceAttributes(this MoveEndpoints endpoints)
         {
             switch (endpoints)
             {
@@ -99,6 +116,23 @@ namespace RubberduckTests.Refactoring.MoveMember
                 case MoveEndpoints.StdToStd:
                 case MoveEndpoints.StdToClass:
                     return (DEFAULT_SOURCE_MODULE_NAME, ComponentType.StandardModule);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public static DeclarationType ToDeclarationType(this MoveEndpoints endpoints)
+        {
+            switch (endpoints)
+            {
+                case MoveEndpoints.StdToStd:
+                case MoveEndpoints.ClassToStd:
+                case MoveEndpoints.FormToStd:
+                    return DeclarationType.ProceduralModule;
+                case MoveEndpoints.StdToClass:
+                case MoveEndpoints.ClassToClass:
+                case MoveEndpoints.FormToClass:
+                    return DeclarationType.ClassModule;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

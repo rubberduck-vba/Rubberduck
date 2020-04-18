@@ -7,8 +7,8 @@ namespace Rubberduck.Refactorings.MoveMember
         private readonly IRefactoringAction<MoveMemberModel> _moveMemberToNewModuleRefactoringAction;
         private readonly IRefactoringAction<MoveMemberModel> _moveMemberToExistingModuleRefactoringAction;
 
-        public MoveMemberRefactoringAction(MoveMemberToNewStandardModuleRefactoringAction moveMemberToNewModuleRefactoring, 
-                                            MoveMemberToExistingStandardModuleRefactoringAction moveMemberToExistingModuleRefactoring)
+        public MoveMemberRefactoringAction(MoveMemberToNewModuleRefactoringAction moveMemberToNewModuleRefactoring, 
+                                            MoveMemberToExistingModuleRefactoringAction moveMemberToExistingModuleRefactoring)
         {
             _moveMemberToNewModuleRefactoringAction = moveMemberToNewModuleRefactoring;
             _moveMemberToExistingModuleRefactoringAction = moveMemberToExistingModuleRefactoring;

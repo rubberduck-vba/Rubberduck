@@ -14,6 +14,7 @@ namespace Rubberduck.Refactorings.MoveMember
         private readonly IMoveMemberEndpointFactory _moveEndpointFactory;
 
         private IMoveMemberRefactoringStrategy _strategyMoveToStandardModule;
+        private IMoveMemberRefactoringStrategy _strategyMoveStdToClass;
 
         public MoveMemberModel(Declaration target, 
                                 IDeclarationFinderProvider declarationFinderProvider, 
@@ -29,8 +30,11 @@ namespace Rubberduck.Refactorings.MoveMember
             var destinationModuleName = DetermineInitialDestinationModuleName(declarationFinderProvider, Source.ModuleName);
             Destination = _moveEndpointFactory.CreateDestinationEndpoint(destinationModuleName, ComponentType.StandardModule) as IMoveDestinationEndpoint;
 
-            _strategyMoveToStandardModule = _strategyFactory.Create(MoveMemberStrategy.MoveToStandardModule);
+            _strategyMoveToStandardModule = _strategyFactory.Create(DetermineMoveEndpoints());
+            _strategyMoveStdToClass = _strategyFactory.Create(MoveEndpoints.StdToClass);
         }
+
+        public MoveEndpoints MoveEndpoints => DetermineMoveEndpoints();
 
         public IMoveSourceEndpoint Source { private set; get; }
 
@@ -51,7 +55,7 @@ namespace Rubberduck.Refactorings.MoveMember
             Destination = _moveEndpointFactory.CreateDestinationEndpoint(destinationModuleName, componentType) as IMoveDestinationEndpoint;
         }
 
-        public void ChangeDestination(Declaration destinationModule)
+        public void ChangeDestination(ModuleDeclaration destinationModule)
         {
             if (destinationModule != null)
             {
@@ -82,6 +86,11 @@ namespace Rubberduck.Refactorings.MoveMember
                 strategy = _strategyMoveToStandardModule;
                 return true;
             }
+            if (_strategyMoveStdToClass.IsApplicable(this))
+            {
+                strategy = _strategyMoveStdToClass;
+                return true;
+            }
             strategy = null;
             return false;
         }
@@ -101,5 +110,35 @@ namespace Rubberduck.Refactorings.MoveMember
             }
             return destinationModuleName;
         }
+
+        private MoveEndpoints DetermineMoveEndpoints()
+        {
+            if (Source.IsStandardModule)
+            {
+                if (Destination.IsStandardModule)
+                {
+                    return MoveEndpoints.StdToStd;
+                }
+                return MoveEndpoints.StdToClass;
+            }
+            if (Source.IsClassModule)
+            {
+                if (Destination.IsStandardModule)
+                {
+                    return MoveEndpoints.ClassToStd;
+                }
+                return MoveEndpoints.ClassToClass;
+            }
+            if (Source.IsUserFormModule)
+            {
+                if (Destination.IsStandardModule)
+                {
+                    return MoveEndpoints.FormToStd;
+                }
+                return MoveEndpoints.FormToClass;
+            }
+            return MoveEndpoints.Undefined;
+        }
+
     }
 }

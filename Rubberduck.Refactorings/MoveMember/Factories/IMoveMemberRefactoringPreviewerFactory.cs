@@ -15,11 +15,11 @@ namespace Rubberduck.Refactorings
 
     public class MoveMemberRefactoringPreviewerFactory : IMoveMemberRefactoringPreviewerFactory
     {
-        private readonly MoveMemberToExistingStandardModuleRefactoringAction _refactoringAction;
+        private readonly MoveMemberToExistingModuleRefactoringAction _refactoringAction;
         private readonly IRewritingManager _rewritingManager;
         private readonly IMovedContentProviderFactory _movedContentProviderFactory;
 
-        public MoveMemberRefactoringPreviewerFactory(MoveMemberToExistingStandardModuleRefactoringAction refactoringAction, 
+        public MoveMemberRefactoringPreviewerFactory(MoveMemberToExistingModuleRefactoringAction refactoringAction, 
                                                 IRewritingManager rewritingManager,
                                                 IMovedContentProviderFactory movedContentProviderFactory)
         {

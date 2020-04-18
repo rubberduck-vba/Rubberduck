@@ -1,10 +1,15 @@
 ﻿using NUnit.Framework;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.Refactorings.MoveMember.Extensions;
 using RubberduckTests.Mocks;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
@@ -194,7 +199,228 @@ End Property
             Assert.AreEqual(expected, actual);
         }
 
-        public static string TestForImprovedArgumentList(string targetID, string sourceContent)
+        [TestCase("mTest")]
+        [TestCase("mTest", "mTest1")]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void MoveMemberModelFactoryCreateOverloadsNamedDestination(params string[] fieldsToMove)
+        {
+            var endpoints = MoveEndpoints.StdToStd;
+            var source =
+$@"
+Option Explicit
+
+Public mTest As Long
+
+Public mTest1 As Long
+";
+            (RubberduckParserState state, IRewritingManager rewritingManager) = CreateAndParse(MoveEndpoints.StdToStd, source, string.Empty);
+            using (state)
+            {
+                var useDestinationName = true;
+                var destinationContent = ExecuteMoveMemberRefactoringAction(state, rewritingManager, endpoints, fieldsToMove, useDestinationName);
+
+                StringAssert.Contains("Public mTest As Long", destinationContent);
+                if (fieldsToMove.Count() > 1)
+                {
+                    StringAssert.Contains("Public mTest1 As Long", destinationContent);
+                }
+            }
+        }
+
+        [TestCase("mTest")]
+        [TestCase("mTest", "mTest1")]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void MoveMemberModelFactoryCreateOverloadsDestinationDeclaration(params string[] fieldsToMove)
+        {
+            var endpoints = MoveEndpoints.StdToStd;
+            var source =
+$@"
+Option Explicit
+
+Public mTest As Long
+
+Public mTest1 As Long
+";
+            (RubberduckParserState state, IRewritingManager rewritingManager) = CreateAndParse(MoveEndpoints.StdToStd, source, string.Empty);
+            using (state)
+            {
+                var useDestinationName = false;
+                var destinationContent = ExecuteMoveMemberRefactoringAction(state, rewritingManager, endpoints, fieldsToMove, useDestinationName);
+
+                StringAssert.Contains("Public mTest As Long", destinationContent);
+                if (fieldsToMove.Count() > 1)
+                {
+                    StringAssert.Contains("Public mTest1 As Long", destinationContent);
+                }
+            }
+        }
+
+        [TestCase("mTest")]
+        [TestCase("mTest", "mTest1")]
+        [TestCase("mTest1", "mTest2")]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void MoveMemberModelFactoryCreateOverloadsUsesDestinationNameThrows(params string[] fieldsToMove)
+        {
+            var endpoints = MoveEndpoints.StdToStd;
+            var source =
+$@"
+Option Explicit
+
+Private Type TestType
+    FirstVal As Long
+End Type
+
+Public mTest As TestType
+
+Private mINeedMyType As TestType
+
+Public mTest1 As Long
+
+Private mTest2 As Long
+";
+            (RubberduckParserState state, IRewritingManager rewritingManager) = CreateAndParse(MoveEndpoints.StdToStd, source, string.Empty);
+            using (state)
+            {
+                var useDestinationName = false;
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteMoveMemberRefactoringAction(state, rewritingManager, endpoints, fieldsToMove, useDestinationName));
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void MoveMemberModelFactoryNullTargetThrows()
+        {
+            var source =
+$@"
+Option Explicit
+
+Public mTest As Long
+";
+            (RubberduckParserState state, IRewritingManager rewritingManager) = CreateAndParse(MoveEndpoints.StdToStd, source, string.Empty);
+            using (state)
+            {
+                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
+                var modelFactory = serviceLocator.Resolve<IMoveMemberModelFactory>();
+
+                Declaration target = null;
+                Assert.Throws<TargetDeclarationIsNullException>(() => modelFactory.Create(target));
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void MoveMemberModelFactoryInvalidTargetTypeThrows()
+        {
+            var source =
+$@"
+Option Explicit
+
+Public Enum ETest
+    FirstValue = 0
+    SecondValue
+End Enum
+";
+            (RubberduckParserState state, IRewritingManager rewritingManager) = CreateAndParse(MoveEndpoints.StdToStd, source, string.Empty);
+            using (state)
+            {
+                var target = state.DeclarationFinder.DeclarationsWithType(DeclarationType.EnumerationMember)
+                    .Where(d => d.IdentifierName == "SecondValue");
+
+                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
+                var modelFactory = serviceLocator.Resolve<IMoveMemberModelFactory>();
+
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => modelFactory.Create(target));
+            }
+        }
+
+
+        [Test]
+        [Ignore("False test while trying to get classes involved")]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void MoveMemberToClassModuleThrows()
+        {
+            var endpoints = MoveEndpoints.StdToClass;
+            var source =
+$@"
+Option Explicit
+
+Public Sub NoCanDo()
+End Sub
+";
+            (RubberduckParserState state, IRewritingManager rewritingManager) = CreateAndParse(MoveEndpoints.StdToClass, source, string.Empty);
+            using (state)
+            {
+                var target = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Procedure)
+                    .Where(d => d.IdentifierName == "NoCanDo");
+
+                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
+                var modelFactory = serviceLocator.Resolve<IMoveMemberModelFactory>();
+
+                var model = modelFactory.Create(target);
+                model.ChangeDestination(endpoints.DestinationModuleName(), endpoints.DestinationComponentType());
+
+                var refactoringAction = serviceLocator.Resolve<MoveMemberToExistingModuleRefactoringAction>();
+
+                Assert.Throws<MoveMemberUnsupportedMoveException>(() => refactoringAction.Refactor(model, rewritingManager.CheckOutCodePaneSession()));
+            }
+        }
+
+        private string ExecuteMoveMemberRefactoringAction(RubberduckParserState state, IRewritingManager rewritingManager, MoveEndpoints endpoints, string[] fieldsToMove, bool useDestinationName)
+        {
+            var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
+            var targets = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
+                .Where(d => fieldsToMove.Contains(d.IdentifierName));
+
+            var destination = state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule)
+                .Where(d => d.IdentifierName.Equals(endpoints.DestinationModuleName())).OfType<ModuleDeclaration>().Single();
+
+            var modelFactory = serviceLocator.Resolve<IMoveMemberModelFactory>();
+            var refactoringAction = serviceLocator.Resolve<MoveMemberToExistingModuleRefactoringAction>();
+            var rewriteSession = rewritingManager.CheckOutCodePaneSession();
+
+            MoveMemberModel model;
+            if (fieldsToMove.Count() == 1)
+            {
+                if (useDestinationName)
+                {
+                    model = modelFactory.Create(targets.First(), endpoints.DestinationModuleName());
+                }
+                else
+                {
+                    model = modelFactory.Create(targets.First(), destination);
+                }
+            }
+            else
+            {
+                if (useDestinationName)
+                {
+                    model = modelFactory.Create(targets, endpoints.DestinationModuleName());
+                }
+                else
+                {
+                    model = modelFactory.Create(targets, destination);
+                }
+            }
+
+            refactoringAction.Refactor(model);
+            return rewriteSession.CheckOutModuleRewriter(destination.QualifiedModuleName)
+                                        .GetText();
+        }
+
+        private (RubberduckParserState, IRewritingManager) CreateAndParse(MoveEndpoints endpoints, string sourceContent, string destinationContent)
+        {
+            var modules = endpoints.ToModulesTuples(sourceContent, destinationContent);
+            var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
+            return MockParser.CreateAndParseWithRewritingManager(vbe);
+        }
+
+        public static string TestForImprovedArgumentList(string sourceContent, string targetID)
         {
             var vbeStub = MockVbeBuilder.BuildFromSingleStandardModule(sourceContent, out _).Object;
             var state = MockParser.CreateAndParse(vbeStub);

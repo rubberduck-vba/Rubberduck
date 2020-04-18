@@ -160,9 +160,12 @@ namespace Rubberduck.UI.Refactorings.MoveMember
         {
             set
             {
-                Model.ChangeDestination(value);
-                OnPropertyChanged(nameof(IsExecutableMove));
-                OnPropertyChanged(nameof(MovePreview));
+                if (value is ModuleDeclaration modDeclaration)
+                {
+                    Model.ChangeDestination(modDeclaration);
+                    OnPropertyChanged(nameof(IsExecutableMove));
+                    OnPropertyChanged(nameof(MovePreview));
+                }
             }
             get
             {

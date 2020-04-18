@@ -3,6 +3,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.VBEditor.SafeComWrappers;
+using System.Linq;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
@@ -82,12 +83,13 @@ End Function
             StringAssert.Contains($"NonQualifiedFoo = ({endpoints.DestinationModuleName()}.mFooBar.Foo + arg1) * 2", refactoredCode[callSiteModuleName]);
         }
 
-        [Test]
+        [TestCase(MoveEndpoints.StdToStd, true)] //OK for Private UDTType exposed as Public Field
+        [TestCase(MoveEndpoints.StdToClass, false)] //Not compilable for Private UDTType exposed as Public Field MS-VBAL 5.2.3.1
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void PrivateUDTMovePublicField_MoveToStdModuleStrategyNotApplicable()
+        public void PrivateUDTMovePublicFieldFromStdModule(MoveEndpoints endpoints, bool expected)
         {
-            var endpoints = MoveEndpoints.StdToStd;
+            (string targetID, DeclarationType DecType) = ("mFooBar", DeclarationType.Variable);
             var source =
 $@"
 Option Explicit
@@ -112,9 +114,12 @@ End Function";
             {
                 var resolver = new MoveMemberTestsResolver(state);
                 var strategyFactory = resolver.Resolve<IMoveMemberStrategyFactory>();
-                var strategy = strategyFactory.Create(MoveMemberStrategy.MoveToStandardModule);
-                var model = MoveMemberTestsResolver.CreateRefactoringModel("mFooBar", DeclarationType.Variable, state);
-                Assert.False(strategy.IsApplicable(model));
+                var target = state.DeclarationFinder.DeclarationsWithType(DecType).Where(d => d.IdentifierName == targetID).Single();
+                var destination = state.DeclarationFinder.DeclarationsWithType(endpoints.ToDeclarationType()).Where(d => d.IdentifierName == endpoints.DestinationModuleName()).Single();
+                var model = resolver.Resolve<IMoveMemberModelFactory>().Create(target, destination as ModuleDeclaration); 
+
+                var strategy = strategyFactory.Create(model.MoveEndpoints);
+                Assert.AreEqual(expected, strategy.IsApplicable(model));
             }
         }
 

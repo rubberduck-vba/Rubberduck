@@ -30,12 +30,9 @@ namespace RubberduckTests.Refactoring.MoveMember
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
             return new MoveMemberRefactoring(serviceLocator.Resolve<MoveMemberRefactoringAction>(),
                                                 userInteraction,
-                                                state,
                                                 selectionService,
                                                 selectedDeclarationService,
-                                                serviceLocator.Resolve<IMoveMemberStrategyFactory>(),
-                                                serviceLocator.Resolve<IMoveMemberEndpointFactory>(),
-                                                serviceLocator.Resolve<IMoveMemberRefactoringPreviewerFactory>()
+                                                serviceLocator.Resolve<IMoveMemberModelFactory>()
                                                 );
         }
 
@@ -43,21 +40,13 @@ namespace RubberduckTests.Refactoring.MoveMember
         {
             var serviceLocator = new MoveMemberTestsResolver(state);
             var target = state.DeclarationFinder.DeclarationsWithType(declarationType).Where(d => d.IdentifierName == identifier).Single();
-            return new MoveMemberModel(target,
-                                        state,
-                                        serviceLocator.Resolve<IMoveMemberStrategyFactory>(),
-                                        serviceLocator.Resolve<IMoveMemberEndpointFactory>()
-                                        );
+            return serviceLocator.Resolve<IMoveMemberModelFactory>().Create(target);
         }
 
-        public static MoveMemberModel CreateRefactoringModel(Declaration target, IDeclarationFinderProvider state)
+        public static MoveMemberModel CreateRefactoringModel(Declaration target, IDeclarationFinderProvider declarationFinderProvider)
         {
-            var serviceLocator = new MoveMemberTestsResolver(state as RubberduckParserState);
-            return new MoveMemberModel(target,
-                                        state,
-                                        serviceLocator.Resolve<IMoveMemberStrategyFactory>(),
-                                        serviceLocator.Resolve<IMoveMemberEndpointFactory>()
-                                        );
+            var serviceLocator = new MoveMemberTestsResolver(declarationFinderProvider as RubberduckParserState);
+            return serviceLocator.Resolve<IMoveMemberModelFactory>().Create(target);
         }
 
         public T Resolve<T>() where T : class
@@ -71,10 +60,10 @@ namespace RubberduckTests.Refactoring.MoveMember
             {
                 case nameof(MoveMemberRefactoringAction):
                     return new MoveMemberRefactoringAction(
-                            Resolve<MoveMemberToNewStandardModuleRefactoringAction>(),
-                            Resolve<MoveMemberToExistingStandardModuleRefactoringAction>()) as T;
-                case nameof(MoveMemberToNewStandardModuleRefactoringAction):
-                    return new MoveMemberToNewStandardModuleRefactoringAction(
+                            Resolve<MoveMemberToNewModuleRefactoringAction>(),
+                            Resolve<MoveMemberToExistingModuleRefactoringAction>()) as T;
+                case nameof(MoveMemberToNewModuleRefactoringAction):
+                    return new MoveMemberToNewModuleRefactoringAction(
                             _state,
                             _rewritingManager,
                             Resolve<IMovedContentProviderFactory>(),
@@ -84,11 +73,11 @@ namespace RubberduckTests.Refactoring.MoveMember
                     return TestAddComponentService(_state?.ProjectsProvider) as T;
                 case nameof(IMoveMemberRefactoringPreviewerFactory):
                     return new MoveMemberRefactoringPreviewerFactory(
-                            Resolve<MoveMemberToExistingStandardModuleRefactoringAction>(),
+                            Resolve<MoveMemberToExistingModuleRefactoringAction>(),
                             _rewritingManager,
                             Resolve<IMovedContentProviderFactory>()) as T;
-                case nameof(MoveMemberToExistingStandardModuleRefactoringAction):
-                    return new MoveMemberToExistingStandardModuleRefactoringAction(
+                case nameof(MoveMemberToExistingModuleRefactoringAction):
+                    return new MoveMemberToExistingModuleRefactoringAction(
                             _rewritingManager,
                             Resolve<IMovedContentProviderFactory>(),
                             Resolve<IMoveMemberStrategyFactory>()
@@ -125,6 +114,8 @@ namespace RubberduckTests.Refactoring.MoveMember
                     return new DeclarationProxyFactory(_state) as T;
                 case nameof(IDeclarationFinderProvider):
                     return _state as T;
+                case nameof(IMoveMemberModelFactory):
+                    return new MoveMemberModelFactory(_state, Resolve<IMoveMemberStrategyFactory>(), Resolve<IMoveMemberEndpointFactory>()) as T;
                 default:
                     throw new ArgumentException();
             }

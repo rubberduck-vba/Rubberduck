@@ -6,14 +6,9 @@ using System;
 
 namespace Rubberduck.Refactorings
 {
-    public enum MoveMemberStrategy
-    {
-        MoveToStandardModule,
-    }
-
     public interface IMoveMemberStrategyFactory
     {
-        IMoveMemberRefactoringStrategy Create(MoveMemberStrategy strategyID);
+        IMoveMemberRefactoringStrategy Create(MoveEndpoints moveEndpoints);
     }
 
     public class MoveMemberStrategyFactory : IMoveMemberStrategyFactory
@@ -38,12 +33,18 @@ namespace Rubberduck.Refactorings
             _declarationProxyFactory = declarationProxyFactory;
         }
 
-        public IMoveMemberRefactoringStrategy Create(MoveMemberStrategy strategyID)
+        public IMoveMemberRefactoringStrategy Create(MoveEndpoints moveEndpoints)
         {
-            switch (strategyID)
+            switch (moveEndpoints)
             {
-                case MoveMemberStrategy.MoveToStandardModule:
+                case MoveEndpoints.StdToStd:
+                case MoveEndpoints.ClassToStd:
+                case MoveEndpoints.FormToStd:
                     return new MoveMemberToStdModule(_declarationFinderProvider, _renameAction, _moveGroupsProviderFactory, _nameConflictFinder, _declarationProxyFactory);
+                case MoveEndpoints.StdToClass:
+                case MoveEndpoints.FormToClass:
+                case MoveEndpoints.ClassToClass:
+                    return new MoveMemberStdToClassModule(_declarationFinderProvider, _renameAction, _moveGroupsProviderFactory, _nameConflictFinder, _declarationProxyFactory);
                 default:
                     throw new ArgumentException();
             }

@@ -1,67 +1,50 @@
 ﻿using Microsoft.CSharp.RuntimeBinder;
 using NLog;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
-using Rubberduck.VBEditor.Utility;
+using Rubberduck.Refactorings.MoveMember;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.Refactorings.MoveMember
+namespace Rubberduck.Refactorings
 {
-    public class MoveMemberToNewStandardModuleRefactoringAction : RefactoringActionWithSuspension<MoveMemberModel>
+    public class MoveMemberToExistingModuleRefactoringAction :  CodeOnlyRefactoringActionBase<MoveMemberModel>
     {
         private readonly IRewritingManager _rewritingManager;
-        private readonly IAddComponentService _addComponentService;
         private readonly IMovedContentProviderFactory _contentProviderFactory;
         private readonly IMoveMemberStrategyFactory _strategyFactory;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public MoveMemberToNewStandardModuleRefactoringAction(
-                        IParseManager parseManager,
+        public MoveMemberToExistingModuleRefactoringAction(
                         IRewritingManager rewritingManager,
                         IMovedContentProviderFactory contentProviderFactory,
-                        IMoveMemberStrategyFactory strategyFactory,
-                        IAddComponentService addComponentService)
-                : base(parseManager, rewritingManager)
+                        IMoveMemberStrategyFactory strategyFactory)
+                : base(rewritingManager)
         {
             _rewritingManager = rewritingManager;
-            _addComponentService = addComponentService;
             _contentProviderFactory = contentProviderFactory;
             _strategyFactory = strategyFactory;
         }
 
-        protected override void Refactor(MoveMemberModel model, IRewriteSession rewriteSession)
+        public override void Refactor(MoveMemberModel model, IRewriteSession rewriteSession)
         {
-            var strategy = _strategyFactory.Create(MoveMemberStrategy.MoveToStandardModule);
+            var strategy = _strategyFactory.Create(model.MoveEndpoints);
 
             if (!strategy.IsExecutableModel(model, out var msg))
             {
                 throw new MoveMemberUnsupportedMoveException(msg);
             }
 
-            var newContent = MoveMembers(model, strategy, rewriteSession, _contentProviderFactory.CreateDefaultProvider());
-
-            var optionExplicit = $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}";
-
-            _addComponentService.AddComponentWithAttributes(
-                                        model.Source.Module.ProjectId,
-                                        model.Destination.ComponentType,
-                                        $"{optionExplicit}{Environment.NewLine}{newContent}",
-                                        componentName: model.Destination.ModuleName);
+            MoveMembers(model, strategy, rewriteSession, _contentProviderFactory.CreateDefaultProvider());
         }
 
-        protected override bool RequiresSuspension(MoveMemberModel model) => true;
-
-        private string MoveMembers(MoveMemberModel model, IMoveMemberRefactoringStrategy strategy, IRewriteSession rewriteSession, IMovedContentProvider contentProvider)
+        private void MoveMembers(MoveMemberModel model, IMoveMemberRefactoringStrategy strategy, IRewriteSession rewriteSession, IMovedContentProvider contentProvider)
         {
             var newModuleContent = string.Empty;
             try
             {
                 strategy.RefactorRewrite(model, rewriteSession, _rewritingManager, contentProvider, out newModuleContent);
-                return newModuleContent;
             }
             catch (MoveMemberUnsupportedMoveException unsupportedMove)
             {
@@ -85,7 +68,6 @@ namespace Rubberduck.Refactorings.MoveMember
             {
                 _logger.Warn($"{nameof(MoveMembers)} {nameof(Exception)} {unhandledEx.Message}");
             }
-            return newModuleContent;
         }
     }
 }

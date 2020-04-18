@@ -10,30 +10,21 @@ namespace Rubberduck.Refactorings.MoveMember
     public class MoveMemberRefactoring : InteractiveRefactoringBase<MoveMemberModel>
     {
         private readonly MoveMemberRefactoringAction _refactoringAction;
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
-        private readonly IMoveMemberStrategyFactory _strategyFactory;
-        private readonly IMoveMemberEndpointFactory _endpointFactory;
-        private readonly IMoveMemberRefactoringPreviewerFactory _previewerFactory;
+        private readonly IMoveMemberModelFactory _modelFactory;
 
         public MoveMemberRefactoring(
             MoveMemberRefactoringAction refactoringAction,
             RefactoringUserInteraction<IMoveMemberPresenter, MoveMemberModel> userInteraction,
-            IDeclarationFinderProvider declarationFinderProvider,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider,
-            IMoveMemberStrategyFactory strategyFactory,
-            IMoveMemberEndpointFactory enpointFactory,
-            IMoveMemberRefactoringPreviewerFactory previewerFactory)
+            IMoveMemberModelFactory modelFactory)
                 : base(selectionProvider, userInteraction)
 
         {
             _refactoringAction = refactoringAction;
-            _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
-            _strategyFactory = strategyFactory;
-            _previewerFactory = previewerFactory;
-            _endpointFactory = enpointFactory;
+            _modelFactory = modelFactory;
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
@@ -53,10 +44,7 @@ namespace Rubberduck.Refactorings.MoveMember
         {
             if (target == null) { throw new TargetDeclarationIsNullException(); }
 
-            return new MoveMemberModel(target,
-                                        _declarationFinderProvider,
-                                        _strategyFactory,
-                                        _endpointFactory);
+            return _modelFactory.Create(target);
         }
 
         protected override void RefactorImpl(MoveMemberModel model)

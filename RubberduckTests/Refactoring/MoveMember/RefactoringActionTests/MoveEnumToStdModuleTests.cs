@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
-using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -32,9 +31,6 @@ Public Function FooMath(arg1 As Long) As Long
     FooMath = arg1 * eFoo
 End Function
 ";
-
-            //var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("eFoo", DeclarationType.Variable), sourceContent: source);
-
             var callSiteModuleName = "CallSiteModule";
 
             var otherModuleReference =
@@ -57,10 +53,6 @@ Public Function NonQualifiedFoo(arg1 As Long) As Long
     NonQualifiedFoo = (eFoo + arg1) * 2
 End Function
 ";
-            //moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
-
-
-            //var refactoredCode = ExecuteTest(moveDefinition, moveDefinition.ModelBuilder);
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, 
                 endpoints.ToSourceTuple(source),
                 endpoints.ToDestinationTuple(string.Empty),
@@ -112,9 +104,6 @@ Public Property Let Test2Value(ByVal value As Long)
     mTestValue2 = value
 End Property
 ";
-
-            //var moveDefinition = new TestMoveDefinition(endpoints, memberToMove, source);
-            //moveDefinition.AddSelectedDeclaration("Test2Value", DeclarationType.PropertyLet);
             MoveMemberModel ModelAdjustment(MoveMemberModel model)
             {
                 model.MoveableMemberSetByName("Test2Value").IsSelected = true;
@@ -122,7 +111,6 @@ End Property
                 return model;
             }
 
-            //var refactoredCode = ExecuteTest(moveDefinition, moveDefinition.ModelBuilder);
             var refactoredCode = RefactorTargets(memberToMove, endpoints, source, string.Empty, ModelAdjustment);
 
             StringAssert.AreEqualIgnoringCase("Option Explicit", refactoredCode.Source.Trim());
@@ -182,16 +170,11 @@ Public Sub MoveThisUsesMemberAccess(arg1 As Long, arg2 As Long)
     mValue2 = arg2
 End Sub
 ";
-
-            //var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, memberToMove, source);
-
             if (expectedStrategy is null)
             {
-                //Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition, moveDefinition.ModelBuilder));
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source);
                 return;
             }
-            //var refactoredCode = ExecuteTest(moveDefinition, moveDefinition.ModelBuilder);
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
 
             StringAssert.DoesNotContain($"Sub {identifier}(arg1 As Long, arg2 As Long)", refactoredCode.Source);
@@ -229,10 +212,6 @@ Public Function BoundTheValue(key As Long) As Long
     End if
 End Function
 ";
-
-            //var moveDefinition = new TestMoveDefinition(endpoints, memberToMove, source);
-
-            //var refactoredCode = ExecuteTest(moveDefinition, moveDefinition.ModelBuilder);
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
 
             StringAssert.Contains("Function BoundTheValue(", refactoredCode.Destination);
@@ -273,11 +252,6 @@ Private Function UsePvtEnum(arg As Long) As KeyValues
     UsePvtEnum = mKV
 End Function
 ";
-
-            //var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, memberToMove, source);
-
-            //var refactoredCode = ExecuteTest(moveDefinition, moveDefinition.ModelBuilder);
-
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
 
             StringAssert.AreEqualIgnoringCase("Option Explicit", refactoredCode.Source.Trim());
@@ -322,18 +296,11 @@ Option Explicit
 Private Sub {memberName}(arg As Long)
 End Sub
 ";
-
-            //var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, memberToMove, source, destination);
-
             if (expectedStrategy is null)
             {
-                //Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteTest(moveDefinition, moveDefinition.ModelBuilder));
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source, destination);
                 return;
             }
-
-            //var refactoredCode = ExecuteTest(moveDefinition, moveDefinition.ModelBuilder);
-
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, endpoints.SourceModuleName(), source, destination);
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
         }
