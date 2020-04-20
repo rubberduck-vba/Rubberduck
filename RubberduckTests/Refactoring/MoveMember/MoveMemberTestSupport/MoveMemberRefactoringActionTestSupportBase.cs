@@ -20,7 +20,7 @@ namespace RubberduckTests.Refactoring.MoveMember
             return serviceLocator.Resolve<MoveMemberRefactoringAction>();
         }
 
-        protected MoveMemberRefactorResults RefactorTargets((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, string sourceContent, string destinationContent, Func<MoveMemberModel, MoveMemberModel> modelAdjustment)
+        protected MoveMemberRefactorTestResults RefactorTargets((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, string sourceContent, string destinationContent, Func<MoveMemberModel, MoveMemberModel> modelAdjustment)
         {
             var sourceTuple = endpoints.ToSourceTuple(sourceContent);
             var destinationTuple = endpoints.ToDestinationTuple(destinationContent);
@@ -28,23 +28,23 @@ namespace RubberduckTests.Refactoring.MoveMember
             return RefactorTargets(memberToMove, endpoints, modelAdjustment, sourceTuple, destinationTuple);
         }
 
-        protected MoveMemberRefactorResults RefactorTargets((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, Func<MoveMemberModel, MoveMemberModel> modelAdjustment, params (string, string, ComponentType)[] modules)
+        protected MoveMemberRefactorTestResults RefactorTargets((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, Func<MoveMemberModel, MoveMemberModel> modelAdjustment, params (string, string, ComponentType)[] modules)
         {
             return ExecuteRefactoring(memberToMove, endpoints, modelAdjustment, modules);
         }
 
-        protected MoveMemberRefactorResults RefactorSingleTarget((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, string sourceContent, string destinationContent = null)
+        protected MoveMemberRefactorTestResults RefactorSingleTarget((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, string sourceContent, string destinationContent = null)
         {
             return RefactorSingleTarget(memberToMove, endpoints, endpoints.ToModulesTuples(sourceContent, destinationContent ?? string.Empty));
         }
 
         //Takes a sourceModuleName parameter for cases where another module has an identical declaration name and type. (e.g., name collision tests)
-        protected MoveMemberRefactorResults RefactorSingleTarget((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, string sourceModuleName, string sourceContent, string destinationContent = null)
+        protected MoveMemberRefactorTestResults RefactorSingleTarget((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, string sourceModuleName, string sourceContent, string destinationContent = null)
         {
             return RefactorSingleTarget(memberToMove, endpoints, sourceModuleName, endpoints.ToModulesTuples(sourceContent, destinationContent ?? string.Empty));
         }
 
-        protected MoveMemberRefactorResults RefactorSingleTarget((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, params (string, string, ComponentType)[] moduleTuples)
+        protected MoveMemberRefactorTestResults RefactorSingleTarget((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, params (string, string, ComponentType)[] moduleTuples)
         {
             MoveMemberModel modelAdjustment(MoveMemberModel model)
             {
@@ -55,11 +55,11 @@ namespace RubberduckTests.Refactoring.MoveMember
             var vbe = MockVbeBuilder.BuildFromModules(moduleTuples);
             var results = RefactoredCode(vbe.Object, state => TestModel(state, modelAdjustment, memberToMove.ID, memberToMove.DecType));
 
-            return new MoveMemberRefactorResults(endpoints, results);
+            return new MoveMemberRefactorTestResults(endpoints, results);
         }
 
         //Takes a sourceModuleName parameter for cases where another module has an identical declaration name and type. (e.g., name collision tests)
-        protected MoveMemberRefactorResults RefactorSingleTarget((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, string sourceModuleName, params (string, string, ComponentType)[] moduleTuples)
+        protected MoveMemberRefactorTestResults RefactorSingleTarget((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, string sourceModuleName, params (string, string, ComponentType)[] moduleTuples)
         {
             MoveMemberModel modelAdjustment(MoveMemberModel model)
             {
@@ -70,7 +70,7 @@ namespace RubberduckTests.Refactoring.MoveMember
             var vbe = MockVbeBuilder.BuildFromModules(moduleTuples);
             var results = RefactoredCode(vbe.Object, state => TestModel(state, modelAdjustment, memberToMove.ID, memberToMove.DecType, sourceModuleName));
 
-            return new MoveMemberRefactorResults(endpoints, results);
+            return new MoveMemberRefactorTestResults(endpoints, results);
         }
 
         protected void ExecuteSingleTargetMoveThrowsExceptionTest((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, string sourceContent, string destinationContent = null)
@@ -89,12 +89,12 @@ namespace RubberduckTests.Refactoring.MoveMember
             Assert.Throws<MoveMemberUnsupportedMoveException>(() => ExecuteRefactoring(memberToMove, endpoints, modelAdjustment, moduleTuples));
         }
 
-        protected MoveMemberRefactorResults ExecuteRefactoring((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, Func<MoveMemberModel, MoveMemberModel> modelAdjustment, params (string, string, ComponentType)[] moduleTuples)
+        private MoveMemberRefactorTestResults ExecuteRefactoring((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, Func<MoveMemberModel, MoveMemberModel> modelAdjustment, params (string, string, ComponentType)[] moduleTuples)
         {
             var vbe = MockVbeBuilder.BuildFromModules(moduleTuples);
             var results = RefactoredCode(vbe.Object, state => TestModel(state, modelAdjustment, memberToMove.ID, memberToMove.DecType));
 
-            return new MoveMemberRefactorResults(endpoints, results);
+            return new MoveMemberRefactorTestResults(endpoints, results);
         }
 
         private static MoveMemberModel TestModel(RubberduckParserState state, Func<MoveMemberModel, MoveMemberModel> modelAdjustment, string targetID, DeclarationType declarationType)
@@ -132,7 +132,7 @@ Public Sub Initialize()
     Set {instanceIdentifier} = new {className}
 End Sub
 ";
-            return $"{declaration}{Environment.NewLine}{instantiation}";
+            return $"{declaration}{Environment.NewLine}{Environment.NewLine}{instantiation}";
         }
     }
 }

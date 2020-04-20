@@ -13,7 +13,7 @@ namespace Rubberduck.Refactorings.MoveMember
 {
     public interface IMoveMemberRefactoringStrategy
     {
-        void RefactorRewrite(MoveMemberModel model, IRewriteSession rewriteSession, IRewritingManager rewritingManager, IMovedContentProvider contentProvider, out string newModuleContent);
+        void RefactorRewrite(MoveMemberModel model, IRewriteSession rewriteSession, IRewritingManager rewritingManager, INewContentProvider contentProvider, out string newModuleContent);
         bool IsApplicable(MoveMemberModel model);
         bool IsExecutableModel(MoveMemberModel model, out string nonExecutableMessage);
     }
@@ -21,16 +21,16 @@ namespace Rubberduck.Refactorings.MoveMember
     public class MoveMemberToStdModule : MoveMemberStrategyBase, IMoveMemberRefactoringStrategy
     {
         public MoveMemberToStdModule(IDeclarationFinderProvider declarationFinderProvider,
-                                        RenameCodeDefinedIdentifierRefactoringAction renameAction, 
+                                        RenameCodeDefinedIdentifierRefactoringAction renameAction,
                                         IMoveMemberMoveGroupsProviderFactory moveGroupsProviderFactory,
-                                        INameConflictFinder nameConflictFinder, 
+                                        INameConflictFinder nameConflictFinder,
                                         IDeclarationProxyFactory declarationProxyFactory)
             : base(declarationFinderProvider,
                                         renameAction,
                                         moveGroupsProviderFactory,
                                         nameConflictFinder,
                                         declarationProxyFactory)
-        {}
+        { }
 
         public override bool IsApplicable(MoveMemberModel model)
         {
@@ -77,6 +77,8 @@ namespace Rubberduck.Refactorings.MoveMember
 
             throw new MoveMemberUnsupportedMoveException();
         }
+
+        protected override INewContentProvider LoadSourceNewContentProvider(INewContentProvider contentProvider, MoveMemberModel model) => contentProvider.ResetContent();
 
         private bool TrySetDispositionGroupsForClassModuleSource(MoveMemberModel model, IMoveMemberGroupsProvider moveGroups, out Dictionary<MoveDisposition, List<Declaration>> dispositions)
         {

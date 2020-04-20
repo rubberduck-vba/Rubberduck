@@ -39,7 +39,7 @@ namespace Rubberduck.Refactorings
             MoveMembers(model, strategy, rewriteSession, _contentProviderFactory.CreateDefaultProvider());
         }
 
-        private void MoveMembers(MoveMemberModel model, IMoveMemberRefactoringStrategy strategy, IRewriteSession rewriteSession, IMovedContentProvider contentProvider)
+        private void MoveMembers(MoveMemberModel model, IMoveMemberRefactoringStrategy strategy, IRewriteSession rewriteSession, INewContentProvider contentProvider)
         {
             var newModuleContent = string.Empty;
             try

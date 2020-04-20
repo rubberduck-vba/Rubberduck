@@ -407,8 +407,6 @@ End Function
 ";
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
 
-            StringAssert.AreEqualIgnoringCase(nameof(MoveMemberToStdModule), refactoredCode.StrategyName);
-
             var sourceRefactored = refactoredCode.Source;
             StringAssert.DoesNotContain("Private Function Bar", sourceRefactored);
             StringAssert.DoesNotContain("Private Function Barn", sourceRefactored);
@@ -597,12 +595,12 @@ End Function
         }
 
 
-        [TestCase(MoveEndpoints.StdToStd, "Public", nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.ClassToStd, "Public", null)]
-        [TestCase(MoveEndpoints.FormToStd, "Public", null)]
+        [TestCase(MoveEndpoints.StdToStd, "Public", false)]
+        [TestCase(MoveEndpoints.ClassToStd, "Public", true)]
+        [TestCase(MoveEndpoints.FormToStd, "Public", true)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void NonExclusiveCallChainPublicMember(MoveEndpoints endpoints, string accessibility, string expectedStrategy)
+        public void NonExclusiveCallChainPublicMember(MoveEndpoints endpoints, string accessibility, bool throwsException)
         {
             var memberToMove = ("Foo", DeclarationType.Procedure);
             var AddSix = "AddSix"; //NonExclusive callchain member
@@ -639,15 +637,13 @@ Private Function Bark(arg1 As Long) As Long
     Bark = mfoo4
 End Function
 ";
-            if (expectedStrategy is null)
+            if (throwsException)
             {
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source);
                 return;
             }
 
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
             var sourceRefactored = refactoredCode.Source;
             StringAssert.DoesNotContain("Private Function Bar", sourceRefactored);
@@ -666,13 +662,13 @@ End Function
             StringAssert.DoesNotContain("Public Function AddSix(", destinationRefactored);
         }
 
-        [TestCase(MoveEndpoints.StdToStd, "Public", nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.StdToStd, "Private", nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.ClassToStd, "Public", null)]
-        [TestCase(MoveEndpoints.FormToStd, "Public", null)]
+        [TestCase(MoveEndpoints.StdToStd, "Public", false)]
+        [TestCase(MoveEndpoints.StdToStd, "Private", false)]
+        [TestCase(MoveEndpoints.ClassToStd, "Public", true)]
+        [TestCase(MoveEndpoints.FormToStd, "Public", true)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void ExclusiveCallChainMemberExternallyReferences(MoveEndpoints endpoints, string accessibility, string expectedStrategy)
+        public void ExclusiveCallChainMemberExternallyReferences(MoveEndpoints endpoints, string accessibility, bool throwsException)
         {
             var classInstanceCode = string.Empty;
             var memberToMove = ("Foo", DeclarationType.Procedure);
@@ -745,7 +741,7 @@ Public Sub NonQualifiedAccess(arg3 As Long)
     mBar = AddSix(arg3)
 End Sub
 ";
-            if (expectedStrategy is null)
+            if (throwsException)
             {
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints,
                     endpoints.ToSourceTuple(source),
@@ -861,15 +857,15 @@ End Sub
             }
         }
 
-        [TestCase("Public", MoveEndpoints.StdToStd, nameof(MoveMemberToStdModule))]
-        [TestCase("Private", MoveEndpoints.StdToStd, nameof(MoveMemberToStdModule))]
-        [TestCase("Public", MoveEndpoints.ClassToStd, null)]
-        [TestCase("Private", MoveEndpoints.ClassToStd, null)]
-        [TestCase("Public", MoveEndpoints.FormToStd, null)]
-        [TestCase("Private", MoveEndpoints.FormToStd, null)]
+        [TestCase("Public", MoveEndpoints.StdToStd, false)]
+        [TestCase("Private", MoveEndpoints.StdToStd, false)]
+        [TestCase("Public", MoveEndpoints.ClassToStd, true)]
+        [TestCase("Private", MoveEndpoints.ClassToStd, true)]
+        [TestCase("Public", MoveEndpoints.FormToStd, true)]
+        [TestCase("Private", MoveEndpoints.FormToStd, true)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void ReferencesNonExclusiveProperty(string accessibility, MoveEndpoints endpoints, string expectedStrategy)
+        public void ReferencesNonExclusiveProperty(string accessibility, MoveEndpoints endpoints, bool throwsException)
         {
             var memberToMove = ("Foo", DeclarationType.Procedure);
             var source = $@"
@@ -893,7 +889,7 @@ Public Property Get Bar() As Long
     Bar = mBar
 End Property
 ";
-            if (expectedStrategy is null)
+            if (throwsException)
             {
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source);
                 return;
@@ -901,19 +897,17 @@ End Property
 
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
 
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
-
             StringAssert.DoesNotContain("Sub Foo(arg1", refactoredCode.Source);
             StringAssert.Contains($"{accessibility} Sub Foo(arg1", refactoredCode.Destination);
             StringAssert.Contains($"arg1 = {endpoints.SourceModuleName()}", refactoredCode.Destination);
         }
 
-        [TestCase(MoveEndpoints.StdToStd, nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.ClassToStd, null)]
-        [TestCase(MoveEndpoints.FormToStd, null)]
+        [TestCase(MoveEndpoints.StdToStd, false)]
+        [TestCase(MoveEndpoints.ClassToStd, true)]
+        [TestCase(MoveEndpoints.FormToStd, true)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void SupportMembersReferenceNonExclusiveBackingVariables(MoveEndpoints endpoints, string expectedStrategy)
+        public void SupportMembersReferenceNonExclusiveBackingVariables(MoveEndpoints endpoints, bool throwsException)
         {
             var memberToMove = ("Foo", DeclarationType.Procedure);
             var source = $@"
@@ -938,15 +932,13 @@ Public Property Get Bar() As Long
     Bar = mBar
 End Property
 ";
-            if (expectedStrategy is null)
+            if (throwsException)
             {
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source);
                 return;
             }
 
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
             StringAssert.Contains("Bar(", refactoredCode.Source);
             StringAssert.DoesNotContain("Sub Foo(arg1", refactoredCode.Source);
@@ -957,12 +949,12 @@ End Property
         }
 
 
-        [TestCase(MoveEndpoints.StdToStd, nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.ClassToStd, null)]
-        [TestCase(MoveEndpoints.FormToStd, null)]
+        [TestCase(MoveEndpoints.StdToStd, false)]
+        [TestCase(MoveEndpoints.ClassToStd, true)]
+        [TestCase(MoveEndpoints.FormToStd, true)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void SupportMembersReferenceNonExclusivePrivateMember(MoveEndpoints endpoints, string expectedStrategy)
+        public void SupportMembersReferenceNonExclusivePrivateMember(MoveEndpoints endpoints, bool throwsException)
         {
             var memberToMove = ("Foo", DeclarationType.Procedure);
             var source = $@"
@@ -991,15 +983,13 @@ Public Property Get Bar() As Long
     Bar = mBar
 End Property
 ";
-            if (expectedStrategy is null)
+            if (throwsException)
             {
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source);
                 return;
             }
 
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
             StringAssert.Contains("Bar(", refactoredCode.Source);
             StringAssert.DoesNotContain("Sub Foo(arg1", refactoredCode.Source);

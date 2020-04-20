@@ -99,8 +99,8 @@ namespace RubberduckTests.Refactoring.MoveMember
                             _state, Resolve<IMoveableMemberSetsFactory>()) as T;
                 case nameof(IMoveMemberMoveGroupsProviderFactory):
                     return new MoveMemberMoveGroupsProviderFactory(_state) as T;
-                case nameof(IMovedContentPreviewProvider):
-                    return new MovedContentPreviewProvider() as T;
+                case nameof(INewContentPreviewProvider):
+                    return new NewContentPreviewProvider() as T;
                 case nameof(IMovedContentProviderFactory):
                     return new MovedContentProviderFactory() as T;
                 case nameof(IMoveableMemberSetsFactory):

@@ -4,19 +4,19 @@ namespace Rubberduck.Refactorings
 {
     public interface IMovedContentProviderFactory
     {
-        IMovedContentProvider CreateDefaultProvider();
-        IMovedContentProvider CreatePreviewProvider();
+        INewContentProvider CreateDefaultProvider();
+        INewContentProvider CreatePreviewProvider();
     }
 
     public class MovedContentProviderFactory : IMovedContentProviderFactory
     {
-        public IMovedContentProvider CreateDefaultProvider()
+        public INewContentProvider CreateDefaultProvider()
         {
-            return new MovedContentProvider();
+            return new NewContentProvider();
         }
-        public IMovedContentProvider CreatePreviewProvider()
+        public INewContentProvider CreatePreviewProvider()
         {
-            return new MovedContentPreviewProvider();
+            return new NewContentPreviewProvider();
         }
     }
 }

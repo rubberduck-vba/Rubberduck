@@ -79,13 +79,13 @@ End Function
             }
         }
 
-        [TestCase(MoveEndpoints.FormToStd, "Private", null)]
-        [TestCase(MoveEndpoints.ClassToStd, "Private", null)]
-        [TestCase(MoveEndpoints.StdToStd, "Public", nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.StdToStd, "Private", null)]
+        [TestCase(MoveEndpoints.FormToStd, "Private", true)]
+        [TestCase(MoveEndpoints.ClassToStd, "Private", true)]
+        [TestCase(MoveEndpoints.StdToStd, "Public", false)]
+        [TestCase(MoveEndpoints.StdToStd, "Private", true)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MoveNonAggregateValueTypeField_HasReferences(MoveEndpoints endpoints, string accessibility, string expectedStrategyName)
+        public void MoveNonAggregateValueTypeField_HasReferences(MoveEndpoints endpoints, string accessibility, bool throwsException)
         {
             var memberToMove = ("mFoo", DeclarationType.Variable);
             var source =
@@ -129,14 +129,13 @@ End Function
             moduleTuples.Add(endpoints.ToSourceTuple(source));
             moduleTuples.Add(endpoints.ToDestinationTuple(string.Empty));
 
-            if (expectedStrategyName is null)
+            if (throwsException)
             {
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, moduleTuples.ToArray());
                 return;
             }
 
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, moduleTuples.ToArray());
-            StringAssert.AreEqualIgnoringCase(expectedStrategyName, refactoredCode.StrategyName);
 
             var destinationDeclaration = "Public mFoo As Long";
 
@@ -364,13 +363,13 @@ End Function
             }
         }
 
-        [TestCase("PVT_VALUE", null)]
-        [TestCase("85 + PVT_VALUE * 4", null)]
-        [TestCase("PUB_VALUE + PVT_VALUE", null)]
-        [TestCase("PUB_VALUE", nameof(MoveMemberToStdModule))]
+        [TestCase("PVT_VALUE", true)]
+        [TestCase("85 + PVT_VALUE * 4", true)]
+        [TestCase("PUB_VALUE + PVT_VALUE", true)]
+        [TestCase("PUB_VALUE", false)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MoveConstantDeclarationReferencesOtherConstant(string expression, string expectedStrategy)
+        public void MoveConstantDeclarationReferencesOtherConstant(string expression, bool throwsException)
         {
             var endpoints = MoveEndpoints.StdToStd;
             var memberToMove = ("FIZZ", DeclarationType.Constant);
@@ -390,7 +389,7 @@ Private Function Bizz(arg As Long) As Long
     Bizz = arg + PVT_VALUE
 End Function
 ";
-            if (expectedStrategy is null)
+            if (throwsException)
             {
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source);
                 return;

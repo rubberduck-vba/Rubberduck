@@ -445,6 +445,55 @@ End Function
             }
         }
 
+        [Test]
+        [Category("Refactoring")]
+        [Category(nameof(NameConflictFinder))]
+        public void ReservedProxyConflicts()
+        {
+            (string identifier, DeclarationType declarationType) selection = ("TestFunc", DeclarationType.Function);
+
+            var sourceCode =
+$@"
+Option Explicit
+
+Private mTestVar As Long
+
+Private Function TestFunc() As Long
+End Function
+";
+
+            var newProxyVariables = new string[] { "ProxyVariable1", "ProxyVariable2", "ProxyVariable3" };
+
+
+            var result = false;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(sourceCode, out _);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            using (state)
+            {
+                var target = state.DeclarationFinder.DeclarationsWithType(selection.declarationType)
+                                .Single(d => d.IdentifierName == selection.identifier && d.QualifiedModuleName.ComponentName == MockVbeBuilder.TestModuleName);
+
+                var targetModule = state.DeclarationFinder.DeclarationsWithType(DeclarationType.ProceduralModule)
+                                .Single(d => d.QualifiedModuleName.ComponentName == MockVbeBuilder.TestModuleName);
+
+                var proxyFactory = TestDI.Resolve<IDeclarationProxyFactory>(state);
+
+                var proxies = new List<IDeclarationProxy>();
+                foreach (var newVariable in newProxyVariables)
+                {
+                    var proxy = proxyFactory.Create(newVariable, DeclarationType.Variable, Accessibility.Private, targetModule as ModuleDeclaration, targetModule);
+                    proxies.Add(proxy);
+                }
+
+                var existingMemberproxy = MemberProxy(target, MockVbeBuilder.TestModuleName, state);
+                existingMemberproxy.IdentifierName = newProxyVariables.Last();
+                var conflictFinder = TestDI.Resolve<INameConflictFinder>(state);
+                result = conflictFinder.CreatesConflictWithValidatedProxyDeclarations(existingMemberproxy, proxies, out var conflicts);
+                Assert.IsTrue(result);
+                StringAssert.AreEqualIgnoringCase(newProxyVariables.Last(), conflicts.Values.First().First().IdentifierName);
+            }
+        }
+
         private bool TestForMoveConflict(string sourceContent, string destinationCode, string destinationModuleName = "DestinationDefault")
         {
             (string code, Selection selection) = ToCodeAndSelectionTuple(sourceContent);

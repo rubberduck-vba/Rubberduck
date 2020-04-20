@@ -124,11 +124,11 @@ End Property
             StringAssert.Contains("Private mTestValue2 As ETestValues", refactoredCode.Destination);
         }
 
-        [TestCase("MoveThisUsesProperty", nameof(MoveMemberToStdModule))]
-        [TestCase("MoveThisUsesMemberAccess", null)]
+        [TestCase("MoveThisUsesProperty", false)]
+        [TestCase("MoveThisUsesMemberAccess", true)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void ProcedureReferencesPropertiesUsingPrivateEnum(string identifier, string expectedStrategy)
+        public void ProcedureReferencesPropertiesUsingPrivateEnum(string identifier, bool throwsException)
         {
             var memberToMove = (identifier, DeclarationType.Procedure);
             var endpoints = MoveEndpoints.StdToStd;
@@ -170,7 +170,7 @@ Public Sub MoveThisUsesMemberAccess(arg1 As Long, arg2 As Long)
     mValue2 = arg2
 End Sub
 ";
-            if (expectedStrategy is null)
+            if (throwsException)
             {
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source);
                 return;
@@ -262,12 +262,12 @@ End Function
             Assert.IsTrue("Private Enum KeyValues".OccursOnce(refactoredCode.Destination));
         }
 
-        [TestCase("KeyOne", null)]
-        [TestCase("KeyValues", nameof(MoveMemberToStdModule))]
+        [TestCase("KeyOne", true)]
+        [TestCase("KeyValues", false)]
         [Category("Refactorings")]
         [Category(nameof(NameConflictFinder))]
         [Category("MoveMember")]
-        public void MovePrivateEnumRespectsDestinationNameCollision(string memberName, string expectedStrategy)
+        public void MovePrivateEnumRespectsDestinationNameCollision(string memberName, bool throwsException)
         {
             var memberToMove = ("UsePvtEnum", DeclarationType.Function);
             var endpoints = MoveEndpoints.StdToStd;
@@ -296,13 +296,12 @@ Option Explicit
 Private Sub {memberName}(arg As Long)
 End Sub
 ";
-            if (expectedStrategy is null)
+            if (throwsException)
             {
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source, destination);
                 return;
             }
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, endpoints.SourceModuleName(), source, destination);
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
         }
     }
 }

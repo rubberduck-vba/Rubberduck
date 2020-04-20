@@ -4,57 +4,66 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
-    public enum ContentTypes
+    public interface INewContentProvider
     {
-        TypeDeclarationBlock,
-        DeclarationBlock,
-        MethodBlock
-    };
-
-    public interface IMovedContentProvider
-    {
-        void AddMethodDeclaration(string content);
+        void AddMember(string content);
         void AddFieldOrConstantDeclaration(string content);
         void AddTypeDeclaration(string content);
+        INewContentProvider ResetContent();
         string AsSingleBlock { get; }
     }
 
-    public interface IMovedContentPreviewProvider : IMovedContentProvider
+    public interface INewContentPreviewProvider : INewContentProvider
     { }
 
-    public class MovedContentProvider : MovedContentProviderBase, IMovedContentProvider
+    public class NewContentProvider : NewContentProviderBase, INewContentProvider
     {
-        public MovedContentProvider()
+        public NewContentProvider()
                : base(false) { }
     }
 
-    public class MovedContentPreviewProvider : MovedContentProviderBase, IMovedContentPreviewProvider
+    public class NewContentPreviewProvider : NewContentProviderBase, INewContentPreviewProvider
     {
-        public MovedContentPreviewProvider()
+        public NewContentPreviewProvider()
             : base(true) { }
     }
 
-    public class MovedContentProviderBase
+    public class NewContentProviderBase
     {
-        private Dictionary<ContentTypes, List<string>> _movedContent;
+        private enum NewContentBlocks
+        {
+            TypeDeclaration,
+            FieldOrConstantDeclaration,
+            Member
+        };
+
+        private Dictionary<NewContentBlocks, List<string>> _movedContent;
         private readonly bool _applyPreviewAnnotations;
 
-        public MovedContentProviderBase(bool applyPreviewAnnotations)
+        public NewContentProviderBase(bool applyPreviewAnnotations)
         {
             _applyPreviewAnnotations = applyPreviewAnnotations;
-            _movedContent = new Dictionary<ContentTypes, List<string>>
-            {
-                { ContentTypes.DeclarationBlock, new List<string>() },
-                { ContentTypes.MethodBlock, new List<string>() },
-                { ContentTypes.TypeDeclarationBlock, new List<string>() }
-            };
+            ResetContent();
         }
 
-        public void AddMethodDeclaration(string content) => Add(ContentTypes.MethodBlock, content);
-        public void AddFieldOrConstantDeclaration(string content) => Add(ContentTypes.DeclarationBlock, content);
-        public void AddTypeDeclaration(string content) => Add(ContentTypes.TypeDeclarationBlock, content);
+        public void AddMember(string content) => Add(NewContentBlocks.Member, content);
 
-        private void Add(ContentTypes contentType, string content)
+        public void AddFieldOrConstantDeclaration(string content) => Add(NewContentBlocks.FieldOrConstantDeclaration, content);
+
+        public void AddTypeDeclaration(string content) => Add(NewContentBlocks.TypeDeclaration, content);
+
+        public INewContentProvider ResetContent()
+        {
+            _movedContent = new Dictionary<NewContentBlocks, List<string>>
+            {
+                { NewContentBlocks.FieldOrConstantDeclaration, new List<string>() },
+                { NewContentBlocks.Member, new List<string>() },
+                { NewContentBlocks.TypeDeclaration, new List<string>() }
+            };
+            return this as INewContentProvider;
+        }
+
+        private void Add(NewContentBlocks contentType, string content)
         {
             if (_movedContent.TryGetValue(contentType, out var blocks))
             {
@@ -69,9 +78,9 @@ namespace Rubberduck.Refactorings.MoveMember
             get
             {
                 var result = string.Join($"{ Environment.NewLine}{ Environment.NewLine}",
-                                (_movedContent[ContentTypes.TypeDeclarationBlock])
-                                .Concat(_movedContent[ContentTypes.DeclarationBlock])
-                                .Concat(_movedContent[ContentTypes.MethodBlock]))
+                                (_movedContent[NewContentBlocks.TypeDeclaration])
+                                .Concat(_movedContent[NewContentBlocks.FieldOrConstantDeclaration])
+                                .Concat(_movedContent[NewContentBlocks.Member]))
                                 .Trim();
 
                 if (_applyPreviewAnnotations)

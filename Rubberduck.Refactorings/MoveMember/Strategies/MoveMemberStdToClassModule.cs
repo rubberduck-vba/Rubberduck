@@ -29,7 +29,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public override bool IsApplicable(MoveMemberModel model)
         {
-            //TODO: Implement StdToClass moves
+            //TODO: StdToClass move Strategy
             return false;
 
             if (!model.Destination.IsClassModule) { return false; }
@@ -49,7 +49,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public bool IsExecutableModel(MoveMemberModel model, out string nonExecutableMessage)
         {
-            //TODO: Implement StdToClass moves
+            //TODO: StdToClass move Strategy
             nonExecutableMessage = string.Empty;
             return false;
 
@@ -105,16 +105,7 @@ namespace Rubberduck.Refactorings.MoveMember
             }
         }
 
-        protected override void InsertNewSourceContent(MoveMemberModel model, IMoveMemberGroupsProvider moveGroups, IRewriteSession moveMemberRewriteSession, IRewriteSession scratchPadSession, Dictionary<MoveDisposition, List<Declaration>> dispositions, IMovedContentProvider sourceContentProvider)
-        {
-            sourceContentProvider = LoadSourceNewContentProvider(sourceContentProvider, model, moveGroups, scratchPadSession, dispositions);
-
-            var newContent = sourceContentProvider.AsSingleBlock;
-
-            InsertNewContent(moveMemberRewriteSession, model.Source, newContent);
-        }
-
-        protected IMovedContentProvider LoadSourceNewContentProvider(IMovedContentProvider contentProvider, MoveMemberModel model, IMoveMemberGroupsProvider moveGroups, IRewriteSession scratchPadSession, Dictionary<MoveDisposition, List<Declaration>> dispositions)
+        protected override INewContentProvider LoadSourceNewContentProvider(INewContentProvider contentProvider, MoveMemberModel model)
         {
             var instanceFieldIdentiier = CreatNonConflictObjectFieldIdentifier(model.Source.Module as ModuleDeclaration, model.Destination.ModuleName);
 
@@ -139,7 +130,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
 
             contentProvider.AddFieldOrConstantDeclaration(destinationClassDeclaration);
-            contentProvider.AddMethodDeclaration(pvtProperty);
+            contentProvider.AddMember(pvtProperty);
 
             return contentProvider;
         }

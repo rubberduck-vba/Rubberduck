@@ -96,15 +96,15 @@ End Function
             StringAssert.Contains("Public Function CalculateVolumeFromDiameter(", refactoredCode.Destination);
         }
 
-        [TestCase(MoveEndpoints.StdToStd, "Public", nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.StdToStd, "Private", nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.ClassToStd, "Public", nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.ClassToStd, "Private", nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.FormToStd, "Public", nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.FormToStd, "Private", nameof(MoveMemberToStdModule))]
+        [TestCase(MoveEndpoints.StdToStd, "Public")]
+        [TestCase(MoveEndpoints.StdToStd, "Private")]
+        [TestCase(MoveEndpoints.ClassToStd, "Public")]
+        [TestCase(MoveEndpoints.ClassToStd, "Private")]
+        [TestCase(MoveEndpoints.FormToStd, "Public")]
+        [TestCase(MoveEndpoints.FormToStd, "Private")]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MovedFunctionReferencesExclusiveSupportConstantSelectAllMembers(MoveEndpoints endpoints, string exclusiveFuncAccessibility, string expectedStrategy)
+        public void MovedFunctionReferencesExclusiveSupportConstantSelectAllMembers(MoveEndpoints endpoints, string exclusiveFuncAccessibility)
         {
             var memberToMove = ("CalculateVolumeFromDiameter", DeclarationType.Function);
             var source =
@@ -131,8 +131,6 @@ End Function
 
             var refactoredCode = RefactorTargets(memberToMove, endpoints, source, string.Empty, modelAdjustment);
 
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
-
             StringAssert.DoesNotContain("Public Function CalculateVolumeFromDiameter(", refactoredCode.Source);
             StringAssert.DoesNotContain($"{exclusiveFuncAccessibility} Function CalculateVolume(", refactoredCode.Source);
             StringAssert.DoesNotContain($"Pi As Single", refactoredCode.Source);
@@ -143,13 +141,13 @@ End Function
             StringAssert.Contains($"{exclusiveFuncAccessibility} Function CalculateVolume(", refactoredCode.Destination);
         }
 
-        [TestCase(MoveEndpoints.StdToStd, "Public Const Pi As Single = 3.14", nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.StdToStd, "Public Pi As Single", nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.ClassToStd, "Public Pi As Single", null)]
-        [TestCase(MoveEndpoints.FormToStd, "Public Pi As Single", null)]
+        [TestCase(MoveEndpoints.StdToStd, "Public Const Pi As Single = 3.14", false)]
+        [TestCase(MoveEndpoints.StdToStd, "Public Pi As Single", false)]
+        [TestCase(MoveEndpoints.ClassToStd, "Public Pi As Single", true)]
+        [TestCase(MoveEndpoints.FormToStd, "Public Pi As Single", true)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MovedFunctionReferencesNonExclusivePublicSupportNonMember(MoveEndpoints endpoints, string nonMemberDeclaration, string expectedStrategy)
+        public void MovedFunctionReferencesNonExclusivePublicSupportNonMember(MoveEndpoints endpoints, string nonMemberDeclaration, bool throwsException)
         {
             var memberToMove = ("CalculateVolumeFromDiameter", DeclarationType.Function);
             var source =
@@ -166,15 +164,13 @@ Public Function CalculateCircumferenceFromDiameter(ByVal diameter As Single) As 
     CalculateCircumferenceFromDiameter = diameter * Pi
 End Function";
 
-            if (expectedStrategy is null)
+            if (throwsException)
             {
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source);
                 return;
             }
 
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
             StringAssert.DoesNotContain("Public Function CalculateVolumeFromDiameter(", refactoredCode.Source);
             StringAssert.Contains($"Public Function CalculateCircumferenceFromDiameter(", refactoredCode.Source);
@@ -207,15 +203,15 @@ End Function";
             ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, MoveEndpoints.StdToStd, source);
         }
 
-        [TestCase(MoveEndpoints.StdToStd, "Public", nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.StdToStd, "Private", null)]
-        [TestCase(MoveEndpoints.ClassToStd, "Public", null)]
-        [TestCase(MoveEndpoints.ClassToStd, "Private", null)]
-        [TestCase(MoveEndpoints.FormToStd, "Public", null)]
-        [TestCase(MoveEndpoints.FormToStd, "Private", null)]
+        [TestCase(MoveEndpoints.StdToStd, "Public", false)]
+        [TestCase(MoveEndpoints.StdToStd, "Private", true)]
+        [TestCase(MoveEndpoints.ClassToStd, "Public", true)]
+        [TestCase(MoveEndpoints.ClassToStd, "Private", true)]
+        [TestCase(MoveEndpoints.FormToStd, "Public", true)]
+        [TestCase(MoveEndpoints.FormToStd, "Private", true)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void ReferencesNonExclusiveMember(MoveEndpoints endpoints, string exclusiveFuncAccessibility, string expectedStrategy)
+        public void ReferencesNonExclusiveMember(MoveEndpoints endpoints, string exclusiveFuncAccessibility, bool throwsException)
         {
             var memberToMove = ("CalculateVolumeFromDiameter", DeclarationType.Function);
             var source =
@@ -234,15 +230,13 @@ Public Function CalculateVolumeFromCyliderCircumference(ByVal circumference As S
     CalculateVolumeFromCyliderCircumference = CalculateVolume((circumference / Pi) / 2, height)
 End Function
 ";
-            if (expectedStrategy is null)
+            if (throwsException)
             {
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source);
                 return;
             }
 
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
             StringAssert.DoesNotContain("Public Function CalculateVolumeFromDiameter(", refactoredCode.Source);
             StringAssert.Contains($"{exclusiveFuncAccessibility} Function CalculateVolume(", refactoredCode.Source);
@@ -294,7 +288,6 @@ End Sub
                                                     endpoints.ToDestinationTuple(string.Empty),
                                                     (referencingModuleName, externalReferences, ComponentType.StandardModule));
 
-            StringAssert.AreEqualIgnoringCase(nameof(MoveMemberToStdModule), refactoredCode.StrategyName);
 
             StringAssert.DoesNotContain("Public Function CalculateVolumeFromDiameter(", refactoredCode.Source);
             StringAssert.Contains($"Public Function CalculateVolumeFromDiameter(", refactoredCode.Destination);
@@ -414,7 +407,6 @@ End Function
 ";
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
 
-            StringAssert.AreEqualIgnoringCase(nameof(MoveMemberToStdModule), refactoredCode.StrategyName);
             StringAssert.Contains($"{endpoints.DestinationModuleName()}.CalculateVolume(", refactoredCode.Source);
             StringAssert.DoesNotContain("Private Function CalculateVolume", refactoredCode.Source);
 
@@ -473,8 +465,6 @@ End Function
 ";
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
 
-            StringAssert.AreEqualIgnoringCase(nameof(MoveMemberToStdModule), refactoredCode.StrategyName);
-
             var sourceRefactored = refactoredCode.Source;
             StringAssert.DoesNotContain("Private Function Bar", sourceRefactored);
             StringAssert.DoesNotContain("Private Function Barn", sourceRefactored);
@@ -523,8 +513,6 @@ Private Function Barn(arg1 As Long) As Long
 End Function
 ";
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
-
-            StringAssert.AreEqualIgnoringCase(nameof(MoveMemberToStdModule), refactoredCode.StrategyName);
 
             var sourceRefactored = refactoredCode.Source;
             StringAssert.Contains("Private mfoo As Long", sourceRefactored);
@@ -638,12 +626,12 @@ End Function
             ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source);
         }
 
-        [TestCase(MoveEndpoints.StdToStd, "Public", nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.ClassToStd, "Public", null)]
-        [TestCase(MoveEndpoints.FormToStd, "Public", null)]
+        [TestCase(MoveEndpoints.StdToStd, "Public", false)]
+        [TestCase(MoveEndpoints.ClassToStd, "Public", true)]
+        [TestCase(MoveEndpoints.FormToStd, "Public", true)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void NonExclusiveCallChainPublicMember(MoveEndpoints endpoints, string accessibility, string expectedStrategy)
+        public void NonExclusiveCallChainPublicMember(MoveEndpoints endpoints, string accessibility, bool throwsException)
         {
             var memberToMove = ("Foo", DeclarationType.Function);
             var AddSix = "AddSix"; //NonExclusive callchain member
@@ -682,15 +670,13 @@ Private Function Bark(arg1 As Long) As Long
 End Function
 ";
 
-            if (expectedStrategy is null)
+            if (throwsException)
             {
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source);
                 return;
             }
 
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
             var sourceRefactored = refactoredCode.Source;
             StringAssert.DoesNotContain("Private Function Bar", sourceRefactored);
@@ -794,8 +780,6 @@ End Sub
                         endpoints.ToSourceTuple(source),
                         endpoints.ToDestinationTuple(string.Empty),
                         (callSiteModuleName, callSiteCode, ComponentType.StandardModule));
-
-            StringAssert.AreEqualIgnoringCase(nameof(MoveMemberToStdModule), refactoredCode.StrategyName);
 
             var sourceRefactored = refactoredCode.Source;
             StringAssert.DoesNotContain("Private Function Bar", sourceRefactored);
@@ -1120,12 +1104,12 @@ End Property
             StringAssert.Contains($"arg1 = {sourceModuleName}.Bar * 10", refactoredCode.Destination);
         }
 
-        [TestCase(MoveEndpoints.StdToStd, nameof(MoveMemberToStdModule))]
-        [TestCase(MoveEndpoints.ClassToStd, null)]
-        [TestCase(MoveEndpoints.FormToStd, null)]
+        [TestCase(MoveEndpoints.StdToStd, false)]
+        [TestCase(MoveEndpoints.ClassToStd, true)]
+        [TestCase(MoveEndpoints.FormToStd, true)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void SupportMemberReferencesNonExclusiveBackingVariable( MoveEndpoints endpoints, string expectedStrategy)
+        public void SupportMemberReferencesNonExclusiveBackingVariable( MoveEndpoints endpoints, bool throwsException)
         {
             var memberToMove = ("Foo", DeclarationType.Function);
             var source = $@"
@@ -1152,14 +1136,13 @@ Public Property Get Bar() As Long
 End Property
 ";
 
-            if (expectedStrategy is null)
+            if (throwsException)
             {
                 ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source);
                 return;
             }
 
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, source);
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
             StringAssert.Contains("Bar(", refactoredCode.Source);
             StringAssert.DoesNotContain("Function Foo(arg1", refactoredCode.Source);
@@ -1266,8 +1249,6 @@ End Sub
                     endpoints.ToSourceTuple(source),
                     endpoints.ToDestinationTuple(string.Empty),
                     ("Module3", externalReferencingCode, ComponentType.StandardModule));
-
-            StringAssert.AreEqualIgnoringCase(nameof(MoveMemberToStdModule), refactoredCode.StrategyName);
 
             StringAssert.DoesNotContain("Function Foo(arg1", refactoredCode.Source);
 

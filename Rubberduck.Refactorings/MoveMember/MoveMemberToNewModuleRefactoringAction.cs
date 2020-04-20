@@ -55,7 +55,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
         protected override bool RequiresSuspension(MoveMemberModel model) => true;
 
-        private string MoveMembers(MoveMemberModel model, IMoveMemberRefactoringStrategy strategy, IRewriteSession rewriteSession, IMovedContentProvider contentProvider)
+        private string MoveMembers(MoveMemberModel model, IMoveMemberRefactoringStrategy strategy, IRewriteSession rewriteSession, INewContentProvider contentProvider)
         {
             var newModuleContent = string.Empty;
             try
