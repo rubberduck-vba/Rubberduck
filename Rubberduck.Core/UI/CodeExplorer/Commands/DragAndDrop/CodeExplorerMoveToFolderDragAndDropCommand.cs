@@ -31,7 +31,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands.DragAndDrop
         {
             var (targetFolder, node) = (ValueTuple<string, ICodeExplorerNode>)parameter;
             return !string.IsNullOrEmpty(targetFolder)
-                   && (node is CodeExplorerCustomFolderViewModel
+                   && (node is CodeExplorerCustomFolderViewModel folderViewModel
+                       && folderViewModel.FullPath != targetFolder
                     || node is CodeExplorerComponentViewModel componentViewModel
                         && componentViewModel.Declaration is ModuleDeclaration);
         }
