@@ -3,8 +3,8 @@
     /// <summary>
     /// @Ignore annotation, used for ignoring inspection results at member and local level.
     /// </summary>
-    /// <parameter>
-    /// This annotation optionally takes a comma-separated list of inspection names as argument. If no specific inspection is provided, then all inspections would ignore the annotated target.
+    /// <parameter name="Inspections" type="ParamArray (Identifier)">
+    /// This annotation optionally takes a comma-separated list of inspection names as argument. If no specific inspection is provided, then all inspections should ignore the annotated target.
     /// </parameter>
     /// <remarks>
     /// Use the @IgnoreModule annotation to annotate at module level.

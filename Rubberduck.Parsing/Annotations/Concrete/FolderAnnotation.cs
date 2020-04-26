@@ -3,8 +3,8 @@
     /// <summary>
     /// @Folder annotation, determines where in a custom folder structure a given module appears in the Code Explorer toolwindow.
     /// </summary>
-    /// <parameter>
-    /// This annotation takes a single string literal argument that uses the dot "." character to indicate parent/child folders. Consider using folder names that are valid in the file system; PascalCase names is ideal.
+    /// <parameter name="Path" type="String">
+    /// This string literal argument uses the dot "." character to indicate parent/child folders. Consider using folder names that are valid in the file system; PascalCase names are ideal.
     /// </parameter>
     /// <example>
     /// <module name="Class1" type="Class Module">

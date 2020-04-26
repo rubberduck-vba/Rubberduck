@@ -3,7 +3,7 @@
     /// <summary>
     /// @IgnoreModule annotation, used for ignoring inspection results module-wide.
     /// </summary>
-    /// <parameter>
+    /// <parameter name="Inspections" type="ParamArray (Identifier)">
     /// This annotation optionally takes a comma-separated list of inspection names as argument. If no specific inspection is provided, then all inspections would ignore the annotated module.
     /// </parameter>
     /// <remarks>

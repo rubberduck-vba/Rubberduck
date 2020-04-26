@@ -7,8 +7,8 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// @TestMethod annotation, identifies procedures that contain unit tests.
     /// </summary>
-    /// <parameter>
-    /// This annotation takes an optional string argument identifying the test category.
+    /// <parameter name="TestCategory" type="String">
+    /// If arguments are supplied, the current implementation makes the first provided argument be the test category.
     /// </parameter>
     /// <example>
     /// <module name="TestModule1" type="Standard Module">

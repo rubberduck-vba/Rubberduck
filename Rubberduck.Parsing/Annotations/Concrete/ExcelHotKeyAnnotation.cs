@@ -10,8 +10,8 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// @ExcelHotkey annotation, uses a VB_ProcData.VB_Invoke_Func metadata attribute to map a hotkey to a standard module procedure. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
-    /// <parameter>
-    /// This annotation requires a single-letter string argument to map the hotkey. If the letter is in UPPER CASE, the hotkey is Ctrl+Shift+letter; if the letter is lower case, the hotkey is Ctrl+letter. Avoid remapping commonly used keyboard shortcuts!
+    /// <parameter name="Key" type="String*1">
+    /// A single-letter string argument maps the hotkey. If the letter is in UPPER CASE, the hotkey is Ctrl+Shift+letter; if the letter is lower case, the hotkey is Ctrl+letter. Avoid remapping commonly used keyboard shortcuts!
     /// </parameter>
     /// <example>
     /// <module name="Module1" type="Standard Module">

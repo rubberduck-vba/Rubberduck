@@ -3,9 +3,6 @@
     /// <summary>
     /// @TestInitialize annotation, marks a procedure that the unit testing engine executes once before running each of the tests in a module.
     /// </summary>
-    /// <parameter>
-    /// This annotation takes no argument.
-    /// </parameter>
     /// <example>
     /// <module name="TestModule1" type="Standard Module">
     /// <![CDATA[

@@ -9,9 +9,6 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// @DefaultMember annotation, uses the VB_UserMemId attribute to make a class member the default member of that class. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
-    /// <parameter>
-    /// This annotation takes no argument.
-    /// </parameter>
     /// <example>
     /// <module name="Class1" type="Class Module">
     /// <![CDATA[

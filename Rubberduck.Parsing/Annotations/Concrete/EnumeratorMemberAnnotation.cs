@@ -8,9 +8,6 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// @Enumerator annotation, uses the VB_UserMemId attribute to make a class member the enumerator-provider member of that class, enabling For Each iteration of custom collections. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
-    /// <parameter>
-    /// This annotation takes no argument.
-    /// </parameter>
     /// <example>
     /// <module name="Class1" type="Class Module">
     /// <![CDATA[

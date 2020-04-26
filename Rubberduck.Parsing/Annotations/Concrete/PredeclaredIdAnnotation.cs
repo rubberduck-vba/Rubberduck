@@ -7,9 +7,6 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// @PredeclaredId annotation, uses the VB_Predeclared module attribute to define a compile-time default instance for the class. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
-    /// <parameter>
-    /// This annotation takes no argument.
-    /// </parameter>
     /// <remarks>
     /// Consider keeping the default/predeclared instance stateless.
     /// </remarks>

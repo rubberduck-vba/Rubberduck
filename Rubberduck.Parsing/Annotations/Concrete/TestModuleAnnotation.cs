@@ -3,9 +3,6 @@
     /// <summary>
     /// @TestModule annotation, marks a module for unit test discovery.
     /// </summary>
-    /// <parameter>
-    /// This annotation takes no argument.
-    /// </parameter>
     /// <remarks>
     /// The test engine only scans modules with this annotation when discovering unit tests.
     /// </remarks>

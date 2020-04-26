@@ -7,8 +7,11 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// @ModuleAttribute annotation, allows specifying arbitrary VB_Attribute for modules. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
-    /// <parameter>
-    /// This annotation takes the literal name of the member VB_Attribute, then the comma-separated values of that attribute.
+    /// <parameter name="VB_Attribute" type="Identifier">
+    /// The literal identifier name of the member VB_Attribute.
+    /// </parameter>
+    /// <parameter name="Values" type="ParamArray">
+    /// The comma-separated attribute values, as applicable.
     /// </parameter>
     /// <example>
     /// <module name="Class1" type="Class Module">

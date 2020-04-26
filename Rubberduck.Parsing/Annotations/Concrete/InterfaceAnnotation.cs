@@ -3,9 +3,6 @@
     /// <summary>
     /// @Interface annotation, marks a class as an abstract interface; Rubberduck can use this valuable metadata in its code analysis.
     /// </summary>
-    /// <parameter>
-    /// This annotation takes no argument.
-    /// </parameter>
     /// <remarks>
     /// Code Explorer uses an "interface" icon to represent class modules with this annotation.
     /// </remarks>

@@ -3,9 +3,6 @@
     /// <summary>
     /// @IgnoreTest annotation, used for ignoring a particular unit test in a test module.
     /// </summary>
-    /// <parameter>
-    /// This annotation takes no argument.
-    /// </parameter>
     /// <remarks>
     /// Test Explorer will skip tests decorated with this annotation.
     /// </remarks>

@@ -3,9 +3,6 @@
     /// <summary>
     /// @ModuleCleanup annotation, marks a procedure that the unit testing engine executes after all tests of a module have completed.
     /// </summary>
-    /// <parameter>
-    /// This annotation takes no argument.
-    /// </parameter>
     /// <example>
     /// <module name="TestModule1" type="Standard Module">
     /// <![CDATA[
