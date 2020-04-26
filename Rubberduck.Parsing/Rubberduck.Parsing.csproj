@@ -13,6 +13,7 @@
     <WarningLevel>1</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <NoWarn>1701;1702;1591;4011;1001;7035;1053</NoWarn>
+    <DocumentationFile>Rubberduck.Parsing.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <Antlr4UseCSharpGenerator>True</Antlr4UseCSharpGenerator>
