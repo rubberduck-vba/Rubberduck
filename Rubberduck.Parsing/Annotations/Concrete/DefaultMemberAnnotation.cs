@@ -7,8 +7,33 @@ using Rubberduck.Resources.Registration;
 namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// Used for specifying a member's <c>VB_UserMemId</c> attribute value.
+    /// @DefaultMember annotation, uses the VB_UserMemId attribute to make a class member the default member of that class. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
+    /// <parameter>
+    /// This annotation takes no argument.
+    /// </parameter>
+    /// <example>
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// Private InternalState As VBA.Collection
+    ///
+    /// @DefaultMember
+    /// Public Property Get Item(ByVal Index As Variant) As Variant
+    ///     Item = InternalState(Index)
+    /// End Sub
+    /// 
+    /// 'if the default member is a property, only the Get accessor needs the attribute/annotation.
+    /// Public Property Let Item(ByVal Index As Variant, ByVal Value As Variant)
+    ///     InternalState(Index) = Value    
+    /// End Sub
+    /// 
+    /// Private Sub Class_Initialize()
+    ///     Set InternalState = New VBA.Collection
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
     public sealed class DefaultMemberAnnotation : FixedAttributeValueAnnotationBase
     {
         public DefaultMemberAnnotation()

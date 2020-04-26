@@ -5,8 +5,22 @@ using Rubberduck.VBEditor;
 namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// Used for specifying a module's <c>VB_Exposed</c> attribute.
+    /// @Exposed annotation, uses the VB_Exposed module attribute to make a class visible to a referencing project (classes are otherwise private). Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
+    /// <parameter>
+    /// This annotation takes no argument.
+    /// </parameter>
+    /// <example>
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
+    /// '@Exposed
+    /// Option Explicit
+    ///
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
     public sealed class ExposedModuleAnnotation : FixedAttributeValueAnnotationBase
     {
         public ExposedModuleAnnotation()

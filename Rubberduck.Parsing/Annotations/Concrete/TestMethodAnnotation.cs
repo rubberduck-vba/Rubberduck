@@ -5,8 +5,28 @@ using Rubberduck.Common;
 namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// Marks a method that the test engine will execute as a unit test.
+    /// @TestMethod annotation, identifies procedures that contain unit tests.
     /// </summary>
+    /// <parameter>
+    /// This annotation takes an optional string argument identifying the test category.
+    /// </parameter>
+    /// <example>
+    /// <module name="TestModule1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// '@TestModule
+    /// 
+    /// Private Assert As Rubberduck.AssertClass
+    /// '...
+    /// 
+    /// '@TestMethod("Category")
+    /// Private Sub GivenThing_ThenResult()
+    ///     'use Assert calls to specify conditions that make the test fail.
+    ///     Assert.IsTrue False
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
     public sealed class TestMethodAnnotation : AnnotationBase, ITestAnnotation
     {
         public TestMethodAnnotation()
