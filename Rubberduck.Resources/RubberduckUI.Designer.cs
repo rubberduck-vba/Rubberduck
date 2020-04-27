@@ -154,6 +154,222 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_AddArgumentButtonLabel {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_AddArgumentButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation to Add:.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_AnnotationLabel {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_AnnotationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation Arguments:.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_ArgumentsLabel {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_ArgumentsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_ArgumentTypeHeader {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_ArgumentTypeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_ArgumentValueHeader {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_ArgumentValueHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Annotate Declaration.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_Caption {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Declaration to Annotate:.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_DeclarationLabel {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_DeclarationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select an annotation (and values) to add to the selected declaration..
+        /// </summary>
+        public static string AnnotateDeclarationDialog_Instructions {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_Instructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_RemoveArgumentButtonLabel {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_RemoveArgumentButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotate Declaration.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_TitleText {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments of type &apos;Attribute Name&apos; have to start with &apos;VB_&apos;..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_AttributeNameStart {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_AttributeNameStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments cannot be empty..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_EmptyArgument {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_EmptyArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments of type &apos;Inspection Name&apos; have to the name of an existing inspection..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_InspectionName {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_InspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments can only contain a single line..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_Newline {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_Newline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments of type &apos;Boolean&apos; have to either be &apos;True&apos; or &apos;False&apos;..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_NotABoolean {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_NotABoolean", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments of type &apos;Number&apos; have to be a valid number in integer of floating point format..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_NotANumber {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_NotANumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments must not contain control characters..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_SpecialCharacters {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_SpecialCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments cannot be longer than {0} characters..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_TooLong {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_TooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments of type &apos;Attribute Name&apos; cannot contain whitespace..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_WhitespaceInAttribute {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_WhitespaceInAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attribute.
+        /// </summary>
+        public static string AnnotationArgumentType_Attribute {
+            get {
+                return ResourceManager.GetString("AnnotationArgumentType_Attribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Boolean.
+        /// </summary>
+        public static string AnnotationArgumentType_Boolean {
+            get {
+                return ResourceManager.GetString("AnnotationArgumentType_Boolean", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inspection Name.
+        /// </summary>
+        public static string AnnotationArgumentType_Inspection {
+            get {
+                return ResourceManager.GetString("AnnotationArgumentType_Inspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number.
+        /// </summary>
+        public static string AnnotationArgumentType_Number {
+            get {
+                return ResourceManager.GetString("AnnotationArgumentType_Number", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text.
+        /// </summary>
+        public static string AnnotationArgumentType_Text {
+            get {
+                return ResourceManager.GetString("AnnotationArgumentType_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apply.
         /// </summary>
         public static string ApplyButtonText {

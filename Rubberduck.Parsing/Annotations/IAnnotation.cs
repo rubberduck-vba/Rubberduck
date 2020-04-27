@@ -66,7 +66,7 @@ namespace Rubberduck.Parsing.Annotations
         /// <summary>
         /// Indicates that the annotation argument can be a string.
         /// </summary>
-        Text = 1 << 0,
+        Text = 1,
         /// <summary>
         /// Indicates that the annotation argument can be a number.
         /// </summary>

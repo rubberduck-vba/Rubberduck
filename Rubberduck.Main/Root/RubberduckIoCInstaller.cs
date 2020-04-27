@@ -60,6 +60,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.VbeRuntime;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.UI.Refactorings.AnnotateDeclaration;
 
 namespace Rubberduck.Root
 {
@@ -375,6 +376,9 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IAddRemoveReferencesPresenterFactory>()
                 .ImplementedBy<AddRemoveReferencesPresenterFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IAnnotationArgumentViewModelFactory>()
+                .ImplementedBy<AnnotationArgumentViewModelFactory>()
                 .LifestyleSingleton());
             RegisterUnreachableCaseFactories(container);
         }

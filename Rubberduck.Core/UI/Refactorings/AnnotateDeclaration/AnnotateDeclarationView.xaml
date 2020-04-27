@@ -1,0 +1,181 @@
+﻿<UserControl x:Class="Rubberduck.UI.Refactorings.AnnotateDeclaration.AnnotateDeclarationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
+             xmlns:local="clr-namespace:Rubberduck.UI.Refactorings.AnnotateDeclaration"
+             xmlns:annotations="clr-namespace:Rubberduck.Parsing.Annotations;assembly=Rubberduck.Parsing"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Controls/ToolBar.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:EnumToLocalizedStringConverter ResourcePrefix="AnnotationArgumentType_" x:Key="AnnotationArgumentTypeToStringConverter"/>
+            <converters:InspectionToLocalizedNameConverter x:Key="InspectionToLocalizedNameConverter"/>
+            <converters:DeclarationToQualifiedNameConverter x:Key="DeclarationToQualifiedNameConverter"/>
+
+            <BitmapImage x:Key="InvalidTextImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
+            <Style x:Key="TextBoxErrorStyle" TargetType="{x:Type TextBox}">
+                <Setter Property="Validation.ErrorTemplate">
+                    <Setter.Value>
+                        <ControlTemplate x:Name="TextBoxErrorTemplate">
+                            <DockPanel LastChildFill="True">
+                                <AdornedElementPlaceholder/>
+                                <Image Source="{StaticResource InvalidTextImage}"
+                                       Height="16"
+                                       Margin="0,-8,-8,0"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Top"/>
+                            </DockPanel>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError"
+                             Value="True">
+                        <Setter Property="ToolTip"
+                                Value="{Binding RelativeSource={x:Static RelativeSource.Self}, 
+                                                    Path=(Validation.Errors)[0].ErrorContent}">
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+        <StackPanel Background="{StaticResource BackgroundLightBrush}">
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_TitleText}" FontWeight="Bold" />
+            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_Instructions}" Margin="5,0" TextWrapping="Wrap" />
+        </StackPanel>
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_DeclarationLabel}" Margin="5,0" />
+            <TextBlock Text="{Binding Model.Target, Converter={StaticResource DeclarationToQualifiedNameConverter}}" Margin="10,0" />
+            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_AnnotationLabel}" Margin="5,5,0,0" />
+            <ComboBox 
+                ItemsSource="{Binding ApplicableAnnotations}"
+                SelectedItem="{Binding Annotation}"
+                IsSynchronizedWithCurrentItem="True"
+                Margin="5,0">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type annotations:IAnnotation}">
+                        <TextBlock Text="{Binding Name, StringFormat=@{}{0}}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentsLabel}" Margin="5,5,0,0" />
+        </StackPanel>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentSingleTypeTemplate">
+                    <TextBlock Text="{Binding ArgumentType, Converter={StaticResource AnnotationArgumentTypeToStringConverter}}"/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentMultiTypeTemplate">
+                    <ComboBox 
+                        ItemsSource="{Binding Path=ApplicableArgumentTypes, Converter={StaticResource AnnotationArgumentTypeToStringConverter}}"
+                        SelectedItem="{Binding Path=ArgumentType, Converter={StaticResource AnnotationArgumentTypeToStringConverter}}"
+                        IsSynchronizedWithCurrentItem="True"/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentValueTemplate">
+                    <TextBox 
+                        Text="{Binding Path=ArgumentValue, ValidatesOnNotifyDataErrors=True}"
+                        Style="{StaticResource TextBoxErrorStyle}"/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentValueBooleanTemplate">
+                    <ComboBox 
+                        SelectedItem="{Binding Path=ArgumentValue}"
+                        IsSynchronizedWithCurrentItem="True">
+                        <TextBlock Text="True"/>
+                        <TextBlock Text="False"/>
+                    </ComboBox>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentValueInspectionTemplate">
+                    <ComboBox
+                        SelectedItem="{Binding Path=ArgumentValue}"
+                        IsSynchronizedWithCurrentItem="True">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=., Converter={StaticResource InspectionToLocalizedNameConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </DataTemplate>
+                <local:AnnotationArgumentTypeCellDataTemplateSelector x:Key="AnnotationArgumentTypeCellDataTemplateSelector"/>
+                <local:AnnotationArgumentValueCellDataTemplateSelector x:Key="AnnotationArgumentValueCellDataTemplateSelector"/>
+            </Grid.Resources>
+            <DataGrid 
+                Grid.Column="0"
+                VerticalAlignment="Stretch"
+                ItemsSource="{Binding Path=AnnotationArguments}"
+                AutoGenerateColumns="False"
+                VerticalScrollBarVisibility="Auto"
+                Margin="5,0,0,5">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn 
+                        Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentTypeHeader}"
+                        CellTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}"
+                        CellEditingTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}">
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn 
+                        Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentValueHeader}"
+                        CellTemplateSelector="{StaticResource AnnotationArgumentValueCellDataTemplateSelector}"
+                        CellEditingTemplateSelector="{StaticResource AnnotationArgumentValueCellDataTemplateSelector}">
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel 
+                Grid.Column="1" 
+                VerticalAlignment="Center">
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_AddArgumentButtonLabel}"
+                        Height="20"
+                        Margin="5,2.5"
+                        Padding="10,0"
+                        Command="{Binding AddAnnotationArgument}"/>
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_RemoveArgumentButtonLabel}"
+                        Height="20"
+                        Margin="5,2.5"
+                        Padding="10,0"
+                        Command="{Binding RemoveAnnotationArgument}"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="3" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
+            <Grid HorizontalAlignment="Right"
+                  Margin="5,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                    <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                </Grid.ColumnDefinitions>
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
+                        Grid.Column="0"
+                        Height="20"
+                        Margin="5,0"
+                        Padding="10,0"
+                        IsEnabled="{Binding IsValidAnnotation}"
+                        IsDefault="True"
+                        Command="{Binding OkButtonCommand}" />
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}"
+                        Grid.Column="1"
+                        Height="20"
+                        Margin="5,0"
+                        Padding="10,0"
+                        IsCancel="True"
+                        Command="{Binding CancelButtonCommand}">
+                </Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

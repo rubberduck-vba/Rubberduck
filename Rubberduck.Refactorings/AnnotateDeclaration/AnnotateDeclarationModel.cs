@@ -21,7 +21,7 @@ namespace Rubberduck.Refactorings.AnnotateDeclaration
     {
         public Declaration Target { get; }
         public IAnnotation Annotation { get; set; }
-        public IList<TypedAnnotationArgument> Arguments { get; }
+        public IList<TypedAnnotationArgument> Arguments { get; set; }
 
         public AnnotateDeclarationModel(
             Declaration target, 

@@ -1607,4 +1607,76 @@ Import abgebrochen.</value>
   <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
     <value>Die Komponente '{0}' würde durch das Refactoring verändert, aber ihr Inhalt ist in Rubberduck veraltet. Bitte lassen Sie Rubberduck seinen Stand aktualisieren und versuchen Sie es erneut.</value>
   </data>
+  <data name="AnnotateDeclarationDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Annotation hinzufügen</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_TitleText" xml:space="preserve">
+    <value>Annotation hinzufügen</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentsLabel" xml:space="preserve">
+    <value>Annotationsarguments:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_AnnotationLabel" xml:space="preserve">
+    <value>Hinzuzufügende Annotation:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_DeclarationLabel" xml:space="preserve">
+    <value>Deklaration, zu welcher eine Annotation hinzugefügt werden soll:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentValueHeader" xml:space="preserve">
+    <value>Wert</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentTypeHeader" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_RemoveArgumentButtonLabel" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_AddArgumentButtonLabel" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_Instructions" xml:space="preserve">
+    <value>Wähle eine Annotation (und Werte), die zu der ausgewählten Deklaration hinzugefügt werden soll.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
+    <value>Annotationsargumente dürfen keine Kontrollzeichen enthalten.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_InspectionName" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Inspektionsname' müssen der Name einer existierenden Inspektion sein.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_AttributeNameStart" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Attributname' müssen mit 'VB_' anfangen.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Zahl' müssen eine ganze Zahl oder eine Gleitkommazahl sein.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Wahrheitswert' müssen entweder 'True' oder 'False' sein.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_EmptyArgument" xml:space="preserve">
+    <value>Annotationsargumente können nicht leer sein.</value>
+  </data>
+  <data name="AnnotationArgumentType_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="AnnotationArgumentType_Number" xml:space="preserve">
+    <value>Zahl</value>
+  </data>
+  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
+    <value>Inspektionsname</value>
+  </data>
+  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
+    <value>Wahrheitswert</value>
+  </data>
+  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
+    <value>Attribut</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_Newline" xml:space="preserve">
+    <value>Annotationsargumente können nur aus einer einzigen Zeile bestehen.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Attributname' dürfen keine Leerzeichen enthalten.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_TooLong" xml:space="preserve">
+    <value>Annotationsargumente dürfen nicht länger als {0} Zeihen sein.</value>
+  </data>
 </root>

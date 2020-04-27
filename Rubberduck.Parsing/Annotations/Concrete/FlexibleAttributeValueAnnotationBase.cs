@@ -10,7 +10,7 @@ namespace Rubberduck.Parsing.Annotations
         private readonly int _numberOfValues;
 
         protected FlexibleAttributeValueAnnotationBase(string name, AnnotationTarget target, string attribute, int numberOfValues, IReadOnlyList<AnnotationArgumentType> argumentTypes)
-            : base(name, target, numberOfValues, numberOfValues)
+            : base(name, target, numberOfValues, numberOfValues, argumentTypes)
         {
             _attribute = attribute;
             _numberOfValues = numberOfValues;

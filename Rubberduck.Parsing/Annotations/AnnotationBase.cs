@@ -26,5 +26,22 @@ namespace Rubberduck.Parsing.Annotations
         {
             return arguments.ToList();
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is AnnotationBase annotation 
+                && Equals(annotation);
+        }
+
+        public bool Equals(AnnotationBase other)
+        {
+            return other != null 
+                   && Name.Equals(other.Name);
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
     }
 }
