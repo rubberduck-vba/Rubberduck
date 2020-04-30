@@ -1,5 +1,7 @@
 using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -7,12 +9,12 @@ using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TestDI = RubberduckTests.Refactoring.NameConflictFinderTestsDI;
+using TestResolver = RubberduckTests.Refactoring.ConflictDetectionSessionTestsResolver;
 
 namespace RubberduckTests.Refactoring
 {
     [TestFixture]
-    public class NameConflictFinderRenameTests
+    public class ConflictDetectionSessionRenameTests
     {
         //MS_VBAL 5.4.3.1, 5.4.3.2
         //Method names need to be different than contained local variables or constants
@@ -20,7 +22,7 @@ namespace RubberduckTests.Refactoring
         [TestCase("Static goo As Long", "GOO", true)]
         [TestCase("Const goo As Long = 10", "GOO", true)]
         [Category("Refactoring")]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void ProcedureNameChangeConflictsWithLocalDeclaration(string declaration, string newName, bool expected)
         {
             var selection = ("Fizz", DeclarationType.Procedure);
@@ -41,7 +43,7 @@ End Sub
         [TestCase("Static goo As Long", "GOO", true)]
         [TestCase("Const goo As Long = 10", "GOO", true)]
         [Category("Refactoring")]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void FunctionNameChangeConflictsWithLocalDeclaration(string declaration, string newName, bool expected)
         {
             var selection = ("Fizz", DeclarationType.Function);
@@ -62,7 +64,7 @@ End Function
         [TestCase("Static goo As Long", "GOO", true)]
         [TestCase("Const goo As Long = 10", "GOO", true)]
         [Category("Refactoring")]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void PropertyNameChangeConflictsWithLocalDeclaration(string declaration, string newName, bool expected)
         {
             var selection = ("Fizz", DeclarationType.PropertyGet);
@@ -87,7 +89,7 @@ End Property
         [TestCase("Fizz", DeclarationType.PropertyLet, "value", false)]
         [TestCase("Gazz", DeclarationType.Function, "gazzArg", true)]
         [TestCase("Guzz", DeclarationType.Procedure, "guzzArg", false)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void FunctionRenameConflictsWithParameters(string target, DeclarationType declarationType, string newName, bool expected)
         {
             var selection = (target, declarationType);
@@ -126,7 +128,7 @@ End Sub
         //MS-VBAL 5.4.3.1 (Method names need to be different than contained local variables)
         //would be the applicable conflict 'rule'.
         [Test]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void SubRenameConflictsWithParameterRecursive()
         {
             var selection = ("Guzz", DeclarationType.Procedure);
@@ -157,7 +159,7 @@ End Sub
         [TestCase("Gazz", false)]
         [TestCase("ETest", false)]
         [Category("Refactoring")]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void MethodRenameChangeConflicts(string newName, bool expected)
         {
             var selection = ("Fizz", DeclarationType.Function);
@@ -202,7 +204,7 @@ End Property
         [TestCase("SecondValue", true)]
         [TestCase("ETest", false)]
         [Category("Refactoring")]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void EnumMemberRenameChangeConflicts(string newName, bool expected)
         {
             var selection = ("FirstValue", DeclarationType.EnumerationMember);
@@ -246,7 +248,7 @@ End Property
         [TestCase("Fazz", DeclarationType.PropertyGet, "Fuzz", true)]
         [TestCase("Fazz", DeclarationType.PropertySet, "Fuzz", false)]
         [Category("Refactoring")]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void RenameLetSetGetAreUnique(string targetName, DeclarationType targetDeclarationType, string newName, bool expected)
         {
             var selection = (targetName, targetDeclarationType);
@@ -300,7 +302,7 @@ End Property
         [TestCase("(arg1 As String, arg2 As Long, value As Long)", "(arg1 As String, arg22 As Long)", true)] //Inconsistent parameters (parameter name)
         [TestCase("(arg1 As String, arg2 As Variant, value As Long)", "(arg1 As String, ParamArray arg2() As Variant)", true)] //Inconsistent parameters (ParamArray)
         [Category("Refactoring")]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void RenamePropertyInconsistentSignatures(string letParameters, string getParameters, bool expected)
         {
             var sourceContent =
@@ -324,7 +326,7 @@ End Property
         [TestCase("multiplier", true)]
         [TestCase("adder", true)]
         [TestCase("Foo", false)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void NewFunctionNameConflictsWithLocalVariable(string newName, bool isConflict)
         {
             var moduleContent1 =
@@ -345,7 +347,7 @@ End Function
 
         [TestCase("Fizz", true)]
         [TestCase("Foo", false)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void NewFunctionNameConflictsWithReferenceInOtherMember(string nameToCheck, bool isConflict)
         {
             var moduleContent1 =
@@ -369,7 +371,7 @@ End Sub
         [TestCase("member1", true)]
         [TestCase("adder", false)]
         [TestCase("Foo", true)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void RenameLocalVariableInFunction(string newName, bool isConflict)
         {
             var moduleContent1 =
@@ -391,7 +393,7 @@ End Function
 
         [TestCase("member1", true)]
         [TestCase("adder", false)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void RenameFunctionToLocalVariable(string newName, bool isConflict)
         {
             var moduleContent1 =
@@ -418,7 +420,7 @@ End Function
         [TestCase("member1", false)]
         [TestCase("adder", true)]
         [TestCase("Foo", true)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void InProcedure_MemberDeclaration(string nameToCheck, bool isConflict)
         {
             var moduleContent1 =
@@ -442,7 +444,7 @@ End Function
         [TestCase("Foo", true)]
         [TestCase("Foo2", false)]
         [TestCase("Bar", false)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void ModuleScope(string nameToCheck, bool isConflict)
         {
             var moduleContent1 =
@@ -486,7 +488,7 @@ End Sub
 
         [TestCase("Foo", false)]
         [TestCase("Foo2", false)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void PublicClassAndPublicModuleSub_RenameClassSub(string nameToCheck, bool isConflict)
         {
             var moduleContent1 =
@@ -517,7 +519,7 @@ End Function
         [TestCase("Fooz", true)]
         [TestCase("Tizz", true)]
         [TestCase("Bazz2", false)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void RenamedSubHasExternalNonQualifiedReferenceConflicts(string nameToCheck, bool isConflict)
         {
             var moduleContent1 =
@@ -554,7 +556,7 @@ End Function
         [TestCase("Bazz", true)]
         [TestCase("Buzz", true)]
         [TestCase("Fooz", false)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void RenamedSubConflictsWithParameter(string nameToCheck, bool isConflict)
         {
             var moduleContent1 =
@@ -595,7 +597,7 @@ End Function
         [TestCase("member1", false)]
         [TestCase("Bar", true)]
         [TestCase("adder", false)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void Module_To_ClassScope(string nameToCheck, bool isConflict)
         {
             var moduleContent1 =
@@ -637,7 +639,7 @@ End Function
             Assert.AreEqual(isConflict, hasConflict);
         }
 
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void PrivateSub_CheckConflictsInOtherModule()
         {
             var nameToCheck = "DoThis";
@@ -672,7 +674,7 @@ End Sub
         [TestCase("ExtractFilename", true)]
         [TestCase("StoreFilename", true)]
         [TestCase("filepath", true)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void PrivateSub_MultipleReferences(string nameToCheck, bool isConflict)
         {
 
@@ -727,7 +729,7 @@ End Function"
         [TestCase("SetFilename", true)]
         [TestCase("Foo", false)]
         [TestCase("FooBar", false)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void PrivateSub_WithAccessBlock(string nameToCheck, bool isConflict)
         {
             var moduleContent1 =
@@ -797,7 +799,7 @@ End Sub
         [TestCase("Bar1", true, "Foo1 + Fo|o2 + Foo3")]
         [TestCase("Bar2", false, "modTwo.Foo1 + modTwo.Fo|o2 + modTwo.Foo3")]
         [TestCase("Bar2", true, "Foo1 + Fo|o2 + Foo3")]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void Module_To_ModuleScopeResolutions(string nameToCheck, bool isConflict, string scopeResolvedInput)
         {
             var moduleContent1 =
@@ -846,7 +848,7 @@ End Sub
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/4969
         [Test]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void NameConflictDetectionRespectsProjectScope()
         {
             var projectTwoModule = "ProjectTwoModule"; //try to rename ProjectOneModule to this
@@ -872,14 +874,13 @@ End Sub
                 var target = parser.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule)
                     .FirstOrDefault(item => item.IdentifierName.Equals(renameTargetModule));
 
-                var conflictFinder = TestDI.Resolve<INameConflictFinder>(parser);
-                var hasConflict = conflictFinder.RenameCreatesNameConflict(target, projectTwoModule, out _);
+                var hasConflict = HasRenameConflict(parser, target, projectTwoModule);
                 Assert.IsFalse(hasConflict);
             }
         }
 
         [Test]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void RenameModuleToExistingModuleIdentifierConflict()
         {
             var nameConflictModule = "modTwo";
@@ -895,7 +896,7 @@ End Sub
         }
 
         [Test]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void ModuleNameMatchesProjectName()
         {
             (string code, Selection selection) = ToCodeAndSelectionTuple("Option Explicit");
@@ -909,7 +910,7 @@ End Sub
         [TestCase("Bazz", true)]
         [TestCase("Tazz", false)]
         [TestCase("mTazz", false)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void RenameEvent(string newName, bool isConflict)
         {
             var moduleContent1 =
@@ -936,7 +937,7 @@ End Sub
         [TestCase("arg2", true)]
         [TestCase("Tazz", false)]
         [TestCase("mTazz", true)] //Does not violate MS-VBAL conflict rules, but will change logic 
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void RenameSubroutineParameter(string newName, bool isConflict)
         {
             var moduleContent1 =
@@ -960,7 +961,7 @@ End Sub
         }
 
         [Test]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void RenameParameterInRecursiveSubroutine_HasConflict()
         {
             var selection = ("guzzArg", DeclarationType.Parameter);
@@ -983,7 +984,7 @@ End Sub
         [TestCase("arg2", true)]
         [TestCase("Tazz", true)]
         [TestCase("mTazz", true)] //Does not violate MS-VBAL conflict rules, but will change logic
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void RenameFunctionParameter(string newName, bool isConflict)
         {
             var moduleContent1 =
@@ -1011,7 +1012,7 @@ End Function
         [TestCase("Bar2", DeclarationType.Procedure, "XYZ")]
         [TestCase("member11", DeclarationType.Variable, "XYZ")]
         [TestCase("member2", DeclarationType.Constant, "XYZ")]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void NoMatchingNames(string targetName, DeclarationType targetDeclarationType, string newName)
         {
             var selection = (targetName, targetDeclarationType);
@@ -1044,7 +1045,7 @@ End Sub
         [TestCase(MockVbeBuilder.TestProjectName, "Public", true)]
         [TestCase(MockVbeBuilder.TestProjectName, "Private", false)]
         [Category("Refactoring")]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void EnumerationRename_SameModuleConflicts(string newName, string accessibility, bool expected)
         {
             var inputCode =
@@ -1083,7 +1084,7 @@ End Sub
         }
 
         [Test]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void PublicEnumerationRenameToOtherProjectName_HasConflict()
         {
             var containingModuleContent =
@@ -1121,8 +1122,8 @@ Option Explicit
                 var target = parser.DeclarationFinder.UserDeclarations(DeclarationType.Enumeration)
                     .FirstOrDefault(item => item.IdentifierName.Equals("ETest"));
 
-                var conflictFinder = TestDI.Resolve<INameConflictFinder>(parser);
-                var hasConflict = conflictFinder.RenameCreatesNameConflict(target, "ConflictProject", out _);
+                var hasConflict = HasRenameConflict(parser, target, "ConflictProject");
+
                 Assert.IsTrue(hasConflict);
             }
         }
@@ -1133,7 +1134,7 @@ Option Explicit
         [TestCase("ConflictModule", true)]
         [TestCase("EPvtConflictTest", false)]
         [TestCase("TPvtConflictTest", false)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void PublicEnumerationRenamesConflictsOtherModule(string newName, bool expected)
         {
             var containingModuleContent =
@@ -1181,8 +1182,7 @@ End Type
                 var target = parser.DeclarationFinder.UserDeclarations(DeclarationType.Enumeration)
                     .FirstOrDefault(item => item.IdentifierName.Equals("ETest"));
 
-                var conflictFinder = TestDI.Resolve<INameConflictFinder>(parser);
-                var hasConflict = conflictFinder.RenameCreatesNameConflict(target, newName, out _);
+                var hasConflict = HasRenameConflict(parser, target, newName);
                 Assert.AreEqual(expected, hasConflict);
             }
         }
@@ -1200,7 +1200,7 @@ End Type
         [TestCase(MockVbeBuilder.TestProjectName, "Public", true)]
         [TestCase(MockVbeBuilder.TestProjectName, "Private", false)]
         [Category("Refactoring")]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void UDTRename_SameModuleConflicts(string newName, string accessibility, bool expected)
         {
             var inputCode =
@@ -1236,7 +1236,7 @@ End Sub
         }
 
         [Test]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void PublicUDTRenameToOtherProjectName_HasConflict()
         {
             var containingModuleContent =
@@ -1273,8 +1273,7 @@ Option Explicit
                 var target = parser.DeclarationFinder.UserDeclarations(DeclarationType.UserDefinedType)
                     .FirstOrDefault(item => item.IdentifierName.Equals("TTest"));
 
-                var conflictFinder = TestDI.Resolve<INameConflictFinder>(parser);
-                var hasConflict = conflictFinder.RenameCreatesNameConflict(target, "ConflictProject", out _);
+                var hasConflict = HasRenameConflict(parser, target, "ConflictProject");
                 Assert.IsTrue(hasConflict);
             }
         }
@@ -1285,7 +1284,7 @@ Option Explicit
         [TestCase("ConflictModule", true)]
         [TestCase("EPvtConflictTest", false)]
         [TestCase("TPvtConflictTest", false)]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void PublicUDTRenamesConflictsOtherModule(string newName, bool expected)
         {
             var containingModuleContent =
@@ -1328,18 +1327,17 @@ End Type
                 var target = parser.DeclarationFinder.UserDeclarations(DeclarationType.UserDefinedType)
                     .FirstOrDefault(item => item.IdentifierName.Equals("TTest"));
 
-                var conflictFinder = TestDI.Resolve<INameConflictFinder>(parser);
-                var hasConflict = conflictFinder.RenameCreatesNameConflict(target, newName, out _);
+                var hasConflict = HasRenameConflict(parser, target, newName);
                 Assert.AreEqual(expected, hasConflict);
             }
         }
 
         [TestCase("TTest")]
         [TestCase("ETest")]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         public void RenameProjectMatchesUDTOrEnum_HasConflict(string newName)
         {
-            var containingModuleContent =
+            var sourceCode =
 $@"
 Option Explicit
 
@@ -1351,34 +1349,60 @@ Public Enum ETest
     FirstValue = 0
 End Enum
 ";
-            var conflictModuleCode =
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(sourceCode, out _);
+            using (var parser = MockParser.CreateAndParse(vbe.Object))
+            {
+                var target = parser.DeclarationFinder.Projects.Single(p => p.IdentifierName.Equals(MockVbeBuilder.TestProjectName));
+
+                var hasConflict = HasRenameConflict(parser, target, newName);
+                Assert.IsTrue(hasConflict);
+            }
+        }
+
+        [Test]
+        [Category("Refactoring")]
+        [Category(nameof(ConflictDetectionSession))]
+        public void RenameRespectsNewlyIntroducedFields()
+        {
+            var identifier = "TestFunc";
+            var declarationType = DeclarationType.Function;
+
+            var sourceCode =
 $@"
 Option Explicit
+
+Private mTestVar As Long
+
+Private Function TestFunc() As Long
+End Function
 ";
-            var renameTargetModuleName = MockVbeBuilder.TestModuleName;
-            var otherProject = "ConflictProject";
-            var conflictModuleName = "ConflictProjectModule";
+            var newProxyVariables = new string[] { "ProxyVariable1", "ProxyVariable2", "ProxyVariable3" };
 
-            var projects = new Dictionary<string, IEnumerable<(string, string, ComponentType)>>()
+            //var result = false;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(sourceCode, out _);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            using (state)
             {
-                [MockVbeBuilder.TestProjectName] = new List<(string, string, ComponentType)>() { (renameTargetModuleName, containingModuleContent, ComponentType.StandardModule) },
-                [otherProject] = new List<(string, string, ComponentType)>() { (conflictModuleName, conflictModuleCode, ComponentType.StandardModule), }
-            };
+                var target = state.DeclarationFinder.DeclarationsWithType(declarationType)
+                                .Single(d => d.IdentifierName == identifier && d.QualifiedModuleName.ComponentName == MockVbeBuilder.TestModuleName);
 
-            var builder = new MockVbeBuilder();
-            foreach (var project in projects.Keys)
-            {
-                builder = AddProject(builder, project, projects[project]);
-            }
-            var vbe = builder.Build().Object;
+                var targetModule = state.DeclarationFinder.DeclarationsWithType(DeclarationType.ProceduralModule)
+                                .Single(d => d.QualifiedModuleName.ComponentName == MockVbeBuilder.TestModuleName);
 
-            using (var parser = MockParser.CreateAndParse(vbe))
-            {
-                var target = parser.DeclarationFinder.Projects.Single(p => p.IdentifierName.Equals(otherProject));
+                var nameConflictManager = TestResolver.Resolve<IConflictDetectionSessionFactory>(state);
+                var conflictSession = nameConflictManager.Create();
+                var nonConflictName = string.Empty;
+                foreach (var newVariable in newProxyVariables)
+                {
+                    //result = conflictSession.NewDeclarationHasConflict(newVariable, DeclarationType.Variable, Accessibility.Private, targetModule as ModuleDeclaration, targetModule, out _); // nonConflictName);
+                    conflictSession.TryProposeNewDeclaration(newVariable, DeclarationType.Variable, Accessibility.Private, targetModule as ModuleDeclaration, targetModule, out _); // nonConflictName);
+                }
 
-                var conflictFinder = TestDI.Resolve<INameConflictFinder>(parser);
-                var hasConflict = conflictFinder.RenameCreatesNameConflict(target, newName, out _);
-                Assert.IsTrue(hasConflict);
+                Assert.IsTrue(conflictSession.TryProposeRenamePair(target, "ProxyVariable3")); // nonConflictName);
+                Assert.IsFalse(conflictSession.TryProposeRenamePair(target, "ProxyVariable3", false)); // nonConflictName);
+                //var newName = conflictSession.GenerateNoConflictRename(target, "ProxyVariable3");
+                var pairs = conflictSession.ConflictFreeRenamePairs;
+                StringAssert.AreEqualIgnoringCase("ProxyVariable4", pairs.First().newName);
             }
         }
 
@@ -1393,8 +1417,7 @@ Option Explicit
 
                 var target = targets.Single(d => d.IdentifierName == selection.identifier);
 
-                var conflictFinder = TestDI.Resolve<INameConflictFinder>(state);
-                result = conflictFinder.RenameCreatesNameConflict(target, newName, out _);
+                result = HasRenameConflict(state, target, newName);
             }
 
             return result;
@@ -1421,6 +1444,7 @@ Option Explicit
                             .Build();
 
             var result = false;
+            var nonConflictName = string.Empty;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName.Equals(selectionModuleName));
@@ -1429,11 +1453,18 @@ Option Explicit
                                 .Where(item => item.IsUserDefined)
                                 .FirstOrDefault(item => item.IsSelected(qualifiedSelection) || item.References.Any(r => r.IsSelected(qualifiedSelection)));
 
+                result = HasRenameConflict(state, target, newName);
 
-                var conflictFinder = TestDI.Resolve<INameConflictFinder>(state);
-                result = conflictFinder.RenameCreatesNameConflict(target, newName, out _);
             }
             return result;
+        }
+
+        private bool HasRenameConflict(RubberduckParserState state, Declaration target, string newName)
+        {
+            var conflictDectionSessionFactory = TestResolver.Resolve<IConflictDetectionSessionFactory>(state);
+            var conflictDetectionSession = conflictDectionSessionFactory.Create();
+            //return conflictDetectionSession.HasRenameConflict(target, newName, out _);
+            return !conflictDetectionSession.TryProposeRenamePair(target, newName, false);
         }
 
         private MockVbeBuilder AddProject(MockVbeBuilder builder, string projectName, IEnumerable<(string ModuleName, string Content, ComponentType ComponentType)> testComponents)

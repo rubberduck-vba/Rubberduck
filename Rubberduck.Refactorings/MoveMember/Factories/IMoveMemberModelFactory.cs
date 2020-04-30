@@ -55,9 +55,9 @@ namespace Rubberduck.Refactorings
         public MoveMemberModel Create(Declaration target, string destinationModuleName, DeclarationType declarationType = DeclarationType.ProceduralModule)
         {
             var model = new MoveMemberModel(target, _declarationFinderProvider, _strategyFactory, _endpointFactory);
-            var componenType = DeclarationTypeToComponentType(declarationType);
+            var componentType = DeclarationTypeToComponentType(declarationType);
 
-            model.ChangeDestination(destinationModuleName, componenType);
+            model.ChangeDestination(destinationModuleName, componentType);
             return model;
         }
 

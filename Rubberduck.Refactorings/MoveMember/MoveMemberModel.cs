@@ -1,6 +1,5 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,8 +26,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
             Source = _moveEndpointFactory.CreateSourceEndpoint(target) as IMoveSourceEndpoint;
 
-            var destinationModuleName = DetermineInitialDestinationModuleName(declarationFinderProvider, Source.ModuleName);
-            Destination = _moveEndpointFactory.CreateDestinationEndpoint(destinationModuleName, ComponentType.StandardModule) as IMoveDestinationEndpoint;
+            Destination = _moveEndpointFactory.CreateDestinationEndpoint(null, ComponentType.StandardModule) as IMoveDestinationEndpoint;
 
             _strategyMoveToStandardModule = _strategyFactory.Create(DetermineMoveEndpoints());
             _strategyMoveStdToClass = _strategyFactory.Create(MoveEndpoints.StdToClass);
@@ -93,22 +91,6 @@ namespace Rubberduck.Refactorings.MoveMember
             }
             strategy = null;
             return false;
-        }
-
-        private static string DetermineInitialDestinationModuleName(IDeclarationFinderProvider declarationFinderProvider, string sourceModuleName)
-        {
-            var allModuleIdentifiers = declarationFinderProvider.DeclarationFinder.AllModules.Select(m => m.ComponentName);
-            var destinationModuleName = sourceModuleName;
-            var hasNameConflict = true;
-            for (var idx = 0; hasNameConflict && idx < 100; idx++)
-            {
-                destinationModuleName = destinationModuleName.IncrementIdentifier();
-                if (allModuleIdentifiers.All(name => !destinationModuleName.IsEquivalentVBAIdentifierTo(name)))
-                {
-                    hasNameConflict = false;
-                }
-            }
-            return destinationModuleName;
         }
 
         private MoveEndpoints DetermineMoveEndpoints()

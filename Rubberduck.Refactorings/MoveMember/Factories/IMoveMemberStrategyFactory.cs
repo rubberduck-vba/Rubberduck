@@ -16,20 +16,20 @@ namespace Rubberduck.Refactorings
         private readonly RenameCodeDefinedIdentifierRefactoringAction _renameAction;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IMoveMemberMoveGroupsProviderFactory _moveGroupsProviderFactory;
-        private readonly INameConflictFinder _nameConflictFinder;
-        private readonly IDeclarationProxyFactory _declarationProxyFactory;
+        private readonly IConflictDetectionSessionFactory _nameConflictResolverFactory;
+        private readonly IConflictDetectionDeclarationProxyFactory _declarationProxyFactory;
 
         public MoveMemberStrategyFactory(
                 IDeclarationFinderProvider declarationFinderProvider,
                 RenameCodeDefinedIdentifierRefactoringAction renameAction,
                 IMoveMemberMoveGroupsProviderFactory moveGroupsProviderFactory,
-                INameConflictFinder nameConflictFinder,
-                IDeclarationProxyFactory declarationProxyFactory)
+                IConflictDetectionSessionFactory nameConflictResolverFactory,
+                IConflictDetectionDeclarationProxyFactory declarationProxyFactory)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _renameAction = renameAction;
             _moveGroupsProviderFactory = moveGroupsProviderFactory;
-            _nameConflictFinder = nameConflictFinder;
+            _nameConflictResolverFactory = nameConflictResolverFactory;
             _declarationProxyFactory = declarationProxyFactory;
         }
 
@@ -40,11 +40,11 @@ namespace Rubberduck.Refactorings
                 case MoveEndpoints.StdToStd:
                 case MoveEndpoints.ClassToStd:
                 case MoveEndpoints.FormToStd:
-                    return new MoveMemberToStdModule(_declarationFinderProvider, _renameAction, _moveGroupsProviderFactory, _nameConflictFinder, _declarationProxyFactory);
+                    return new MoveMemberToStdModule(_declarationFinderProvider, _renameAction, _moveGroupsProviderFactory, _nameConflictResolverFactory, _declarationProxyFactory);
                 case MoveEndpoints.StdToClass:
                 case MoveEndpoints.FormToClass:
                 case MoveEndpoints.ClassToClass:
-                    return new MoveMemberStdToClassModule(_declarationFinderProvider, _renameAction, _moveGroupsProviderFactory, _nameConflictFinder, _declarationProxyFactory);
+                    return new MoveMemberStdToClassModule(_declarationFinderProvider, _renameAction, _moveGroupsProviderFactory, _nameConflictResolverFactory, _declarationProxyFactory);
                 default:
                     throw new ArgumentException();
             }

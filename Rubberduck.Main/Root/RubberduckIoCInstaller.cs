@@ -376,12 +376,10 @@ namespace Rubberduck.Root
             container.Register(Component.For<IAddRemoveReferencesPresenterFactory>()
                 .ImplementedBy<AddRemoveReferencesPresenterFactory>()
                 .LifestyleSingleton());
-            container.Register(Component.For<IDeclarationProxyFactory>()
-                .ImplementedBy<DeclarationProxyFactory>()
-                .LifestyleSingleton());
 
             RegisterUnreachableCaseFactories(container);
             RegisterMoveMemberRefactoringFactories(container);
+            RegisterConflictDetectionFactories(container);
         }
 
         private void RegisterUnreachableCaseFactories(IWindsorContainer container)
@@ -413,6 +411,22 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IMoveMemberModelFactory>()
                 .ImplementedBy<MoveMemberModelFactory>()
+                .LifestyleSingleton());
+        }
+
+        private void RegisterConflictDetectionFactories(IWindsorContainer container)
+        {
+            container.Register(Component.For<IConflictFinderFactory>()
+                .ImplementedBy<ConflictFinderFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IConflictDetectionSessionFactory>()
+                .ImplementedBy<ConflictDetectionSessionFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IConflictDetectionDeclarationProxyFactory>()
+                .ImplementedBy<ConflictDetectionDeclarationProxyFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IConflictDetectionSessionDataFactory>()
+                .ImplementedBy<ConflictDetectionSessionDataFactory>()
                 .LifestyleSingleton());
         }
 

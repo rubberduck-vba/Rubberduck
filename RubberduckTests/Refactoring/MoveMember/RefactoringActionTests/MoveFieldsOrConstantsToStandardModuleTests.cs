@@ -655,7 +655,7 @@ End Function
         }
 
         [Test]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         [Category("Refactorings")]
         [Category("MoveMember")]
         public void CorrectsFieldNameCollisionInDestination()
@@ -805,7 +805,7 @@ End Sub
         }
 
         [Test]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         [Category("Refactorings")]
         [Category("MoveMember")]
         public void CorrectsConstantNameCollisionInDestination()

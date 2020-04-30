@@ -1262,7 +1262,7 @@ End Sub
         }
 
         [Test]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         [Category("Refactorings")]
         [Category("MoveMember")]
         public void CorrectsMemberNameCollisionInDestination()

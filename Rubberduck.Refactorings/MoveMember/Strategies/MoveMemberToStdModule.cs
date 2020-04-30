@@ -23,12 +23,12 @@ namespace Rubberduck.Refactorings.MoveMember
         public MoveMemberToStdModule(IDeclarationFinderProvider declarationFinderProvider,
                                         RenameCodeDefinedIdentifierRefactoringAction renameAction,
                                         IMoveMemberMoveGroupsProviderFactory moveGroupsProviderFactory,
-                                        INameConflictFinder nameConflictFinder,
-                                        IDeclarationProxyFactory declarationProxyFactory)
+                                        IConflictDetectionSessionFactory namingToolsSessionFactory,
+                                        IConflictDetectionDeclarationProxyFactory declarationProxyFactory)
             : base(declarationFinderProvider,
                                         renameAction,
                                         moveGroupsProviderFactory,
-                                        nameConflictFinder,
+                                        namingToolsSessionFactory,
                                         declarationProxyFactory)
         { }
 

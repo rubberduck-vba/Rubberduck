@@ -32,6 +32,7 @@ namespace RubberduckTests.Refactoring.MoveMember
                                                 userInteraction,
                                                 selectionService,
                                                 selectedDeclarationService,
+                                                serviceLocator.Resolve<IConflictDetectionSessionFactory>(),
                                                 serviceLocator.Resolve<IMoveMemberModelFactory>()
                                                 );
         }
@@ -45,8 +46,8 @@ namespace RubberduckTests.Refactoring.MoveMember
 
         public static MoveMemberModel CreateRefactoringModel(Declaration target, IDeclarationFinderProvider declarationFinderProvider)
         {
-            var serviceLocator = new MoveMemberTestsResolver(declarationFinderProvider as RubberduckParserState);
-            return serviceLocator.Resolve<IMoveMemberModelFactory>().Create(target);
+            var resolver = new MoveMemberTestsResolver(declarationFinderProvider as RubberduckParserState);
+            return resolver.Resolve<IMoveMemberModelFactory>().Create(target);
         }
 
         public T Resolve<T>() where T : class
@@ -87,8 +88,8 @@ namespace RubberduckTests.Refactoring.MoveMember
                             Resolve<IDeclarationFinderProvider>(),
                             Resolve<RenameCodeDefinedIdentifierRefactoringAction>(),
                             Resolve<IMoveMemberMoveGroupsProviderFactory>(),
-                            Resolve<INameConflictFinder>(),
-                            Resolve<IDeclarationProxyFactory>()) as T;
+                            Resolve<IConflictDetectionSessionFactory>(),
+                            Resolve<IConflictDetectionDeclarationProxyFactory>()) as T;
                 case nameof(RenameCodeDefinedIdentifierRefactoringAction):
                     return new RenameCodeDefinedIdentifierRefactoringAction(
                             _state,
@@ -108,12 +109,16 @@ namespace RubberduckTests.Refactoring.MoveMember
                             _state, Resolve<MoveableMemberSetFactory>()) as T;
                 case nameof(MoveableMemberSetFactory):
                     return new MoveableMemberSetFactory() as T;
-                case nameof(INameConflictFinder):
-                    return new NameConflictFinder(_state, Resolve<IDeclarationProxyFactory>()) as T;
-                case nameof(IDeclarationProxyFactory):
-                    return new DeclarationProxyFactory(_state) as T;
+                case nameof(IConflictDetectionSessionDataFactory):
+                    return new ConflictDetectionSessionDataFactory(Resolve<IConflictDetectionDeclarationProxyFactory>()) as T;
+                case nameof(IConflictDetectionSessionFactory):
+                    return new ConflictDetectionSessionFactory(_state, Resolve<IConflictDetectionSessionDataFactory>(), Resolve<IConflictFinderFactory>()) as T;
+                case nameof(IConflictDetectionDeclarationProxyFactory):
+                    return new ConflictDetectionDeclarationProxyFactory(_state) as T;
                 case nameof(IDeclarationFinderProvider):
                     return _state as T;
+                case nameof(IConflictFinderFactory):
+                    return new ConflictFinderFactory(_state) as T;
                 case nameof(IMoveMemberModelFactory):
                     return new MoveMemberModelFactory(_state, Resolve<IMoveMemberStrategyFactory>(), Resolve<IMoveMemberEndpointFactory>()) as T;
                 default:

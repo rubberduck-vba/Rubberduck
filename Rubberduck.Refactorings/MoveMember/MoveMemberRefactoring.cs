@@ -12,12 +12,14 @@ namespace Rubberduck.Refactorings.MoveMember
         private readonly MoveMemberRefactoringAction _refactoringAction;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IMoveMemberModelFactory _modelFactory;
+        private readonly IConflictDetectionSessionFactory _conflictDetectionSessionFactory;
 
         public MoveMemberRefactoring(
             MoveMemberRefactoringAction refactoringAction,
             RefactoringUserInteraction<IMoveMemberPresenter, MoveMemberModel> userInteraction,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider,
+            IConflictDetectionSessionFactory namingToolsSessionFactory,
             IMoveMemberModelFactory modelFactory)
                 : base(selectionProvider, userInteraction)
 
@@ -25,6 +27,7 @@ namespace Rubberduck.Refactorings.MoveMember
             _refactoringAction = refactoringAction;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _modelFactory = modelFactory;
+            _conflictDetectionSessionFactory = namingToolsSessionFactory;
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
@@ -44,7 +47,15 @@ namespace Rubberduck.Refactorings.MoveMember
         {
             if (target == null) { throw new TargetDeclarationIsNullException(); }
 
-            return _modelFactory.Create(target);
+            var qmn = target.QualifiedModuleName;
+            var conflictDetectionSession = _conflictDetectionSessionFactory.Create();
+
+            conflictDetectionSession.NewModuleDeclarationHasConflict(
+                                                    $"{qmn.ComponentName}1",
+                                                    qmn.ProjectId,
+                                                    out var nonConflictName);
+
+            return _modelFactory.Create(target, nonConflictName, DeclarationType.ProceduralModule);
         }
 
         protected override void RefactorImpl(MoveMemberModel model)

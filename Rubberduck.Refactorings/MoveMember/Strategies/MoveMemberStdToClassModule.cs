@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.Exceptions;
-using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.Refactorings.Rename;
 using System;
 using System.Collections.Generic;
@@ -18,12 +17,12 @@ namespace Rubberduck.Refactorings.MoveMember
         public MoveMemberStdToClassModule(IDeclarationFinderProvider declarationFinderProvider,
                                         RenameCodeDefinedIdentifierRefactoringAction renameAction,
                                         IMoveMemberMoveGroupsProviderFactory moveGroupsProviderFactory,
-                                        INameConflictFinder nameConflictFinder,
-                                        IDeclarationProxyFactory declarationProxyFactory)
+                                        IConflictDetectionSessionFactory nameConflictResolverFactory,
+                                        IConflictDetectionDeclarationProxyFactory declarationProxyFactory)
             : base(declarationFinderProvider,
                                         renameAction,
                                         moveGroupsProviderFactory,
-                                        nameConflictFinder,
+                                        nameConflictResolverFactory,
                                         declarationProxyFactory)
         {}
 
@@ -107,18 +106,34 @@ namespace Rubberduck.Refactorings.MoveMember
 
         protected override INewContentProvider LoadSourceNewContentProvider(INewContentProvider contentProvider, MoveMemberModel model)
         {
-            var instanceFieldIdentiier = CreatNonConflictObjectFieldIdentifier(model.Source.Module as ModuleDeclaration, model.Destination.ModuleName);
+            var fieldIdentifier = $"{model.Destination.ModuleName.ToLowerCaseFirstLetter()}1";
+            var instanceFieldIdentifier = fieldIdentifier;
+            var propertyIdentifier = model.Destination.ModuleName;
+            var conflictDetectionSession = _conflictDetectionSessionFactory.Create();
 
-            var destinationClassDeclaration = $"{Tokens.Private} {instanceFieldIdentiier} {Tokens.As} {model.Destination.ModuleName}";
+            if (model.Destination.IsExistingModule(out var destinationModule))
+            {
+                //namingSession.NewDeclarationHasConflict(fieldIdentifier, DeclarationType.Variable, Accessibility.Private, model.Source.Module as ModuleDeclaration, model.Source.Module, out instanceFieldIdentifier);
+                conflictDetectionSession.TryProposeNewDeclaration(fieldIdentifier, DeclarationType.Variable, Accessibility.Private, model.Source.Module as ModuleDeclaration, model.Source.Module, out _); // var fieldIDRetrievalKey); //, out instanceFieldIdentifier);
 
-            var destinationClassInstantiation = $"{Tokens.Set} {instanceFieldIdentiier} = {Tokens.New} {model.Destination.ModuleName}";
+                //conflictDetectionSession.NewDeclarationHasConflict(model.Destination.ModuleName, DeclarationType.PropertyGet, Accessibility.Private, model.Source.Module as ModuleDeclaration, model.Source.Module, out propertyIdentifier);
+                if (!conflictDetectionSession.TryProposeNewDeclaration(model.Destination.ModuleName, DeclarationType.PropertyGet, Accessibility.Private, model.Source.Module as ModuleDeclaration, model.Source.Module, out _, false))
+                //if (propertyIdentifier != model.Destination.ModuleName)
+                {
+                    throw new MoveMemberUnsupportedMoveException();
+                }
+            }
+
+            var destinationClassDeclaration = $"{Tokens.Private} {instanceFieldIdentifier} {Tokens.As} {model.Destination.ModuleName}";
+
+            var destinationClassInstantiation = $"{Tokens.Set} {instanceFieldIdentifier} = {Tokens.New} {model.Destination.ModuleName}";
 
             var indent4Spaces = "    ";
-            var pvtPropertySignature = $"{Tokens.Private} {Tokens.Property} {Tokens.Get} {model.Destination.ModuleName}() {Tokens.As} {model.Destination.ModuleName}";
-            var pvtPropertyBodyIf = $"{indent4Spaces}{Tokens.If} {instanceFieldIdentiier} {Tokens.Is} {Tokens.Nothing} {Tokens.Then}";
+            var pvtPropertySignature = $"{Tokens.Private} {Tokens.Property} {Tokens.Get} {propertyIdentifier}() {Tokens.As} {model.Destination.ModuleName}";
+            var pvtPropertyBodyIf = $"{indent4Spaces}{Tokens.If} {instanceFieldIdentifier} {Tokens.Is} {Tokens.Nothing} {Tokens.Then}";
             var pvtPropertyBodyInstantiation = $"{indent4Spaces}{indent4Spaces}{destinationClassInstantiation}";
             var pvtPropertyBodyEndIf = $"{indent4Spaces}{Tokens.End} {Tokens.If}";
-            var pvtPropertyAssignment = $"{indent4Spaces}{Tokens.Set} {model.Destination.ModuleName} = {instanceFieldIdentiier}";
+            var pvtPropertyAssignment = $"{indent4Spaces}{Tokens.Set} {propertyIdentifier} = {instanceFieldIdentifier}";
             var pvtPropertyEnd = $"{Tokens.End} {Tokens.Property}";
 
             var pvtProperty = string.Join(Environment.NewLine, pvtPropertySignature,
@@ -128,38 +143,10 @@ namespace Rubberduck.Refactorings.MoveMember
                                                                 pvtPropertyAssignment,
                                                                 pvtPropertyEnd);
 
-
             contentProvider.AddFieldOrConstantDeclaration(destinationClassDeclaration);
             contentProvider.AddMember(pvtProperty);
 
             return contentProvider;
-        }
-
-        private string CreatNonConflictObjectFieldIdentifier(ModuleDeclaration sourceModule, string destinationModuleName)
-        {
-            var fieldIdentifier = $"{destinationModuleName.ToLowerCaseFirstLetter().IncrementIdentifier()}";
-
-            var members = _declarationFinderProvider.DeclarationFinder.Members(sourceModule.QualifiedModuleName)
-                .Where(d => d.IsMemberVariable() && destinationModuleName.IsEquivalentVBAIdentifierTo(d.AsTypeDeclaration.IdentifierName));
-
-            if (members.Any() && members.Count() == 1)
-            {
-                return members.Single().IdentifierName;
-            }
-
-            var instanceProxy = _declarationProxyFactory.Create(fieldIdentifier, DeclarationType.Variable, Accessibility.Private, sourceModule as ModuleDeclaration, sourceModule);
-
-            var conflictsResolved = false;
-            for (var idx = 0; idx < 20 && !conflictsResolved; idx++)
-            {
-                if (!_nameConflictFinder.ProposedDeclarationCreatesConflict(instanceProxy, out _))
-                {
-                    conflictsResolved = true;
-                    continue;
-                }
-                instanceProxy.IdentifierName = instanceProxy.IdentifierName.IncrementIdentifier();
-            }
-            return instanceProxy.IdentifierName;
         }
     }
 }

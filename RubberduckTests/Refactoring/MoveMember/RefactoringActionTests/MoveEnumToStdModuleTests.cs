@@ -262,12 +262,53 @@ End Function
             Assert.IsTrue("Private Enum KeyValues".OccursOnce(refactoredCode.Destination));
         }
 
-        [TestCase("KeyOne", true)]
-        [TestCase("KeyValues", false)]
+//        [TestCase("KeyOne", true)]
+//        [TestCase("KeyValues", false)]
+//        [Category("Refactorings")]
+//        [Category(nameof(NameConflictResolver))]
+//        [Category("MoveMember")]
+//        public void MovePrivateEnumRespectsDestinationNameCollision(string memberName, bool throwsException)
+//        {
+//            var memberToMove = ("UsePvtEnum", DeclarationType.Function);
+//            var endpoints = MoveEndpoints.StdToStd;
+//            var source =
+//$@"
+//Option Explicit
+
+//Private Enum KeyValues
+//    KeyOne
+//    KeyTwo
+//End Enum
+
+//Private mKV As KeyValues
+
+//Private Function UsePvtEnum(arg As Long) As KeyValues
+//    If arg = KeyOne OR arg = KeyTwo Then mKV = arg
+
+//    UsePvtEnum = mKV
+//End Function
+//";
+
+//            var destination =
+//$@"
+//Option Explicit
+
+//Private Sub {memberName}(arg As Long)
+//End Sub
+//";
+//            if (throwsException)
+//            {
+//                ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source, destination);
+//                return;
+//            }
+//            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, endpoints.SourceModuleName(), source, destination);
+//        }
+
+        [Test]
         [Category("Refactorings")]
-        [Category(nameof(NameConflictFinder))]
+        [Category(nameof(ConflictDetectionSession))]
         [Category("MoveMember")]
-        public void MovePrivateEnumRespectsDestinationNameCollision(string memberName, bool throwsException)
+        public void MovePrivateEnumRenamesEnumMember()
         {
             var memberToMove = ("UsePvtEnum", DeclarationType.Function);
             var endpoints = MoveEndpoints.StdToStd;
@@ -293,15 +334,50 @@ End Function
 $@"
 Option Explicit
 
-Private Sub {memberName}(arg As Long)
+Private Sub KeyOne(arg As Long)
 End Sub
 ";
-            if (throwsException)
-            {
-                ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source, destination);
-                return;
-            }
             var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, endpoints.SourceModuleName(), source, destination);
+            StringAssert.Contains("KeyOne1", refactoredCode.Destination);
+            StringAssert.Contains("If arg = KeyOne1 OR arg = KeyTwo", refactoredCode.Destination);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(ConflictDetectionSession))]
+        [Category("MoveMember")]
+        public void MovePrivateEnumRespectsEnumTypeVersusMemberName()
+        {
+            var memberToMove = ("UsePvtEnum", DeclarationType.Function);
+            var endpoints = MoveEndpoints.StdToStd;
+            var source =
+$@"
+Option Explicit
+
+Private Enum KeyValues
+    KeyOne
+    KeyTwo
+End Enum
+
+Private mKV As KeyValues
+
+Private Function UsePvtEnum(arg As Long) As KeyValues
+    If arg = KeyOne OR arg = KeyTwo Then mKV = arg
+
+    UsePvtEnum = mKV
+End Function
+";
+
+            var destination =
+$@"
+Option Explicit
+
+Private Sub KeyValues(arg As Long)
+End Sub
+";
+            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, endpoints.SourceModuleName(), source, destination);
+            StringAssert.Contains("Sub KeyValues(arg As Long)", refactoredCode.Destination);
+            StringAssert.Contains("If arg = KeyOne OR arg = KeyTwo", refactoredCode.Destination);
         }
     }
 }
