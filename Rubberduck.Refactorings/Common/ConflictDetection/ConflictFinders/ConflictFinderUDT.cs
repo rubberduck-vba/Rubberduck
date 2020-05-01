@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.Common
 {
+    /// <summary>
+    /// Finds identifier conflicts for UserDefinedTypes and UserDefinedTypeMembers
+    /// </summary>
+    /// <remarks>
+    /// MS-VBAL 5.2.3.3 UserDefinedType Declarations
+    /// </remarks>
     public class ConflictFinderUDT : ConflictFinderModuleDeclarationSection
     {
         public ConflictFinderUDT(IDeclarationFinderProvider declarationFinderProvider)
@@ -23,7 +29,6 @@ namespace Rubberduck.Refactorings.Common
         }
 
 
-        //MS-VBAL 5.2.3.3 UserDefinedType Declarations
         private bool TryFindUDTNameConflict(IConflictDetectionDeclarationProxy udtProxy, IConflictDetectionSessionData sessionData, out Dictionary<IConflictDetectionDeclarationProxy, List<IConflictDetectionDeclarationProxy>> conflicts)
         {
             conflicts = new Dictionary<IConflictDetectionDeclarationProxy, List<IConflictDetectionDeclarationProxy>>();

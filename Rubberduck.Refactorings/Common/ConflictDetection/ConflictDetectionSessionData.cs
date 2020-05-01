@@ -15,6 +15,10 @@ namespace Rubberduck.Refactorings.Common
         IConflictDetectionDeclarationProxy this[Declaration declaration] { get; }
     }
 
+    /// <summary>
+    /// Provides IConflictDetectionDeclarationProxy lifecycle management and hosts the 
+    /// accumulated results of the ConflictDetectionSession.
+    /// </summary>
     public class ConflictDetectionSessionData : IConflictDetectionSessionData
     {
         private Dictionary<int, IConflictDetectionDeclarationProxy> _newDeclarationProxies;

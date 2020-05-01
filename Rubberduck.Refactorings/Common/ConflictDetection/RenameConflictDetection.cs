@@ -10,6 +10,9 @@ namespace Rubberduck.Refactorings.Common
 {
     public interface IRenameConflictDetection : IConflictDetectionBase
     {
+        /// <summary>
+        /// Determines if a IConflictDetectionDeclarationProxy represents a name conflict
+        /// </summary>
         bool HasRenameConflict(IConflictDetectionDeclarationProxy proxy, IConflictDetectionSessionData sessionData);
     }
 

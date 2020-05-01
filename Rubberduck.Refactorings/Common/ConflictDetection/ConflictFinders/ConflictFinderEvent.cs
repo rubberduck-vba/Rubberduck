@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.Common
 {
+    /// <summary>
+    /// Finds identifier conflicts for Events
+    /// </summary>
     public class ConflictFinderEvent : ConflictFinderModuleDeclarationSection
     {
         public ConflictFinderEvent(IDeclarationFinderProvider declarationFinderProvider)

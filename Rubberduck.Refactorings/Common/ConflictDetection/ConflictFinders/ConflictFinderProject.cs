@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.Common
 {
+    /// <summary>
+    /// Finds identifier conflicts when renaming Project
+    /// </summary>
     public class ConflictFinderProject :ConflictFinderBase
     {
         public ConflictFinderProject(IDeclarationFinderProvider declarationFinderProvider)

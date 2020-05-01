@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.Common
 {
+    /// <summary>
+    /// Finds identifier conflicts for Enumerations and its EnumerationMembers
+    /// </summary>
+    /// <remarks>
+    /// MS-VBAL 5.2.3.4 Enum Declarations
+    /// </remarks>
     public class ConflictFinderEnum : ConflictFinderModuleDeclarationSection
     {
         public ConflictFinderEnum(IDeclarationFinderProvider declarationFinderProvider)
@@ -22,7 +28,6 @@ namespace Rubberduck.Refactorings.Common
             return TryFindEnumerationMemberNameConflict(proxy, sessionData, out conflicts);
         }
 
-        //MS-VBAL 5.2.3.4 Enum Declarations
         private bool TryFindEnumerationNameConflict(IConflictDetectionDeclarationProxy enumerationProxy, IConflictDetectionSessionData sessionData, out Dictionary<IConflictDetectionDeclarationProxy, List<IConflictDetectionDeclarationProxy>> conflicts)
         {
             conflicts = new Dictionary<IConflictDetectionDeclarationProxy, List<IConflictDetectionDeclarationProxy>>();

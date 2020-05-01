@@ -20,6 +20,19 @@ namespace Rubberduck.Refactorings.Common
         QualifiedModuleName? QualifiedModuleName { get; }
     }
 
+    /// <summary>
+    /// ConflictDeclarationProxy is a thin wrapper class around an existing <c>Declaration</c> that
+    /// exposes <c>Declaration</c> attributes needed for conflict evaluation as read/write properties.
+    /// If the <c>ConflictDetectionDeclarationProxy</c> represents a new declaration, then the <c>Prototype</c>
+    /// attribute is null.
+    /// </summary>
+    /// <remarks>
+    /// A <c>ConflictDetectionDeclarationProxy</c> based on a concrete/pre-existing <c>Declaration</c> is stored in a
+    /// <c>Dictionary</c> using the concrete <c>Declaration</c> as the Key.  
+    /// A <c>ConflictDetectionDeclarationProxy</c> representing a new <c>Declaration</c> is stored 
+    /// in a <c>Dictionary</c> using the <c>ConflictDetectionDeclarationProxy</c> instance's HashCode
+    /// as the Key.
+    /// </remarks>
     public class ConflictDetectionDeclarationProxy : IConflictDetectionDeclarationProxy
     {
         private readonly Declaration _declaration;

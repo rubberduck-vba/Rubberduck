@@ -13,6 +13,10 @@ namespace Rubberduck.Refactorings.Common
         bool TryFindConflict(IConflictDetectionDeclarationProxy proxy, IConflictDetectionSessionData sessionData, out Dictionary<IConflictDetectionDeclarationProxy, List<IConflictDetectionDeclarationProxy>> conflicts);
     }
 
+    /// <summary>
+    /// Base class for all ConflictFinder classes. ConflictFinder classes are stateless.  
+    /// They operate on/with the <see cref="ConflictDetectionSessionData"/>.
+    /// </summary>
     public abstract class ConflictFinderBase : IConflictFinder
     {
         protected readonly IDeclarationFinderProvider _declarationFinderProvider;

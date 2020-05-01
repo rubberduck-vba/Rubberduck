@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.Common
 {
+    /// <summary>
+    /// Finds identifier conflicts for Fields and Constants
+    /// </summary>
     class ConflictFinderNonMembers : ConflictFinderModuleDeclarationSection
     {
         public ConflictFinderNonMembers(IDeclarationFinderProvider declarationFinderProvider)

@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.Common
 {
+    /// <summary>
+    /// Finds identifier conflicts for Functions and Subroutines
+    /// </summary>
+    /// /// See <see cref="ConflictFinderProperties"/> for Properties.
     public class ConflictFinderMembers : ConflictFinderModuleCodeSection
     {
         public ConflictFinderMembers(IDeclarationFinderProvider declarationFinderProvider)

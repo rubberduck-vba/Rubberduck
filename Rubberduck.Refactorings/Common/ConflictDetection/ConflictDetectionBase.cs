@@ -15,6 +15,13 @@ namespace Rubberduck.Refactorings.Common
         Func<string, string> ConflictingNameModifier { set; get; }
     }
 
+    /// <summary>
+    /// Base class for all ConflictDetection classes. ConflictDetection classes are stateless.  
+    /// They operate on/with the <see cref="ConflictDetectionSessionData"/>.
+    /// <seealso cref="RenameConflictDetection"/>
+    /// <seealso cref="RelocateConflictDetection"/>
+    /// <seealso cref="NewDeclarationConflictDetection"/>
+    /// </summary>
     public class ConflictDetectionBase : IConflictDetectionBase
     {
         protected readonly IDeclarationFinderProvider _declarationFinderProvider;

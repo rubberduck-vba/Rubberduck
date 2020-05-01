@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.Common
 {
+    /// <summary>
+    /// Finds identifier conflicts for Property Let\Set\Get procedures
+    /// </summary>
+    /// <seealso cref="ConflictFinderMembers"/>
     public class ConflictFinderProperties : ConflictFinderModuleCodeSection
     {
         public ConflictFinderProperties(IDeclarationFinderProvider declarationFinderProvider)

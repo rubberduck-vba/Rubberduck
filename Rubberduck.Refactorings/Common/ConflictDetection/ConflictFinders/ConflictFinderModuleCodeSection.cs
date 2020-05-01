@@ -8,6 +8,11 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.Common
 {
+    /// <summary>
+    /// Supporting base class for Subroutines, Functions, and Properties
+    /// </summary>
+    /// <seealso cref="ConflictFinderMembers"/>
+    /// <seealso cref="ConflictFinderProperties"/>
     public abstract class ConflictFinderModuleCodeSection : ConflictFinderBase
     {
         public ConflictFinderModuleCodeSection(IDeclarationFinderProvider declarationFinderProvider)

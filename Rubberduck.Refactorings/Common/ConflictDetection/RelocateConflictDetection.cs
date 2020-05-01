@@ -11,6 +11,10 @@ namespace Rubberduck.Refactorings.Common
 {
     public interface IRelocateConflictDetection : IConflictDetectionBase
     {
+        /// <summary>
+        /// Determines if a IConflictDetectionDeclarationProxy represents a name conflict
+        /// in a location different than the wrapped Declaration module.
+        /// </summary>
         bool HasConflictInNewLocation(IConflictDetectionDeclarationProxy proxy, IConflictDetectionSessionData sessionData);
     }
 

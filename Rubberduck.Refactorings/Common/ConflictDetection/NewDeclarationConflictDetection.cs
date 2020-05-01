@@ -10,7 +10,14 @@ namespace Rubberduck.Refactorings.Common
 {
     public interface INewDeclarationConflictDetection : IConflictDetectionBase
     {
+        /// <summary>
+        /// Determines if a IConflictDetectionDeclarationProxy represents a name conflict.
+        /// </summary>
         bool NewDeclarationHasConflict(IConflictDetectionDeclarationProxy proxy, IConflictDetectionSessionData sessionData);
+
+        /// <summary>
+        /// Determines if proposed new module identifier represents a name conflict.
+        /// </summary>
         bool NewModuleDeclarationHasConflict(string name, string projectID, IConflictDetectionSessionData sessionData, out string nonConflictName);
     }
 

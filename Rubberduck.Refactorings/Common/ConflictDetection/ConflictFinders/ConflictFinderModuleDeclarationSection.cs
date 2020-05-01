@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.Common
 {
+    /// <summary>
+    /// Supporting base class for a Module's Declaration Section
+    /// <seealso cref="ConflictFinderNonMembers"/>
+    /// <seealso cref="ConflictFinderEnum"/>
+    /// <seealso cref="ConflictFinderUDT"/>
+    /// </summary>
     public abstract class ConflictFinderModuleDeclarationSection : ConflictFinderBase
     {
         public ConflictFinderModuleDeclarationSection(IDeclarationFinderProvider declarationFinderProvider)
