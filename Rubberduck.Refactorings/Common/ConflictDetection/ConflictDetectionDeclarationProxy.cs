@@ -18,21 +18,15 @@ namespace Rubberduck.Refactorings.Common
         string ProjectId { get; }
         string ProjectName { get; }
         QualifiedModuleName? QualifiedModuleName { get; }
+        bool IsMutableIdentifier { set; get; }
+        int KeyID { get; }
     }
 
     /// <summary>
-    /// ConflictDeclarationProxy is a thin wrapper class around an existing <c>Declaration</c> that
-    /// exposes <c>Declaration</c> attributes needed for conflict evaluation as read/write properties.
-    /// If the <c>ConflictDetectionDeclarationProxy</c> represents a new declaration, then the <c>Prototype</c>
-    /// attribute is null.
+    /// ConflictDeclarationProxy is a wrapper class for an existing or new <c>Declaration</c>.
+    /// The Proxy class supports manipulating <c>Declaration</c> attributes that would be otherwise readonly.
+    /// The manipulated attributes support conflict analysis for proposed renames, relocations, or code insertions.
     /// </summary>
-    /// <remarks>
-    /// A <c>ConflictDetectionDeclarationProxy</c> based on a concrete/pre-existing <c>Declaration</c> is stored in a
-    /// <c>Dictionary</c> using the concrete <c>Declaration</c> as the Key.  
-    /// A <c>ConflictDetectionDeclarationProxy</c> representing a new <c>Declaration</c> is stored 
-    /// in a <c>Dictionary</c> using the <c>ConflictDetectionDeclarationProxy</c> instance's HashCode
-    /// as the Key.
-    /// </remarks>
     public class ConflictDetectionDeclarationProxy : IConflictDetectionDeclarationProxy
     {
         private readonly Declaration _declaration;
@@ -50,7 +44,7 @@ namespace Rubberduck.Refactorings.Common
         public ConflictDetectionDeclarationProxy(string identifier, DeclarationType declarationType, Accessibility accessibility, ModuleDeclaration targetModule, Declaration parentDeclaration)
         {
             TargetModule = targetModule;
-            IdentifierName = identifier;
+            _identifierName = identifier;
             DeclarationType = declarationType;
             Accessibility = accessibility;
             ParentDeclaration = parentDeclaration;
@@ -60,7 +54,7 @@ namespace Rubberduck.Refactorings.Common
             var test = DeclarationType.ToString();
             var uniqueID = $"{ProjectId}.{_targetModuleName}.{IdentifierName}.{DeclarationType}.{Accessibility}";
             _hashCode = uniqueID.GetHashCode();
-            keyID = _hashCode;
+            KeyID = _hashCode;
         }
 
         public Declaration Prototype => _declaration;
@@ -71,9 +65,19 @@ namespace Rubberduck.Refactorings.Common
 
         public Declaration ParentDeclaration { set; get; }
 
-        public string IdentifierName { set; get; }
+        private string _identifierName;
+        public string IdentifierName
+        {
+            set
+            {
+                _identifierName = IsMutableIdentifier ? value : _identifierName;
+            }
+            get => _identifierName;
+        }
 
-        public int keyID { set; get; }
+        public bool IsMutableIdentifier { set; get; } = true;
+
+        public int KeyID { get; }
 
         public DeclarationType DeclarationType { set; get; }
 

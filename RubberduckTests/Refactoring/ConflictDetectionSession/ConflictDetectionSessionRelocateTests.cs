@@ -409,7 +409,7 @@ End Function
                 var conflictSessionFactory = TestResolver.Resolve<IConflictDetectionSessionFactory>(state);
 
                 var conflictSession = conflictSessionFactory.Create();
-                var hasConflict = !conflictSession.TryProposedRelocation(target, destinationModule, Accessibility.Public, false);
+                var hasConflict = !conflictSession.TryProposedRelocation(target, destinationModule, false, Accessibility.Public);
 
                 Assert.AreEqual(isConflict, hasConflict);
             }
@@ -461,7 +461,7 @@ Public Function Foo(arg1 As Variant) As Variant
 End Function
 
 ";
-            Assert.AreEqual("Bar", TestForMovedNonConflictName(source, selection, destinationCode));
+            Assert.AreEqual("Bar", TestForMovedNonConflictNamePairs(source, selection, destinationCode));
         }
 
         [Test]
@@ -499,7 +499,7 @@ Public Property Get Bar(arg1 As Long) As Long
     Bar = mMyBar
 End Property
 ";
-            Assert.AreEqual("Bar1", TestForMovedNonConflictName(source, selection, destinationCode));
+            Assert.AreEqual("Bar1", TestForMovedNonConflictNamePairs(source, selection, destinationCode));
         }
 
         [Test]
@@ -535,7 +535,7 @@ Private SameName2 As Long
                 var conflictDetectionSession = conflictDetectionSessionFactory.Create();
                 foreach (var target in targets)
                 {
-                    conflictDetectionSession.TryProposeRenamePair(target, "SameName");
+                    conflictDetectionSession.TryProposeRenamePair(target, "SameName", true);
                 }
                 var renamePairs = conflictDetectionSession.ConflictFreeRenamePairs;
 
@@ -568,9 +568,117 @@ Option Explicit
 Private Sub KeyOne(arg As Long)
 End Sub
 ";
-            Assert.AreEqual("KeyOne1", TestForMovedNonConflictName(sourceCode, selection, destinationCode));
+            Assert.AreEqual("KeyOne1", TestForMovedNonConflictNamePairs(sourceCode, selection, destinationCode));
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(ConflictDetectionSession))]
+        public void MoveEnumAllowsSameMemberNames()
+        {
+            var selection = ("KeyValues", DeclarationType.Enumeration);
+            var sourceCode =
+$@"
+Option Explicit
+
+Private Enum KeyValues
+    KeyOne
+    KeyTwo
+End Enum
+";
+
+            var destinationCode =
+$@"
+Option Explicit
+
+Private Enum KeyValues2
+    KeyOne
+    KeyTwo
+End Enum
+";
+            var results = TestForMovedNonConflictNames(sourceCode, selection, destinationCode);
+            Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(ConflictDetectionSession))]
+        public void MovePrivateEnumResolvesNameCollisions()
+        {
+            var selection = ("KeyValues", DeclarationType.Enumeration);
+            var sourceCode =
+$@"
+Option Explicit
+
+Private Enum KeyValues
+    KeyOne
+    KeyTwo
+End Enum
+";
+
+            var destinationCode =
+$@"
+Option Explicit
+
+Private keyOne1 As Double
+Private keyOne2 As Double
+Private keyOne3 As Double
+Private keyOne5 As Double
+
+Private Const keyTWO1 As String = ""Fizz""
+Private Const keyTWO2 As String = ""Fuzz""
+
+Private Sub KeyOne(arg As Long)
+End Sub
+
+Private Sub KeyTwo(arg As Long)
+End Sub
+";
+            var renamePairs = TestForMovedNonConflictNames(sourceCode, selection, destinationCode);
+            Assert.AreEqual(2, renamePairs.Count());
+            Assert.IsTrue(renamePairs.Select(r => r.newName).Contains("KeyOne4"));
+            Assert.IsTrue(renamePairs.Select(r => r.newName).Contains("KeyTwo3"));
+        }
+
+        [TestCase(true, 2)]
+        [TestCase(false, 0)]
+        [Category("Refactorings")]
+        [Category(nameof(ConflictDetectionSession))]
+        public void MovePrivateEnumRespectsIsMutableIdentifierFlag(bool isMutableFlag, int expectedResultsCount)
+        {
+            var selection = ("KeyValues", DeclarationType.Enumeration);
+            var sourceCode =
+$@"
+Option Explicit
+
+Private Enum KeyValues
+    KeyOne
+    KeyTwo
+End Enum
+";
+
+            var destinationCode =
+$@"
+Option Explicit
+
+Private keyOne1 As Double
+Private keyOne2 As Double
+Private keyOne3 As Double
+Private keyOne5 As Double
+
+Private Const keyTWO1 As String = ""Fizz""
+Private Const keyTWO2 As String = ""Fuzz""
+
+Private Sub KeyOne(arg As Long)
+End Sub
+
+Private Sub KeyTwo(arg As Long)
+End Sub
+";
+
+            var renamingPairs = TestForMovedNonConflictNames(sourceCode, selection, destinationCode, isMutableIdentifier: isMutableFlag);
+            Assert.AreEqual(expectedResultsCount, renamingPairs.Count());
+        }
 
         [TestCase("Bizz", false)]
         [TestCase("mfizZ", true)]
@@ -617,14 +725,19 @@ End Function
 
                 var conflictDetectionSession = TestResolver.Resolve<IConflictDetectionSessionFactory>(state);
                 var conflictSession = conflictDetectionSession.Create();
-                //result = conflictSession.HasConflictInNewLocation(target, destinationModule, out _);
-                result = conflictSession.TryProposedRelocation(target, destinationModule, IsMutableIdentifier: false); //, out _);
+                result = conflictSession.TryProposedRelocation(target, destinationModule, IsMutableIdentifier: false);
             }
 
             return !result;
         }
 
-        private string TestForMovedNonConflictName(string inputCode, (string identifier, DeclarationType declarationType) selection, string destinationCode, string destinationModuleName = "DestinationDefault") //, string newName = null)
+        private string TestForMovedNonConflictNamePairs(string inputCode, (string identifier, DeclarationType declarationType) selection, string destinationCode, string destinationModuleName = "DestinationDefault")
+        {
+            var results = TestForMovedNonConflictNames(inputCode, selection, destinationCode, destinationModuleName);
+            return results.Any() ? results.First().newName : selection.identifier;
+        }
+
+        private List<(Declaration target, string newName)> TestForMovedNonConflictNames(string inputCode, (string identifier, DeclarationType declarationType) selection, string destinationCode, string destinationModuleName = "DestinationDefault", bool isMutableIdentifier = true)
         {
             var results = new List<(Declaration target, string newName)>();
             var vbe = MockVbeBuilder.BuildFromStdModules((MockVbeBuilder.TestModuleName, inputCode), (destinationModuleName, destinationCode)).Object;
@@ -640,13 +753,11 @@ End Function
                 var conflictDetectionSessionFactory = TestResolver.Resolve<IConflictDetectionSessionFactory>(state);
 
                 var conflictDetectionSession = conflictDetectionSessionFactory.Create();
-                //conflictDetectionSession.HasConflictInNewLocation(target, destinationModule, out result);
-                conflictDetectionSession.TryProposedRelocation(target, destinationModule); //, out result);
+                conflictDetectionSession.TryProposedRelocation(target, destinationModule, IsMutableIdentifier: isMutableIdentifier);
                 results = conflictDetectionSession.ConflictFreeRenamePairs.ToList();
             }
 
-            return results.Any() ? results.First().newName : selection.identifier;
+            return results;
         }
-
     }
 }

@@ -1,20 +1,10 @@
-﻿using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-using System;
-using System.Collections.Generic;
+﻿using Rubberduck.Parsing.VBA;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.Common
 {
     public interface INewDeclarationConflictDetection : IConflictDetectionBase
     {
-        /// <summary>
-        /// Determines if a IConflictDetectionDeclarationProxy represents a name conflict.
-        /// </summary>
-        bool NewDeclarationHasConflict(IConflictDetectionDeclarationProxy proxy, IConflictDetectionSessionData sessionData);
-
         /// <summary>
         /// Determines if proposed new module identifier represents a name conflict.
         /// </summary>
@@ -23,18 +13,12 @@ namespace Rubberduck.Refactorings.Common
 
     public class NewDeclarationConflictDetection : ConflictDetectionBase, INewDeclarationConflictDetection
     {
-        public NewDeclarationConflictDetection(IDeclarationFinderProvider declarationFinderProvider, /*IDeclarationProxyFactory declarationProxyFactory,*/ IConflictFinderFactory conflictFinderFactory)
-            : base(declarationFinderProvider, conflictFinderFactory)
-        { }
+        public NewDeclarationConflictDetection(IDeclarationFinderProvider declarationFinderProvider, IConflictFinderFactory conflictFinderFactory)
+            : base(declarationFinderProvider, conflictFinderFactory) { }
 
-        public bool NewDeclarationHasConflict(IConflictDetectionDeclarationProxy proxy, IConflictDetectionSessionData sessionData)
+        public override bool HasConflict(IConflictDetectionDeclarationProxy proxy, IConflictDetectionSessionData sessionData)
         {
-            if (TryResolveToConflictFreeIdentifier(proxy, sessionData))
-            {
-                sessionData.RegisterResolvedProxyIdentifier(proxy);
-                return true;
-            }
-            return false;
+            return !CanResolveToConflictFreeIdentifier(proxy, sessionData);
         }
 
         public bool NewModuleDeclarationHasConflict(string name, string projectID, IConflictDetectionSessionData sessionData, out string nonConflictName)

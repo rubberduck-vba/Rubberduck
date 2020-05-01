@@ -1359,10 +1359,11 @@ End Enum
             }
         }
 
-        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
         [Category("Refactoring")]
         [Category(nameof(ConflictDetectionSession))]
-        public void RenameRespectsNewlyIntroducedFields()
+        public void RenameRespectsNewlyIntroducedFields(bool IsMutableIdentifier)
         {
             var identifier = "TestFunc";
             var declarationType = DeclarationType.Function;
@@ -1378,7 +1379,6 @@ End Function
 ";
             var newProxyVariables = new string[] { "ProxyVariable1", "ProxyVariable2", "ProxyVariable3" };
 
-            //var result = false;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(sourceCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
             using (state)
@@ -1394,15 +1394,18 @@ End Function
                 var nonConflictName = string.Empty;
                 foreach (var newVariable in newProxyVariables)
                 {
-                    //result = conflictSession.NewDeclarationHasConflict(newVariable, DeclarationType.Variable, Accessibility.Private, targetModule as ModuleDeclaration, targetModule, out _); // nonConflictName);
-                    conflictSession.TryProposeNewDeclaration(newVariable, DeclarationType.Variable, Accessibility.Private, targetModule as ModuleDeclaration, targetModule, out _); // nonConflictName);
+                    conflictSession.TryProposeNewDeclaration(newVariable, DeclarationType.Variable, Accessibility.Private, targetModule as ModuleDeclaration, targetModule, true, out _);
                 }
 
-                Assert.IsTrue(conflictSession.TryProposeRenamePair(target, "ProxyVariable3")); // nonConflictName);
-                Assert.IsFalse(conflictSession.TryProposeRenamePair(target, "ProxyVariable3", false)); // nonConflictName);
-                //var newName = conflictSession.GenerateNoConflictRename(target, "ProxyVariable3");
-                var pairs = conflictSession.ConflictFreeRenamePairs;
-                StringAssert.AreEqualIgnoringCase("ProxyVariable4", pairs.First().newName);
+                conflictSession.TryProposeRenamePair(target, "ProxyVariable3", IsMutableIdentifier);
+                if (IsMutableIdentifier)
+                {
+                    StringAssert.AreEqualIgnoringCase("ProxyVariable4", conflictSession.ConflictFreeRenamePairs.Single().newName);
+                }
+                else
+                {
+                    Assert.AreEqual(0, conflictSession.ConflictFreeRenamePairs.Count());
+                }
             }
         }
 

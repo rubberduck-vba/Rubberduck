@@ -1,17 +1,29 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.Common
 {
     public interface IConflictDetectionBase
     {
+        /// <summary>
+        /// Determines if a IConflictDetectionDeclarationProxy represents a name conflict
+        /// with other IConflictDetectionDeclarationProxy instances in the session.
+        /// </summary>
+        bool HasConflict(IConflictDetectionDeclarationProxy proxy, IConflictDetectionSessionData sessionData);
+        
+        
+        /// <summary>
+        /// A delegate for generating a proposed name based on a given string/name.
+        /// The default algorithm simply increments an input string (e.g. "myValue" => "myValue1", 
+        /// "anotherValue6" => "anotherValue7")
+        /// </summary>
+        /// <remarks>
+        /// The <c>ConflictingNameModifier</c> property is writable so that a client can inject an 
+        /// alternative renaming protocol.
+        /// </remarks>
         Func<string, string> ConflictingNameModifier { set; get; }
     }
 
@@ -22,7 +34,7 @@ namespace Rubberduck.Refactorings.Common
     /// <seealso cref="RelocateConflictDetection"/>
     /// <seealso cref="NewDeclarationConflictDetection"/>
     /// </summary>
-    public class ConflictDetectionBase : IConflictDetectionBase
+    public abstract class ConflictDetectionBase : IConflictDetectionBase
     {
         protected readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IConflictFinderFactory _conflictFinderFactory;
@@ -35,9 +47,10 @@ namespace Rubberduck.Refactorings.Common
 
         public Func<string, string> ConflictingNameModifier { set; get; } = IncrementIdentifier;
 
+        public abstract bool HasConflict(IConflictDetectionDeclarationProxy proxy, IConflictDetectionSessionData sessionData);
+
         protected IEnumerable<Declaration> ModuleIdentifierConflicts(string name, string projectID)
         {
-            
             var matchingModules = _declarationFinderProvider.DeclarationFinder.AllModules
                 .Where(mod => AreVBAEquivalent(mod.ComponentName, name) && mod.ProjectId == projectID)
                 .Select(qmn => _declarationFinderProvider.DeclarationFinder.ModuleDeclaration(qmn));
@@ -51,8 +64,13 @@ namespace Rubberduck.Refactorings.Common
             return matchingModules.Concat(matchingUDTs).Concat(matchingEnums);
         }
 
-        protected bool TryResolveToConflictFreeIdentifier(IConflictDetectionDeclarationProxy proxy, IConflictDetectionSessionData sessionData)
+        protected bool CanResolveToConflictFreeIdentifier(IConflictDetectionDeclarationProxy proxy, IConflictDetectionSessionData sessionData)
         {
+            if (!proxy.IsMutableIdentifier)
+            {
+                return ImmutableIdentifierIsConflictFree(proxy, sessionData);
+            }
+
             var isConflictFree = false;
             var iterationMax = 100;
             for (var iteration = 0; iteration < iterationMax && !isConflictFree; iteration++)
@@ -66,9 +84,20 @@ namespace Rubberduck.Refactorings.Common
                     }
                     continue;
                 }
+                sessionData.RegisterResolvedProxyIdentifier(proxy);
                 isConflictFree = true;
             }
             return isConflictFree;
+        }
+
+        private bool ImmutableIdentifierIsConflictFree(IConflictDetectionDeclarationProxy proxy, IConflictDetectionSessionData sessionData)
+        {
+            if (HasNameConflicts(proxy, sessionData, out _))
+            {
+                return false;
+            }
+            sessionData.RegisterResolvedProxyIdentifier(proxy);
+            return true;
         }
 
         protected bool HasNameConflicts(IConflictDetectionDeclarationProxy proxy, IConflictDetectionSessionData sessionData, out Dictionary<IConflictDetectionDeclarationProxy, List<IConflictDetectionDeclarationProxy>> conflicts)

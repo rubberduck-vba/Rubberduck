@@ -88,14 +88,14 @@ End Sub
             StringAssert.AreEqualIgnoringCase(expectedName, nonConflictName);
         }
 
-        [TestCase(DeclarationType.Variable)]
-        [TestCase(DeclarationType.Function)]
-        [TestCase(DeclarationType.Procedure)]
-        [TestCase(DeclarationType.Constant)]
-        [TestCase(DeclarationType.EnumerationMember)]
+        [TestCase(DeclarationType.Variable, MockVbeBuilder.TestModuleName)]
+        [TestCase(DeclarationType.Function, MockVbeBuilder.TestModuleName)]
+        [TestCase(DeclarationType.Procedure, MockVbeBuilder.TestModuleName)]
+        [TestCase(DeclarationType.Constant, MockVbeBuilder.TestModuleName)]
+        [TestCase(DeclarationType.EnumerationMember, "ETest")]
         [Category("Refactoring")]
         [Category(nameof(ConflictDetectionSession))]
-        public void NewDeclarationNameConflictsWithEnumMember(DeclarationType newDeclarationType)
+        public void NewDeclarationNameConflictsWithEnumMember(DeclarationType newDeclarationType, string parentDeclarationIdentifier)
         {
             var expectedName = "FirstValue1";
             var sourceCode =
@@ -104,7 +104,7 @@ Private Enum ETest
     FirstValue = 34
 End Enum
 ";
-            var nonConflictName = RunNewDeclarationTest(("FirstValue", newDeclarationType, Accessibility.Public), sourceCode);
+            var nonConflictName = RunNewDeclarationTest(("FirstValue", newDeclarationType, Accessibility.Public), sourceCode, parentDeclarationIdentifier);
             StringAssert.AreEqualIgnoringCase(expectedName, nonConflictName);
         }
 
@@ -133,22 +133,15 @@ End Sub
 
                 var conflictDetectionSession = TestResolver.Resolve<IConflictDetectionSessionFactory>(state).Create();
                 foreach (var newVarName in new string[] {"FirstVariable", "SecondVariable"})
-                    //conflictDetectionSession.NewDeclarationHasConflict(newVarName,
-                    //                                    DeclarationType.Variable,
-                    //                                    Accessibility.Private,
-                    //                                    stdModule as ModuleDeclaration, stdModule,
-                    //                                    out _);
 
                 conflictDetectionSession.TryProposeNewDeclaration(newVarName,
                                                     DeclarationType.Variable,
                                                     Accessibility.Private,
-                                                    stdModule as ModuleDeclaration, stdModule, 
-                                                    out _,
-                                                    false);
+                                                    stdModule as ModuleDeclaration, stdModule,
+                                                    false,
+                                                    out _);
 
-                //conflictDetectionSession.HasRenameConflict(target, "SecondVariable", out _); // var nonConflictName);
-                conflictDetectionSession.TryProposeRenamePair(target, "SecondVariable"); // var nonConflictName);
-                //var nonConflictName = conflictDetectionSession.GenerateNoConflictRename(target, "SecondVariable");
+                conflictDetectionSession.TryProposeRenamePair(target, "SecondVariable", true); // var nonConflictName);
                 StringAssert.AreEqualIgnoringCase(expectedName, conflictDetectionSession.ConflictFreeRenamePairs.Single(pr => pr.target == target).newName);
             }
         }
@@ -183,7 +176,7 @@ Private mTest As Long
             }
         }
 
-        private string RunNewDeclarationTest((string ID, DeclarationType Type, Accessibility accessibility) target, string sourceCode)
+        private string RunNewDeclarationTest((string ID, DeclarationType Type, Accessibility accessibility) target, string sourceCode, string parentDeclarationIdentifier = null)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(sourceCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -192,29 +185,21 @@ Private mTest As Long
                 var destination = state.DeclarationFinder.DeclarationsWithType(DeclarationType.ProceduralModule)
                                 .Where(d => d.IdentifierName.Equals(MockVbeBuilder.TestModuleName)).Single();
 
+                var parentDeclaration = string.IsNullOrEmpty(parentDeclarationIdentifier)
+                        ? destination
+                        : state.DeclarationFinder.MatchName(parentDeclarationIdentifier).Single();
+
                 var nameConflictManager = TestResolver.Resolve<IConflictDetectionSessionFactory>(state);
                 var conflictSession = nameConflictManager.Create();
-                //conflictSession.NewDeclarationHasConflict(target.ID,
-                //                                        target.Type,
-                //                                        target.accessibility,
-                //                                        destination as ModuleDeclaration,
-                //                                        destination,
-                //                                        out var nonConflictName);
                 conflictSession.TryProposeNewDeclaration(target.ID,
                                                         target.Type,
                                                         target.accessibility,
                                                         destination as ModuleDeclaration,
-                                                        destination,
+                                                        parentDeclaration,
+                                                        true,
                                                         out int retrievalKey);
 
-                //var results = new List<((string ID, DeclarationType decType, string ModuleName), string ResolvedID)>();
-                //results.AddRange(conflictSession.NewDeclarationIdentifiers);
-
-                //var theOne = results.Where(rID => rID.Item1.ID.Equals(target.ID)
-                //                                && rID.Item1.decType.Equals(target.Type)
-                //                                && rID.Item1.ModuleName.Equals(destination.IdentifierName)).First();
                 (int key, string newName) = conflictSession.NewDeclarationIdentifiers.Single(pr => pr.keyID == retrievalKey);
-                //var theOne = conflictSession.ConflictFreeRenamePairs.Single(pr => pr.GetHashCode() == retrievalKey);
                 return newName;
             }
         }

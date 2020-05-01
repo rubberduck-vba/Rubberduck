@@ -113,12 +113,9 @@ namespace Rubberduck.Refactorings.MoveMember
 
             if (model.Destination.IsExistingModule(out var destinationModule))
             {
-                //namingSession.NewDeclarationHasConflict(fieldIdentifier, DeclarationType.Variable, Accessibility.Private, model.Source.Module as ModuleDeclaration, model.Source.Module, out instanceFieldIdentifier);
-                conflictDetectionSession.TryProposeNewDeclaration(fieldIdentifier, DeclarationType.Variable, Accessibility.Private, model.Source.Module as ModuleDeclaration, model.Source.Module, out _); // var fieldIDRetrievalKey); //, out instanceFieldIdentifier);
+                conflictDetectionSession.TryProposeNewDeclaration(fieldIdentifier, DeclarationType.Variable, Accessibility.Private, model.Source.Module as ModuleDeclaration, model.Source.Module, true, out _);
 
-                //conflictDetectionSession.NewDeclarationHasConflict(model.Destination.ModuleName, DeclarationType.PropertyGet, Accessibility.Private, model.Source.Module as ModuleDeclaration, model.Source.Module, out propertyIdentifier);
-                if (!conflictDetectionSession.TryProposeNewDeclaration(model.Destination.ModuleName, DeclarationType.PropertyGet, Accessibility.Private, model.Source.Module as ModuleDeclaration, model.Source.Module, out _, false))
-                //if (propertyIdentifier != model.Destination.ModuleName)
+                if (!conflictDetectionSession.TryProposeNewDeclaration(model.Destination.ModuleName, DeclarationType.PropertyGet, Accessibility.Private, model.Source.Module as ModuleDeclaration, model.Source.Module, false, out _))
                 {
                     throw new MoveMemberUnsupportedMoveException();
                 }

@@ -1,11 +1,6 @@
-﻿using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-using System;
+﻿using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.Common
 {

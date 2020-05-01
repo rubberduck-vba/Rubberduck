@@ -71,7 +71,7 @@ namespace Rubberduck.Refactorings.Common
         public IConflictDetectionDeclarationProxy CreateProxy(string name, DeclarationType declarationType, Accessibility accessibility, ModuleDeclaration module, Declaration parentDeclaration, out int retrievalKey)
         {
             var proxy = _declarationProxyFactory.Create(name, declarationType, accessibility, module, parentDeclaration);
-            retrievalKey = proxy.GetHashCode();
+            retrievalKey = proxy.KeyID;
             if (! _newDeclarationProxies.ContainsKey(retrievalKey))
             {
                 AddProxy(proxy);
@@ -87,7 +87,7 @@ namespace Rubberduck.Refactorings.Common
             }
             else
             {
-                _newDeclarationProxies.Remove(proxy.GetHashCode());
+                _newDeclarationProxies.Remove(proxy.KeyID);
             }
         }
 
@@ -102,9 +102,9 @@ namespace Rubberduck.Refactorings.Common
                 return;
             }
 
-            if (!_newDeclarationProxies.TryGetValue(proxy.GetHashCode(), out _))
+            if (!_newDeclarationProxies.TryGetValue(proxy.KeyID, out _))
             {
-                _newDeclarationProxies.Add(proxy.GetHashCode(), proxy);
+                _newDeclarationProxies.Add(proxy.KeyID, proxy);
             }
         }
     }

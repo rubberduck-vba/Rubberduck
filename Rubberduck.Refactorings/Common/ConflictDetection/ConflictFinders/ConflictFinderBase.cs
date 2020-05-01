@@ -43,7 +43,7 @@ namespace Rubberduck.Refactorings.Common
             return proxies;
         }
 
-        public bool ModuleLevelElementChecks(IEnumerable<IConflictDetectionDeclarationProxy> matchingDeclarations, out List<IConflictDetectionDeclarationProxy> conflicts)
+        protected bool ModuleLevelElementChecks(IEnumerable<IConflictDetectionDeclarationProxy> matchingDeclarations, out List<IConflictDetectionDeclarationProxy> conflicts)
         {
             conflicts = new List<IConflictDetectionDeclarationProxy>();
 

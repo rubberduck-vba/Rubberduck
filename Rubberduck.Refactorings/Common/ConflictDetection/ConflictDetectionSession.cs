@@ -1,10 +1,23 @@
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using System;
 using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.Common
 {
+    /// <summary>
+    /// ConflictDetectionSession interface for evaluating proposed renames, relocations, and new declarations
+    /// for IdentifierName conflicts and other ambiguous identifier scenarios.
+    /// </summary>
+    /// <remarks>
+    /// The <c>IsMutableIdentifier</c> flag common to the 'TryProposedXXX' functions determines
+    /// the behavior of ConflictDetectionSession logic.
+    /// Setting this flag to 'true' enables the session logic to modify identifiers as needed 
+    /// to avoid/resolve a naming collision.
+    /// When set to 'true' <c>TryProposedXXX</c> will always succeed unless an exception occurs.
+    /// Setting this flag to 'false' results in a conflict analysis free of any attempt to 
+    /// 'coerce' the target's proposed identifier.  Setting a value of 'false' would be appropriate for UI related callers
+    /// where the user is supplying the identifier and would not expect it to be modified by the system.
+    /// </remarks>
     public interface IConflictDetectionSession
     {
         /// <summary>
@@ -13,47 +26,35 @@ namespace Rubberduck.Refactorings.Common
         /// <param name="target">The declaration proposed for relocation</param>
         /// <param name="destinationModule"></param>
         /// <param name="accessibility">Uses the Accessibility of the target if no parameter value is provided</param>
-        /// <param name="IsMutableIdentifier">
-        /// a value of 'true' (the default) allows the session to modify the 
-        /// proposed declaration's identifier in order to avoid a naming collision.
-        /// When set to 'true' the function will always return 'true' unless an exception occurs.
-        /// Explicitly setting a value of 'false' would be appropriate for UI related proposals
-        /// where the user is supplying the identifier.
-        /// </param>
+        /// <param name="IsMutableIdentifier">See <see cref="IConflictDetectionSession"/></param>
         /// <returns>'true' if there is no conflict, or the conflict has been resolved internally by the ConflictSession</returns>
-        bool TryProposedRelocation(Declaration target, ModuleDeclaration destinationModule, Accessibility? accessibility = null, bool IsMutableIdentifier = true);
+        bool TryProposedRelocation(Declaration target, ModuleDeclaration destinationModule, bool IsMutableIdentifier, Accessibility? accessibility = null);
 
         /// <summary>
         /// Evaluates the target for Conflicts if relocated to another module
         /// </summary>
         /// <remarks>
-        /// This override accepts a destination module name in order to support
+        /// This override accepts a destination module name (string) in order to support
         /// scenarios where the destination module is new or unknown.  
-        /// If the name represents an existing ModuleDeclaration then the call is forwarded to
-        /// <see cref="TryProposedRelocation(Declaration, ModuleDeclaration, Accessibility?, bool)"/>
         /// </remarks>
         /// <param name="target"></param>
         /// <param name="destinationModuleName"></param>
         /// <param name="accessibility"></param>
-        /// <param name="IsMutableIdentifier">
-        /// See IsMutableIdentifier <see cref="TryProposedRelocation(Declaration, ModuleDeclaration, Accessibility?, bool)"/>
-        /// </param>
+        /// <param name="IsMutableIdentifier">See <see cref="IConflictDetectionSession"/></param>
         /// <returns>'true' if there is no conflict, or the conflict has been resolved internally by the ConflictSession</returns>
-        bool TryProposedRelocation(Declaration target, string destinationModuleName, Accessibility? accessibility = null, bool IsMutableIdentifier = true);
+        bool TryProposedRelocation(Declaration target, string destinationModuleName, bool IsMutableIdentifier, Accessibility? accessibility = null);
 
         /// <summary>
-        /// Evaluates the proposed new Identifier for conflicts
+        /// Evaluates the proposed IdentifierName for conflicts
         /// </summary>
         /// <param name="target"></param>
         /// <param name="newName"></param>
-        /// <param name="IsMutableIdentifier">
-        /// See IsMutableIdentifier <see cref="TryProposedRelocation(Declaration, ModuleDeclaration, Accessibility?, bool)"/>
-        /// </param>
+        /// <param name="IsMutableIdentifier">See <see cref="IConflictDetectionSession"/></param>
         /// <returns>'true' if there is no conflict, or the conflict has been resolved internally by the ConflictSession</returns>
-        bool TryProposeRenamePair(Declaration target, string newName, bool IsMutableNewName = true);
+        bool TryProposeRenamePair(Declaration target, string newName, bool IsMutableNewName);
 
         /// <summary>
-        /// Evaluates a proposed new Declaration
+        /// Evaluates a proposed new Declaration for conflicts with existing code elements
         /// </summary>
         /// <param name="name"></param>
         /// <param name="declarationType"></param>
@@ -62,14 +63,14 @@ namespace Rubberduck.Refactorings.Common
         /// <param name="parentDeclaration"></param>
         /// <param name="idKey">
         /// A value that can be used to associate the conflict evaluation 
-        /// results with the result of this function. See <see cref="NewDeclarationIdentifiers"/>
+        /// results with the result of the function. See <see cref="NewDeclarationIdentifiers"/>
         /// </param>
-        /// See IsMutableIdentifier <see cref="TryProposedRelocation(Declaration, ModuleDeclaration, Accessibility?, bool)"/>
+        /// <param name="IsMutableIdentifier">See <see cref="IConflictDetectionSession"/></param>
         /// <returns>'true' if there is no conflict, or the conflict has been resolved internally by the ConflictSession</returns>
-        bool TryProposeNewDeclaration(string name, DeclarationType declarationType, Accessibility accessibility, ModuleDeclaration destination, Declaration parentDeclaration, out int idKey, bool isMutableIdentifier = true);
+        bool TryProposeNewDeclaration(string name, DeclarationType declarationType, Accessibility accessibility, ModuleDeclaration destination, Declaration parentDeclaration, bool isMutableIdentifier, out int idKey);
 
         /// <summary>
-        /// Evaluates a proposed new Module declaration
+        /// Evaluates a proposed new Module declaration for conflicts with existing code elements
         /// </summary>
         /// <param name="name"></param>
         /// <param name="projectID"></param>
@@ -81,10 +82,15 @@ namespace Rubberduck.Refactorings.Common
         bool NewModuleDeclarationHasConflict(string name, string projectID, out string nonConflictName);
 
         /// <summary>
-        /// Provides the results of the ConflictDetectionSession evaluations.
-        /// It is possible for a single conflict evaluation request to generate more 
-        /// than one rename pair. (e.g. Moving an enumeration may result in multiple enumMember conflicts).
+        /// Provides an enumerable set of (<c>Declaration</c>, <c>string</c>) tuples to be used for renaming/resolving 
+        /// detected conflicts.
         /// </summary>
+        /// <remarks>
+        /// 1. The set of tuples contains only (<c>Declaration</c>, <c>string</c>) pairs that change
+        /// the IdentifierName of an existing <c>Declaration</c>
+        /// 2. It is possible for a single conflict evaluation request to generate more 
+        /// than one rename pair. (e.g. Moving an enumeration may result in multiple enumMember conflicts).
+        /// </remarks>
         IEnumerable<(Declaration target, string newName)> ConflictFreeRenamePairs { get; }
 
         /// <summary>
@@ -98,8 +104,7 @@ namespace Rubberduck.Refactorings.Common
     /// <summary>
     /// ConflictDetectionSession provides analysis as to whether or not a proposed change (new name, new location, or new Declaration)
     /// results in a name conflict.  Based on the value of flag IsMutableIdentifier (default is 'true'), the evaluation determines and associates
-    /// a conflict-free identifier with the proposed target.  The default algorithm for generating the conflict-free name is to based upon
-    /// simply incrementing the proposed name. (e.g. "myValue" => "myValue1", "anotherValue6" => "anotherValue7")
+    /// a conflict-free identifier with the proposed target. 
     /// If IsMutableIdentifier is 'false' and a conflict is found, the target declaration will not be present
     /// in the ConflictDetectionSession results provided by <see cref="ConflictFreeRenamePairs"/>.
     /// </summary>
@@ -122,54 +127,40 @@ namespace Rubberduck.Refactorings.Common
             _sessionData = sessionData;
         }
 
-        public bool TryProposedRelocation(Declaration target, ModuleDeclaration destinationModule, Accessibility? accessibility = null, bool IsMutableIdentifier = true)
+        public bool TryProposedRelocation(Declaration target, ModuleDeclaration destinationModule, bool IsMutableIdentifier, Accessibility? accessibility = null)
         {
-            var proxy = _sessionData.CreateProxy(target, destinationModule.IdentifierName, accessibility);
-            var hasConflict = _relocatingConflictDetection.HasConflictInNewLocation(proxy, _sessionData);
-            if (hasConflict && !IsMutableIdentifier)
-            {
-                _sessionData.RemoveProxy(proxy);
-                return false;
-            }
-            return true;
+            return TryProposedRelocation(target, destinationModule.IdentifierName, IsMutableIdentifier, accessibility);
         }
 
-        public bool TryProposedRelocation(Declaration target, string destinationModuleName, Accessibility? accessibility = null, bool IsMutableIdentifier = true)
+        public bool TryProposedRelocation(Declaration target, string destinationModuleName, bool isMutableIdentifier, Accessibility? accessibility = null)
         {
             var proxy = _sessionData.CreateProxy(target, destinationModuleName, accessibility);
-            var hasConflict = _relocatingConflictDetection.HasConflictInNewLocation(proxy, _sessionData);
-            if (hasConflict && !IsMutableIdentifier)
-            {
-                _sessionData.RemoveProxy(proxy);
-                return false;
-            }
-            return true;
+            proxy.IsMutableIdentifier = isMutableIdentifier;
+
+            var hasConflict = _relocatingConflictDetection.HasConflict(proxy, _sessionData);
+
+            return isMutableIdentifier ? true : !hasConflict;
         }
 
-        public bool TryProposeRenamePair(Declaration target, string newName, bool IsMutableNewName = true)
+        public bool TryProposeRenamePair(Declaration target, string newName, bool isMutableIdentifier)
         {
             var proxy = _sessionData.CreateProxy(target);
             proxy.IdentifierName = newName;
-            var hasConflict = _renamingConflictDetection.HasRenameConflict(proxy, _sessionData);
+            proxy.IsMutableIdentifier = isMutableIdentifier;
 
-            if (hasConflict && !IsMutableNewName)
-            {
-                _sessionData.RemoveProxy(proxy);
-                return false;
-            }
-            return true;
+            var hasConflict = _renamingConflictDetection.HasConflict(proxy, _sessionData);
+
+            return isMutableIdentifier ? true : !hasConflict;
         }
 
-        public bool TryProposeNewDeclaration(string name, DeclarationType declarationType, Accessibility accessibility, ModuleDeclaration destination, Declaration parentDeclaration, out int retrievalKey, bool isMutableIdentifier = true)
+        public bool TryProposeNewDeclaration(string name, DeclarationType declarationType, Accessibility accessibility, ModuleDeclaration destination, Declaration parentDeclaration, bool isMutableIdentifier, out int retrievalKey)
         {
             var proxy = _sessionData.CreateProxy(name, declarationType, accessibility, destination, parentDeclaration, out retrievalKey);
-            var hasConflict = _newDeclarationConflictDetection.NewDeclarationHasConflict(proxy, _sessionData);
-            if (hasConflict && !isMutableIdentifier)
-            {
-                _sessionData.RemoveProxy(proxy);
-                return false;
-            }
-            return true;
+            proxy.IsMutableIdentifier = isMutableIdentifier;
+
+            var hasConflict = _newDeclarationConflictDetection.HasConflict(proxy, _sessionData);
+
+            return isMutableIdentifier ? true : !hasConflict;
         }
 
         public bool NewModuleDeclarationHasConflict(string name, string projectID, out string nonConflictName)
@@ -184,7 +175,7 @@ namespace Rubberduck.Refactorings.Common
                 var results = new List<(int keyID, string newName)>();
                 foreach (var proxy in _sessionData.ResolvedProxyDeclarations)
                 {
-                    results.Add((proxy.GetHashCode(), proxy.IdentifierName));
+                    results.Add((proxy.KeyID, proxy.IdentifierName));
                 }
                 return results;
             }

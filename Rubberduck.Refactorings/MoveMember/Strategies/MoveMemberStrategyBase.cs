@@ -371,7 +371,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
             foreach (var mover in movers)
             {
-                if (conflictSession.TryProposedRelocation(mover, model.Destination.ModuleName))
+                if (conflictSession.TryProposedRelocation(mover, model.Destination.ModuleName, true))
                 {
                     var renamePairs = conflictSession.ConflictFreeRenamePairs;
                     foreach ((Declaration target, string newName) in renamePairs)

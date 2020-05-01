@@ -1,10 +1,7 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.Common
 {
@@ -59,10 +56,12 @@ namespace Rubberduck.Refactorings.Common
             var identifierMatchingDeclarations
                             = destinationModuleDeclarations.Where(d => d != enumerationMemberProxy.Prototype
                                                                 && AreVBAEquivalent(d.IdentifierName, enumerationMemberProxy.IdentifierName))
-                                                            .Select(d => sessionData.CreateProxy(d));
+                                                                .Select(d => sessionData.CreateProxy(d));
 
             if (ModuleLevelElementChecks(identifierMatchingDeclarations, out var nameConflicts))
             {
+                var sameEnumMemberNameInOtherEnumDeclarations = nameConflicts.Where(nc => nc.DeclarationType.HasFlag(DeclarationType.EnumerationMember) && nc.ParentDeclaration != enumerationMemberProxy.ParentDeclaration);
+                nameConflicts = nameConflicts.Except(sameEnumMemberNameInOtherEnumDeclarations).ToList();
                 conflicts = AddConflicts(conflicts, enumerationMemberProxy, nameConflicts);
             }
             return conflicts.Values.Any();
