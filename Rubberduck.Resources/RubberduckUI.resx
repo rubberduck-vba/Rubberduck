@@ -1794,11 +1794,11 @@ Import aborted.</value>
   <data name="MoveMember_ModuleMatchesProjectNameFailMsg" xml:space="preserve">
     <value>Module name matches Project Name</value>
   </data>
-  <data name="MoveMember_MovedContentAboveThisLine" xml:space="preserve">
-    <value>Moved Content above this line</value>
+  <data name="MoveMember_NewContentAboveThisLine" xml:space="preserve">
+    <value>New Content above this line</value>
   </data>
-  <data name="MoveMember_MovedContentBelowThisLine" xml:space="preserve">
-    <value>Moved Content below this line</value>
+  <data name="MoveMember_NewContentBelowThisLine" xml:space="preserve">
+    <value>New Content below this line</value>
   </data>
   <data name="MoveMember_MoveMember_DestinationSelectionLabelFormat" xml:space="preserve">
     <value>Destination ({0})</value>
@@ -1827,7 +1827,7 @@ Import aborted.</value>
   <data name="MoveMember_UnsupportedMoveExceptionFormat" xml:space="preserve">
     <value>Unable to Move Member: {0}</value>
     <comment>{0} = member identifier</comment>
-  </data>	
+  </data>
   <data name="MoveToFolderDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Move to Folder</value>
   </data>

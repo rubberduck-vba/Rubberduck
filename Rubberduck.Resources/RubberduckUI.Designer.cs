@@ -2793,18 +2793,47 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Applicable move strategy not found.
-        /// </summary>
-        public static string MoveMember_ApplicableStrategyNotFound {
-            get {
-                return ResourceManager.GetString("MoveMember_ApplicableStrategyNotFound", resourceCulture);
-            }
-        }
         ///   Looks up a localized string similar to Please specify a new parent folder for the subfolder &apos;{0}&apos; of &apos;{1}&apos;..
         /// </summary>
         public static string MoveFolderDialog_InstructionsLabelText {
             get {
                 return ResourceManager.GetString("MoveFolderDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Move Folders.
+        /// </summary>
+        public static string MoveFoldersDialog_Caption {
+            get {
+                return ResourceManager.GetString("MoveFoldersDialog_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify a new parent folder for the folders..
+        /// </summary>
+        public static string MoveFoldersDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("MoveFoldersDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move Folders.
+        /// </summary>
+        public static string MoveFoldersDialog_TitleText {
+            get {
+                return ResourceManager.GetString("MoveFoldersDialog_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Applicable move strategy not found.
+        /// </summary>
+        public static string MoveMember_ApplicableStrategyNotFound {
+            get {
+                return ResourceManager.GetString("MoveMember_ApplicableStrategyNotFound", resourceCulture);
             }
         }
         
@@ -2816,13 +2845,6 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("MoveMember_Caption", resourceCulture);
             }
         }
-        ///   Looks up a localized string similar to Rubberduck - Move Folders.
-        /// </summary>
-        public static string MoveFoldersDialog_Caption {
-            get {
-                return ResourceManager.GetString("MoveFoldersDialog_Caption", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Destination.
@@ -2830,13 +2852,6 @@ namespace Rubberduck.Resources {
         public static string MoveMember_Destination {
             get {
                 return ResourceManager.GetString("MoveMember_Destination", resourceCulture);
-            }
-        }
-        ///   Looks up a localized string similar to Please specify a new parent folder for the folders..
-        /// </summary>
-        public static string MoveFoldersDialog_InstructionsLabelText {
-            get {
-                return ResourceManager.GetString("MoveFoldersDialog_InstructionsLabelText", resourceCulture);
             }
         }
         
@@ -2848,13 +2863,6 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("MoveMember_InstructionText", resourceCulture);
             }
         }
-        ///   Looks up a localized string similar to Move Folders.
-        /// </summary>
-        public static string MoveFoldersDialog_TitleText {
-            get {
-                return ResourceManager.GetString("MoveFoldersDialog_TitleText", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Module name matches Project Name.
@@ -2862,45 +2870,6 @@ namespace Rubberduck.Resources {
         public static string MoveMember_ModuleMatchesProjectNameFailMsg {
             get {
                 return ResourceManager.GetString("MoveMember_ModuleMatchesProjectNameFailMsg", resourceCulture);
-            }
-        }
-        ///   Looks up a localized string similar to Please specify new folder for the components..
-        /// </summary>
-        public static string MoveMultipleToFolderDialog_InstructionsLabelText {
-            get {
-                return ResourceManager.GetString("MoveMultipleToFolderDialog_InstructionsLabelText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Moved Content above this line.
-        /// </summary>
-        public static string MoveMember_MovedContentAboveThisLine {
-            get {
-                return ResourceManager.GetString("MoveMember_MovedContentAboveThisLine", resourceCulture);
-            }
-        }
-        ///   Looks up a localized string similar to Please specify a new parent folder for the older &apos;{0}&apos;..
-        /// </summary>
-        public static string MoveRootFolderDialog_InstructionsLabelText {
-            get {
-                return ResourceManager.GetString("MoveRootFolderDialog_InstructionsLabelText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Moved Content below this line.
-        /// </summary>
-        public static string MoveMember_MovedContentBelowThisLine {
-            get {
-                return ResourceManager.GetString("MoveMember_MovedContentBelowThisLine", resourceCulture);
-            }
-        }
-        ///   Looks up a localized string similar to Rubberduck - Move to Folder.
-        /// </summary>
-        public static string MoveToFolderDialog_Caption {
-            get {
-                return ResourceManager.GetString("MoveToFolderDialog_Caption", resourceCulture);
             }
         }
         
@@ -2912,13 +2881,6 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("MoveMember_MoveMember_DestinationSelectionLabelFormat", resourceCulture);
             }
         }
-        ///   Looks up a localized string similar to Folder:.
-        /// </summary>
-        public static string MoveToFolderDialog_FolderLabelText {
-            get {
-                return ResourceManager.GetString("MoveToFolderDialog_FolderLabelText", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Source ({0}) Declarations.
@@ -2928,13 +2890,6 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("MoveMember_MoveMember_MemberListLabelFormat", resourceCulture);
             }
         }
-        ///   Looks up a localized string similar to Please specify a new folder for {0} &apos;{1}&apos; in folder &apos;{2}&apos;..
-        /// </summary>
-        public static string MoveToFolderDialog_InstructionsLabelText {
-            get {
-                return ResourceManager.GetString("MoveToFolderDialog_InstructionsLabelText", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Source ({0}).
@@ -2942,6 +2897,24 @@ namespace Rubberduck.Resources {
         public static string MoveMember_MoveMember_SourceModuleLabelFormat {
             get {
                 return ResourceManager.GetString("MoveMember_MoveMember_SourceModuleLabelFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Content above this line.
+        /// </summary>
+        public static string MoveMember_NewContentAboveThisLine {
+            get {
+                return ResourceManager.GetString("MoveMember_NewContentAboveThisLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Content below this line.
+        /// </summary>
+        public static string MoveMember_NewContentBelowThisLine {
+            get {
+                return ResourceManager.GetString("MoveMember_NewContentBelowThisLine", resourceCulture);
             }
         }
         
@@ -2989,6 +2962,53 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("MoveMember_UnsupportedMoveExceptionFormat", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify new folder for the components..
+        /// </summary>
+        public static string MoveMultipleToFolderDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("MoveMultipleToFolderDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify a new parent folder for the older &apos;{0}&apos;..
+        /// </summary>
+        public static string MoveRootFolderDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("MoveRootFolderDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Move to Folder.
+        /// </summary>
+        public static string MoveToFolderDialog_Caption {
+            get {
+                return ResourceManager.GetString("MoveToFolderDialog_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folder:.
+        /// </summary>
+        public static string MoveToFolderDialog_FolderLabelText {
+            get {
+                return ResourceManager.GetString("MoveToFolderDialog_FolderLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify a new folder for {0} &apos;{1}&apos; in folder &apos;{2}&apos;..
+        /// </summary>
+        public static string MoveToFolderDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("MoveToFolderDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Move to Folder.
         /// </summary>
         public static string MoveToFolderDialog_TitleText {
