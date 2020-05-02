@@ -16,8 +16,8 @@ namespace RubberduckTests.Refactoring.MoveMember
     {
         protected override IRefactoringAction<MoveMemberModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            MoveMemberTestsResolver serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
-            return serviceLocator.Resolve<MoveMemberRefactoringAction>();
+            MoveMemberTestsResolver resolver = new MoveMemberTestsResolver(state, rewritingManager);
+            return resolver.Resolve<MoveMemberRefactoringAction>();
         }
 
         protected MoveMemberRefactorTestResults RefactorTargets((string ID, DeclarationType DecType) memberToMove, MoveEndpoints endpoints, string sourceContent, string destinationContent, Func<MoveMemberModel, MoveMemberModel> modelAdjustment)

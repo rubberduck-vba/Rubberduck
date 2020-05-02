@@ -47,51 +47,52 @@ namespace Rubberduck.Refactorings.MoveMember
 
             var session = _rewritingManager.CheckOutCodePaneSession();
             var sourceRewriter = session.CheckOutModuleRewriter(model.Source.QualifiedModuleName);
-            var sourceContent = FormatPreview(sourceRewriter.GetText());
 
-            if (!model.TryFindApplicableStrategy(out var strategy))
+            var sourceContent = LimitNewLines(sourceRewriter.GetText());
+
+            var contentProvider = _movedContentProviderFactory.CreatePreviewProvider() as INewContentPreviewProvider;
+
+            if (!model.TryGetStrategy(out var strategy))
             {
-                destinationContent = FormatPreview(Resources.RubberduckUI.MoveMember_ApplicableStrategyNotFound, addDemarcation: true);
+                destinationContent = contentProvider.AddNewContentDemarcation(Resources.RubberduckUI.MoveMember_ApplicableStrategyNotFound);
                 return (sourceContent, destinationContent);
             }
 
             if (!model.SelectedDeclarations.Any())
             {
-                destinationContent = FormatPreview(Resources.RubberduckUI.MoveMember_NoDeclarationsSelectedToMove, addDemarcation: true);
+                destinationContent = contentProvider.AddNewContentDemarcation(Resources.RubberduckUI.MoveMember_NoDeclarationsSelectedToMove);
                 return (sourceContent, destinationContent);
             }
 
             var refactorSession = _rewritingManager.CheckOutCodePaneSession();
-            strategy.RefactorRewrite(model, refactorSession, _rewritingManager, _movedContentProviderFactory.CreatePreviewProvider(), out var newContent);
+            strategy.RefactorRewrite(model, refactorSession, _rewritingManager, contentProvider, out var newContent);
 
             var rewriter = refactorSession.CheckOutModuleRewriter(model.Source.QualifiedModuleName);
-            sourceContent = FormatPreview(rewriter.GetText());
+            sourceContent = LimitNewLines(rewriter.GetText());
 
             if (model.Destination.IsExistingModule(out var destinationModule))
             {
                 rewriter = refactorSession.CheckOutModuleRewriter(destinationModule.QualifiedModuleName);
-                destinationContent = FormatPreview(rewriter.GetText());
+                destinationContent = LimitNewLines(rewriter.GetText());
             }
             else
             {
                 var optionExplicit = $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}";
-                destinationContent =  $"{optionExplicit}{Environment.NewLine}{FormatPreview(newContent)}";
+                destinationContent = $"{optionExplicit}{Environment.NewLine}{LimitNewLines(newContent)}";
             }
 
             return (sourceContent, destinationContent);
         }
 
-        private static string FormatPreview(string text, int maxConsecutiveNewLines = 2, bool addDemarcation = false)
+        private static string LimitNewLines(string text, int maxConsecutiveNewLines = 2)
         {
             var target = string.Concat(Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines + 1).ToList());
             var replacement = string.Concat(Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines).ToList());
-            for (var counter = 1; counter < 10 && text.Contains(target); counter++)
+            for (var counter = 1; counter < 50 && text.Contains(target); counter++)
             {
                 text = text.Replace(target, replacement);
             }
-            return addDemarcation
-                    ? $"'*****  {Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine}  *****{Environment.NewLine}{Environment.NewLine}{text}{Environment.NewLine}{Environment.NewLine}'****  {Resources.RubberduckUI.MoveMember_MovedContentAboveThisLine}  ****{Environment.NewLine}"
-                    : text;
+            return text;
         }
     }
 }

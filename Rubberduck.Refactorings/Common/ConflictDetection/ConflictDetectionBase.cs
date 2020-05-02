@@ -126,7 +126,7 @@ namespace Rubberduck.Refactorings.Common
                 || declarationType.HasFlag(DeclarationType.Project);
         }
 
-        private static string IncrementIdentifier(string identifier)
+        public static string IncrementIdentifier(string identifier)
         {
             var numeric = string.Concat(identifier.Reverse().TakeWhile(c => char.IsDigit(c)).Reverse());
             if (!int.TryParse(numeric, out var currentNum))

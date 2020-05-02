@@ -15,7 +15,9 @@ namespace Rubberduck.Refactorings.MoveMember
     }
 
     public interface INewContentPreviewProvider : INewContentProvider
-    { }
+    {
+        string AddNewContentDemarcation(string block);
+    }
 
     public class NewContentProvider : NewContentProviderBase, INewContentProvider
     {
@@ -40,6 +42,12 @@ namespace Rubberduck.Refactorings.MoveMember
 
         private Dictionary<NewContentBlocks, List<string>> _newContent;
         private readonly bool _applyPreviewAnnotations;
+
+        private static string _blockSpacing = $"{Environment.NewLine}{Environment.NewLine}";
+        private static string _markers = "*****";
+
+        private static string _annotationStartMsg = Resources.RubberduckUI.MoveMember_NewContentBelowThisLine;
+        private static string _annotationsEndMsg = Resources.RubberduckUI.MoveMember_NewContentAboveThisLine;
 
         public NewContentProviderBase(bool applyPreviewAnnotations)
         {
@@ -74,7 +82,7 @@ namespace Rubberduck.Refactorings.MoveMember
             _newContent.Add(contentType, new List<string>() { content });
         }
 
-        public bool HasContent => _newContent.Values.Any();
+        public bool HasContent => _newContent.Values.Any(v => v.Any());
 
         public string AsSingleBlock
         {
@@ -85,18 +93,28 @@ namespace Rubberduck.Refactorings.MoveMember
                     return string.Empty;
                 }
 
-                var result = string.Join($"{ Environment.NewLine}{ Environment.NewLine}",
+                var result = string.Join(_blockSpacing,
                                 (_newContent[NewContentBlocks.TypeDeclaration])
                                 .Concat(_newContent[NewContentBlocks.FieldOrConstantDeclaration])
                                 .Concat(_newContent[NewContentBlocks.Member]))
                                 .Trim();
 
-                if (_applyPreviewAnnotations)
-                {
-                    return $"'*****  {Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine}  *****{Environment.NewLine}{Environment.NewLine}{result}{Environment.NewLine}{Environment.NewLine}'****  {Resources.RubberduckUI.MoveMember_MovedContentAboveThisLine}  ****{Environment.NewLine}";
-                }
-                return result;
+                return _applyPreviewAnnotations
+                            ? AddNewContentDemarcation(result)
+                            : result;
             }
+        }
+
+        public string AddNewContentDemarcation(string block)
+        {
+            var contentLines = new List<string>()
+                {
+                    $"'{_markers}  {_annotationStartMsg}  {_markers}",
+                    block,
+                    $"'{_markers}  {_annotationsEndMsg}  {_markers}"
+                };
+
+            return string.Join(_blockSpacing, contentLines);
         }
     }
 }

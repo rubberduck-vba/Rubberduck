@@ -708,6 +708,20 @@ End Function
             Assert.AreEqual(expected, TestForMoveConflict(sourceCode, selection, destinationCode));
         }
 
+        [TestCase("fizz", "fizz1")]
+        [TestCase("fizz1", "fizz2")]
+        [TestCase("fizz123", "fizz124")]
+        [TestCase("f67oo3", "f67oo4")]
+        [TestCase("fizz0", "fizz1")]
+        [TestCase("", "1")]
+        [Category("Refactorings")]
+        [Category(nameof(ConflictDetectionSession))]
+        public void IdentifierNameIncrementing(string input, string expected)
+        {
+            var actual = ConflictDetectionBase.IncrementIdentifier(input);
+            Assert.AreEqual(expected, actual);
+        }
+
         private bool TestForMoveConflict(string inputCode, (string identifier, DeclarationType declarationType) selection, string destinationCode, string destinationModuleName = "DestinationDefault")
         {
             var result = false;

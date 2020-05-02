@@ -122,8 +122,8 @@ End Function
 ";
             var preview = RetrievePreviewsAfterUserInput(memberToMove, MoveEndpoints.StdToStd, source, OptionExplicitBlock);
 
-            var changesBelowMarker = Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine;
-            var changesAboveMarker = Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentAboveThisLine;
+            var changesBelowMarker = Rubberduck.Resources.RubberduckUI.MoveMember_NewContentBelowThisLine;
+            var changesAboveMarker = Rubberduck.Resources.RubberduckUI.MoveMember_NewContentAboveThisLine;
 
             Assert.IsTrue(OptionExplicitBlock.Trim().OccursOnce(preview.Destination));
             Assert.IsTrue("Public Function Foo(".OccursOnce(preview.Destination));
@@ -161,8 +161,8 @@ Function Goo(arg1 As Long) As Long
 End Function
 ";
             var preview = RetrievePreviewsAfterUserInput(memberToMove, MoveEndpoints.StdToStd, source, destination);
-            var changesBelowMarker = Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine;
-            var changesAboveMarker = Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentAboveThisLine;
+            var changesBelowMarker = Rubberduck.Resources.RubberduckUI.MoveMember_NewContentBelowThisLine;
+            var changesAboveMarker = Rubberduck.Resources.RubberduckUI.MoveMember_NewContentAboveThisLine;
 
             Assert.IsTrue(OptionExplicitBlock.Trim().OccursOnce(preview.Destination));
             Assert.IsTrue("Public Function Foo(".OccursOnce(preview.Destination));
@@ -257,8 +257,8 @@ End Sub
 
                 //Show a preview that should have renamed a couple declarations
 
-                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
-                var previewerFactory = serviceLocator.Resolve<IMoveMemberRefactoringPreviewerFactory>();
+                var resolver = new MoveMemberTestsResolver(state, rewritingManager);
+                var previewerFactory = resolver.Resolve<IMoveMemberRefactoringPreviewerFactory>();
                 var preview = previewerFactory.Create(model.Destination).PreviewMove(model);
 
                 StringAssert.Contains("mFizz1", preview);
@@ -310,14 +310,14 @@ End Property
                     moveable.IsSelected = false;
                 }
 
-                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
-                var previewerFactory = serviceLocator.Resolve<IMoveMemberRefactoringPreviewerFactory>();
+                var resolver = new MoveMemberTestsResolver(state, rewritingManager);
+                var previewerFactory = resolver.Resolve<IMoveMemberRefactoringPreviewerFactory>();
 
                 var destination = previewerFactory.Create(model.Destination).PreviewMove(model);
 
                 StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_NoDeclarationsSelectedToMove, destination);
-                StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine, destination);
-                StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentAboveThisLine, destination);
+                StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_NewContentBelowThisLine, destination);
+                StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_NewContentAboveThisLine, destination);
             }
         }
 
@@ -363,14 +363,14 @@ End Sub
                     moveable.IsSelected = false;
                 }
 
-                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
-                var previewerFactory = serviceLocator.Resolve<IMoveMemberRefactoringPreviewerFactory>();
+                var resolver = new MoveMemberTestsResolver(state, rewritingManager);
+                var previewerFactory = resolver.Resolve<IMoveMemberRefactoringPreviewerFactory>();
 
                 var destination = previewerFactory.Create(model.Destination).PreviewMove(model);
 
                 StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_NoDeclarationsSelectedToMove, destination);
-                StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine, destination);
-                StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_MovedContentAboveThisLine, destination);
+                StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_NewContentBelowThisLine, destination);
+                StringAssert.Contains(Rubberduck.Resources.RubberduckUI.MoveMember_NewContentAboveThisLine, destination);
             }
 
         }
@@ -389,8 +389,8 @@ End Sub
                     model.ChangeDestination(MoveEndpoints.StdToStd.DestinationModuleName(), ComponentType.StandardModule);
                 }
 
-                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
-                var previewerFactory = serviceLocator.Resolve<IMoveMemberRefactoringPreviewerFactory>();
+                var resolver = new MoveMemberTestsResolver(state, rewritingManager);
+                var previewerFactory = resolver.Resolve<IMoveMemberRefactoringPreviewerFactory>();
 
                 var source = previewerFactory.Create(model.Source).PreviewMove(model);
                 var destination = previewerFactory.Create(model.Destination).PreviewMove(model);

@@ -3,7 +3,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.Exceptions;
-using Rubberduck.Refactorings.MoveMember.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,22 +23,44 @@ namespace Rubberduck.Refactorings.MoveMember
 
     public interface IMoveMemberGroupsProvider
     {
+        /// <summary>
+        /// Returns MoveableMemberSets for the specified MoveGroup
+        /// </summary>
         IReadOnlyCollection<IMoveableMemberSet> MoveableMemberSets(MoveGroup moveGroup);
+
+        /// <summary>
+        /// Returns declarations for the moveGroup
+        /// </summary>
         IReadOnlyCollection<Declaration> Declarations(MoveGroup moveGroup);
+
+        /// <summary>
+        /// Returns flattened dependency graph declarations for the moveGroup
+        /// </summary>
         IReadOnlyCollection<Declaration> Dependencies(MoveGroup moveGroup);
+
+        /// <summary>
+        /// Returns declarations for IdentifierReferences directly 
+        /// referenced by each declaration in the MoveGroup 
+        /// </summary>
         IReadOnlyCollection<Declaration> DirectDependencies(MoveGroup moveGroup);
+
+        /// <summary>
+        /// Returns MoveMemberSets associated with a set of declarations
+        /// </summary>
         IReadOnlyCollection<IMoveableMemberSet> ToMoveableMemberSets(IEnumerable<Declaration> declarations);
+
         IReadOnlyCollection<Declaration> SelectedPrivateFields { get; }
     }
 
     /// <summary>
     /// MoveMemberGroupsProvider presents the declarations of a module categorized by
-    /// their relationship to the 'Selected to Move' declarations.
-    /// The MoveMemberGroupsProvider does not evaluate 'how' to move the declarations
-    ///  - 'how/where to move is the responsibility of a move strategy.
-    /// This object's responsiblity is only to categorize the relationships 
-    /// between declarations in the context of a group of 'Selected' declarations.
+    /// their <c>MoveGroup</c> in the context of a group of 'Selected' declarations.
     /// </summary>
+    /// <remarks>
+    /// The MoveMemberGroupsProvider does not evaluate 'how' to move the declarations.
+    /// How/where to move the participating declarations is the responsibility of a 
+    /// move strategy.
+    /// </remarks>
     public class MoveMemberGroupsProvider : IMoveMemberGroupsProvider
     {
         private readonly IDeclarationFinderProvider _declarationProvider;
@@ -143,25 +165,16 @@ namespace Rubberduck.Refactorings.MoveMember
             _dependenciesByMoveGroup = new Dictionary<MoveGroup, List<Declaration>>();
         }
 
-        /// <summary>
-        /// Returns MoveableMemberSets for the specified MoveGroup
-        /// </summary>
         public IReadOnlyCollection<IMoveableMemberSet> MoveableMemberSets(MoveGroup moveGroup) 
             => _moveMemberSetsByMoveGroup is null 
                 ? new List<IMoveableMemberSet>() 
                 : _moveMemberSetsByMoveGroup[moveGroup];
 
-        /// <summary>
-        /// Returns declarations for the moveGroup
-        /// </summary>
         public IReadOnlyCollection<Declaration> Declarations(MoveGroup moveGroup) 
             => _declarationsByMoveGroup is null 
                     ? new List<Declaration>() 
                     : _declarationsByMoveGroup[moveGroup];
 
-        /// <summary>
-        /// Returns flattened dependency graph declarations for the moveGroup
-        /// </summary>
         public IReadOnlyCollection<Declaration> Dependencies(MoveGroup moveGroup)
         {
             if (_dependenciesByMoveGroup is null)
@@ -177,24 +190,16 @@ namespace Rubberduck.Refactorings.MoveMember
             return dependencies;
         }
 
-        /// <summary>
-        /// Returns declarations for IdentifierReferences directly 
-        /// referenced by each declaration in the MoveGroup 
-        /// </summary>
         public IReadOnlyCollection<Declaration> DirectDependencies(MoveGroup moveGroup)
             => MoveableMemberSets(moveGroup).SelectMany(mm => mm.DirectDependencies).ToList();
 
-
-        /// <summary>
-        /// Returns MoveMemberSets associated with a set of declarations
-        /// </summary>
         public IReadOnlyCollection<IMoveableMemberSet> ToMoveableMemberSets(IEnumerable<Declaration> declarations)
         {
             var uniqueIdentifiers = declarations.Select(d => d.IdentifierName).Distinct();
             var moveables = new List<IMoveableMemberSet>();
             foreach (var identifier in uniqueIdentifiers)
             {
-                moveables.AddRange(_allMoveableMemberSets.Where(mm => mm.IdentifierName.IsEquivalentVBAIdentifierTo(identifier)));
+                moveables.AddRange(_allMoveableMemberSets.Where(mm => AreVBAEquivalent(mm.IdentifierName, identifier)));
             }
             return moveables;
         }
@@ -287,6 +292,11 @@ namespace Rubberduck.Refactorings.MoveMember
                     moveableMemberSet.IsExclusive = !(allEnumFields.Except(participatingTypeFields)).Any();
                 }
             }
+        }
+
+        private bool AreVBAEquivalent(string identifier1, string identifier2)
+        {
+            return identifier1.Equals(identifier2, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

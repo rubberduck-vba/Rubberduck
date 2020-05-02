@@ -29,7 +29,10 @@ namespace Rubberduck.Refactorings
 
         public override void Refactor(MoveMemberModel model, IRewriteSession rewriteSession)
         {
-            var strategy = _strategyFactory.Create(model.MoveEndpoints);
+            if (!model.TryGetStrategy(out var strategy))
+            {
+                throw new MoveMemberUnsupportedMoveException(Resources.RubberduckUI.MoveMember_ApplicableStrategyNotFound);
+            }
 
             if (!strategy.IsExecutableModel(model, out var msg))
             {

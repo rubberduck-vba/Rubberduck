@@ -26,22 +26,22 @@ namespace RubberduckTests.Refactoring.MoveMember
 
         public static MoveMemberRefactoring CreateRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, RefactoringUserInteraction<IMoveMemberPresenter, MoveMemberModel> userInteraction, ISelectionService selectionService)
         {
-            var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
+            var resolver = new MoveMemberTestsResolver(state, rewritingManager);
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
-            return new MoveMemberRefactoring(serviceLocator.Resolve<MoveMemberRefactoringAction>(),
+            return new MoveMemberRefactoring(resolver.Resolve<MoveMemberRefactoringAction>(),
                                                 userInteraction,
                                                 selectionService,
                                                 selectedDeclarationService,
-                                                serviceLocator.Resolve<IConflictDetectionSessionFactory>(),
-                                                serviceLocator.Resolve<IMoveMemberModelFactory>()
+                                                resolver.Resolve<IConflictDetectionSessionFactory>(),
+                                                resolver.Resolve<IMoveMemberModelFactory>()
                                                 );
         }
 
         public static MoveMemberModel CreateRefactoringModel(string identifier, DeclarationType declarationType, RubberduckParserState state)
         {
-            var serviceLocator = new MoveMemberTestsResolver(state);
+            var resolver = new MoveMemberTestsResolver(state);
             var target = state.DeclarationFinder.DeclarationsWithType(declarationType).Where(d => d.IdentifierName == identifier).Single();
-            return serviceLocator.Resolve<IMoveMemberModelFactory>().Create(target);
+            return resolver.Resolve<IMoveMemberModelFactory>().Create(target);
         }
 
         public static MoveMemberModel CreateRefactoringModel(Declaration target, IDeclarationFinderProvider declarationFinderProvider)

@@ -9,7 +9,6 @@ using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.Refactorings.MoveMember.Extensions;
 using RubberduckTests.Mocks;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
@@ -177,27 +176,27 @@ End Property
             using (state)
             {
                 var targets = state.DeclarationFinder.MatchName(member);
-                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
-                var factory = serviceLocator.Resolve<IMoveableMemberSetsFactory>();
+                var resolver = new MoveMemberTestsResolver(state, rewritingManager);
+                var factory = resolver.Resolve<IMoveableMemberSetsFactory>();
 
                 var result =  factory.Create(targets.First()).ToDictionary(key => key.IdentifierName).Values;
                 Assert.AreEqual(3, result.Count());
             }
         }
 
-        [TestCase("fizz", "fizz1")]
-        [TestCase("fizz1", "fizz2")]
-        [TestCase("fizz123", "fizz124")]
-        [TestCase("f67oo3", "f67oo4")]
-        [TestCase("fizz0", "fizz1")]
-        [TestCase("", "1")]
-        [Category("Refactorings")]
-        [Category("MoveMember")]
-        public void IdentifierNameIncrementing(string input, string expected)
-        {
-            var actual = input.IncrementIdentifier();
-            Assert.AreEqual(expected, actual);
-        }
+        //[TestCase("fizz", "fizz1")]
+        //[TestCase("fizz1", "fizz2")]
+        //[TestCase("fizz123", "fizz124")]
+        //[TestCase("f67oo3", "f67oo4")]
+        //[TestCase("fizz0", "fizz1")]
+        //[TestCase("", "1")]
+        //[Category("Refactorings")]
+        //[Category("MoveMember")]
+        //public void IdentifierNameIncrementing(string input, string expected)
+        //{
+        //    var actual = input.IncrementIdentifier();
+        //    Assert.AreEqual(expected, actual);
+        //}
 
         [TestCase("mTest")]
         [TestCase("mTest", "mTest1")]
@@ -303,8 +302,8 @@ Public mTest As Long
             (RubberduckParserState state, IRewritingManager rewritingManager) = CreateAndParse(MoveEndpoints.StdToStd, source, string.Empty);
             using (state)
             {
-                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
-                var modelFactory = serviceLocator.Resolve<IMoveMemberModelFactory>();
+                var resolver = new MoveMemberTestsResolver(state, rewritingManager);
+                var modelFactory = resolver.Resolve<IMoveMemberModelFactory>();
 
                 Declaration target = null;
                 Assert.Throws<TargetDeclarationIsNullException>(() => modelFactory.Create(target));
@@ -331,8 +330,8 @@ End Enum
                 var target = state.DeclarationFinder.DeclarationsWithType(DeclarationType.EnumerationMember)
                     .Where(d => d.IdentifierName == "SecondValue");
 
-                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
-                var modelFactory = serviceLocator.Resolve<IMoveMemberModelFactory>();
+                var resolver = new MoveMemberTestsResolver(state, rewritingManager);
+                var modelFactory = resolver.Resolve<IMoveMemberModelFactory>();
 
                 Assert.Throws<MoveMemberUnsupportedMoveException>(() => modelFactory.Create(target));
             }
@@ -340,10 +339,9 @@ End Enum
 
 
         [Test]
-        [Ignore("False test while trying to get classes involved")]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MoveMemberToClassModuleThrows()
+        public void MoveMemberToClassModuleThrow()
         {
             var endpoints = MoveEndpoints.StdToClass;
             var source =
@@ -359,13 +357,13 @@ End Sub
                 var target = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Procedure)
                     .Where(d => d.IdentifierName == "NoCanDo");
 
-                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
-                var modelFactory = serviceLocator.Resolve<IMoveMemberModelFactory>();
+                var resolver = new MoveMemberTestsResolver(state, rewritingManager);
+                var modelFactory = resolver.Resolve<IMoveMemberModelFactory>();
 
                 var model = modelFactory.Create(target);
                 model.ChangeDestination(endpoints.DestinationModuleName(), endpoints.DestinationComponentType());
 
-                var refactoringAction = serviceLocator.Resolve<MoveMemberToExistingModuleRefactoringAction>();
+                var refactoringAction = resolver.Resolve<MoveMemberToExistingModuleRefactoringAction>();
 
                 Assert.Throws<MoveMemberUnsupportedMoveException>(() => refactoringAction.Refactor(model, rewritingManager.CheckOutCodePaneSession()));
             }
@@ -373,15 +371,15 @@ End Sub
 
         private string ExecuteMoveMemberRefactoringAction(RubberduckParserState state, IRewritingManager rewritingManager, MoveEndpoints endpoints, string[] fieldsToMove, bool useDestinationName)
         {
-            var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
+            var resolver = new MoveMemberTestsResolver(state, rewritingManager);
             var targets = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
                 .Where(d => fieldsToMove.Contains(d.IdentifierName));
 
             var destination = state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule)
                 .Where(d => d.IdentifierName.Equals(endpoints.DestinationModuleName())).OfType<ModuleDeclaration>().Single();
 
-            var modelFactory = serviceLocator.Resolve<IMoveMemberModelFactory>();
-            var refactoringAction = serviceLocator.Resolve<MoveMemberToExistingModuleRefactoringAction>();
+            var modelFactory = resolver.Resolve<IMoveMemberModelFactory>();
+            var refactoringAction = resolver.Resolve<MoveMemberToExistingModuleRefactoringAction>();
             var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
             MoveMemberModel model;

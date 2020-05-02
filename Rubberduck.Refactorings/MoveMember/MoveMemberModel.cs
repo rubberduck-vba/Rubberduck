@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,8 +13,7 @@ namespace Rubberduck.Refactorings.MoveMember
         private readonly IMoveMemberStrategyFactory _strategyFactory;
         private readonly IMoveMemberEndpointFactory _moveEndpointFactory;
 
-        private IMoveMemberRefactoringStrategy _strategyMoveToStandardModule;
-        private IMoveMemberRefactoringStrategy _strategyMoveStdToClass;
+        private List<IMoveMemberRefactoringStrategy> _strategies;
 
         public MoveMemberModel(Declaration target, 
                                 IDeclarationFinderProvider declarationFinderProvider, 
@@ -28,8 +28,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
             Destination = _moveEndpointFactory.CreateDestinationEndpoint(null, ComponentType.StandardModule) as IMoveDestinationEndpoint;
 
-            _strategyMoveToStandardModule = _strategyFactory.Create(DetermineMoveEndpoints());
-            _strategyMoveStdToClass = _strategyFactory.Create(MoveEndpoints.StdToClass);
+            _strategies = _strategyFactory.CreateAll().ToList();
         }
 
         public MoveEndpoints MoveEndpoints => DetermineMoveEndpoints();
@@ -68,7 +67,7 @@ namespace Rubberduck.Refactorings.MoveMember
             get
             {
                 var result = false;
-                if (TryFindApplicableStrategy(out var strategy))
+                if (TryGetStrategy(out var strategy))
                 {
                     result = strategy.IsExecutableModel(this, out _);
                 }
@@ -76,21 +75,26 @@ namespace Rubberduck.Refactorings.MoveMember
             }
         }
 
-        public bool TryFindApplicableStrategy(out IMoveMemberRefactoringStrategy strategy)
+        public bool TryGetStrategy(out IMoveMemberRefactoringStrategy strategy)
         {
-            //The default strategy when the Destination is undefined
-            if (_strategyMoveToStandardModule.IsApplicable(this))
-            {
-                strategy = _strategyMoveToStandardModule;
-                return true;
-            }
-            if (_strategyMoveStdToClass.IsApplicable(this))
-            {
-                strategy = _strategyMoveStdToClass;
-                return true;
-            }
             strategy = null;
-            return false;
+            try
+            {
+                strategy = _strategies.SingleOrDefault(st => st.IsApplicable(this));
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
+            catch (ArgumentNullException)
+            {
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return strategy != null;
         }
 
         private MoveEndpoints DetermineMoveEndpoints()

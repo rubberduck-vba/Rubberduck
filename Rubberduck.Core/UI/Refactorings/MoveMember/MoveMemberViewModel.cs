@@ -4,7 +4,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.MoveMember;
-using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.Resources;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -99,13 +98,13 @@ namespace Rubberduck.UI.Refactorings.MoveMember
                 return false;
             }
 
-            if (Model.Source.Module.ProjectName.IsEquivalentVBAIdentifierTo(DestinationModuleName))
+            if (AreVBAEquivalent(Model.Source.Module.ProjectName, DestinationModuleName))
             {
                 failCriteria = RubberduckUI.MoveMember_ModuleMatchesProjectNameFailMsg;
                 return false;
             }
 
-            if (Model.Source.ModuleName.IsEquivalentVBAIdentifierTo(DestinationModuleName))
+            if (AreVBAEquivalent(Model.Source.ModuleName, DestinationModuleName))
             {
                 failCriteria = RubberduckUI.MoveMember_SourceAndDestinationModuleNameMatchFailMsg;
                 return false;
@@ -260,5 +259,9 @@ namespace Rubberduck.UI.Refactorings.MoveMember
         public CommandBase SelectAllCommand { get; }
         public CommandBase DeselectAllCommand { get; }
 
+        private bool AreVBAEquivalent(string identifier1, string identifier2)
+        {
+            return identifier1.Equals(identifier2, StringComparison.InvariantCultureIgnoreCase);
+        }
     }
 }

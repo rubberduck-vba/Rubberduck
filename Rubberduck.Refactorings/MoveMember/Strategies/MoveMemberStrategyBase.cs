@@ -80,8 +80,6 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public virtual void RefactorRewrite(MoveMemberModel model, IRewriteSession moveMemberRewriteSession, IRewritingManager rewritingManager, INewContentProvider newContentProvider, out string newModuleContent)
         {
-            newModuleContent = string.Empty;
-
             var moveGroups = _moveGroupsProviderFactory.Create(model.MoveableMemberSets);
 
             var dispositions = DetermineDispositionGroups(model, moveGroups);
@@ -89,6 +87,7 @@ namespace Rubberduck.Refactorings.MoveMember
             var scratchPadSession = rewritingManager.CheckOutCodePaneSession();
 
             newContentProvider = LoadNewContentProvider(newContentProvider, model, moveGroups, moveMemberRewriteSession, scratchPadSession, dispositions);
+
             newModuleContent = newContentProvider.AsSingleBlock;
 
             if (model.Destination.IsExistingModule(out _))
@@ -263,6 +262,13 @@ namespace Rubberduck.Refactorings.MoveMember
 
         protected static void InsertNewContent(IRewriteSession refactoringRewriteSession, IMoveMemberEndpoint endpoint, string movedContent)
         {
+            if (string.IsNullOrEmpty(movedContent))
+            {
+                return;
+            }
+
+            var doubleSpace = $"{Environment.NewLine}{Environment.NewLine}";
+
             if (endpoint is IMoveDestinationEndpoint destination)
             {
                 if (!destination.IsExistingModule(out var module))
@@ -274,11 +280,11 @@ namespace Rubberduck.Refactorings.MoveMember
 
                 if (endpoint.TryGetCodeSectionStartIndex(out var destCoodeSectionStartIndex))
                 {
-                    destinationRewriter.InsertBefore(destCoodeSectionStartIndex, $"{movedContent}{Environment.NewLine}{Environment.NewLine}");
+                    destinationRewriter.InsertBefore(destCoodeSectionStartIndex, $"{movedContent}{doubleSpace}");
                 }
                 else
                 {
-                    destinationRewriter.InsertAtEndOfFile($"{Environment.NewLine}{Environment.NewLine}{movedContent}");
+                    destinationRewriter.InsertAtEndOfFile($"{doubleSpace}{movedContent}");
                 }
             }
 
@@ -288,11 +294,11 @@ namespace Rubberduck.Refactorings.MoveMember
 
                 if (endpoint.TryGetCodeSectionStartIndex(out var sourceCodeSectionStartIndex))
                 {
-                    sourceRewriter.InsertBefore(sourceCodeSectionStartIndex, $"{movedContent}{Environment.NewLine}{Environment.NewLine}");
+                    sourceRewriter.InsertBefore(sourceCodeSectionStartIndex, $"{movedContent}{doubleSpace}");
                 }
                 else
                 {
-                    sourceRewriter.InsertAtEndOfFile($"{Environment.NewLine}{Environment.NewLine}{movedContent}");
+                    sourceRewriter.InsertAtEndOfFile($"{doubleSpace}{movedContent}");
                 }
             }
         }

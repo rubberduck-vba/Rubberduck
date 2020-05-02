@@ -116,10 +116,9 @@ End Function";
                 var strategyFactory = resolver.Resolve<IMoveMemberStrategyFactory>();
                 var target = state.DeclarationFinder.DeclarationsWithType(DecType).Where(d => d.IdentifierName == targetID).Single();
                 var destination = state.DeclarationFinder.DeclarationsWithType(endpoints.ToDeclarationType()).Where(d => d.IdentifierName == endpoints.DestinationModuleName()).Single();
-                var model = resolver.Resolve<IMoveMemberModelFactory>().Create(target, destination as ModuleDeclaration); 
+                var model = resolver.Resolve<IMoveMemberModelFactory>().Create(target, destination as ModuleDeclaration);
 
-                var strategy = strategyFactory.Create(model.MoveEndpoints);
-                Assert.AreEqual(expected, strategy.IsApplicable(model));
+                Assert.AreEqual(expected, model.TryGetStrategy(out _));
             }
         }
 

@@ -7,6 +7,7 @@ using System;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
@@ -548,8 +549,7 @@ End Property
                 var strategyFactory = resolver.Resolve<IMoveMemberStrategyFactory>();
                 var model = MoveMemberTestsResolver.CreateRefactoringModel("mObj", DeclarationType.Variable, state);
 
-                var strategy = strategyFactory.Create(model.MoveEndpoints);
-                Assert.False(strategy.IsApplicable(model));
+                Assert.False(model.TryGetStrategy(out _));
             }
         }
 

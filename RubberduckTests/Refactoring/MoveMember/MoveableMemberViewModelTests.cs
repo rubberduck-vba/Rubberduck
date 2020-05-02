@@ -118,10 +118,10 @@ End Function
             (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbeStub);
             using (state)
             {
-                var serviceLocator = new MoveMemberTestsResolver(state, rewritingManager);
+                var resolver = new MoveMemberTestsResolver(state, rewritingManager);
 
                 var targets = state.DeclarationFinder.MatchName(targetIdentifier);
-                var moveableMemberSet = serviceLocator.Resolve<MoveableMemberSetFactory>()
+                var moveableMemberSet = resolver.Resolve<MoveableMemberSetFactory>()
                     .Create(targets);
 
                 var viewModel = new MoveableMemberSetViewModel(vm => { }, moveableMemberSet);

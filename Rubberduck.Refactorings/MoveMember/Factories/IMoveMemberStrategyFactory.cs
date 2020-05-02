@@ -3,12 +3,13 @@ using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.Refactorings.Rename;
 using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings
 {
     public interface IMoveMemberStrategyFactory
     {
-        IMoveMemberRefactoringStrategy Create(MoveEndpoints moveEndpoints);
+        IEnumerable<IMoveMemberRefactoringStrategy> CreateAll();
     }
 
     public class MoveMemberStrategyFactory : IMoveMemberStrategyFactory
@@ -33,21 +34,13 @@ namespace Rubberduck.Refactorings
             _declarationProxyFactory = declarationProxyFactory;
         }
 
-        public IMoveMemberRefactoringStrategy Create(MoveEndpoints moveEndpoints)
+        public IEnumerable<IMoveMemberRefactoringStrategy> CreateAll()
         {
-            switch (moveEndpoints)
-            {
-                case MoveEndpoints.StdToStd:
-                case MoveEndpoints.ClassToStd:
-                case MoveEndpoints.FormToStd:
-                    return new MoveMemberToStdModule(_declarationFinderProvider, _renameAction, _moveGroupsProviderFactory, _nameConflictResolverFactory, _declarationProxyFactory);
-                case MoveEndpoints.StdToClass:
-                case MoveEndpoints.FormToClass:
-                case MoveEndpoints.ClassToClass:
-                    return new MoveMemberStdToClassModule(_declarationFinderProvider, _renameAction, _moveGroupsProviderFactory, _nameConflictResolverFactory, _declarationProxyFactory);
-                default:
-                    throw new ArgumentException();
-            }
+            var allStrategies = new List<IMoveMemberRefactoringStrategy>();
+            var anySourceToStdModule = new MoveMemberToStdModule(_declarationFinderProvider, _renameAction, _moveGroupsProviderFactory, _nameConflictResolverFactory, _declarationProxyFactory);
+
+            allStrategies.Add(anySourceToStdModule);
+            return allStrategies;
         }
     }
 }

@@ -262,48 +262,6 @@ End Function
             Assert.IsTrue("Private Enum KeyValues".OccursOnce(refactoredCode.Destination));
         }
 
-//        [TestCase("KeyOne", true)]
-//        [TestCase("KeyValues", false)]
-//        [Category("Refactorings")]
-//        [Category(nameof(NameConflictResolver))]
-//        [Category("MoveMember")]
-//        public void MovePrivateEnumRespectsDestinationNameCollision(string memberName, bool throwsException)
-//        {
-//            var memberToMove = ("UsePvtEnum", DeclarationType.Function);
-//            var endpoints = MoveEndpoints.StdToStd;
-//            var source =
-//$@"
-//Option Explicit
-
-//Private Enum KeyValues
-//    KeyOne
-//    KeyTwo
-//End Enum
-
-//Private mKV As KeyValues
-
-//Private Function UsePvtEnum(arg As Long) As KeyValues
-//    If arg = KeyOne OR arg = KeyTwo Then mKV = arg
-
-//    UsePvtEnum = mKV
-//End Function
-//";
-
-//            var destination =
-//$@"
-//Option Explicit
-
-//Private Sub {memberName}(arg As Long)
-//End Sub
-//";
-//            if (throwsException)
-//            {
-//                ExecuteSingleTargetMoveThrowsExceptionTest(memberToMove, endpoints, source, destination);
-//                return;
-//            }
-//            var refactoredCode = RefactorSingleTarget(memberToMove, endpoints, endpoints.SourceModuleName(), source, destination);
-//        }
-
         [Test]
         [Category("Refactorings")]
         [Category(nameof(ConflictDetectionSession))]
