@@ -51,8 +51,7 @@ namespace Rubberduck.Refactorings.MoveMember
         public MoveSourceEndpoint(Declaration target, IMoveMemberEndpoint endpoint, IMoveableMemberSetsFactory moveableMemberSetFactory)
         {
             _endpoint = endpoint;
-            _moveablesByName = moveableMemberSetFactory.Create(endpoint.Module).ToDictionary(mm => mm.IdentifierName);
-            _moveablesByName[target.IdentifierName].IsSelected = true;
+            _moveablesByName = moveableMemberSetFactory.Create(target).ToDictionary(mm => mm.IdentifierName);
         }
 
         public IEnumerable<Declaration> ModuleDeclarations

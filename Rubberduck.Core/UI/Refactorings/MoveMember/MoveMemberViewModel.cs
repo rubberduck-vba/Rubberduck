@@ -135,7 +135,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
                 var previewSelections = new List<KeyValuePair<PreviewModule, string>>()
                 {
                     new KeyValuePair<PreviewModule, string>(PreviewModule.Destination, RubberduckUI.MoveMember_Destination),
-                    new KeyValuePair<PreviewModule, string>(PreviewModule.Source, $"{Model.Source.ModuleName}"),
+                    new KeyValuePair<PreviewModule, string>(PreviewModule.Source, $"{string.Format(RubberduckUI.MoveMember_MoveMember_SourceModuleLabelFormat, Model.Source.ModuleName)}"),
                 };
                 return previewSelections;
             }

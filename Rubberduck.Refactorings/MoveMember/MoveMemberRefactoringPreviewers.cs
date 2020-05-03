@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using System;
 using System.Linq;
 
@@ -61,6 +62,22 @@ namespace Rubberduck.Refactorings.MoveMember
             if (!model.SelectedDeclarations.Any())
             {
                 destinationContent = contentProvider.AddNewContentDemarcation(Resources.RubberduckUI.MoveMember_NoDeclarationsSelectedToMove);
+                if (model.Destination.IsExistingModule(out var destModule))
+                {
+                    var tempSession = _rewritingManager.CheckOutCodePaneSession();
+                    var destRewriter = tempSession.CheckOutModuleRewriter(destModule.QualifiedModuleName);
+
+                    destinationContent = $"{destinationContent}{Environment.NewLine}{Environment.NewLine}";
+                    if (model.Destination.TryGetCodeSectionStartIndex(out var insertionIndex))
+                    {
+                        destRewriter.InsertBefore(insertionIndex, destinationContent);
+                    }
+                    else
+                    {
+                        destRewriter.InsertAtEndOfFile(destinationContent);
+                    }
+                    destinationContent = destRewriter.GetText();
+                }
                 return (sourceContent, destinationContent);
             }
 

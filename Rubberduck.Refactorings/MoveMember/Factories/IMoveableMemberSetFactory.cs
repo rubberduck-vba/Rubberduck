@@ -59,7 +59,8 @@ namespace Rubberduck.Refactorings
             foreach (var group in groupsByIdentifier)
             {
                 var moveableMemberSet = _factory.Create(group.ToList());
-                moveableMemberSet.IsSelected = moveableMemberSet.IdentifierName == moveTarget.IdentifierName;
+                moveableMemberSet.IsSelected = moveableMemberSet.Members.Contains(moveTarget) 
+                                        && moveableMemberSet.IdentifierName == moveTarget.IdentifierName;
 
                 var idRefs = new List<IdentifierReference>();
                 foreach (var member in moveableMemberSet.Members.Where(m => m.IsMember()))
