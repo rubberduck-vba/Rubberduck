@@ -144,6 +144,7 @@
                                          Text="{Binding Path=PropertyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                          TabIndex="1" Margin="10,5"
                                          VerticalAlignment="Center" 
+                                         VerticalContentAlignment="Center"
                                          Height="22" />
                                 <Image Grid.Row="1" Style="{StaticResource InvalidNameIconStyle}"
                                        Visibility="{Binding Path=SelectionHasValidEncapsulationAttributes, Converter={StaticResource BoolToHiddenVisibility}}" />
