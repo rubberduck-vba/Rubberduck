@@ -20,13 +20,21 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// <remarks>
     /// Not all unused procedures can/should be removed: ignore any inspection results for 
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
+    /// Public procedures of Standard Modules are not flagged by this inspection regardless of
+    /// the presence or absence of user code references.
     /// </remarks>
     /// <example hasResult="true">
     /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
+    /// 'No inspection result
     /// Public Sub DoSomething()
+    ///     ' macro is attached to a worksheet Shape.
+    /// End Sub
+    /// 
+    /// 'Flagged by inspection
+    /// Private Sub DoSomethingElse()
     ///     ' macro is attached to a worksheet Shape.
     /// End Sub
     /// ]]>
@@ -36,9 +44,13 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     ' macro is attached to a worksheet Shape.
+    /// End Sub
     ///
     /// '@Ignore ProcedureNotUsed
-    /// Public Sub DoSomething()
+    /// Private Sub DoSomethingElse()
     ///     ' macro is attached to a worksheet Shape.
     /// End Sub
     /// ]]>
@@ -78,8 +90,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             return !declaration.References
-                       .Any(reference => !reference.IsAssignment 
-                                         && !reference.ParentScoping.Equals(declaration)) // recursive calls don't count
+                       .Any(reference => !reference.ParentScoping.Equals(declaration)) // recursive calls don't count
                    && !finder.FindEventHandlers().Contains(declaration)
                    && !IsPublicModuleMember(declaration)
                    && !IsClassLifeCycleHandler(declaration)
