@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.CodeAnalysis.Inspections.Extensions;
@@ -14,8 +15,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// </summary>
     /// <why>
     /// Unused procedures are dead code that should probably be removed. Note, a procedure may be effectively "not used" in code, but attached to some
-    /// Shape object in the host document: in such cases the inspection result should be ignored. An event handler procedure that isn't being
-    /// resolved as such, may also wrongly trigger this inspection.
+    /// Shape object in the host document: in such cases the inspection result should be ignored.
     /// </why>
     /// <remarks>
     /// Not all unused procedures can/should be removed: ignore any inspection results for 
@@ -24,34 +24,81 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// the presence or absence of user code references.
     /// </remarks>
     /// <example hasResult="true">
-    /// <module name="MyModule" type="Standard Module">
+    /// <module name="Module1" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
-    /// 'No inspection result
-    /// Public Sub DoSomething()
-    ///     ' macro is attached to a worksheet Shape.
-    /// End Sub
-    /// 
-    /// 'Flagged by inspection
-    /// Private Sub DoSomethingElse()
-    ///     ' macro is attached to a worksheet Shape.
+    /// Private Sub DoSomething()
     /// End Sub
     /// ]]>
     /// </module>
     /// </example>
     /// <example hasResult="false">
-    /// <module name="MyModule" type="Standard Module">
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// '@Ignore ProcedureNotUsed
+    /// Private Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="false">
+    /// <module name="Module1" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
     /// Public Sub DoSomething()
-    ///     ' macro is attached to a worksheet Shape.
     /// End Sub
-    ///
-    /// '@Ignore ProcedureNotUsed
-    /// Private Sub DoSomethingElse()
-    ///     ' macro is attached to a worksheet Shape.
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="true">
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// 
+    /// Public Sub DoSomethingElse()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub ReferenceOneClass1Procedure()
+    ///     Dim target As Class1
+    ///     Set target = new Class1
+    ///     target.DoSomething
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="false">
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// 
+    /// Public Sub DoSomethingElse()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub ReferenceAllClass1Procedures()
+    ///     Dim target As Class1
+    ///     Set target = new Class1
+    ///     target.DoSomething
+    ///     target.DoSomethingElse
     /// End Sub
     /// ]]>
     /// </module>
@@ -90,7 +137,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             return !declaration.References
-                       .Any(reference => !reference.ParentScoping.Equals(declaration)) // recursive calls don't count
+                       .Any(reference => !reference.ParentScoping.Equals(declaration)) // ignore recursive/self-referential calls
                    && !finder.FindEventHandlers().Contains(declaration)
                    && !IsPublicModuleMember(declaration)
                    && !IsClassLifeCycleHandler(declaration)
