@@ -28,6 +28,22 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void ExcelMemberMayReturnNothing_ReturnsResult_WithMemberAccessOnFind()
+        {
+            const string inputCode =
+                @"Sub UnderTest()
+    Dim ws As Worksheet
+    Set ws = Sheet1
+    With ws.UsedRange
+        foo = .Find(""foo"").Row
+    End With
+End Sub
+";
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ExcelMemberMayReturnNothing_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -104,6 +120,25 @@ End Sub
     Set ws = Sheet1
     Dim result As Range
     Set result = ws.UsedRange.Find(""foo"")
+    result.Value = ""bar""
+End Sub
+";
+
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ExcelMemberMayReturnNothing_ReturnsResult_AssignedAndNotTested_FromWithMemberAccess()
+        {
+            const string inputCode =
+                @"Sub UnderTest()
+    Dim ws As Worksheet
+    Set ws = Sheet1
+    Dim result As Range
+    With ws.UsedRange
+        Set result = .Find(""foo"")
+    End With
     result.Value = ""bar""
 End Sub
 ";
