@@ -45,11 +45,13 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// </module>
     /// </example>
     /// <example hasResult="false">
-    /// <module name="Module1" type="Standard Module">
+    /// <module name="Macros" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
     /// Public Sub DoSomething()
+    ///     'a public procedure in a standard module may be a macro 
+    ///     attached to a worksheet Shape or invoked by means other than user code.
     /// End Sub
     /// ]]>
     /// </module>
