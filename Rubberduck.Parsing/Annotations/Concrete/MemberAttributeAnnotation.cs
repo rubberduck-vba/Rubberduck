@@ -10,7 +10,7 @@
     public class MemberAttributeAnnotation : FlexibleAttributeAnnotationBase
     {
         public MemberAttributeAnnotation()
-            : base("MemberAttribute", AnnotationTarget.Member | AnnotationTarget.Variable, _argumentTypes)
+            : base("MemberAttribute", AnnotationTarget.Member | AnnotationTarget.Variable, _argumentTypes, true)
         {}
 
         private static AnnotationArgumentType[] _argumentTypes = new[]

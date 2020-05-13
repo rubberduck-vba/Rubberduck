@@ -12,16 +12,15 @@ namespace Rubberduck.UI.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var inspectionName = value is IInspection inspection
-                ? inspection.Name
+                ? inspection.AnnotationName
                 : value as string;
 
             if (inspectionName == null)
             {
-
                 throw new ArgumentException("The value must be an instance of IInspection or a string containing the programmatic name of an inspection.", "value");
             }
 
-            return InspectionNames.ResourceManager.GetString(inspectionName, culture);
+            return InspectionNames.ResourceManager.GetString($"{inspectionName}Inspection", culture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

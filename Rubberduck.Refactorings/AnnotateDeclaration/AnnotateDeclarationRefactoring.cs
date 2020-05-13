@@ -24,7 +24,7 @@ namespace Rubberduck.Refactorings.AnnotateDeclaration
         
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            return _selectedDeclarationProvider.SelectedModule(targetSelection);
+            return _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
         }
 
         protected override AnnotateDeclarationModel InitializeModel(Declaration target)

@@ -13,6 +13,7 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
         TypedAnnotationArgument Model { get; }
         IReadOnlyList<AnnotationArgumentType> ApplicableArgumentTypes { get; }
         IReadOnlyList<string> InspectionNames { get; }
+        IReadOnlyList<string> BooleanValues { get; }
         bool CanEditArgumentType { get; }
         AnnotationArgumentType ArgumentType { get; set; }
         string ArgumentValue { get; set; }
@@ -27,9 +28,16 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
         public AnnotationArgumentViewModel(TypedAnnotationArgument model, IReadOnlyList<string> inspectionNames)
         {
             _model = model;
+
             ApplicableArgumentTypes = ApplicableTypes(_model.ArgumentType);
-            _model.ArgumentType = ApplicableArgumentTypes.FirstOrDefault();
             InspectionNames = inspectionNames;
+            BooleanValues = new List<string> { "True", "False" };
+
+            _model.ArgumentType = ApplicableArgumentTypes.FirstOrDefault();
+            _model.Argument = string.IsNullOrEmpty(_model.Argument)
+                ? DefaultValue(_model.ArgumentType)
+                : _model.Argument;
+
             ValidateArgument();
         }
 
@@ -46,6 +54,7 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
 
         public bool CanEditArgumentType => ApplicableArgumentTypes.Count > 1;
         public IReadOnlyList<string> InspectionNames { get; }
+        public IReadOnlyList<string> BooleanValues { get; }
 
         public AnnotationArgumentType ArgumentType
         {
@@ -58,8 +67,22 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
                 }
 
                 _model.ArgumentType = value;
+                ArgumentValue = DefaultValue(value);
                 ValidateArgument();
                 OnPropertyChanged();
+            }
+        }
+
+        private string DefaultValue(AnnotationArgumentType argumentType)
+        {
+            switch (argumentType)
+            {
+                case AnnotationArgumentType.Boolean:
+                    return "True";
+                case AnnotationArgumentType.Inspection:
+                    return InspectionNames.FirstOrDefault() ?? string.Empty;
+                default:
+                    return string.Empty;
             }
         }
 
@@ -85,7 +108,7 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
 
             if (errors.Any())
             {
-                SetErrors("SelectedArgumentType", errors);
+                SetErrors("ArgumentValue", errors);
             }
             else
             {

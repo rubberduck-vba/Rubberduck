@@ -73,7 +73,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
-        public void AnnotationNotNull_WithArgumentsWithError_Valid()
+        public void AnnotationNotNull_WithArgumentsWithError_Invalid()
         {
             var mockArgumentFactory = MockArgumentFactory(new List<bool> { true });
             

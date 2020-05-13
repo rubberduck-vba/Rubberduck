@@ -160,7 +160,7 @@ namespace Rubberduck.Resources.Menus {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Annotate Declaration.
+        ///   Looks up a localized string similar to Annotate.
         /// </summary>
         public static string RefactorMenu_AnnotateDeclaration {
             get {

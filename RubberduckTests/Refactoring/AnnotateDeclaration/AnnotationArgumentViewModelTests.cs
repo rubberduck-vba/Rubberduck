@@ -137,7 +137,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         [TestCase(AnnotationArgumentType.Text)]
         public void InitialValueIsValidated(AnnotationArgumentType argumentType)
         {
-            var viewModel = TestViewModel(argumentType, initialArgument: string.Empty);
+            var viewModel = TestViewModel(argumentType, initialArgument: "\u0000");
 
             Assert.IsTrue(viewModel.HasErrors);
         }
@@ -158,12 +158,12 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
-        [TestCase(AnnotationArgumentType.Attribute, AnnotationArgumentType.Number, "VB_Exposed")]
-        [TestCase(AnnotationArgumentType.Inspection, AnnotationArgumentType.Attribute, "MyInspection")]
-        [TestCase(AnnotationArgumentType.Boolean, AnnotationArgumentType.Inspection, "True")]
-        [TestCase(AnnotationArgumentType.Number, AnnotationArgumentType.Boolean, "42")]
-        [TestCase(AnnotationArgumentType.Text, AnnotationArgumentType.Attribute, "someText")]
-        public void ChangingTheArgumentTypeCausesValidation_ToIllegal(AnnotationArgumentType initialArgumentType, AnnotationArgumentType newIllegalArgumentType, string initiallyLegalValue)
+        [TestCase(AnnotationArgumentType.Attribute, AnnotationArgumentType.Number, "VB_Exposed", "")]
+        [TestCase(AnnotationArgumentType.Inspection, AnnotationArgumentType.Attribute, "MyInspection", "")]
+        [TestCase(AnnotationArgumentType.Boolean, AnnotationArgumentType.Inspection, "True", "MyInspection")]
+        [TestCase(AnnotationArgumentType.Number, AnnotationArgumentType.Boolean, "42", "True")]
+        [TestCase(AnnotationArgumentType.Text, AnnotationArgumentType.Attribute, "someText", "")]
+        public void ChangingTheArgumentTypeSetsDefaultValue(AnnotationArgumentType initialArgumentType, AnnotationArgumentType newArgumentType, string initiallyLegalValue, string defaultValue)
         {
             const AnnotationArgumentType allArgumentTypes = AnnotationArgumentType.Attribute 
                                                             | AnnotationArgumentType.Inspection 
@@ -171,36 +171,26 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
                                                             | AnnotationArgumentType.Number 
                                                             | AnnotationArgumentType.Text;
 
-            var viewModel = TestViewModel(allArgumentTypes, initialArgument: string.Empty, inspectionNames: new[] { "MyInspection" });
+            var viewModel = TestViewModel(allArgumentTypes, initialArgument: string.Empty, inspectionNames: new[] { "MyInspection" , "OtherInspection"});
             viewModel.ArgumentType = initialArgumentType;
             viewModel.ArgumentValue = initiallyLegalValue;
 
-            viewModel.ArgumentType = newIllegalArgumentType;
+            viewModel.ArgumentType = newArgumentType;
 
-            Assert.IsTrue(viewModel.HasErrors);
+            Assert.AreEqual(defaultValue, viewModel.ArgumentValue);
         }
 
         [Test]
-        [TestCase(AnnotationArgumentType.Number, AnnotationArgumentType.Attribute, "VB_Exposed")]
-        [TestCase(AnnotationArgumentType.Number, AnnotationArgumentType.Inspection, "MyInspection")]
-        [TestCase(AnnotationArgumentType.Number, AnnotationArgumentType.Boolean, "True")]
-        [TestCase(AnnotationArgumentType.Boolean, AnnotationArgumentType.Number, "42")]
-        [TestCase(AnnotationArgumentType.Number, AnnotationArgumentType.Text, "someText")]
-        public void ChangingTheArgumentTypeCausesValidation_ToLegal(AnnotationArgumentType initialArgumentType, AnnotationArgumentType newLegalArgumentType, string initialyIllegalValueegalValue)
+        [TestCase(AnnotationArgumentType.Attribute, "")]
+        [TestCase(AnnotationArgumentType.Inspection, "MyInspection")]
+        [TestCase(AnnotationArgumentType.Boolean, "True")]
+        [TestCase(AnnotationArgumentType.Number, "")]
+        [TestCase(AnnotationArgumentType.Text, "")]
+        public void EmptyInitialValueLeadsToDefaultValue(AnnotationArgumentType argumentType, string defaultValue)
         {
-            const AnnotationArgumentType allArgumentTypes = AnnotationArgumentType.Attribute
-                                                            | AnnotationArgumentType.Inspection
-                                                            | AnnotationArgumentType.Boolean
-                                                            | AnnotationArgumentType.Number
-                                                            | AnnotationArgumentType.Text;
-
-            var viewModel = TestViewModel(allArgumentTypes, initialArgument: string.Empty, inspectionNames: new[] { "MyInspection" });
-            viewModel.ArgumentType = initialArgumentType;
-            viewModel.ArgumentValue = initialyIllegalValueegalValue;
-
-            viewModel.ArgumentType = newLegalArgumentType;
-
-            Assert.IsFalse(viewModel.HasErrors);
+            var viewModel = TestViewModel(argumentType, initialArgument: string.Empty, inspectionNames: new[] { "MyInspection", "OtherInspection" });
+            
+            Assert.AreEqual(defaultValue, viewModel.ArgumentValue);
         }
 
         [Test]

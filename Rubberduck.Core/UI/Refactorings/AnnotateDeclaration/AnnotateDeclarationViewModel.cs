@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using NLog;
 using Rubberduck.Parsing.Annotations;
@@ -75,6 +76,7 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
                 RefreshAnnotationArguments(value);
 
                 OnPropertyChanged();
+                OnPropertyChanged("IsValidAnnotation");
             }
         }
 
@@ -102,7 +104,14 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
 
         private IAnnotationArgumentViewModel InitialArgumentViewModel(AnnotationArgumentType argumentType)
         {
-            return _argumentFactory.Create(argumentType, string.Empty);
+            var argumentModel = _argumentFactory.Create(argumentType, string.Empty);
+            argumentModel.ErrorsChanged += ArgumentErrorStateChanged;
+            return argumentModel;
+        }
+
+        private void ArgumentErrorStateChanged(object requestor, DataErrorsChangedEventArgs e)
+        {
+            OnPropertyChanged("IsValidAnnotation");
         }
 
         public CommandBase AddAnnotationArgument { get; }
@@ -147,6 +156,6 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
         }
 
         public bool IsValidAnnotation => Annotation != null 
-                                         && AnnotationArguments.All(argument => !argument.HasErrors);
+                                          && AnnotationArguments.All(argument => !argument.HasErrors);
     }
 }

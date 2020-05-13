@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -17,7 +18,7 @@ namespace Rubberduck.UI
         public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
-        private readonly IDictionary<string, List<string>> _errors = new Dictionary<string, List<string>>();
+        private readonly IDictionary<string, List<string>> _errors = new ConcurrentDictionary<string, List<string>>();
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -45,6 +46,7 @@ namespace Rubberduck.UI
         protected virtual void OnErrorsChanged(string propertyName = null)
         {
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            OnPropertyChanged("HasErrors");
         }
 
         public IEnumerable GetErrors(string propertyName)
@@ -112,8 +114,12 @@ namespace Rubberduck.UI
 
             if (propertyName == null)
             {
+                var errorProperties = _errors.Keys.ToList();
                 _errors.Clear();
-                OnErrorsChanged();
+                foreach (var errorPropertyName in errorProperties)
+                {
+                    OnErrorsChanged(errorPropertyName);
+                }
             }
             else if (_errors.ContainsKey(propertyName))
             {
