@@ -3534,6 +3534,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The refactoring can only annotate components, members and variables, but the target had type &apos;{0}&apos;..
+        /// </summary>
+        public static string RefactoringFailure_AnnotateDeclaration_InvalidType {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_AnnotateDeclaration_InvalidType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refactoring failed..
         /// </summary>
         public static string RefactoringFailure_BaseMessage {

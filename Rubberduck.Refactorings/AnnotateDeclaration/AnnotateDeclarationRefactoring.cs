@@ -34,6 +34,16 @@ namespace Rubberduck.Refactorings.AnnotateDeclaration
                 throw new TargetDeclarationIsNullException();
             }
 
+            var targetType = target.DeclarationType;
+
+            if (!targetType.HasFlag(DeclarationType.Member)
+                && !targetType.HasFlag(DeclarationType.Module)
+                && !targetType.HasFlag(DeclarationType.Variable)
+                && !targetType.HasFlag(DeclarationType.Constant))
+            {
+                throw new InvalidDeclarationTypeException(target);
+            }
+
             return new AnnotateDeclarationModel(target);
         }
 

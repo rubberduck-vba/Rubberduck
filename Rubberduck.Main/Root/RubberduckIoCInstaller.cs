@@ -664,6 +664,7 @@ namespace Rubberduck.Root
         {
             return new[]
             {
+                typeof(CodePaneAnnotateDeclarationCommandMenuItem),
                 typeof(CodePaneRefactorRenameCommandMenuItem),
                 typeof(RefactorExtractMethodCommandMenuItem),
                 typeof(RefactorReorderParametersCommandMenuItem),

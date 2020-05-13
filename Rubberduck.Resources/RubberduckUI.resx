@@ -1895,4 +1895,8 @@ Import aborted.</value>
     <value>Annotation arguments cannot be longer than {0} characters.</value>
     <comment>{0} max allowed characters</comment>
   </data>
+  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
+    <value>The refactoring can only annotate components, members and variables, but the target had type '{0}'.</value>
+    <comment>{0} declaration type</comment>
+  </data>
 </root>

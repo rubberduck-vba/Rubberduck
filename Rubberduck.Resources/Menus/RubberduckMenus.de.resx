@@ -249,4 +249,7 @@
   <data name="RefactorMenu_MoveContainingFolder" xml:space="preserve">
     <value>Enthaltenden Ordner verschieben</value>
   </data>
+  <data name="RefactorMenu_AnnotateDeclaration" xml:space="preserve">
+    <value>Annotation hinzufügen</value>
+  </data>
 </root>

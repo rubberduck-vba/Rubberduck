@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.AnnotateDeclaration;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
 
@@ -61,6 +62,20 @@ End Sub
                 ("TestModule", code, ComponentType.StandardModule));
 
             Assert.IsFalse(model.Arguments.Any());
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        public void AnnotateDeclarationRefactoring_InvalidTargetType_Throws()
+        {
+            const string code = @"Public Sub Foo()
+myLabel: Debug.Print ""Label"";
+End Sub";
+            Assert.Throws<InvalidDeclarationTypeException>(() => 
+                InitialModel(
+                    "myLabel",
+                    DeclarationType.LineLabel,
+                    ("TestModule", code, ComponentType.StandardModule)));
         }
 
         protected override IRefactoring TestRefactoring(

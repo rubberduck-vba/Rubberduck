@@ -250,4 +250,7 @@
   <data name="RefactorMenu_MoveContainingFolder" xml:space="preserve">
     <value>Move Containing Folder</value>
   </data>
+  <data name="RefactorMenu_AnnotateDeclaration" xml:space="preserve">
+    <value>Annotate Declaration</value>
+  </data>
 </root>

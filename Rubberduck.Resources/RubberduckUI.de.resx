@@ -1679,4 +1679,7 @@ Import abgebrochen.</value>
   <data name="AnnotationArgument_ValidationError_TooLong" xml:space="preserve">
     <value>Annotationsargumente dürfen nicht länger als {0} Zeihen sein.</value>
   </data>
+  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
+    <value>Das Refactoring kann Annotationen nur zu Komponenten, Methoden und Variablen hinzufügen. Die Zieldeklaration hatte allerdings den Typ '{0}'.</value>
+  </data>
 </root>

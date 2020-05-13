@@ -160,6 +160,15 @@ namespace Rubberduck.Resources.Menus {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Annotate Declaration.
+        /// </summary>
+        public static string RefactorMenu_AnnotateDeclaration {
+            get {
+                return ResourceManager.GetString("RefactorMenu_AnnotateDeclaration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Encapsulate Field.
         /// </summary>
         public static string RefactorMenu_EncapsulateField {
