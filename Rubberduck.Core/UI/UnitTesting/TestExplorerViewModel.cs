@@ -256,6 +256,7 @@ namespace Rubberduck.UI.UnitTesting
 
             return false;
         }
+
         public bool CanExecuteUnignoreSelectedTests(object obj)
         {
             if (!Model.IsBusy && obj is IList viewModels && viewModels.Count > 0)
@@ -273,12 +274,14 @@ namespace Rubberduck.UI.UnitTesting
 
             return groupItems.Cast<TestMethodViewModel>().Count(test => test.Method.IsIgnored) != groupItems.Count;
         }
+
         public bool CanExecuteUnignoreGroupCommand(object obj)
         {
             var groupItems = MouseOverGroup?.Items
-                             ?? GroupContainingSelectedTest(MouseOverTest).Items;
-
-            return groupItems.Cast<TestMethodViewModel>().Any(test => test.Method.IsIgnored);
+                             ?? GroupContainingSelectedTest(MouseOverTest)?.Items;
+            
+            return groupItems != null 
+                   && groupItems.Cast<TestMethodViewModel>().Any(test => test.Method.IsIgnored);
         }
         
         #region Commands
