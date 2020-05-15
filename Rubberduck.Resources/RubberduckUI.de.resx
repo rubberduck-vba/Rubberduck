@@ -1635,7 +1635,7 @@ Import abgebrochen.</value>
     <value>Hinzufügen</value>
   </data>
   <data name="AnnotateDeclarationDialog_Instructions" xml:space="preserve">
-    <value>Wähle eine Annotation (und Werte), die zu der ausgewählten Deklaration hinzugefügt werden soll.</value>
+    <value>Wählen Sie eine Annotation (und Werte), die zu der Deklaration hinzugefügt werden soll.</value>
   </data>
   <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
     <value>Annotationsargumente dürfen keine Kontrollzeichen enthalten.</value>

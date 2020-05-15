@@ -3,11 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              xmlns:local="clr-namespace:Rubberduck.UI.Refactorings.AnnotateDeclaration"
              xmlns:annotations="clr-namespace:Rubberduck.Parsing.Annotations;assembly=Rubberduck.Parsing"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="300">
+             d:DesignHeight="500" d:DesignWidth="400">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -24,17 +25,14 @@
                 <Setter Property="Validation.ErrorTemplate">
                     <Setter.Value>
                         <ControlTemplate x:Name="TextBoxErrorTemplate">
-                            <Canvas>
-                                <DockPanel LastChildFill="True" ClipToBounds="False">
-                                    <AdornedElementPlaceholder/>
-                                    <Image Source="{StaticResource InvalidTextImage}"
-                                           Height="16"
-                                           Margin="0,-8,-8,0"
-                                           HorizontalAlignment="Right"
-                                           VerticalAlignment="Top"
-                                           ClipToBounds="False"/>
-                                </DockPanel>
-                            </Canvas>
+                            <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                                <AdornedElementPlaceholder/>
+                                <Image Source="{StaticResource InvalidTextImage}"
+                                       Height="16"
+                                       Margin="0,-8,-8,0"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Top"/>
+                            </StackPanel>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
@@ -53,19 +51,19 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <StackPanel Background="{StaticResource BackgroundLightBrush}">
-            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_TitleText}" FontWeight="Bold" />
-            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_Instructions}" Margin="5,0" TextWrapping="Wrap" />
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_TitleText}" FontWeight="Bold"/>
+            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_Instructions}" Margin="5,0,0,10" TextWrapping="Wrap" />
         </StackPanel>
         <StackPanel Grid.Row="1">
-            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_DeclarationLabel}" Margin="5,0" />
-            <TextBlock Text="{Binding Model.Target, Converter={StaticResource DeclarationToQualifiedNameConverter}}" Margin="10,0" />
-            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_AnnotationLabel}" Margin="5,5,0,0" />
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_DeclarationLabel}" FontWeight="DemiBold" />
+            <TextBlock Text="{Binding Model.Target, Converter={StaticResource DeclarationToQualifiedNameConverter}}" Margin="5,0,0,5" FontWeight="Regular" />
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_AnnotationLabel}" FontWeight="DemiBold" />
             <ComboBox 
                 ItemsSource="{Binding ApplicableAnnotations}"
                 SelectedItem="{Binding Annotation}"
@@ -77,7 +75,7 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentsLabel}" Margin="5,5,0,0" />
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentsLabel}" FontWeight="DemiBold" Margin="5,5,0,0" />
         </StackPanel>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
@@ -108,6 +106,13 @@
                 <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Boolean}" CollapseSpecialValue="False" x:Key="BooleanArgumentVisibilityConverter"/>
                 <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Inspection}" CollapseSpecialValue="False" x:Key="InspectionArgumentVisibilityConverter"/>
                 <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentValueTemplate">
+                    <DataTemplate.Resources>
+                        <CollectionViewSource Source="{Binding InspectionNames}" x:Key="InspectionNamesView">
+                            <CollectionViewSource.SortDescriptions>
+                                <scm:SortDescription PropertyName="." /> <!-- This is not really the sort we want. We want a converter here, which is impossible. -->
+                            </CollectionViewSource.SortDescriptions>
+                        </CollectionViewSource>
+                    </DataTemplate.Resources>
                     <StackPanel>
                         <TextBox Text="{Binding ArgumentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                                  Style="{StaticResource TextBoxErrorStyle}"

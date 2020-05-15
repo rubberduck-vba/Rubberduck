@@ -1850,7 +1850,7 @@ Import aborted.</value>
     <value>Remove</value>
   </data>
   <data name="AnnotateDeclarationDialog_Instructions" xml:space="preserve">
-    <value>Select an annotation (and values) to add to the selected declaration.</value>
+    <value>Select an annotation (and values) to add to the declaration.</value>
   </data>
   <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
     <value>Annotation arguments must not contain control characters.</value>

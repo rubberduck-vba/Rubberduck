@@ -217,7 +217,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select an annotation (and values) to add to the selected declaration..
+        ///   Looks up a localized string similar to Select an annotation (and values) to add to the declaration..
         /// </summary>
         public static string AnnotateDeclarationDialog_Instructions {
             get {
