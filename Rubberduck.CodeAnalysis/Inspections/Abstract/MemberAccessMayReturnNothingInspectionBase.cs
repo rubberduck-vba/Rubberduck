@@ -19,12 +19,20 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
             : base(declarationFinderProvider)
         {}
 
+        /// <summary>
+        /// Members that might return Nothing
+        /// </summary>
+        /// <remarks>
+        /// It must not be legal to call the members unqualified. In particular, user-defined members will not be considered.
+        /// Moreover, this disqualifies all members on global objects. 
+        /// </remarks>
         public abstract IEnumerable<Declaration> MembersUnderTest(DeclarationFinder finder);
         public abstract string ResultTemplate { get; }
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            return MembersUnderTest(finder);
+            //This restriction is in place because the inspection currently cannot handle unqualified accesses.
+            return MembersUnderTest(finder).Where(member => !member.IsUserDefined);
         }
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
@@ -46,7 +54,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
             {
                 return usageContext is VBAParser.MemberAccessExprContext 
                         || !(usageContext is VBAParser.CallStmtContext)
-                            && !ContextIsNothingTest(usageContext);
+                            && !ContextIsNothing(usageContext);
             }
 
             var assignedTo = AssignmentTarget(reference, finder, setter);
@@ -65,14 +73,21 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 
         private static RuleContext UsageContext(IdentifierReference reference)
         {
-            var access = reference.Context.GetAncestor<VBAParser.MemberAccessExprContext>();
-            var usageContext = access.Parent is VBAParser.IndexExprContext indexExpr
+            //We prefer the with member access over the member access, because the accesses are resolved right to left.
+            var access = reference.Context.GetAncestor<VBAParser.WithMemberAccessExprContext>() as VBAParser.LExpressionContext
+                ?? reference.Context.GetAncestor<VBAParser.MemberAccessExprContext>();
+
+            if (access == null)
+            {
+                return null;
+            }
+
+            return access.Parent is VBAParser.IndexExprContext indexExpr
                 ? indexExpr.Parent
                 : access.Parent;
-            return usageContext;
         }
 
-        private static bool ContextIsNothingTest(IParseTree context)
+        private static bool ContextIsNothing(IParseTree context)
         {
             return context is VBAParser.LExprContext 
                    && context.Parent is VBAParser.RelationalOpContext comparison 
@@ -86,7 +101,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
             var firstUse = GetReferenceNodes(tree).FirstOrDefault();
 
             return !(firstUse is null)
-                   && !ContextIsNothingTest(firstUse.Reference.Context.Parent);
+                   && !ContextIsNothing(firstUse.Reference.Context.Parent);
         }
 
         private static IEnumerable<INode> GetReferenceNodes(INode node)

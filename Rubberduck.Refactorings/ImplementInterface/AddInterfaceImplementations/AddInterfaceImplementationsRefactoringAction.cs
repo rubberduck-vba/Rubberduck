@@ -15,7 +15,7 @@ namespace Rubberduck.Refactorings.AddInterfaceImplementations
         public AddInterfaceImplementationsRefactoringAction(IRewritingManager rewritingManager) 
             : base(rewritingManager)
         {
-            _memberBody = $"    {Tokens.Err}.Raise 5 {Resources.RubberduckUI.ImplementInterface_TODO}";
+            _memberBody = $"    {Tokens.Err}.Raise 5 {Resources.Refactorings.Refactorings.ImplementInterface_TODO}";
         }
 
         public override void Refactor(AddInterfaceImplementationsModel model, IRewriteSession rewriteSession)
