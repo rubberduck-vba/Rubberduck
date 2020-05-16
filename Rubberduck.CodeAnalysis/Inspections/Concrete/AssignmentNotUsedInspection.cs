@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Inspections.CodePathAnalysis;
@@ -112,35 +113,47 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         private static bool DisqualifiedByResumeOrGoToStatements(IdentifierReference resultCandidate, DeclarationFinder finder)
         {
-            var relevantLabels = finder.DeclarationsWithType(DeclarationType.LineLabel)
-                                            .Where(label => resultCandidate.ParentScoping.Equals(label.ParentDeclaration));
+            var jumpCtxts = (resultCandidate.ParentScoping.Context.GetDescendents<VBAParser.ResumeStmtContext>().Cast<ParserRuleContext>())
+                .Concat(resultCandidate.ParentScoping.Context.GetDescendents<VBAParser.GoToStmtContext>().Cast<ParserRuleContext>());
 
-            if (!relevantLabels.Any())
-            {
-                return false;
-            }
+            if (!jumpCtxts.Any()) { return false; }
 
-            var lineNumbersForNonAssignmentReferencesOfResultCandidateDeclaration = 
+            var lineNumbersForNonAssignmentReferences =
                     resultCandidate.Declaration.References
                                                     .Where(rf => !rf.IsAssignment)
                                                     .Select(rf => rf.Context.Stop.Line);
 
-            if (!lineNumbersForNonAssignmentReferencesOfResultCandidateDeclaration.Any())
-            {
-                return false;
-            }
+            if (!lineNumbersForNonAssignmentReferences.Any()) { return false; }
 
-            var labelReferencesAffectingExecutionPath = relevantLabels.SelectMany(d => d.References)
-                                .Where(labelReference => LabelReferencedByJumpStatementAfterResultCandidateAssignment(labelReference, resultCandidate));
-
-            return labelReferencesAffectingExecutionPath.Any(labelReference => labelReference.Declaration.Context.Stop.Line < resultCandidate.Context.Start.Line
-                                                && labelReference.Declaration.Context.Start.Line < lineNumbersForNonAssignmentReferencesOfResultCandidateDeclaration.Max());
+            //The jumped-to-line is after the resultCandidate and before a use of the variable 
+            return AllJumpToLines(resultCandidate, jumpCtxts, finder)
+                                .Any(jumpToLine => resultCandidate.Context.Start.Line > jumpToLine
+                                    && lineNumbersForNonAssignmentReferences.Max() >= jumpToLine);
         }
 
-        private static bool LabelReferencedByJumpStatementAfterResultCandidateAssignment(IdentifierReference labelReference, IdentifierReference resultCandidate)
-            => labelReference.Context.Start.Line > resultCandidate.Context.Stop.Line
-                    && (labelReference.Context.TryGetAncestor<VBAParser.ResumeStmtContext>(out _)
-                        || labelReference.Context.TryGetAncestor<VBAParser.GoToStmtContext>(out _));
+        private static IEnumerable<int> AllJumpToLines(IdentifierReference resultCandidate, IEnumerable<ParserRuleContext> jumpCtxts, DeclarationFinder finder)
+        {
+            var jumpToLineNumbers = new List<int>();
+            var jumpToLabels = new List<string>();
+            foreach (var ctxt in jumpCtxts)
+            {
+                var target = ctxt.children[2].GetText();
+                if (int.TryParse(target, out var line))
+                {
+                    jumpToLineNumbers.Add(line);
+                }
+                jumpToLabels.Add(target);
+            }
+
+            var relevantLabelLineNumbers = finder.DeclarationsWithType(DeclarationType.LineLabel)
+                                            .Where(label => resultCandidate.ParentScoping.Equals(label.ParentDeclaration)
+                                                                && jumpToLabels.Contains(label.IdentifierName))
+                                            .Select(d => d.Context.Start.Line);
+
+            jumpToLineNumbers.AddRange(relevantLabelLineNumbers);
+
+            return jumpToLineNumbers;
+        }
 
         protected override string ResultDescription(IdentifierReference reference)
         {

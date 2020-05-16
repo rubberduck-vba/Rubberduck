@@ -262,7 +262,7 @@ End Sub";
         //https://github.com/rubberduck-vba/Rubberduck/issues/5456
         [TestCase("Resume CleanExit")]
         [TestCase("GoTo CleanExit")]
-        public void IgnoresAssignmentWhereExecutionPathModifiedByJumpStatementCouldIncludeUse(string statement)
+        public void IgnoresAssignmentWhereExecutionPathModifiedByJumpStatementCouldIncludeUse_UseLabels(string statement)
         {
             string code =
 $@"
@@ -274,6 +274,30 @@ On Error Goto ErrorHandler
 CleanExit:
     Inverse = ratio
     Exit Function
+ErrorHandler:
+    ratio = -1# 'assigment not used evaluation disqualified by Resume/GoTo - not flagged
+    {statement}
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(1, results.Count());
+        }
+
+        //Inverse = ratio => line 7
+        [TestCase("Resume 7")]
+        [TestCase("GoTo 7")] 
+        public void IgnoresAssignmentWhereExecutionPathModifiedByJumpStatementCouldIncludeUse_UseLineNumbers(string statement)
+        {
+            string code =
+$@"
+Public Function Inverse(value As Double) As Double
+    Dim ratio As Double
+    ratio = 0# 'assigment not used - flagged
+On Error Goto ErrorHandler
+    ratio = 1# / value
+    Inverse = ratio
+    Exit Function
+
 ErrorHandler:
     ratio = -1# 'assigment not used evaluation disqualified by Resume/GoTo - not flagged
     {statement}
