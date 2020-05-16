@@ -259,6 +259,269 @@ End Sub";
             Assert.AreEqual(0, results.Count());
         }
 
+        //https://github.com/rubberduck-vba/Rubberduck/issues/5456
+        [TestCase("Resume CleanExit")]
+        [TestCase("GoTo CleanExit")]
+        public void IgnoresAssignmentWhereExecutionPathModifiedByJumpStatementCouldIncludeUse_Labels(string statement)
+        {
+            string code =
+$@"
+Public Function Inverse(value As Double) As Double
+    Dim ratio As Double
+    ratio = 0# 'assigment not used - flagged
+On Error Goto ErrorHandler
+    ratio = 1# / value
+CleanExit:
+    Inverse = ratio
+    Exit Function
+ErrorHandler:
+    ratio = -1# 'assigment not used evaluation disqualified by Resume/GoTo - not flagged
+    {statement}
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(1, results.Count());
+        }
+
+        //Inverse = ratio => line 7
+        [TestCase("Resume 7")]
+        [TestCase("GoTo 7")]
+        public void IgnoresAssignmentWhereExecutionPathModifiedByJumpStatementCouldIncludeUse_LineNumbers(string statement)
+        {
+            string code =
+$@"
+Public Function Inverse(value As Double) As Double
+    Dim ratio As Double
+    ratio = 0# 'assigment not used - flagged
+On Error Goto ErrorHandler
+    ratio = 1# / value
+    Inverse = ratio
+    Exit Function
+
+ErrorHandler:
+    ratio = -1# 'assigment not used evaluation disqualified by Resume/GoTo - not flagged
+    {statement}
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(1, results.Count());
+        }
+
+        [Test]
+        public void IgnoresExitForStmt()
+        {
+            string code =
+$@"
+Public Function DoStuff() As Double
+On Error Goto ErrorHandler
+    Dim fizz As Double
+    Dim index As Long
+    For index = 0 to 20
+        fizz = CDbl(index)
+        If index = 5 Then
+            Exit For
+        End If
+    Next
+Finally:
+    DoStuff = fizz
+    Exit Function
+ErrorHandler:
+    fizz = 100#
+    Resume Next
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
+        public void IgnoresExitDoStmt()
+        {
+            string code =
+$@"
+Public Function DoStuff() As Double
+On Error Goto ErrorHandler
+    Dim fizz As Double
+    Dim index As Long
+    index = 0
+    Do While index < 20
+        fizz = CDbl(index)
+        If index = 5 Then
+            Exit Do
+        End If
+        index = index + 1
+    Loop 
+Finally:
+    DoStuff = fizz
+    Exit Function
+ErrorHandler:
+    fizz = 100#
+    Resume Next
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
+        public void GotoRespectsExitStmt()
+        {
+            string code =
+$@"
+Public Function DoStuff(value As Double) As Double
+    Dim fizz As Double
+    GoTo DumbGotoLabel2
+
+DumbGotoLabel1:
+    DoStuff = 6#
+    Exit Function
+
+    DoStuff = fizz
+    Exit Function
+
+DumbGotoLabel2:
+    fizz = value
+    GoTo DumbGotoLabel1
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(1, results.Count());
+        }
+
+        [Test]
+        [TestCase("Resume IgnoreRatio")]
+        [TestCase("GoTo IgnoreRatio")]
+        public void FlagsAssignmentWhereExecutionPathModifiedByJumpStatementCouldNotIncludeUse(string statement)
+        {
+            string code =
+$@"
+Public Function Inverse(value As Double) As Double
+    Inverse = 0#
+    Dim ratio As Double
+On Error Goto ErrorHandler
+    ratio = 1# / value
+    Inverse = ratio
+
+IgnoreRatio:
+    Exit Function
+ErrorHandler:
+    'assignment not used since jump is to IgnoreRatio: 
+    'and all ratio references below IgnoreRatio: are assignments
+    ratio = 0# 
+    {statement}
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(1, results.Count());
+        }
+
+
+        [Test]
+        public void FlagsWhereNoJumpStatementsFollowsUnusedAssignment()
+        {
+            string code =
+$@"
+Public Function Inverse(value As Double) As Double
+    Inverse = 0#
+    Dim ratio As Double
+On Error Goto ErrorHandler
+    ratio = 1# / value
+IgnoreRatio:
+    Inverse = ratio
+    Exit Function
+ErrorHandler:
+    ratio = 0# 'Removed from unused results
+    Resume IgnoreRatio
+    ratio = 0# 'Not Used
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(1, results.Count());
+        }
+
+        [Test]
+        [TestCase("Resume Next")]
+        [TestCase("Resume")]
+        public void ResumeStmtSpecialCases(string resumeStmt)
+        {
+            string code =
+$@"
+Public Function Inverse(value As Double) As Double
+    Inverse = 0#
+    Dim ratio As Double
+On Error Goto ErrorHandler
+    ratio = 1# / value
+    Inverse = ratio
+    Exit Function
+ErrorHandler:
+    ratio = 0#
+    {resumeStmt}
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
+        [TestCase("Resume Next")]
+        [TestCase("Resume")]
+        public void ResumeStmt_VariableReadIsNotAvailableInExecutionBranch(string resumeStmt)
+        {
+            string code =
+$@"
+Public Function Inverse(value As Double) As Double
+    Inverse = 0#
+    Dim ratio As Double
+On Error GoTo 0
+    ratio = 1# / value
+    Inverse = ratio
+On Error GoTo ErrorHandler:
+    Exit Function
+ErrorHandler:
+    ratio = 0#
+    {resumeStmt}
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(1, results.Count());
+        }
+
+        [Test]
+        [TestCase("Resume Next", true, 2)]
+        [TestCase("Resume", true, 2)]
+        [TestCase("Resume Next", false, 1)]
+        [TestCase("Resume", false, 1)]
+        public void ResumeStmt_NarrowsEvaluationsUsingExitStatements(string resumeStmt, bool errorHandler2HasExit, int expected)
+        {
+            string exitStmt = errorHandler2HasExit ? "Exit Function" : "'Exit Function";
+            string code =
+$@"
+Public Function Inverse(value As Double) As Double
+    Dim ratio As Double
+    Inverse = 0#
+On Error GoTo ErrorHandler1:
+    ratio = 1# / value
+    Inverse = ratio
+On Error GoTo ErrorHandler2:
+    ratio = 0# 'Not used
+    {exitStmt}
+On Error GoTo ErrorHandler3:
+    ratio = 0# * 34# 'Used
+    Inverse = ratio
+    Exit Function
+ErrorHandler1:
+    ratio = 0# 'Used
+    {resumeStmt}
+ErrorHandler2:
+    ratio = 0# 'Not used with ""Exit Function"", removed from unused without ""Exit Function""
+    {resumeStmt}
+ErrorHandler3:
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(expected, results.Count());
+        }
+
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
             return new AssignmentNotUsedInspection(state, new Walker());
