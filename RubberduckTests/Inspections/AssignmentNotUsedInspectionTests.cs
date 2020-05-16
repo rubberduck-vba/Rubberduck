@@ -259,6 +259,56 @@ End Sub";
             Assert.AreEqual(0, results.Count());
         }
 
+        //https://github.com/rubberduck-vba/Rubberduck/issues/5456
+        [TestCase("Resume CleanExit")]
+        [TestCase("GoTo CleanExit")]
+        public void IgnoresAssignmentWhereExecutionPathModifiedByJumpStatementCouldIncludeUse(string statement)
+        {
+            string code =
+$@"
+Public Function Inverse(value As Double) As Double
+    Dim ratio As Double
+    ratio = 0# 'assigment not used - flagged
+On Error Goto ErrorHandler
+    ratio = 1# / value
+CleanExit:
+    Inverse = ratio
+    Exit Function
+ErrorHandler:
+    ratio = -1# 'assigment not used evaluation disqualified by Resume/GoTo - not flagged
+    {statement}
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(1, results.Count());
+        }
+
+        [TestCase("Resume IgnoreRatio")]
+        [TestCase("GoTo IgnoreRatio")]
+        public void FlagsAssignmentWhereExecutionPathModifiedByJumpStatementCouldNotIncludeUse(string statement)
+        {
+            string code =
+$@"
+Public Function Inverse(value As Double) As Double
+    Inverse = 0#
+    Dim ratio As Double
+On Error Goto ErrorHandler
+    ratio = 1# / value
+    Inverse = ratio
+
+IgnoreRatio:
+    Exit Function
+ErrorHandler:
+    'assignment not used since jump is to IgnoreRatio: 
+    'and all ratio references below IgnoreRatio: are assignments
+    ratio = 0# 
+    {statement}
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(1, results.Count());
+        }
+
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
             return new AssignmentNotUsedInspection(state, new Walker());

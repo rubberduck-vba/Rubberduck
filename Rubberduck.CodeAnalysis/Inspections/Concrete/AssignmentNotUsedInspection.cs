@@ -5,6 +5,7 @@ using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Inspections.CodePathAnalysis;
 using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using Rubberduck.Inspections.CodePathAnalysis.Nodes;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -67,7 +68,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return UnusedAssignmentReferences(tree);
         }
 
-        public static List<IdentifierReference> UnusedAssignmentReferences(INode node)
+        private static List<IdentifierReference> UnusedAssignmentReferences(INode node)
         {
             var nodes = new List<IdentifierReference>();
 
@@ -98,7 +99,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            return !IsAssignmentOfNothing(reference);
+            return !(IsAssignmentOfNothing(reference)
+                        || DisqualifiedByResumeOrGoToStatements(reference, finder));
         }
 
         private static bool IsAssignmentOfNothing(IdentifierReference reference)
@@ -107,6 +109,38 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 && reference.Context.Parent is VBAParser.SetStmtContext setStmtContext
                 && setStmtContext.expression().GetText().Equals(Tokens.Nothing);
         }
+
+        private static bool DisqualifiedByResumeOrGoToStatements(IdentifierReference resultCandidate, DeclarationFinder finder)
+        {
+            var relevantLabels = finder.DeclarationsWithType(DeclarationType.LineLabel)
+                                            .Where(label => resultCandidate.ParentScoping.Equals(label.ParentDeclaration));
+
+            if (!relevantLabels.Any())
+            {
+                return false;
+            }
+
+            var lineNumbersForNonAssignmentReferencesOfResultCandidateDeclaration = 
+                    resultCandidate.Declaration.References
+                                                    .Where(rf => !rf.IsAssignment)
+                                                    .Select(rf => rf.Context.Stop.Line);
+
+            if (!lineNumbersForNonAssignmentReferencesOfResultCandidateDeclaration.Any())
+            {
+                return false;
+            }
+
+            var labelReferencesAffectingExecutionPath = relevantLabels.SelectMany(d => d.References)
+                                .Where(labelReference => LabelReferencedByJumpStatementAfterResultCandidateAssignment(labelReference, resultCandidate));
+
+            return labelReferencesAffectingExecutionPath.Any(labelReference => labelReference.Declaration.Context.Stop.Line < resultCandidate.Context.Start.Line
+                                                && labelReference.Declaration.Context.Start.Line < lineNumbersForNonAssignmentReferencesOfResultCandidateDeclaration.Max());
+        }
+
+        private static bool LabelReferencedByJumpStatementAfterResultCandidateAssignment(IdentifierReference labelReference, IdentifierReference resultCandidate)
+            => labelReference.Context.Start.Line > resultCandidate.Context.Stop.Line
+                    && (labelReference.Context.TryGetAncestor<VBAParser.ResumeStmtContext>(out _)
+                        || labelReference.Context.TryGetAncestor<VBAParser.GoToStmtContext>(out _));
 
         protected override string ResultDescription(IdentifierReference reference)
         {
