@@ -76,7 +76,7 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
                 RefreshAnnotationArguments(value);
 
                 OnPropertyChanged();
-                OnPropertyChanged("IsValidAnnotation");
+                OnPropertyChanged(nameof(IsValidAnnotation));
             }
         }
 
@@ -111,7 +111,7 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
 
         private void ArgumentErrorStateChanged(object requestor, DataErrorsChangedEventArgs e)
         {
-            OnPropertyChanged("IsValidAnnotation");
+            OnPropertyChanged(nameof(IsValidAnnotation));
         }
 
         public CommandBase AddAnnotationArgument { get; }

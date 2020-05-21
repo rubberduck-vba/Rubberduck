@@ -14,6 +14,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Windows;
 using System.Windows.Input;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Templates;
 using Rubberduck.UI.CodeExplorer.Commands.DragAndDrop;
@@ -55,7 +56,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             IUiDispatcher uiDispatcher,
             IVBE vbe,
             ITemplateProvider templateProvider,
-            ICodeExplorerSyncProvider syncProvider)
+            ICodeExplorerSyncProvider syncProvider,
+            IEnumerable<IAnnotation> annotations)
         {
             _state = state;
             _state.StateChanged += HandleStateChanged;
@@ -67,6 +69,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _uiDispatcher = uiDispatcher;
             _vbe = vbe;
             _templateProvider = templateProvider;
+            Annotations = annotations.ToList();
 
             CollapseAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseNodes, EvaluateCanSwitchNodeState);
             ExpandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes, EvaluateCanSwitchNodeState);
@@ -93,6 +96,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             new ObservableCollection<Template>(_templateProvider.GetTemplates().Where(t => t.IsUserDefined)
                 .OrderBy(t => t.Name));
 
+        public IEnumerable<IAnnotation> Annotations { get; }
+
         private ICodeExplorerNode _selectedItem;
         public ICodeExplorerNode SelectedItem
         {
@@ -111,6 +116,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                 OnPropertyChanged(nameof(ExportVisibility));
                 OnPropertyChanged(nameof(ExportAllVisibility));
+                OnPropertyChanged(nameof(CanBeAnnotated));
+                OnPropertyChanged(nameof(AnyTemplatesCanExecute));
             }
         }
 
@@ -118,6 +125,10 @@ namespace Rubberduck.Navigation.CodeExplorer
             AddTemplateCommand.CanExecuteForNode(SelectedItem)
             && BuiltInTemplates.Concat(UserDefinedTemplates)
                 .Any(template => AddTemplateCommand.CanExecute((template.Name, SelectedItem)));
+
+        public bool CanBeAnnotated =>
+            AnnotateDeclarationCommand.CanExecuteForNode(SelectedItem)
+            && Annotations.Any(annotation => AnnotateDeclarationCommand.CanExecute((annotation, SelectedItem)));
 
         private CodeExplorerSortOrder _sortOrder = CodeExplorerSortOrder.Name;
         public CodeExplorerSortOrder SortOrder
@@ -376,6 +387,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public AddTestComponentCommand AddTestModuleCommand { get; set; }
         public AddTestModuleWithStubsCommand AddTestModuleWithStubsCommand { get; set; }
         public AddTemplateCommand AddTemplateCommand { get; set; }
+        public AnnotateDeclarationCommand AnnotateDeclarationCommand { get; set; }
         public OpenDesignerCommand OpenDesignerCommand { get; set; }
         public OpenProjectPropertiesCommand OpenProjectPropertiesCommand { get; set; }
         public SetAsStartupProjectCommand SetAsStartupProjectCommand { get; set; }

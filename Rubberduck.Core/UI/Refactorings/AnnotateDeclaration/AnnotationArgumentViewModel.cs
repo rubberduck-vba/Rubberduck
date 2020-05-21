@@ -108,7 +108,7 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
 
             if (errors.Any())
             {
-                SetErrors("ArgumentValue", errors);
+                SetErrors(nameof(ArgumentValue), errors);
             }
             else
             {
