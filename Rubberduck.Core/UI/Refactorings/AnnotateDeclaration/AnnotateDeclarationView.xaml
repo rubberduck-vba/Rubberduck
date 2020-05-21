@@ -50,7 +50,64 @@
     </UserControl.Resources>
 
     <Grid>
+        <Grid.Resources>
+            <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentSingleTypeTemplate">
+                <TextBlock Text="{Binding ArgumentType, Converter={StaticResource AnnotationArgumentTypeToStringConverter}}"/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentMultiTypeTemplate">
+                <ComboBox 
+                    ItemsSource="{Binding Path=ApplicableArgumentTypes}"
+                    SelectedItem="{Binding Path=ArgumentType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    IsSynchronizedWithCurrentItem="True">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type annotations:AnnotationArgumentType}">
+                            <TextBlock Text="{Binding Path=., Converter={StaticResource AnnotationArgumentTypeToStringConverter}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </DataTemplate>
+            <x:Array Type="sys:Object" xmlns:sys="clr-namespace:System;assembly=mscorlib"  x:Key="NonDefaultInputArgumentTypes">
+                <annotations:AnnotationArgumentType>Boolean</annotations:AnnotationArgumentType>
+                <annotations:AnnotationArgumentType>Inspection</annotations:AnnotationArgumentType>
+            </x:Array>
+            <converters:SpecificValuesToVisibilityConverter SpecialValues="{StaticResource NonDefaultInputArgumentTypes}" CollapseSpecialValues="True" x:Key="DefaultArgumentVisibilityConverter"/>
+            <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Boolean}" CollapseSpecialValue="False" x:Key="BooleanArgumentVisibilityConverter"/>
+            <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Inspection}" CollapseSpecialValue="False" x:Key="InspectionArgumentVisibilityConverter"/>
+            <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentValueTemplate">
+                <DataTemplate.Resources>
+                    <CollectionViewSource Source="{Binding InspectionNames}" x:Key="InspectionNamesView">
+                        <CollectionViewSource.SortDescriptions>
+                            <scm:SortDescription PropertyName="." />
+                            <!-- This is not really the sort we want. We want a converter here, which is impossible. -->
+                        </CollectionViewSource.SortDescriptions>
+                    </CollectionViewSource>
+                </DataTemplate.Resources>
+                <StackPanel>
+                    <TextBox Text="{Binding ArgumentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                             Style="{StaticResource TextBoxErrorStyle}"
+                             Visibility="{Binding ArgumentType, Converter={StaticResource DefaultArgumentVisibilityConverter}}">
+                    </TextBox>
+                    <ComboBox 
+                        Visibility="{Binding ArgumentType, Converter={StaticResource BooleanArgumentVisibilityConverter}}"
+                        ItemsSource="{Binding Path=BooleanValues}"
+                        SelectedItem="{Binding Path=ArgumentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}">
+                    </ComboBox>
+                    <ComboBox
+                        Visibility="{Binding ArgumentType, Converter={StaticResource InspectionArgumentVisibilityConverter}}"
+                        ItemsSource="{Binding Path=InspectionNames}"
+                        SelectedItem="{Binding Path=ArgumentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=., Converter={StaticResource InspectionToLocalizedNameConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </DataTemplate>
+            <local:AnnotationArgumentTypeCellDataTemplateSelector x:Key="AnnotationArgumentTypeCellDataTemplateSelector"/>
+        </Grid.Resources>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -68,98 +125,27 @@
                 ItemsSource="{Binding ApplicableAnnotations}"
                 SelectedItem="{Binding Annotation}"
                 IsSynchronizedWithCurrentItem="True"
-                Margin="5,0">
+                Margin="5,0,5,5">
                 <ComboBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type annotations:IAnnotation}">
                         <TextBlock Text="{Binding Path=., Converter={StaticResource AnnotationToCodeStringConverter}}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentsLabel}" FontWeight="DemiBold" Margin="5,5,0,0" />
         </StackPanel>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            <Grid.Resources>
-                <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentSingleTypeTemplate">
-                    <TextBlock Text="{Binding ArgumentType, Converter={StaticResource AnnotationArgumentTypeToStringConverter}}"/>
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentMultiTypeTemplate">
-                    <ComboBox 
-                        ItemsSource="{Binding Path=ApplicableArgumentTypes}"
-                        SelectedItem="{Binding Path=ArgumentType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        IsSynchronizedWithCurrentItem="True">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate DataType="{x:Type annotations:AnnotationArgumentType}">
-                                <TextBlock Text="{Binding Path=., Converter={StaticResource AnnotationArgumentTypeToStringConverter}}"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </DataTemplate>
-                <x:Array Type="sys:Object" xmlns:sys="clr-namespace:System;assembly=mscorlib"  x:Key="NonDefaultInputArgumentTypes">
-                    <annotations:AnnotationArgumentType>Boolean</annotations:AnnotationArgumentType>
-                    <annotations:AnnotationArgumentType>Inspection</annotations:AnnotationArgumentType>
-                </x:Array>
-                <converters:SpecificValuesToVisibilityConverter SpecialValues="{StaticResource NonDefaultInputArgumentTypes}" CollapseSpecialValues="True" x:Key="DefaultArgumentVisibilityConverter"/>
-                <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Boolean}" CollapseSpecialValue="False" x:Key="BooleanArgumentVisibilityConverter"/>
-                <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Inspection}" CollapseSpecialValue="False" x:Key="InspectionArgumentVisibilityConverter"/>
-                <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentValueTemplate">
-                    <DataTemplate.Resources>
-                        <CollectionViewSource Source="{Binding InspectionNames}" x:Key="InspectionNamesView">
-                            <CollectionViewSource.SortDescriptions>
-                                <scm:SortDescription PropertyName="." /> <!-- This is not really the sort we want. We want a converter here, which is impossible. -->
-                            </CollectionViewSource.SortDescriptions>
-                        </CollectionViewSource>
-                    </DataTemplate.Resources>
-                    <StackPanel>
-                        <TextBox Text="{Binding ArgumentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                                 Style="{StaticResource TextBoxErrorStyle}"
-                                 Visibility="{Binding ArgumentType, Converter={StaticResource DefaultArgumentVisibilityConverter}}">
-                        </TextBox>
-                        <ComboBox 
-                            Visibility="{Binding ArgumentType, Converter={StaticResource BooleanArgumentVisibilityConverter}}"
-                            ItemsSource="{Binding Path=BooleanValues}"
-                            SelectedItem="{Binding Path=ArgumentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}">
-                        </ComboBox>
-                        <ComboBox
-                            Visibility="{Binding ArgumentType, Converter={StaticResource InspectionArgumentVisibilityConverter}}"
-                            ItemsSource="{Binding Path=InspectionNames}"
-                            SelectedItem="{Binding Path=ArgumentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Path=., Converter={StaticResource InspectionToLocalizedNameConverter}, UpdateSourceTrigger=PropertyChanged}"/>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </StackPanel>
-                </DataTemplate>
-                <local:AnnotationArgumentTypeCellDataTemplateSelector x:Key="AnnotationArgumentTypeCellDataTemplateSelector"/>
-            </Grid.Resources>
-            <DataGrid 
-                Grid.Column="0"
-                VerticalAlignment="Stretch"
-                ItemsSource="{Binding Path=AnnotationArguments}"
-                AutoGenerateColumns="False"
-                VerticalScrollBarVisibility="Auto"
-                Margin="5,0,0,5">
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn 
-                        Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentTypeHeader}"
-                        CellTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}"
-                        CellEditingTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}"
-                        Width="Auto"/>
-                    <DataGridTemplateColumn 
-                        Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentValueHeader}"
-                        CellTemplate="{StaticResource ArgumentValueTemplate}"
-                        CellEditingTemplate="{StaticResource ArgumentValueTemplate}"
-                        Width="*"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            <Label 
+                Grid.Column="0" 
+                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentsLabel}" 
+                FontWeight="DemiBold" 
+                Margin="5,5,0,0" />
             <StackPanel 
                 Grid.Column="1" 
-                VerticalAlignment="Center">
+                Orientation="Horizontal">
                 <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_AddArgumentButtonLabel}"
                         Height="20"
                         Margin="5,2.5"
@@ -172,7 +158,27 @@
                         Command="{Binding RemoveAnnotationArgument}"/>
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="3" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
+        <DataGrid 
+            Grid.Row="3"
+            VerticalAlignment="Stretch"
+            ItemsSource="{Binding Path=AnnotationArguments}"
+            AutoGenerateColumns="False"
+            VerticalScrollBarVisibility="Auto"
+            Margin="5,0,0,5">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn 
+                    Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentTypeHeader}"
+                    CellTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}"
+                    CellEditingTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}"
+                    Width="Auto"/>
+                <DataGridTemplateColumn 
+                    Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentValueHeader}"
+                    CellTemplate="{StaticResource ArgumentValueTemplate}"
+                    CellEditingTemplate="{StaticResource ArgumentValueTemplate}"
+                    Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Grid.Row="4" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
             <Grid HorizontalAlignment="Right"
                   Margin="5,0">
                 <Grid.ColumnDefinitions>
