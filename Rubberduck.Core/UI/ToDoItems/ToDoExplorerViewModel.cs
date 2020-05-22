@@ -249,7 +249,9 @@ namespace Rubberduck.UI.ToDoItems
 
             ColumnInfo[] columnInfos = { new ColumnInfo("Type"), new ColumnInfo("Description"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
 
-            var resultArray = _items.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
+            var resultArray = _items
+                .Select(item => new ToDoItemFormatter(item))
+                .Select(formattedItem => formattedItem.ToArray()).ToArray();
 
             var resource = _items.Count == 1
                 ? ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Singular
@@ -257,7 +259,11 @@ namespace Rubberduck.UI.ToDoItems
 
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _items.Count);
 
-            var textResults = title + Environment.NewLine + string.Join(string.Empty, _items.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var itemTexts = _items
+                .Select(item => new ToDoItemFormatter(item))
+                .Select(formattedItem => $"{formattedItem.ToClipboardString()}{Environment.NewLine}")
+                .ToArray();
+            var textResults = $"{title}{Environment.NewLine}{string.Join(string.Empty, itemTexts)}";
             var csvResults = ExportFormatter.Csv(resultArray, title, columnInfos);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, columnInfos);
             var rtfResults = ExportFormatter.RTF(resultArray, title);

@@ -1,11 +1,11 @@
 using System.Linq;
 using NUnit.Framework;
 using Moq;
-using Rubberduck.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
@@ -22,7 +22,7 @@ Public Sub DoSomething()
     [A1] = 42
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromModules(("Module1", code, ComponentType.StandardModule), new string[] { "VBA", "Excel" });
+            var vbe = MockVbeBuilder.BuildFromModules(("Module1", code, ComponentType.StandardModule), new ReferenceLibrary[] { ReferenceLibrary.VBA, ReferenceLibrary.Excel });
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupGet(m => m.ApplicationName).Returns("Excel");
             vbe.Setup(m => m.HostApplication()).Returns(() => mockHost.Object);

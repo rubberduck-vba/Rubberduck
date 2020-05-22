@@ -1,19 +1,11 @@
-﻿using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
-using Rubberduck.Parsing.VBA;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Common;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
-using Rubberduck.Parsing.VBA.Extensions;
-using Rubberduck.VBEditor;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies empty module member blocks.
@@ -22,61 +14,38 @@ namespace Rubberduck.Inspections.Concrete
     /// Methods containing no executable statements are misleading as they appear to be doing something which they actually don't.
     /// This might be the result of delaying the actual implementation for a later stage of development, and then forgetting all about that.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Sub Foo()
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Sub Foo()
     ///     MsgBox "?"
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    internal class EmptyMethodInspection : InspectionBase
+    internal class EmptyMethodInspection : DeclarationInspectionBase
     {
-        public EmptyMethodInspection(RubberduckParserState state)
-            : base(state) { }
+        public EmptyMethodInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Member)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var finder = State.DeclarationFinder;
-
-            var userInterfaces = UserInterfaces(finder);
-            var emptyMethods = EmptyNonInterfaceMethods(finder, userInterfaces);
-
-            return emptyMethods.Select(Result);
+            return declaration is ModuleBodyElementDeclaration member 
+                   && !member.IsInterfaceMember 
+                   && !member.Block.ContainsExecutableStatements();
         }
 
-        private static ICollection<QualifiedModuleName> UserInterfaces(DeclarationFinder finder)
-        {
-            return finder
-                .FindAllUserInterfaces()
-                .Select(decl => decl.QualifiedModuleName)
-                .ToHashSet();
-        }
-
-        private static IEnumerable<Declaration> EmptyNonInterfaceMethods(DeclarationFinder finder, ICollection<QualifiedModuleName> userInterfaces)
-        {
-            return finder
-                .UserDeclarations(DeclarationType.Member)
-                .Where(member => !userInterfaces.Contains(member.QualifiedModuleName)
-                                 && member is ModuleBodyElementDeclaration moduleBodyElement
-                                 && !moduleBodyElement.Block.ContainsExecutableStatements());
-        }
-
-        private IInspectionResult Result(Declaration member)
-        {
-            return new DeclarationInspectionResult(
-                this,
-                ResultDescription(member),
-                member);
-        }
-
-        private static string ResultDescription(Declaration member)
+        protected override string ResultDescription(Declaration member)
         {
             var identifierName = member.IdentifierName;
             var declarationType = member.DeclarationType.ToLocalizedString();

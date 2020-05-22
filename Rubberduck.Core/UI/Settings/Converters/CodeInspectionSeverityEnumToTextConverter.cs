@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
-using Rubberduck.Parsing.Inspections;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.UI.Settings.Converters

@@ -25,8 +25,8 @@ namespace Rubberduck.UnitTesting
         {
             get
             {
-                var testMethodAnnotation = Declaration.Annotations.Where(pta => pta.Annotation is TestMethodAnnotation).First();
-                var argument = testMethodAnnotation.AnnotationArguments.FirstOrDefault()?.UnQuote();
+                var testMethodAnnotation = Declaration.Annotations.First(pta => pta.Annotation is TestMethodAnnotation);
+                var argument = testMethodAnnotation.AnnotationArguments.FirstOrDefault()?.FromVbaStringLiteral();
 
                 var categorization = string.IsNullOrWhiteSpace(argument)
                     ? TestExplorer.TestExplorer_Uncategorized 

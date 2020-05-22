@@ -1,17 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Antlr4.Runtime;
 using Rubberduck.Common;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.Interaction.Navigation;
 
-namespace Rubberduck.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 {
-    public abstract class InspectionResultBase : IInspectionResult, INavigateSource
+    internal abstract class InspectionResultBase : IInspectionResult, INavigateSource
     {
         protected InspectionResultBase(IInspection inspection,
             string description,
@@ -20,7 +16,7 @@ namespace Rubberduck.Inspections.Abstract
             Declaration target,
             QualifiedSelection qualifiedSelection,
             QualifiedMemberName? qualifiedMemberName,
-            dynamic properties)
+            ICollection<string> disabledQuickFixes = null)
         {
             Inspection = inspection;
             Description = description?.Capitalize();
@@ -29,7 +25,7 @@ namespace Rubberduck.Inspections.Abstract
             Target = target;
             QualifiedSelection = qualifiedSelection;
             QualifiedMemberName = qualifiedMemberName;
-            Properties = properties ?? new PropertyBag();
+            DisabledQuickFixes = disabledQuickFixes ?? new List<string>();
         }
 
         public IInspection Inspection { get; }
@@ -38,7 +34,7 @@ namespace Rubberduck.Inspections.Abstract
         public QualifiedMemberName? QualifiedMemberName { get; }
         public ParserRuleContext Context { get; }
         public Declaration Target { get; }
-        public dynamic Properties { get; }
+        public ICollection<string> DisabledQuickFixes { get; }
 
         public virtual bool ChangesInvalidateResult(ICollection<QualifiedModuleName> modifiedModules)
         {

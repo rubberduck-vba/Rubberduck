@@ -13,10 +13,10 @@ using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Input;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Templates;
+using Rubberduck.UI.CodeExplorer.Commands.DragAndDrop;
 using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -287,7 +287,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                 foreach (var project in adding)
                 {
-                    var model = new CodeExplorerProjectViewModel(project, ref updates, _state, _vbe) { Filter = Search };
+                    var model = new CodeExplorerProjectViewModel(project, ref updates, _state, _vbe, _state.ProjectsProvider) { Filter = Search };
                     Projects.Add(model);
                 }
 
@@ -305,12 +305,12 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            var componentProject = _state.ProjectsProvider.Project(e.Module.ProjectId);
+            var componentProjectId = e.Module.ProjectId;
             
             var module = Projects.OfType<CodeExplorerProjectViewModel>()
-                .FirstOrDefault(p => p.Declaration.Project?.Equals(componentProject) ?? false)?.Children
-                .OfType<CodeExplorerComponentViewModel>().FirstOrDefault(component =>
-                    component.QualifiedSelection?.QualifiedName.Equals(e.Module) ?? false);
+                .FirstOrDefault(p => p.Declaration?.ProjectId.Equals(componentProjectId) ?? false)?.Children
+                .OfType<CodeExplorerComponentViewModel>()
+                .FirstOrDefault(component => component.QualifiedSelection?.QualifiedName.Equals(e.Module) ?? false);
 
             if (module == null)
             {
@@ -380,6 +380,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public OpenProjectPropertiesCommand OpenProjectPropertiesCommand { get; set; }
         public SetAsStartupProjectCommand SetAsStartupProjectCommand { get; set; }
         public RenameCommand RenameCommand { get; set; }
+        public CodeExplorerMoveToFolderCommand MoveToFolderCommand { get; set; }
         public IndentCommand IndenterCommand { get; set; }
         public CodeExplorerFindAllReferencesCommand FindAllReferencesCommand { get; set; }
         public CodeExplorerFindAllImplementationsCommand FindAllImplementationsCommand { get; set; }
@@ -399,7 +400,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase SyncCodePaneCommand { get; }
         public CodeExplorerExtractInterfaceCommand CodeExplorerExtractInterfaceCommand { get; set; }
 
-        public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
+        public CodeExplorerMoveToFolderDragAndDropCommand MoveToFolderDragAndDropCommand { get; set; }
+
+    public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
         {
             if (declaration == null)
             {

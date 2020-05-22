@@ -13,8 +13,6 @@ using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -113,15 +111,15 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         public string RefactoredCode(CodeString codeString, Func<EncapsulateFieldModel, EncapsulateFieldModel> presenterAdjustment, Type expectedException = null, bool executeViaActiveSelection = false)
             => RefactoredCode(codeString.Code, codeString.CaretPosition.ToOneBased(), presenterAdjustment, expectedException, executeViaActiveSelection);
 
-        public IRefactoring SupportTestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        public IRefactoring SupportTestRefactoring(
+            IRewritingManager rewritingManager, 
+            RubberduckParserState state,
+            RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction, 
+            ISelectionService selectionService)
         {
             var indenter = CreateIndenter();
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var uiDispatcherMock = new Mock<IUiDispatcher>();
-            uiDispatcherMock
-                .Setup(m => m.Invoke(It.IsAny<Action>()))
-                .Callback((Action action) => action.Invoke());
-            return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
+            return new EncapsulateFieldRefactoring(state, indenter, userInteraction, rewritingManager, selectionService, selectedDeclarationProvider);
         }
 
         public IEncapsulateFieldCandidate RetrieveEncapsulateFieldCandidate(string inputCode, string fieldName)
@@ -159,20 +157,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         public EncapsulateFieldModel RetrieveUserModifiedModelPriorToRefactoring(IVBE vbe, string declarationName, DeclarationType declarationType, Func<EncapsulateFieldModel, EncapsulateFieldModel> presenterAdjustment)
         {
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                var targets = state.DeclarationFinder.DeclarationsWithType(declarationType);
-
-                var target = targets.Single(declaration => declaration.IdentifierName == declarationName);
-
-                var refactoring = TestRefactoring(rewritingManager, state, presenterAdjustment);
-                if (refactoring is IEncapsulateFieldRefactoringTestAccess concrete)
-                {
-                    return concrete.TestUserInteractionOnly(target, presenterAdjustment);
-                }
-                throw new InvalidCastException();
-            }
+            var initialModel = InitialModel(vbe, declarationName, declarationType);
+            return presenterAdjustment(initialModel);
         }
 
         public static IIndenter CreateIndenter(IVBE vbe = null)
@@ -180,9 +166,13 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        protected override IRefactoring TestRefactoring(
+            IRewritingManager rewritingManager,
+            RubberduckParserState state,
+            RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
+            ISelectionService selectionService)
         {
-            return SupportTestRefactoring(rewritingManager, state, factory, selectionService);
+            return SupportTestRefactoring(rewritingManager, state, userInteraction, selectionService);
         }
     }
 

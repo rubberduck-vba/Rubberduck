@@ -2,9 +2,10 @@
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.QuickFixes;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 
@@ -43,23 +44,29 @@ End Sub";
         {
             const string inputCode =
                 @"Sub test()
-    Dim wb As Workbook
+    Dim wb As Variant
     With wb
-        Debug.Print .Name
-        Debug.Print .Name
-        Debug.Print .Name
+        Bar .Name
+        Bar .Name
+        Bar .Name
     End With
+End Sub
+
+Private Sub Bar(ByVal arg)
 End Sub";
 
             const string expectedCode =
                 @"Sub test()
-    Dim wb As Workbook
+    Dim wb As Variant
     'TODO - {0}
 '    With wb
-'        Debug.Print .Name
-'        Debug.Print .Name
-'        Debug.Print .Name
+'        Bar .Name
+'        Bar .Name
+'        Bar .Name
 '    End With
+End Sub
+
+Private Sub Bar(ByVal arg)
 End Sub";
 
             var (actual, inspectionDescription) =

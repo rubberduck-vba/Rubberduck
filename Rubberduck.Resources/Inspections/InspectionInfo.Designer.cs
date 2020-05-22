@@ -880,6 +880,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An annotation has more arguments than allowed; superfluous arguments are ignored..
+        /// </summary>
+        public static string SuperfluousAnnotationArgumentInspection {
+            get {
+                return ResourceManager.GetString("SuperfluousAnnotationArgumentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Whenever both sides of an assignment without Set are objects, there is an assignment from the default member of the RHS to the one on the LHS. Although this might be intentional, in many situations it will just mask an erroneously forgotten Set..
         /// </summary>
         public static string SuspiciousLetAssignmentInspection {

@@ -1,20 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.CodeAnalysis.Settings;
-using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Refactorings.Common;
-using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
-using static Rubberduck.Parsing.Grammar.VBAParser;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about identifiers that have names that are likely to be too short, disemvoweled, or appended with a numeric suffix.
@@ -23,26 +19,30 @@ namespace Rubberduck.Inspections.Concrete
     /// Meaningful, pronounceable, unabbreviated names read better and leave less room for interpretation. 
     /// Moreover, names suffixed with a number can indicate the need to look into an array, collection, or dictionary data structure.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub CpFrmtRls(ByVal rng1 As Range, ByVal rng2 As Range)
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub CopyFormatRules(ByVal source As Range, ByVal destination As Range)
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class UseMeaningfulNameInspection : InspectionBase
+    internal sealed class UseMeaningfulNameInspection : DeclarationInspectionUsingGlobalInformationBase<string[]>
     {
         private readonly IConfigurationService<CodeInspectionSettings> _settings;
 
-        public UseMeaningfulNameInspection(RubberduckParserState state, IConfigurationService<CodeInspectionSettings> settings)
-            : base(state)
+        public UseMeaningfulNameInspection(IDeclarationFinderProvider declarationFinderProvider, IConfigurationService<CodeInspectionSettings> settings)
+            : base(declarationFinderProvider)
         {
             _settings = settings;
         }
@@ -54,43 +54,42 @@ namespace Rubberduck.Inspections.Concrete
             DeclarationType.LibraryProcedure, 
         };
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string[] GlobalInformation(DeclarationFinder finder)
         {
             var settings = _settings.Read();
-            var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToArray();
-
-            var handlers = State.DeclarationFinder.FindEventHandlers();
-
-            var issues = UserDeclarations
-                            .Where(declaration => !string.IsNullOrEmpty(declaration.IdentifierName) &&
-                                !IgnoreDeclarationTypes.Contains(declaration.DeclarationType) &&
-                                !(declaration.Context is LineNumberLabelContext) &&
-                                (declaration.ParentDeclaration == null || 
-                                    !IgnoreDeclarationTypes.Contains(declaration.ParentDeclaration.DeclarationType) &&
-                                    !handlers.Contains(declaration.ParentDeclaration)) &&
-                                    !whitelistedNames.Contains(declaration.IdentifierName) &&
-                                    !VBAIdentifierValidator.IsMeaningfulIdentifier(declaration.IdentifierName));
-
-            return (from issue in issues select CreateInspectionResult(this, issue))
-                .ToList();
+            return settings.WhitelistedIdentifiers
+                .Select(s => s.Identifier)
+                .ToArray();
         }
 
-        private static DeclarationInspectionResult CreateInspectionResult(IInspection inspection, Declaration issue)
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder, string[] whitelistedNames)
         {
-            dynamic properties = null;
+            return !string.IsNullOrEmpty(declaration.IdentifierName)
+                   && !IgnoreDeclarationTypes.Contains(declaration.DeclarationType)
+                   && !(declaration.Context is VBAParser.LineNumberLabelContext)
+                   && (declaration.ParentDeclaration == null
+                       || !IgnoreDeclarationTypes.Contains(declaration.ParentDeclaration.DeclarationType)
+                       && !finder.FindEventHandlers().Contains(declaration.ParentDeclaration))
+                   && !whitelistedNames.Contains(declaration.IdentifierName)
+                   && !VBAIdentifierValidator.IsMeaningfulIdentifier(declaration.IdentifierName);
+        }
 
-            if (issue.DeclarationType.HasFlag(DeclarationType.Module) ||
-                issue.DeclarationType.HasFlag(DeclarationType.Project))
-            {
-                properties = new PropertyBag();
-                properties.DisableFixes = "IgnoreOnceQuickFix";
-            }
+        protected override string ResultDescription(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType.ToLocalizedString();
+            var declarationName = declaration.IdentifierName;
+            return string.Format(
+                Resources.Inspections.InspectionResults.IdentifierNameInspection,
+                declarationType,
+                declarationName);
+        }
 
-            return new DeclarationInspectionResult(inspection,
-                string.Format(Resources.Inspections.InspectionResults.IdentifierNameInspection,
-                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + issue.DeclarationType,
-                        CultureInfo.CurrentUICulture), issue.IdentifierName),
-                issue, properties: properties);
+        protected override ICollection<string> DisabledQuickFixes(Declaration declaration)
+        {
+            return declaration.DeclarationType.HasFlag(DeclarationType.Module)
+                   || declaration.DeclarationType.HasFlag(DeclarationType.Project)
+                   ? new List<string> {"IgnoreOnceQuickFix"}
+                   : new List<string>();
         }
     }
 }

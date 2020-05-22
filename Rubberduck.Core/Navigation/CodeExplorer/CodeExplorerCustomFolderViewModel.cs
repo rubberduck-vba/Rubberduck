@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Rubberduck.Common;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -30,7 +32,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             _vbe = vbe;
             FolderDepth = parent is CodeExplorerCustomFolderViewModel folder ? folder.FolderDepth + 1 : 1;
-            FullPath = fullPath?.Trim('"') ?? string.Empty;
+            FullPath = fullPath?.FromVbaStringLiteral() ?? string.Empty;
             Name = name.Replace("\"", string.Empty);
 
             AddNewChildren(ref declarations);
@@ -44,7 +46,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public string FullPath { get; }
 
-        public string FolderAttribute => $"'@Folder(\"{FullPath.Replace("\"", string.Empty)}\")";
+        public string FolderAttribute => $"'@Folder({FullPath.ToVbaStringLiteral()})";
 
         /// <summary>
         /// One-based depth in the folder hierarchy.

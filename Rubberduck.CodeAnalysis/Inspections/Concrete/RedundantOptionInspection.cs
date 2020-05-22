@@ -1,17 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies redundant module options that are set to their implicit default.
@@ -20,7 +14,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Module options that are redundant can be safely removed. Disable this inspection if your convention is to explicitly specify them; a future 
     /// inspection may be used to enforce consistently explicit module options.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Option Base 0
@@ -29,50 +24,42 @@ namespace Rubberduck.Inspections.Concrete
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class RedundantOptionInspection : ParseTreeInspectionBase
+    internal sealed class RedundantOptionInspection : ParseTreeInspectionBase<ParserRuleContext>
     {
-        public RedundantOptionInspection(RubberduckParserState state)
-            : base(state)
+        public RedundantOptionInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            Listener = new RedundantModuleOptionListener();
+            ContextListener = new RedundantModuleOptionListener();
         }
 
-        public override IInspectionListener Listener { get; }
+        protected override IInspectionListener<ParserRuleContext> ContextListener { get; }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            return Listener.Contexts
-                                   .Select(context => new QualifiedContextInspectionResult(this,
-                                                                           string.Format(InspectionResults.RedundantOptionInspection, context.Context.GetText()),
-                                                                           context));
+            return string.Format(
+                InspectionResults.RedundantOptionInspection, 
+                context.Context.GetText());
         }
 
-        public class RedundantModuleOptionListener : VBAParserBaseListener, IInspectionListener
+        private class RedundantModuleOptionListener : InspectionListenerBase<ParserRuleContext>
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
             public override void ExitOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
             {
                 if (context.numberLiteral()?.INTEGERLITERAL().Symbol.Text == "0")
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                   SaveContext(context);
                 }
             }
 
@@ -81,7 +68,7 @@ namespace Rubberduck.Inspections.Concrete
                 // BINARY is the default, and DATABASE is specified by default + only valid in Access.
                 if (context.TEXT() == null && context.DATABASE() == null)
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    SaveContext(context);
                 }
             }
         }

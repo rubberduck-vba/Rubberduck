@@ -1,37 +1,46 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
-    public sealed class ImplicitlyTypedConstInspection : InspectionBase
+    /// <summary>
+    /// Warns about constants that don't have an explicitly defined type.
+    /// </summary>
+    /// <why>
+    /// All constants have a declared type, whether a type is specified or not. The implicit type is determined by the compiler based on the value, which is not always the expected type.
+    /// </why>
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
+    /// <![CDATA[
+    /// Const myInteger = 12345
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
+    /// <![CDATA[
+    /// Const myInteger As Integer = 12345
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
+    /// <![CDATA[
+    /// Const myInteger% = 12345
+    /// ]]>
+    /// </module>
+    /// </example>
+    internal sealed class ImplicitlyTypedConstInspection : ImplicitTypeInspectionBase
     {
-        public ImplicitlyTypedConstInspection(RubberduckParserState state)
-            : base(state) { }
+        public ImplicitlyTypedConstInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Constant)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(Declaration declaration)
         {
-            var declarationFinder = State.DeclarationFinder;
-
-            var implicitlyTypedConsts = declarationFinder.UserDeclarations(DeclarationType.Constant)
-                .Where(declaration => !declaration.IsTypeSpecified);
-
-            return implicitlyTypedConsts.Select(Result);
-        }
-
-        private IInspectionResult Result(Declaration declaration)
-        {
-            var description = string.Format(InspectionResults.ImplicitlyTypedConstInspection, declaration.IdentifierName);
-
-            return new DeclarationInspectionResult(
-                this,
-                description,
-                declaration);
+           return string.Format(InspectionResults.ImplicitlyTypedConstInspection, declaration.IdentifierName);
         }
     }
 }

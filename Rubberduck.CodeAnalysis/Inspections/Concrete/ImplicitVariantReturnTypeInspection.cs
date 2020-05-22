@@ -1,16 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about 'Function' and 'Property Get' procedures that don't have an explicit return type.
@@ -18,34 +11,33 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// All functions return something, whether a type is specified or not. The implicit default is 'Variant'.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function GetFoo()
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function GetFoo() As Long
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ImplicitVariantReturnTypeInspection : InspectionBase
+    internal sealed class ImplicitVariantReturnTypeInspection : ImplicitTypeInspectionBase
     {
-        public ImplicitVariantReturnTypeInspection(RubberduckParserState state)
-            : base(state) { }
+        public ImplicitVariantReturnTypeInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Function)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(Declaration declaration)
         {
-            var issues = from item in State.DeclarationFinder.UserDeclarations(DeclarationType.Function)
-                         where !item.IsTypeSpecified 
-                         let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
-                         select new DeclarationInspectionResult(this,
-                                                     string.Format(InspectionResults.ImplicitVariantReturnTypeInspection, item.IdentifierName),
-                                                     item);
-            return issues;
+            return string.Format(InspectionResults.ImplicitVariantReturnTypeInspection, declaration.IdentifierName);
         }
     }
 }

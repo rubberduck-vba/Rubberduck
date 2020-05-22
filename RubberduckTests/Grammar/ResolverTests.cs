@@ -1495,10 +1495,11 @@ End Sub
             using (var state = Resolve(code))
             {
 
-                var declaration = state.AllUserDeclarations.Single(item =>
-                    item.DeclarationType == DeclarationType.UserDefinedType);
+                var declaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.UserDefinedType)
+                    .Single();
 
-                if (declaration.Project.Name != declaration.IdentifierName)
+                if (Declaration.GetProjectParent(declaration).IdentifierName != declaration.IdentifierName)
                 {
                     Assert.Inconclusive("UDT should be named after project.");
                 }
@@ -1534,7 +1535,7 @@ End Sub
                 var declaration = state.AllUserDeclarations.Single(item =>
                     item.DeclarationType == DeclarationType.UserDefinedType);
 
-                if (declaration.Project.Name != declaration.IdentifierName)
+                if (Declaration.GetProjectParent(declaration).IdentifierName != declaration.IdentifierName)
                 {
                     Assert.Inconclusive("UDT should be named after project.");
                 }
@@ -1568,7 +1569,7 @@ End Sub
                 var declaration = state.AllUserDeclarations.Single(item =>
                     item.DeclarationType == DeclarationType.Variable);
 
-                if (declaration.Project.Name != declaration.AsTypeName)
+                if (Declaration.GetProjectParent(declaration).IdentifierName != declaration.AsTypeName)
                 {
                     Assert.Inconclusive("variable should be named after project.");
                 }
@@ -1636,7 +1637,7 @@ End Sub
                 var declaration = state.AllUserDeclarations.Single(item =>
                     item.DeclarationType == DeclarationType.UserDefinedTypeMember
                     && item.IdentifierName == "Foo"
-                    && item.AsTypeName == item.Project.Name
+                    && item.AsTypeName == Declaration.GetProjectParent(item).IdentifierName
                     && item.IdentifierName == item.ParentDeclaration.IdentifierName);
 
                 var usages = declaration.References.Where(item =>
@@ -1857,7 +1858,7 @@ End Sub
 
                 var declaration = state.AllUserDeclarations.Single(item =>
                     item.DeclarationType == DeclarationType.Project
-                    && item.IdentifierName == item.Project.Name);
+                    && item.IdentifierName == Declaration.GetProjectParent(item).IdentifierName);
 
                 var usages = declaration.References.Where(item =>
                     item.ParentScoping.IdentifierName == "DoSomething");
@@ -6820,7 +6821,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -6853,7 +6854,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -6890,7 +6891,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -6927,7 +6928,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -6964,7 +6965,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 

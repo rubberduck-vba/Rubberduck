@@ -1,18 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Finds instances of 'On Error Resume Next' that don't have a corresponding 'On Error GoTo 0' to restore error handling.
@@ -22,15 +18,18 @@ namespace Rubberduck.Inspections.Concrete
     /// for the rest of the procedure; 'On Error GoTo 0' reinstates error handling. 
     /// This inspection helps treating 'Resume Next' and 'GoTo 0' as a code block (similar to 'With...End With'), essentially.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error Resume Next ' error handling is never restored in this scope.
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error Resume Next
@@ -38,77 +37,90 @@ namespace Rubberduck.Inspections.Concrete
     ///     On Error GoTo 0
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public class UnhandledOnErrorResumeNextInspection : ParseTreeInspectionBase
+    internal sealed class UnhandledOnErrorResumeNextInspection : ParseTreeInspectionBase<VBAParser.OnErrorStmtContext, IReadOnlyList<VBAParser.OnErrorStmtContext>>
     {
-        private readonly Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>> _unhandledContextsMap =
-            new Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>>();
+        private readonly OnErrorStatementListener _listener = new OnErrorStatementListener();
 
-        public UnhandledOnErrorResumeNextInspection(RubberduckParserState state) : base(state)
+        public UnhandledOnErrorResumeNextInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
+
+        protected override IInspectionListener<VBAParser.OnErrorStmtContext> ContextListener => _listener;
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.OnErrorStmtContext> context, IReadOnlyList<VBAParser.OnErrorStmtContext> properties)
         {
-            Listener = new OnErrorStatementListener(_unhandledContextsMap);
+            return InspectionResults.UnhandledOnErrorResumeNextInspection;
         }
 
-        public override IInspectionListener Listener { get; }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override (bool isResult, IReadOnlyList<VBAParser.OnErrorStmtContext> properties) IsResultContextWithAdditionalProperties(QualifiedContext<VBAParser.OnErrorStmtContext> context, DeclarationFinder finder)
         {
-            return Listener.Contexts
-                .Select(result =>
-                {
-                    dynamic properties = new PropertyBag();
-                    properties.UnhandledContexts = _unhandledContextsMap[result];
-
-                    return new QualifiedContextInspectionResult(this, InspectionResults.UnhandledOnErrorResumeNextInspection, result, properties);
-                });
-        }
-    }
-
-    public class OnErrorStatementListener : VBAParserBaseListener, IInspectionListener
-    {
-        private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-        private readonly List<QualifiedContext<ParserRuleContext>> _unhandledContexts = new List<QualifiedContext<ParserRuleContext>>();
-        private readonly Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>> _unhandledContextsMap;
-
-        public OnErrorStatementListener(Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>> unhandledContextsMap)
-        {
-            _unhandledContextsMap = unhandledContextsMap;
+            return (true, _listener.UnhandledContexts(context));
         }
 
-        public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-        public void ClearContexts()
+        private class OnErrorStatementListener : InspectionListenerBase<VBAParser.OnErrorStmtContext>
         {
-            _contexts.Clear();
-            _unhandledContextsMap.Clear();
-        }
+            private readonly List<QualifiedContext<VBAParser.OnErrorStmtContext>> _unhandledContexts = new List<QualifiedContext<VBAParser.OnErrorStmtContext>>();
+            private readonly Dictionary<QualifiedContext<VBAParser.OnErrorStmtContext>, List<VBAParser.OnErrorStmtContext>> _unhandledContextsMap = new Dictionary<QualifiedContext<VBAParser.OnErrorStmtContext>, List<VBAParser.OnErrorStmtContext>>();
 
-        public QualifiedModuleName CurrentModuleName { get; set; }
-
-        public override void ExitModuleBodyElement(VBAParser.ModuleBodyElementContext context)
-        {
-            if (_unhandledContexts.Any())
+            public IReadOnlyList<VBAParser.OnErrorStmtContext> UnhandledContexts(QualifiedContext<VBAParser.OnErrorStmtContext> context)
             {
-                foreach (var errorContext in _unhandledContexts)
+                return _unhandledContextsMap.TryGetValue(context, out var unhandledContexts)
+                    ? unhandledContexts
+                    : new List<VBAParser.OnErrorStmtContext>();
+            }
+
+            public override void ClearContexts()
+            {
+                _unhandledContextsMap.Clear();
+                base.ClearContexts();
+            }
+
+            public override void ClearContexts(QualifiedModuleName module)
+            {
+                var keysInModule = _unhandledContextsMap.Keys
+                    .Where(context => context.ModuleName.Equals(module));
+
+                foreach (var key in keysInModule)
                 {
-                    _unhandledContextsMap.Add(errorContext, new List<ParserRuleContext>(_unhandledContexts.Select(ctx => ctx.Context)));
+                    _unhandledContextsMap.Remove(key);
                 }
 
-                _contexts.AddRange(_unhandledContexts);
-
-                _unhandledContexts.Clear();
+                base.ClearContexts(module);
             }
-        }
 
-        public override void ExitOnErrorStmt(VBAParser.OnErrorStmtContext context)
-        {
-            if (context.RESUME() != null)
+            public override void ExitModuleBodyElement(VBAParser.ModuleBodyElementContext context)
             {
-                _unhandledContexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                if (_unhandledContexts.Any())
+                {
+                    foreach (var errorContext in _unhandledContexts)
+                    {
+                        _unhandledContextsMap.Add(errorContext, new List<VBAParser.OnErrorStmtContext>(_unhandledContexts.Select(ctx => ctx.Context)));
+                        SaveContext(errorContext.Context);
+                    }
+
+                    _unhandledContexts.Clear();
+                }
             }
-            else if (context.GOTO() != null)
+
+            public override void ExitOnErrorStmt(VBAParser.OnErrorStmtContext context)
             {
-                _unhandledContexts.Clear();
+                if (context.RESUME() != null)
+                {
+                    SaveUnhandledContext(context);
+                }
+                else if (context.GOTO() != null)
+                {
+                    _unhandledContexts.Clear();
+                }
+            }
+
+            private void SaveUnhandledContext(VBAParser.OnErrorStmtContext context)
+            {
+                var module = CurrentModuleName;
+                var qualifiedContext = new QualifiedContext<VBAParser.OnErrorStmtContext>(module, context);
+                _unhandledContexts.Add(qualifiedContext);
             }
         }
     }

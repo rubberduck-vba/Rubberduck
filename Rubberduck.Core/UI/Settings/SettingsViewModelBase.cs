@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using Rubberduck.Resources.Settings;
+﻿using Rubberduck.Resources.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 

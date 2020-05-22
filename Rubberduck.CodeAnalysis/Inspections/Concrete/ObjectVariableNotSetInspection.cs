@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about assignments that appear to be assigning an object reference without the 'Set' keyword.
@@ -23,7 +20,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Omitting the 'Set' keyword will Let-coerce the right-hand side (RHS) of the assignment expression. If the RHS is an object variable,
     /// then the assignment is implicitly assigning to that object's default member, which may raise run-time error 91 at run-time.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Object
@@ -31,8 +29,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Object
@@ -40,45 +40,20 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ObjectVariableNotSetInspection : InspectionBase
+    internal sealed class ObjectVariableNotSetInspection : IdentifierReferenceInspectionBase
     {
-        public ObjectVariableNotSetInspection(RubberduckParserState state)
-            : base(state) { }
+        public ObjectVariableNotSetInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var finder = State.DeclarationFinder;
-
-            var failedLetResolutionResults = FailedLetResolutionResults(finder);
-
-            return failedLetResolutionResults
-                .Select(reference =>
-                    new IdentifierReferenceInspectionResult(
-                        this,
-                        string.Format(InspectionResults.ObjectVariableNotSetInspection, reference.IdentifierName),
-                        State, 
-                        reference));
-        }
-
-        private IEnumerable<IdentifierReference> FailedLetResolutionResults(DeclarationFinder finder)
-        {
-            var results = new List<IdentifierReference>();
-            foreach (var moduleDeclaration in finder.UserDeclarations(DeclarationType.Module))
-            {
-                if (moduleDeclaration == null)
-                {
-                    continue;
-                }
-
-                var module = moduleDeclaration.QualifiedModuleName;
-                var failedLetCoercionAssignmentsInModule = FailedLetResolutionAssignments(module, finder);
-                var possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs = PossiblyObjectLhsLetAssignmentsWithNonValueOnRhs(module, finder);
-                results.AddRange(failedLetCoercionAssignmentsInModule);
-                results.AddRange(possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs);
-            }
-
-            return results;
+            var failedLetCoercionAssignmentsInModule = FailedLetResolutionAssignments(module, finder);
+            var possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs = PossiblyObjectLhsLetAssignmentsWithNonValueOnRhs(module, finder);
+            return failedLetCoercionAssignmentsInModule
+                .Concat(possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs);
         }
 
         private static IEnumerable<IdentifierReference> FailedLetResolutionAssignments(QualifiedModuleName module, DeclarationFinder finder)
@@ -120,6 +95,16 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(reference => reference.IsAssignment);
 
             return assignments.Concat(unboundAssignments);
+        }
+
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
+        {
+            return true;
+        }
+
+        protected override string ResultDescription(IdentifierReference reference)
+        {
+            return string.Format(InspectionResults.ObjectVariableNotSetInspection, reference.IdentifierName);
         }
     }
 }

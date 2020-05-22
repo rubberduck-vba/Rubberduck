@@ -43,7 +43,8 @@ End Property";
         {
             var msgBox = new Mock<IMessageBox>().Object;
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var refactoring = new IntroduceFieldRefactoring(state, rewritingManager, selectionService, selectedDeclarationProvider);
+            var baseRefactoring = new IntroduceFieldRefactoringAction(state, rewritingManager);
+            var refactoring = new IntroduceFieldRefactoring(baseRefactoring, selectionService, selectedDeclarationProvider);
             var notifier = new IntroduceFieldFailedNotifier(msgBox);
             return new RefactorIntroduceFieldCommand(refactoring, notifier, state, selectionService, selectedDeclarationProvider);
         }

@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;

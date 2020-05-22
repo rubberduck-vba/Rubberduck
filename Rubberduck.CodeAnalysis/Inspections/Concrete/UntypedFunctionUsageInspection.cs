@@ -1,15 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags uses of a number of specific string-centric but Variant-returning functions in various standard library modules.
@@ -18,24 +16,29 @@ namespace Rubberduck.Inspections.Concrete
     /// Several functions in the standard library take a Variant parameter and return a Variant result, but an equivalent 
     /// string-returning function taking a string parameter exists and should probably be preferred.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Double)
     ///     Debug.Print Format(foo, "Currency") ' Strings.Format function returns a Variant.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Double)
     ///     Debug.Print Format$(CStr(foo), "Currency") ' Strings.Format$ function returns a String.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class UntypedFunctionUsageInspection : InspectionBase
+    internal sealed class UntypedFunctionUsageInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        public UntypedFunctionUsageInspection(RubberduckParserState state)
-            : base(state) { }
+        public UntypedFunctionUsageInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         private readonly HashSet<string> _tokens = new HashSet<string>{
             Tokens.Error,
@@ -63,48 +66,37 @@ namespace Rubberduck.Inspections.Concrete
             Tokens.UCase
         };
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            var finder = State.DeclarationFinder;
-
-            var declarationsToConsider = BuiltInVariantStringFunctionsWithStringTypedVersion(finder);
-
-            return declarationsToConsider
-                .SelectMany(NonStringHintedReferences)
-                .Select(Result);
+            return BuiltInVariantStringFunctionsWithStringTypedVersion(finder);
         }
 
         private IEnumerable<Declaration> BuiltInVariantStringFunctionsWithStringTypedVersion(DeclarationFinder finder)
         {
             return finder
                 .BuiltInDeclarations(DeclarationType.Member)
-                .Where(item => (_tokens.Contains(item.IdentifierName)
-                                || item.IdentifierName.StartsWith("_B_var_")
-                                    && _tokens.Contains(item.IdentifierName.Substring("_B_var_".Length)))
-                               && item.Scope.StartsWith("VBE7.DLL;"));
+                .Where(item => item.Scope.StartsWith("VBE7.DLL;") 
+                               && (_tokens.Contains(item.IdentifierName)
+                                    || item.IdentifierName.StartsWith("_B_var_")
+                                        && _tokens.Contains(item.IdentifierName.Substring("_B_var_".Length))));
         }
 
-        private IEnumerable<IdentifierReference> NonStringHintedReferences(Declaration declaration)
-        {
-            return declaration.References
-                .Where(item => _tokens.Contains(item.IdentifierName));
-        }
-
-        private IInspectionResult Result(IdentifierReference reference)
-        {
-            return new IdentifierReferenceInspectionResult(
-                this,
-                ResultDescription(reference),
-                State,
-                reference);
-        }
-
-        private static string ResultDescription(IdentifierReference reference)
+        protected override string ResultDescription(IdentifierReference reference)
         {
             var declarationName = reference.Declaration.IdentifierName;
             return string.Format(
                 InspectionResults.UntypedFunctionUsageInspection,
                 declarationName);
+        }
+
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
+        {
+            return IsNotStringHinted(reference);
+        }
+
+        private bool IsNotStringHinted(IdentifierReference reference)
+        {
+            return _tokens.Contains(reference.IdentifierName);
         }
     }
 }

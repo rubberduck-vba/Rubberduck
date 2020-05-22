@@ -1,12 +1,12 @@
 using System.Linq;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.Inspections.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -109,6 +109,23 @@ End Sub";
             };
 
             Assert.AreEqual(0, InspectionResultsForModules(modules).Count(result => result.Target.DeclarationType == DeclarationType.Procedure));
+        }
+
+        [TestCase("@TestMethod(\"TestCategory\")")]
+        [TestCase("@ModuleInitialize")]
+        [TestCase("@ModuleCleanup")]
+        [TestCase("@TestInitialize")]
+        [TestCase("@TestCleanup")]
+        [Category("Inspections")]
+        public void ProcedureNotUsed_NoResultForTestRelatedMethods(string annotationText)
+        {
+            string inputCode =
+                $@"
+'{annotationText}
+Private Sub TestRelatedMethod()
+End Sub";
+            
+            Assert.AreEqual(0, InspectionResultsForModules(("TestClass", inputCode, ComponentType.StandardModule)).Count());
         }
 
         [TestCase("Class_Initialize")]

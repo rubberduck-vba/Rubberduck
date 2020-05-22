@@ -230,7 +230,8 @@
     <value>{0} '{1}' is implicitly 'Variant'.</value>
   </data>
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
-    <value>Expression '{0}' was expected to contain a parameter, but none was specified.</value>
+    <value>The annotation '{0}' was expected to have more arguments.</value>
+    <comment>{0} annotation name</comment>
   </data>
   <data name="ModuleScopeDimKeywordInspection" xml:space="preserve">
     <value>Module-level variable '{0}' is declared with the 'Dim' keyword.</value>
@@ -507,5 +508,9 @@ In memoriam, 1972-2018</value>
   </data>
   <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
     <value>Constant '{0}' is implicitly typed.</value>
+  </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>The annotation '{0}' was expected to have less arguments.</value>
+    <comment>{0} annotation name</comment>
   </data>
 </root>

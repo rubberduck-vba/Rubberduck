@@ -824,7 +824,7 @@ End Sub";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Module", ComponentType.StandardModule, inputCode)
-                .AddReference("EXCEL", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddReference(ReferenceLibrary.Excel)
                 .AddProjectToVbeBuilder()
                 .Build()
                 .Object;
@@ -1075,7 +1075,8 @@ End Sub";
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            return new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService, selectedDeclarationProvider);
+            var baseRefactoring = new MoveCloserToUsageRefactoringAction(rewritingManager);
+            return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
         }
     }
 }

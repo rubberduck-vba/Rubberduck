@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.UnitTesting.CodeGeneration;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -21,13 +22,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             typeof(CodeExplorerMemberViewModel)
         };
 
+        private readonly IProjectsProvider _projectsProvider;
+
         public AddTestComponentCommand(
             IVBE vbe, 
             RubberduckParserState state, 
             ITestCodeGenerator codeGenerator, 
-            IVbeEvents vbeEvents)
-            : base(vbe, state, codeGenerator, vbeEvents)
+            IVbeEvents vbeEvents,
+            IProjectsProvider projectsProvider)
+            : base(vbe, state, codeGenerator, vbeEvents, projectsProvider)
         {
+            _projectsProvider = projectsProvider;
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
@@ -39,8 +44,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
 
             Declaration declaration;
-            if (ApplicableNodes.Contains(parameter.GetType()) &&
-                parameter is CodeExplorerItemViewModel node)
+            if (ApplicableNodes.Contains(parameter.GetType()) 
+                && parameter is CodeExplorerItemViewModel node)
             {
                 declaration = node.Declaration;
             }
@@ -53,9 +58,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return false;
             }
 
+            var project = declaration != null
+                ? _projectsProvider.Project(declaration.ProjectId)
+                : null;
+
             try
             {
-                return declaration?.Project != null || Vbe.ProjectsCount != 1;
+                return project != null || Vbe.ProjectsCount != 1;
             }
             catch (COMException)
             {

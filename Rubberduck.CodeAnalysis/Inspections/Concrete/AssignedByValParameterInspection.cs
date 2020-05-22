@@ -1,14 +1,11 @@
-using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about parameters passed by value being assigned a new value in the body of a procedure.
@@ -18,15 +15,18 @@ namespace Rubberduck.Inspections.Concrete
     /// Mutating the inputs destroys the initial state, and makes the intent ambiguous: if the calling code is meant
     /// to be able to access the modified values, then the parameter should be passed ByRef; the ByVal modifier might be a bug.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     foo = foo + 1 ' is the caller supposed to see the updated value?
     ///     Debug.Print foo
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Dim bar As Long
@@ -35,24 +35,25 @@ namespace Rubberduck.Inspections.Concrete
     ///     Debug.Print bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class AssignedByValParameterInspection : InspectionBase
+    internal sealed class AssignedByValParameterInspection : DeclarationInspectionBase
     {
-        public AssignedByValParameterInspection(RubberduckParserState state)
-            : base(state)
-        { }
-        
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
-        {
-            var parameters = State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
-                .Cast<ParameterDeclaration>()
-                .Where(item => !item.IsByRef 
-                    && item.References.Any(reference => reference.IsAssignment));
+        public AssignedByValParameterInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Parameter)
+        {}
 
-            return parameters
-                .Select(param => new DeclarationInspectionResult(this,
-                                                      string.Format(InspectionResults.AssignedByValParameterInspection, param.IdentifierName),
-                                                      param));
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
+        {
+            return declaration is ParameterDeclaration parameter 
+                   && !parameter.IsByRef 
+                   && parameter.References
+                       .Any(reference => reference.IsAssignment);
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.AssignedByValParameterInspection, declaration.IdentifierName);
         }
     }
 }

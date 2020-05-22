@@ -1655,7 +1655,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <comment>{0}=Project; {1}=Folder; {2}=Component; {3}=DeclarationType; {4}=Scope; {5}=Name</comment>
   </data>
   <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
-    <value>Unable to suspend the Parser to perform the refactoring operation</value>
+    <value>Unable to suspend the Parser to perform the refactoring operation.</value>
   </data>
   <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
     <value>Tell me if a newer pre-release build is available</value>
@@ -1778,6 +1778,46 @@ Import aborted.</value>
   </data>
   <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
     <value>Wrap Fields in Private Type</value>
+  </data>
+  <data name="MoveToFolderDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Move to Folder</value>
+  </data>
+  <data name="MoveToFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify a new folder for {0} '{1}' in folder '{2}'.</value>
+    <comment>{0} DeclarationType; {1} IdentifierName; {2} current folder</comment>
+  </data>
+  <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
+    <value>Move to Folder</value>
+  </data>
+  <data name="MoveToFolderDialog_FolderLabelText" xml:space="preserve">
+    <value>Folder:</value>
+  </data>
+  <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify new folder for the components.</value>
+  </data>
+  <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify a new parent folder for the older '{0}'.</value>
+    <comment>{0} folder</comment>
+  </data>
+  <data name="MoveFoldersDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify a new parent folder for the folders.</value>
+  </data>
+  <data name="MoveFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify a new parent folder for the subfolder '{0}' of '{1}'.</value>
+    <comment>{0} folder; {1} parent folder</comment>
+  </data>
+  <data name="MoveFoldersDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Move Folders</value>
+  </data>
+  <data name="MoveFoldersDialog_TitleText" xml:space="preserve">
+    <value>Move Folders</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
+    <value>No target has been specified.</value>
+  </data>
+  <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
+    <value>The component '{0}' would have been affected by the refactoring, but its state in Rubberduck's memory is stale. Please refresh Rubberduck and try again.</value>
+    <comment>{0} stale module</comment>
   </data>
   <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
     <value>Instancing</value>

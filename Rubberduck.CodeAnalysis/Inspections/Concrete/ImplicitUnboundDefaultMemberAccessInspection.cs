@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Parsing.Inspections;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies the use of indexed default member accesses for which the default member cannot be determined at compile time.
@@ -18,51 +18,59 @@ namespace Rubberduck.Inspections.Concrete
     /// and should there not be a suitable default member at runtime, an error 438 'Object doesn't support this property or method' will be raised.
     /// </why>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Object)
     ///     Dim bar As Variant
     ///     bar = arg
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Object)
     ///     Dim bar As Variant
     ///     arg = bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Object)
     ///     Dim bar As Variant
     ///     bar = arg.SomeValueReturningMember
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Object)
     ///     Dim bar As Variant
     ///     arg.SomePropertyLet = bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ImplicitUnboundDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
+    internal sealed class ImplicitUnboundDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
     {
-        public ImplicitUnboundDefaultMemberAccessInspection(RubberduckParserState state)
-            : base(state)
+        public ImplicitUnboundDefaultMemberAccessInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module)
+        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            return DeclarationFinderProvider.DeclarationFinder.UnboundDefaultMemberAccesses(module);
+            return finder.UnboundDefaultMemberAccesses(module);
         }
 
-        protected override bool IsResultReference(IdentifierReference reference)
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             return reference.IsNonIndexedDefaultMemberAccess
                    && !reference.IsProcedureCoercion

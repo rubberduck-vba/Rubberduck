@@ -1,12 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
+﻿using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.TypeResolvers;
 using Rubberduck.Parsing.VBA;
@@ -16,110 +11,111 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
-	/// <summary>
-	/// Locates assignments to object variables for which the RHS does not have a compatible declared type. 
-	/// </summary>
-	/// <why>
-	/// The VBA compiler does not check whether different object types are compatible. Instead there is a runtime error whenever the types are incompatible.
-	/// </why>
-	/// <example hasresult="true">
-	/// <![CDATA[
-	/// IInterface:
-	///
-	/// Public Sub DoSomething()
-	/// End Sub
-	///
-	/// ------------------------------
-	/// Class1:
-	///
-	///'No Implements IInterface
-	/// 
-	/// Public Sub DoSomething()
-	/// End Sub
-	///
-	/// ------------------------------
-	/// Module1:
-	/// 
-	/// Public Sub DoIt()
-	///     Dim cls As Class1
-	///     Dim intrfc As IInterface
-	///
-	///     Set cls = New Class1
-	///     Set intrfc = cls 
-	/// End Sub
-	/// ]]>
-	/// </example>
-	/// <example hasresult="false">
-	/// <![CDATA[
-	/// IInterface:
-	///
-	/// Public Sub DoSomething()
-	/// End Sub
-	///
-	/// ------------------------------
-	/// Class1:
-	///
-	/// Implements IInterface
-	/// 
-	/// Private Sub IInterface_DoSomething()
-	/// End Sub
-	///
-	/// ------------------------------
-	/// Module1:
-	/// 
-	/// Public Sub DoIt()
-	///     Dim cls As Class1
-	///     Dim intrfc As IInterface
-	///
-	///     Set cls = New Class1
-	///     Set intrfc = cls 
-	/// End Sub
-	/// ]]>
-	/// </example>
-    public class SetAssignmentWithIncompatibleObjectTypeInspection : InspectionBase
+    /// <summary>
+    /// Locates assignments to object variables for which the RHS does not have a compatible declared type. 
+    /// </summary>
+    /// <why>
+    /// The VBA compiler does not check whether different object types are compatible. Instead there is a runtime error whenever the types are incompatible.
+    /// </why>
+    /// <example hasresult="true">
+    /// <module name="IInterface" type="Class Module">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
+    ///'No Implements IInterface
+    /// 
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Public Sub DoIt()
+    ///     Dim cls As Class1
+    ///     Dim intrfc As IInterface
+    ///
+    ///     Set cls = New Class1
+    ///     Set intrfc = cls 
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasresult="false">
+    /// <module name="IInterface" type="Class Module">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
+    /// Implements IInterface
+    /// 
+    /// Private Sub IInterface_DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Public Sub DoIt()
+    ///     Dim cls As Class1
+    ///     Dim intrfc As IInterface
+    ///
+    ///     Set cls = New Class1
+    ///     Set intrfc = cls 
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    internal class SetAssignmentWithIncompatibleObjectTypeInspection : IdentifierReferenceInspectionBase<string>
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISetTypeResolver _setTypeResolver;
 
-        public SetAssignmentWithIncompatibleObjectTypeInspection(RubberduckParserState state, ISetTypeResolver setTypeResolver)
-            : base(state)
+        public SetAssignmentWithIncompatibleObjectTypeInspection(IDeclarationFinderProvider declarationFinderProvider, ISetTypeResolver setTypeResolver)
+            : base(declarationFinderProvider)
         {
-            _declarationFinderProvider = state;
             _setTypeResolver = setTypeResolver;
 
             //This will most likely cause a runtime error. The exceptions are rare and should be refactored or made explicit with an @Ignore annotation.
             Severity = CodeInspectionSeverity.Error;
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override (bool isResult, string properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder)
         {
-            var finder = _declarationFinderProvider.DeclarationFinder;
+            if (!ToBeConsidered(reference))
+            {
+                return (false, null);
+            }
 
-            var setAssignments = finder.AllIdentifierReferences().Where(reference => reference.IsSetAssignment);
+            var assignedTypeName = AssignedTypeName(reference, finder);
 
-            var offendingAssignments = setAssignments
-                .Where(ToBeConsidered)
-                .Select(setAssignment => SetAssignmentWithAssignedTypeName(setAssignment, finder))
-                .Where(setAssignmentWithAssignedTypeName => setAssignmentWithAssignedTypeName.assignedTypeName != null
-                                                            && !SetAssignmentPossiblyLegal(setAssignmentWithAssignedTypeName));
+            if(assignedTypeName == null || SetAssignmentPossiblyLegal(reference.Declaration, assignedTypeName))
+            {
+                return (false, null);
+            }
 
-            return offendingAssignments
-                // Ignoring the Declaration disqualifies all assignments
-                .Where(setAssignmentWithAssignedTypeName => !setAssignmentWithAssignedTypeName.setAssignment.Declaration.IsIgnoringInspectionResultFor(AnnotationName))
-                .Select(setAssignmentWithAssignedTypeName => InspectionResult(setAssignmentWithAssignedTypeName, _declarationFinderProvider));
+            return (true, assignedTypeName);
         }
 
         private static bool ToBeConsidered(IdentifierReference reference)
         {
+            if (reference == null || !reference.IsSetAssignment)
+            {
+                return false;
+            }
+
             var declaration = reference.Declaration;
-            return declaration != null
-                   && declaration.AsTypeDeclaration != null
+            return declaration?.AsTypeDeclaration != null 
                    && declaration.IsObject;
         }
 
-        private (IdentifierReference setAssignment, string assignedTypeName) SetAssignmentWithAssignedTypeName(IdentifierReference setAssignment, DeclarationFinder finder)
+        private string AssignedTypeName(IdentifierReference setAssignment, DeclarationFinder finder)
         {
-            return (setAssignment, SetTypeNameOfExpression(RHS(setAssignment), setAssignment.QualifiedModuleName, finder));
+            return SetTypeNameOfExpression(RHS(setAssignment), setAssignment.QualifiedModuleName, finder);
         }
 
         private VBAParser.ExpressionContext RHS(IdentifierReference setAssignment)
@@ -131,13 +127,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         {
             return _setTypeResolver.SetTypeName(expression, containingModule);
         }
-        
-        private bool SetAssignmentPossiblyLegal((IdentifierReference setAssignment, string assignedTypeName) setAssignmentWithAssignedType)
-        {
-            var (setAssignment, assignedTypeName) = setAssignmentWithAssignedType;
-            
-            return SetAssignmentPossiblyLegal(setAssignment.Declaration, assignedTypeName);
-        }
 
         private bool SetAssignmentPossiblyLegal(Declaration declaration, string assignedTypeName)
         {
@@ -145,7 +134,9 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 || assignedTypeName == Tokens.Variant
                 || assignedTypeName == Tokens.Object
                 || HasBaseType(declaration, assignedTypeName)
-                || HasSubType(declaration, assignedTypeName);
+                || HasSubType(declaration, assignedTypeName)
+                || assignedTypeName.EndsWith("stdole.IUnknown")
+                || declaration.FullAsTypeName.EndsWith("stdole.IUnknown");
         }
 
         private bool HasBaseType(Declaration declaration, string typeName)
@@ -170,19 +161,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return classType.Supertypes.Select(supertype => supertype.QualifiedModuleName.ToString()).Contains(typeName);
         }
 
-        private IInspectionResult InspectionResult((IdentifierReference setAssignment, string assignedTypeName) setAssignmentWithAssignedType, IDeclarationFinderProvider declarationFinderProvider)
+        protected override string ResultDescription(IdentifierReference reference, string assignedTypeName)
         {
-            var (setAssignment, assignedTypeName) = setAssignmentWithAssignedType;
-            return new IdentifierReferenceInspectionResult(this,
-                ResultDescription(setAssignment, assignedTypeName),
-                declarationFinderProvider,
-                setAssignment);
-        }
-
-        private string ResultDescription(IdentifierReference setAssignment, string assignedTypeName)
-        {
-            var declarationName = setAssignment.Declaration.IdentifierName;
-            var variableTypeName = setAssignment.Declaration.FullAsTypeName;
+            var declarationName = reference.Declaration.IdentifierName;
+            var variableTypeName = reference.Declaration.FullAsTypeName;
             return string.Format(InspectionResults.SetAssignmentWithIncompatibleObjectTypeInspection, declarationName, variableTypeName, assignedTypeName);
         }
     }

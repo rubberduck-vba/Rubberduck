@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using RubberduckTests.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.Excel;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -738,7 +738,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -870,7 +870,7 @@ End Sub";
                 @"'@IgnoreModule EmptyModule
 Option Explicit";
 
-            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new EmptyModuleInspection(state), TestStandardModuleVbeSetup);
+            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new EmptyModuleInspection(state, state), TestStandardModuleVbeSetup);
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -1152,7 +1152,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddReference(ReferenceLibrary.Excel)
                 .Build();
             var component = project.Object.VBComponents[0];
             var vbe = builder.AddProject(project).Build();
@@ -1165,7 +1165,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddReference(ReferenceLibrary.Excel)
                 .Build();
 
             var vbe = builder.AddProject(project).Build();

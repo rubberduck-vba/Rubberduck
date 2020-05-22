@@ -1,19 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.CodeAnalysis.Settings;
 using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.SettingsProvider;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags identifiers that use [Systems] Hungarian Notation prefixes.
@@ -23,7 +19,8 @@ namespace Rubberduck.Inspections.Concrete
     /// when they described that prefixes identified the "kind" of variable in a naming scheme dubbed Apps Hungarian.
     /// Modern naming conventions in all programming languages heavily discourage the use of Systems Hungarian prefixes. 
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim bFoo As Boolean, blnFoo As Boolean
@@ -34,8 +31,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     fnlngGetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Boolean, isFoo As Boolean
@@ -46,11 +45,11 @@ namespace Rubberduck.Inspections.Concrete
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class HungarianNotationInspection : InspectionBase
+    internal sealed class HungarianNotationInspection : DeclarationInspectionUsingGlobalInformationBase<List<string>>
     {
-        #region statics
-        private static readonly List<DeclarationType> TargetDeclarationTypes = new List<DeclarationType>
+        private static readonly DeclarationType[] TargetDeclarationTypes = new []
         {
             DeclarationType.Parameter,
             DeclarationType.Constant,
@@ -66,40 +65,43 @@ namespace Rubberduck.Inspections.Concrete
             DeclarationType.Variable
         };
 
-        private static readonly List<DeclarationType> IgnoredProcedureTypes = new List<DeclarationType>
+        private static readonly DeclarationType[] IgnoredProcedureTypes = new []
         {
             DeclarationType.LibraryFunction,
             DeclarationType.LibraryProcedure
         };
 
-        #endregion
-
         private readonly IConfigurationService<CodeInspectionSettings> _settings;
 
-        public HungarianNotationInspection(RubberduckParserState state, IConfigurationService<CodeInspectionSettings> settings)
-            : base(state)
+        public HungarianNotationInspection(IDeclarationFinderProvider declarationFinderProvider, IConfigurationService<CodeInspectionSettings> settings)
+            : base(declarationFinderProvider, TargetDeclarationTypes, IgnoredProcedureTypes)
         {
             _settings = settings;
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override List<string> GlobalInformation(DeclarationFinder finder)
         {
             var settings = _settings.Read();
-            var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToList();
+            return settings.WhitelistedIdentifiers
+                .Select(s => s.Identifier)
+                .ToList();
+        }
 
-            var hungarians = UserDeclarations
-                .Where(declaration => !whitelistedNames.Contains(declaration.IdentifierName)
-                                      && TargetDeclarationTypes.Contains(declaration.DeclarationType)
-                                      && !IgnoredProcedureTypes.Contains(declaration.DeclarationType)
-                                      && !IgnoredProcedureTypes.Contains(declaration.ParentDeclaration.DeclarationType)
-                                      && declaration.IdentifierName.TryMatchHungarianNotationCriteria(out _))
-                .Select(issue => new DeclarationInspectionResult(this,
-                                                      string.Format(Resources.Inspections.InspectionResults.IdentifierNameInspection,
-                                                                    RubberduckUI.ResourceManager.GetString($"DeclarationType_{issue.DeclarationType}", CultureInfo.CurrentUICulture),
-                                                                    issue.IdentifierName),
-                                                      issue));
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder, List<string> whitelistedNames)
+        {
+            return !whitelistedNames.Contains(declaration.IdentifierName)
+                   && !IgnoredProcedureTypes.Contains(declaration.ParentDeclaration.DeclarationType)
+                   && declaration.IdentifierName.TryMatchHungarianNotationCriteria(out _);
+        }
 
-            return hungarians;
+        protected override string ResultDescription(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType.ToLocalizedString();
+            var declarationName = declaration.IdentifierName;
+            return string.Format(
+                Resources.Inspections.InspectionResults.IdentifierNameInspection,
+                declarationType,
+                declarationName);
         }
     }
 }

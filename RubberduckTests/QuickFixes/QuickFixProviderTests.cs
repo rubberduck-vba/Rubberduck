@@ -2,9 +2,10 @@
 using System.Threading;
 using Moq;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.QuickFixes;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
+using Rubberduck.CodeAnalysis.QuickFixes.Logistics;
 using Rubberduck.Parsing.Rewriter;
 using RubberduckTests.Mocks;
 using RubberduckTests.Inspections;
@@ -83,7 +84,7 @@ End Sub";
                 var quickFixProvider = new QuickFixProvider(rewritingManager, failureNotifier, new IQuickFix[] { new RemoveUnusedDeclarationQuickFix() });
 
                 var result = inspectionResults.First();
-                result.Properties.DisableFixes = nameof(RemoveUnusedDeclarationQuickFix);
+                result.DisabledQuickFixes.Add(nameof(RemoveUnusedDeclarationQuickFix));
 
                 Assert.AreEqual(0, quickFixProvider.QuickFixes(result).Count());
             }

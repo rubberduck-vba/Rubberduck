@@ -1,13 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about host-evaluated square-bracketed expressions.
@@ -16,29 +13,38 @@ namespace Rubberduck.Inspections.Concrete
     /// Host-evaluated expressions should be implementable using the host application's object model.
     /// If the expression yields an object, member calls against that object are late-bound.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     [A1].Value = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     ActiveSheet.Range("A1").Value = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class HostSpecificExpressionInspection : InspectionBase
+    internal sealed class HostSpecificExpressionInspection : DeclarationInspectionBase
     {
-        public HostSpecificExpressionInspection(RubberduckParserState state)
-            : base(state) { }
+        public HostSpecificExpressionInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.BracketedExpression)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            return Declarations.Where(item => item.DeclarationType == DeclarationType.BracketedExpression)
-                .Select(item => new DeclarationInspectionResult(this, string.Format(InspectionResults.HostSpecificExpressionInspection, item.IdentifierName), item));
+            return true;
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.HostSpecificExpressionInspection, declaration.IdentifierName);
         }
     }
 }

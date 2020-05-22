@@ -1,12 +1,11 @@
-﻿using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies the use of bang notation, formally known as dictionary access expression.
@@ -15,13 +14,16 @@ namespace Rubberduck.Inspections.Concrete
     /// A dictionary access expression looks like a strongly typed call, but it actually is a stringly typed access to the parameterized default member of the object. 
     /// </why>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     wkb.Worksheets!MySheet.Range("A1").Value = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     With wkb.Worksheets
@@ -29,22 +31,28 @@ namespace Rubberduck.Inspections.Concrete
     ///     End With
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     wkb.Worksheets("MySheet").Range("A1").Value = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     wkb.Worksheets.Item("MySheet").Range("A1").Value = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     With wkb.Worksheets
@@ -52,16 +60,17 @@ namespace Rubberduck.Inspections.Concrete
     ///     End With
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class UseOfBangNotationInspection : IdentifierReferenceInspectionBase
+    internal sealed class UseOfBangNotationInspection : IdentifierReferenceInspectionBase
     {
-        public UseOfBangNotationInspection(RubberduckParserState state)
-            : base(state)
+        public UseOfBangNotationInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        protected override bool IsResultReference(IdentifierReference reference)
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             return reference.IsIndexedDefaultMemberAccess
                    && reference.DefaultMemberRecursionDepth == 1

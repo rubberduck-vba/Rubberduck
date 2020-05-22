@@ -336,7 +336,7 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extract Interface.
+        ///   Looks up a localized string similar to Extract Interface....
         /// </summary>
         public static string CodeExplorer_ExtractInterfaceText {
             get {
@@ -395,6 +395,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         public static string CodeExplorer_LibraryReferences {
             get {
                 return ResourceManager.GetString("CodeExplorer_LibraryReferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move to Folder....
+        /// </summary>
+        public static string CodeExplorer_MoveToFolder {
+            get {
+                return ResourceManager.GetString("CodeExplorer_MoveToFolder", resourceCulture);
             }
         }
         
@@ -489,7 +498,7 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rename.
+        ///   Looks up a localized string similar to Rename....
         /// </summary>
         public static string CodeExplorer_Rename {
             get {

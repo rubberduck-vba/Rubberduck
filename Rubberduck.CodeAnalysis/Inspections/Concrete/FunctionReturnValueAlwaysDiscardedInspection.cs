@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns when a user function's return value is discarded at all its call sites.
@@ -20,7 +20,8 @@ namespace Rubberduck.Inspections.Concrete
     /// It's possible that not all call sites need the return value, but if the value is systematically discarded then this
     /// means the function is side-effecting, and thus should probably be a 'Sub' procedure instead.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     GetFoo ' return value is not captured
@@ -30,8 +31,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     GetFoo ' return value is discarded
@@ -46,14 +49,15 @@ namespace Rubberduck.Inspections.Concrete
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class FunctionReturnValueAlwaysDiscardedInspection : DeclarationInspectionBase
+    internal sealed class FunctionReturnValueAlwaysDiscardedInspection : DeclarationInspectionBase
     {
-        public FunctionReturnValueAlwaysDiscardedInspection(RubberduckParserState state)
-            :base(state, DeclarationType.Function)
+        public FunctionReturnValueAlwaysDiscardedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Function)
         {}
 
-        protected override bool IsResultDeclaration(Declaration declaration)
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             if (!(declaration is ModuleBodyElementDeclaration moduleBodyElementDeclaration))
             {
@@ -65,8 +69,6 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return false;
             }
-
-            var finder = DeclarationFinderProvider.DeclarationFinder;
 
             if (moduleBodyElementDeclaration.IsInterfaceMember)
             {

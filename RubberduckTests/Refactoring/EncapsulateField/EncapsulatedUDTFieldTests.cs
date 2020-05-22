@@ -1,14 +1,11 @@
 ﻿using NUnit.Framework;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -979,9 +976,13 @@ Private my|Bar As TBar
             StringAssert.Contains("myBar.FooBar = value", actualCode);
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        protected override IRefactoring TestRefactoring(
+            IRewritingManager rewritingManager,
+            RubberduckParserState state,
+            RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
+            ISelectionService selectionService)
         {
-            return Support.SupportTestRefactoring(rewritingManager, state, factory, selectionService);
+            return Support.SupportTestRefactoring(rewritingManager, state, userInteraction, selectionService);
         }
     }
 }

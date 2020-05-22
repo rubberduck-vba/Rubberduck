@@ -12,7 +12,6 @@ using Rubberduck.VBEditor.VbeRuntime.Settings;
 using Rubberduck.Resources;
 using Rubberduck.Resources.Settings;
 using Rubberduck.Parsing.Common;
-using System.Collections.Specialized;
 using Rubberduck.UI.WPF;
 
 namespace Rubberduck.UI.Settings
@@ -112,7 +111,7 @@ namespace Rubberduck.UI.Settings
         {
             get
             {
-                return _hotkeys.Any(s => !s.IsValid);
+                return _hotkeys.Any(s => !s.IsValid && s.IsEnabled);
             }
         }
 

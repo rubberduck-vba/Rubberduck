@@ -2,17 +2,11 @@
 using Moq;
 using Rubberduck.Refactorings.EncapsulateField;
 using RubberduckTests.Mocks;
-using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using System.Linq;
-using System.Collections.Generic;
-using Rubberduck.VBEditor;
 using Rubberduck.Refactorings;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.Parsing.Symbols;
-using System;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
@@ -608,9 +602,13 @@ Private myType As MyType
             Assert.AreEqual(false, model[fieldUT].TryValidateEncapsulationAttributes(out var errorMessage), errorMessage);
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        protected override IRefactoring TestRefactoring(
+            IRewritingManager rewritingManager,
+            RubberduckParserState state,
+            RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
+            ISelectionService selectionService)
         {
-            return Support.SupportTestRefactoring(rewritingManager, state, factory, selectionService);
+            return Support.SupportTestRefactoring(rewritingManager, state, userInteraction, selectionService);
         }
     }
 }

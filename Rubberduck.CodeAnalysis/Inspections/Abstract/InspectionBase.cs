@@ -1,28 +1,28 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using System.Diagnostics;
 using System.Threading;
 using NLog;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 {
-    public abstract class InspectionBase : IInspection
+    internal abstract class InspectionBase : IInspection
     {
-        protected readonly RubberduckParserState State;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        protected readonly ILogger Logger;
 
-        protected InspectionBase(RubberduckParserState state)
+        protected InspectionBase(IDeclarationFinderProvider declarationFinderProvider)
         {
-            State = state;
+            Logger = LogManager.GetLogger(GetType().FullName);
+
+            _declarationFinderProvider = declarationFinderProvider;
             Name = GetType().Name;
         }
 
@@ -63,37 +63,11 @@ namespace Rubberduck.Inspections.Abstract
         /// </summary>
         public virtual string AnnotationName => Name.Replace("Inspection", string.Empty);
 
-        /// <summary>
-        /// Gets all declarations in the parser state without an @Ignore annotation for this inspection.
-        /// </summary>
-        protected virtual IEnumerable<Declaration> Declarations
-        {
-            get { return State.AllDeclarations.Where(declaration => !declaration.IsIgnoringInspectionResultFor(AnnotationName)); }
-        }
+        public int CompareTo(IInspection other) => string.Compare(InspectionType + Name, other.InspectionType + other.Name, StringComparison.Ordinal);
+        public int CompareTo(object obj) => CompareTo(obj as IInspection);
 
-        /// <summary>
-        /// Gets all user declarations in the parser state without an @Ignore annotation for this inspection.
-        /// </summary>
-        protected virtual IEnumerable<Declaration> UserDeclarations
-        {
-            get { return State.AllUserDeclarations.Where(declaration => !declaration.IsIgnoringInspectionResultFor(AnnotationName)); }
-        }
-
-        protected virtual IEnumerable<Declaration> BuiltInDeclarations
-        {
-            get { return State.AllDeclarations.Where(declaration => !declaration.IsUserDefined); }
-        }
-
-        public int CompareTo(IInspection other)
-        {
-            return string.Compare(InspectionType + Name, other.InspectionType + other.Name, StringComparison.Ordinal);
-        }
-
-        public int CompareTo(object obj)
-        {
-            return CompareTo(obj as IInspection);
-        }
-        protected abstract IEnumerable<IInspectionResult> DoGetInspectionResults();
+        protected abstract IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder);
+        protected abstract IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder);
 
         /// <summary>
         /// A method that inspects the parser state and returns all issues it can find.
@@ -102,14 +76,35 @@ namespace Rubberduck.Inspections.Abstract
         /// <returns></returns>
         public IEnumerable<IInspectionResult> GetInspectionResults(CancellationToken token)
         {
-            var _stopwatch = new Stopwatch();
-            _stopwatch.Start();
-            var declarationFinder = State.DeclarationFinder;
-            var result = DoGetInspectionResults()
-                .Where(ir => !ir.IsIgnoringInspectionResult(declarationFinder));
-            _stopwatch.Stop();
-            _logger.Trace("Intercepted invocation of '{0}.{1}' returned {2} objects.", GetType().Name, nameof(DoGetInspectionResults), result.Count());
-            _logger.Trace("Intercepted invocation of '{0}.{1}' ran for {2}ms", GetType().Name, nameof(DoGetInspectionResults), _stopwatch.ElapsedMilliseconds);
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var finder = _declarationFinderProvider.DeclarationFinder;
+            var result = DoGetInspectionResults(finder)
+                .Where(ir => !ir.IsIgnoringInspectionResult(finder))
+                .ToList();
+            stopwatch.Stop();
+            Logger.Trace("Intercepted invocation of '{0}.{1}' returned {2} objects.", GetType().Name, nameof(DoGetInspectionResults), result.Count);
+            Logger.Trace("Intercepted invocation of '{0}.{1}' ran for {2}ms", GetType().Name, nameof(DoGetInspectionResults), stopwatch.ElapsedMilliseconds);
+            return result;
+        }
+
+        /// <summary>
+        /// A method that inspects the parser state and returns all issues in it can find in a module.
+        /// </summary>
+        /// <param name="module">The module for which to get inspection results</param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public IEnumerable<IInspectionResult> GetInspectionResults(QualifiedModuleName module, CancellationToken token)
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var finder = _declarationFinderProvider.DeclarationFinder;
+            var result = DoGetInspectionResults(module, finder)
+                .Where(ir => !ir.IsIgnoringInspectionResult(finder))
+                .ToList();
+            stopwatch.Stop();
+            Logger.Trace("Intercepted invocation of '{0}.{1}' returned {2} objects.", GetType().Name, nameof(DoGetInspectionResults), result.Count);
+            Logger.Trace("Intercepted invocation of '{0}.{1}' ran for {2}ms", GetType().Name, nameof(DoGetInspectionResults), stopwatch.ElapsedMilliseconds);
             return result;
         }
 

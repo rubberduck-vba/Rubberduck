@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -12,10 +13,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private static readonly ProjectType[] Types = { ProjectType.StandardExe, ProjectType.ActiveXExe };
 
+        private readonly IProjectsProvider _projectsProvider;
+
         public AddMDIFormCommand(
-            ICodeExplorerAddComponentService addComponentService, IVbeEvents vbeEvents) 
-            : base(addComponentService, vbeEvents) 
+            ICodeExplorerAddComponentService addComponentService, 
+            IVbeEvents vbeEvents,
+            IProjectsProvider projectsProvider) 
+            : base(addComponentService, vbeEvents, projectsProvider)
         {
+            _projectsProvider = projectsProvider;
+
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
@@ -30,7 +37,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return false;
             }
 
-            var project = node.Declaration?.Project;
+            var project = node.Declaration != null
+                ? _projectsProvider.Project(node.Declaration.ProjectId)
+                : null;
 
             return EvaluateCanExecuteForProject(project);
         }

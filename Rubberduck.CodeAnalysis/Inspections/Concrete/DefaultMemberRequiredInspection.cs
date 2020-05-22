@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Parsing.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
@@ -16,16 +15,15 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// The VBA compiler does not check whether the necessary default member is present. Instead there is a runtime error whenever the runtime type fails to have the default member.
     /// </why>
     /// <example hasresult="true">
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
-    /// Class1:
-    ///
     /// Public Function Foo(index As Long) As Long
     /// 'No default member attribute
     /// End Function
-    ///
-    /// ------------------------------
-    /// Module1:
-    /// 
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
     /// Public Sub DoIt()
     ///     Dim cls As Class1
     ///     Dim bar As Variant
@@ -33,18 +31,18 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     bar = cls(0) 
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
-    /// Class1:
-    ///
     /// Public Function Foo(index As Long) As Long
     /// Attribute Foo.UserMemId = 0
     /// End Function
-    ///
-    /// ------------------------------
-    /// Module1:
-    /// 
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
     /// Public Sub DoIt()
     ///     Dim cls As Class1
     ///     Dim bar As Variant
@@ -52,22 +50,23 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     bar = cls(0) 
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public class DefaultMemberRequiredInspection : IdentifierReferenceInspectionBase
+    internal class DefaultMemberRequiredInspection : IdentifierReferenceInspectionBase
     {
-        public DefaultMemberRequiredInspection(RubberduckParserState state)
-            : base(state)
+        public DefaultMemberRequiredInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             //This will most likely cause a runtime error. The exceptions are rare and should be refactored or made explicit with an @Ignore annotation.
             Severity = CodeInspectionSeverity.Error;
         }
 
-        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module)
+        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            return DeclarationFinderProvider.DeclarationFinder.FailedIndexedDefaultMemberAccesses(module);
+            return finder.FailedIndexedDefaultMemberAccesses(module);
         }
 
-        protected override bool IsResultReference(IdentifierReference failedIndexedDefaultMemberAccess)
+        protected override bool IsResultReference(IdentifierReference failedIndexedDefaultMemberAccess, DeclarationFinder finder)
         {
             return true;
         }

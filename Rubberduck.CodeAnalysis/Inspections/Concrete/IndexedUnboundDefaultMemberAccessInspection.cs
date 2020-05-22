@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies the use of indexed default member accesses for which the default member cannot be determined at compile time.
@@ -18,35 +18,39 @@ namespace Rubberduck.Inspections.Concrete
     /// Should there not be a suitable default member at runtime, an error 438 'Object doesn't support this property or method' will be raised.
     /// </why>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal rst As Object)
     ///     Dim bar As Variant
     ///     bar = rst("MyField")
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal rst As Object)
     ///     Dim bar As Variant
     ///     bar = rst.Fields.Item("MyField")
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class IndexedUnboundDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
+    internal sealed class IndexedUnboundDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
     {
-        public IndexedUnboundDefaultMemberAccessInspection(RubberduckParserState state)
-            : base(state)
+        public IndexedUnboundDefaultMemberAccessInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module)
+        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            return DeclarationFinderProvider.DeclarationFinder.UnboundDefaultMemberAccesses(module);
+            return finder.UnboundDefaultMemberAccesses(module);
         }
 
-        protected override bool IsResultReference(IdentifierReference reference)
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             return reference.IsIndexedDefaultMemberAccess
                    && !(reference.Context is VBAParser.DictionaryAccessContext)

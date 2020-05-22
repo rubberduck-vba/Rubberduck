@@ -1,16 +1,17 @@
 using System.Collections.Generic;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.CodePathAnalysis;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using System.Linq;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
+using Rubberduck.Inspections.CodePathAnalysis;
+using Rubberduck.Inspections.CodePathAnalysis.Extensions;
+using Rubberduck.Inspections.CodePathAnalysis.Nodes;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about a variable that is assigned, and then re-assigned before the first assignment is read.
@@ -18,7 +19,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// The first assignment is likely redundant, since it is being overwritten by the second.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
@@ -26,8 +28,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     foo = 34 
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Dim bar As Long
@@ -35,46 +39,78 @@ namespace Rubberduck.Inspections.Concrete
     ///     bar = bar + foo ' variable is re-assigned, but the prior assigned value is read at least once first.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class AssignmentNotUsedInspection : InspectionBase
+    internal sealed class AssignmentNotUsedInspection : IdentifierReferenceInspectionBase
     {
         private readonly Walker _walker;
 
-        public AssignmentNotUsedInspection(RubberduckParserState state, Walker walker)
-            : base(state) {
+        public AssignmentNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider, Walker walker)
+            : base(declarationFinderProvider)
+        {
             _walker = walker;
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var variables = State.DeclarationFinder
-                    .UserDeclarations(DeclarationType.Variable)
-                    .Where(d => !d.IsArray);
+            var localNonArrayVariables = finder.Members(module, DeclarationType.Variable)
+                .Where(declaration => !declaration.IsArray
+                                      && !declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module));
+            return localNonArrayVariables
+                .Where(declaration => !declaration.IsIgnoringInspectionResultFor(AnnotationName))
+                .SelectMany(UnusedAssignments);
+        }
 
+        private IEnumerable<IdentifierReference> UnusedAssignments(Declaration localVariable)
+        {
+            var tree = _walker.GenerateTree(localVariable.ParentScopeDeclaration.Context, localVariable);
+            return UnusedAssignmentReferences(tree);
+        }
+
+        public static List<IdentifierReference> UnusedAssignmentReferences(INode node)
+        {
             var nodes = new List<IdentifierReference>();
-            foreach (var variable in variables)
-            {
-                var parentScopeDeclaration = variable.ParentScopeDeclaration;
 
-                if (parentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
+            var blockNodes = node.Nodes(new[] { typeof(BlockNode) });
+            foreach (var block in blockNodes)
+            {
+                INode lastNode = default;
+                foreach (var flattenedNode in block.FlattenedNodes(new[] { typeof(GenericNode), typeof(BlockNode) }))
                 {
-                    continue;
+                    if (flattenedNode is AssignmentNode &&
+                        lastNode is AssignmentNode)
+                    {
+                        nodes.Add(lastNode.Reference);
+                    }
+
+                    lastNode = flattenedNode;
                 }
 
-                var tree = _walker.GenerateTree(parentScopeDeclaration.Context, variable);
-
-                var references = tree.GetIdentifierReferences();
-                // ignore set-assignments to 'Nothing'
-                nodes.AddRange(references.Where(r =>
-                    !(r.Context.Parent is VBAParser.SetStmtContext setStmtContext &&
-                    setStmtContext.expression().GetText().Equals(Tokens.Nothing))));
+                if (lastNode is AssignmentNode &&
+                    block.Children[0].GetFirstNode(new[] { typeof(GenericNode) }) is DeclarationNode)
+                {
+                    nodes.Add(lastNode.Reference);
+                }
             }
 
-            return nodes
-                // Ignoring the Declaration disqualifies all assignments
-                .Where(issue => !issue.Declaration.IsIgnoringInspectionResultFor(AnnotationName))
-                .Select(issue => new IdentifierReferenceInspectionResult(this, Description, State, issue))
-                .ToList();
+            return nodes;
+        }
+
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
+        {
+            return !IsAssignmentOfNothing(reference);
+        }
+
+        private static bool IsAssignmentOfNothing(IdentifierReference reference)
+        {
+            return reference.IsSetAssignment
+                && reference.Context.Parent is VBAParser.SetStmtContext setStmtContext
+                && setStmtContext.expression().GetText().Equals(Tokens.Nothing);
+        }
+
+        protected override string ResultDescription(IdentifierReference reference)
+        {
+            return Description;
         }
     }
 }

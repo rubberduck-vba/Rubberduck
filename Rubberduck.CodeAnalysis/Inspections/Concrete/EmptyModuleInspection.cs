@@ -1,18 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+﻿using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags empty code modules.
@@ -20,34 +15,29 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// An empty module does not need to exist and can be safely removed.
     /// </why>
-    public sealed class EmptyModuleInspection : InspectionBase
+    internal sealed class EmptyModuleInspection : DeclarationInspectionBase
     {
         private readonly EmptyModuleVisitor _emptyModuleVisitor;
+        private readonly IParseTreeProvider _parseTreeProvider;
 
-        public EmptyModuleInspection(RubberduckParserState state)
-            : base(state)
+        public EmptyModuleInspection(IDeclarationFinderProvider declarationFinderProvider, IParseTreeProvider parseTreeProvider)
+            : base(declarationFinderProvider, new []{DeclarationType.Module}, new []{DeclarationType.Document})
         {
             _emptyModuleVisitor = new EmptyModuleVisitor();
+            _parseTreeProvider = parseTreeProvider;
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var modulesToInspect = State.DeclarationFinder.AllModules
-                .Where(qmn => qmn.ComponentType == ComponentType.ClassModule
-                        || qmn.ComponentType == ComponentType.StandardModule).ToHashSet();
+            var module = declaration.QualifiedModuleName;
+            var tree = _parseTreeProvider.GetParseTree(module, CodeKind.CodePaneCode);
 
-            var treesToInspect = State.ParseTrees.Where(kvp => modulesToInspect.Contains(kvp.Key));
+            return _emptyModuleVisitor.Visit(tree);
+        }
 
-            var emptyModules = treesToInspect
-                .Where(kvp => _emptyModuleVisitor.Visit(kvp.Value))
-                .Select(kvp => kvp.Key)
-                .ToHashSet();
-
-            var emptyModuleDeclarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Module)
-                .Where(declaration => emptyModules.Contains(declaration.QualifiedName.QualifiedModuleName));
-
-            return emptyModuleDeclarations.Select(declaration =>
-                new DeclarationInspectionResult(this, string.Format(InspectionResults.EmptyModuleInspection, declaration.IdentifierName), declaration));
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.EmptyModuleInspection, declaration.IdentifierName);
         }
     }
 

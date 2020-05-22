@@ -1,4 +1,5 @@
-﻿using Rubberduck.Refactorings;
+﻿using System.Windows;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
 
 namespace Rubberduck.UI.Refactorings.Rename
@@ -9,11 +10,14 @@ namespace Rubberduck.UI.Refactorings.Rename
         {
             InitializeComponent();
 
-            Loaded += (o, e) =>
-                {
-                    RenameTextBox.Focus();
-                    RenameTextBox.SelectAll();
-                };
+            Loaded += AfterLoadHandler;
+        }
+
+        private void AfterLoadHandler(object sender, RoutedEventArgs e)
+        {
+            RenameTextBox.Focus();
+            RenameTextBox.SelectAll();
+            Loaded -= AfterLoadHandler;
         }
     }
 }

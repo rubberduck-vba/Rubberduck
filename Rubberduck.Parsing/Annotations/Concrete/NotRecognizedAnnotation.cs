@@ -1,8 +1,4 @@
-﻿using Rubberduck.VBEditor;
-using System.Collections.Generic;
-using Rubberduck.Parsing.Grammar;
-
-namespace Rubberduck.Parsing.Annotations
+﻿namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
     /// Used for all annotations not recognized by RD.
@@ -12,6 +8,6 @@ namespace Rubberduck.Parsing.Annotations
     {
         public NotRecognizedAnnotation()
             : base("NotRecognized", 0)
-        { }
+        {}
     }
 }
