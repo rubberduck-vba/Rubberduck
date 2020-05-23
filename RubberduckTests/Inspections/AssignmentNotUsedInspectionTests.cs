@@ -415,7 +415,6 @@ End Function
             Assert.AreEqual(1, results.Count());
         }
 
-
         [Test]
         public void FlagsWhereNoJumpStatementsFollowsUnusedAssignment()
         {
