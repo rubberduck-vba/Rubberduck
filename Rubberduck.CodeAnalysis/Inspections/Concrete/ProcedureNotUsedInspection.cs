@@ -51,7 +51,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// 
     /// Public Sub DoSomething()
     ///     'a public procedure in a standard module may be a macro 
-    ///     attached to a worksheet Shape or invoked by means other than user code.
+    ///     'attached to a worksheet Shape or invoked by means other than user code.
     /// End Sub
     /// ]]>
     /// </module>
