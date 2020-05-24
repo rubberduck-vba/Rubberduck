@@ -262,7 +262,9 @@ End Sub";
         //https://github.com/rubberduck-vba/Rubberduck/issues/5456
         [TestCase("Resume CleanExit")]
         [TestCase("GoTo CleanExit")]
-        public void IgnoresAssignmentWhereExecutionPathModifiedByJumpStatementCouldIncludeUse_Labels(string statement)
+        [TestCase("Resume 8")] //Inverse = ratio
+        [TestCase("GoTo 8")] //Inverse = ratio
+        public void IgnoresAssignmentWhereUsedByJumpStatement(string statement)
         {
             string code =
 $@"
@@ -275,7 +277,8 @@ CleanExit:
     Inverse = ratio
     Exit Function
 ErrorHandler:
-    ratio = -1# 'assigment not used evaluation disqualified by Resume/GoTo - not flagged
+    'assigment not used evaluation disqualified by Resume/GoTo - not flagged
+    ratio = -1#
     {statement}
 End Function
 ";
@@ -283,10 +286,11 @@ End Function
             Assert.AreEqual(1, results.Count());
         }
 
-        //Inverse = ratio => line 7
-        [TestCase("Resume 7")]
-        [TestCase("GoTo 7")]
-        public void IgnoresAssignmentWhereExecutionPathModifiedByJumpStatementCouldIncludeUse_LineNumbers(string statement)
+        [TestCase("Resume CleanExit")]
+        [TestCase("GoTo CleanExit")]
+        [TestCase("Resume 8")] //Inverse = ratio
+        [TestCase("GoTo 8")] //Inverse = ratio
+        public void IgnoresAssignmentWhereUsedByJumpStatement_JumpOnSameLineAsAssignment(string statement)
         {
             string code =
 $@"
@@ -295,16 +299,69 @@ Public Function Inverse(value As Double) As Double
     ratio = 0# 'assigment not used - flagged
 On Error Goto ErrorHandler
     ratio = 1# / value
+CleanExit:
     Inverse = ratio
     Exit Function
-
 ErrorHandler:
-    ratio = -1# 'assigment not used evaluation disqualified by Resume/GoTo - not flagged
-    {statement}
+    'assigment not used evaluation disqualified by Resume/GoTo - not flagged
+    ratio = -1#: {statement}
 End Function
 ";
             var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(1, results.Count());
+        }
+
+        [TestCase("GoTo")]
+        [TestCase("Resume")]
+        public void MultipleSingleLineJumpStmts(string jumpStatement)
+        {
+            string code =
+$@"
+Public Function Fizz(value As Double) As Double
+    Dim firstVal As Double
+    Dim anotherVal As Double
+    Dim yetAnotherVal As Double
+On Error GoTo ErrorHandler
+    Fizz = 1# / value
+    Exit Function
+Exit1:
+    Fizz = anotherVal
+    Exit Function 
+Exit2:
+    Fizz = firstVal
+    Exit Function
+Exit3:
+    Fizz = yetAnotherVal
+    Exit Function
+ErrorHandler:
+    anotherVal = 6#: {jumpStatement} Exit1: firstVal = -1#: {jumpStatement} Exit2: yetAnotherVal = -99#: {jumpStatement} Exit3
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(0, results.Count());
+        }
+
+
+        [TestCase("Exit Function: Fizz = firstVal: Exit Function", 1)] //value not read
+        [TestCase("Fizz = firstVal: Exit Function", 0)] //value is read
+        public void ExitStmtOnSameLineAsNonAssignments(string exitFunctionLine, int expected)
+        {
+            string code =
+$@"
+Public Function Fizz(value As Double) As Double
+    Dim firstVal As Double
+On Error GoTo ErrorHandler
+    Fizz = 1# / value
+    Exit Function
+Exit1:
+    Fizz = 0#
+    {exitFunctionLine} 
+ErrorHandler:
+    firstVal = -1#: GoTo Exit1
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(expected, results.Count());
         }
 
         [Test]
@@ -483,6 +540,25 @@ End Function
 ";
             var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(1, results.Count());
+        }
+
+
+        [Test]
+        public void ResumeStmt_OnSameLineAsLabel()
+        {
+            string code =
+$@"
+Public Function Inverse(value As Double) As Double
+    Dim ratio As Double
+On Error GoTo ErrorHandler:
+    ratio = 1# / value
+    Inverse = ratio
+    Exit Function
+ErrorHandler: ratio = 0#: Resume Next
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(0, results.Count());
         }
 
         [Test]
