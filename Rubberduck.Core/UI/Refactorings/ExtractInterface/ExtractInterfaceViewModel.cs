@@ -61,13 +61,7 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public bool IsClassInstancingMutable
-        {
-            get
-            {
-                return Model.ImplementingClassInstancing != ClassInstancing.Public;
-            }
-        }
+        public bool CanChooseInterfaceInstancing => Model.ImplementingClassInstancing != ClassInstancing.Public;
 
         public IEnumerable<ClassInstancing> ClassInstances => Enum.GetValues(typeof(ClassInstancing)).Cast<ClassInstancing>();
 

@@ -1829,6 +1829,8 @@ Import aborted.</value>
     <value>Public</value>
   </data>
   <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
-    <value>'Public' will be chosen. For private instancing make implementing class private also.</value>
+    <value>The implementing class is 'Public' mandating the interface be public as well.
+If you require a 'Private' interface, change the classes instancing to private as well.
+A private class can still implement a public interface.</value>
   </data>
 </root>

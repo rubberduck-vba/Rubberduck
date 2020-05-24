@@ -1466,7 +1466,9 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;Public&apos; will be chosen. For private instancing make implementing class private also..
+        ///   Looks up a localized string similar to The implementing class is &apos;Public&apos; mandating the interface be public as well.
+        ///If you require a &apos;Private&apos; interface, change the classes instancing to private as well.
+        ///A private class can still implement a public interface..
         /// </summary>
         public static string ExtractInterface_PublicInstancingMandatedByPublicClass {
             get {

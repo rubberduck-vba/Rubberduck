@@ -58,10 +58,11 @@
                 <Grid>
                     <ComboBox ItemsSource="{Binding ClassInstances}"
                               SelectedValue="{Binding InterfaceInstancing, Mode=TwoWay}"
-                              Visibility="{Binding IsClassInstancingMutable, Converter={StaticResource BoolToVisibility}}">
+                              Visibility="{Binding CanChooseInterfaceInstancing, Converter={StaticResource BoolToVisibility}}">
                     </ComboBox>
-                    <Label Visibility="{Binding IsClassInstancingMutable, Converter={StaticResource BoolToHiddenVisibility}}"
-                           Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_PublicInstancingMandatedByPublicClass}" />
+                    <TextBlock Visibility="{Binding CanChooseInterfaceInstancing, Converter={StaticResource BoolToHiddenVisibility}}"
+                               Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_PublicInstancingMandatedByPublicClass}"
+                               TextWrapping="Wrap" />
                 </Grid>
             </GroupBox>
 
