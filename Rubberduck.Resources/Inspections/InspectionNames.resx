@@ -361,23 +361,23 @@
     <value>Missing module annotation</value>
   </data>
   <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
-    <value>ThunderCode 1</value>
-    <comment>meta easter egg; do not translate</comment>
+    <value>Keyword used as member name</value>
+    
   </data>
   <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
-    <value>ThunderCode 10</value>
-    <comment>meta easter egg; do not translate</comment>
+    <value>Line continuation between keywords</value>
+    
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
-    <value>ThunderCode 11</value>
-    <comment>meta easter egg; do not translate</comment>
+    <value>Identifier containing a non-breaking space</value>
+    
   </data>
   <data name="NegativeLineNumberInspection" xml:space="preserve">
-    <value>ThunderCode 100</value>
-    <comment>meta easter egg; do not translate</comment>
+    <value>Negative line number</value>
+    
   </data>
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
-    <value>ThunderCode 101</value>
+    <value>OnErrorGoto -1</value>
     <comment>meta easter egg; do not translate</comment>
   </data>
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
