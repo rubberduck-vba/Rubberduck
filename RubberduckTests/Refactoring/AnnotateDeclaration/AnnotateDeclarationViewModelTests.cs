@@ -53,7 +53,40 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
 
             Assert.True(applicableAnnotationNames.Contains("Ignore"));
         }
-        
+
+        [Test]
+        public void AttributeAnnotation_NoAttributesContext_NoModule_NotInApplicableAnnotations()
+        {
+            var viewModel = TestViewModel(DeclarationType.Variable, localScope: true);
+            var applicableAnnotationNames = viewModel.ApplicableAnnotations
+                .Select(annotation => annotation.Name)
+                .ToList();
+
+            Assert.False(applicableAnnotationNames.Contains("VariableDescription"));
+        }
+
+        [Test]
+        public void AttributeAnnotation_NoAttributesContext_IsModule_InApplicableAnnotations()
+        {
+            var viewModel = TestViewModel(DeclarationType.Module);
+            var applicableAnnotationNames = viewModel.ApplicableAnnotations
+                .Select(annotation => annotation.Name)
+                .ToList();
+
+            Assert.True(applicableAnnotationNames.Contains("Exposed"));
+        }
+
+        [Test]
+        public void AttributeAnnotation_HasAttributesContext_NotInApplicableAnnotations()
+        {
+            var viewModel = TestViewModel(DeclarationType.Variable, localScope: false);
+            var applicableAnnotationNames = viewModel.ApplicableAnnotations
+                .Select(annotation => annotation.Name)
+                .ToList();
+
+            Assert.True(applicableAnnotationNames.Contains("VariableDescription"));
+        }
+
         [Test]
         public void AnnotationNull_Invalid()
         {
@@ -264,10 +297,10 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
 
-        private AnnotateDeclarationViewModel TestViewModel(DeclarationType targetDeclarationType, IAnnotation initialAnnotation = null)
+        private AnnotateDeclarationViewModel TestViewModel(DeclarationType targetDeclarationType, IAnnotation initialAnnotation = null, bool localScope = false)
         {
             var argumentFactory = MockArgumentFactory().Object;
-            return TestViewModel(targetDeclarationType, argumentFactory, initialAnnotation);
+            return TestViewModel(targetDeclarationType, argumentFactory, initialAnnotation, localScope);
         }
 
         private Mock<IAnnotationArgumentViewModelFactory> MockArgumentFactory(IReadOnlyList<bool> hasErrorSpecifications = null)
@@ -296,20 +329,21 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
             return mockArgument;
         }
 
-        private AnnotateDeclarationViewModel TestViewModel(DeclarationType targetDeclarationType, IAnnotationArgumentViewModelFactory argumentFactory, IAnnotation initialAnnotation = null)
+        private AnnotateDeclarationViewModel TestViewModel(DeclarationType targetDeclarationType, IAnnotationArgumentViewModelFactory argumentFactory, IAnnotation initialAnnotation = null, bool localScope = false)
         {
-            var targetDeclaration = TestDeclaration(targetDeclarationType);
+            var targetDeclaration = TestDeclaration(targetDeclarationType, localScope);
             var model = new AnnotateDeclarationModel(targetDeclaration, initialAnnotation);
             return new AnnotateDeclarationViewModel(model, _testAnnotations, argumentFactory);
         }
 
-        private Declaration TestDeclaration(DeclarationType targetDeclarationType)
+        private Declaration TestDeclaration(DeclarationType targetDeclarationType, bool localScope = false)
         {
             const string code = @"
 Public myVar As Variant
 
 '@Ignore MissingMemberAnnotationInspection
 Public Sub Foo
+Dim bar As Variant
 End Sub
 
 '@DefaultMember
@@ -319,7 +353,15 @@ End Function
             var vbe = MockVbeBuilder.BuildFromSingleModule(code, ComponentType.ClassModule, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
-                return state.DeclarationFinder.UserDeclarations(targetDeclarationType).Single();
+                if (localScope)
+                {
+                    return state.DeclarationFinder.UserDeclarations(targetDeclarationType)
+                        .Single(declaration => declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member));
+                }
+
+                return state.DeclarationFinder.UserDeclarations(targetDeclarationType)
+                    .Single(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) 
+                                           || declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module));
             }
         }
 

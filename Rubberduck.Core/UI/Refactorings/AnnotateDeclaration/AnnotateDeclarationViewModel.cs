@@ -35,8 +35,11 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
         private static IReadOnlyList<IAnnotation> AnnotationsForDeclaration(Declaration declaration, IEnumerable<IAnnotation> annotations)
         {
             return AnnotationsForDeclarationType(declaration.DeclarationType, annotations)
-                .Where(annotation => annotation.AllowMultiple 
-                                     || !declaration.Annotations.Any(pta => annotation.Equals(pta.Annotation)))
+                .Where(annotation => (annotation.AllowMultiple 
+                                        || !declaration.Annotations.Any(pta => annotation.Equals(pta.Annotation)))
+                                     && (declaration.DeclarationType.HasFlag(DeclarationType.Module) 
+                                        || declaration.AttributesPassContext != null 
+                                        || !(annotation is IAttributeAnnotation)))
                 .ToList();
         }
 

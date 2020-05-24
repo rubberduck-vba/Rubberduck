@@ -32,6 +32,13 @@ namespace Rubberduck.UI.Converters
                 return false;
             }
 
+            if (!target.DeclarationType.HasFlag(DeclarationType.Module)
+                && target.AttributesPassContext == null
+                && annotation is IAttributeAnnotation)
+            {
+                return false;
+            }
+
             var targetType = target.DeclarationType;
 
             switch (annotation.Target)
@@ -46,7 +53,7 @@ namespace Rubberduck.UI.Converters
                     return targetType.HasFlag(DeclarationType.Variable)
                            || targetType.HasFlag(DeclarationType.Constant);
                 case AnnotationTarget.General:
-                    return true;
+                    return !targetType.HasFlag(DeclarationType.Module);
                 case AnnotationTarget.Identifier:
                     return false;
                 default:
