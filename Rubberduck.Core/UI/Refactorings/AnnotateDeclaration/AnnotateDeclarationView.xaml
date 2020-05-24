@@ -75,12 +75,7 @@
             <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Inspection}" CollapseSpecialValue="False" x:Key="InspectionArgumentVisibilityConverter"/>
             <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentValueTemplate">
                 <DataTemplate.Resources>
-                    <CollectionViewSource Source="{Binding InspectionNames}" x:Key="InspectionNamesView">
-                        <CollectionViewSource.SortDescriptions>
-                            <scm:SortDescription PropertyName="." />
-                            <!-- This is not really the sort we want. We want a converter here, which is impossible. -->
-                        </CollectionViewSource.SortDescriptions>
-                    </CollectionViewSource>
+                    <CollectionViewSource Source="{Binding InspectionNames}" x:Key="InspectionNamesView" />
                 </DataTemplate.Resources>
                 <StackPanel>
                     <TextBox Text="{Binding ArgumentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"

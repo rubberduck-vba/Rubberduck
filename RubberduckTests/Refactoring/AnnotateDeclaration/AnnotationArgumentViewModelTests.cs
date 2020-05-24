@@ -4,6 +4,7 @@ using System.Linq;
 using NUnit.Framework;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Refactorings.AnnotateDeclaration;
+using Rubberduck.UI.Converters;
 using Rubberduck.UI.Refactorings.AnnotateDeclaration;
 
 namespace RubberduckTests.Refactoring.AnnotateDeclaration
@@ -217,7 +218,8 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
             IReadOnlyList<string> inspectionNames = null)
         {
             var model = new TypedAnnotationArgument(argumentType, initialArgument ?? string.Empty);
-            return new AnnotationArgumentViewModel(model, inspectionNames ?? new List<string>());
+            var inspectionNameConverter = new InspectionToLocalizedNameConverter();
+            return new AnnotationArgumentViewModel(model, inspectionNames ?? new List<string>(), inspectionNameConverter);
         }
     }
 }

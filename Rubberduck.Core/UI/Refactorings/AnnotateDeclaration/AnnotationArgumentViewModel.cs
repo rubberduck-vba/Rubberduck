@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Windows.Controls;
+using System.Windows.Data;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Refactorings.AnnotateDeclaration;
 using Rubberduck.Resources;
+using Rubberduck.UI.Converters;
 
 namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
 {
@@ -24,13 +28,16 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
         private const int MaxAllowedCharacters = 511;
 
         private TypedAnnotationArgument _model;
+        private readonly IReadOnlyList<string> _inspectionNames;
+        private readonly IValueConverter _inspectionNameConverter;
 
-        public AnnotationArgumentViewModel(TypedAnnotationArgument model, IReadOnlyList<string> inspectionNames)
+        public AnnotationArgumentViewModel(TypedAnnotationArgument model, IReadOnlyList<string> inspectionNames, InspectionToLocalizedNameConverter inspectionNameConverter)
         {
             _model = model;
+            _inspectionNameConverter = inspectionNameConverter;
+            _inspectionNames = inspectionNames;
 
             ApplicableArgumentTypes = ApplicableTypes(_model.ArgumentType);
-            InspectionNames = inspectionNames;
             BooleanValues = new List<string> { "True", "False" };
 
             _model.ArgumentType = ApplicableArgumentTypes.FirstOrDefault();
@@ -53,8 +60,11 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
         public IReadOnlyList<AnnotationArgumentType> ApplicableArgumentTypes { get; }
 
         public bool CanEditArgumentType => ApplicableArgumentTypes.Count > 1;
-        public IReadOnlyList<string> InspectionNames { get; }
         public IReadOnlyList<string> BooleanValues { get; }
+
+        public IReadOnlyList<string> InspectionNames => _inspectionNames
+            .OrderBy(inspectionName => _inspectionNameConverter.Convert(inspectionName, typeof(TextBlock), null, CultureInfo.CurrentUICulture))
+            .ToList();
 
         public AnnotationArgumentType ArgumentType
         {
