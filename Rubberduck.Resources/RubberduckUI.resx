@@ -1819,9 +1819,6 @@ Import aborted.</value>
     <value>The component '{0}' would have been affected by the refactoring, but its state in Rubberduck's memory is stale. Please refresh Rubberduck and try again.</value>
     <comment>{0} stale module</comment>
   </data>
-  <data name="ImplementInterface_TODO" xml:space="preserve">
-    <value>'TODO implement interface member</value>
-  </data>
   <data name="AnnotateDeclarationDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Annotate Declaration</value>
   </data>
