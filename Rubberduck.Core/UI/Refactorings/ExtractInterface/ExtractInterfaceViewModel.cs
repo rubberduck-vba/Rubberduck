@@ -81,25 +81,6 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        private bool isPublicInterfaceChecked = true;
-        public bool IsPublicInterfaceChecked
-        {
-            get => isPublicInterfaceChecked;
-            set
-            {
-                if (value == isPublicInterfaceChecked)
-                {
-                    return;
-                }
-
-                Model.InterfaceInstancing = value 
-                    ? ClassInstancing.Public 
-                    : ClassInstancing.Private;
-                isPublicInterfaceChecked = value;
-                OnPropertyChanged();                
-            }
-        }
-
         private void ToggleSelection(bool value)
         {
             foreach (var item in Members)
