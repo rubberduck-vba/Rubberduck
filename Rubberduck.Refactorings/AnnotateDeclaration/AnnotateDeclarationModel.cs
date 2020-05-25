@@ -4,7 +4,7 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Refactorings.AnnotateDeclaration
 {
-    //This is introduced in favor of a value tuple in order to ba able to bind to the components in XAML.
+    //This is introduced in favor of a value tuple in order to be able to bind to the components in XAML.
     public struct TypedAnnotationArgument
     {
         public AnnotationArgumentType ArgumentType { get; set; }

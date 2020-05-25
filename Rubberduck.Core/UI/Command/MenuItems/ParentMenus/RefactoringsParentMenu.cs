@@ -14,7 +14,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
     public enum RefactoringsMenuItemDisplayOrder
     {
-        AnnotateDeclaration,
         RenameIdentifier,
         ExtractMethod,
         ExtractInterface,

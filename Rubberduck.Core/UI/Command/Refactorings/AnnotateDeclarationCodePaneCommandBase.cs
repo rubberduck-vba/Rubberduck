@@ -6,25 +6,24 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
-    public class CodePaneAnnotateDeclarationCommand : RefactorCodePaneCommandBase
+    public abstract class AnnotateDeclarationCodePaneCommandBase : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
-        public CodePaneAnnotateDeclarationCommand(
+        protected AnnotateDeclarationCodePaneCommandBase(
             AnnotateDeclarationRefactoring refactoring,
             AnnotateDeclarationFailedNotifier failureNotifier, 
             ISelectionProvider selectionProvider, 
             IParserStatusProvider parserStatusProvider,
-            RubberduckParserState state,
-            ISelectedDeclarationProvider selectedDeclarationProvider) 
+            RubberduckParserState state) 
             : base(refactoring, failureNotifier, selectionProvider, parserStatusProvider)
         {
-            _selectedDeclarationProvider = selectedDeclarationProvider;
             _state = state;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
+
+        protected abstract Declaration GetTarget();
 
         private bool SpecializedEvaluateCanExecute(object parameter)
         {
@@ -46,11 +45,6 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             return !_state.IsNewOrModified(target.QualifiedModuleName);
-        }
-
-        private Declaration GetTarget()
-        {
-            return _selectedDeclarationProvider.SelectedDeclaration();
         }
     }
 }

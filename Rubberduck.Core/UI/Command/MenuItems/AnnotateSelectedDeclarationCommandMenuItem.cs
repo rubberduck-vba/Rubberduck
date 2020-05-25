@@ -4,14 +4,14 @@ using Rubberduck.UI.Command.Refactorings;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-    public class CodePaneAnnotateDeclarationCommandMenuItem : CommandMenuItemBase
+    public class AnnotateSelectedDeclarationCommandMenuItem : CommandMenuItemBase
     {
-        public CodePaneAnnotateDeclarationCommandMenuItem(CodePaneAnnotateDeclarationCommand command)
+        public AnnotateSelectedDeclarationCommandMenuItem(AnnotateSelectedDeclarationCommand command)
             : base(command)
         { }
 
-        public override string Key => "RefactorMenu_AnnotateDeclaration";
-        public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.AnnotateDeclaration;
+        public override string Key => "AnnotateMenu_SelectedDeclaration";
+        public override int DisplayOrder => (int)AnnotateParentMenuItemDisplayOrder.SelectedDeclaration;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

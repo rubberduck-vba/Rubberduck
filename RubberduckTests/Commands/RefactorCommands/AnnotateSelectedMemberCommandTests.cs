@@ -18,14 +18,14 @@ using Rubberduck.VBEditor.Utility;
 namespace RubberduckTests.Commands.RefactorCommands
 {
     [TestFixture]
-    public class CodePaneAnnotateDeclarationCommandTests : RefactorCodePaneCommandTestBase
+    public class AnnotateSelectedMemberCommandTests : RefactorCodePaneCommandTestBase
     {
         [Category("Commands")]
         [Test]
-        public void AnnotateDeclaration_CanExecute_InvalidTargetType()
+        public void AnnotateDeclaration_CanExecute_OutsideMember()
         {
             var vbe = SetupAllowingExecution();
-            vbe.ActiveCodePane.Selection = new Selection(2,2);
+            vbe.ActiveCodePane.Selection = new Selection(5,1);
 
             Assert.IsFalse(CanExecute(vbe));
         }
@@ -52,7 +52,7 @@ namespace RubberduckTests.Commands.RefactorCommands
             var refactoring = new AnnotateDeclarationRefactoring(annotateDeclarationAction, selectedDeclarationProvider, selectionService, userInteraction);
             var notifier = new AnnotateDeclarationFailedNotifier(msgBox);
 
-            return new CodePaneAnnotateDeclarationCommand(refactoring, notifier, selectionService, state, state, selectedDeclarationProvider);
+            return new AnnotateSelectedMemberCommand(refactoring, notifier, selectionService, state, state, selectedDeclarationProvider);
         }
 
         protected override IVBE SetupAllowingExecution()
@@ -60,8 +60,11 @@ namespace RubberduckTests.Commands.RefactorCommands
             const string input =
                 @"Public Sub Foo()
 myLabel: Debug.Print ""Label"";
-End Sub";
-            var selection = Selection.Home;
+End Sub
+
+
+";
+            var selection = new Selection(2,2);
             return TestVbe(input, selection, ComponentType.ClassModule);
         }
     }

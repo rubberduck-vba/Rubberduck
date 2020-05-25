@@ -530,7 +530,8 @@ namespace Rubberduck.Root
         {
             return new Type[]
             {
-                typeof(RefactoringsParentMenu),
+                typeof(CodePaneRefactoringsParentMenu),
+                typeof(AnnotateParentMenu),
                 typeof(SmartIndenterParentMenu),
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
@@ -634,8 +635,10 @@ namespace Rubberduck.Root
         {
             RegisterParentMenu<UnitTestingParentMenu>(container, UnitTestingMenuItems());
             RegisterParentMenu<RefactoringsParentMenu>(container, RefactoringsMenuItems());
+            RegisterParentMenu<CodePaneRefactoringsParentMenu>(container, RefactoringsMenuItems());
             RegisterParentMenu<NavigateParentMenu>(container, NavigateMenuItems());
             RegisterParentMenu<SmartIndenterParentMenu>(container, SmartIndenterMenuItems());
+            RegisterParentMenu<AnnotateParentMenu>(container, AnnotateMenuItems());
             RegisterParentMenu<ToolsParentMenu>(container, ToolsMenuItems());
         }
 
@@ -664,7 +667,6 @@ namespace Rubberduck.Root
         {
             return new[]
             {
-                typeof(CodePaneAnnotateDeclarationCommandMenuItem),
                 typeof(CodePaneRefactorRenameCommandMenuItem),
                 typeof(RefactorExtractMethodCommandMenuItem),
                 typeof(RefactorReorderParametersCommandMenuItem),
@@ -700,6 +702,16 @@ namespace Rubberduck.Root
                 typeof(IndentCurrentModuleCommandMenuItem),
                 typeof(IndentCurrentProjectCommandMenuItem),
                 typeof(NoIndentAnnotationCommandMenuItem)
+            };
+        }
+
+        private Type[] AnnotateMenuItems()
+        {
+            return new[]
+            {
+                typeof(AnnotateSelectedDeclarationCommandMenuItem),
+                typeof(AnnotateSelectedModuleCommandMenuItem),
+                typeof(AnnotateSelectedMemberCommandMenuItem)
             };
         }
 
