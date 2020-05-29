@@ -333,9 +333,8 @@
 	                                       SelectionMode="Extended"
 	                                       ShowGroupingItemCount="True"
 	                                       InitialExpandedState="True"
-	                                       RequestBringIntoView="TestGrid_RequestBringIntoView"
 	                                       VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-	                                       ScrollViewer.CanContentScroll="True" 
+	                                       ScrollViewer.CanContentScroll="False" 
 	                                       ScrollViewer.VerticalScrollBarVisibility="Auto"
 	                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 	                    <DataGrid.Columns>
