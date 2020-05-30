@@ -6,6 +6,7 @@ using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Inspections
 {
@@ -30,7 +31,7 @@ Sub Foo()
 End Sub
 ";
             var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, results.Count(), TestFailureMsg(results, ""));
         }
 
         [Test]
@@ -44,7 +45,7 @@ Sub Foo()
 End Sub
 ";
             var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, results.Count(), TestFailureMsg(results, ""));
         }
 
         [Test]
@@ -58,14 +59,17 @@ Sub test()
 End Sub
 ";
             var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, results.Count(), TestFailureMsg(results, ""));
         }
 
         [Test]
         public void MarksSequentialAssignments()
         {
-            const string code = @"
+            var expectedResults = new string[] { "i", "unused" };
+            var code = @"
 Sub Foo()
+    Dim unused As String
+    unused = ""Unused""
     Dim i As Integer
     i = 9
     i = 8
@@ -75,7 +79,7 @@ End Sub
 Sub Bar(ByVal i As Integer)
 End Sub";
             var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(1, results.Count());
+            Assert.AreEqual(expectedResults.Count(), results.Count(), TestFailureMsg(results, expectedResults));
         }
 
         [Test]
@@ -91,9 +95,7 @@ End Sub";
         }
 
         [Test]
-        // Note: both assignments in the if/else can be marked in the future;
-        // I just want feedback before I start mucking around that deep.
-        public void DoesNotMarkLastAssignmentInNonDeclarationBlock()
+        public void IgnoresAssignmentsWithinBranchNodes()
         {
             const string code = @"
 Sub Foo()
@@ -106,7 +108,7 @@ Sub Foo()
     End If
 End Sub";
             var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, results.Count(), TestFailureMsg(results, ""));
         }
 
         [Test]
@@ -122,51 +124,24 @@ End Sub
 Sub Bar(ByVal i As Integer)
 End Sub";
             var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, results.Count(), TestFailureMsg(results, ""));
         }
 
-        [Test]
-        public void DoesNotMarkAssignment_UsedInForNext()
+        [TestCase("For counter = 1 To 20", "Next")]
+        [TestCase("While i < 10", "Wend")]
+        [TestCase("Do While", "Loop")]
+        public void IgnoresAssignmentsWithinLoopNodes(string loopBeginStmt, string loopEndStmt)
         {
-            const string code = @"
-Sub foo()
-    Dim i As Integer
-    i = 1
-    For counter = i To 2
-    Next
-End Sub";
-            var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(0, results.Count());
-        }
-
-        [Test]
-        public void DoesNotMarkAssignment_UsedInWhileWend()
-        {
-            const string code = @"
+            var code = $@"
 Sub foo()
     Dim i As Integer
     i = 0
-
-    While i < 10
+    {loopBeginStmt}
         i = i + 1
-    Wend
+    {loopEndStmt}
 End Sub";
             var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(0, results.Count());
-        }
-
-        [Test]
-        public void DoesNotMarkAssignment_UsedInDoWhile()
-        {
-            const string code = @"
-Sub foo()
-    Dim i As Integer
-    i = 0
-    Do While i < 10
-    Loop
-End Sub";
-            var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, results.Count(), TestFailureMsg(results, ""));
         }
 
         [Test]
@@ -175,6 +150,8 @@ End Sub";
             const string code = @"
 Sub foo()
     Dim i As Integer
+    Dim unused As String
+    unused = ""Unused""
     i = 0
     Select Case i
         Case 0
@@ -188,7 +165,7 @@ Sub foo()
     End Select
 End Sub";
             var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(1, results.Count(), TestFailureMsg(results, "unused"));
         }
 
         [Test]
@@ -197,6 +174,8 @@ End Sub";
             const string code = @"
 Public Sub Test()
 Dim my_fso   As Scripting.FileSystemObject
+Dim unused As String
+unused = ""Unused""
 Set my_fso = New Scripting.FileSystemObject
 
 Debug.Print my_fso.GetFolder(""C:\Windows"").DateLastModified
@@ -204,7 +183,7 @@ Debug.Print my_fso.GetFolder(""C:\Windows"").DateLastModified
 Set my_fso = Nothing
 End Sub";
             var results = InspectionResultsForStandardModuleUsingStdLibs(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(1, results.Count(), TestFailureMsg(results, "unused"));
         }
 
         [Test]
@@ -221,16 +200,18 @@ End Sub";
             Assert.AreEqual(1, results.Count());
         }
 
-        [Test]
-        public void DoesNotMarkResults_InIgnoredModule()
+        [TestCase("'@IgnoreModule", 0)]
+        [TestCase("", 1)]
+        public void DoesNotMarkResults_InIgnoredModule(string annotation, int expected)
         {
-            const string code = @"'@IgnoreModule 
+            var code = 
+$@"{annotation} 
 Public Sub Test()
     Dim foo As Long
     foo = 1245316
 End Sub";
             var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(expected, results.Count());
         }
 
         [Test]
@@ -246,17 +227,143 @@ End Sub";
             Assert.AreEqual(1, results.Count());
         }
 
-        [Test]
-        public void DoesNotMarkAssignment_ToIgnoredDeclaration()
+        [TestCase("'@Ignore AssignmentNotUsed", "unused")]
+        [TestCase("", "unused", "foo", "foo")]
+        public void DoesNotMarkAssignment_ToIgnoredDeclaration(string annotation, params string[] expectedResults)
         {
-            const string code = @"Public Sub Test()
-    '@Ignore AssignmentNotUsed
+            var code = $@"
+Public Sub Test()
+    {annotation}
     Dim foo As Long
+    Dim unused As String
+    unused = ""Unused""
     foo = 123467
     foo = 45678
 End Sub";
             var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(expectedResults.Count(), results.Count(), TestFailureMsg(results, expectedResults));
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/4913
+        [TestCase("Test = foo", "unused")]
+        [TestCase("", "unused", "foo")]
+        public void AssignmentUsedByNextLetAssignment(string finalStatement, params string[] expectedResults)
+        {
+            var code =
+$@"
+Public Function Test() As String
+    Test = ""test""
+    Dim foo As String
+    Dim unused As String
+    unused = ""Unused""
+    foo = ""bar""
+    foo = foo & ""baz""
+    {finalStatement}
+End Function";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(expectedResults.Count(), results.Count(), TestFailureMsg(results, expectedResults));
+        }
+
+        [TestCase("Test = foo.ReturnOne()", "unused")]
+        [TestCase(@"Test = ""test""", "unused", "foo")]
+        public void AssignmentUsedByNextSetAssignment(string finalStatement, params string[] expectedResults)
+        {
+            var code =
+$@"
+Public Function Test() As String
+    Dim unused As String
+    unused = ""Unused""
+    Dim foo As Class1
+    Set foo = new Class1
+    Set foo = foo
+    {finalStatement}
+End Function";
+
+            var classModuleName = "Class1";
+            var classCode =
+$@"
+Option Explicit
+    
+Public Function ReturnOne() As String
+    ReturnOne = ""1""
+End Function
+";
+
+            var results = InspectionResultsForModules(
+                            (MockVbeBuilder.TestModuleName, code, ComponentType.StandardModule),
+                            (classModuleName, classCode, ComponentType.ClassModule));
+
+            Assert.AreEqual(expectedResults.Count(), results.Count(), TestFailureMsg(results, expectedResults));
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/4913
+        [Test]
+        public void LocalVariablesHaveProcedureScope_WithBlock()
+        {
+            var code =
+$@"
+Public Function Test() As String
+    Dim unused As String
+    unused = ""Unused""  
+    With Module2
+        Dim localName As String
+        localName = .Name
+    End With
+    Test = localName
+End Function";
+
+            var otherModuleName = "Module2";
+            var otherModuleCode =
+$@"
+Option Explicit
+    
+Public Name As String
+";
+
+            var results = InspectionResultsForModules(
+                            (MockVbeBuilder.TestModuleName, code, ComponentType.StandardModule),
+                            (otherModuleName, otherModuleCode, ComponentType.StandardModule));
+
+            Assert.AreEqual(1, results.Count(), TestFailureMsg(results, "unused"));
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/4913
+        [Test]
+        public void LocalVariablesHaveProcedureScope_BranchNode()
+        {
+            var code =
+@"
+Public Sub Test(markerLocation As Long, componentName As String)
+    Dim unused As String
+    unused = ""Unused""
+    If markerLocation > 0 Then
+        Dim workingName As String
+        workingName = Right$(componentName, Len(componentName) - markerLocation - 1)
+    Else
+        workingName = componentName
+    End If
+    markerLocation = InStr(1, workingName, ""."")
+End Sub";
+
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(1, results.Count(), TestFailureMsg(results, "unused"));
+        }
+
+        private static string TestFailureMsg(IEnumerable<IInspectionResult> results, params string[] expectedResults)
+        {
+            var resultStrings = results.Select(r => r.Target.IdentifierName);
+            var expectedMissing = string.Join(", ", expectedResults.Except(expectedResults.Intersect(resultStrings)));
+            if (!string.IsNullOrEmpty(expectedMissing))
+            {
+                return $"No result for: {expectedMissing}";
+            }
+
+            var unexpectedResults = string.Join(", ", resultStrings.Except(resultStrings.Intersect(expectedResults)));
+            if (!string.IsNullOrEmpty(unexpectedResults))
+            {
+                return $"Unexpected result: {unexpectedResults}";
+            }
+            return string.Empty;
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
