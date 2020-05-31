@@ -484,9 +484,9 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>New</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>'{0}' conflicts with an existing name. Renaming '{1}' to '{0}' may result in uncompilable code or a change in logic.
+    <value>'{0}' conflicts with the name of the existing declaration '{1}'. Renaming '{2}' to '{0}' may result in uncompilable  code or a change in logic.
 Do you want to proceed with this rename?</value>
-    <comment>0: NewName 1: CurrentName</comment>
+    <comment>{0}: NewName {1}: conflicting declaration {2}: CurrentName</comment>
   </data>
   <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
     <value>Please ensure that exactly 1 control is selected before renaming.</value>

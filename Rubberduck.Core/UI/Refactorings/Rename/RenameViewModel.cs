@@ -83,21 +83,31 @@ namespace Rubberduck.UI.Refactorings.Rename
 
         protected override void DialogOk()
         {
-            if (Target == null
-                || (_declarationFinderProvider.DeclarationFinder.FindNewDeclarationNameConflicts(NewName, Model.Target).Any()
-                    && !UserConfirmsToProceedWithConflictingName(Model.NewName, Model.Target)))
+            if (Target == null)
             {
                 base.DialogCancel();
             }
             else
             {
-                base.DialogOk();
+                var firstConflictingDeclaration = _declarationFinderProvider.DeclarationFinder
+                    .FindNewDeclarationNameConflicts(NewName, Model.Target)
+                    .FirstOrDefault();
+
+                if (firstConflictingDeclaration != null
+                    && !UserConfirmsToProceedWithConflictingName(Model.NewName, Model.Target, firstConflictingDeclaration))
+                {
+                    base.DialogCancel();
+                }
+                else
+                {
+                    base.DialogOk();
+                }
             }
         }
 
-        private bool UserConfirmsToProceedWithConflictingName(string newName, Declaration target)
+        private bool UserConfirmsToProceedWithConflictingName(string newName, Declaration target, Declaration conflictingDeclaration)
         {
-            var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, newName, target.IdentifierName);
+            var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, newName, target.IdentifierName, conflictingDeclaration.QualifiedName.ToString());
             return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_Caption) ?? false;
         }
     }

@@ -465,7 +465,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Neu</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>Das Umbenenen zu '{0}' wird einen Konflikt mit '{1}' auslösen.'
+    <value>Der neue Name '{0}' kollidiert mit dem Namen des existierenden Elements '{1}'. '{2}' in '{0}' umzubenennen kann zu nicht kompilierbarem Code oder einer Änderung der Logik führen.
 Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
