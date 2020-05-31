@@ -1899,4 +1899,25 @@ Import aborted.</value>
   <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
     <value>It is not possible to change only the case of an identifier in VBA.</value>
   </data>
+  <data name="MoveFolders_SameNameSubfolder" xml:space="preserve">
+    <value>The target folder '{0}' already contains a subfolder '{1}'. Moving the folder will merge it with the existing folder.
+Do you want to proceed?</value>
+    <comment>{0} target folder; {1} subfolder</comment>
+  </data>
+  <data name="MoveFolders_SameNameSubfolders" xml:space="preserve">
+    <value>The target folder '{0}' already contains subfolders {1}. Moving the folders will merge them with the existing folders with corresponding names.
+Do you want to proceed?</value>
+    <comment>{0} target folder; {1} subfolder</comment>
+  </data>
+  <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
+    <value>Several folders with the same name are being moved. This will merge them.
+Do you want to proceed?</value>
+    
+  </data>
+  <data name="MoveFolders_EmptyName" xml:space="preserve">
+    <value>A folder name cannot be empty.</value>
+  </data>
+  <data name="MoveFolders_ControlCharacter" xml:space="preserve">
+    <value>Folder names cannot contain control characters like e.g. new lines.</value>
+  </data>
 </root>

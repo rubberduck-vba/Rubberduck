@@ -15,6 +15,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
     public class AnnotateDeclarationViewModelTests
     {
         [Test]
+        [Category("Refactorings")]
         [TestCase(DeclarationType.Module, 4, "Exposed")]
         [TestCase(DeclarationType.Procedure, 5, "DefaultMember")]
         [TestCase(DeclarationType.Variable, 3, "VariableDescription")]
@@ -33,6 +34,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void AnnotationAlreadyPresent_DoesNotAllowMultiple_NotInApplicableAnnotations()
         {
             var viewModel = TestViewModel(DeclarationType.Function);
@@ -44,6 +46,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void AnnotationAlreadyPresent_AllowsMultiple_InApplicableAnnotations()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -55,6 +58,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void AttributeAnnotation_NoAttributesContext_NoModule_NotInApplicableAnnotations()
         {
             var viewModel = TestViewModel(DeclarationType.Variable, localScope: true);
@@ -66,6 +70,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void AttributeAnnotation_NoAttributesContext_IsModule_InApplicableAnnotations()
         {
             var viewModel = TestViewModel(DeclarationType.Module);
@@ -77,6 +82,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void AttributeAnnotation_HasAttributesContext_NotInApplicableAnnotations()
         {
             var viewModel = TestViewModel(DeclarationType.Variable, localScope: false);
@@ -88,6 +94,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void AnnotationNull_Invalid()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -97,6 +104,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void AnnotationNotNull_WithoutRequiredArguments_Valid()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -106,6 +114,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void AnnotationNotNull_WithArgumentsWithError_Invalid()
         {
             var mockArgumentFactory = MockArgumentFactory(new List<bool> { true });
@@ -118,6 +127,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void AnnotationNotNull_WithArgumentsWithoutError_Valid()
         {
             var mockArgumentFactory = MockArgumentFactory(new List<bool> { false });
@@ -130,6 +140,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void AddArgumentAddsEmptyArgumentOfAppropriateType()
         {
             var mockArgumentFactory = MockArgumentFactory(new List<bool> { false });
@@ -146,6 +157,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void SetAnnotation_AddsRequiredArguments()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -155,6 +167,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void SetAnnotation_NoRequiredArguments_AddsNone()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -164,6 +177,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void CanAddArguments_NoArguments_False()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -174,6 +188,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void CanAddArguments_NoOptionalArguments_False()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -184,6 +199,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void CanAddArguments_OptionalArgumentsNotThere_True()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -194,6 +210,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void CanAddArguments_MaxArgumentsSpecified_False()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -206,6 +223,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void CanRemoveArguments_OptionalArgumentsPresent_True()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -218,6 +236,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void CanRemoveArguments_NoOptionalArgumentsPresent_False()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -229,6 +248,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void RemoveArgument_LastArgumentRemoved()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -250,6 +270,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void SetAnnotation_ResetsArguments()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -260,6 +281,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void SetAnnotation_SetsAnnotationOnModel()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -270,6 +292,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void ModelIsInputModelFromCreation()
         {
             var target = TestDeclaration(DeclarationType.Procedure);
@@ -280,6 +303,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void DialogOK_SetsArguments()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);

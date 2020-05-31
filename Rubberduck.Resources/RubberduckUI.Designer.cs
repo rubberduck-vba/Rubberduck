@@ -3018,6 +3018,54 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Folder names cannot contain control characters like e.g. new lines..
+        /// </summary>
+        public static string MoveFolders_ControlCharacter {
+            get {
+                return ResourceManager.GetString("MoveFolders_ControlCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A folder name cannot be empty..
+        /// </summary>
+        public static string MoveFolders_EmptyName {
+            get {
+                return ResourceManager.GetString("MoveFolders_EmptyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Several folders with the same name are being moved. This will merge them.
+        ///Do you want to proceed?.
+        /// </summary>
+        public static string MoveFolders_SameNameSourceFolders {
+            get {
+                return ResourceManager.GetString("MoveFolders_SameNameSourceFolders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target folder &apos;{0}&apos; already contains a subfolder &apos;{1}&apos;. Moving the folder will merge it with the existing folder.
+        ///Do you want to proceed?.
+        /// </summary>
+        public static string MoveFolders_SameNameSubfolder {
+            get {
+                return ResourceManager.GetString("MoveFolders_SameNameSubfolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target folder &apos;{0}&apos; already contains subfolders {1}. Moving the folders will merge them with the existing folders with corresponding names.
+        ///Do you want to proceed?.
+        /// </summary>
+        public static string MoveFolders_SameNameSubfolders {
+            get {
+                return ResourceManager.GetString("MoveFolders_SameNameSubfolders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Move Folders.
         /// </summary>
         public static string MoveFoldersDialog_Caption {

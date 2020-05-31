@@ -13,6 +13,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
     public class AnnotationArgumentViewModelTests
     {
         [Test]
+        [Category("Refactorings")]
         [TestCase(AnnotationArgumentType.Attribute)]
         [TestCase(AnnotationArgumentType.Inspection)]
         [TestCase(AnnotationArgumentType.Boolean)]
@@ -27,6 +28,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void SplitsArgumentTypeIntoFlags()
         {
             var viewModel = TestViewModel(AnnotationArgumentType.Boolean | AnnotationArgumentType.Number | AnnotationArgumentType.Text);
@@ -39,6 +41,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void InitiallySelectedArgumentTypeIsFirstApplicableOne()
         {
             var viewModel = TestViewModel(AnnotationArgumentType.Boolean | AnnotationArgumentType.Number | AnnotationArgumentType.Text);
@@ -50,6 +53,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void CanEditArgumentTypeForMultipleApplicableArgumentTypes()
         {
             var viewModel = TestViewModel(AnnotationArgumentType.Boolean | AnnotationArgumentType.Number | AnnotationArgumentType.Text);
@@ -58,6 +62,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void CannotEditArgumentTypeForSingleApplicableArgumentType()
         {
             var viewModel = TestViewModel(AnnotationArgumentType.Boolean);
@@ -66,6 +71,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         [TestCase(AnnotationArgumentType.Attribute)]
         [TestCase(AnnotationArgumentType.Inspection)]
         [TestCase(AnnotationArgumentType.Boolean)]
@@ -80,6 +86,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         [TestCase(AnnotationArgumentType.Attribute)]
         [TestCase(AnnotationArgumentType.Inspection)]
         [TestCase(AnnotationArgumentType.Boolean)]
@@ -94,6 +101,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void TextArgumentsWith511CharactersAreLegal()
         {
             var viewModel = TestViewModel(AnnotationArgumentType.Text, initialArgument: "someText");
@@ -103,6 +111,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         [TestCase(AnnotationArgumentType.Attribute)]
         [TestCase(AnnotationArgumentType.Inspection)]
         [TestCase(AnnotationArgumentType.Boolean)]
@@ -117,6 +126,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         [TestCase(AnnotationArgumentType.Attribute)]
         [TestCase(AnnotationArgumentType.Inspection)]
         [TestCase(AnnotationArgumentType.Boolean)]
@@ -131,6 +141,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         [TestCase(AnnotationArgumentType.Attribute)]
         [TestCase(AnnotationArgumentType.Inspection)]
         [TestCase(AnnotationArgumentType.Boolean)]
@@ -144,6 +155,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         [TestCase(AnnotationArgumentType.Attribute, "VB_Exposed")]
         [TestCase(AnnotationArgumentType.Inspection, "MyInspection")]
         [TestCase(AnnotationArgumentType.Boolean, "True")]
@@ -159,6 +171,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         [TestCase(AnnotationArgumentType.Attribute, AnnotationArgumentType.Number, "VB_Exposed", "")]
         [TestCase(AnnotationArgumentType.Inspection, AnnotationArgumentType.Attribute, "MyInspection", "")]
         [TestCase(AnnotationArgumentType.Boolean, AnnotationArgumentType.Inspection, "True", "MyInspection")]
@@ -182,6 +195,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         [TestCase(AnnotationArgumentType.Attribute, "")]
         [TestCase(AnnotationArgumentType.Inspection, "MyInspection")]
         [TestCase(AnnotationArgumentType.Boolean, "True")]
@@ -195,6 +209,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void ChangingTheArgumentTypeChangesItOnTheReturnedModel()
         {
             var viewModel = TestViewModel(AnnotationArgumentType.Text);
@@ -204,6 +219,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
         [Test]
+        [Category("Refactorings")]
         public void ChangingTheArgumentValueChangesItOnTheReturnedModel()
         {
             var viewModel = TestViewModel(AnnotationArgumentType.Text, string.Empty);
