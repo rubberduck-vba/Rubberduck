@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              xmlns:local="clr-namespace:Rubberduck.UI.Refactorings.AnnotateDeclaration"
              xmlns:annotations="clr-namespace:Rubberduck.Parsing.Annotations;assembly=Rubberduck.Parsing"
@@ -20,32 +19,6 @@
             <converters:DeclarationToQualifiedNameConverter x:Key="DeclarationToQualifiedNameConverter"/>
             <converters:AnnotationToCodeStringConverter x:Key="AnnotationToCodeStringConverter"/>
 
-            <BitmapImage x:Key="InvalidTextImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
-            <Style x:Key="TextBoxErrorStyle" TargetType="{x:Type TextBox}">
-                <Setter Property="Validation.ErrorTemplate">
-                    <Setter.Value>
-                        <ControlTemplate x:Name="TextBoxErrorTemplate">
-                            <Grid>
-                                <AdornedElementPlaceholder Grid.Row="0"/>
-                                <Image Source="{StaticResource InvalidTextImage}"
-                                       Height="16"
-                                       Margin="0,-8,-8,0"
-                                       HorizontalAlignment="Right"
-                                       VerticalAlignment="Top"/>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="Validation.HasError"
-                             Value="True">
-                        <Setter Property="ToolTip"
-                                Value="{Binding RelativeSource={x:Static RelativeSource.Self}, 
-                                                    Path=(Validation.Errors)[0].ErrorContent}">
-                        </Setter>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 

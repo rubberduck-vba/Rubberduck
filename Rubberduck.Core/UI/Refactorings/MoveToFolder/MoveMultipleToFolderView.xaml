@@ -11,8 +11,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../../Controls/ToolBar.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
-            <BitmapImage x:Key="InvalidFolderImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -41,7 +39,7 @@
                      VerticalContentAlignment="Center"
                      HorizontalAlignment="Stretch" />
             <Image Grid.Column="1"
-                   Source="{StaticResource InvalidFolderImage}"
+                   Source="{StaticResource InvalidTextImage}"
                    Height="16"
                    Margin="0,-8,-8,0"
                    HorizontalAlignment="Right"
