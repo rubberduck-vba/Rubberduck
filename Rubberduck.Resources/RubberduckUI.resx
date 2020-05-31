@@ -1896,4 +1896,7 @@ Import aborted.</value>
     <value>The refactoring can only annotate components, members and variables, but the target had type '{0}'.</value>
     <comment>{0} declaration type</comment>
   </data>
+  <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
+    <value>It is not possible to change only the case of an identifier in VBA.</value>
+  </data>
 </root>

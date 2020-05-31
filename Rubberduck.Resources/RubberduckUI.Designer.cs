@@ -4336,6 +4336,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to It is not possible to change only the case of an identifier in VBA..
+        /// </summary>
+        public static string RenameDialog_OnlyCasingDifferent {
+            get {
+                return ResourceManager.GetString("RenameDialog_OnlyCasingDifferent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rename identifier.
         /// </summary>
         public static string RenameDialog_TitleText {

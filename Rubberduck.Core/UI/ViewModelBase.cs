@@ -46,7 +46,7 @@ namespace Rubberduck.UI
         protected virtual void OnErrorsChanged(string propertyName = null)
         {
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-            OnPropertyChanged("HasErrors");
+            OnPropertyChanged(nameof(HasErrors));
         }
 
         public IEnumerable GetErrors(string propertyName)

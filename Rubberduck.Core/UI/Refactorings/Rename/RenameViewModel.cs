@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Interaction;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;
-using Rubberduck.Common;
 using Rubberduck.Refactorings.Common;
 
 namespace Rubberduck.UI.Refactorings.Rename
@@ -50,25 +47,39 @@ namespace Rubberduck.UI.Refactorings.Rename
             set
             {
                 Model.NewName = value;
+                ValidateName();
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsValidName));
             }
         }
         
-        public bool IsValidName
+        private void ValidateName()
         {
-            get
+            if (Target == null)
             {
-                if (Target == null) { return false; }
+                return;
+            }
 
-                if (VBAIdentifierValidator.IsValidIdentifier(NewName, Target.DeclarationType))
-                {
-                    return !NewName.Equals(Target.IdentifierName, StringComparison.InvariantCultureIgnoreCase);
-                }
+            var errors = VBAIdentifierValidator.SatisfiedInvalidIdentifierCriteria(NewName, Target.DeclarationType).ToList();
 
-                return false;
+            var originalName = Model.Target.IdentifierName;
+            if (!originalName.Equals(NewName)
+                && originalName.Equals(NewName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                errors.Add(RubberduckUI.RenameDialog_OnlyCasingDifferent);
+            }
+
+            if (errors.Any())
+            {
+                SetErrors(nameof(NewName), errors);
+            }
+            else
+            {
+                ClearErrors();
             }
         }
+
+        public bool IsValidName => !HasErrors;
 
         protected override void DialogOk()
         {
