@@ -19,7 +19,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Refactoring.MoveFolders
 {
     [TestFixture]
-    public class MoveMultipleToFolderViewModelTests
+    public class MoveMultipleFoldersViewModelTests
     {
         [Test]
         [Category("Refactorings")]
@@ -257,13 +257,6 @@ namespace RubberduckTests.Refactoring.MoveFolders
                 .Returns<string, string, bool>((message, caption, suggestion) => requestCounter < confirmsRequest.Count 
                                                                                  && confirmsRequest[requestCounter++]);
             return messageBox;
-        }
-
-        private MoveMultipleFoldersViewModel TestViewModel(ICollection<string> sourceFolders, IDeclarationFinderProvider declarationFinderProvider, IMessageBox messageBox)
-        {
-            var finder = declarationFinderProvider.DeclarationFinder;
-            var model = TestModel(sourceFolders, finder);
-            return TestViewModel(model, declarationFinderProvider, messageBox);
         }
 
         private MoveMultipleFoldersViewModel TestViewModel(MoveMultipleFoldersModel model, IDeclarationFinderProvider declarationFinderProvider, IMessageBox messageBox)

@@ -43,16 +43,39 @@ namespace Rubberduck.UI.Refactorings.MoveToFolder
             set
             {
                 Model.TargetFolder = value;
+                ValidateFolder();
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsValidFolder));
             }
         }
-        
+
+        private void ValidateFolder()
+        {
+            var errors = new List<string>();
+
+            if (string.IsNullOrEmpty(NewFolder))
+            {
+                errors.Add(RubberduckUI.MoveFolders_EmptyName);
+            }
+            else if (NewFolder.Any(char.IsControl))
+            {
+                errors.Add(RubberduckUI.MoveFolders_ControlCharacter);
+            }
+
+            if (errors.Any())
+            {
+                SetErrors(nameof(NewFolder), errors);
+            }
+            else
+            {
+                ClearErrors();
+            }
+        }
+
         public bool IsValidFolder => Targets != null 
                                      && Targets.Any()
-                                     && NewFolder != null 
-                                     && !NewFolder.Any(char.IsControl);
-        
+                                     && !HasErrors;
+
         protected override void DialogOk()
         {
             if (Targets == null || !Targets.Any())
