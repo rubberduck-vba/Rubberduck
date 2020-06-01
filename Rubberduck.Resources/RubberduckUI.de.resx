@@ -1697,10 +1697,13 @@ Wollen Sie fortfahren?</value>
     <value>Mehrere Ordner mit demselben Namenfolders werden verschoben. Dies verschmilzt sie.
 Wollen Sie fortfahren?</value>
   </data>
-  <data name="MoveFolders_EmptyName" xml:space="preserve">
+  <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
     <value>Ordnernamen dürfen nicht leer sein.</value>
   </data>
   <data name="MoveFolders_ControlCharacter" xml:space="preserve">
     <value>Ordnernamen dürfen keine Kontrollzeichen wie etwa Zeilenumbrüche enthalten.</value>
+  </data>
+  <data name="MoveFolders_EmptySubfolderName" xml:space="preserve">
+    <value>Die Namen individueller Unterordner dürfen nicht leer sein.</value>
   </data>
 </root>

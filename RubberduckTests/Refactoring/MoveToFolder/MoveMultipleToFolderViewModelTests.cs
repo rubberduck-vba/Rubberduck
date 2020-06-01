@@ -84,6 +84,25 @@ namespace RubberduckTests.Refactoring.MoveToFolder
 
         [Test]
         [Category("Refactorings")]
+        [TestCase(".SomeFolder.SomeOtherFolder")]
+        [TestCase("SomeFolder..SomeOtherFolder")]
+        [TestCase("SomeFolder.SomeOtherFolder.")]
+        public void TargetFolderWithEmptyIndividualFolder_Error(string folderName)
+        {
+            using (var state = MockParser.CreateAndParse(TestVbe()))
+            {
+                var model = TestModel("FooBar.Foo", state.DeclarationFinder);
+                var viewModel = TestViewModel(model);
+
+                viewModel.NewFolder = folderName;
+
+                Assert.IsTrue(viewModel.HasErrors);
+                Assert.IsFalse(viewModel.IsValidFolder);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
         public void NonEmptyTargetFolderWithoutControlCharacter_NoError()
         {
             using (var state = MockParser.CreateAndParse(TestVbe()))
@@ -91,7 +110,7 @@ namespace RubberduckTests.Refactoring.MoveToFolder
                 var model = TestModel("FooBar.Foo" , state.DeclarationFinder);
                 var viewModel = TestViewModel(model);
 
-                viewModel.NewFolder = ";oehaha .adaiafa.a@#$^%&#@$&%%$%^$.ad3.1010101.   . . . rqrq";
+                viewModel.NewFolder = ";oehaha .adaiafa.a@#$^%&#@$&%%$%^$.ad3.1010101.  ## . @.{ ]. rqrq";
 
                 Assert.IsFalse(viewModel.HasErrors);
                 Assert.IsTrue(viewModel.IsValidFolder);

@@ -68,11 +68,19 @@ namespace Rubberduck.UI.Refactorings.MoveFolder
 
             if (string.IsNullOrEmpty(NewFolder))
             {
-                errors.Add(RubberduckUI.MoveFolders_EmptyName);
+                errors.Add(RubberduckUI.MoveFolders_EmptyFolderName);
             }
-            else if (NewFolder.Any(char.IsControl))
+            else
             {
-                errors.Add(RubberduckUI.MoveFolders_ControlCharacter);
+                if (NewFolder.Any(char.IsControl))
+                {
+                    errors.Add(RubberduckUI.MoveFolders_ControlCharacter);
+                }
+
+                if (NewFolder.Split(FolderExtensions.FolderDelimiter).Any(string.IsNullOrEmpty))
+                {
+                    errors.Add(RubberduckUI.MoveFolders_EmptySubfolderName);
+                }
             }
 
             if (errors.Any())

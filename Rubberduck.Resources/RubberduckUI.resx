@@ -1914,10 +1914,13 @@ Do you want to proceed?</value>
 Do you want to proceed?</value>
     
   </data>
-  <data name="MoveFolders_EmptyName" xml:space="preserve">
+  <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
     <value>A folder name cannot be empty.</value>
   </data>
   <data name="MoveFolders_ControlCharacter" xml:space="preserve">
     <value>Folder names cannot contain control characters like e.g. new lines.</value>
+  </data>
+  <data name="MoveFolders_EmptySubfolderName" xml:space="preserve">
+    <value>The names of individual subfolders cannot be empty.</value>
   </data>
 </root>

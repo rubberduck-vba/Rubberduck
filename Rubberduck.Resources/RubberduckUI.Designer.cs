@@ -3029,9 +3029,18 @@ namespace Rubberduck.Resources {
         /// <summary>
         ///   Looks up a localized string similar to A folder name cannot be empty..
         /// </summary>
-        public static string MoveFolders_EmptyName {
+        public static string MoveFolders_EmptyFolderName {
             get {
-                return ResourceManager.GetString("MoveFolders_EmptyName", resourceCulture);
+                return ResourceManager.GetString("MoveFolders_EmptyFolderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The names of individual subfolders cannot be empty..
+        /// </summary>
+        public static string MoveFolders_EmptySubfolderName {
+            get {
+                return ResourceManager.GetString("MoveFolders_EmptySubfolderName", resourceCulture);
             }
         }
         

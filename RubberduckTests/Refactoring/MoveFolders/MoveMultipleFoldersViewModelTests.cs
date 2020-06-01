@@ -91,14 +91,33 @@ namespace RubberduckTests.Refactoring.MoveFolders
 
         [Test]
         [Category("Refactorings")]
-        public void NonEmptyTargetFolderWithoutControlCharacter_NoError()
+        [TestCase(".SomeFolder.SomeOtherFolder")]
+        [TestCase("SomeFolder..SomeOtherFolder")]
+        [TestCase("SomeFolder.SomeOtherFolder.")]
+        public void TargetFolderWithEmptyIndividualFolder_Error(string folderName)
         {
             using (var state = MockParser.CreateAndParse(TestVbe()))
             {
                 var model = TestModel(new List<string> { "FooBar.Foo.Barr" }, state.DeclarationFinder);
                 var viewModel = TestViewModel(model, state, null);
 
-                viewModel.NewFolder = ";oehaha .adaiafa.a@#$^%&#@$&%%$%^$.ad3.1010101.   . . . rqrq";
+                viewModel.NewFolder = folderName;
+
+                Assert.IsTrue(viewModel.HasErrors);
+                Assert.IsFalse(viewModel.IsValidFolder);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        public void TargetFolderWithoutEmptyPartsOrControlCharacter_NoError()
+        {
+            using (var state = MockParser.CreateAndParse(TestVbe()))
+            {
+                var model = TestModel(new List<string> { "FooBar.Foo.Barr" }, state.DeclarationFinder);
+                var viewModel = TestViewModel(model, state, null);
+
+                viewModel.NewFolder = ";oehaha .adaiafa.a@#$^%&#@$&%%$%^$.ad3.1010101.  ## . @.{ ]. rqrq";
 
                 Assert.IsFalse(viewModel.HasErrors);
                 Assert.IsTrue(viewModel.IsValidFolder);

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources;
 using Rubberduck.Refactorings.MoveToFolder;
@@ -52,14 +53,22 @@ namespace Rubberduck.UI.Refactorings.MoveToFolder
         private void ValidateFolder()
         {
             var errors = new List<string>();
-
+            
             if (string.IsNullOrEmpty(NewFolder))
             {
-                errors.Add(RubberduckUI.MoveFolders_EmptyName);
+                errors.Add(RubberduckUI.MoveFolders_EmptyFolderName);
             }
-            else if (NewFolder.Any(char.IsControl))
+            else
             {
-                errors.Add(RubberduckUI.MoveFolders_ControlCharacter);
+                if (NewFolder.Any(char.IsControl))
+                {
+                    errors.Add(RubberduckUI.MoveFolders_ControlCharacter);
+                }
+
+                if (NewFolder.Split(FolderExtensions.FolderDelimiter).Any(string.IsNullOrEmpty))
+                {
+                    errors.Add(RubberduckUI.MoveFolders_EmptySubfolderName);
+                }
             }
 
             if (errors.Any())
