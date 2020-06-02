@@ -83,22 +83,12 @@ End Sub";
         }
 
         [Test]
-        public void MarksLastAssignmentInDeclarationBlock()
-        {
-            const string code = @"
-Sub Foo()
-    Dim i As Integer
-    i = 9
-End Sub";
-            var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(1, results.Count());
-        }
-
-        [Test]
         public void IgnoresAssignmentsWithinBranchNodes()
         {
             const string code = @"
 Sub Foo()
+    Dim unused As String
+    unused = ""Unused""
     Dim i As Integer
     i = 0
     If i = 9 Then
@@ -108,7 +98,7 @@ Sub Foo()
     End If
 End Sub";
             var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(0, results.Count(), TestFailureMsg(results, ""));
+            Assert.AreEqual(1, results.Count(), TestFailureMsg(results, "unused"));
         }
 
         [Test]
@@ -129,7 +119,7 @@ End Sub";
 
         [TestCase("For counter = 1 To 20", "Next")]
         [TestCase("While i < 10", "Wend")]
-        [TestCase("Do While", "Loop")]
+        [TestCase("Do While i < 10", "Loop")]
         public void IgnoresAssignmentsWithinLoopNodes(string loopBeginStmt, string loopEndStmt)
         {
             var code = $@"
@@ -139,9 +129,11 @@ Sub foo()
     {loopBeginStmt}
         i = i + 1
     {loopEndStmt}
+    Dim unused As String
+    unused = ""Unused""
 End Sub";
             var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(0, results.Count(), TestFailureMsg(results, ""));
+            Assert.AreEqual(1, results.Count(), TestFailureMsg(results, "unused"));
         }
 
         [Test]
@@ -149,9 +141,9 @@ End Sub";
         {
             const string code = @"
 Sub foo()
-    Dim i As Integer
     Dim unused As String
     unused = ""Unused""
+    Dim i As Integer
     i = 0
     Select Case i
         Case 0
@@ -214,17 +206,20 @@ End Sub";
             Assert.AreEqual(expected, results.Count());
         }
 
-        [Test]
-        public void DoesNotMarkAssignment_WithIgnoreOnceAnnotation()
+        [TestCase("'@Ignore AssignmentNotUsed", 0)]
+        [TestCase("", 1)]
+        public void DoesNotMarkAssignment_WithIgnoreOnceAnnotation(string annotation, int expectedCount)
         {
-            const string code = @"Public Sub Test()
+            var code =
+$@"Public Function Test() As Long
     Dim foo As Long
-    '@Ignore AssignmentNotUsed
+    {annotation}
     foo = 123451
     foo = 56126
-End Sub";
+    Test = foo
+End Function";
             var results = InspectionResultsForStandardModule(code);
-            Assert.AreEqual(1, results.Count());
+            Assert.AreEqual(expectedCount, results.Count());
         }
 
         [TestCase("'@Ignore AssignmentNotUsed", "unused")]
@@ -259,6 +254,65 @@ Public Function Test() As String
     foo = ""bar""
     foo = foo & ""baz""
     {finalStatement}
+End Function";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(expectedResults.Count(), results.Count(), TestFailureMsg(results, expectedResults));
+        }
+
+        [TestCase("Test = foo", "foo", "foo", "unused")]
+        [TestCase("", "foo", "foo", "foo", "unused")]
+        public void AssignmentUsedByNextLetAssignment_HasSubsequentUnused(string finalStatement, params string[] expectedResults)
+        {
+            var code =
+$@"
+Public Function Test() As String
+    Dim foo As String
+    Dim unused As String
+    unused = ""Unused""
+    foo = ""bar"" 
+    foo = foo & ""baz"" 'not used
+    foo = ""Yo"" 'not used
+    foo = ""YoYo"" 'depends
+    {finalStatement}
+End Function";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(expectedResults.Count(), results.Count(), TestFailureMsg(results, expectedResults));
+        }
+
+        [TestCase("temp = testValue + value", "unused")]
+        [TestCase("temp = value", "unused", "testValue")]
+        public void StaticVariable(string reference, params string[] expectedResults)
+        {
+            var code =
+$@"
+Public Function Test(value As Long) As Long
+    Static testValue As Long
+    Dim temp As Long
+    {reference}
+    Dim unused As String
+    unused = ""Unused""
+    testValue = temp 
+    Test = temp
+End Function";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(expectedResults.Count(), results.Count(), TestFailureMsg(results, expectedResults));
+        }
+
+
+        [TestCase("temp = testValue + value", "unused")]
+        [TestCase("temp = value", "unused", "testValue")]
+        public void StaticProcedure(string reference, params string[] expectedResults)
+        {
+            var code =
+$@"
+Public Static Function Test(value As Long) As Long
+    Dim testValue As Long
+    Dim temp As Long
+    {reference}
+    Dim unused As String
+    unused = ""Unused""
+    testValue = temp 
+    Test = temp
 End Function";
             var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(expectedResults.Count(), results.Count(), TestFailureMsg(results, expectedResults));
@@ -669,13 +723,10 @@ End Function
         }
 
         [Test]
-        [TestCase("Resume Next", true, 2)]
-        [TestCase("Resume", true, 2)]
-        [TestCase("Resume Next", false, 1)]
-        [TestCase("Resume", false, 1)]
-        public void ResumeStmt_NarrowsEvaluationsUsingExitStatements(string resumeStmt, bool errorHandler2HasExit, int expected)
+        [TestCase("Resume Next", 2)]
+        [TestCase("Resume", 2)]
+        public void ResumeStmt_NarrowsEvaluationsUsingExitStatementPrecedesUse(string resumeStmt, int expected)
         {
-            string exitStmt = errorHandler2HasExit ? "Exit Function" : "'Exit Function";
             string code =
 $@"
 Public Function Inverse(value As Double) As Double
@@ -686,7 +737,7 @@ On Error GoTo ErrorHandler1:
     Inverse = ratio
 On Error GoTo ErrorHandler2:
     ratio = 0# 'Not used
-    {exitStmt}
+    Exit Function
 On Error GoTo ErrorHandler3:
     ratio = 0# * 34# 'Used
     Inverse = ratio
@@ -695,7 +746,39 @@ ErrorHandler1:
     ratio = 0# 'Used
     {resumeStmt}
 ErrorHandler2:
-    ratio = 0# 'Not used with ""Exit Function"", removed from unused without ""Exit Function""
+    ratio = 0# 'Not used
+    {resumeStmt}
+ErrorHandler3:
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(expected, results.Count());
+        }
+
+        [Test]
+        [TestCase("Resume Next", 1)]
+        [TestCase("Resume", 1)]
+        public void ResumeStmt_NarrowsEvaluationsUsingExitStatements_FallsThroughToReference(string resumeStmt, int expected)
+        {
+            string code =
+$@"
+Public Function Inverse(value As Double) As Double
+    Dim ratio As Double
+    Inverse = 0#
+On Error GoTo ErrorHandler1:
+    ratio = 1# / value
+    Inverse = ratio
+On Error GoTo ErrorHandler2:
+    ratio = 0# 'Not used
+On Error GoTo ErrorHandler3:
+    ratio = 0# * 34#
+    Inverse = ratio
+    Exit Function
+ErrorHandler1:
+    ratio = 0#
+    {resumeStmt}
+ErrorHandler2:
+    ratio = 0#
     {resumeStmt}
 ErrorHandler3:
 End Function

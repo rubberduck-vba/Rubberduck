@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
@@ -17,18 +16,32 @@ using Rubberduck.VBEditor;
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
-    /// Warns about a variable that is assigned, and then re-assigned before the first assignment is read.
+    /// Warns about a local variable that is assigned and never read. 
+    /// Or, warns about a local variable that is assigned and then re-assigned 
+    /// before using the previous value.
     /// </summary>
     /// <why>
-    /// The first assignment is likely redundant, since it is being overwritten by the second.
+    /// An assignment that is never used is a meaningless statement that was likely 
+    /// used by an execution path in a prior version of the module.
     /// </why>
     /// <example hasResult="true">
     /// <module name="Module1" type="Standard Module">
     /// <![CDATA[
+    /// Public Sub DoSomething(ByRef value As Long)
+    ///     Dim localVar As Long
+    ///     localVar = 12 ' assignment never used
+    ///     Dim otherVar As Long
+    ///     otherVar = 12
+    ///     value = otherVar * value
+    /// End Sub
+    /// ]]>
+    /// <example hasResult="true">
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
     /// Public Sub DoSomething()
-    ///     Dim foo As Long
-    ///     foo = 12 ' assignment is redundant
-    ///     foo = 34 
+    ///     Dim localVar As Long
+    ///     localVar = 12 ' assignment is redundant
+    ///     localVar = 34 
     /// End Sub
     /// ]]>
     /// </module>
@@ -36,11 +49,11 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// <example hasResult="false">
     /// <module name="Module1" type="Standard Module">
     /// <![CDATA[
-    /// Public Function DoSomething(ByVal foo As Long) As Long
-    ///     Dim bar As Long
-    ///     bar = 12
-    ///     bar = bar + foo ' variable is re-assigned, but the prior assigned value is read at least once first.
-    ///     DoSomething = bar
+    /// Public Function DoSomething(ByVal value As Long) As Long
+    ///     Dim localVar As Long
+    ///     localVar = 12
+    ///     localVar = localVar + value 'variable is re-assigned, but the prior assigned value is read at least once first.
+    ///     DoSomething = localVar
     /// End Function
     /// ]]>
     /// </module>
@@ -60,241 +73,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             var localNonArrayVariables = finder.Members(module, DeclarationType.Variable)
                 .Where(declaration => !declaration.IsArray
                                       && !declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module));
+
             return localNonArrayVariables
                 .Where(declaration => !declaration.IsIgnoringInspectionResultFor(AnnotationName))
-                .SelectMany(UnusedAssignments);
-        }
-
-        private IEnumerable<IdentifierReference> UnusedAssignments(Declaration localVariable)
-        {
-            if (!localVariable.References.Any(rf => rf.IsAssignment))
-            {
-                return Enumerable.Empty<IdentifierReference>();
-            }
-
-            var tree = _walker.GenerateTree(localVariable.ParentScopeDeclaration.Context, localVariable);
-            if (File.Exists("C:\\Users\\Brian\\Documents\\GitHub\\CodePath1.txt"))
-            {
-                return UnusedAssignmentReferences1(tree, localVariable);
-            }
-            return UnusedAssignmentReferences(tree);
-        }
-
-        private static List<IdentifierReference> UnusedAssignmentReferences(INode node)
-        {
-            var nodes = new List<IdentifierReference>();
-
-            var blockNodes = node.Nodes(new[] { typeof(BlockNode) });
-            foreach (var block in blockNodes)
-            {
-                INode lastNode = default;
-                foreach (var flattenedNode in block.FlattenedNodes(new[] { typeof(GenericNode), typeof(BlockNode) }))
-                {
-                    if (flattenedNode is AssignmentNode &&
-                        lastNode is AssignmentNode)
-                    {
-                        nodes.Add(lastNode.Reference);
-                    }
-
-                    lastNode = flattenedNode;
-                }
-
-                if (lastNode is AssignmentNode &&
-                    block.Children[0].GetFirstNode(new[] { typeof(GenericNode) }) is DeclarationNode)
-                {
-                    nodes.Add(lastNode.Reference);
-                }
-            }
-
-            return nodes;
-        }
-
-
-        public static IEnumerable<IdentifierReference> UnusedAssignmentReferences1(INode node, Declaration localVariable)
-        {
-            var allNodes = node.Nodes(new[] { typeof(AssignmentNode), typeof(ReferenceNode) })
-                                    .Where(n => localVariable.References.Contains(n.Reference));
-
-            var unUsedNodes = new List<AssignmentNode>();
-
-            if (!allNodes.OfType<ReferenceNode>().Any())
-            {
-                unUsedNodes.AddRange(allNodes.OfType<AssignmentNode>().Cast<AssignmentNode>());
-            }
-            else
-            {
-                unUsedNodes.AddRange(AssignmentsTrailingLastReference(allNodes));
-                unUsedNodes.AddRange(UnusedAssignments(allNodes));
-            }
-
-            return unUsedNodes.Except(DescendantsOfNonEvaluatedTypes(allNodes))
-                                .Select(n => n.Reference);
-        }
-
-        /// <summary>
-        /// Returns Assignments occuring after the last ReferenceNode
-        /// </summary>
-        /// <example>
-        /// <code>
-        ///Private Function Message()
-        ///      fizz = "Hello"
-        ///      Message = fizz
-        ///      fizz = "GoodBye"   'Not used   
-        ///      fizz = "Ciao"      'Not used  
-        ///End Function
-        /// </code>
-        /// </example>
-        private static IEnumerable<AssignmentNode> AssignmentsTrailingLastReference(IEnumerable<INode> allNodes)
-        {
-            var lastReferenceNode = allNodes.OfType<ReferenceNode>().Last();
-            return allNodes
-                        .SkipWhile(n => n != lastReferenceNode)
-                        .OfType<AssignmentNode>();
-        }
-        /// <summary>
-        /// Detects AssignmentNodes that are subsequently re-assigned without being referenced.  
-        /// </summary>
-        /// <remarks>
-        /// There is a scenario where the sequential assignment analysis would generate 
-        /// a false-positive result.  The scenario is addressed by this function.  See example 
-        /// </remarks>
-        /// <example>
-        /// <code>
-        /// Private Sub Test(ByRef value As Long)
-        ///     Dim fizz As Long
-        ///     fizz = value        'not used
-        ///     fizz = value + 2    'not used
-        ///     'The next statement 'looks' unused by sequential analysis only.
-        ///     'But, it the assignment is referenced by the subsequent assignment
-        ///     fizz = 6            
-        ///     fizz = value + fizz  'not used
-        ///     fizz = 7
-        ///     value = fizz
-        /// End Sub
-        /// </code>
-        /// </example>
-        private static IEnumerable<AssignmentNode> UnusedAssignments(IEnumerable<INode> allNodes)
-        {
-            var assignmentsByReferenceNode = new Dictionary<ReferenceNode, List<AssignmentNode>>();
-            foreach (var rfn in allNodes.OfType<ReferenceNode>())
-            {
-                assignmentsByReferenceNode.Add(rfn, allNodes.TakeWhile(n => n != rfn)
-                                                        .OfType<AssignmentNode>()
-                                                        .Except(assignmentsByReferenceNode.Values.SelectMany(v => v))
-                                                        .Cast<AssignmentNode>().ToList());
-            }
-
-            var unUsedSequentialAssignments = new List<AssignmentNode>();
-
-            var usedByNextAssignment = new List<AssignmentNode>();
-
-            var sequentialAssignmentsFound = false;
-            foreach (var key in assignmentsByReferenceNode.Keys)
-            {
-                if (assignmentsByReferenceNode[key].Count() > 1)
-                {
-                    sequentialAssignmentsFound = true;
-                    var numberOfUnusedAssignments = assignmentsByReferenceNode[key].Count() - 1;
-                    unUsedSequentialAssignments.AddRange(assignmentsByReferenceNode[key].Take(numberOfUnusedAssignments));
-                }
-
-                //Find assignments that are referenced in the RHS of the 'next' assignment
-                if (unUsedSequentialAssignments.Any() && TryFindAssigmentUsedBySubsequentAssignment(key, assignmentsByReferenceNode[key], out var usedAssignment))
-                {
-                    usedByNextAssignment.Add(usedAssignment);
-                }
-            }
-
-            if (sequentialAssignmentsFound)
-            {
-                var lastAssignmentNode = allNodes.OfType<AssignmentNode>().Last();
-
-                if (LastAssignmentIsUnUsed(allNodes, lastAssignmentNode))
-                {
-                    unUsedSequentialAssignments.Add(lastAssignmentNode);
-                }
-            }
-
-            return unUsedSequentialAssignments.Except(usedByNextAssignment);
-        }
-
-        /// <summary>
-        /// Detects edge case where last AssignmentNode is unused despite the presence of 
-        /// a subsequent ReferenceNode. 
-        /// </summary>
-        /// <example>
-        /// <code>
-        ///Private Function SpecialCase() As Long
-        ///  Dim fizz As Long
-        ///  fizz = 0    
-        ///     'Edge Case: LHS of fizz = fizz + 1 assignment is unused 
-        ///     'since the subsequent ReferenceNode
-        ///     'is part on the assignment expression's RHS.  And,
-        ///     'the LHS fizz is unused before the end of the procedure
-        ///  fizz = fizz + 1
-        ///  SpecialCase = 1
-        ///End Function
-        /// </code>
-        /// </example>
-        private static bool LastAssignmentIsUnUsed(IEnumerable<INode> allNodes, AssignmentNode lastAssignmentNode)
-        {
-            var lastAssignmentAndFollowingNodes = allNodes.SkipWhile(n => n != lastAssignmentNode);
-
-            return lastAssignmentAndFollowingNodes.Count() == 2
-                        && lastAssignmentAndFollowingNodes.ElementAt(1) is ReferenceNode refNode
-                        && AssignmentUsesReferenceNode(lastAssignmentNode, refNode);
-        }
-
-        private static IEnumerable<AssignmentNode> DescendantsOfNonEvaluatedTypes(IEnumerable<INode> allNodes)
-        {
-            var results = new List<AssignmentNode>();
-            var allAssignmentNodes = allNodes.Where(n => n.Reference.IsAssignment).Cast<AssignmentNode>();
-
-            foreach (var assignment in allAssignmentNodes)
-            {
-                if (assignment.TryGetAncestorNode<BranchNode>(out _))
-                {
-                    results.Add(assignment);
-                }
-                if (assignment.TryGetAncestorNode<LoopNode>(out _))
-                {
-                    results.Add(assignment);
-                }
-            }
-            return results;
-        }
-
-        private static bool AssignmentUsesReferenceNode(AssignmentNode assignNode, ReferenceNode refNode)
-        {
-            if (refNode.Reference.Context.TryGetAncestor<VBAParser.LetStmtContext>(out var letAncestor))
-            {
-                return assignNode.Reference.Context.GetAncestor<VBAParser.LetStmtContext>() == letAncestor;
-            }
-            if (refNode.Reference.Context.TryGetAncestor<VBAParser.SetStmtContext>(out var setAncestor))
-            {
-                return assignNode.Reference.Context.GetAncestor<VBAParser.SetStmtContext>() == setAncestor;
-            }
-            return false;
-        }
-
-        //foo = "Hello" <= assignment
-        //foo = foo & " World" <= assignment uses prior assignment in RHS expression
-        private static bool TryFindAssigmentUsedBySubsequentAssignment(ReferenceNode referenceNode, IEnumerable<AssignmentNode> allAssignments, out AssignmentNode usedAssignment)
-        {
-            usedAssignment = null;
-            //foo = foo & " World"
-            var assignmentNode = allAssignments
-                                    .FirstOrDefault(an => AssignmentUsesReferenceNode(an, referenceNode));
-
-            if (assignmentNode != null)
-            {
-                //foo = "Hello"
-                usedAssignment = allAssignments.Select(v => v)
-                                        .Reverse()
-                                        .SkipWhile(n => n != assignmentNode)
-                                        .ElementAtOrDefault(1);
-            }
-            return usedAssignment != null;
+                .SelectMany(d => FindUnusedAssignmentReferences(d, _walker));
         }
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
@@ -303,8 +85,89 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                         || IsPotentiallyUsedViaJump(reference, finder));
         }
 
+        protected override string ResultDescription(IdentifierReference reference)
+        {
+            return Description;
+        }
+
+        private static IEnumerable<IdentifierReference> FindUnusedAssignmentReferences(Declaration localVariable, Walker walker)
+        {
+            if (!localVariable.References.Any(rf => rf.IsAssignment))
+            {
+                return Enumerable.Empty<IdentifierReference>();
+            }
+
+            //Consider static local variables used if they are referenced anywhere within their procedure
+            if (localVariable.References.Any(r => !r.IsAssignment) && IsStatic(localVariable))
+            {
+                return Enumerable.Empty<IdentifierReference>();
+            }
+
+            var tree = walker.GenerateTree(localVariable.ParentScopeDeclaration.Context, localVariable);
+
+            var allAssignmentsAndReferences = tree.Nodes(new[] { typeof(AssignmentNode), typeof(ReferenceNode) })
+                                    .Where(node => localVariable.References.Contains(node.Reference));
+
+            var unusedAssignmentNodes = allAssignmentsAndReferences.Any(n => n is ReferenceNode)
+                        ? FindUnusedAssignmentNodes(tree, localVariable, allAssignmentsAndReferences)
+                        : allAssignmentsAndReferences.OfType<AssignmentNode>();
+
+            return unusedAssignmentNodes.Except(FindDescendantsOfNeverFlagNodeTypes(unusedAssignmentNodes))
+                                        .Select(n => n.Reference);
+        }
+
+        private static IEnumerable<AssignmentNode> FindUnusedAssignmentNodes(INode node, Declaration localVariable, IEnumerable<INode> allAssignmentsAndReferences)
+        {
+            var assignmentExprNodes = node.Nodes(new[] { typeof(AssignmentExpressionNode) })
+                                                .Where(n => localVariable.References.Contains(n.Children.FirstOrDefault()?.Reference));
+
+            var usedAssignments = new List<AssignmentNode>();
+            foreach (var refNode in allAssignmentsAndReferences.OfType<ReferenceNode>().Reverse())
+            {
+                var assignmentExprNodesWithReference = assignmentExprNodes.Where(n => n.Nodes(new[] { typeof(ReferenceNode) })
+                                                            .Contains(refNode));
+
+                var assignmentsPrecedingReference = assignmentExprNodesWithReference.Any()
+                    ? assignmentExprNodes.TakeWhile(n => n != assignmentExprNodesWithReference.Last())
+                                                .Last()
+                                                .Nodes(new[] { typeof(AssignmentNode) })
+                    : allAssignmentsAndReferences.TakeWhile(n => n != refNode)
+                        .OfType<AssignmentNode>();
+
+                if (assignmentsPrecedingReference.Any())
+                {
+                    usedAssignments.Add(assignmentsPrecedingReference.Last() as AssignmentNode);
+                }
+            }
+
+            return allAssignmentsAndReferences.OfType<AssignmentNode>()
+                                                .Except(usedAssignments);
+        }
+
+        private static IEnumerable<AssignmentNode> FindDescendantsOfNeverFlagNodeTypes(IEnumerable<AssignmentNode> flaggedAssignments)
+        {
+            var filteredResults = new List<AssignmentNode>();
+
+            foreach (var assignment in flaggedAssignments)
+            {
+                if (assignment.TryGetAncestorNode<BranchNode>(out _))
+                {
+                    filteredResults.Add(assignment);
+                }
+                if (assignment.TryGetAncestorNode<LoopNode>(out _))
+                {
+                    filteredResults.Add(assignment);
+                }
+            }
+            return filteredResults;
+        }
+
         private static bool IsAssignmentOfNothing(IdentifierReference reference)
         {
+            if (reference.Context.Parent is VBAParser.SetStmtContext setStmtContext2)
+            {
+                var test = setStmtContext2.expression();
+            }
             return reference.IsSetAssignment
                 && reference.Context.Parent is VBAParser.SetStmtContext setStmtContext
                 && setStmtContext.expression().GetText().Equals(Tokens.Nothing);
@@ -330,31 +193,21 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                                                 .Where(label => resultCandidate.ParentScoping.Equals(label.ParentDeclaration))
                                                 .Select(lbl => (lbl.IdentifierName, lbl.Context.Start.Line));
 
-            return GotoPotentiallyUsesVariable(resultCandidate, labelIdLineNumberPairs) 
-                || ResumePotentiallyUsesVariable(resultCandidate, labelIdLineNumberPairs);
+            return JumpStmtPotentiallyUsesVariable<VBAParser.GoToStmtContext>(resultCandidate, labelIdLineNumberPairs)
+                || JumpStmtPotentiallyUsesVariable<VBAParser.ResumeStmtContext>(resultCandidate, labelIdLineNumberPairs);
         }
 
-        private static bool GotoPotentiallyUsesVariable(IdentifierReference resultCandidate, IEnumerable<(string, int)> labelIdLineNumberPairs)
+        private static bool JumpStmtPotentiallyUsesVariable<T>(IdentifierReference resultCandidate, IEnumerable<(string IdentifierName, int Line)> labelIdLineNumberPairs) where T : ParserRuleContext
         {
-            if (TryGetRelevantJumpContext<VBAParser.GoToStmtContext>(resultCandidate, out var gotoStmt))
+            if (TryGetRelevantJumpContext<T>(resultCandidate, out var jumpStmt))
             {
-                return IsPotentiallyUsedAssignment(gotoStmt, resultCandidate, labelIdLineNumberPairs);
+                return IsPotentiallyUsedAssignment(jumpStmt, resultCandidate, labelIdLineNumberPairs);
             }
 
             return false;
         }
 
-        private static bool ResumePotentiallyUsesVariable(IdentifierReference resultCandidate, IEnumerable<(string IdentifierName, int Line)> labelIdLineNumberPairs)
-        {
-            if (TryGetRelevantJumpContext<VBAParser.ResumeStmtContext>(resultCandidate, out var resumeStmt))
-            {
-                return IsPotentiallyUsedAssignment(resumeStmt, resultCandidate, labelIdLineNumberPairs);
-            }
-
-            return false;
-        }
-
-        private static bool TryGetRelevantJumpContext<T>(IdentifierReference resultCandidate, out T ctxt) where T : ParserRuleContext //, IEnumerable<T> stmtContexts, int targetLine, int? targetColumn = null) where T : ParserRuleContext
+        private static bool TryGetRelevantJumpContext<T>(IdentifierReference resultCandidate, out T ctxt) where T : ParserRuleContext
         {
             ctxt = resultCandidate.ParentScoping.Context.GetDescendents<T>()
                                     .Where(sc => sc.Start.Line > resultCandidate.Context.Start.Line
@@ -366,7 +219,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return ctxt != null;
         }
 
-        private static bool IsPotentiallyUsedAssignment<T>(T jumpContext, IdentifierReference resultCandidate, IEnumerable<(string, int)> labelIdLineNumberPairs) //, int executionBranchLine)
+        private static bool IsPotentiallyUsedAssignment<T>(T jumpContext, IdentifierReference resultCandidate, IEnumerable<(string, int)> labelIdLineNumberPairs)
         {
             int? executionBranchLine = null;
             if (jumpContext is VBAParser.GoToStmtContext gotoCtxt)
@@ -403,7 +256,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return !(sortedContextsAfterBranch.FirstOrDefault() is VBAParser.ExitStmtContext);
         }
 
-        private static int? DetermineResumeStmtExecutionBranchLine(VBAParser.ResumeStmtContext resumeStmt, IdentifierReference resultCandidate, IEnumerable<(string IdentifierName, int Line)> labelIdLineNumberPairs) //where T: ParserRuleContext
+        private static int? DetermineResumeStmtExecutionBranchLine(VBAParser.ResumeStmtContext resumeStmt, IdentifierReference resultCandidate, IEnumerable<(string IdentifierName, int Line)> labelIdLineNumberPairs)
         {
             var onErrorGotoLabelToLineNumber = resultCandidate.ParentScoping.Context.GetDescendents<VBAParser.OnErrorStmtContext>()
                     .Where(errorStmtCtxt => !errorStmtCtxt.expression().GetText().Equals("0"))
@@ -446,9 +299,29 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                                         ? parsedLineNumber
                                         : IDandLinePairs.Single(v => v.IdentifierName.Equals(expression)).Line;
 
-        protected override string ResultDescription(IdentifierReference reference)
+        private static bool IsStatic(Declaration declaration)
         {
-            return Description;
+            var ctxt = declaration.Context.GetAncestor<VBAParser.VariableStmtContext>();
+            if (ctxt?.STATIC() != null)
+            {
+                return true;
+            }
+
+            switch (declaration.ParentDeclaration.Context)
+            {
+                case VBAParser.FunctionStmtContext func:
+                    return func.STATIC() != null;
+                case VBAParser.SubStmtContext sub:
+                    return sub.STATIC() != null;
+                case VBAParser.PropertyLetStmtContext let:
+                    return let.STATIC() != null;
+                case VBAParser.PropertySetStmtContext set:
+                    return set.STATIC() != null;
+                case VBAParser.PropertyGetStmtContext get:
+                    return get.STATIC() != null;
+                default:
+                    return false;
+            }
         }
     }
 }
