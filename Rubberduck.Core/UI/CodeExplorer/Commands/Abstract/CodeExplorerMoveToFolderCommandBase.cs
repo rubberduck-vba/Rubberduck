@@ -23,24 +23,27 @@ namespace Rubberduck.UI.CodeExplorer.Commands.Abstract
         };
 
         private readonly IParserStatusProvider _parserStatusProvider;
+        private readonly RubberduckParserState _state;
 
         private readonly IRefactoringAction<MoveMultipleFoldersModel> _moveFolders;
         private readonly IRefactoringAction<MoveMultipleToFolderModel> _moveToFolder;
 
         private readonly IRefactoringFailureNotifier _failureNotifier;
 
-        public CodeExplorerMoveToFolderCommandBase(
+        protected CodeExplorerMoveToFolderCommandBase(
             MoveMultipleFoldersRefactoringAction moveFolders,
             MoveMultipleToFolderRefactoringAction moveToFolder,
             MoveToFolderRefactoringFailedNotifier failureNotifier, 
             IParserStatusProvider parserStatusProvider, 
-            IVbeEvents vbeEvents) 
+            IVbeEvents vbeEvents,
+            RubberduckParserState state) 
             : base(vbeEvents)
         {
             _moveFolders = moveFolders;
             _moveToFolder = moveToFolder;
 
             _parserStatusProvider = parserStatusProvider;
+            _state = state;
             _failureNotifier = failureNotifier;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
@@ -67,15 +70,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands.Abstract
             if (node is CodeExplorerComponentViewModel componentViewModel)
             {
                 var model = ComponentModel(componentViewModel);
-                var modifiedModel = ModifiedComponentModel(model, parameter);
-                ExecuteRefactoringAction(modifiedModel, _moveToFolder, _failureNotifier);
+                ExecuteRefactoringAction(model, parameter, ValidateInitialComponentModel, ModifiedComponentModel, _moveToFolder, _failureNotifier);
             }
 
             if (node is CodeExplorerCustomFolderViewModel folderViewModel)
             {
                 var model = FolderModel(folderViewModel);
-                var modifiedModel = ModifiedFolderModel(model, parameter);
-                ExecuteRefactoringAction(modifiedModel, _moveFolders, _failureNotifier);
+                ExecuteRefactoringAction(model, parameter, ValidateInitialFolderModel, ModifiedFolderModel, _moveFolders, _failureNotifier);
             }
         }
 
@@ -103,6 +104,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands.Abstract
                 .ToList();
         }
 
+        private void ValidateInitialFolderModel(MoveMultipleFoldersModel model)
+        {
+            var firstStaleAffectedModules = model.ModulesBySourceFolder.Values
+                .SelectMany(modules => modules)
+                .FirstOrDefault(module => _state.IsNewOrModified(module.QualifiedModuleName));
+            if (firstStaleAffectedModules != null)
+            {
+                throw new AffectedModuleIsStaleException(firstStaleAffectedModules.QualifiedModuleName);
+            }
+        }
+
         private MoveMultipleToFolderModel ComponentModel(CodeExplorerComponentViewModel componentViewModel)
         {
             if (!(componentViewModel.Declaration is ModuleDeclaration moduleDeclaration))
@@ -113,14 +125,32 @@ namespace Rubberduck.UI.CodeExplorer.Commands.Abstract
             var targets = new List<ModuleDeclaration>{moduleDeclaration};
             var targetFolder = moduleDeclaration.CustomFolder;
             return new MoveMultipleToFolderModel(targets, targetFolder);
-        } 
+        }
 
-        private static void ExecuteRefactoringAction<TModel>(TModel model, IRefactoringAction<TModel> refactoringAction, IRefactoringFailureNotifier failureNotifier)
+        private void ValidateInitialComponentModel(MoveMultipleToFolderModel model)
+        {
+            var firstStaleAffectedModules = model.Targets
+                .FirstOrDefault(module => _state.IsNewOrModified(module.QualifiedModuleName));
+            if (firstStaleAffectedModules != null)
+            {
+                throw new AffectedModuleIsStaleException(firstStaleAffectedModules.QualifiedModuleName);
+            }
+        }
+
+        private static void ExecuteRefactoringAction<TModel>(
+            TModel model, 
+            object parameter,
+            Action<TModel> initialModelValidation,
+            Func<TModel,object,TModel> modelModification, 
+            IRefactoringAction<TModel> refactoringAction, 
+            IRefactoringFailureNotifier failureNotifier)
             where TModel : class, IRefactoringModel
         {
             try
             {
-                refactoringAction.Refactor(model);
+                initialModelValidation(model);
+                var modifiedModel = modelModification(model, parameter);
+                refactoringAction.Refactor(modifiedModel);
             }
             catch (RefactoringAbortedException)
             {}
