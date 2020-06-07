@@ -385,7 +385,7 @@
                 Padding="2">
             <controls:SearchBox x:Name="SearchBox"
                       Background="{x:Static SystemColors.WindowBrush}"
-                      Text="{Binding Search, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      Text="{Binding Search, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}"
                       Hint="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI,
                           Key=CodeExplorer_SearchPlaceholder}"
                       Grid.Column="0"

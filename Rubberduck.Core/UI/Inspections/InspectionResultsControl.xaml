@@ -136,7 +136,7 @@
                 <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_Filter}" VerticalContentAlignment="Center" />
 
                 <controls:SearchBox Width="100"
-                                    Text="{Binding InspectionDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    Text="{Binding InspectionDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
 
                 <Label Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI ,Key=CodeInspection_SeverityFilter}" />
 
