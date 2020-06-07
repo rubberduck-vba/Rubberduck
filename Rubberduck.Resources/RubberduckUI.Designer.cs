@@ -2973,7 +2973,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is defined neither in the component component it is used nor in a standard module. .
+        ///   Looks up a localized string similar to &apos;{0}&apos; is defined neither in the component component it is used nor in a standard module..
         /// </summary>
         public static string MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule {
             get {
@@ -4375,6 +4375,43 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to folder.
+        /// </summary>
+        public static string RenameDialog_Folder {
+            get {
+                return ResourceManager.GetString("RenameDialog_Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The folder &apos;{0}&apos; already exists. Renaming &apos;{1}&apos; to &apos;{2}&apos; will lead to a merge with the existing folder.
+        ///Do you want to proceed?.
+        /// </summary>
+        public static string RenameDialog_FolderAlreadyExists {
+            get {
+                return ResourceManager.GetString("RenameDialog_FolderAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folder:.
+        /// </summary>
+        public static string RenameDialog_FolderLabel {
+            get {
+                return ResourceManager.GetString("RenameDialog_FolderLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full new folder:.
+        /// </summary>
+        public static string RenameDialog_FullNewFolderLabel {
+            get {
+                return ResourceManager.GetString("RenameDialog_FullNewFolderLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please specify new name for {0} &apos;{1}&apos;..
         /// </summary>
         public static string RenameDialog_InstructionsLabelText {
@@ -4407,6 +4444,15 @@ namespace Rubberduck.Resources {
         public static string RenameDialog_TitleText {
             get {
                 return ResourceManager.GetString("RenameDialog_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename folder.
+        /// </summary>
+        public static string RenameDialog_TitleText_Folder {
+            get {
+                return ResourceManager.GetString("RenameDialog_TitleText_Folder", resourceCulture);
             }
         }
         

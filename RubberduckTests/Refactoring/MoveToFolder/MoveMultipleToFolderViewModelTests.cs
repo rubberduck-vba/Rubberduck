@@ -155,6 +155,5 @@ namespace RubberduckTests.Refactoring.MoveToFolder
                 .Build()
                 .Object;
         }
-
     }
 }
