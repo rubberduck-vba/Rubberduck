@@ -1,9 +1,10 @@
 ﻿using System.Windows;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.RenameFolder;
 
 namespace Rubberduck.UI.Refactorings.RenameFolder
 {
-    public partial class RenameFolderView : IRefactoringView<RenameFolderView>
+    public partial class RenameFolderView : IRefactoringView<RenameFolderModel>
     {
         public RenameFolderView()
         {
