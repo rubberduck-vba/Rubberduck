@@ -11,6 +11,11 @@ namespace Rubberduck.JunkDrawer.Extensions
             return (folder ?? string.Empty).Split(FolderExtensions.FolderDelimiter).FirstOrDefault();
         }
 
+        public static string SubFolderName(this string folder)
+        {
+            return (folder ?? string.Empty).Split(FolderExtensions.FolderDelimiter).LastOrDefault();
+        }
+
         public static string SubFolderPathRelativeTo(this string subFolder, string folder)
         {
             if (subFolder is null || folder is null)
