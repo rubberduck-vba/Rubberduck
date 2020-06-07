@@ -131,7 +131,7 @@
                   ItemsSource="{Binding Path=AnnotationArguments}"
                   AutoGenerateColumns="False"
                   VerticalScrollBarVisibility="Auto"
-                  Margin="5,0,0,5">
+                  Margin="5,0,5,5">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentTypeHeader}"
                                         CellTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}"
