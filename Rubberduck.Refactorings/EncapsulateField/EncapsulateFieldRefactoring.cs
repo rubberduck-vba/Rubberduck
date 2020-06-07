@@ -21,6 +21,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IIndenter _indenter;
+        private readonly ICodeBuilder _codeBuilder;
         private readonly IRewritingManager _rewritingManager;
 
         public EncapsulateFieldRefactoring(
@@ -29,12 +30,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
                 IRewritingManager rewritingManager,
                 ISelectionProvider selectionProvider,
-                ISelectedDeclarationProvider selectedDeclarationProvider)
+                ISelectedDeclarationProvider selectedDeclarationProvider,
+                ICodeBuilder codeBuilder)
             :base(selectionProvider, userInteraction)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _indenter = indenter;
+            _codeBuilder = codeBuilder;
             _rewritingManager = rewritingManager;
         }
 
@@ -112,8 +115,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             if (!model.SelectedFieldCandidates.Any()) { return refactorRewriteSession; }
 
             var strategy = model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
-                ? new ConvertFieldsToUDTMembers(_declarationFinderProvider, model, _indenter) as IEncapsulateStrategy
-                : new UseBackingFields(_declarationFinderProvider, model, _indenter) as IEncapsulateStrategy;
+                ? new ConvertFieldsToUDTMembers(_declarationFinderProvider, model, _indenter, _codeBuilder) as IEncapsulateStrategy
+                : new UseBackingFields(_declarationFinderProvider, model, _indenter, _codeBuilder) as IEncapsulateStrategy;
 
             return strategy.RefactorRewrite(refactorRewriteSession, asPreview);
         }
