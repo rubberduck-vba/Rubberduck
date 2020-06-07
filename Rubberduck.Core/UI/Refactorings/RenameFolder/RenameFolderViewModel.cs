@@ -34,8 +34,8 @@ namespace Rubberduck.UI.Refactorings.RenameFolder
 
                 return string.Format(
                     RubberduckUI.RenameDialog_InstructionsLabelText,
-                    folderToRename, 
-                    RubberduckUI.RenameDialog_Folder);
+                    RubberduckUI.RenameDialog_Folder,
+                    folderToRename);
             }
         }
 
