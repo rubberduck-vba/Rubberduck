@@ -21,8 +21,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private IObjectStateUDT _stateUDTField;
 
-        public ConvertFieldsToUDTMembers(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
-            : base(declarationFinderProvider, model, indenter)
+        public ConvertFieldsToUDTMembers(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter, ICodeBuilder codeBuilder)
+            : base(declarationFinderProvider, model, indenter, codeBuilder)
         {
             _stateUDTField = model.ObjectStateUDTField;
         }
@@ -64,40 +64,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             AddContentBlock(NewContentTypes.DeclarationBlock, _stateUDTField.FieldDeclarationBlock);
             return;
-        }
-
-        protected override void LoadNewPropertyBlocks()
-        {
-            var propertyGenerationSpecs = SelectedFields.SelectMany(f => f.PropertyAttributeSets);
-
-            foreach (var selectedField in SelectedFields)
-            {
-                var converted = selectedField as IConvertToUDTMember;
-                foreach (var set in selectedField.PropertyAttributeSets)
-                {
-                    if (converted.Declaration is VariableDeclaration variableDeclaration)
-                    {
-                        var getContent = $"{set.PropertyName} = {set.BackingField}";
-                        if (set.UsesSetAssignment)
-                        {
-                            getContent = $"{Tokens.Set} {getContent}";
-                        }
-                        AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertyGet, set.PropertyName, content: $"{_defaultIndent}{getContent}"));
-                        if (converted.IsReadOnly)
-                        {
-                            continue;
-                        }
-                        if (set.GenerateLetter)
-                        {
-                            AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertyLet, set.PropertyName, content: $"{_defaultIndent}{set.BackingField} = {set.ParameterName}"));
-                        }
-                        if (set.GenerateSetter)
-                        {
-                            AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertySet, set.PropertyName, content: $"{_defaultIndent}{Tokens.Set} {set.BackingField} = {set.ParameterName}"));
-                        }
-                    }
-                }
-            }
         }
 
         protected override void LoadFieldReferenceContextReplacements(IEncapsulateFieldCandidate field)
