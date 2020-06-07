@@ -82,14 +82,17 @@ namespace Rubberduck.UI.UnitTesting
             AnnotationUpdater = annotationUpdater;
 
             Model = model;
-            Model.TestCompleted += HandleTestCompletion;
 
             if (CollectionViewSource.GetDefaultView(Model.Tests) is ListCollectionView tests)
             {
                 tests.SortDescriptions.Add(new SortDescription("QualifiedName.QualifiedModuleName.Name", ListSortDirection.Ascending));
                 tests.SortDescriptions.Add(new SortDescription("QualifiedName.MemberName", ListSortDirection.Ascending));
+                tests.IsLiveFiltering = true;
+                tests.IsLiveGrouping = true;
                 Tests = tests;
             }
+
+            
 
             OnPropertyChanged(nameof(Tests));
             TestGrouping = TestExplorerGrouping.Outcome;
@@ -228,16 +231,6 @@ namespace Rubberduck.UI.UnitTesting
             var passesOutcomeFilter = (OutcomeFilter & convertedOutcome) == convertedOutcome;
 
             return passesNameFilter && passesOutcomeFilter;
-        }
-
-        private void HandleTestCompletion(object sender, TestCompletedEventArgs e)
-        {
-            if (TestGrouping != TestExplorerGrouping.Outcome)
-            {
-                return;
-            }
-
-            Tests.Refresh();
         }
 
         public IRewritingManager RewritingManager { get; }
@@ -605,7 +598,6 @@ namespace Rubberduck.UI.UnitTesting
 
         public void Dispose()
         {
-            Model.TestCompleted -= HandleTestCompletion;
             Model.Dispose();
         }
     }
