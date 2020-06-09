@@ -1706,4 +1706,20 @@ Wollen Sie fortfahren?</value>
   <data name="MoveFolders_EmptySubfolderName" xml:space="preserve">
     <value>Die Namen individueller Unterordner dürfen nicht leer sein.</value>
   </data>
+  <data name="RenameDialog_Folder" xml:space="preserve">
+    <value>Ordner</value>
+  </data>
+  <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
+    <value>Der Ordner '{0}' existiert bereits. '{1}' in '{2}. umzubenennen wird die Ordner verschmelzen.
+Wollen Sie fortfahren?</value>
+  </data>
+  <data name="RenameDialog_FolderLabel" xml:space="preserve">
+    <value>Ordner:</value>
+  </data>
+  <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
+    <value>Kompletter Ordnername:</value>
+  </data>
+  <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
+    <value>Ordner umbenennen</value>
+  </data>
 </root>

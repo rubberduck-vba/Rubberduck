@@ -6,6 +6,7 @@ using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveFolder;
 using Rubberduck.Refactorings.MoveToFolder;
 using Rubberduck.Resources;
@@ -27,8 +28,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands.DragAndDrop
             IParserStatusProvider parserStatusProvider, 
             IVbeEvents vbeEvents,
             IMessageBox messageBox,
-            IDeclarationFinderProvider declarationFinderProvider) 
-            : base(moveFolders, moveToFolder, failureNotifier, parserStatusProvider, vbeEvents)
+            IDeclarationFinderProvider declarationFinderProvider,
+            RubberduckParserState state) 
+            : base(moveFolders, moveToFolder, failureNotifier, parserStatusProvider, vbeEvents, state)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _messageBox = messageBox;
@@ -69,6 +71,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands.DragAndDrop
             {
                 model.TargetFolder = targetFolder;
             }
+            else
+            {
+                throw new RefactoringAbortedException();
+            }
+
             return model;
         }
 

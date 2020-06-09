@@ -126,6 +126,9 @@
     <Compile Update="UI\Refactorings\MoveToFolder\MoveMultipleToFolderView.xaml.cs">
       <DependentUpon>MoveMultipleToFolderView.xaml</DependentUpon>
     </Compile>
+    <Compile Update="UI\Refactorings\RenameFolder\RenameFolderView.xaml.cs">
+      <DependentUpon>RenameFolderView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">

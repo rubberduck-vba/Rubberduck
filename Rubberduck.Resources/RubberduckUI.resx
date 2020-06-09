@@ -1496,7 +1496,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <comment>{0}: Variable Name</comment>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
-    <value>'{0}' is defined neither in the component component it is used nor in a standard module. </value>
+    <value>'{0}' is defined neither in the component component it is used nor in a standard module.</value>
     <comment>{0}: Variable Name</comment>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
@@ -1922,5 +1922,22 @@ Do you want to proceed?</value>
   </data>
   <data name="MoveFolders_EmptySubfolderName" xml:space="preserve">
     <value>The names of individual subfolders cannot be empty.</value>
+  </data>
+  <data name="RenameDialog_Folder" xml:space="preserve">
+    <value>folder</value>
+  </data>
+  <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
+    <value>The folder '{0}' already exists. Renaming '{1}' to '{2}' will lead to a merge with the existing folder.
+Do you want to proceed?</value>
+    <comment>{0} new full folder name; {1} folder part to rename; {2} new folder part name</comment>
+  </data>
+  <data name="RenameDialog_FolderLabel" xml:space="preserve">
+    <value>Folder:</value>
+  </data>
+  <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
+    <value>Full new folder:</value>
+  </data>
+  <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
+    <value>Rename folder</value>
   </data>
 </root>
