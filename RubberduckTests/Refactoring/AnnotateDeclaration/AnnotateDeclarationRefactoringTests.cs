@@ -84,7 +84,7 @@ End Sub";
             RefactoringUserInteraction<IAnnotateDeclarationPresenter, AnnotateDeclarationModel> userInteraction, 
             ISelectionService selectionService)
         {
-            var annotationUpdater = new AnnotationUpdater();
+            var annotationUpdater = new AnnotationUpdater(state);
             var annotateDeclarationAction = new AnnotateDeclarationRefactoringAction(rewritingManager, annotationUpdater);
 
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);

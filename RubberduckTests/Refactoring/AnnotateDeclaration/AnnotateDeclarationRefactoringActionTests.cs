@@ -276,7 +276,7 @@ End Sub
 
         protected override IRefactoringAction<AnnotateDeclarationModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            var annotationUpdater = new AnnotationUpdater();
+            var annotationUpdater = new AnnotationUpdater(state);
             return new AnnotateDeclarationRefactoringAction(rewritingManager, annotationUpdater);
         }
     }
