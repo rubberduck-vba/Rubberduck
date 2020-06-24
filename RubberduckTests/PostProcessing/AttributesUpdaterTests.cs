@@ -851,7 +851,7 @@ End Sub
 
         [Test]
         [Category("AttributesUpdater")]
-        public void AddOrUpdateAttribute_UsualAttribute_NotThere_AddsAttribute()
+        public void AddOrUpdateAttribute_UsualAttribute_NotThere_AddsAttribute_Module()
         {
             const string inputCode =
                 @"VERSION 1.0 CLASS
@@ -887,6 +887,261 @@ End Sub
                 var moduleDeclaration = state.DeclarationFinder
                     .UserDeclarations(DeclarationType.Module)
                     .Single();
+                var attributesUpdater = new AttributesUpdater(state);
+
+                attributesUpdater.AddOrUpdateAttribute(rewriteSession, moduleDeclaration, attribute, newValues);
+                rewriteSession.TryRewrite();
+
+                actualCode = component.CodeModule.Content();
+            }
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("AttributesUpdater")]
+        public void AddOrUpdateAttribute_UsualAttribute_AlreadyThere_UpdatesAttribute_Module()
+        {
+            const string inputCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""ClassKeys""
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Exposed = False
+Public Sub Foo(bar As String)
+    bar = vbNullString
+End Sub
+";
+
+            const string expectedCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""ClassKeys""
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Exposed = True
+Public Sub Foo(bar As String)
+    bar = vbNullString
+End Sub
+";
+            var attribute = "VB_Exposed";
+            var newValues = new List<string> { "True" };
+
+            string actualCode;
+            var (component, rewriteSession, state) = TestSetup(inputCode);
+            using (state)
+            {
+                var moduleDeclaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Module)
+                    .Single();
+                var attributesUpdater = new AttributesUpdater(state);
+
+                attributesUpdater.AddOrUpdateAttribute(rewriteSession, moduleDeclaration, attribute, newValues);
+                rewriteSession.TryRewrite();
+
+                actualCode = component.CodeModule.Content();
+            }
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("AttributesUpdater")]
+        public void AddOrUpdateAttribute_UsualAttribute_NotThere_AddsAttribute_Member()
+        {
+            const string inputCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""ClassKeys""
+Attribute VB_GlobalNameSpace = False
+Public Sub Foo(bar As String)
+    bar = vbNullString
+End Sub
+";
+
+            const string expectedCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""ClassKeys""
+Attribute VB_GlobalNameSpace = False
+Public Sub Foo(bar As String)
+Attribute Foo.VB_UserMemId = 0
+    bar = vbNullString
+End Sub
+";
+            var attribute = "Foo.VB_UserMemId";
+            var newValues = new List<string> { "0" };
+
+            string actualCode;
+            var (component, rewriteSession, state) = TestSetup(inputCode);
+            using (state)
+            {
+                var moduleDeclaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Procedure)
+                    .Single();
+                var attributesUpdater = new AttributesUpdater(state);
+
+                attributesUpdater.AddOrUpdateAttribute(rewriteSession, moduleDeclaration, attribute, newValues);
+                rewriteSession.TryRewrite();
+
+                actualCode = component.CodeModule.Content();
+            }
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("AttributesUpdater")]
+        public void AddOrUpdateAttribute_UsualAttribute_AlreadyThere_UpdatesAttribute_Member()
+        {
+            const string inputCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""ClassKeys""
+Attribute VB_GlobalNameSpace = False
+Public Sub Foo(bar As String)
+Attribute Foo.VB_UserMemId = -4
+    bar = vbNullString
+End Sub
+";
+
+            const string expectedCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""ClassKeys""
+Attribute VB_GlobalNameSpace = False
+Public Sub Foo(bar As String)
+Attribute Foo.VB_UserMemId = 0
+    bar = vbNullString
+End Sub
+";
+            var attribute = "Foo.VB_UserMemId";
+            var newValues = new List<string> { "0" };
+
+            string actualCode;
+            var (component, rewriteSession, state) = TestSetup(inputCode);
+            using (state)
+            {
+                var moduleDeclaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Procedure)
+                    .Single();
+                var attributesUpdater = new AttributesUpdater(state);
+
+                attributesUpdater.AddOrUpdateAttribute(rewriteSession, moduleDeclaration, attribute, newValues);
+                rewriteSession.TryRewrite();
+
+                actualCode = component.CodeModule.Content();
+            }
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("AttributesUpdater")]
+        public void AddOrUpdateAttribute_UsualAttribute_NotThere_AddsAttribute_Variable()
+        {
+            const string inputCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""ClassKeys""
+Attribute VB_GlobalNameSpace = False
+
+Public MyVariable As Variant
+
+Public Sub Foo(bar As String)
+    bar = vbNullString
+End Sub
+";
+
+            const string expectedCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""ClassKeys""
+Attribute VB_GlobalNameSpace = False
+
+Public MyVariable As Variant
+Attribute MyVariable.VB_VarDescription = ""MyDesc""
+
+Public Sub Foo(bar As String)
+    bar = vbNullString
+End Sub
+";
+            var attribute = "MyVariable.VB_VarDescription";
+            var newValues = new List<string> { "\"MyDesc\"" };
+
+            string actualCode;
+            var (component, rewriteSession, state) = TestSetup(inputCode);
+            using (state)
+            {
+                var moduleDeclaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Variable)
+                    .Single(declaration => declaration.IdentifierName.Equals("MyVariable"));
+                var attributesUpdater = new AttributesUpdater(state);
+
+                attributesUpdater.AddOrUpdateAttribute(rewriteSession, moduleDeclaration, attribute, newValues);
+                rewriteSession.TryRewrite();
+
+                actualCode = component.CodeModule.Content();
+            }
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("AttributesUpdater")]
+        public void AddOrUpdateAttribute_UsualAttribute_AlreadyThere_UpdatesAttribute_Variable()
+        {
+            const string inputCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""ClassKeys""
+Attribute VB_GlobalNameSpace = False
+
+Public MyVariable As Variant
+Attribute MyVariable.VB_VarDescription = ""NotMyDesc""
+
+Public Sub Foo(bar As String)
+    bar = vbNullString
+End Sub
+";
+
+            const string expectedCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""ClassKeys""
+Attribute VB_GlobalNameSpace = False
+
+Public MyVariable As Variant
+Attribute MyVariable.VB_VarDescription = ""MyDesc""
+
+Public Sub Foo(bar As String)
+    bar = vbNullString
+End Sub
+";
+            var attribute = "MyVariable.VB_VarDescription";
+            var newValues = new List<string> { "\"MyDesc\"" };
+
+            string actualCode;
+            var (component, rewriteSession, state) = TestSetup(inputCode);
+            using (state)
+            {
+                var moduleDeclaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Variable)
+                    .Single(declaration => declaration.IdentifierName.Equals("MyVariable"));
                 var attributesUpdater = new AttributesUpdater(state);
 
                 attributesUpdater.AddOrUpdateAttribute(rewriteSession, moduleDeclaration, attribute, newValues);
@@ -927,55 +1182,6 @@ End Sub
 ";
             var attribute = "VB_Ext_Key";
             var newValues = new List<string> { "\"MyKey\"", "\"MyValue\"" };
-
-            string actualCode;
-            var (component, rewriteSession, state) = TestSetup(inputCode);
-            using (state)
-            {
-                var moduleDeclaration = state.DeclarationFinder
-                    .UserDeclarations(DeclarationType.Module)
-                    .Single();
-                var attributesUpdater = new AttributesUpdater(state);
-
-                attributesUpdater.AddOrUpdateAttribute(rewriteSession, moduleDeclaration, attribute, newValues);
-                rewriteSession.TryRewrite();
-
-                actualCode = component.CodeModule.Content();
-            }
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-
-        [Test]
-        [Category("AttributesUpdater")]
-        public void AddOrUpdateAttribute_UsualAttribute_AlreadyThere_UpdatesAttribute()
-        {
-            const string inputCode =
-                @"VERSION 1.0 CLASS
-BEGIN
-  MultiUse = -1  'True
-END
-Attribute VB_Name = ""ClassKeys""
-Attribute VB_GlobalNameSpace = False
-Attribute VB_Exposed = False
-Public Sub Foo(bar As String)
-    bar = vbNullString
-End Sub
-";
-
-            const string expectedCode =
-                @"VERSION 1.0 CLASS
-BEGIN
-  MultiUse = -1  'True
-END
-Attribute VB_Name = ""ClassKeys""
-Attribute VB_GlobalNameSpace = False
-Attribute VB_Exposed = True
-Public Sub Foo(bar As String)
-    bar = vbNullString
-End Sub
-";
-            var attribute = "VB_Exposed";
-            var newValues = new List<string> { "True" };
 
             string actualCode;
             var (component, rewriteSession, state) = TestSetup(inputCode);

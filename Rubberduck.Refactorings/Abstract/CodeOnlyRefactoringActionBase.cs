@@ -18,7 +18,7 @@ namespace Rubberduck.Refactorings
 
         public virtual void Refactor(TModel model)
         {
-            var rewriteSession = RewriteSession(RewriteSessionCodeKind);
+            var rewriteSession = RewriteSession(RewriteSessionCodeKind(model));
 
             Refactor(model, rewriteSession);
 
@@ -35,6 +35,6 @@ namespace Rubberduck.Refactorings
                 : _rewritingManager.CheckOutCodePaneSession();
         }
 
-        protected virtual CodeKind RewriteSessionCodeKind => CodeKind.CodePaneCode;
+        protected virtual CodeKind RewriteSessionCodeKind(TModel model) => CodeKind.CodePaneCode;
     }
 }

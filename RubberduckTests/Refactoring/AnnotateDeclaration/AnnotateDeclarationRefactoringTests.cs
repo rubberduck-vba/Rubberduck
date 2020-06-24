@@ -85,7 +85,8 @@ End Sub";
             ISelectionService selectionService)
         {
             var annotationUpdater = new AnnotationUpdater(state);
-            var annotateDeclarationAction = new AnnotateDeclarationRefactoringAction(rewritingManager, annotationUpdater);
+            var attributesUpdater = new AttributesUpdater(state);
+            var annotateDeclarationAction = new AnnotateDeclarationRefactoringAction(rewritingManager, annotationUpdater, attributesUpdater);
 
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
             return new AnnotateDeclarationRefactoring(annotateDeclarationAction, selectedDeclarationProvider, selectionService, userInteraction);
