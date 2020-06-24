@@ -465,7 +465,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Neu</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>Das Umbenenen zu '{0}' wird einen Konflikt mit '{1}' auslösen.'
+    <value>Der neue Name '{0}' kollidiert mit dem Namen des existierenden Elements '{1}'. '{2}' in '{0}' umzubenennen kann zu nicht kompilierbarem Code oder einer Änderung der Logik führen.
 Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
@@ -1606,5 +1606,120 @@ Import abgebrochen.</value>
   </data>
   <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
     <value>Die Komponente '{0}' würde durch das Refactoring verändert, aber ihr Inhalt ist in Rubberduck veraltet. Bitte lassen Sie Rubberduck seinen Stand aktualisieren und versuchen Sie es erneut.</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Annotation hinzufügen</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_TitleText" xml:space="preserve">
+    <value>Annotation hinzufügen</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentsLabel" xml:space="preserve">
+    <value>Annotationsarguments:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_AnnotationLabel" xml:space="preserve">
+    <value>Hinzuzufügende Annotation:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_DeclarationLabel" xml:space="preserve">
+    <value>Deklaration, zu welcher eine Annotation hinzugefügt werden soll:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentValueHeader" xml:space="preserve">
+    <value>Wert</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentTypeHeader" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_RemoveArgumentButtonLabel" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_AddArgumentButtonLabel" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_Instructions" xml:space="preserve">
+    <value>Wählen Sie eine Annotation (und Werte), die zu der Deklaration hinzugefügt werden soll.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
+    <value>Annotationsargumente dürfen keine Kontrollzeichen enthalten.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_InspectionName" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Inspektionsname' müssen der Name einer existierenden Inspektion sein.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_AttributeNameStart" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Attributname' müssen mit 'VB_' anfangen.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Zahl' müssen eine ganze Zahl oder eine Gleitkommazahl sein.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Wahrheitswert' müssen entweder 'True' oder 'False' sein.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_EmptyArgument" xml:space="preserve">
+    <value>Annotationsargumente können nicht leer sein.</value>
+  </data>
+  <data name="AnnotationArgumentType_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="AnnotationArgumentType_Number" xml:space="preserve">
+    <value>Zahl</value>
+  </data>
+  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
+    <value>Inspektionsname</value>
+  </data>
+  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
+    <value>Wahrheitswert</value>
+  </data>
+  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
+    <value>Attribut</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_Newline" xml:space="preserve">
+    <value>Annotationsargumente können nur aus einer einzigen Zeile bestehen.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Attributname' dürfen keine Leerzeichen enthalten.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_TooLong" xml:space="preserve">
+    <value>Annotationsargumente dürfen nicht länger als {0} Zeihen sein.</value>
+  </data>
+  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
+    <value>Das Refactoring kann Annotationen nur zu Komponenten, Methoden und Variablen hinzufügen. Die Zieldeklaration hatte allerdings den Typ '{0}'.</value>
+  </data>
+  <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
+    <value>Es ist in VBA nicht möglich nur die Groß- und Kleinschreibung eines Namens zu ändern.</value>
+  </data>
+  <data name="MoveFolders_SameNameSubfolder" xml:space="preserve">
+    <value>Der Zielordner '{0}' enthält bereits einen Unterordner '{1}'. Die Ordner werden verschmolzen, wenn der Ordner verschoben wird.
+Wollen Sie fortfahren?</value>
+  </data>
+  <data name="MoveFolders_SameNameSubfolders" xml:space="preserve">
+    <value>Der Zielordner '{0}' enthält bereits die Unterordner {1}. Gleichnamige Ordner werden verschmolzen, wenn die Ordner verschoben werden.
+Wollen Sie fortfahren?</value>
+  </data>
+  <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
+    <value>Mehrere Ordner mit demselben Namenfolders werden verschoben. Dies verschmilzt sie.
+Wollen Sie fortfahren?</value>
+  </data>
+  <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
+    <value>Ordnernamen dürfen nicht leer sein.</value>
+  </data>
+  <data name="MoveFolders_ControlCharacter" xml:space="preserve">
+    <value>Ordnernamen dürfen keine Kontrollzeichen wie etwa Zeilenumbrüche enthalten.</value>
+  </data>
+  <data name="MoveFolders_EmptySubfolderName" xml:space="preserve">
+    <value>Die Namen individueller Unterordner dürfen nicht leer sein.</value>
+  </data>
+  <data name="RenameDialog_Folder" xml:space="preserve">
+    <value>Ordner</value>
+  </data>
+  <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
+    <value>Der Ordner '{0}' existiert bereits. '{1}' in '{2}. umzubenennen wird die Ordner verschmelzen.
+Wollen Sie fortfahren?</value>
+  </data>
+  <data name="RenameDialog_FolderLabel" xml:space="preserve">
+    <value>Ordner:</value>
+  </data>
+  <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
+    <value>Kompletter Ordnername:</value>
+  </data>
+  <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
+    <value>Ordner umbenennen</value>
   </data>
 </root>

@@ -458,4 +458,7 @@ Continue?</value>
   <data name="CodeExplorer_MoveToFolder" xml:space="preserve">
     <value>Move to Folder...</value>
   </data>
+  <data name="CodeExplorer_Annotate" xml:space="preserve">
+    <value>Annotate</value>
+  </data>
 </root>

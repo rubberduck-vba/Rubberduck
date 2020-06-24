@@ -34,7 +34,7 @@ namespace Rubberduck.Parsing.Annotations
 
         public bool MatchesAttributeDefinition(string attributeName, IReadOnlyList<string> attributeValues)
         {
-            return _attribute == attributeName && this._attributeValues.SequenceEqual(attributeValues);
+            return _attribute == attributeName && _attributeValues.SequenceEqual(attributeValues);
         }
     }
 }

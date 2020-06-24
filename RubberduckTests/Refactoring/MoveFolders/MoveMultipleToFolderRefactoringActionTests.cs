@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.ChangeFolder;
 using Rubberduck.Refactorings.MoveFolder;
 using Rubberduck.Refactorings.MoveToFolder;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -106,7 +107,8 @@ End Sub
         {
             var annotationUpdater = new AnnotationUpdater();
             var moveToFolderAction = new MoveToFolderRefactoringAction(rewritingManager, annotationUpdater);
-            var moveFolderAction = new MoveFolderRefactoringAction(rewritingManager, moveToFolderAction);
+            var changeFolderAction = new ChangeFolderRefactoringAction(rewritingManager, moveToFolderAction);
+            var moveFolderAction = new MoveFolderRefactoringAction(rewritingManager, changeFolderAction);
             return new MoveMultipleFoldersRefactoringAction(rewritingManager, moveFolderAction);
         }
     }

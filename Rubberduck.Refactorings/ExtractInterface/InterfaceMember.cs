@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactorings.Common;
-using Rubberduck.Refactorings.ImplementInterface;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
     public class InterfaceMember : INotifyPropertyChanged
     {
         private readonly ModuleBodyElementDeclaration _element;
+        private readonly ICodeBuilder _codeBuilder;
 
-        public InterfaceMember(Declaration member)
+        public InterfaceMember(Declaration member, ICodeBuilder codeBuilder)
         {
             Member = member;
             if (!(member is ModuleBodyElementDeclaration mbed))
@@ -22,6 +18,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 throw new ArgumentException();
             }
             _element = mbed;
+            _codeBuilder = codeBuilder;
         }
 
         public Declaration Member { get; }
@@ -37,9 +34,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
         }
 
-        public string FullMemberSignature => _element.FullMemberSignature();
+        public string FullMemberSignature => _codeBuilder.ImprovedFullMemberSignature(_element);
 
-        public string Body => _element.AsCodeBlock();
+        public string Body => _codeBuilder.BuildMemberBlockFromPrototype(_element);
 
         public event PropertyChangedEventHandler PropertyChanged;
 

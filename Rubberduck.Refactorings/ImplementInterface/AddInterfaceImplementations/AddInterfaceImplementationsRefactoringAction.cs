@@ -4,17 +4,19 @@ using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactorings.Common;
+
 
 namespace Rubberduck.Refactorings.AddInterfaceImplementations
 {
     public class AddInterfaceImplementationsRefactoringAction : CodeOnlyRefactoringActionBase<AddInterfaceImplementationsModel>
     {
         private readonly string _memberBody;
+        private readonly ICodeBuilder _codeBuilder;
 
-        public AddInterfaceImplementationsRefactoringAction(IRewritingManager rewritingManager) 
+        public AddInterfaceImplementationsRefactoringAction(IRewritingManager rewritingManager, ICodeBuilder codeBuilder) 
             : base(rewritingManager)
         {
+            _codeBuilder = codeBuilder;
             _memberBody = $"    {Tokens.Err}.Raise 5 {Resources.Refactorings.Refactorings.ImplementInterface_TODO}";
         }
 
@@ -36,23 +38,33 @@ namespace Rubberduck.Refactorings.AddInterfaceImplementations
         {
             if (member is ModuleBodyElementDeclaration mbed)
             {
-                return mbed.AsCodeBlock(accessibility: Tokens.Private, newIdentifier: $"{interfaceName}_{member.IdentifierName}", content: _memberBody);
+                return _codeBuilder.BuildMemberBlockFromPrototype(mbed, accessibility: Tokens.Private, newIdentifier: $"{interfaceName}_{member.IdentifierName}", content: _memberBody);
             }
 
-            if (member.DeclarationType.Equals(DeclarationType.Variable))
+            if (member is VariableDeclaration variable)
             {
-                var propertyGet = member.FieldToPropertyBlock(DeclarationType.PropertyGet, $"{interfaceName}_{member.IdentifierName}", Tokens.Private, _memberBody);
+                if (!_codeBuilder.TryBuildPropertyGetCodeBlock(variable, $"{interfaceName}_{variable.IdentifierName}", out var propertyGet, Tokens.Private, _memberBody))
+                {
+                    throw new InvalidOperationException();
+                }
+
                 var members = new List<string> { propertyGet };
 
-                if (member.AsTypeName.Equals(Tokens.Variant) || !member.IsObject)
+                if (variable.AsTypeName.Equals(Tokens.Variant) || !variable.IsObject)
                 {
-                    var propertyLet = member.FieldToPropertyBlock(DeclarationType.PropertyLet, $"{interfaceName}_{member.IdentifierName}", Tokens.Private, _memberBody);
+                    if (!_codeBuilder.TryBuildPropertyLetCodeBlock(variable, $"{interfaceName}_{variable.IdentifierName}", out var propertyLet, Tokens.Private, _memberBody))
+                    {
+                        throw new InvalidOperationException();
+                    }
                     members.Add(propertyLet);
                 }
 
-                if (member.AsTypeName.Equals(Tokens.Variant) || member.IsObject)
+                if (variable.AsTypeName.Equals(Tokens.Variant) || variable.IsObject)
                 {
-                    var propertySet = member.FieldToPropertyBlock(DeclarationType.PropertySet, $"{interfaceName}_{member.IdentifierName}", Tokens.Private, _memberBody);
+                    if (!_codeBuilder.TryBuildPropertySetCodeBlock(variable, $"{interfaceName}_{variable.IdentifierName}", out var propertySet, Tokens.Private, _memberBody))
+                    {
+                        throw new InvalidOperationException();
+                    }
                     members.Add(propertySet);
                 }
 

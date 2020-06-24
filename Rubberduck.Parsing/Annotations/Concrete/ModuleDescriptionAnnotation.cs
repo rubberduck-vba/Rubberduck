@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
-
-namespace Rubberduck.Parsing.Annotations
+﻿namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
     /// Used for specifying a module's <c>VB_Description</c> attribute.
@@ -13,7 +9,7 @@ namespace Rubberduck.Parsing.Annotations
     public sealed class ModuleDescriptionAnnotation : DescriptionAttributeAnnotationBase
     {
         public ModuleDescriptionAnnotation()
-            : base("ModuleDescription", AnnotationTarget.Module, "VB_Description", 1)
+            : base("ModuleDescription", AnnotationTarget.Module, "VB_Description")
         {}
     }
 }
