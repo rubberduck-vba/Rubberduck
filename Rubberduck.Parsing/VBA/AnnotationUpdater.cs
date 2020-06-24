@@ -214,7 +214,11 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            AddAnnotation(rewriteSession, declaration.QualifiedModuleName, declaration.Context, annotationInfo, annotationValues);
+            var context = rewriteSession.TargetCodeKind == CodeKind.CodePaneCode
+                ? declaration.Context
+                : declaration.AttributesPassContext;
+
+            AddAnnotation(rewriteSession, declaration.QualifiedModuleName, context, annotationInfo, annotationValues);
         }
 
         private void AddMemberAnnotation(IRewriteSession rewriteSession, Declaration declaration, IAnnotation annotationInfo, IReadOnlyList<string> annotationValues)
@@ -233,7 +237,11 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            AddAnnotation(rewriteSession, declaration.QualifiedModuleName, declaration.Context, annotationInfo, annotationValues);
+            var context = rewriteSession.TargetCodeKind == CodeKind.CodePaneCode
+                ? declaration.Context
+                : declaration.AttributesPassContext;
+
+            AddAnnotation(rewriteSession, declaration.QualifiedModuleName, context, annotationInfo, annotationValues);
         }
 
         public void AddAnnotation(IRewriteSession rewriteSession, IdentifierReference reference, IAnnotation annotationInfo, IReadOnlyList<string> values = null)

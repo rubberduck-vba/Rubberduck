@@ -616,6 +616,80 @@ End Sub
             Assert.AreEqual(expectedCode, refactoredCode);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        public void AnnotateDeclarationRefactoringAction_AdjustAttributeSet_WorksWithExistingAnnotation_Module()
+        {
+            const string code = @"Attribute VB_Exposed = False
+'@Folder ""MyFolder""
+'@DefaultMember
+Public Sub Foo()
+End Sub
+";
+            const string expectedCode = @"Attribute VB_Exposed = False
+Attribute VB_Description = ""MyDesc""
+'@ModuleDescription ""MyDesc""
+'@Folder ""MyFolder""
+'@DefaultMember
+Public Sub Foo()
+End Sub
+";
+            Func<RubberduckParserState, AnnotateDeclarationModel> modelBuilder = (state) =>
+            {
+                var declaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Module)
+                    .Single();
+                var annotation = new ModuleDescriptionAnnotation();
+                var arguments = new List<TypedAnnotationArgument>
+                {
+                    new TypedAnnotationArgument(AnnotationArgumentType.Text, "MyDesc")
+                };
+
+                return new AnnotateDeclarationModel(declaration, annotation, arguments, true);
+            };
+
+            var refactoredCode = RefactoredCode(code, modelBuilder);
+
+            Assert.AreEqual(expectedCode, refactoredCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        public void AnnotateDeclarationRefactoringAction_WorksWithExistingAnnotation_Member()
+        {
+            const string code = @"Attribute VB_Exposed = False
+'@Folder ""MyFolder""
+'@DefaultMember
+Public Sub Foo()
+End Sub
+";
+            const string expectedCode = @"Attribute VB_Exposed = False
+'@Folder ""MyFolder""
+'@DefaultMember
+'@Description ""MyDesc""
+Public Sub Foo()
+Attribute Foo.VB_Description = ""MyDesc""
+End Sub
+";
+            Func<RubberduckParserState, AnnotateDeclarationModel> modelBuilder = (state) =>
+            {
+                var declaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Procedure)
+                    .Single();
+                var annotation = new DescriptionAnnotation();
+                var arguments = new List<TypedAnnotationArgument>
+                {
+                    new TypedAnnotationArgument(AnnotationArgumentType.Text, "MyDesc")
+                };
+
+                return new AnnotateDeclarationModel(declaration, annotation, arguments, true);
+            };
+
+            var refactoredCode = RefactoredCode(code, modelBuilder);
+
+            Assert.AreEqual(expectedCode, refactoredCode);
+        }
+
         protected override IRefactoringAction<AnnotateDeclarationModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
             var annotationUpdater = new AnnotationUpdater(state);
