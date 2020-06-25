@@ -1940,4 +1940,7 @@ Do you want to proceed?</value>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Rename folder</value>
   </data>
+  <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
+    <value>Enable drag and drop in Code Explorer</value>
+  </data>
 </root>

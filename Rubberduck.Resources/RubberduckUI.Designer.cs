@@ -1828,6 +1828,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable drag and drop in Code Explorer.
+        /// </summary>
+        public static string GeneralSettings_EnableDragAndDrop {
+            get {
+                return ResourceManager.GetString("GeneralSettings_EnableDragAndDrop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string GeneralSettings_ErrorLogLevel {

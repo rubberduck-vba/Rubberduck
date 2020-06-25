@@ -291,6 +291,7 @@ namespace Rubberduck.Properties {
   <AutoSavePeriod>10</AutoSavePeriod>
   <UserEditedLogLevel>false</UserEditedLogLevel>
   <MinimumLogLevel>0</MinimumLogLevel>
+  <EnableFolderDragAndDrop>true</EnableFolderDragAndDrop>
   <SetDpiUnaware>false</SetDpiUnaware>
   <EnableExperimentalFeatures />
 </GeneralSettings>")]
