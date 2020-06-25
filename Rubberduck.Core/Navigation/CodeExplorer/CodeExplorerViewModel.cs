@@ -63,12 +63,15 @@ namespace Rubberduck.Navigation.CodeExplorer
             _state.StateChanged += HandleStateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
-            _externalRemoveCommand = removeCommand;
             _generalSettingsProvider = generalSettingsProvider;
+            _generalSettingsProvider.SettingsChanged += GeneralSettingsChanged;
+            RefreshDragAndDropSetting();
+
             _windowSettingsProvider = windowSettingsProvider;
             _uiDispatcher = uiDispatcher;
             _vbe = vbe;
             _templateProvider = templateProvider;
+            _externalRemoveCommand = removeCommand;
             Annotations = annotations.ToList();
 
             CollapseAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseNodes, EvaluateCanSwitchNodeState);
@@ -78,6 +81,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, _externalRemoveCommand.CanExecute);
             }
+
 
             OnPropertyChanged(nameof(Projects));
 
@@ -489,12 +493,25 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public Visibility VBAVisibility => _vbe.Kind == VBEKind.Hosted ? Visibility.Visible : Visibility.Collapsed;
 
+        public bool AllowDragAndDrop { get; internal set; }
+
+        private void GeneralSettingsChanged(object sender, ConfigurationChangedEventArgs e)
+        {
+            RefreshDragAndDropSetting();
+        }
+
+        private void RefreshDragAndDropSetting()
+        {
+            AllowDragAndDrop = _generalSettingsProvider.Read().EnableFolderDragAndDrop;
+        }
+
         public void Dispose()
         {
             if (_state != null)
             {
                 _state.StateChanged -= HandleStateChanged;
                 _state.ModuleStateChanged -= ParserState_ModuleStateChanged;
+                _generalSettingsProvider.SettingsChanged -= GeneralSettingsChanged;
             }
         }
     }
