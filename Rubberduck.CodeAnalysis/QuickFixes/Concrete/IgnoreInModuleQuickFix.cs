@@ -13,7 +13,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// <summary>
     /// Adds an '@IgnoreModule annotation to ignore a inspection results for a specific inspection inside a whole module. Applicable to all inspections whose results can be annotated in a module.
     /// </summary>
-    /// <canfix procedure="false" module="false" project="false" />
+    /// <canfix procedure="false" module="true" project="true" />
     /// <example>
     /// <before>
     /// <![CDATA[

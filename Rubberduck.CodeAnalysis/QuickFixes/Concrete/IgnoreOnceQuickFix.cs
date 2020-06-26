@@ -14,7 +14,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// <summary>
     /// Adds an '@Ignore annotation to ignore a specific inspection result. Applicable to all inspections whose results can be annotated in a module.
     /// </summary>
-    /// <canfix procedure="false" module="false" project="false" />
+    /// <canfix procedure="true" module="true" project="true" />
     /// <example>
     /// <before>
     /// <![CDATA[
@@ -48,10 +48,10 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             _annotationUpdater = annotationUpdater;
         }
 
-        public override bool CanFixInProcedure => false;
-        public override bool CanFixInModule => false;
-        public override bool CanFixInProject => false;
-        public override bool CanFixAll => false;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
+        public override bool CanFixAll => true;
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
