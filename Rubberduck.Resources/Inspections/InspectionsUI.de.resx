@@ -201,4 +201,7 @@
   <data name="CodeInspection_SeverityFilter" xml:space="preserve">
     <value>Schweregrad</value>
   </data>
+  <data name="QuickFix_Instance" xml:space="preserve">
+    <value>Ausgewähltes Vorkommnis  beheben</value>
+  </data>
 </root>

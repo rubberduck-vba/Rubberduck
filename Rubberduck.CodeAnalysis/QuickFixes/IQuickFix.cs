@@ -14,6 +14,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes
         bool CanFixInProcedure { get; }
         bool CanFixInModule { get; }
         bool CanFixInProject { get; }
+        bool CanFixAll { get; }
 
         IReadOnlyCollection<Type> SupportedInspections { get; }
         CodeKind TargetCodeKind { get; }

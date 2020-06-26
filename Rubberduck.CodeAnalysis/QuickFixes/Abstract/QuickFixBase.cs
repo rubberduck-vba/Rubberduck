@@ -60,5 +60,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Abstract
         public abstract bool CanFixInProcedure { get; }
         public abstract bool CanFixInModule { get; }
         public abstract bool CanFixInProject { get; }
+
+        public virtual bool CanFixAll => CanFixInProject;
     }
 }
