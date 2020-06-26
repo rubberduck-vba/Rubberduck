@@ -214,6 +214,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore in module.
+        /// </summary>
+        public static string IgnoreInModuleQuickFix {
+            get {
+                return ResourceManager.GetString("IgnoreInModuleQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignore once.
         /// </summary>
         public static string IgnoreOnce {
