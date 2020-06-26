@@ -11,7 +11,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// <inspections>
     /// <inspection name="StopKeywordInspection" />
     /// </inspections>
-    /// <canfix procedure="false" module="false" project="false" />
+    /// <canfix multiple="true" procedure="false" module="false" project="false" all="false" />
     /// <example>
     /// <before>
     /// <![CDATA[
@@ -48,8 +48,10 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveStopKeywordQuickFix;
 
+        public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => false;
         public override bool CanFixInProject => false;
+        public override bool CanFixAll => false;
     }
 }

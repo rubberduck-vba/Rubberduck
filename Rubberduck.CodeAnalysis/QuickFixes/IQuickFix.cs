@@ -11,6 +11,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes
         void Fix(IInspectionResult result, IRewriteSession rewriteSession);
         string Description(IInspectionResult result);
 
+        bool CanFixMultiple { get; }
         bool CanFixInProcedure { get; }
         bool CanFixInModule { get; }
         bool CanFixInProject { get; }
