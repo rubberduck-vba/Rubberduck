@@ -35,6 +35,7 @@
                     </Setter.Value>
                 </Setter>
                 <Setter Property="Command" Value="{Binding Command}"/>
+                <Setter Property="Visibility" Value="{Binding IsVisible, Converter={StaticResource BoolToVisibility}}"/>
             </Style>
 
             <Style TargetType="MenuItem" x:Key="QuickFixItemStyle">

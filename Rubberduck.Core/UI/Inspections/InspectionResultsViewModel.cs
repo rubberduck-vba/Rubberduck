@@ -72,15 +72,18 @@ namespace Rubberduck.UI.Inspections
         public IQuickFix Fix { get; }
         public string Key { get; }
         public ICommand Command { get; }
+        public bool IsVisible { get; }
 
         public QuickFixCommandViewModel(
             IQuickFix fix,
             string key,
-            ICommand command)
+            ICommand command,
+            bool isVisible)
         {
             Fix = fix;
             Key = key;
             Command = command;
+            IsVisible = isVisible;
         }
     }
 
@@ -142,14 +145,14 @@ namespace Rubberduck.UI.Inspections
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
 
-            QuickFixCommands = new List<(ICommand command, string key)>
+            QuickFixCommands = new List<(ICommand command, string key, Func<IQuickFix, bool> visibility)>
             {
-                (QuickFixCommand,"QuickFix_Instance"),
-                (QuickFixSelectedItemsCommand,"QuickFix_Selection"),
-                (QuickFixInProcedureCommand,"QuickFix_ThisProcedure"),
-                (QuickFixInModuleCommand,"QuickFix_ThisModule"),
-                (QuickFixInProjectCommand,"QuickFix_ThisProject"),
-                (QuickFixInAllProjectsCommand,"QuickFix_All")
+                (QuickFixCommand,"QuickFix_Instance", quickFix => true),
+                (QuickFixSelectedItemsCommand,"QuickFix_Selection", quickFix => quickFix.CanFixMultiple),
+                (QuickFixInProcedureCommand,"QuickFix_ThisProcedure", quickFix => quickFix.CanFixInProcedure),
+                (QuickFixInModuleCommand,"QuickFix_ThisModule", quickFix => quickFix.CanFixInModule),
+                (QuickFixInProjectCommand,"QuickFix_ThisProject", quickFix => quickFix.CanFixInProject),
+                (QuickFixInAllProjectsCommand,"QuickFix_All", quickFix => quickFix.CanFixAll)
             };
 
             _configService.SettingsChanged += _configService_SettingsChanged;
@@ -239,11 +242,11 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        private List<(ICommand command, string key)> QuickFixCommands { get; }
+        private List<(ICommand command, string key, Func<IQuickFix,bool> visibility)> QuickFixCommands { get; }
 
         private QuickFixViewModel DisplayQuickFix(IQuickFix quickFix, IInspectionResult result)
         {
-            var commands = QuickFixCommands.Select(tpl => new QuickFixCommandViewModel(quickFix, tpl.key, tpl.command));
+            var commands = QuickFixCommands.Select(tpl => new QuickFixCommandViewModel(quickFix, tpl.key, tpl.command, tpl.visibility(quickFix)));
             return new QuickFixViewModel(quickFix, result, commands);
         }
 
