@@ -334,6 +334,7 @@
 	                                       ShowGroupingItemCount="True"
 	                                       InitialExpandedState="True"
 	                                       VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                                           RequestBringIntoView="TestGrid_RequestBringIntoView"
 	                                       ScrollViewer.CanContentScroll="False" 
 	                                       ScrollViewer.VerticalScrollBarVisibility="Auto"
 	                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled">
