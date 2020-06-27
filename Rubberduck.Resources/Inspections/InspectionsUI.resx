@@ -232,4 +232,7 @@
   <data name="QuickFix_Instance" xml:space="preserve">
     <value>Fix selected occurrence</value>
   </data>
+  <data name="QuickFix_Selection" xml:space="preserve">
+    <value>Fix all selected occurrences</value>
+  </data>
 </root>

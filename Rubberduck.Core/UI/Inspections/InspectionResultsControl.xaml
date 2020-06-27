@@ -22,11 +22,19 @@
             <codeInspections:InspectionImageSourceConverter x:Key="InspectionIconConverter" />
             <codeInspections:QuickFixImageSourceConverter x:Key="QuickFixIconConverter" />
             <codeInspections:InspectionsUIResourceKeyConverter x:Key="InspectionsUIResourceConverter" />
+            <codeInspections:QuickFixCommandParametersToTupleConverter x:Key="QuickFixCommandParametersToTupleConverter" />
             
             <Style TargetType="MenuItem" x:Key="QuickFixCommandStyle">
                 <Setter Property="Header" Value="{Binding Key, Converter={StaticResource InspectionsUIResourceConverter}}" />
+                <Setter Property="CommandParameter">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource QuickFixCommandParametersToTupleConverter}">
+                            <Binding Path="Fix" />
+                            <Binding Path="SelectedItems" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:GroupingGrid}}" />
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
                 <Setter Property="Command" Value="{Binding Command}"/>
-                <Setter Property="CommandParameter" Value="{Binding Fix}"/>
             </Style>
 
             <Style TargetType="MenuItem" x:Key="QuickFixItemStyle">

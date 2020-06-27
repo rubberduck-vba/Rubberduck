@@ -202,6 +202,9 @@
     <value>Schweregrad</value>
   </data>
   <data name="QuickFix_Instance" xml:space="preserve">
-    <value>Ausgewähltes Vorkommnis  beheben</value>
+    <value>Ausgewähltes Vorkommnis beheben</value>
+  </data>
+  <data name="QuickFix_Selection" xml:space="preserve">
+    <value>Alle ausgewählten Vorkomnisse beheben</value>
   </data>
 </root>

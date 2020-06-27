@@ -365,6 +365,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fix all selected occurrences.
+        /// </summary>
+        public static string QuickFix_Selection {
+            get {
+                return ResourceManager.GetString("QuickFix_Selection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fix all occurrences in module.
         /// </summary>
         public static string QuickFix_ThisModule {
