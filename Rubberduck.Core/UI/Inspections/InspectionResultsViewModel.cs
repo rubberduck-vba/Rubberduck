@@ -560,9 +560,22 @@ namespace Rubberduck.UI.Inspections
 
         private bool CanExecuteQuickFixCommand(object parameter)
         {
+            if (!BaseCanExecuteQuickFixCommand()
+                || !(parameter is ValueTuple<IQuickFix, IEnumerable<IInspectionResult>> tpl))
+            {
+                return false;
+            }
+
+            var (_, selectedResults) = tpl;
+
+            return selectedResults != null 
+                   && selectedResults.Count() == 1;
+        }
+
+        private bool BaseCanExecuteQuickFixCommand()
+        {
             return !IsBusy
-                   && _state.Status == ParserState.Ready
-                   && parameter is ValueTuple<IQuickFix, IEnumerable<IInspectionResult>>;
+                   && _state.Status == ParserState.Ready;
         }
 
         private void ExecuteQuickFixForSelection(object parameter)
@@ -572,25 +585,26 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var (quickFix, selectedItems) = tpl;
+            var (quickFix, selectedResults) = tpl;
             
             _quickFixProvider.Fix(
                 quickFix,
-                selectedItems);
+                selectedResults);
         }
 
         public bool CanExecuteQuickFixForSelection(object parameter)
         {
-            if (!CanExecuteQuickFixCommand(parameter)
+            if (!BaseCanExecuteQuickFixCommand()
                 || !(parameter is ValueTuple<IQuickFix, IEnumerable<IInspectionResult>> tpl))
             {
                 return false;
             }
 
-            var (quickFix, selectedItems) = tpl;
+            var (quickFix, selectedResults) = tpl;
 
             return quickFix.CanFixMultiple
-                   && (selectedItems?.All(result => _quickFixProvider.CanFix(quickFix, result)) ?? false);
+                   && selectedResults != null
+                   && selectedResults.All(result => _quickFixProvider.CanFix(quickFix, result));
         }
 
         private void ExecuteQuickFixInProcedureCommand(object parameter)
@@ -612,15 +626,17 @@ namespace Rubberduck.UI.Inspections
 
         public bool CanExecuteQuickFixInProcedure(object parameter)
         {
-            if (!CanExecuteQuickFixCommand(parameter)
+            if (!BaseCanExecuteQuickFixCommand()
                 || !(parameter is ValueTuple<IQuickFix, IEnumerable<IInspectionResult>> tpl))
             {
                 return false;
             }
 
-            var (quickFix, _) = tpl;
+            var (quickFix, selectedResults) = tpl;
 
-            return quickFix.CanFixInProcedure;
+            return quickFix.CanFixInProcedure
+                   && selectedResults != null
+                   && selectedResults.Count() == 1;
         }
 
         private void ExecuteQuickFixInModuleCommand(object parameter)
@@ -642,15 +658,17 @@ namespace Rubberduck.UI.Inspections
 
         public bool CanExecuteQuickFixInModule(object parameter)
         {
-            if (!CanExecuteQuickFixCommand(parameter)
+            if (!BaseCanExecuteQuickFixCommand()
                 || !(parameter is ValueTuple<IQuickFix, IEnumerable<IInspectionResult>> tpl))
             {
                 return false;
             }
 
-            var (quickFix, _) = tpl;
+            var (quickFix, selectedResults) = tpl;
 
-            return quickFix.CanFixInModule;
+            return quickFix.CanFixInModule
+                   && selectedResults != null
+                   && selectedResults.Count() == 1;
         }
 
         private void ExecuteQuickFixInProjectCommand(object parameter)
@@ -672,15 +690,17 @@ namespace Rubberduck.UI.Inspections
 
         public bool CanExecuteQuickFixInProject(object parameter)
         {
-            if (!CanExecuteQuickFixCommand(parameter)
+            if (!BaseCanExecuteQuickFixCommand()
                 || !(parameter is ValueTuple<IQuickFix, IEnumerable<IInspectionResult>> tpl))
             {
                 return false;
             }
 
-            var (quickFix, _) = tpl;
+            var (quickFix, selectedResults) = tpl;
 
-            return quickFix.CanFixInProject;
+            return quickFix.CanFixInProject
+                   && selectedResults != null
+                   && selectedResults.Count() == 1;
         }
 
         private void ExecuteQuickFixInAllProjectsCommand(object parameter)
@@ -701,15 +721,17 @@ namespace Rubberduck.UI.Inspections
 
         public bool CanExecuteQuickFixAll(object parameter)
         {
-            if (!CanExecuteQuickFixCommand(parameter)
+            if (!BaseCanExecuteQuickFixCommand()
                 || !(parameter is ValueTuple<IQuickFix, IEnumerable<IInspectionResult>> tpl))
             {
                 return false;
             }
 
-            var (quickFix, _) = tpl;
+            var (quickFix, selectedResults) = tpl;
 
-            return quickFix.CanFixAll;
+            return quickFix.CanFixAll
+                   && selectedResults != null
+                   && selectedResults.Count() == 1;
         }
 
         private void ExecuteDisableInspectionCommand(object parameter)
