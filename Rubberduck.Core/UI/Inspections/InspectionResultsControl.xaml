@@ -30,7 +30,9 @@
                     <Setter.Value>
                         <MultiBinding Converter="{StaticResource QuickFixCommandParametersToTupleConverter}">
                             <Binding Path="Fix" />
-                            <Binding Path="SelectedItems" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:GroupingGrid}}" />
+                            <Binding ElementName="InspectionResultsGrid"  Path="SelectedItems" />
+                            <!-- This is a hack to deal with the fact that a named element on the control cannot be accessed from the context menu of the element by name. -->
+                            <Binding Path="SelectedItems" RelativeSource="{RelativeSource  FindAncestor, AncestorType={x:Type controls:GroupingGrid}}" />
                         </MultiBinding>
                     </Setter.Value>
                 </Setter>

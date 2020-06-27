@@ -13,9 +13,15 @@ namespace Rubberduck.UI.Inspections
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            //Note: this is necessary for a hack dealing with the fact that a named element on the control cannot be accessed from the context menu of the element by name.
+            var selectedItems = values[1] as IEnumerable
+                                ?? values[2] as IEnumerable
+                                ?? new List<IInspectionResult>();
+
             (IQuickFix quickFix, IEnumerable<IInspectionResult> selectedResults) data = (
                 values[0] as IQuickFix,
-                ((IEnumerable)values[1]).OfType<IInspectionResult>());
+                selectedItems.OfType<IInspectionResult>());
+
             return data;
         }
 
