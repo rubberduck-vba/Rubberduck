@@ -5,7 +5,6 @@ using System.Linq;
 using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
 
@@ -59,6 +58,26 @@ namespace Rubberduck.UI.Refactorings
                        && char.IsLetter(InterfaceName.FirstOrDefault())
                        && !tokenValues.Contains(InterfaceName, StringComparer.InvariantCultureIgnoreCase)
                        && !InterfaceName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+            }
+        }
+
+        public bool CanChooseInterfaceInstancing => Model.ImplementingClassInstancing != ClassInstancing.Public;
+
+        public IEnumerable<ClassInstancing> ClassInstances => Enum.GetValues(typeof(ClassInstancing)).Cast<ClassInstancing>();
+
+        public ClassInstancing InterfaceInstancing
+        {
+            get => Model.InterfaceInstancing;
+
+            set
+            {
+                if (value == Model.InterfaceInstancing)
+                {
+                    return;
+                }
+
+                Model.InterfaceInstancing = value;
+                OnPropertyChanged();
             }
         }
 
