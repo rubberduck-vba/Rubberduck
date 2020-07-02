@@ -1646,6 +1646,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Instancing.
+        /// </summary>
+        public static string ExtractInterface_InstancingGroupBox {
+            get {
+                return ResourceManager.GetString("ExtractInterface_InstancingGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please specify interface name and members..
         /// </summary>
         public static string ExtractInterface_InstructionLabel {
@@ -1660,6 +1669,35 @@ namespace Rubberduck.Resources {
         public static string ExtractInterface_MembersGroupBox {
             get {
                 return ResourceManager.GetString("ExtractInterface_MembersGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private.
+        /// </summary>
+        public static string ExtractInterface_Private {
+            get {
+                return ResourceManager.GetString("ExtractInterface_Private", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Public.
+        /// </summary>
+        public static string ExtractInterface_Public {
+            get {
+                return ResourceManager.GetString("ExtractInterface_Public", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The implementing class is &apos;Public&apos; mandating the interface be public as well.
+        ///If you require a &apos;Private&apos; interface, change the classes instancing to private as well.
+        ///A private class can still implement a public interface..
+        /// </summary>
+        public static string ExtractInterface_PublicInstancingMandatedByPublicClass {
+            get {
+                return ResourceManager.GetString("ExtractInterface_PublicInstancingMandatedByPublicClass", resourceCulture);
             }
         }
         
