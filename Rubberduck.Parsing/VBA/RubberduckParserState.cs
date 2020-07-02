@@ -603,17 +603,16 @@ namespace Rubberduck.Parsing.VBA
             return _moduleStates.GetOrAdd(module, new ModuleState(ParserState.Pending)).State;
         }
 
-        private readonly object _statusLockObject = new object(); 
-        private ParserState _status;
-        public ParserState Status => _status;
+        private readonly object _statusLockObject = new object();
+        public ParserState Status { get; private set; }
 
         private void SetStatusWithCancellation(ParserState value, CancellationToken token)
         {
-            if (_status != value)
+            if (Status != value)
             {
-                var oldStatus = _status;
-                _status = value;
-                OnStateChanged(this, token, _status, oldStatus);
+                var oldStatus = Status;
+                Status = value;
+                OnStateChanged(this, token, Status, oldStatus);
             }
         }
 
@@ -621,7 +620,7 @@ namespace Rubberduck.Parsing.VBA
         {
             if (Status == status)
             {
-                OnStateChanged(requestor, token, status, _status);
+                OnStateChanged(requestor, token, status, Status);
             }
             else
             {
