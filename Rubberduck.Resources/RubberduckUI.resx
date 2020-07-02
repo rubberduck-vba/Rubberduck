@@ -1819,6 +1819,20 @@ Import aborted.</value>
     <value>The component '{0}' would have been affected by the refactoring, but its state in Rubberduck's memory is stale. Please refresh Rubberduck and try again.</value>
     <comment>{0} stale module</comment>
   </data>
+  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
+    <value>Instancing</value>
+  </data>
+  <data name="ExtractInterface_Private" xml:space="preserve">
+    <value>Private</value>
+  </data>
+  <data name="ExtractInterface_Public" xml:space="preserve">
+    <value>Public</value>
+  </data>
+  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
+    <value>The implementing class is 'Public' mandating the interface be public as well.
+If you require a 'Private' interface, change the classes instancing to private as well.
+A private class can still implement a public interface.</value>
+  </data>
   <data name="AnnotateDeclarationDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Annotate Declaration</value>
   </data>
@@ -1911,8 +1925,7 @@ Do you want to proceed?</value>
   </data>
   <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
     <value>Several folders with the same name are being moved. This will merge them.
-Do you want to proceed?</value>
-    
+Do you want to proceed?</value>    
   </data>
   <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
     <value>A folder name cannot be empty.</value>
