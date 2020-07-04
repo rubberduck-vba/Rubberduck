@@ -18,6 +18,7 @@
             <converters:InspectionToLocalizedNameConverter x:Key="InspectionToLocalizedNameConverter"/>
             <converters:DeclarationToQualifiedNameConverter x:Key="DeclarationToQualifiedNameConverter"/>
             <converters:AnnotationToCodeStringConverter x:Key="AnnotationToCodeStringConverter"/>
+            <converters:BoolToVisibleVisibilityConverter FalseVisibility="Hidden" x:Key="AdjustAttributeVisibilityConverter"/>
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -102,6 +103,15 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
+            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_AdjustAttributeLabel}"
+                      IsChecked="{Binding AdjustAttribute}"
+                      Visibility="{Binding ShowAdjustAttributeOption, Converter={StaticResource AdjustAttributeVisibilityConverter}}"
+                      Margin="10,0,10,-5"
+                      VerticalContentAlignment="Center">
+                <CheckBox.LayoutTransform>
+                    <ScaleTransform ScaleX="0.9" ScaleY="0.9"/>
+                </CheckBox.LayoutTransform>
+            </CheckBox>
         </StackPanel>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>

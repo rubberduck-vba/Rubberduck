@@ -1956,4 +1956,7 @@ Do you want to proceed?</value>
   <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
     <value>Enable drag and drop in Code Explorer</value>
   </data>
+  <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
+    <value>Add/Adjust attribute</value>
+  </data>
 </root>

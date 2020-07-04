@@ -80,10 +80,29 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
 
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsValidAnnotation));
+                OnPropertyChanged(nameof(ShowAdjustAttributeOption));
             }
         }
 
         public ObservableViewModelCollection<IAnnotationArgumentViewModel> AnnotationArguments { get; }
+
+        public bool AdjustAttribute
+        {
+            get => Model.AdjustAttribute;
+            set
+            {
+                if (value == Model.AdjustAttribute)
+                {
+                    return;
+                }
+
+                Model.AdjustAttribute = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool ShowAdjustAttributeOption => Model?.Annotation is IAttributeAnnotation;
 
         private void RefreshAnnotationArguments(IAnnotation annotation)
         {

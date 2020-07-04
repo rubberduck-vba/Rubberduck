@@ -1725,4 +1725,7 @@ Wollen Sie fortfahren?</value>
   <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
     <value>Drag and Drop im Code Explorer aktivieren</value>
   </data>
+  <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
+    <value>Attribut hinzufügen / anpassen</value>
+  </data>
 </root>

@@ -289,7 +289,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 string literalDescription;
 
-                var memberAttribute = Attributes.SingleOrDefault(a => a.Name == $"{IdentifierName}.VB_Description");
+                var memberAttribute = Attributes.SingleOrDefault(a => a.Name == Attributes.MemberAttributeName("VB_Description", IdentifierName));
                 if (memberAttribute != null)
                 {
                     literalDescription = memberAttribute.Values.SingleOrDefault() ?? string.Empty;
