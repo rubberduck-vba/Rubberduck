@@ -1722,4 +1722,7 @@ Wollen Sie fortfahren?</value>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Ordner umbenennen</value>
   </data>
+  <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
+    <value>Attribut hinzufügen / anpassen</value>
+  </data>
 </root>

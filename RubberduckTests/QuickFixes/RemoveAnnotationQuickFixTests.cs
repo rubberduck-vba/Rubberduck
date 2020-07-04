@@ -49,7 +49,7 @@ End Sub";
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            return new RemoveAnnotationQuickFix(new AnnotationUpdater());
+            return new RemoveAnnotationQuickFix(new AnnotationUpdater(state));
         }
     }
 }

@@ -192,7 +192,7 @@ End Sub";
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            return new RemoveDuplicatedAnnotationQuickFix(new AnnotationUpdater());
+            return new RemoveDuplicatedAnnotationQuickFix(new AnnotationUpdater(state));
         }
     }
 }

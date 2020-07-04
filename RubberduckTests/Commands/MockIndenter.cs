@@ -43,7 +43,7 @@ namespace RubberduckTests.Commands
         {
             var selectionService = new SelectionService(vbe.Object, state.ProjectsProvider);
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
-            return new NoIndentAnnotationCommand(selectedDeclarationService, rewritingManager, new AnnotationUpdater(), vbeEvents.Object);
+            return new NoIndentAnnotationCommand(selectedDeclarationService, rewritingManager, new AnnotationUpdater(state), vbeEvents.Object);
         }
 
         internal static IndentCurrentProcedureCommand ArrangeIndentCurrentProcedureCommand(Mock<IVBE> vbe,

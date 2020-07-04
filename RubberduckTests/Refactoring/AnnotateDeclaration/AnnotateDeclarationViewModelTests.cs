@@ -271,6 +271,28 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
 
         [Test]
         [Category("Refactorings")]
+        public void ShowAdjustAttributeOption_AttributeAnnotation_True()
+        {
+            var viewModel = TestViewModel(DeclarationType.Procedure);
+            var annotation = new DescriptionAnnotation();
+            viewModel.Annotation = annotation;
+
+            Assert.IsTrue(viewModel.ShowAdjustAttributeOption);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        public void ShowAdjustAttributeOption_NotAnAttributeAnnotation_False()
+        {
+            var viewModel = TestViewModel(DeclarationType.Procedure);
+            var annotation = new IgnoreAnnotation();
+            viewModel.Annotation = annotation;
+
+            Assert.IsFalse(viewModel.ShowAdjustAttributeOption);
+        }
+
+        [Test]
+        [Category("Refactorings")]
         public void SetAnnotation_ResetsArguments()
         {
             var viewModel = TestViewModel(DeclarationType.Procedure);
@@ -289,6 +311,20 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
             viewModel.Annotation = annotation;
             
             Assert.AreSame(viewModel.Model.Annotation, annotation);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [TestCase(true, true)]
+        [TestCase(false, true)]
+        [TestCase(true, false)]
+        [TestCase(false, false)]
+        public void SetAdjustAttribute_SetsAdjustAttributeOnModel(bool initialValue, bool valueToSet)
+        {
+            var viewModel = TestViewModel(DeclarationType.Procedure, initialAdjustAttribute: initialValue);
+            viewModel.AdjustAttribute = valueToSet;
+
+            Assert.AreEqual(viewModel.Model.AdjustAttribute, valueToSet);
         }
 
         [Test]
@@ -321,10 +357,10 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
         }
 
 
-        private AnnotateDeclarationViewModel TestViewModel(DeclarationType targetDeclarationType, IAnnotation initialAnnotation = null, bool localScope = false)
+        private AnnotateDeclarationViewModel TestViewModel(DeclarationType targetDeclarationType, IAnnotation initialAnnotation = null, bool localScope = false, bool initialAdjustAttribute = false)
         {
             var argumentFactory = MockArgumentFactory().Object;
-            return TestViewModel(targetDeclarationType, argumentFactory, initialAnnotation, localScope);
+            return TestViewModel(targetDeclarationType, argumentFactory, initialAnnotation, localScope, initialAdjustAttribute);
         }
 
         private Mock<IAnnotationArgumentViewModelFactory> MockArgumentFactory(IReadOnlyList<bool> hasErrorSpecifications = null)
@@ -353,7 +389,7 @@ namespace RubberduckTests.Refactoring.AnnotateDeclaration
             return mockArgument;
         }
 
-        private AnnotateDeclarationViewModel TestViewModel(DeclarationType targetDeclarationType, IAnnotationArgumentViewModelFactory argumentFactory, IAnnotation initialAnnotation = null, bool localScope = false)
+        private AnnotateDeclarationViewModel TestViewModel(DeclarationType targetDeclarationType, IAnnotationArgumentViewModelFactory argumentFactory, IAnnotation initialAnnotation = null, bool localScope = false, bool initialAdjustAttribute = false)
         {
             var targetDeclaration = TestDeclaration(targetDeclarationType, localScope);
             var model = new AnnotateDeclarationModel(targetDeclaration, initialAnnotation);

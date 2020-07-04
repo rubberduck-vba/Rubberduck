@@ -201,7 +201,7 @@ End Sub
             RefactoringUserInteraction<IMoveMultipleToFolderPresenter, MoveMultipleToFolderModel> userInteraction, 
             ISelectionService selectionService)
         {
-            var annotationUpdater = new AnnotationUpdater();
+            var annotationUpdater = new AnnotationUpdater(state);
             var moveToFolderAction = new MoveToFolderRefactoringAction(rewritingManager, annotationUpdater);
             var moveMultipleToFolderAction = new MoveMultipleToFolderRefactoringAction(rewritingManager, moveToFolderAction);
 
