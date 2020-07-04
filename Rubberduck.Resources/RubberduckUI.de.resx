@@ -1722,6 +1722,9 @@ Wollen Sie fortfahren?</value>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Ordner umbenennen</value>
   </data>
+  <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
+    <value>Drag and Drop im Code Explorer aktivieren</value>
+  </data>
   <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
     <value>Attribut hinzufügen / anpassen</value>
   </data>
