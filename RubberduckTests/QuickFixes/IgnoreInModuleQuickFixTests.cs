@@ -127,7 +127,7 @@ End Sub";
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            var annotationUpdater = new AnnotationUpdater();
+            var annotationUpdater = new AnnotationUpdater(state);
             var inspections = new List<IInspection> {new VariableNotUsedInspection(state)};
             return new IgnoreInModuleQuickFix(annotationUpdater, state, inspections);
         }
