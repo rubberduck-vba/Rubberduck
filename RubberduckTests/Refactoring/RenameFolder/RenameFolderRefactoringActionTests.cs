@@ -193,7 +193,7 @@ End Sub
 
         protected override IRefactoringAction<RenameFolderModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            var annotationUpdater = new AnnotationUpdater();
+            var annotationUpdater = new AnnotationUpdater(state);
             var moveToFolderAction = new MoveToFolderRefactoringAction(rewritingManager, annotationUpdater);
             var changeFolderAction = new ChangeFolderRefactoringAction(rewritingManager, moveToFolderAction);
             return new RenameFolderRefactoringAction(rewritingManager, changeFolderAction);

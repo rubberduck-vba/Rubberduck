@@ -133,7 +133,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 var model = ModelFromParameter(annotation, target);
                 if (!annotation.AllowedArguments.HasValue 
-                    || annotation.AllowedArguments.Value > 0)
+                    || annotation.AllowedArguments.Value > 0
+                    || annotation is IAttributeAnnotation)
                 {
                     model = _userInteraction.UserModifiedModel(model);
                 }

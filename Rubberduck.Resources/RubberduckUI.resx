@@ -1953,4 +1953,7 @@ Do you want to proceed?</value>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Rename folder</value>
   </data>
+  <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
+    <value>Add/Adjust attribute</value>
+  </data>
 </root>

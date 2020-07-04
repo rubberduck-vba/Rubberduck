@@ -22,15 +22,18 @@ namespace Rubberduck.Refactorings.AnnotateDeclaration
         public Declaration Target { get; }
         public IAnnotation Annotation { get; set; }
         public IList<TypedAnnotationArgument> Arguments { get; set; }
+        public bool AdjustAttribute { get; set; }
 
         public AnnotateDeclarationModel(
             Declaration target, 
             IAnnotation annotation = null,
-            IList<TypedAnnotationArgument> arguments = null)
+            IList<TypedAnnotationArgument> arguments = null,
+            bool adjustAttribute = false)
         {
             Target = target;
             Annotation = annotation;
             Arguments = arguments ?? new List<TypedAnnotationArgument>();
+            AdjustAttribute = adjustAttribute;
         }
     }
 }

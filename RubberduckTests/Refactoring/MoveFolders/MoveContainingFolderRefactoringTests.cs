@@ -368,7 +368,7 @@ End Sub
             RefactoringUserInteraction<IMoveMultipleFoldersPresenter, MoveMultipleFoldersModel> userInteraction, 
             ISelectionService selectionService)
         {
-            var annotationUpdater = new AnnotationUpdater();
+            var annotationUpdater = new AnnotationUpdater(state);
             var moveToFolderAction = new MoveToFolderRefactoringAction(rewritingManager, annotationUpdater);
             var changeFolderAction = new ChangeFolderRefactoringAction(rewritingManager, moveToFolderAction);
             var moveFolderAction = new MoveFolderRefactoringAction(rewritingManager, changeFolderAction);

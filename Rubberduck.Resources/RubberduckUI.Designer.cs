@@ -163,6 +163,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add/Adjust attribute.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_AdjustAttributeLabel {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_AdjustAttributeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Annotation to Add:.
         /// </summary>
         public static string AnnotateDeclarationDialog_AnnotationLabel {
