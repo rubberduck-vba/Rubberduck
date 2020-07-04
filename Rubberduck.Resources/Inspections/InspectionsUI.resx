@@ -127,10 +127,10 @@
     <value>Usage</value>
   </data>
   <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value>Fix all occurrences in module</value>
+    <value>Occurrences in module</value>
   </data>
   <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value>Fix all occurrences in project</value>
+    <value>Occurrences in project</value>
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Disable this inspection</value>
@@ -139,10 +139,10 @@
     <value>{0}: {1} - {2} {3}.{4}, line {5}</value>
   </data>
   <data name="QuickFix_All" xml:space="preserve">
-    <value>Fix all detected occurrences</value>
+    <value>All occurrences</value>
   </data>
   <data name="QuickFix_ThisProcedure" xml:space="preserve">
-    <value>Fix all occurrences in procedure</value>
+    <value>Occurrences in procedure</value>
   </data>
   <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
     <value>Code Quality Issues</value>
@@ -228,5 +228,11 @@
   </data>
   <data name="CodeInspection_SeverityFilter" xml:space="preserve">
     <value>Severity</value>
+  </data>
+  <data name="QuickFix_Instance" xml:space="preserve">
+    <value>Selected occurrence</value>
+  </data>
+  <data name="QuickFix_Selection" xml:space="preserve">
+    <value>Selected occurrences</value>
   </data>
 </root>

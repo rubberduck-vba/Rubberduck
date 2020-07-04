@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="Rubberduck.UI.Inspections.InspectionResultsControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:codeInspections="clr-namespace:Rubberduck.UI.Inspections"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
@@ -21,6 +21,35 @@
             <codeInspections:InspectionSeverityImageSourceConverter x:Key="SeverityIconConverter" />
             <codeInspections:InspectionImageSourceConverter x:Key="InspectionIconConverter" />
             <codeInspections:QuickFixImageSourceConverter x:Key="QuickFixIconConverter" />
+            <codeInspections:InspectionsUIResourceKeyConverter x:Key="InspectionsUIResourceConverter" />
+            <codeInspections:QuickFixCommandParametersToTupleConverter x:Key="QuickFixCommandParametersToTupleConverter" />
+            
+            <Style TargetType="MenuItem" x:Key="QuickFixCommandStyle">
+                <Setter Property="Header" Value="{Binding Key, Converter={StaticResource InspectionsUIResourceConverter}}" />
+                <Setter Property="CommandParameter">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource QuickFixCommandParametersToTupleConverter}">
+                            <Binding Path="Fix" />
+                            <Binding ElementName="InspectionResultsGrid"  Path="SelectedItems" />
+                            <!-- This is a hack to deal with the fact that a named element on the control cannot be accessed from the context menu of the element by name. -->
+                            <Binding Path="SelectedItems" RelativeSource="{RelativeSource  FindAncestor, AncestorType={x:Type controls:GroupingGrid}}" />
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Command" Value="{Binding Command}"/>
+                <Setter Property="Visibility" Value="{Binding IsVisible, Converter={StaticResource BoolToVisibility}}"/>
+            </Style>
+
+            <Style TargetType="MenuItem" x:Key="QuickFixItemStyle">
+                <Setter Property="Header" Value="{Binding Description}"/>
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{Binding Fix, Converter={StaticResource QuickFixIconConverter}}" />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="ItemsSource" Value="{Binding Commands}" />
+                <Setter Property="ItemContainerStyle" Value="{StaticResource QuickFixCommandStyle}" />
+            </Style>
 
             <Style x:Key="IconMargin" TargetType="Image">
                 <Setter Property="Margin" Value="4" />
@@ -78,26 +107,15 @@
                 <Menu Background="Transparent">
                     <MenuItem VerticalAlignment="Center"
                               HeaderTemplate="{StaticResource MenuItemHeaderDropdownIndicatorTemplate}"
-                              ItemsSource="{Binding QuickFixes}" Background="Transparent">
+                              ItemsSource="{Binding QuickFixes}" 
+                              Background="Transparent"
+                              ItemContainerStyle="{StaticResource QuickFixItemStyle}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource FixImage}" />
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Fix}" />
                         </MenuItem.Header>
-                        <MenuItem.ItemContainerStyle>
-                            <Style TargetType="{x:Type MenuItem}">
-                                <Setter Property="Icon">
-                                    <Setter.Value>
-                                        <Image Source="{Binding Fix, Converter={StaticResource QuickFixIconConverter}}" />
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="Command" Value="{Binding Command}" />
-                                <Setter Property="CommandParameter" Value="{Binding Fix}" />
-                                <Setter Property="Header" Value="{Binding Description}" />
-                                <Setter Property="Background" Value="Transparent"></Setter>
-                            </Style>
-                        </MenuItem.ItemContainerStyle>
                     </MenuItem>
                 </Menu>
 
@@ -225,21 +243,8 @@
                             <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime, Converter={StaticResource GroupingGridLocationConverter}}" />
                         </DataGrid.Columns>
                         <DataGrid.ContextMenu>
-                            <ContextMenu ItemsSource="{Binding PlacementTarget.DataContext.QuickFixes, RelativeSource={RelativeSource Self}}">
-                                <ContextMenu.Resources>
-                                    <Style TargetType="{x:Type MenuItem}">
-                                        <Setter Property="Icon">
-                                            <Setter.Value>
-                                                <Image Source="{Binding Fix, Converter={StaticResource QuickFixIconConverter}}" />
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="Command" Value="{Binding Command}" />
-                                        <Setter Property="CommandParameter" Value="{Binding Fix}" />
-                                        <Setter Property="Header" Value="{Binding Description}" />
-                                        <Setter Property="Background" Value="Transparent" />
-                                    </Style>
-                                </ContextMenu.Resources>
-                            </ContextMenu>
+                            <ContextMenu ItemsSource="{Binding PlacementTarget.DataContext.QuickFixes, RelativeSource={RelativeSource Self}}"
+                                         ItemContainerStyle="{StaticResource QuickFixItemStyle}" />
                         </DataGrid.ContextMenu>
                         <i:Interaction.Behaviors>
                             <controls:GroupItemExpandedBehavior ExpandedState="{Binding ExpandedState, Mode=TwoWay}" />
@@ -269,28 +274,10 @@
                     <TextBlock Margin="4" Text="{Binding SelectedInspection.Meta}" FontSize="10" TextWrapping="WrapWithOverflow"/>
                     <TextBlock Margin="8" Text="{Binding SelectedInspection.QualifiedSelection}" FontSize="10" TextWrapping="WrapWithOverflow" />
 
-                    <WrapPanel>
-                        <controls:LinkButton Margin="4"
-                                         Visibility="{Binding CanExecuteQuickFixInProcedure, Converter={StaticResource BoolToVisibility}}"
-                                         Command="{Binding QuickFixInProcedureCommand}"
-                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_ThisProcedure}" />
-                        <controls:LinkButton Margin="4"
-                                         Visibility="{Binding CanExecuteQuickFixInModule, Converter={StaticResource BoolToVisibility}}"
-                                         Command="{Binding QuickFixInModuleCommand}"
-                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_ThisModule}" />
-                        <controls:LinkButton Margin="4"
-                                         Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
-                                         Command="{Binding QuickFixInProjectCommand}"
-                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_ThisProject}" />
-                        <controls:LinkButton Margin="4"
-                                         Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
-                                         Command="{Binding QuickFixInAllProjectsCommand}"
-                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_All}" />
-                        <controls:LinkButton Margin="4"
-                            Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding DisableInspectionCommand}"
-                            Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=DisableThisInspection}" />
-                    </WrapPanel>
+                    <controls:LinkButton Margin="4"
+                        Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
+                        Command="{Binding DisableInspectionCommand}"
+                        Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=DisableThisInspection}" />
                 </StackPanel>
             </ScrollViewer>
         </Border>
