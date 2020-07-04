@@ -201,6 +201,7 @@
                                            SelectionUnit="FullRow"
                                            ItemsSource="{Binding Results, NotifyOnSourceUpdated=True}"
                                            VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                                           RequestBringIntoView="InspectionResultsGrid_RequestBringIntoView"
                                            ScrollViewer.CanContentScroll="True" 
                                            ScrollViewer.VerticalScrollBarVisibility="Auto"
                                            ScrollViewer.HorizontalScrollBarVisibility="Disabled">
