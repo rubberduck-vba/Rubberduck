@@ -146,6 +146,10 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="{x:Type CheckBox}">
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
     <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
     <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
     <settingsConverters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
