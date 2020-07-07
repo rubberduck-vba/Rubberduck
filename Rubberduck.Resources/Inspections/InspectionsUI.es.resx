@@ -145,7 +145,7 @@
     <value>Ocurrencias en el procedimiento</value>
   </data>
   <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
-    <value>Cuestiones de calidad del código</value>
+    <value>Problemas de calidad del código</value>
   </data>
   <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
     <value>Oportunidades de lenguaje</value>
@@ -166,7 +166,7 @@
     <value>Error</value>
   </data>
   <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
-    <value>Consejo</value>
+    <value>Sugerencia</value>
   </data>
   <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
     <value>Sugerencia</value>
