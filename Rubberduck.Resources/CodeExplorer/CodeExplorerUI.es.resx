@@ -157,13 +157,13 @@
     <value>Mostrar completo y firmas</value>
   </data>
   <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
-    <value>Expandir nodo y todos los nodos hijos</value>
+    <value>Expandir todo</value>
   </data>
   <data name="CodeExplorer_Export" xml:space="preserve">
-    <value>Exportar ...</value>
+    <value>Exportar...</value>
   </data>
   <data name="CodeExplorer_ExportAll" xml:space="preserve">
-    <value>Proyecto de exportación ...</value>
+    <value>Exportar Proyecto...</value>
   </data>
   <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
     <value>Buscar todas las implementaciones ...</value>
@@ -190,19 +190,19 @@
     <value>Abrir</value>
   </data>
   <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
-    <value>Abrir diseño</value>
+    <value>Abrir diseñador</value>
   </data>
   <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
     <value>Propiedades del proyecto</value>
   </data>
   <data name="CodeExplorer_Print" xml:space="preserve">
-    <value>Impresión...</value>
+    <value>Imprimir...</value>
   </data>
   <data name="CodeExplorer_Refresh" xml:space="preserve">
     <value>R&amp;efrescar</value>
   </data>
   <data name="CodeExplorer_Remove" xml:space="preserve">
-    <value>Retirar...</value>
+    <value>Eliminar...</value>
   </data>
   <data name="CodeExplorer_ResourceFileText" xml:space="preserve">
     <value>Recursos</value>
@@ -211,13 +211,13 @@
     <value>Ejecutar todas las pruebas</value>
   </data>
   <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
-    <value>Abrir diseño</value>
+    <value>Abrir diseñador</value>
   </data>
   <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
-    <value>Alternar carpetas</value>
+    <value>Mostrar/Ocultar carpetas</value>
   </data>
   <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
-    <value>Alternar firmas</value>
+    <value>Mostrar/Ocultar firmas</value>
   </data>
   <data name="CodeExplorer_Sort" xml:space="preserve">
     <value>Ordenar</value>
