@@ -124,7 +124,7 @@
     <value>Autocompletar bloques con ENTER</value>
   </data>
   <data name="PageHeader" xml:space="preserve">
-    <value>Configuración de autocompletado</value>
+    <value>Ajustes de autocompletado</value>
   </data>
   <data name="PageInstructions" xml:space="preserve">
     <value>Configure qué autocompletaciones de Rubberduck están habilitadas.</value>
@@ -154,6 +154,6 @@
     <value>Concatenación inteligente</value>
   </data>
   <data name="MaxConcatLines" xml:space="preserve">
-    <value>Lineas maximas</value>
+    <value>Máximo de Líneas</value>
   </data>
 </root>
