@@ -127,7 +127,7 @@
     <value>Esperado: desbordamiento de pila ?; Actual: cláusula de guardia.</value>
   </data>
   <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
-    <value>Yo también verifico</value>
+    <value>Se pasó IVerify como parámetro</value>
   </data>
   <data name="Assert_FailedMessageFormat" xml:space="preserve">
     <value>La afirmación {0} ha fallado. {1}</value>

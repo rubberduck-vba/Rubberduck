@@ -223,7 +223,7 @@
     <value>Ordenar</value>
   </data>
   <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
-    <value>Según lo declarado en el módulo.</value>
+    <value>Según lo declarado en el módulo</value>
   </data>
   <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
     <value>Por nombre</value>
@@ -256,7 +256,7 @@
     <value>Form (.frm)</value>
   </data>
   <data name="CodeExplorer_Rename" xml:space="preserve">
-    <value>Rebautizar...</value>
+    <value>Renombrar...</value>
   </data>
   <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
     <value>Establecer como inicio</value>
@@ -284,5 +284,51 @@
   </data>
   <data name="CodeExplorer_LibraryReferences" xml:space="preserve">
     <value>Biblioteca de referencias</value>
+  </data>
+  <data name="CodeExplorer_AddExistingFileText" xml:space="preserve">
+    <value>Archivos existentes...</value>
+  </data>
+  <data name="CodeExplorer_Delete" xml:space="preserve">
+    <value>Borrar</value>
+  </data>
+  <data name="CodeExplorer_Exclude" xml:space="preserve">
+    <value>Quitar del proyecto</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Caption" xml:space="preserve">
+    <value>Confirmar Borrado</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Prompt" xml:space="preserve">
+    <value>{0} se borrará permanentemente.
+    
+¿Desea continuar?</value>
+  </data>
+  <data name="DeleteFailed_Caption" xml:space="preserve">
+    <value>Borrado falló</value>
+  </data>
+  <data name="DeleteFailed_Message" xml:space="preserve">
+    <value>Los siguientes archivos no se pudieron borrar:
+    
+{0}</value>
+  </data>
+  <data name="CodeExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck - Declaraciones de Usuario - {0}</value>
+  </data>
+  <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
+    <value>Extraer Interfaz...</value>
+  </data>
+  <data name="SyncProject" xml:space="preserve">
+    <value>Sincronizar proyecto</value>
+  </data>
+  <data name="UpdateFromFiles" xml:space="preserve">
+    <value>Actualizar Componentes desde Archivos...</value>
+  </data>
+  <data name="ReplaceFromFiles" xml:space="preserve">
+    <value>Reemplazar Contenidos desde Archivos...</value>
+  </data>
+  <data name="CodeExplorer_MoveToFolder" xml:space="preserve">
+    <value>Mover a Carpeta...</value>
+  </data>
+  <data name="CodeExplorer_Annotate" xml:space="preserve">
+    <value>Anotar</value>
   </data>
 </root>

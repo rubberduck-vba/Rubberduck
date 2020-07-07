@@ -199,10 +199,10 @@
     <value>Este método se ejecuta una vez por módulo.</value>
   </data>
   <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
-    <value>Este método se ejecuta antes de cada prueba en el módulo.</value>
+    <value>Este método se ejecuta antes de cada prueba en el módulo</value>
   </data>
   <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
-    <value>Este método se ejecuta después de cada prueba en el módulo.</value>
+    <value>Este método se ejecuta después de cada prueba en el módulo</value>
   </data>
   <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
     <value>Prueba de cambio de nombre</value>
@@ -229,7 +229,7 @@
     <value>No se puede crear el módulo de prueba. Es posible que la aplicación host no permita la creación de nuevos módulos o que el proyecto esté bloqueado. Para más detalles, consulte el registro.</value>
   </data>
   <data name="TestExplorer_ContextMenuRunGroup" xml:space="preserve">
-    <value>Ejecutar todas las pruebas en grupo.</value>
+    <value>Ejecutar todas las pruebas en grupo</value>
   </data>
   <data name="TestExplorer_CategoryName" xml:space="preserve">
     <value>Categoría</value>

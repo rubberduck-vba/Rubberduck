@@ -393,7 +393,7 @@
   <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
     <value>Un appel de procédure est attendu, mais un objet est fourni</value>
   </data>
-  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+  <data name="A" xml:space="preserve">
     <value>Appel indexé d'un membre par défaut</value>
   </data>
   <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">

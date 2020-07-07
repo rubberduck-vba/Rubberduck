@@ -408,7 +408,7 @@
   <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
     <value>Objekt použit tam, kde je vyžadována procedura</value>
   </data>
-  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+  <data name="A" xml:space="preserve">
     <value>Indexovaný výchozí členský přístup</value>
   </data>
   <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">

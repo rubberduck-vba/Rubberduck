@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
-    <value>Reemplace la cadena vacía por la constante 'vbNullString'</value>
+    <value>Reemplazar la cadena vacía por la constante 'vbNullString'</value>
   </data>
   <data name="EncapsulatePublicFieldInspectionQuickFix" xml:space="preserve">
     <value>Encapsular el campo '{0}' con una propiedad</value>
@@ -142,7 +142,7 @@
     <value>Escribir variable en una linea</value>
   </data>
   <data name="ObsoleteGlobalInspectionQuickFix" xml:space="preserve">
-    <value>Reemplace el modificador de acceso 'Global' con 'Public'</value>
+    <value>Reemplazar el modificador de acceso 'Global' con 'Public'</value>
   </data>
   <data name="OptionExplicitQuickFix" xml:space="preserve">
     <value>Especifique 'Option Explicit'</value>
@@ -178,13 +178,13 @@
     <value>Eliminar parámetro no utilizado</value>
   </data>
   <data name="ReplaceCommentMarkerQuickFix" xml:space="preserve">
-    <value>Reemplace el uso 'Rem' con un marcador de comillas simples</value>
+    <value>Reemplazar el uso 'Rem' con un marcador de comillas simples</value>
   </data>
   <data name="SetExplicitVariantReturnTypeQuickFix" xml:space="preserve">
     <value>Variant explícita de retorno</value>
   </data>
   <data name="SpecifyExplicitPublicModifierQuickFix" xml:space="preserve">
-    <value>Especificar explícitamente el modificador de acceso público.</value>
+    <value>Especificar explícitamente el modificador de acceso 'Public'</value>
   </data>
   <data name="SplitMultipleDeclarationsQuickFix" xml:space="preserve">
     <value>Separe las declaraciones múltiples en instrucciones múltiples</value>
@@ -211,13 +211,13 @@
     <value>Use el método de inicio temprano "Application.WorksheetFunction".</value>
   </data>
   <data name="AssignedByValParameterMakeLocalCopyQuickFix" xml:space="preserve">
-    <value>Crea y utiliza una copia local del parámetro.</value>
+    <value>Crea y utiliza una copia local del parámetro</value>
   </data>
   <data name="RemoveOptionBaseStatementQuickFix" xml:space="preserve">
     <value>Eliminar la declaración 'Option Base'</value>
   </data>
   <data name="SynchronizeAttributesQuickFix" xml:space="preserve">
-    <value>Sincronizar atributos/anotaciones en el módulo.</value>
+    <value>Sincronizar atributos/anotaciones en el módulo</value>
   </data>
   <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
     <value>Eliminar bloque If vací</value>
@@ -235,7 +235,7 @@
     <value>Eliminar el uso de la palabra clave 'Stop'</value>
   </data>
   <data name="ReplaceObsoleteErrorStatementQuickFix" xml:space="preserve">
-    <value>Reemplace 'Error' con 'Err.Raise'</value>
+    <value>Reemplazar 'Error' con 'Err.Raise'</value>
   </data>
   <data name="ReplaceIfElseWithConditionalStatementQuickFix" xml:space="preserve">
     <value>Reemplazar If/Else con una sola asignación</value>
@@ -256,7 +256,7 @@
     <value>Eliminar anotación duplicada</value>
   </data>
   <data name="RemoveLocalErrorQuickFix" xml:space="preserve">
-    <value>Reemplace 'On Local Error' con 'On Error'</value>
+    <value>Reemplazar 'On Local Error' con 'On Error'</value>
   </data>
   <data name="IsMissingOnInappropriateArgumentQuickFix" xml:space="preserve">
     <value>Cambie la llamada 'IsMissing' para probar el valor predeterminado.</value>
@@ -287,5 +287,17 @@
   </data>
   <data name="ApplyQuickFixFailedCaption" xml:space="preserve">
     <value>Error de aplicación de solución rápida</value>
+  </data>
+  <data name="IgnoreInModuleQuickFix" xml:space="preserve">
+    <value>Ignorar en el módulo</value>
+  </data>
+  <data name="ExpandDefaultMemberQuickFix" xml:space="preserve">
+    <value>Hacer explícito el acceso al miembro default</value>
+  </data>
+  <data name="ExpandBangNotationQuickFix" xml:space="preserve">
+    <value>Reemplazar la notación Bang con acceso explícito</value>
+  </data>
+  <data name="ReplaceWhileWendWithDoWhileLoopQuickFix" xml:space="preserve">
+    <value>Reemplazar 'While...Wend' con 'Do While...Loop'</value>
   </data>
 </root>
