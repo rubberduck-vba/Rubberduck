@@ -127,7 +127,7 @@
     <value>Ajustes de autocompletado</value>
   </data>
   <data name="PageInstructions" xml:space="preserve">
-    <value>Configure qué autocompletaciones de Rubberduck están habilitadas.</value>
+    <value>Configurar qué autocompletaciones de Rubberduck están habilitadas.</value>
   </data>
   <data name="BlockCompletion" xml:space="preserve">
     <value>Completar bloque</value>
