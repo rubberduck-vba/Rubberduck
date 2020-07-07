@@ -396,7 +396,7 @@
   <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
     <value>Objekt an Stell einer Prozedur verwendet</value>
   </data>
-  <data name="A" xml:space="preserve">
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
     <value>Parametrisierter Zugriff auf einen Standardmember</value>
   </data>
   <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">

@@ -416,7 +416,7 @@
   <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
     <value>Object used where a procedure is required</value>
   </data>
-  <data name="A" xml:space="preserve">
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
     <value>Indexed default member access</value>
   </data>
   <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
