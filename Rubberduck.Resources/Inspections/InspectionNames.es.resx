@@ -307,10 +307,10 @@
     <value>Uso de la declaración 'Def [Type]'</value>
   </data>
   <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
-    <value>No se especifica Step del bucle 'For...Next'</value>
+    <value>No se especifica incremento del bucle 'For...Next'</value>
   </data>
   <data name="StepOneIsRedundantInspection" xml:space="preserve">
-    <value>'For...Next' loop step 1 es redundante</value>
+    <value>El incremento 1 en el bucle 'For...Next' es redundante</value>
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Se accede a la hoja estáticamente usando una cadena</value>
@@ -436,6 +436,6 @@
     <value>Número de línea negativo</value>
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
-    <value>Identificador contiene un espacio</value>
+    <value>Identificador contiene un espacio NBSP</value>
   </data>
 </root>

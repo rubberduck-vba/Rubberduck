@@ -304,10 +304,10 @@
     <value>Considere el uso explícito de 'As {0}' en lugar de '{1}'.</value>
   </data>
   <data name="StepOneIsRedundantInspection" xml:space="preserve">
-    <value>1 es el Step predeterminado en un bucle 'For ... Next' y, por lo tanto, es redundante.</value>
+    <value>1 es el incremento predeterminado en un bucle 'For ... Next' y, por lo tanto, es redundante.</value>
   </data>
   <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
-    <value>'Step' no especificado.</value>
+    <value>'Step' (incremento) no especificado.</value>
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>La hoja estáticamente accesible puede ser referida por su nombre en código.</value>
@@ -361,7 +361,7 @@
     <value>Línea de continuacion(es) en lugares inesperados.</value>
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
-    <value>Se han encontrado espacios en el identificador '{0}'.</value>
+    <value>Se han encontrado espacios NBSP en el identificador '{0}'.</value>
   </data>
   <data name="ThunderCode_Base" xml:space="preserve">
     <value>{0}

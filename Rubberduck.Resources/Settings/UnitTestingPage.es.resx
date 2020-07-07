@@ -121,13 +121,13 @@
     <value>Ajustes de prueba unitaria</value>
   </data>
   <data name="PageInstructions" xml:space="preserve">
-    <value>Configure los ajustes para nuevos módulos y métodos de prueba de unidad.</value>
+    <value>Configure los ajustes para nuevos módulos y métodos de prueba unitaria.</value>
   </data>
   <data name="UnitTestSettings_AssertMode" xml:space="preserve">
-    <value>Tipo de seguridad:</value>
+    <value>Seguridad de tipos:</value>
   </data>
   <data name="UnitTestSettings_BindingMode" xml:space="preserve">
-    <value>modo de unión:</value>
+    <value>Modo de enlace:</value>
   </data>
   <data name="UnitTestSettings_DualBinding" xml:space="preserve">
     <value>Doble enlace</value>
@@ -136,13 +136,13 @@
     <value>Enlace temprano</value>
   </data>
   <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
-    <value>Procedimiento de prueba de inicialización/limpieza</value>
+    <value>Inicialización/limpieza de método de prueba</value>
   </data>
   <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt" xml:space="preserve">
-    <value>Insertar procedimiento de prueba</value>
+    <value>Insertar método de prueba</value>
   </data>
   <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
-    <value>Prueba de inicialización/limpieza del módulo</value>
+    <value>Inicialización/limpieza de módulo de prueba</value>
   </data>
   <data name="UnitTestSettings_LateBinding" xml:space="preserve">
     <value>Unión tardía</value>

@@ -305,10 +305,10 @@ Si el parámetro puede ser nulo, ignore el resultado de esta inspección; pasar 
     <value>El uso de la declaración 'Def [Type]' lleva a especificar tipos utilizando un prefijo. Este estilo de denominación está muy desaconsejado y debe evitarse.</value>
   </data>
   <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
-    <value>Step del bucle for-next no está especificado. Esto podría ser involuntario.</value>
+    <value>Incremento del bucle for-next no está especificado. Esto podría ser involuntario.</value>
   </data>
   <data name="StepOneIsRedundantInspection" xml:space="preserve">
-    <value>1 es el Step predeterminado en un bucle 'For ... Next' y, por lo tanto, es redundante.</value>
+    <value>1 es el incremento predeterminado en un bucle 'For ... Next' y, por lo tanto, es redundante.</value>
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Excel ya define una variable de objeto de ámbito global con esta referencia. Considere usar la propiedad 'CodeName' de la hoja.</value>
@@ -362,7 +362,7 @@ Si el parámetro puede ser nulo, ignore el resultado de esta inspección; pasar 
     <value>Hay continuaciones de línea entre palabras clave. No hay una buena razón para ponerlas allí; Considera eliminarlas por completo.</value>
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
-    <value>El identificador contiene un espacio de no ruptura que se parece mucho a un espacio ordinario, que concibe el código y crea una experiencia confusa. Considere el uso de caracteres visibles para los identificadores.</value>
+    <value>El identificador contiene un espacio NBSP, que ofusca el código y puede ocasionar errores a quien lee el código. Considere el uso de caracteres visibles para los identificadores.</value>
   </data>
   <data name="NegativeLineNumberInspection" xml:space="preserve">
     <value>Los números de línea negativos en realidad se ingresan como literal hexadecimal y luego son prectificados por VBE. Volver a editar la línea hará que se vuelva roja, ya que los números de línea negativos son, de hecho, ilegales.</value>

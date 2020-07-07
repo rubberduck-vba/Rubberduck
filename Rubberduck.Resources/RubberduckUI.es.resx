@@ -482,7 +482,7 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
     <value>'{0}' entra en conflicto con un nombre de la declaración '{1}'. Renombrar de '{2}' a '{0}' puede resultar en un código no compilable o un cambio en la lógica.
-¿Desea continuar con este reombre?</value>
+¿Desea continuar con este renombre?</value>
     <comment>0: Nuevo nombre 1: Nombre actual</comment>
   </data>
   <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
@@ -1011,7 +1011,7 @@ End Sub</value>
     <comment>Se usa para mostrar la descripción de la selección de control múltiple en la selección de contexto de la barra de comandos</comment>
   </data>
   <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
-    <value>Se encontraron configuraciones de Smart Indenter en su registro.
+    <value>Se encontraron ajustes de Smart Indenter en su registro.
 ¿Te gustaría importarlos a Rubberduck?</value>
   </data>
   <data name="IndenterSettings_VerticalSpacing" xml:space="preserve">
@@ -1042,7 +1042,7 @@ Buenas noticias! La version {1} ({2}) ya está disponible.
 
 Para revisar el log de cambios y actualizar Rubberduck manualmente haga click en 'Si'.
 
-Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desactivar este comportamiento en Rubberduck &gt; Opciones.</value>
+Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desactivar este comportamiento en Rubberduck &gt; Ajustes.</value>
   </data>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Compruebe si hay una versión más nueva disponible en el inicio</value>
@@ -1517,7 +1517,7 @@ Importación cancelada.</value>
     <value>Fallo</value>
   </data>
   <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Indeterminado</value>
+    <value>Indefinido</value>
   </data>
   <data name="TestOutcome_Succeeded" xml:space="preserve">
     <value>Exitoso</value>

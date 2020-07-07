@@ -244,7 +244,7 @@
     <value>Introducir error en la subrutina de manejo</value>
   </data>
   <data name="RemoveStepOneQuickFix" xml:space="preserve">
-    <value>Eliminar la cláusula 'Step' redundante</value>
+    <value>Eliminar la cláusula 'Step' (incremento) redundante</value>
   </data>
   <data name="AddStepOneQuickFix" xml:space="preserve">
     <value>Añadir cláusula 'Step' explícita</value>
