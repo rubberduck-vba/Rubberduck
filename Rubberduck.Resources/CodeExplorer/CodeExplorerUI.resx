@@ -455,4 +455,7 @@ Continue?</value>
   <data name="ReplaceFromFiles" xml:space="preserve">
     <value>Replace Contents from Files...</value>
   </data>
+  <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>Code _Explorer</value>
+  </data>
 </root>

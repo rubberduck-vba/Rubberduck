@@ -312,7 +312,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Implementations of '{0}'</value>
   </data>
   <data name="CodeInspections" xml:space="preserve">
-    <value>Code Inspections</value>
+    <value>Code _Inspections</value>
   </data>
   <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
     <value>{0} ({1} issue)</value>
@@ -1778,5 +1778,8 @@ Import aborted.</value>
   </data>
   <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
     <value>Wrap Fields in Private Type</value>
+  </data>
+  <data name="TodoExplorer_AccessKey" xml:space="preserve">
+    <value>To_do Explorer</value>
   </data>
 </root>

@@ -370,7 +370,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Code Inspections.
+        ///   Looks up a localized string similar to Code _Inspections.
         /// </summary>
         public static string CodeInspections {
             get {
@@ -4482,6 +4482,15 @@ namespace Rubberduck.Resources {
             get {
                 object obj = ResourceManager.GetObject("tick_circle_pinned", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To_do Explorer.
+        /// </summary>
+        public static string TodoExplorer_AccessKey {
+            get {
+                return ResourceManager.GetString("TodoExplorer_AccessKey", resourceCulture);
             }
         }
         
