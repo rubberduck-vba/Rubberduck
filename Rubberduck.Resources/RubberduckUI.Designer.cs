@@ -19,7 +19,7 @@ namespace Rubberduck.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class RubberduckUI {
@@ -1565,7 +1565,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check if a newer version is available at startup.
+        ///   Looks up a localized string similar to Check if a newer _version is available at startup.
         /// </summary>
         public static string GeneralSettings_CheckVersion {
             get {
@@ -1574,7 +1574,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Compile code before parsing.
+        ///   Looks up a localized string similar to _Compile code before parsing.
         /// </summary>
         public static string GeneralSettings_CompileBeforeParse {
             get {
@@ -1747,7 +1747,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tell me if a newer pre-release build is available.
+        ///   Looks up a localized string similar to Tell me if a newer _pre-release build is available.
         /// </summary>
         public static string GeneralSettings_IncludePreRelease {
             get {
@@ -1765,7 +1765,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display language:.
+        ///   Looks up a localized string similar to Display l_anguage:.
         /// </summary>
         public static string GeneralSettings_LanguageLabel {
             get {
@@ -1774,7 +1774,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Minimum Log Level:.
+        ///   Looks up a localized string similar to Minimum _Log Level:.
         /// </summary>
         public static string GeneralSettings_MinimumLogLevelLabel {
             get {
@@ -1810,7 +1810,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Correction for high-resolution display scalings.
+        ///   Looks up a localized string similar to Correction for high-resolution _display scalings.
         /// </summary>
         public static string GeneralSettings_SetDpiUnaware {
             get {
@@ -1828,7 +1828,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show splash screen at startup.
+        ///   Looks up a localized string similar to Show _splash screen at startup.
         /// </summary>
         public static string GeneralSettings_ShowSplash {
             get {

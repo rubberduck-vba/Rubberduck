@@ -376,7 +376,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Result</value>
   </data>
   <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
-    <value>Display language:</value>
+    <value>Display l_anguage:</value>
   </data>
   <data name="Language_EN" xml:space="preserve">
     <value>English</value>
@@ -881,7 +881,7 @@ Do you want to proceed with this rename?</value>
     <value>Parser Errors</value>
   </data>
   <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
-    <value>Minimum Log Level:</value>
+    <value>Minimum _Log Level:</value>
   </data>
   <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
     <value>Debug</value>
@@ -953,7 +953,7 @@ Do you want to proceed with this rename?</value>
     <value>_Run inspections automatically on successful parse</value>
   </data>
   <data name="GeneralSettings_ShowSplash" xml:space="preserve">
-    <value>Show splash screen at startup</value>
+    <value>Show _splash screen at startup</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Toolwindows were not correctly destroyed and/or could not be recreated; the VBE may not be in a stable state. Rubberduck will load normally next time the VBE is initialized.</value>
@@ -1055,7 +1055,7 @@ This dialog is showing because version checks are enabled. You can turn off this
     <comment>{0}=local; {1}=latest; {2}=buildtype (release/pre-release)</comment>
   </data>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
-    <value>Check if a newer version is available at startup</value>
+    <value>Check if a newer _version is available at startup</value>
   </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' is already accessible to this scope.</value>
@@ -1161,7 +1161,7 @@ This dialog is showing because version checks are enabled. You can turn off this
     <value>Unable to compile for parsing</value>
   </data>
   <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
-    <value>Compile code before parsing</value>
+    <value>_Compile code before parsing</value>
   </data>
   <data name="ParserState_Started" xml:space="preserve">
     <value>Started</value>
@@ -1378,7 +1378,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>TODO Explorer</value>
   </data>
   <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
-    <value>Correction for high-resolution display scalings</value>
+    <value>Correction for high-resolution _display scalings</value>
   </data>
   <data name="References_BrowseFilterAccess" xml:space="preserve">
     <value>Microsoft Access Databases({0})|{0}</value>
@@ -1658,7 +1658,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>Unable to suspend the Parser to perform the refactoring operation</value>
   </data>
   <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
-    <value>Tell me if a newer pre-release build is available</value>
+    <value>Tell me if a newer _pre-release build is available</value>
   </data>
   <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
     <value>pre-release</value>
