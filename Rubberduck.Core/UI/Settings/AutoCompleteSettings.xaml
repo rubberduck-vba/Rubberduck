@@ -55,9 +55,8 @@
                         </StackPanel>
                     </DockPanel>
                 </Label>
-                <CheckBox Margin="10,0" VerticalContentAlignment="Center" IsChecked="{Binding IsEnabled}">
-                    <Label Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=EnableAutocompleteLabel}"/>
-                </CheckBox>
+                <CheckBox Margin="10,0" VerticalContentAlignment="Center" IsChecked="{Binding IsEnabled}"
+                          Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=EnableAutocompleteLabel}" />
 
                 <Label Margin="10" 
                        Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=SelfClosingPairs}"
@@ -79,9 +78,11 @@
                           IsChecked="{Binding ConcatVbNewLine}" 
                           Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=ConcatVbNewLine}" />
 
-                <Label Margin="15,0,15,0" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=MaxConcatLines}" />
+                <Label Target="{Binding ElementName=maximumLines}"
+                       Margin="15,0,15,0" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=MaxConcatLines}" />
                 <StackPanel Orientation="Horizontal" Margin="15,0,15,0">
-                    <TextBox Margin="5,5,0,5" Height="24" Width="50" Text="{Binding ConcatMaxLines, Mode=TwoWay, StringFormat=\{0:D\}, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                    <TextBox x:Name="maximumLines"
+                             Margin="5,5,0,5" Height="24" Width="50" Text="{Binding ConcatMaxLines, Mode=TwoWay, StringFormat=\{0:D\}, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" VerticalAlignment="Top" VerticalContentAlignment="Center" />
                     <StackPanel Margin="0,5" >
                         <Button Height="12" Width="20" Command="{Binding IncrementMaxConcatLinesCommand}">
                             <TextBlock Text="▲" FontSize="10" Margin="0,-4,0,0"/>
