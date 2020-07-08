@@ -10,8 +10,11 @@ using Moq;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command.ComCommands;
 using RubberduckTests.Mocks;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -2352,12 +2355,15 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, null, MockVbeEvents.CreateMockVbeEvents(vbe));
             var state = parser.State;
             var dispatcher = new Mock<IUiDispatcher>();
+            var generalSettingsProvider = new Mock<IConfigurationService<GeneralSettings>>();
+            var generalSettings = new GeneralSettings();
+            generalSettingsProvider.Setup(m => m.Read()).Returns(generalSettings);
 
             dispatcher.Setup(m => m.Invoke(It.IsAny<Action>())).Callback((Action argument) => argument.Invoke());
             dispatcher.Setup(m => m.StartTask(It.IsAny<Action>(), It.IsAny<TaskCreationOptions>())).Returns((Action argument, TaskCreationOptions options) => Task.Factory.StartNew(argument.Invoke, options));
 
-            var viewModel = new CodeExplorerViewModel(state, null, null, null, dispatcher.Object, vbe.Object, null,
-                new CodeExplorerSyncProvider(vbe.Object, state, vbeEvents.Object));
+            var viewModel = new CodeExplorerViewModel(state, null, generalSettingsProvider.Object, null, dispatcher.Object, vbe.Object, null,
+                new CodeExplorerSyncProvider(vbe.Object, state, vbeEvents.Object), new List<IAnnotation>());
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error)

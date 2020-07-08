@@ -143,5 +143,73 @@ namespace Rubberduck.Refactorings.Common
             }
             return false;
         }
+
+        /// <summary>
+        /// Evaluates an identifier string's conformance with MS-VBAL naming requirements.
+        /// </summary>
+        /// <returns>Messages for all matching invalid identifier criteria</returns>
+        public static IReadOnlyList<string> SatisfiedInvalidIdentifierCriteria(string name, DeclarationType declarationType, bool isArrayDeclaration = false)
+        {
+            var criteriaMatchMessages = new List<string>();
+
+            var maxNameLength = declarationType.HasFlag(DeclarationType.Module)
+               ? Declaration.MaxModuleNameLength 
+               : Declaration.MaxMemberNameLength;
+
+            if (string.IsNullOrEmpty(name))
+            {
+                criteriaMatchMessages.Add(RubberduckUI.InvalidNameCriteria_IsNullOrEmpty);
+            }
+
+            //Does not start with a letter
+            if (!char.IsLetter(name.First()))
+            {
+                criteriaMatchMessages.Add(string.Format(RubberduckUI.InvalidNameCriteria_DoesNotStartWithLetterFormat, name));
+            }
+
+            //Has special characters
+            if (name.Any(c => !char.IsLetterOrDigit(c) && c != '_'))
+            {
+                criteriaMatchMessages.Add(string.Format(RubberduckUI.InvalidNameCriteria_InvalidCharactersFormat, name));
+            }
+
+            //Is a reserved identifier
+            if (!declarationType.HasFlag(DeclarationType.UserDefinedTypeMember))
+            {
+                if (ReservedIdentifiers.Contains(name, StringComparer.InvariantCultureIgnoreCase))
+                {
+                    criteriaMatchMessages.Add(string.Format(RubberduckUI.InvalidNameCriteria_IsReservedKeywordFormat, name));
+                }
+            }
+            else if (isArrayDeclaration) //is a DeclarationType.UserDefinedTypeMember
+            {
+                //DeclarationType.UserDefinedTypeMember can have reserved identifier keywords
+                //...unless the declaration is an array.  Adding the parentheses causes errors.
+
+                //Name is not a reserved identifier, but when used as a UDTMember array declaration
+                //it collides with the 'Name' Statement (Renames a disk file, directory, or folder)
+                var invalidUDTArrayIdentifiers = ReservedIdentifiers.Concat(new List<string>() { "Name" });
+
+                if (invalidUDTArrayIdentifiers.Contains(name, StringComparer.InvariantCultureIgnoreCase))
+                {
+                    criteriaMatchMessages.Add(string.Format(RubberduckUI.InvalidNameCriteria_IsReservedKeywordFormat, name));
+                }
+            }
+
+            //"VBA" identifier not allowed for projects
+            if (declarationType.HasFlag(DeclarationType.Project)
+                && name.Equals("VBA", StringComparison.InvariantCultureIgnoreCase))
+            {
+                criteriaMatchMessages.Add(string.Format(RubberduckUI.InvalidNameCriteria_IsReservedKeywordFormat, name));
+            }
+
+            //Exceeds max length
+            if (name.Length > maxNameLength)
+            {
+                criteriaMatchMessages.Add(string.Format(RubberduckUI.InvalidNameCriteria_ExceedsMaximumLengthFormat, name));
+            }
+
+            return criteriaMatchMessages;
+        }
     }
 }

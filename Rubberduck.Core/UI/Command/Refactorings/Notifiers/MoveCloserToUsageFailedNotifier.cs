@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
     {
         public MoveCloserToUsageFailedNotifier(IMessageBox messageBox)
             : base(messageBox)
-        { }
+        {}
 
         protected override string Caption => Resources.RubberduckUI.MoveCloserToUsage_Caption;
 
@@ -45,7 +45,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
                 case InvalidDeclarationTypeException invalidDeclarationType:
                     Logger.Warn(invalidDeclarationType);
                     return string.Format(Resources.RubberduckUI.RefactoringFailure_InvalidDeclarationType,
-                        invalidDeclarationType.TargetDeclaration.QualifiedModuleName,
+                        invalidDeclarationType.TargetDeclaration.QualifiedName,
                         invalidDeclarationType.TargetDeclaration.DeclarationType,
                         DeclarationType.Variable);
                 default:

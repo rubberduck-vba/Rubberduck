@@ -70,6 +70,42 @@ namespace Rubberduck.Resources.Menus {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Annotate.
+        /// </summary>
+        public static string AnnotateMenu {
+            get {
+                return ResourceManager.GetString("AnnotateMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected Declaration.
+        /// </summary>
+        public static string AnnotateMenu_SelectedDeclaration {
+            get {
+                return ResourceManager.GetString("AnnotateMenu_SelectedDeclaration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected Member.
+        /// </summary>
+        public static string AnnotateMenu_SelectedMember {
+            get {
+                return ResourceManager.GetString("AnnotateMenu_SelectedMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected Module.
+        /// </summary>
+        public static string AnnotateMenu_SelectedModule {
+            get {
+                return ResourceManager.GetString("AnnotateMenu_SelectedModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Find all references....
         /// </summary>
         public static string ContextMenu_FindAllReferences {
@@ -223,6 +259,24 @@ namespace Rubberduck.Resources.Menus {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Move Containing Folder.
+        /// </summary>
+        public static string RefactorMenu_MoveContainingFolder {
+            get {
+                return ResourceManager.GetString("RefactorMenu_MoveContainingFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move To Folder.
+        /// </summary>
+        public static string RefactorMenu_MoveToFolder {
+            get {
+                return ResourceManager.GetString("RefactorMenu_MoveToFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remo&amp;ve Parameters.
         /// </summary>
         public static string RefactorMenu_RemoveParameter {
@@ -291,6 +345,15 @@ namespace Rubberduck.Resources.Menus {
         public static string RubberduckMenu_CodeMetrics {
             get {
                 return ResourceManager.GetString("RubberduckMenu_CodeMetrics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Refactor.
+        /// </summary>
+        public static string RubberduckMenu_CodePaneRefactor {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_CodePaneRefactor", resourceCulture);
             }
         }
         

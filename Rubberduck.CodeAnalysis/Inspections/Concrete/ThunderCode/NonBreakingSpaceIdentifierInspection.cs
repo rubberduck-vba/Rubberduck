@@ -1,10 +1,10 @@
-﻿using Rubberduck.Inspections.Abstract;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.ThunderCode
 {
     /// <summary hidden="true">
     /// A ThunderCode inspection that locates non-breaking spaces hidden in identifier names.
@@ -14,12 +14,12 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
     /// This inspection may accidentally reveal non-breaking spaces in code copied and pasted from a website.
     /// </why>
-    public class NonBreakingSpaceIdentifierInspection : DeclarationInspectionBase
+    internal class NonBreakingSpaceIdentifierInspection : DeclarationInspectionBase
     {
         private const string Nbsp = "\u00A0";
 
-        public NonBreakingSpaceIdentifierInspection(RubberduckParserState state) 
-            : base(state)
+        public NonBreakingSpaceIdentifierInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

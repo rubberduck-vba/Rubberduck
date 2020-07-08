@@ -1,13 +1,13 @@
 using System.Diagnostics;
 using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies parameter declarations that are not used.
@@ -19,7 +19,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Not all unused parameters can/should be removed: ignore any inspection results for 
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
     /// </remarks>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -27,19 +28,22 @@ namespace Rubberduck.Inspections.Concrete
     ///     Debug.Print foo
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example>
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Public Sub DoSomething(ByVal foo As Long, ByVal bar As Long)
     ///     Debug.Print foo, bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ParameterNotUsedInspection : DeclarationInspectionBase
+    internal sealed class ParameterNotUsedInspection : DeclarationInspectionBase
     {
-        public ParameterNotUsedInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Parameter)
+        public ParameterNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Parameter)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

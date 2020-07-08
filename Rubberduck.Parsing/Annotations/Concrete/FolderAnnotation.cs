@@ -1,9 +1,4 @@
-﻿using Rubberduck.VBEditor;
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Parsing.Grammar;
-
-namespace Rubberduck.Parsing.Annotations
+﻿namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
     /// Used for specifying the Code Explorer folder a appears under.
@@ -11,7 +6,7 @@ namespace Rubberduck.Parsing.Annotations
     public sealed class FolderAnnotation : AnnotationBase
     {
         public FolderAnnotation()
-            : base("Folder", AnnotationTarget.Module)
-        { }
+            : base("Folder", AnnotationTarget.Module, 1, 1, new[] { AnnotationArgumentType.Text})
+        {}
     }
 }

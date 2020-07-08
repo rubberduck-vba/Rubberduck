@@ -1,49 +1,114 @@
+using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Locates procedures that are never invoked from user code.
     /// </summary>
     /// <why>
     /// Unused procedures are dead code that should probably be removed. Note, a procedure may be effectively "not used" in code, but attached to some
-    /// Shape object in the host document: in such cases the inspection result should be ignored. An event handler procedure that isn't being
-    /// resolved as such, may also wrongly trigger this inspection.
+    /// Shape object in the host document: in such cases the inspection result should be ignored.
     /// </why>
     /// <remarks>
     /// Not all unused procedures can/should be removed: ignore any inspection results for 
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
+    /// Public procedures of Standard Modules are not flagged by this inspection regardless of
+    /// the presence or absence of user code references.
     /// </remarks>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Private Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="false">
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// '@Ignore ProcedureNotUsed
+    /// Private Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="false">
+    /// <module name="Macros" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
     /// Public Sub DoSomething()
-    ///     ' macro is attached to a worksheet Shape.
+    ///     'a public procedure in a standard module may be a macro 
+    ///     'attached to a worksheet Shape or invoked by means other than user code.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="true">
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
-    ///
-    /// '@Ignore ProcedureNotUsed
+    /// 
     /// Public Sub DoSomething()
-    ///     ' macro is attached to a worksheet Shape.
+    /// End Sub
+    /// 
+    /// Public Sub DoSomethingElse()
     /// End Sub
     /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub ReferenceOneClass1Procedure()
+    ///     Dim target As Class1
+    ///     Set target = new Class1
+    ///     target.DoSomething
+    /// End Sub
+    /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ProcedureNotUsedInspection : DeclarationInspectionBase
+    /// <example hasResult="false">
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// 
+    /// Public Sub DoSomethingElse()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub ReferenceAllClass1Procedures()
+    ///     Dim target As Class1
+    ///     Set target = new Class1
+    ///     target.DoSomething
+    ///     target.DoSomethingElse
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    internal sealed class ProcedureNotUsedInspection : DeclarationInspectionBase
     {
-        public ProcedureNotUsedInspection(RubberduckParserState state) 
-            : base(state, ProcedureTypes)
+        public ProcedureNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, ProcedureTypes)
         {}
 
         private static readonly DeclarationType[] ProcedureTypes =
@@ -74,8 +139,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             return !declaration.References
-                       .Any(reference => !reference.IsAssignment 
-                                         && !reference.ParentScoping.Equals(declaration)) // recursive calls don't count
+                       .Any(reference => !reference.ParentScoping.Equals(declaration)) // ignore recursive/self-referential calls
                    && !finder.FindEventHandlers().Contains(declaration)
                    && !IsPublicModuleMember(declaration)
                    && !IsClassLifeCycleHandler(declaration)

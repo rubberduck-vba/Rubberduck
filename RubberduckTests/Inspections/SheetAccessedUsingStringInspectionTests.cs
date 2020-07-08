@@ -2,8 +2,8 @@
 using System.Linq;
 using Moq;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.Excel;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -25,6 +25,45 @@ namespace RubberduckTests.Inspections
 End Sub";
 
             Assert.AreEqual(2, ArrangeParserAndGetResults(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void SheetAccessedUsingString_DoesNotReturnResult_NoDocumentWithSheetName()
+        {
+            const string inputCode =
+                @"Public Sub Foo()
+    ThisWorkbook.Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
+    ThisWorkbook.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
+End Sub";
+
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode, "NotSheet1").Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void SheetAccessedUsingString_ReturnsResult_CodeNameAndSheetNameDifferent()
+        {
+            const string inputCode =
+                @"Public Sub Foo()
+    ThisWorkbook.Worksheets(""NotSheet1"").Range(""A1"") = ""Foo""
+    ThisWorkbook.Sheets(""NotSheet1"").Range(""A1"") = ""Foo""
+End Sub";
+
+            Assert.AreEqual(2, ArrangeParserAndGetResults(inputCode, "NotSheet1").Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void SheetAccessedUsingString_ReturnsResult_SheetNameContainsDoubleQuotes()
+        {
+            const string inputCode =
+                @"Public Sub Foo()
+    ThisWorkbook.Worksheets(""She""""et1"").Range(""A1"") = ""Foo""
+    ThisWorkbook.Sheets(""She""""et1"").Range(""A1"") = ""Foo""
+End Sub";
+
+            Assert.AreEqual(2, ArrangeParserAndGetResults(inputCode, "She\"et1").Count());
         }
 
         [Test]
@@ -172,7 +211,7 @@ End Sub";
             Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
         }
 
-        private IEnumerable<IInspectionResult> ArrangeParserAndGetResults(string inputCode)
+        private IEnumerable<IInspectionResult> ArrangeParserAndGetResults(string inputCode, string sheetName = "Sheet1")
         {
             var builder = new MockVbeBuilder();
 
@@ -190,7 +229,7 @@ End Sub";
                 .AddComponent("Sheet1", ComponentType.Document, "",
                     properties: new[]
                     {
-                        CreateVBComponentPropertyMock("Name", "Sheet1").Object,
+                        CreateVBComponentPropertyMock("Name", sheetName).Object,
                         CreateVBComponentPropertyMock("CodeName", "Sheet1").Object
                     })
                 .AddReference("ReferencedProject", string.Empty, 0, 0)

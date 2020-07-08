@@ -12,7 +12,8 @@ namespace Rubberduck.UI.Inspections
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value != null && value.GetType().Name.Equals("IgnoreOnceQuickFix"))
+            if (value != null 
+                && value.GetType().Name.Equals("IgnoreOnceQuickFix"))
             {
                 return IgnoreOnceIcon;
             }

@@ -82,14 +82,17 @@ namespace Rubberduck.UI.UnitTesting
             AnnotationUpdater = annotationUpdater;
 
             Model = model;
-            Model.TestCompleted += HandleTestCompletion;
 
             if (CollectionViewSource.GetDefaultView(Model.Tests) is ListCollectionView tests)
             {
                 tests.SortDescriptions.Add(new SortDescription("QualifiedName.QualifiedModuleName.Name", ListSortDirection.Ascending));
                 tests.SortDescriptions.Add(new SortDescription("QualifiedName.MemberName", ListSortDirection.Ascending));
+                tests.IsLiveFiltering = true;
+                tests.IsLiveGrouping = true;
                 Tests = tests;
             }
+
+            
 
             OnPropertyChanged(nameof(Tests));
             TestGrouping = TestExplorerGrouping.Outcome;
@@ -230,16 +233,6 @@ namespace Rubberduck.UI.UnitTesting
             return passesNameFilter && passesOutcomeFilter;
         }
 
-        private void HandleTestCompletion(object sender, TestCompletedEventArgs e)
-        {
-            if (TestGrouping != TestExplorerGrouping.Outcome)
-            {
-                return;
-            }
-
-            Tests.Refresh();
-        }
-
         public IRewritingManager RewritingManager { get; }
         public IAnnotationUpdater AnnotationUpdater { get; }
 
@@ -256,6 +249,7 @@ namespace Rubberduck.UI.UnitTesting
 
             return false;
         }
+
         public bool CanExecuteUnignoreSelectedTests(object obj)
         {
             if (!Model.IsBusy && obj is IList viewModels && viewModels.Count > 0)
@@ -273,12 +267,14 @@ namespace Rubberduck.UI.UnitTesting
 
             return groupItems.Cast<TestMethodViewModel>().Count(test => test.Method.IsIgnored) != groupItems.Count;
         }
+
         public bool CanExecuteUnignoreGroupCommand(object obj)
         {
             var groupItems = MouseOverGroup?.Items
-                             ?? GroupContainingSelectedTest(MouseOverTest).Items;
-
-            return groupItems.Cast<TestMethodViewModel>().Any(test => test.Method.IsIgnored);
+                             ?? GroupContainingSelectedTest(MouseOverTest)?.Items;
+            
+            return groupItems != null 
+                   && groupItems.Cast<TestMethodViewModel>().Any(test => test.Method.IsIgnored);
         }
         
         #region Commands
@@ -602,7 +598,6 @@ namespace Rubberduck.UI.UnitTesting
 
         public void Dispose()
         {
-            Model.TestCompleted -= HandleTestCompletion;
             Model.Dispose();
         }
     }

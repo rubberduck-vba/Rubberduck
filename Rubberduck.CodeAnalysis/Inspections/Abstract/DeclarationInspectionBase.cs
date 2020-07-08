@@ -1,22 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 {
-    public abstract class DeclarationInspectionBase : DeclarationInspectionBaseBase
+    internal abstract class DeclarationInspectionBase : DeclarationInspectionBaseBase
     {
-        protected DeclarationInspectionBase(RubberduckParserState state, params DeclarationType[] relevantDeclarationTypes)
-            : base(state, relevantDeclarationTypes)
+        protected DeclarationInspectionBase(IDeclarationFinderProvider declarationFinderProvider, params DeclarationType[] relevantDeclarationTypes)
+            : base(declarationFinderProvider, relevantDeclarationTypes)
         {}
 
-        protected DeclarationInspectionBase(RubberduckParserState state, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
-            : base(state, relevantDeclarationTypes, excludeDeclarationTypes)
+        protected DeclarationInspectionBase(IDeclarationFinderProvider declarationFinderProvider, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
+            : base(declarationFinderProvider, relevantDeclarationTypes, excludeDeclarationTypes)
         {}
 
         protected abstract bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder);
@@ -44,14 +43,14 @@ namespace Rubberduck.Inspections.Abstract
         }
     }
 
-    public abstract class DeclarationInspectionBase<T> : DeclarationInspectionBaseBase
+    internal abstract class DeclarationInspectionBase<T> : DeclarationInspectionBaseBase
     {
-        protected DeclarationInspectionBase(RubberduckParserState state, params DeclarationType[] relevantDeclarationTypes)
-            : base(state, relevantDeclarationTypes)
+        protected DeclarationInspectionBase(IDeclarationFinderProvider declarationFinderProvider, params DeclarationType[] relevantDeclarationTypes)
+            : base(declarationFinderProvider, relevantDeclarationTypes)
         {}
 
-        protected DeclarationInspectionBase(RubberduckParserState state, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
-            : base(state, relevantDeclarationTypes, excludeDeclarationTypes)
+        protected DeclarationInspectionBase(IDeclarationFinderProvider declarationFinderProvider , DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
+            : base(declarationFinderProvider, relevantDeclarationTypes, excludeDeclarationTypes)
         {}
 
         protected abstract (bool isResult, T properties) IsResultDeclarationWithAdditionalProperties(Declaration declaration, DeclarationFinder finder);

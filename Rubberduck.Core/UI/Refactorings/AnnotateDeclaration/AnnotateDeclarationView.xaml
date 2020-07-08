@@ -1,0 +1,182 @@
+﻿<UserControl x:Class="Rubberduck.UI.Refactorings.AnnotateDeclaration.AnnotateDeclarationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
+             xmlns:local="clr-namespace:Rubberduck.UI.Refactorings.AnnotateDeclaration"
+             xmlns:annotations="clr-namespace:Rubberduck.Parsing.Annotations;assembly=Rubberduck.Parsing"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="400">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Controls/ToolBar.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:EnumToLocalizedStringConverter ResourcePrefix="AnnotationArgumentType_" x:Key="AnnotationArgumentTypeToStringConverter"/>
+            <converters:InspectionToLocalizedNameConverter x:Key="InspectionToLocalizedNameConverter"/>
+            <converters:DeclarationToQualifiedNameConverter x:Key="DeclarationToQualifiedNameConverter"/>
+            <converters:AnnotationToCodeStringConverter x:Key="AnnotationToCodeStringConverter"/>
+            <converters:BoolToVisibleVisibilityConverter FalseVisibility="Hidden" x:Key="AdjustAttributeVisibilityConverter"/>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.Resources>
+            <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentSingleTypeTemplate">
+                <TextBlock Text="{Binding ArgumentType, Converter={StaticResource AnnotationArgumentTypeToStringConverter}}"/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentMultiTypeTemplate">
+                <ComboBox ItemsSource="{Binding Path=ApplicableArgumentTypes}"
+                          SelectedItem="{Binding Path=ArgumentType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          IsSynchronizedWithCurrentItem="True">                    
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type annotations:AnnotationArgumentType}">
+                            <TextBlock Text="{Binding Path=., Converter={StaticResource AnnotationArgumentTypeToStringConverter}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </DataTemplate>
+            <x:Array Type="sys:Object" xmlns:sys="clr-namespace:System;assembly=mscorlib"  x:Key="NonDefaultInputArgumentTypes">
+                <annotations:AnnotationArgumentType>Boolean</annotations:AnnotationArgumentType>
+                <annotations:AnnotationArgumentType>Inspection</annotations:AnnotationArgumentType>
+            </x:Array>
+            <converters:SpecificValuesToVisibilityConverter SpecialValues="{StaticResource NonDefaultInputArgumentTypes}" CollapseSpecialValues="True" x:Key="DefaultArgumentVisibilityConverter"/>
+            <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Boolean}" CollapseSpecialValue="False" x:Key="BooleanArgumentVisibilityConverter"/>
+            <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Inspection}" CollapseSpecialValue="False" x:Key="InspectionArgumentVisibilityConverter"/>
+            <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentValueTemplate">
+                <DataTemplate.Resources>
+                    <CollectionViewSource Source="{Binding InspectionNames}" x:Key="InspectionNamesView" />
+                </DataTemplate.Resources>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBox Text="{Binding ArgumentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                             Style="{StaticResource TextBoxErrorStyle}"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Stretch"
+                             Visibility="{Binding ArgumentType, Converter={StaticResource DefaultArgumentVisibilityConverter}}">
+                    </TextBox>
+                    <ComboBox Visibility="{Binding ArgumentType, Converter={StaticResource BooleanArgumentVisibilityConverter}}"
+                              ItemsSource="{Binding Path=BooleanValues}"
+                              SelectedItem="{Binding Path=ArgumentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch">
+                    </ComboBox>
+                    <ComboBox Visibility="{Binding ArgumentType, Converter={StaticResource InspectionArgumentVisibilityConverter}}"
+                              ItemsSource="{Binding Path=InspectionNames}"
+                              SelectedItem="{Binding Path=ArgumentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=., Converter={StaticResource InspectionToLocalizedNameConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                           HorizontalAlignment="Stretch"
+                                           VerticalAlignment="Stretch"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </DataTemplate>
+            <local:AnnotationArgumentTypeCellDataTemplateSelector x:Key="AnnotationArgumentTypeCellDataTemplateSelector"/>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+        <StackPanel Background="{StaticResource BackgroundLightBrush}">
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_TitleText}" FontWeight="Bold"/>
+            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_Instructions}" Margin="5,0,0,10" TextWrapping="Wrap" />
+        </StackPanel>
+        <StackPanel Grid.Row="1">
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_DeclarationLabel}" FontWeight="DemiBold" />
+            <TextBlock Text="{Binding Model.Target, Converter={StaticResource DeclarationToQualifiedNameConverter}}" Margin="5,0,0,5" FontWeight="Regular" />
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_AnnotationLabel}" FontWeight="DemiBold" />
+            <ComboBox ItemsSource="{Binding ApplicableAnnotations}"
+                      SelectedItem="{Binding Annotation}"
+                      IsSynchronizedWithCurrentItem="True"
+                      Margin="5,0,5,5">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type annotations:IAnnotation}">
+                        <TextBlock Text="{Binding Path=., Converter={StaticResource AnnotationToCodeStringConverter}}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_AdjustAttributeLabel}"
+                      IsChecked="{Binding AdjustAttribute}"
+                      Visibility="{Binding ShowAdjustAttributeOption, Converter={StaticResource AdjustAttributeVisibilityConverter}}"
+                      Margin="10,0,10,-5"
+                      VerticalContentAlignment="Center">
+                <CheckBox.LayoutTransform>
+                    <ScaleTransform ScaleX="0.9" ScaleY="0.9"/>
+                </CheckBox.LayoutTransform>
+            </CheckBox>
+        </StackPanel>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" 
+                   Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentsLabel}" 
+                   FontWeight="DemiBold" 
+                   Margin="5,5,0,0" />
+            <StackPanel Grid.Column="1" 
+                        Orientation="Horizontal">
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_AddArgumentButtonLabel}"
+                        Height="20"
+                        Margin="5,2.5"
+                        Padding="10,0"
+                        Command="{Binding AddAnnotationArgument}"/>
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_RemoveArgumentButtonLabel}"
+                        Height="20"
+                        Margin="5,2.5"
+                        Padding="10,0"
+                        Command="{Binding RemoveAnnotationArgument}"/>
+            </StackPanel>
+        </Grid>
+        <DataGrid Grid.Row="3"
+                  VerticalAlignment="Stretch"
+                  ItemsSource="{Binding Path=AnnotationArguments}"
+                  AutoGenerateColumns="False"
+                  VerticalScrollBarVisibility="Auto"
+                  Margin="5,0,5,5">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentTypeHeader}"
+                                        CellTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}"
+                                        CellEditingTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}"
+                                        Width="Auto"/>
+                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentValueHeader}"
+                                        CellTemplate="{StaticResource ArgumentValueTemplate}"
+                                        CellEditingTemplate="{StaticResource ArgumentValueTemplate}"
+                                        Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Grid.Row="4" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
+            <Grid HorizontalAlignment="Right"
+                  Margin="5,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                    <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                </Grid.ColumnDefinitions>
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
+                        Grid.Column="0"
+                        Height="20"
+                        Margin="5,0"
+                        Padding="10,0"
+                        IsEnabled="{Binding IsValidAnnotation}"
+                        IsDefault="True"
+                        Command="{Binding OkButtonCommand}" />
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}"
+                        Grid.Column="1"
+                        Height="20"
+                        Margin="5,0"
+                        Padding="10,0"
+                        IsCancel="True"
+                        Command="{Binding CancelButtonCommand}">
+                </Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

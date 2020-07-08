@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -72,38 +73,50 @@ namespace Rubberduck.Parsing.VBA
             var rewriter = rewriteSession.CheckOutModuleRewriter(declaration.QualifiedModuleName);
             if (declaration.DeclarationType.HasFlag(DeclarationType.Module))
             {
-                var moduleParseTree = (ParserRuleContext)_parseTreeProvider.GetParseTree(declaration.QualifiedModuleName, CodeKind.AttributesCode);
-                var lastModuleAttribute = moduleParseTree.GetDescendents<VBAParser.ModuleAttributesContext>()
-                    .Where(moduleAttributes => moduleAttributes.attributeStmt() != null)
-                    .SelectMany(moduleAttributes => moduleAttributes.attributeStmt())
-                    .OrderBy(moduleAttribute => moduleAttribute.stop.TokenIndex)
-                    .LastOrDefault();
-                if (lastModuleAttribute == null)
-                {
-                    //This should never happen for a real module.
-                    var codeToInsert = $"Attribute {attribute} = {AttributeValuesText(values)}{Environment.NewLine}";
-                    rewriter.InsertBefore(0, codeToInsert);
-                }
-                else
-                {
-                    var codeToInsert = $"{Environment.NewLine}Attribute {attribute} = {AttributeValuesText(values)}";
-                    rewriter.InsertAfter(lastModuleAttribute.stop.TokenIndex, codeToInsert);
-                }  
+                var codeToAdd = $"Attribute {attribute} = {AttributeValuesText(values)}";
+                InsertAfterLastModuleAttribute(rewriter, declaration.QualifiedModuleName, codeToAdd);
             }
             else
             {
-                var attributesContext = declaration.AttributesPassContext;
-                var firstEndOfLineInMember = attributesContext.GetDescendent<VBAParser.EndOfLineContext>();
-                if (firstEndOfLineInMember == null)
-                {
-                    var codeToInsert = $"{Environment.NewLine}Attribute {attribute} = {AttributeValuesText(values)}";
-                    rewriter.InsertAfter(declaration.AttributesPassContext.Stop.TokenIndex, codeToInsert);
-                }
-                else
-                {
-                    var codeToInsert = $"Attribute {attribute} = {AttributeValuesText(values)}{Environment.NewLine}";
-                    rewriter.InsertAfter(firstEndOfLineInMember.Stop.TokenIndex, codeToInsert);
-                }
+                var codeToAdd = $"Attribute {attribute} = {AttributeValuesText(values)}";
+                InsertAfterFirstEolOfAttributeContext(rewriter, declaration, codeToAdd);
+            }
+        }
+
+        private void InsertAfterLastModuleAttribute(IModuleRewriter rewriter, QualifiedModuleName module, string codeToAdd)
+        {
+            var moduleParseTree = (ParserRuleContext)_parseTreeProvider.GetParseTree(module, CodeKind.AttributesCode);
+            var lastModuleAttribute = moduleParseTree.GetDescendents<VBAParser.ModuleAttributesContext>()
+                .Where(moduleAttributes => moduleAttributes.attributeStmt() != null)
+                .SelectMany(moduleAttributes => moduleAttributes.attributeStmt())
+                .OrderBy(moduleAttribute => moduleAttribute.stop.TokenIndex)
+                .LastOrDefault();
+            if (lastModuleAttribute == null)
+            {
+                //This should never happen for a real module.
+                var codeToInsert = codeToAdd + Environment.NewLine;
+                rewriter.InsertBefore(0, codeToInsert);
+            }
+            else
+            {
+                var codeToInsert = Environment.NewLine + codeToAdd;
+                rewriter.InsertAfter(lastModuleAttribute.stop.TokenIndex, codeToInsert);
+            }
+        }
+
+        private void InsertAfterFirstEolOfAttributeContext(IModuleRewriter rewriter, Declaration declaration, string codeToAdd)
+        {
+            var attributesContext = declaration.AttributesPassContext;
+            var firstEndOfLineInMember = attributesContext.GetDescendent<VBAParser.EndOfLineContext>();
+            if (firstEndOfLineInMember == null)
+            {
+                var codeToInsert = Environment.NewLine + codeToAdd;
+                rewriter.InsertAfter(declaration.AttributesPassContext.Stop.TokenIndex, codeToInsert);
+            }
+            else
+            {
+                var codeToInsert = codeToAdd + Environment.NewLine;
+                rewriter.InsertAfter(firstEndOfLineInMember.Stop.TokenIndex, codeToInsert);
             }
         }
 
@@ -222,6 +235,39 @@ namespace Rubberduck.Parsing.VBA
             var replacementText = $" {AttributeValuesText(values)}";
 
             rewriter.Replace(new Interval(firstIndexToReplace, lastIndexToReplace), replacementText);
+        }
+
+        public void AddOrUpdateAttribute(
+            IRewriteSession rewriteSession, 
+            Declaration declaration, 
+            string attribute,
+            IReadOnlyList<string> values)
+        {
+            var attributeNodes = ApplicableAttributeNodes(declaration, attribute);
+
+            if (!attributeNodes.Any())
+            {
+                AddAttribute(rewriteSession, declaration, attribute, values);
+                return;
+            }
+
+            if (attribute.Equals("VB_Ext_Key"))
+            {
+                var newKey = values.First();
+                var matchingExtKeyAttribute = attributeNodes.FirstOrDefault(node =>  newKey.Equals(node.Values.FirstOrDefault(), StringComparison.InvariantCultureIgnoreCase));
+
+                if (matchingExtKeyAttribute == null)
+                {
+                    AddAttribute(rewriteSession, declaration, attribute, values);
+                    return;
+                }
+
+                var oldValues = matchingExtKeyAttribute.Values;
+                UpdateAttribute(rewriteSession, declaration, attribute, values, oldValues);
+                return;
+            }
+
+            UpdateAttribute(rewriteSession, declaration, attribute, values);
         }
     }
 }

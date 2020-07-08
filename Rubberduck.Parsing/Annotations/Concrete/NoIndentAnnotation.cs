@@ -7,6 +7,6 @@
     {
         public NoIndentAnnotation()
             : base("NoIndent", AnnotationTarget.Module)
-        { }
+        {}
     }
 }

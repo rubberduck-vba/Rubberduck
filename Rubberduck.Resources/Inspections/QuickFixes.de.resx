@@ -297,4 +297,7 @@
   <data name="ExpandDefaultMemberQuickFix" xml:space="preserve">
     <value>Füge einen expliziten Zugriff auf den Standardmember ein</value>
   </data>
+  <data name="IgnoreInModuleQuickFix" xml:space="preserve">
+    <value>In Modul ignorieren</value>
+  </data>
 </root>

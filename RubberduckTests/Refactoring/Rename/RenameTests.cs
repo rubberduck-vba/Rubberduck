@@ -3362,14 +3362,17 @@ End Property";
             messageBoxMock.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        protected override IRefactoring TestRefactoring(
+            IRewritingManager rewritingManager, 
+            RubberduckParserState state,
+            RefactoringUserInteraction<IRenamePresenter, RenameModel> userInteraction, 
+            ISelectionService selectionService)
         {
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
-            var uiDispatcherMock = new Mock<IUiDispatcher>();
-            uiDispatcherMock
-                .Setup(m => m.Invoke(It.IsAny<Action>()))
-                .Callback((Action action) => action.Invoke());
-            return new RenameRefactoring(factory, state, state?.ProjectsProvider, rewritingManager, selectionService, selectedDeclarationService, state, uiDispatcherMock.Object);
+            var componentRename = new RenameComponentOrProjectRefactoringAction(state, state?.ProjectsProvider, state, rewritingManager);
+            var otherRename = new RenameCodeDefinedIdentifierRefactoringAction(state, state?.ProjectsProvider, rewritingManager);
+            var baseRefactoring = new RenameRefactoringAction(componentRename, otherRename);
+            return new RenameRefactoring(baseRefactoring, userInteraction, state, state?.ProjectsProvider, selectionService, selectedDeclarationService);
         }
 
         #endregion

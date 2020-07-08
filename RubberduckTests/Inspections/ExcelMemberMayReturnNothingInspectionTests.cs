@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.Excel;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
@@ -21,6 +21,22 @@ namespace RubberduckTests.Inspections
     Dim ws As Worksheet
     Set ws = Sheet1
     foo = ws.UsedRange.Find(""foo"").Row
+End Sub
+";
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ExcelMemberMayReturnNothing_ReturnsResult_WithMemberAccessOnFind()
+        {
+            const string inputCode =
+                @"Sub UnderTest()
+    Dim ws As Worksheet
+    Set ws = Sheet1
+    With ws.UsedRange
+        foo = .Find(""foo"").Row
+    End With
 End Sub
 ";
             Assert.AreEqual(1, InspectionResults(inputCode).Count());
@@ -104,6 +120,25 @@ End Sub
     Set ws = Sheet1
     Dim result As Range
     Set result = ws.UsedRange.Find(""foo"")
+    result.Value = ""bar""
+End Sub
+";
+
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ExcelMemberMayReturnNothing_ReturnsResult_AssignedAndNotTested_FromWithMemberAccess()
+        {
+            const string inputCode =
+                @"Sub UnderTest()
+    Dim ws As Worksheet
+    Set ws = Sheet1
+    Dim result As Range
+    With ws.UsedRange
+        Set result = .Find(""foo"")
+    End With
     result.Value = ""bar""
 End Sub
 ";

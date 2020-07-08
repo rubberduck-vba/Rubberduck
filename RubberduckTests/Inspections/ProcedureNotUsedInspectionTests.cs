@@ -1,12 +1,12 @@
 using System.Linq;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.Inspections.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -180,6 +180,57 @@ Private Sub Foo()
 End Sub";
 
             Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/5490
+        [TestCase(@"Name = ""Bizz""", 0)]
+        [TestCase(@"mName = ""Bizz""", 1)]
+        [Category("Inspections")]
+        public void PropertyLet(string assignmentCode, int expectedResults)
+        {
+            var inputCode =
+$@"
+Private mName As String
+
+Private Sub Class_Initialize()
+    {assignmentCode}
+End Sub
+
+Private Property Let Name(ByVal value As String)
+    mName = value
+End Property
+";
+
+            var modules = new(string, string, ComponentType)[]
+            {
+                (MockVbeBuilder.TestModuleName, inputCode, ComponentType.ClassModule),
+            };
+
+            Assert.AreEqual(expectedResults, InspectionResultsForModules(modules).Count(result => result.Target.DeclarationType.HasFlag(DeclarationType.Procedure)));
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void RecursiveReferenceOnly_ReturnsResult()
+        {
+            var inputCode =
+$@"
+Private mName As String
+
+Private Property Let Name(ByVal value As String)
+    mName = value
+    If Len(mName) > 10 Then
+        Name = Left(mName, 8)
+    End If
+End Property
+";
+
+            var modules = new(string, string, ComponentType)[]
+            {
+                (MockVbeBuilder.TestModuleName, inputCode, ComponentType.ClassModule),
+            };
+
+            Assert.AreEqual(1, InspectionResultsForModules(modules).Count(result => result.Target.DeclarationType.HasFlag(DeclarationType.Procedure)));
         }
 
         [Test]

@@ -1,13 +1,13 @@
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using static Rubberduck.Parsing.Grammar.VBAParser;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies line labels that are never referenced, and therefore superfluous.
@@ -16,7 +16,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Line labels are useful for GoTo, GoSub, Resume, and On Error statements; but the intent of a line label
     /// can be confusing if it isn't referenced by any such instruction.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     /// '    On Error GoTo ErrHandler ' (commented-out On Error statement leaves line label unreferenced)
@@ -26,8 +27,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error GoTo ErrHandler
@@ -37,18 +40,19 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class LineLabelNotUsedInspection : DeclarationInspectionBase
+    internal sealed class LineLabelNotUsedInspection : DeclarationInspectionBase
     {
-        public LineLabelNotUsedInspection(RubberduckParserState state) 
-            : base(state, DeclarationType.LineLabel)
+        public LineLabelNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.LineLabel)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             return declaration != null
                    && !declaration.IsWithEvents
-                   && declaration.Context is IdentifierStatementLabelContext
+                   && declaration.Context is VBAParser.IdentifierStatementLabelContext
                    && declaration.References.All(reference => reference.IsAssignment);
         }
 

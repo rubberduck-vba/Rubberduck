@@ -69,7 +69,7 @@ namespace Rubberduck.Parsing.Symbols
                     .ToList();
         }
 
-        public IEnumerable<ParameterDeclaration> Parameters => _parameters.ToList();
+        public IReadOnlyList<ParameterDeclaration> Parameters => _parameters.ToList();
 
         public void AddParameter(ParameterDeclaration parameter)
         {

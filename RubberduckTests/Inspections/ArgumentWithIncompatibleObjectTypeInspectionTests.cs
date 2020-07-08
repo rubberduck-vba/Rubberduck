@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading;
 using Moq;
 using NUnit.Framework;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.TypeResolvers;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -23,10 +23,12 @@ namespace RubberduckTests.Inspections
         [TestCase("Class1", "TestProject.Class1", 0)]
         [TestCase("Interface1", "TestProject.Class1", 0)]
         [TestCase("Class1", "TestProject.Interface1", 0)]
-        [TestCase("Variant", "Whatever", 0)] //Tokens.Variant cannot be used here because it is not a constant expression.
-        [TestCase("Object", "Whatever", 0)]
-        [TestCase("Whatever", "Variant", 0)]
-        [TestCase("Whatever", "Object", 0)]
+        [TestCase("Variant", "Class1", 0)] //Tokens.Variant cannot be used here because it is not a constant expression.
+        [TestCase("Object", "Class1", 0)]
+        [TestCase("IUnknown", "Class1", 0)]
+        [TestCase("Class1", "Variant", 0)]
+        [TestCase("Class1", "Object", 0)]
+        [TestCase("Class1", ":stdole.IUnknown", 0)]
         [TestCase("Class1", "TestProject.SomethingIncompatible", 1)]
         [TestCase("Class1", "SomethingDifferent", 1)]
         [TestCase("TestProject.Class1", "OtherProject.Class1", 1)]
@@ -133,11 +135,18 @@ End Sub
 
         private static IVBE BuildTestVBE(string class1, string interface1, string module1)
         {
-            return new MockVbeBuilder()
+            var projectBuilder = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, class1)
                 .AddComponent("Interface1", ComponentType.ClassModule, interface1)
-                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1);
+
+            if (module1.Contains("IUnknown"))
+            {
+                projectBuilder.AddReference(ReferenceLibrary.StdOle);
+            }
+
+            return projectBuilder
                 .AddProjectToVbeBuilder()
                 .Build()
                 .Object;

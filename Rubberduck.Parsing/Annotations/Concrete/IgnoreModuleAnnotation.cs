@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
-
-namespace Rubberduck.Parsing.Annotations
+﻿namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
     /// This annotation allows ignoring inspection results of defined inspections for a whole module
@@ -11,7 +6,7 @@ namespace Rubberduck.Parsing.Annotations
     public sealed class IgnoreModuleAnnotation : AnnotationBase
     {
         public IgnoreModuleAnnotation()
-            : base("IgnoreModule", AnnotationTarget.Module, true)
-        { }
+            : base("IgnoreModule", AnnotationTarget.Module, allowedArguments: null, allowedArgumentTypes: new[] { AnnotationArgumentType.Inspection }, allowMultiple: true)
+        {}
     }
 }

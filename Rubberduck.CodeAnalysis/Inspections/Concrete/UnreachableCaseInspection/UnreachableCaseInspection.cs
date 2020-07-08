@@ -1,20 +1,21 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
+using Rubberduck.CodeAnalysis.Inspections.Results;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using System;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Resources.Inspections;
+using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
     /// <summary>
     /// Flags 'Case' blocks that will never execute.
@@ -26,6 +27,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     /// Not all unreachable 'Case' blocks may be flagged, depending on expression complexity.
     /// </remarks>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example(ByVal value As Long)
     ///     Select Case value
@@ -40,8 +42,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     ///     End Select
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// 
     /// 'If the cumulative result of multiple 'Case' statements
@@ -64,8 +68,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     ///     End Select
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Enum ProductID
     ///     Widget = 1
@@ -92,8 +98,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     ///     End Select
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// 
     /// 'The inspecion flags Range Clauses that are not of the required form:
@@ -110,166 +118,108 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     ///     End Select
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class UnreachableCaseInspection : ParseTreeInspectionBase
+    internal sealed class UnreachableCaseInspection : InspectionBase, IParseTreeInspection
     {
-        private readonly IUnreachableCaseInspectorFactory _unreachableCaseInspectorFactory;
-        private readonly IParseTreeValueFactory _valueFactory;
+        private readonly IUnreachableCaseInspector _inspector;
+        private readonly IParseTreeValueVisitor _parseTreeValueVisitor;
+        private readonly IInspectionListener<VBAParser.SelectCaseStmtContext> _listener;
 
-        private enum CaseInspectionResult { Unreachable, InherentlyUnreachable, MismatchType, Overflow, CaseElse };
-
-        private static readonly Dictionary<CaseInspectionResult, string> ResultMessages = new Dictionary<CaseInspectionResult, string>()
+        public enum CaseInspectionResultType
         {
-            [CaseInspectionResult.Unreachable] = InspectionResults.UnreachableCaseInspection_Unreachable,
-            [CaseInspectionResult.InherentlyUnreachable] = InspectionResults.UnreachableCaseInspection_InherentlyUnreachable,
-            [CaseInspectionResult.MismatchType] = InspectionResults.UnreachableCaseInspection_TypeMismatch,
-            [CaseInspectionResult.Overflow] = InspectionResults.UnreachableCaseInspection_Overflow,
-            [CaseInspectionResult.CaseElse] = InspectionResults.UnreachableCaseInspection_CaseElse
-        };
-
-        public UnreachableCaseInspection(RubberduckParserState state) : base(state)
-        {
-            var factoryProvider = new UnreachableCaseInspectionFactoryProvider();
-
-            _unreachableCaseInspectorFactory = factoryProvider.CreateIUnreachableInspectorFactory();
-            _valueFactory = factoryProvider.CreateIParseTreeValueFactory();
+            Unreachable,
+            InherentlyUnreachable,
+            MismatchType,
+            Overflow,
+            CaseElse
         }
 
-        public override IInspectionListener Listener { get; } =
-            new UnreachableCaseInspectionListener();
-
-        private List<IInspectionResult> _inspectionResults = new List<IInspectionResult>();
-        private ParseTreeVisitorResults ValueResults { get; }  = new ParseTreeVisitorResults();
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        public UnreachableCaseInspection(
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IUnreachableCaseInspector inspector, 
+            IParseTreeValueVisitor parseTreeValueVisitor) 
+            : base(declarationFinderProvider)
         {
-            _inspectionResults = new List<IInspectionResult>();
-            var qualifiedSelectCaseStmts = Listener.Contexts
+            _inspector = inspector;
+            _parseTreeValueVisitor = parseTreeValueVisitor;
+            _listener = new UnreachableCaseInspectionListener();
+        }
+
+        public CodeKind TargetKindOfCode => CodeKind.CodePaneCode;
+
+        public IInspectionListener Listener => _listener;
+
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
+        {
+            return finder.UserDeclarations(DeclarationType.Module)
+                .Where(module => module != null)
+                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder))
+                .ToList();
+        }
+
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
+        {
+            var qualifiedSelectCaseStmts = _listener.Contexts(module)
                 // ignore filtering here to make the search space smaller
-                .Where(result => !result.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName));
+                .Where(result => !result.IsIgnoringInspectionResultFor(finder, AnnotationName));
 
-            ParseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
-
-            foreach (var qualifiedSelectCaseStmt in qualifiedSelectCaseStmts)
-            {
-                qualifiedSelectCaseStmt.Context.Accept(ParseTreeValueVisitor);
-                var selectCaseInspector = _unreachableCaseInspectorFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, ValueResults, _valueFactory, GetVariableTypeName);
-
-                selectCaseInspector.InspectForUnreachableCases();
-
-                selectCaseInspector.UnreachableCases.ForEach(uc => CreateInspectionResult(qualifiedSelectCaseStmt, uc, ResultMessages[CaseInspectionResult.Unreachable]));
-                selectCaseInspector.MismatchTypeCases.ForEach(mm => CreateInspectionResult(qualifiedSelectCaseStmt, mm, ResultMessages[CaseInspectionResult.MismatchType]));
-                selectCaseInspector.OverflowCases.ForEach(mm => CreateInspectionResult(qualifiedSelectCaseStmt, mm, ResultMessages[CaseInspectionResult.Overflow]));
-                selectCaseInspector.InherentlyUnreachableCases.ForEach(mm => CreateInspectionResult(qualifiedSelectCaseStmt, mm, ResultMessages[CaseInspectionResult.InherentlyUnreachable]));
-                selectCaseInspector.UnreachableCaseElseCases.ForEach(ce => CreateInspectionResult(qualifiedSelectCaseStmt, ce, ResultMessages[CaseInspectionResult.CaseElse]));
-            }
-            return _inspectionResults;
+            return qualifiedSelectCaseStmts
+                .SelectMany(context => ResultsForContext(context, finder))
+                .ToList();
         }
 
-        private IParseTreeValueVisitor _parseTreeValueVisitor;
-        public IParseTreeValueVisitor ParseTreeValueVisitor
+        private IEnumerable<IInspectionResult> ResultsForContext(QualifiedContext<VBAParser.SelectCaseStmtContext> qualifiedSelectCaseStmt, DeclarationFinder finder)
         {
-            get
+            var module = qualifiedSelectCaseStmt.ModuleName;
+            var selectStmt = qualifiedSelectCaseStmt.Context;
+            var contextValues = _parseTreeValueVisitor.VisitChildren(module, selectStmt, finder);
+
+            var results = _inspector.InspectForUnreachableCases(module, selectStmt, contextValues, finder);
+
+            return results
+                .Select(resultTpl => CreateInspectionResult(qualifiedSelectCaseStmt, resultTpl.context, resultTpl.resultType))
+                .ToList();
+        }
+
+        private IInspectionResult CreateInspectionResult(QualifiedContext<VBAParser.SelectCaseStmtContext> selectStmt, ParserRuleContext unreachableBlock, CaseInspectionResultType resultType)
+        {
+            return CreateInspectionResult(selectStmt, unreachableBlock, ResultMessage(resultType));
+        }
+
+        //This cannot be a dictionary because the strings have to change after a change in the selected language.
+        private static string ResultMessage(CaseInspectionResultType resultType)
+        {
+            switch (resultType)
             {
-                if (_parseTreeValueVisitor is null)
-                {
-                    var listener = (UnreachableCaseInspectionListener)Listener;
-                    _parseTreeValueVisitor = CreateParseTreeValueVisitor(_valueFactory, listener.EnumerationStmtContexts.ToList(), GetIdentifierReferenceForContext);
-                }
-                return _parseTreeValueVisitor;
+                case CaseInspectionResultType.Unreachable:
+                    return InspectionResults.UnreachableCaseInspection_Unreachable;
+                case CaseInspectionResultType.InherentlyUnreachable:
+                    return InspectionResults.UnreachableCaseInspection_InherentlyUnreachable;
+                case CaseInspectionResultType.MismatchType:
+                    return InspectionResults.UnreachableCaseInspection_TypeMismatch;
+                case CaseInspectionResultType.Overflow:
+                    return InspectionResults.UnreachableCaseInspection_Overflow;
+                case CaseInspectionResultType.CaseElse:
+                    return InspectionResults.UnreachableCaseInspection_CaseElse;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(resultType), resultType, null);
             }
         }
 
-        private void CreateInspectionResult(QualifiedContext<ParserRuleContext> selectStmt, ParserRuleContext unreachableBlock, string message)
+        private IInspectionResult CreateInspectionResult(QualifiedContext<VBAParser.SelectCaseStmtContext> selectStmt, ParserRuleContext unreachableBlock, string message)
         {
-            var result = new QualifiedContextInspectionResult(this,
+            return new QualifiedContextInspectionResult(this,
                         message,
                         new QualifiedContext<ParserRuleContext>(selectStmt.ModuleName, unreachableBlock));
-            _inspectionResults.Add(result);
         }
 
-        public static IParseTreeValueVisitor CreateParseTreeValueVisitor(IParseTreeValueFactory valueFactory, List<VBAParser.EnumerationStmtContext> allEnums, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> func)
-            => new ParseTreeValueVisitor(valueFactory, allEnums, func);
-
-        //Method is used as a delegate to avoid propogating RubberduckParserState beyond this class
-        private (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context)
+        private class UnreachableCaseInspectionListener : InspectionListenerBase<VBAParser.SelectCaseStmtContext>
         {
-            return GetIdentifierReferenceForContext(context, State);
-        }
-
-        //public static to support tests
-        public static (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context, IDeclarationFinderProvider declarationFinderProvider)
-        {
-            if (context == null)
-            {
-                return (false, null);
-            }
-
-            var finder = declarationFinderProvider.DeclarationFinder;
-            var identifierReferences = finder.MatchName(context.GetText())
-                .SelectMany(declaration => declaration.References)
-                .Where(reference => reference.Context == context)
-                .ToList();
-
-            return identifierReferences.Count == 1 
-                ? (true, identifierReferences.First())
-                : (false, null);
-        }
-
-        //Method is used as a delegate to avoid propogating RubberduckParserState beyond this class
-        private string GetVariableTypeName(string variableName, ParserRuleContext ancestor)
-        {
-            var descendents = ancestor.GetDescendents<VBAParser.SimpleNameExprContext>().Where(desc => desc.GetText().Equals(variableName));
-            if (descendents.Any())
-            {
-                (bool success, IdentifierReference idRef) = GetIdentifierReferenceForContext(descendents.First(), State);
-                if (success)
-                {
-                    return GetBaseTypeForDeclaration(idRef.Declaration);
-                }
-            }
-            return string.Empty;
-        }
-
-        private string GetBaseTypeForDeclaration(Declaration declaration)
-        {
-            var localDeclaration = declaration;
-            var iterationGuard = 0;
-            while (!(localDeclaration is null)
-                && !localDeclaration.AsTypeIsBaseType
-                && iterationGuard++ < 5)
-            {
-                localDeclaration = localDeclaration.AsTypeDeclaration;
-            }
-            return localDeclaration is null ? declaration.AsTypeName : localDeclaration.AsTypeName;
-        }
-
-        #region UnreachableCaseInspectionListeners
-        public class UnreachableCaseInspectionListener : VBAParserBaseListener, IInspectionListener
-        {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            private readonly List<VBAParser.EnumerationStmtContext> _enumStmts = new List<VBAParser.EnumerationStmtContext>();
-            public IReadOnlyList<VBAParser.EnumerationStmtContext> EnumerationStmtContexts => _enumStmts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
             public override void EnterSelectCaseStmt([NotNull] VBAParser.SelectCaseStmtContext context)
             {
-                _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
-            }
-
-            public override void EnterEnumerationStmt([NotNull] VBAParser.EnumerationStmtContext context)
-            {
-                _enumStmts.Add(context);
+                SaveContext(context);
             }
         }
-        #endregion
     }
 }

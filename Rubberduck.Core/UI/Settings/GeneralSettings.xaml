@@ -91,11 +91,13 @@
                     <CheckBox Margin="15,0,0,5" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_IncludePreRelease}"
                               IsChecked="{Binding IncludePreRelease}"
                               IsEnabled="{Binding IsChecked, ElementName=IsVersionCheckEnabled}"/>
-                    
                     <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_CompileBeforeParse}"
                               IsChecked="{Binding CompileBeforeParse}" />
                     <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_SetDpiUnaware}"
-                              IsEnabled="{Binding SetDpiUnawareEnabled}"  IsChecked="{Binding SetDpiUnaware}" />
+                              IsEnabled="{Binding SetDpiUnawareEnabled}"  
+                              IsChecked="{Binding SetDpiUnaware}" />
+                    <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_EnableDragAndDrop}"
+                              IsChecked="{Binding EnableFolderDragAndDrop}" />
                     <StackPanel Orientation="Horizontal"/>
 
                     <Label Target="{Binding ElementName=minimumLogLevel}"

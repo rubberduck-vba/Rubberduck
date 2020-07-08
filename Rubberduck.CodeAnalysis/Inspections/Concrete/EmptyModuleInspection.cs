@@ -1,13 +1,13 @@
 ﻿using System.Linq;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags empty code modules.
@@ -15,16 +15,16 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// An empty module does not need to exist and can be safely removed.
     /// </why>
-    public sealed class EmptyModuleInspection : DeclarationInspectionBase
+    internal sealed class EmptyModuleInspection : DeclarationInspectionBase
     {
         private readonly EmptyModuleVisitor _emptyModuleVisitor;
         private readonly IParseTreeProvider _parseTreeProvider;
 
-        public EmptyModuleInspection(RubberduckParserState state)
-            : base(state, new []{DeclarationType.Module}, new []{DeclarationType.Document})
+        public EmptyModuleInspection(IDeclarationFinderProvider declarationFinderProvider, IParseTreeProvider parseTreeProvider)
+            : base(declarationFinderProvider, new []{DeclarationType.Module}, new []{DeclarationType.Document})
         {
             _emptyModuleVisitor = new EmptyModuleVisitor();
-            _parseTreeProvider = state;
+            _parseTreeProvider = parseTreeProvider;
         }
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

@@ -1,10 +1,10 @@
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about implicit local variables that are used but never declared.
@@ -12,15 +12,18 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// If this code compiles, then Option Explicit is omitted and compile-time validation is easily forfeited, even accidentally (e.g. typos). 
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     foo = 42 ' foo is not declared
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
@@ -28,11 +31,12 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class UndeclaredVariableInspection : DeclarationInspectionBase
+    internal sealed class UndeclaredVariableInspection : DeclarationInspectionBase
     {
-        public UndeclaredVariableInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Variable)
+        public UndeclaredVariableInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Variable)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

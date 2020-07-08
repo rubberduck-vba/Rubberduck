@@ -1,11 +1,11 @@
-﻿using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using System;
+﻿using System;
 using System.Linq;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IParseTreeValueFactory
+    internal interface IParseTreeValueFactory
     {
         IParseTreeValue CreateMismatchExpression(string expression, string typeName);
         IParseTreeValue CreateExpression(string expression, string typeName);
@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         IParseTreeValue CreateDate(double value);
     }
 
-    public class ParseTreeValueFactory : IParseTreeValueFactory
+    internal class ParseTreeValueFactory : IParseTreeValueFactory
     {
         public IParseTreeValue CreateValueType(string expression, string declaredTypeName)
         {

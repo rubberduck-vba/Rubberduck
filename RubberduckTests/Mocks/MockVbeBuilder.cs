@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Moq;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -64,9 +63,16 @@ namespace RubberduckTests.Mocks
         {
             [ReferenceLibrary.VBA] = (ReferenceLibrary.VBA.Name(), ReferenceLibrary.VBA.Path(), 4, 2, true),
             [ReferenceLibrary.Excel] = (ReferenceLibrary.Excel.Name(), ReferenceLibrary.Excel.Path(), 1, 8, true),
-            [ReferenceLibrary.Scripting] = (ReferenceLibrary.Scripting.Name(), ReferenceLibrary.Scripting.Path(), 1, 0, true),
-            [ReferenceLibrary.AdoDb] = (ReferenceLibrary.AdoDb.Name(), ReferenceLibrary.AdoDb.Path(), 6, 1, false),
+            [ReferenceLibrary.MsOffice] = (ReferenceLibrary.MsOffice.Name(), ReferenceLibrary.MsOffice.Path(), 2, 7, true),
+            [ReferenceLibrary.StdOle] = (ReferenceLibrary.StdOle.Name(), ReferenceLibrary.StdOle.Path(), 2, 0, true),
             [ReferenceLibrary.MsForms] = (ReferenceLibrary.MsForms.Name(), ReferenceLibrary.MsForms.Path(), 2, 0, true),
+            [ReferenceLibrary.VBIDE] = (ReferenceLibrary.VBIDE.Name(), ReferenceLibrary.VBIDE.Path(), 5, 3, true),
+            [ReferenceLibrary.Scripting] = (ReferenceLibrary.Scripting.Name(), ReferenceLibrary.Scripting.Path(), 1, 0, true),
+            [ReferenceLibrary.Regex] = (ReferenceLibrary.Regex.Name(), ReferenceLibrary.Regex.Path(), 5, 5, true),
+            [ReferenceLibrary.MsXml] = (ReferenceLibrary.MsXml.Name(), ReferenceLibrary.MsXml.Path(), 6, 0, true),
+            [ReferenceLibrary.ShDoc] = (ReferenceLibrary.ShDoc.Name(), ReferenceLibrary.ShDoc.Path(), 1, 1, true),
+            [ReferenceLibrary.AdoDb] = (ReferenceLibrary.AdoDb.Name(), ReferenceLibrary.AdoDb.Path(), 6, 1, false),
+            [ReferenceLibrary.AdoRecordset] = (ReferenceLibrary.AdoRecordset.Name(), ReferenceLibrary.AdoRecordset.Path(), 6, 0, false),
         };
 
         private readonly Windows _windows = new Windows();

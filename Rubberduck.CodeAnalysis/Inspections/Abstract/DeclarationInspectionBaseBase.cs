@@ -1,38 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 {
-    public abstract class DeclarationInspectionBaseBase : InspectionBase
+    /// <summary>
+    /// This is a base class for the other declaration inspection base classes. It should not be implemented directly by concrete inspections.
+    /// </summary>
+    internal abstract class DeclarationInspectionBaseBase : InspectionBase
     {
-        protected readonly DeclarationType[] RelevantDeclarationTypes;
-        protected readonly DeclarationType[] ExcludeDeclarationTypes;
+        private readonly DeclarationType[] _relevantDeclarationTypes;
+        private readonly DeclarationType[] _excludeDeclarationTypes;
 
-        protected DeclarationInspectionBaseBase(RubberduckParserState state, params DeclarationType[] relevantDeclarationTypes)
-            : base(state)
+        protected DeclarationInspectionBaseBase(IDeclarationFinderProvider declarationFinderProvider, params DeclarationType[] relevantDeclarationTypes)
+            : base(declarationFinderProvider)
         {
-            RelevantDeclarationTypes = relevantDeclarationTypes;
-            ExcludeDeclarationTypes = new DeclarationType[0];
+            _relevantDeclarationTypes = relevantDeclarationTypes;
+            _excludeDeclarationTypes = new DeclarationType[0];
         }
 
-        protected DeclarationInspectionBaseBase(RubberduckParserState state, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
-            : base(state)
+        protected DeclarationInspectionBaseBase(IDeclarationFinderProvider declarationFinderProvider, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
+            : base(declarationFinderProvider)
         {
-            RelevantDeclarationTypes = relevantDeclarationTypes;
-            ExcludeDeclarationTypes = excludeDeclarationTypes;
+            _relevantDeclarationTypes = relevantDeclarationTypes;
+            _excludeDeclarationTypes = excludeDeclarationTypes;
         }
 
-        protected abstract IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder);
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-
             return finder.UserDeclarations(DeclarationType.Module)
                 .Concat(finder.UserDeclarations(DeclarationType.Project))
                 .Where(declaration => declaration != null)
@@ -40,21 +38,15 @@ namespace Rubberduck.Inspections.Abstract
                 .ToList();
         }
 
-        protected virtual IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
-        {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-            return DoGetInspectionResults(module, finder);
-        }
-
         protected virtual IEnumerable<Declaration> RelevantDeclarationsInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var potentiallyRelevantDeclarations = RelevantDeclarationTypes.Length == 0
+            var potentiallyRelevantDeclarations = _relevantDeclarationTypes.Length == 0
                 ? finder.Members(module)
-                : RelevantDeclarationTypes
+                : _relevantDeclarationTypes
                     .SelectMany(declarationType => finder.Members(module, declarationType))
                     .Distinct();
             return potentiallyRelevantDeclarations
-                .Where(declaration => !ExcludeDeclarationTypes.Contains(declaration.DeclarationType));
+                .Where(declaration => !_excludeDeclarationTypes.Contains(declaration.DeclarationType));
         }
     }
 }

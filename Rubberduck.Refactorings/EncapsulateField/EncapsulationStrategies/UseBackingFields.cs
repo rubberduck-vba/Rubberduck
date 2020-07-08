@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
@@ -15,8 +16,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class UseBackingFields : EncapsulateFieldStrategyBase
     {
-        public UseBackingFields(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
-            : base(declarationFinderProvider, model, indenter){ }
+        public UseBackingFields(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter, ICodeBuilder codeBuilder)
+            : base(declarationFinderProvider, model, indenter, codeBuilder) { }
 
         protected override void ModifyFields(IEncapsulateFieldRewriteSession refactorRewriteSession)
         {

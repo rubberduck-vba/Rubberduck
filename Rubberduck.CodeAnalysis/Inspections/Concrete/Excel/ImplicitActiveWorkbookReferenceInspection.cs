@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
 {
     /// <summary>
     /// Locates unqualified Workbook.Worksheets/Sheets/Names member calls that implicitly refer to ActiveWorkbook.
@@ -19,27 +19,32 @@ namespace Rubberduck.Inspections.Concrete
     /// is more robust, and will be less likely to throw run-time error 1004 or produce unexpected results
     /// when the active workbook isn't the expected one.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim summarySheet As Worksheet
     ///     Set summarySheet = Worksheets("Summary") ' unqualified Worksheets is implicitly querying the active workbook's Worksheets collection.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example(ByVal book As Workbook)
     ///     Dim summarySheet As Worksheet
     ///     Set summarySheet = book.Worksheets("Summary")
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
-    public sealed class ImplicitActiveWorkbookReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase
+    internal sealed class ImplicitActiveWorkbookReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        public ImplicitActiveWorkbookReferenceInspection(RubberduckParserState state)
-            : base(state) { }
+        public ImplicitActiveWorkbookReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         private static readonly string[] InterestingMembers =
         {

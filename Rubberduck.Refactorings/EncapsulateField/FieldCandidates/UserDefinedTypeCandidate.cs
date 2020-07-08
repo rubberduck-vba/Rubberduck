@@ -3,7 +3,7 @@ using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactorings.EncapsulateField.Extensions;
+using Rubberduck.Refactorings.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -177,7 +177,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     GenerateLetter = ImplementLet,
                     GenerateSetter = ImplementSet,
                     UsesSetAssignment = Declaration.IsObject,
-                    IsUDTProperty = true
+                    IsUDTProperty = true,
+                    Declaration = Declaration
                 };
             }
         }

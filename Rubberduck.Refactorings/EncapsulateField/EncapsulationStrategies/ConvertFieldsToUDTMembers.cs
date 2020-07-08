@@ -1,6 +1,10 @@
 ﻿using Antlr4.Runtime;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System;
@@ -17,8 +21,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private IObjectStateUDT _stateUDTField;
 
-        public ConvertFieldsToUDTMembers(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
-            : base(declarationFinderProvider, model, indenter)
+        public ConvertFieldsToUDTMembers(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter, ICodeBuilder codeBuilder)
+            : base(declarationFinderProvider, model, indenter, codeBuilder)
         {
             _stateUDTField = model.ObjectStateUDTField;
         }
@@ -60,17 +64,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             AddContentBlock(NewContentTypes.DeclarationBlock, _stateUDTField.FieldDeclarationBlock);
             return;
-        }
-
-        protected override void LoadNewPropertyBlocks()
-        {
-            var propertyGenerationSpecs = SelectedFields.SelectMany(f => f.PropertyAttributeSets);
-
-            var generator = new PropertyGenerator();
-            foreach (var spec in propertyGenerationSpecs)
-            {
-                AddContentBlock(NewContentTypes.MethodBlock, generator.AsPropertyBlock(spec, _indenter));
-            }
         }
 
         protected override void LoadFieldReferenceContextReplacements(IEncapsulateFieldCandidate field)

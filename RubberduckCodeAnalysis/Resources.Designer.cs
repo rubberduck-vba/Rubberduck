@@ -97,6 +97,60 @@ namespace RubberduckCodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate value in &apos;name&apos; attribute.
+        /// </summary>
+        public static string DuplicateNameAttribute {
+            get {
+                return ResourceManager.GetString("DuplicateNameAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;name&apos; attribute is used to uniquely identify an element. Consequently, it has to be unique..
+        /// </summary>
+        public static string DuplicateNameAttributeDescription {
+            get {
+                return ResourceManager.GetString("DuplicateNameAttributeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is used in the &apos;name&apos; attribute of multiple &apos;{1}&apos; elements..
+        /// </summary>
+        public static string DuplicateNameAttributeMessageFormat {
+            get {
+                return ResourceManager.GetString("DuplicateNameAttributeMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid value for &apos;type&apos; attribute..
+        /// </summary>
+        public static string InvalidTypeAttribute {
+            get {
+                return ResourceManager.GetString("InvalidTypeAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The values of the &apos;type&apos; attribute are restricted to the value &apos;Standard Module&apos;, &apos;Class Module&apos;, &apos;Document&apos; and &apos;User Form&apos;..
+        /// </summary>
+        public static string InvalidTypeAttributeDescription {
+            get {
+                return ResourceManager.GetString("InvalidTypeAttributeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is not legal for the &apos;type&apos; attribute..
+        /// </summary>
+        public static string InvalidTypeAttributeMessageFormat {
+            get {
+                return ResourceManager.GetString("InvalidTypeAttributeMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to COM-visible classes must have an explicit ClassInterface attribute and be set to `None`. This is required to avoid versioning problems..
         /// </summary>
         public static string MissingClassInterfaceDescription {
@@ -255,6 +309,33 @@ namespace RubberduckCodeAnalysis {
         public static string MissingHasResultAttributeMessageFormat {
             get {
                 return ResourceManager.GetString("MissingHasResultAttributeMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing xml-doc &apos;hostApp&apos; element.
+        /// </summary>
+        public static string MissingInspectionHostAppElement {
+            get {
+                return ResourceManager.GetString("MissingInspectionHostAppElement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML documentation for inspections with a [RequiredHostAttribute] must include a &lt;hostApp&gt; element with a &apos;name&apos; attribute with the same value as the [RequiredHostAttribute]. For example [RequiredHost(&quot;Excel&quot;)] mandates &lt;hostApp name=&quot;Excel&quot; /&gt;..
+        /// </summary>
+        public static string MissingInspectionHostAppElementDescription {
+            get {
+                return ResourceManager.GetString("MissingInspectionHostAppElementDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML documentation for type &apos;{0}&apos; is missing a &apos;hostApp&apos; element..
+        /// </summary>
+        public static string MissingInspectionHostAppElementMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingInspectionHostAppElementMessageFormat", resourceCulture);
             }
         }
         
@@ -466,6 +547,33 @@ namespace RubberduckCodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing &apos;RequiredHost&apos; attribute.
+        /// </summary>
+        public static string MissingRequiredHostAttribute {
+            get {
+                return ResourceManager.GetString("MissingRequiredHostAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &lt;hostApp name=&quot;RequiredHost&quot; /&gt; element means to document the presence of a [RequiredHostAttribute]. If the attribute is correctly missing, the xml-doc element should be removed..
+        /// </summary>
+        public static string MissingRequiredHostAttributeDescription {
+            get {
+                return ResourceManager.GetString("MissingRequiredHostAttributeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML documentation of type &apos;{0}&apos; includes a &lt;hostApp&gt; element, but no corresponding [RequiredHostAttribute] is decorating the inspection type. Expected: [RequiredHost(&quot;{1}&quot;)]..
+        /// </summary>
+        public static string MissingRequiredHostAttributeMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingRequiredHostAttributeMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing &apos;RequiredLibrary&apos; attribute.
         /// </summary>
         public static string MissingRequiredLibAttribute {
@@ -489,6 +597,33 @@ namespace RubberduckCodeAnalysis {
         public static string MissingRequiredLibAttributeMessageFormat {
             get {
                 return ResourceManager.GetString("MissingRequiredLibAttributeMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing &apos;type&apos; attribute..
+        /// </summary>
+        public static string MissingTypeAttribute {
+            get {
+                return ResourceManager.GetString("MissingTypeAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This attribute value will be used to determine the component type of each module in a code example..
+        /// </summary>
+        public static string MissingTypeAttributeDescription {
+            get {
+                return ResourceManager.GetString("MissingTypeAttributeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A &apos;{0}&apos; element requires a &apos;type&apos; attribute value..
+        /// </summary>
+        public static string MissingTypeAttributeMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingTypeAttributeMessageFormat", resourceCulture);
             }
         }
         

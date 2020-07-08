@@ -1,18 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags declaration statements spanning multiple physical lines of code.
@@ -20,49 +14,43 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Declaration statements should generally declare a single variable.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Dim foo As Long, bar As Long
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Dim foo As Long 
     /// Dim bar As Long 
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class MultipleDeclarationsInspection : ParseTreeInspectionBase
+    internal sealed class MultipleDeclarationsInspection : ParseTreeInspectionBase<ParserRuleContext>
     {
-        public MultipleDeclarationsInspection(RubberduckParserState state)
-            : base(state) { }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        public MultipleDeclarationsInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            return Listener.Contexts
-                .Select(context => new QualifiedContextInspectionResult(this,
-                                                        InspectionResults.MultipleDeclarationsInspection,
-                                                        context));
+            ContextListener = new ParameterListListener();
         }
 
-        public override IInspectionListener Listener { get; } = new ParameterListListener();
+        protected override IInspectionListener<ParserRuleContext> ContextListener { get; }
 
-        public class ParameterListListener : VBAParserBaseListener, IInspectionListener
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
+            return InspectionResults.MultipleDeclarationsInspection;
+        }
 
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
+        private class ParameterListListener : InspectionListenerBase<ParserRuleContext>
+        {
             public override void ExitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context)
             {
                 if (context.variableSubStmt().Length > 1)
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                   SaveContext(context);
                 }
             }
 
@@ -70,7 +58,7 @@ namespace Rubberduck.Inspections.Concrete
             {
                 if (context.constSubStmt().Length > 1)
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    SaveContext(context);
                 }
             }
         }

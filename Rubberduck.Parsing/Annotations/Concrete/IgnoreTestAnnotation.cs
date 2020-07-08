@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
-
-namespace Rubberduck.Parsing.Annotations
+﻿namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
     /// Used to indicate the test engine that a unit test is to be ignored.
@@ -10,7 +6,7 @@ namespace Rubberduck.Parsing.Annotations
     public sealed class IgnoreTestAnnotation : AnnotationBase
     {
         public IgnoreTestAnnotation()
-            : base("IgnoreTest", AnnotationTarget.Member)
-        { }
+            : base("IgnoreTest", AnnotationTarget.Member, allowedArguments: 1, allowedArgumentTypes: new []{AnnotationArgumentType.Text})
+        {}
     }
 }
