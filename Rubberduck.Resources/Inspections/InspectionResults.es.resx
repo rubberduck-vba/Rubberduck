@@ -121,7 +121,7 @@
     <value>Es recomendable usar 'vbNullString' para cadenas vacías.</value>
   </data>
   <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
-    <value>El campo público '{0}' rompe la encapsulación.</value>
+    <value>El campo público '{0}' rompe el encapsulamiento.</value>
   </data>
   <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
     <value>Mueva la variable de nivel de módulo '{0}' a un ámbito más pequeño.</value>
@@ -133,7 +133,7 @@
     <value>Considere cambiar el nombre de {0} '{1}'.</value>
   </data>
   <data name="WriteOnlyPropertyInspection" xml:space="preserve">
-    <value>La propiedad '{0}' no tiene captador.</value>
+    <value>La propiedad '{0}' no tiene Getter.</value>
   </data>
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>La referencia de objeto '{0}' se crea automáticamente.</value>
@@ -151,7 +151,7 @@
     <value>El miembro '{0}' es implícitamente público.</value>
   </data>
   <data name="ImplicitVariantDeclarationInspection" xml:space="preserve">
-    <value>{0} '{1}' es implícitamente 'Variante'.</value>
+    <value>{0} '{1}' es implícitamente 'Variant'.</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspection" xml:space="preserve">
     <value>El tipo de devolución del miembro '{0}' es implícitamente 'Variant'.</value>
@@ -214,7 +214,7 @@
     <value>El componente '{0}' usa 'Option Base 1'.</value>
   </data>
   <data name="UntypedFunctionUsageInspection" xml:space="preserve">
-    <value>Reemplace la función '{0}' con la función escrita existente.</value>
+    <value>Reemplace la función '{0}' con la función tipada existente.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>{0} '{1}' es implícitamente 'Variant'.</value>
@@ -292,7 +292,7 @@
     <value>Se genera un error en tiempo de ejecución utilizando la declaración 'Error' obsoleta.</value>
   </data>
   <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
-    <value>El literal booleano '{0}' asignado en condicional.</value>
+    <value>Literal booleano '{0}' asignado en condicional.</value>
   </data>
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>El módulo/clase '{0}' está vacío.</value>
@@ -331,7 +331,7 @@
     <value>'IsMissing' siempre devolverá false con el argumento pasado.</value>
   </data>
   <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
-    <value>'IsMissing' se pasa una expresión que no es un argumento para el procedimiento adjunto.</value>
+    <value>'IsMissing' se pasa una expresión que no es un argumento para el procedimiento que la contiene.</value>
   </data>
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>Una asignación es anulada inmediatamente por otra asignación o nunca se hace referencia.</value>
@@ -358,7 +358,7 @@
     <value>Palabra reservada usada como identificador para el miembro '{0}'.</value>
   </data>
   <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
-    <value>Línea de continuacion(es) en lugares inesperados.</value>
+    <value>Continuación de línea en lugares inesperados.</value>
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
     <value>Se han encontrado espacios NBSP en el identificador '{0}'.</value>
@@ -421,10 +421,10 @@ En memoria, 1972-2018</value>
     <value>No se puede acceder a la cláusula '{0}' del Case.</value>
   </data>
   <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
-    <value>La sentencia 'Case Else' es inalcanzable.</value>
+    <value>La sentencia 'Case Else' es inaccesible.</value>
   </data>
   <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
-    <value>La sentencia 'Case' es inalcanzable.</value>
+    <value>La sentencia 'Case' es inaccesible.</value>
   </data>
   <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
     <value>La sentencia rango del 'Case' debe expresarse como '[x] To [y]' donde [x] es menor o igual que [y]'.</value>

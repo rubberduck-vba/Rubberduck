@@ -136,7 +136,7 @@
     <value>Declarar como "Variant" explícita</value>
   </data>
   <data name="ImplicitByRefModifierQuickFix" xml:space="preserve">
-    <value>Pase el parámetro por referencia explícitamente</value>
+    <value>Pasar el parámetro por referencia explícitamente</value>
   </data>
   <data name="MakeSingleLineParameterQuickFix" xml:space="preserve">
     <value>Escribir variable en una linea</value>
@@ -145,10 +145,10 @@
     <value>Reemplazar el modificador de acceso 'Global' con 'Public'</value>
   </data>
   <data name="OptionExplicitQuickFix" xml:space="preserve">
-    <value>Especifique 'Option Explicit'</value>
+    <value>Especificar 'Option Explicit'</value>
   </data>
   <data name="PassParameterByReferenceQuickFix" xml:space="preserve">
-    <value>Pase el parámetro por referencia</value>
+    <value>Pasar el parámetro por referencia</value>
   </data>
   <data name="PassParameterByValueQuickFix" xml:space="preserve">
     <value>Pasar parámetro por valor</value>
@@ -187,13 +187,13 @@
     <value>Especificar explícitamente el modificador de acceso 'Public'</value>
   </data>
   <data name="SplitMultipleDeclarationsQuickFix" xml:space="preserve">
-    <value>Separe las declaraciones múltiples en instrucciones múltiples</value>
+    <value>Separar las declaraciones múltiples en instrucciones múltiples</value>
   </data>
   <data name="InvalidContextTypeInspectionFix" xml:space="preserve">
     <value>El tipo de contexto '{0}' no es válido para {1}.</value>
   </data>
   <data name="SetObjectVariableQuickFix" xml:space="preserve">
-    <value>Use la palabra clave 'Set'</value>
+    <value>Usar la palabra clave 'Set'</value>
   </data>
   <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
     <value>Añadir Get a propiedad</value>
@@ -208,7 +208,7 @@
     <value>Añadir a la lista blanca</value>
   </data>
   <data name="ApplicationWorksheetFunctionQuickFix" xml:space="preserve">
-    <value>Use el método de inicio temprano "Application.WorksheetFunction".</value>
+    <value>Usar el método de enlace temprano "Application.WorksheetFunction".</value>
   </data>
   <data name="AssignedByValParameterMakeLocalCopyQuickFix" xml:space="preserve">
     <value>Crea y utiliza una copia local del parámetro</value>
