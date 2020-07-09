@@ -1875,7 +1875,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable drag and drop in Code Explorer.
+        ///   Looks up a localized string similar to Enable dr_ag and drop in Code Explorer.
         /// </summary>
         public static string GeneralSettings_EnableDragAndDrop {
             get {

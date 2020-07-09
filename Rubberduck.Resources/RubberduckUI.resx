@@ -1925,7 +1925,7 @@ Do you want to proceed?</value>
   </data>
   <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
     <value>Several folders with the same name are being moved. This will merge them.
-Do you want to proceed?</value>    
+Do you want to proceed?</value>
   </data>
   <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
     <value>A folder name cannot be empty.</value>
@@ -1954,7 +1954,7 @@ Do you want to proceed?</value>
     <value>Rename folder</value>
   </data>
   <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
-    <value>Enable drag and drop in Code Explorer</value>
+    <value>Enable dr_ag and drop in Code Explorer</value>
   </data>
   <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
     <value>Add/Adjust attribute</value>
