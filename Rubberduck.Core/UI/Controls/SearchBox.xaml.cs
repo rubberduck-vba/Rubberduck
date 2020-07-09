@@ -56,6 +56,8 @@ namespace Rubberduck.UI.Controls
 
         public ICommand ClearSearchCommand => new DelegateCommand(LogManager.GetCurrentClassLogger(), (arg) => Text = string.Empty);
 
+        public TextBox ValueContainerInput { get; }
+
         public SearchBox()
         {
             // design instance!
@@ -66,6 +68,7 @@ namespace Rubberduck.UI.Controls
             Background = SystemColors.WindowBrush;
             // not so much design instance
             InitializeComponent();
+            ValueContainerInput = ValueContainer;
         }
     }
 }

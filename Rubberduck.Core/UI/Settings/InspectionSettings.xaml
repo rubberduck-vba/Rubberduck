@@ -61,7 +61,7 @@
                                 </StackPanel.Resources>
                                 <Label Content="-" />
                                 <Image Source="{StaticResource FilterImage}" Width="19" />
-                                <Label Target="{Binding ElementName=searchBox, Path=ValueContainer}"
+                                <Label Target="{Binding ElementName=searchBox, Path=ValueContainerInput}"
                                        Content="{Resx Key=InspectionSettings_FilterByDescription, ResxName=Rubberduck.Resources.RubberduckUI}" />
                                 <controls:SearchBox x:Name="searchBox"
                                                     Width="100"
