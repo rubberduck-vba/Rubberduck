@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using System;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
+using Rubberduck.Refactorings;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -190,11 +192,11 @@ End Sub"
             var expectedCode =
                     @"
 Public Sub Foo(ByVal arg1 As String)
-    Dim localArg12 As String
-    localArg12 = arg1
+    Dim localArg2 As String
+    localArg2 = arg1
     Dim fooVar, _
         localArg1 As Long
-    Let localArg12 = ""test""
+    Let localArg2 = ""test""
 End Sub"
                 ;
 
@@ -372,10 +374,18 @@ End Sub"
 
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                new AssignedByValParameterMakeLocalCopyQuickFix(state, mockDialogFactory.Object).Fix(result, rewriteSession);
+                new AssignedByValParameterMakeLocalCopyQuickFix(state, mockDialogFactory.Object, CreateConflictSessionFactory(state)).Fix(result, rewriteSession);
 
                 return rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName).GetText();
             }
+        }
+
+        private IConflictSessionFactory CreateConflictSessionFactory(RubberduckParserState state)
+        {
+            var proxyFactory = new ConflictDetectionDeclarationProxyFactory(state);
+            var conflictFinderFactory = new ConflictFinderFactory(state, proxyFactory);
+            var conflictDetectorFactory = new ConflictDetectorFactory(state, conflictFinderFactory, proxyFactory);
+            return new ConflictSessionFactory(state, proxyFactory, conflictDetectorFactory);
         }
 
         private Mock<IVBE> BuildMockVBE(string inputCode, out IVBComponent component)

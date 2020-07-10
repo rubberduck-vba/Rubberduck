@@ -12,6 +12,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.UI.Refactorings;
 
@@ -50,13 +51,18 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     {
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private Declaration _quickFixTarget;
+        private readonly IConflictSession _conflictSession;
 
-        public AssignedByValParameterMakeLocalCopyQuickFix(IDeclarationFinderProvider declarationFinderProvider, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
+        private IConflictDetectionDeclarationProxy _localVariableProxy;
+
+        public AssignedByValParameterMakeLocalCopyQuickFix(IDeclarationFinderProvider declarationFinderProvider, 
+                                                            IAssignedByValParameterQuickFixDialogFactory dialogFactory,
+                                                            IConflictSessionFactory conflictSessionFactory)
             : base(typeof(AssignedByValParameterInspection))
         {
             _dialogFactory = dialogFactory;
             _declarationFinderProvider = declarationFinderProvider;
+            _conflictSession = conflictSessionFactory.Create();
         }
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
@@ -64,7 +70,16 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             Debug.Assert(result.Target.Context.Parent is VBAParser.ArgListContext);
             Debug.Assert(null != ((ParserRuleContext)result.Target.Context.Parent.Parent).GetChild<VBAParser.EndOfStatementContext>());
 
-            _quickFixTarget = result.Target;
+
+            var localVariableParentProxy = _conflictSession.ProxyCreator.Create(result.Target.ParentDeclaration);
+            _localVariableProxy = _conflictSession.ProxyCreator.CreateNewEntity(localVariableParentProxy,
+                                                                        DeclarationType.Variable,
+                                                                        $"local{result.Target.IdentifierName.CapitalizeFirstLetter()}");
+
+            if (_conflictSession.NewEntityConflictDetector.HasConflictingName(_localVariableProxy, out var nonConflictName))
+            {
+                _localVariableProxy.IdentifierName = nonConflictName;
+            }
 
             var localIdentifier = PromptForLocalVariableName(result.Target);
             if (string.IsNullOrEmpty(localIdentifier))
@@ -89,7 +104,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             try
             {
                 view = _dialogFactory.Create(target.IdentifierName, target.DeclarationType.ToString(), IsNameCollision);
-                view.NewName = GetDefaultLocalIdentifier(target);
+                view.NewName = _localVariableProxy.IdentifierName;
                 view.ShowDialog();
 
                 if (view.DialogResult == DialogResult.Cancel || !IsValidVariableName(view.NewName))
@@ -105,26 +120,10 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             }
         }
 
-        private bool IsNameCollision(string newName) 
-            => _declarationFinderProvider.DeclarationFinder.FindNewDeclarationNameConflicts(newName, _quickFixTarget).Any();
-
-        private string GetDefaultLocalIdentifier(Declaration target)
+        private bool IsNameCollision(string newName)
         {
-            var newName = $"local{target.IdentifierName.CapitalizeFirstLetter()}";
-            if (IsValidVariableName(newName))
-            {
-                return newName;
-            }
-
-            for ( var attempt = 2; attempt < 10; attempt++)
-            {
-                var result = newName + attempt;
-                if (IsValidVariableName(result))
-                {
-                    return result;
-                }
-            }
-            return newName;
+            _localVariableProxy.IdentifierName = newName;
+            return _conflictSession.NewEntityConflictDetector.HasConflictingName(_localVariableProxy, out _);
         }
 
         private bool IsValidVariableName(string variableName)
