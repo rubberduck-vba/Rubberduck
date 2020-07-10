@@ -1310,79 +1310,6 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return handlers.ToHashSet();
         }
 
-        /// <summary>
-        /// Finds declarations that would be in conflict with the target declaration if renamed.
-        /// </summary>
-        /// <returns>Zero or more declarations that would be in conflict if the target declaration is renamed.</returns>
-        public IEnumerable<Declaration> FindNewDeclarationNameConflicts(string newName, Declaration renameTarget)
-        {
-            if (newName.Equals(renameTarget.IdentifierName))
-            {
-                return Enumerable.Empty<Declaration>();
-            }
-
-            var identifierMatches = MatchName(newName).Where(match => match.ProjectId == renameTarget.ProjectId).ToList();
-
-            if (!identifierMatches.Any())
-            {
-                return Enumerable.Empty<Declaration>();
-            }
-
-            if (IsEnumOrUDTMemberDeclaration(renameTarget)) 
-            {
-                return identifierMatches.Where(idm =>
-                    IsEnumOrUDTMemberDeclaration(idm) && idm.ParentDeclaration == renameTarget.ParentDeclaration);
-            }
-
-            identifierMatches = identifierMatches.Where(nc => !IsEnumOrUDTMemberDeclaration(nc)).ToList();
-            var referenceConflicts = identifierMatches.Where(idm =>
-                renameTarget.References
-                    .Any(renameTargetRef => renameTargetRef.ParentScoping == idm.ParentDeclaration
-                        || !renameTarget.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
-                            && idm == renameTargetRef.ParentScoping
-                            && !UsesScopeResolution(renameTargetRef.Context.Parent)
-                        || idm.References
-                            .Any(idmRef => idmRef.ParentScoping == renameTargetRef.ParentScoping
-                                && !UsesScopeResolution(renameTargetRef.Context.Parent)))
-                || idm.DeclarationType.HasFlag(DeclarationType.Variable)
-                    && idm.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module)
-                    && renameTarget.References.Any(renameTargetRef => renameTargetRef.QualifiedModuleName == idm.ParentDeclaration.QualifiedModuleName))
-                    .ToList();
-
-            if (referenceConflicts.Any())
-            {
-                return referenceConflicts;
-            }
-
-            var renameTargetModule = Declaration.GetModuleParent(renameTarget);
-            var declarationConflicts = identifierMatches.Where(idm =>
-                renameTarget == idm.ParentDeclaration
-                || AccessibilityCheck.IsAccessible(
-                    Declaration.GetProjectParent(renameTarget),
-                    renameTargetModule,
-                    renameTarget.ParentDeclaration,
-                    idm)
-                    && IsConflictingMember(renameTarget, renameTargetModule, idm))
-                    .ToList();
-
-            return declarationConflicts;
-        }
-
-        private bool IsEnumOrUDTMemberDeclaration(Declaration candidate)
-        {
-            return candidate.DeclarationType == DeclarationType.EnumerationMember
-                       || candidate.DeclarationType == DeclarationType.UserDefinedTypeMember;
-        }
-
-        private bool IsConflictingMember(Declaration renameTarget, Declaration renameTargetModule, Declaration candidate)
-        {
-            var candidateModule = Declaration.GetModuleParent(candidate);
-            return renameTargetModule == candidateModule
-             || renameTargetModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule)
-                && candidate.Accessibility != Accessibility.Private
-                && candidateModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule);
-        }
-
         public bool IsReferenceUsedInProject(ProjectDeclaration project, ReferenceInfo reference, bool checkForward = false)
         {
             if (project == null || string.IsNullOrEmpty(reference.FullPath))
@@ -1447,12 +1374,6 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 : BuiltInDeclarations(DeclarationType.Project).OfType<ProjectDeclaration>().FirstOrDefault(proj =>
                     proj.Guid.Equals(reference.Guid) && proj.MajorVersion == reference.Major &&
                     proj.MinorVersion == reference.Minor);
-        }
-
-        private bool UsesScopeResolution(RuleContext ruleContext)
-        {
-            return (ruleContext is VBAParser.WithMemberAccessExprContext)
-                || (ruleContext is VBAParser.MemberAccessExprContext);
         }
 
         /// <summary>
