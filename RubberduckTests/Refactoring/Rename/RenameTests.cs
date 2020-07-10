@@ -3020,7 +3020,7 @@ End Sub";
                     .First(d => d.IdentifierName.Equals(selected));
                 var renameModel = new RenameModel(declaration);
                 var messageBox = new Mock<IMessageBox>().Object;
-                var renameViewModel = new RenameViewModel(state, renameModel, messageBox);
+                var renameViewModel = new RenameViewModel(state, renameModel, messageBox, CreateConflictSessionFactory(state));
                 renameViewModel.NewName = newName;
                 Assert.IsFalse(renameViewModel.IsValidName); 
             }
@@ -3278,7 +3278,7 @@ End Property";
                 messageBoxMock.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
                     .Returns(() => confirm);
 
-                var renameViewModel = new RenameViewModel(state, renameModel, messageBoxMock.Object)
+                var renameViewModel = new RenameViewModel(state, renameModel, messageBoxMock.Object, CreateConflictSessionFactory(state))
                 {
                     NewName = newName
                 };
@@ -3373,6 +3373,14 @@ End Property";
             var otherRename = new RenameCodeDefinedIdentifierRefactoringAction(state, state?.ProjectsProvider, rewritingManager);
             var baseRefactoring = new RenameRefactoringAction(componentRename, otherRename);
             return new RenameRefactoring(baseRefactoring, userInteraction, state, state?.ProjectsProvider, selectionService, selectedDeclarationService);
+        }
+
+        private static IConflictSessionFactory CreateConflictSessionFactory(RubberduckParserState state)
+        {
+            var proxyFactory = new ConflictDetectionDeclarationProxyFactory(state);
+            var conflictFinderFactory = new ConflictFinderFactory(state, proxyFactory);
+            var conflictDetectorFactory = new ConflictDetectorFactory(state, conflictFinderFactory, proxyFactory);
+            return new ConflictSessionFactory(state, proxyFactory, conflictDetectorFactory);
         }
 
         #endregion

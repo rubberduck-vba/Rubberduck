@@ -10,6 +10,7 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;
 using Rubberduck.Common;
 using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings.Rename
 {
@@ -17,15 +18,17 @@ namespace Rubberduck.UI.Refactorings.Rename
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IMessageBox _messageBox;
+        private readonly IConflictSession _conflictSession;
 
         public RubberduckParserState State { get; }
 
-        public RenameViewModel(RubberduckParserState state, RenameModel model, IMessageBox messageBox) 
+        public RenameViewModel(RubberduckParserState state, RenameModel model, IMessageBox messageBox, IConflictSessionFactory conflictSessionFactory) 
             : base(model)
         {
             State = state;
             _declarationFinderProvider = state;
             _messageBox = messageBox;
+            _conflictSession = conflictSessionFactory.Create();
         }
 
         public Declaration Target => Model.Target;
@@ -73,7 +76,7 @@ namespace Rubberduck.UI.Refactorings.Rename
         protected override void DialogOk()
         {
             if (Target == null
-                || (_declarationFinderProvider.DeclarationFinder.FindNewDeclarationNameConflicts(NewName, Model.Target).Any()
+                || (_conflictSession.RenameConflictDetector.IsConflictingName(Model.Target, NewName, out _)
                     && !UserConfirmsToProceedWithConflictingName(Model.NewName, Model.Target)))
             {
                 base.DialogCancel();
