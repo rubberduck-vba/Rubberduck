@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NLog;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
 
@@ -13,8 +12,14 @@ namespace Rubberduck.UI.Refactorings
 {
     public class ExtractInterfaceViewModel : RefactoringViewModelBase<ExtractInterfaceModel>
     {
-        public ExtractInterfaceViewModel(ExtractInterfaceModel model) : base(model)
+        private readonly IConflictSession _conflictSession;
+        private readonly IConflictDetectionModuleDeclarationProxy _newModuleProxy;
+
+        public ExtractInterfaceViewModel(ExtractInterfaceModel model, IConflictSessionFactory conflictSessionFactory) : base(model)
         {
+            _conflictSession = conflictSessionFactory.Create();
+            _newModuleProxy = _conflictSession.ProxyCreator.CreateNewModule(Model.TargetDeclaration.ProjectId, VBEditor.SafeComWrappers.ComponentType.ClassModule, Model.InterfaceName);
+
             SelectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(true));
             DeselectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(false));
 
@@ -52,13 +57,10 @@ namespace Rubberduck.UI.Refactorings
         {
             get
             {
-                var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
-
-                return !ComponentNames.Contains(InterfaceName)
-                       && InterfaceName.Length > 1
-                       && char.IsLetter(InterfaceName.FirstOrDefault())
-                       && !tokenValues.Contains(InterfaceName, StringComparer.InvariantCultureIgnoreCase)
-                       && !InterfaceName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+                _newModuleProxy.IdentifierName = InterfaceName;
+                return VBAIdentifierValidator.IsValidIdentifier(_newModuleProxy.IdentifierName, DeclarationType.Module)
+                        && _newModuleProxy.IdentifierName.Length > 1
+                        && !_conflictSession.NewEntityConflictDetector.HasConflictingName(_newModuleProxy, out _);
             }
         }
 
