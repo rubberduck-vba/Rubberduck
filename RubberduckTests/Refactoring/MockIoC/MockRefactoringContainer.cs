@@ -109,6 +109,24 @@ namespace RubberduckTests.Refactoring.MockIoC
                 .Unless(t => t.IsAbstract)
                 .WithService.DefaultInterfaces()
                 .LifestyleSingleton());
+
+            RegisterConflictDetectionFactories(container);
+        }
+
+        private void RegisterConflictDetectionFactories(IWindsorContainer container)
+        {
+            container.Register(Component.For<IConflictFinderFactory>()
+                .ImplementedBy<ConflictFinderFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IConflictSessionFactory>()
+                .ImplementedBy<ConflictSessionFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IDeclarationProxyFactory>()
+                .ImplementedBy<ConflictDetectionDeclarationProxyFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IConflictDetectorFactory>()
+                .ImplementedBy<ConflictDetectorFactory>()
+                .LifestyleSingleton());
         }
 
         private void SetUpCollectionResolver(IWindsorContainer container)
