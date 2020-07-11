@@ -15,7 +15,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// <inspection name="HungarianNotationInspection" />
     /// <inspection name="UseMeaningfulNameInspection" />
     /// </inspections>
-    /// <canfix procedure="false" module="false" project="false" />
+    /// <canfix multiple="true" procedure="false" module="false" project="false" all="false"/>
     internal sealed class AddIdentifierToWhiteListQuickFix : QuickFixBase
     {
         private readonly IConfigurationService<CodeInspectionSettings> _settings;
@@ -38,8 +38,10 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.WhiteListIdentifierQuickFix;
 
-        public override bool CanFixInProcedure { get; } = false;
-        public override bool CanFixInModule { get; } = false;
-        public override bool CanFixInProject { get; } = false;
+        public override bool CanFixMultiple => true;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => false;
+        public override bool CanFixInProject => false;
+        public override bool CanFixAll => false;
     }
 }

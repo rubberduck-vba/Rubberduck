@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using System;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -17,6 +18,12 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor(RenameModel model)
         {
+            if (model?.Target == null
+                || model.Target.IdentifierName.Equals(model.NewName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return;
+            }
+
             if (IsComponentOrProjectTarget(model))
             {
                 _renameComponentOrProjectRefactoringAction.Refactor(model);

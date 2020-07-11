@@ -156,7 +156,7 @@ End Sub";
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            return new AddAttributeAnnotationQuickFix(new AnnotationUpdater(),
+            return new AddAttributeAnnotationQuickFix(new AnnotationUpdater(state),
                 new AttributeAnnotationProvider(MockParser.WellKnownAnnotations().OfType<IAttributeAnnotation>()));
         }
     }

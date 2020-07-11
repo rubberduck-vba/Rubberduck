@@ -4,7 +4,6 @@ using Moq;
 using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
@@ -202,7 +201,7 @@ End Sub
             RefactoringUserInteraction<IMoveMultipleToFolderPresenter, MoveMultipleToFolderModel> userInteraction, 
             ISelectionService selectionService)
         {
-            var annotationUpdater = new AnnotationUpdater();
+            var annotationUpdater = new AnnotationUpdater(state);
             var moveToFolderAction = new MoveToFolderRefactoringAction(rewritingManager, annotationUpdater);
             var moveMultipleToFolderAction = new MoveMultipleToFolderRefactoringAction(rewritingManager, moveToFolderAction);
 

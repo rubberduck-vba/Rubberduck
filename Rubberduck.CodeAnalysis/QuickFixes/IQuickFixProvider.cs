@@ -16,17 +16,18 @@ namespace Rubberduck.CodeAnalysis.QuickFixes
 
         void Fix(IQuickFix fix, IInspectionResult result);
 
-        void FixInProcedure(IQuickFix fix, QualifiedMemberName? selection, Type inspectionType,
-            IEnumerable<IInspectionResult> results);
+        void Fix(IQuickFix fix, IEnumerable<IInspectionResult> resultsToFix);
 
-        void FixInModule(IQuickFix fix, QualifiedSelection selection, Type inspectionType,
-            IEnumerable<IInspectionResult> results);
+        void FixInProcedure(IQuickFix fix, QualifiedMemberName? selection, Type inspectionType, IEnumerable<IInspectionResult> allResults);
 
-        void FixInProject(IQuickFix fix, QualifiedSelection selection, Type inspectionType,
-            IEnumerable<IInspectionResult> results);
+        void FixInModule(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> allResults);
 
-        void FixAll(IQuickFix fix, Type inspectionType, IEnumerable<IInspectionResult> results);
+        void FixInProject(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> allResults);
+
+        void FixAll(IQuickFix fix, Type inspectionType, IEnumerable<IInspectionResult> allResults);
 
         bool HasQuickFixes(IInspectionResult inspectionResult);
+
+        bool CanFix(IQuickFix fix, IInspectionResult result);
     }
 }

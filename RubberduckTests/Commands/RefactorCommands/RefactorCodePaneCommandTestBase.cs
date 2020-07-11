@@ -7,12 +7,21 @@ namespace RubberduckTests.Commands.RefactorCommands
     {
         [Category("Commands")]
         [Test]
-        public void EncapsulateField_CanExecute_NullActiveCodePane()
+        public void RefactoringCommand_CanExecute_ValidInput()
+        {
+            var vbe = SetupAllowingExecution();
+
+            Assert.IsTrue(CanExecute(vbe), GetType().FullName);
+        }
+
+        [Category("Commands")]
+        [Test]
+        public void RefactoringCommand_CanExecute_NullActiveCodePane()
         {
             var vbe = SetupAllowingExecution();
             vbe.ActiveCodePane = null;
 
-            Assert.IsFalse(CanExecute(vbe));
+            Assert.IsFalse(CanExecute(vbe), GetType().FullName);
         }
     }
 }
