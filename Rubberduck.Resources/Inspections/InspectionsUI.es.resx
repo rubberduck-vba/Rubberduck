@@ -127,10 +127,10 @@
     <value>Uso</value>
   </data>
   <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value>Solucionar todas las ocurrencias en el módulo.</value>
+    <value>Ocurrencias en el módulo</value>
   </data>
   <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value>Arreglar todas las ocurrencias en el proyecto.</value>
+    <value>Ocurrencias en el proyecto</value>
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Deshabilitar esta inspección</value>
@@ -142,10 +142,10 @@
     <value>Arreglar todas las apariciones detectadas</value>
   </data>
   <data name="QuickFix_ThisProcedure" xml:space="preserve">
-    <value>Reparar todas las incidencias en el procedimiento.</value>
+    <value>Ocurrencias en el procedimiento</value>
   </data>
   <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
-    <value>Cuestiones de calidad del código</value>
+    <value>Problemas de calidad del código</value>
   </data>
   <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
     <value>Oportunidades de lenguaje</value>
@@ -166,7 +166,7 @@
     <value>Error</value>
   </data>
   <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
-    <value>Consejo</value>
+    <value>Sugerencia</value>
   </data>
   <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
     <value>Sugerencia</value>
@@ -197,5 +197,14 @@
   </data>
   <data name="ExportColumnHeader_Type" xml:space="preserve">
     <value>Tipo</value>
+  </data>
+  <data name="QuickFix_Instance" xml:space="preserve">
+    <value>Ocurrencia seleccionada</value>
+  </data>
+  <data name="QuickFix_Selection" xml:space="preserve">
+    <value>Ocurrencias seleccionadas</value>
+  </data>
+  <data name="CodeInspection_SeverityFilter" xml:space="preserve">
+    <value>Severidad</value>
   </data>
 </root>

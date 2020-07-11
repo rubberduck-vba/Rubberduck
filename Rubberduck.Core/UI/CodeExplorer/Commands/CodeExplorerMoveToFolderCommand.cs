@@ -24,8 +24,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             RefactoringUserInteraction<IMoveMultipleToFolderPresenter, MoveMultipleToFolderModel> moveToFolderInteraction,
             MoveToFolderRefactoringFailedNotifier failureNotifier, 
             IParserStatusProvider parserStatusProvider, 
-            IVbeEvents vbeEvents) 
-            : base(moveFolders, moveToFolder, failureNotifier, parserStatusProvider, vbeEvents)
+            IVbeEvents vbeEvents,
+            RubberduckParserState state) 
+            : base(moveFolders, moveToFolder, failureNotifier, parserStatusProvider, vbeEvents, state)
         {
             _moveFoldersInteraction = moveFoldersInteraction;
             _moveToFolderInteraction = moveToFolderInteraction;

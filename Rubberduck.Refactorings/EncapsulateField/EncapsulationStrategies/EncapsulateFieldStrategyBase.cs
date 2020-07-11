@@ -10,6 +10,7 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,6 +42,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected QualifiedModuleName _targetQMN;
         private readonly int? _codeSectionStartIndex;
         protected const string _defaultIndent = "    "; //4 spaces
+        protected ICodeBuilder _codeBuilder;
 
         protected Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
 
@@ -50,10 +52,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected IEnumerable<IEncapsulateFieldCandidate> SelectedFields { private set; get; }
 
-        public EncapsulateFieldStrategyBase(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
+        public EncapsulateFieldStrategyBase(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter, ICodeBuilder codeBuilder)
         {
             _targetQMN = model.QualifiedModuleName;
             _indenter = indenter;
+            _codeBuilder = codeBuilder;
             SelectedFields = model.SelectedFieldCandidates;
 
             _codeSectionStartIndex = declarationFinderProvider.DeclarationFinder
@@ -138,39 +141,62 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        protected virtual void LoadNewPropertyBlocks()
+        protected void LoadNewPropertyBlocks()
         {
-            foreach (var attributeSet in SelectedFields.SelectMany(f => f.PropertyAttributeSets))
+            foreach (var propertyAttributes in SelectedFields.SelectMany(f => f.PropertyAttributeSets))
             {
-                if (attributeSet.Declaration is VariableDeclaration || attributeSet.Declaration.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember))
+                AddPropertyCodeBlocks(propertyAttributes);
+            }
+        }
+
+        private void AddPropertyCodeBlocks(PropertyAttributeSet propertyAttributes)
+        {
+            Debug.Assert(propertyAttributes.Declaration.DeclarationType.HasFlag(DeclarationType.Variable) || propertyAttributes.Declaration.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember));
+
+            var getContent = $"{propertyAttributes.PropertyName} = {propertyAttributes.BackingField}";
+            if (propertyAttributes.UsesSetAssignment)
+            {
+                getContent = $"{Tokens.Set} {getContent}";
+            }
+
+            if (propertyAttributes.AsTypeName.Equals(Tokens.Variant) && !propertyAttributes.Declaration.IsArray)
+            {
+                getContent = string.Join(Environment.NewLine,
+                                    $"{Tokens.If} IsObject({propertyAttributes.BackingField}) {Tokens.Then}",
+                                    $"{_defaultIndent}{Tokens.Set} {propertyAttributes.PropertyName} = {propertyAttributes.BackingField}",
+                                    Tokens.Else,
+                                    $"{_defaultIndent}{propertyAttributes.PropertyName} = {propertyAttributes.BackingField}",
+                                    $"{Tokens.End} {Tokens.If}",
+                                    Environment.NewLine);
+            }
+
+            if (!_codeBuilder.TryBuildPropertyGetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out var propertyGet, content: $"{_defaultIndent}{getContent}"))
+            {
+                throw new ArgumentException();
+            }
+            AddContentBlock(NewContentTypes.MethodBlock, propertyGet);
+
+            if (!(propertyAttributes.GenerateLetter || propertyAttributes.GenerateSetter))
+            {
+                return;
+            }
+
+            if (propertyAttributes.GenerateLetter)
+            {
+                if (!_codeBuilder.TryBuildPropertyLetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out var propertyLet, content: $"{_defaultIndent}{propertyAttributes.BackingField} = {propertyAttributes.ParameterName}"))
                 {
-                    var getContent = $"{attributeSet.PropertyName} = {attributeSet.BackingField}";
-                    if (attributeSet.UsesSetAssignment)
-                    {
-                        getContent = $"{Tokens.Set} {getContent}";
-                    }
-                    if (attributeSet.AsTypeName.Equals(Tokens.Variant) && !attributeSet.Declaration.IsArray)
-                    {
-                        getContent = string.Join(Environment.NewLine,
-                                            $"{Tokens.If} IsObject({attributeSet.BackingField}) {Tokens.Then}",
-                                            $"{_defaultIndent}{Tokens.Set} {attributeSet.PropertyName} = {attributeSet.BackingField}",
-                                            Tokens.Else,
-                                            $"{_defaultIndent}{attributeSet.PropertyName} = {attributeSet.BackingField}",
-                                            $"{Tokens.End} {Tokens.If}",
-                                            Environment.NewLine);
-                    }
-
-                    AddContentBlock(NewContentTypes.MethodBlock, attributeSet.Declaration.FieldToPropertyBlock(DeclarationType.PropertyGet, attributeSet.PropertyName, content: $"{_defaultIndent}{getContent}"));
-
-                    if (attributeSet.GenerateLetter)
-                    {
-                        AddContentBlock(NewContentTypes.MethodBlock, attributeSet.Declaration.FieldToPropertyBlock(DeclarationType.PropertyLet, attributeSet.PropertyName, content: $"{_defaultIndent}{attributeSet.BackingField} = {attributeSet.ParameterName}"));
-                    }
-                    if (attributeSet.GenerateSetter)
-                    {
-                        AddContentBlock(NewContentTypes.MethodBlock, attributeSet.Declaration.FieldToPropertyBlock(DeclarationType.PropertySet, attributeSet.PropertyName, content: $"{_defaultIndent}{Tokens.Set} {attributeSet.BackingField} = {attributeSet.ParameterName}"));
-                    }
+                    throw new ArgumentException();
                 }
+                AddContentBlock(NewContentTypes.MethodBlock, propertyLet);
+            }
+
+            if (propertyAttributes.GenerateSetter)
+            {
+                if (!_codeBuilder.TryBuildPropertySetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out var propertySet, content: $"{_defaultIndent}{Tokens.Set} {propertyAttributes.BackingField} = {propertyAttributes.ParameterName}"))
+                {
+                    throw new ArgumentException();
+                }
+                AddContentBlock(NewContentTypes.MethodBlock, propertySet);
             }
         }
 

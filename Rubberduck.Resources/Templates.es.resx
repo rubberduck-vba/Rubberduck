@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PredeclaredClassModule_Caption" xml:space="preserve">
-    <value>Módulo de clase declarado (.cls)</value>
+    <value>Módulo de clase predeclarado (.cls)</value>
   </data>
   <data name="PredeclaredClassModule_Description" xml:space="preserve">
     <value>Agrega un módulo de clase que está predeclarado y, por lo tanto, se puede usar sin crear primero una nueva instancia.</value>

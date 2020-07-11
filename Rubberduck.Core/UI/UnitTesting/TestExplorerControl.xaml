@@ -208,7 +208,7 @@
 
                 <Label Content="{Resx Key=TestExplorer_Filter, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
                 <controls:SearchBox Width="100"
-                                    Text="{Binding TestNameFilter, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+                                    Text="{Binding TestNameFilter, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
 
                 <Label Content="{Resx Key=TestExplorer_Outcome, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
@@ -334,6 +334,7 @@
 	                                       ShowGroupingItemCount="True"
 	                                       InitialExpandedState="True"
 	                                       VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                                           RequestBringIntoView="TestGrid_RequestBringIntoView"
 	                                       ScrollViewer.CanContentScroll="False" 
 	                                       ScrollViewer.VerticalScrollBarVisibility="Auto"
 	                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled">

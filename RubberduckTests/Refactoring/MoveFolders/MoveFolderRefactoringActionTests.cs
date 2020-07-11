@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.ChangeFolder;
 using Rubberduck.Refactorings.MoveFolder;
 using Rubberduck.Refactorings.MoveToFolder;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -196,9 +197,10 @@ End Sub
 
         protected override IRefactoringAction<MoveFolderModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            var annotationUpdater = new AnnotationUpdater();
+            var annotationUpdater = new AnnotationUpdater(state);
             var moveToFolderAction = new MoveToFolderRefactoringAction(rewritingManager, annotationUpdater);
-            return new MoveFolderRefactoringAction(rewritingManager, moveToFolderAction);
+            var changeFolderAction = new ChangeFolderRefactoringAction(rewritingManager, moveToFolderAction);
+            return new MoveFolderRefactoringAction(rewritingManager, changeFolderAction);
         }
     }
 }

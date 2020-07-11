@@ -24,7 +24,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// <inspection name="ImplicitRecursiveDefaultMemberAccessInspection" />
     /// <inspection name="SuspiciousLetAssignmentInspection" />
     /// </inspections>
-    /// <canfix procedure="true" module="true" project="true" />
+    /// <canfix multiple="true" procedure="true" module="true" project="true" all="true" />
     /// <example>
     /// <before>
     /// <![CDATA[
@@ -170,9 +170,11 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             return Resources.Inspections.QuickFixes.ExpandDefaultMemberQuickFix;
         }
 
+        public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;
         public override bool CanFixInProject => true;
+        public override bool CanFixAll => true;
 
         private string NonIdentifierCharacters = "[](){}\r\n\t.,'\"\\ |!@#$%^&*-+:=; ";
         private string AdditionalNonFirstIdentifierCharacters = "0123456789_";

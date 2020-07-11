@@ -37,7 +37,7 @@ namespace RubberduckTests.Commands.RefactorCommands
                 .Callback((Action action) => action.Invoke());
             var userInteraction = new RefactoringUserInteraction<IMoveMultipleToFolderPresenter, MoveMultipleToFolderModel>(factory, uiDispatcherMock.Object);
 
-            var annotationUpdater = new AnnotationUpdater();
+            var annotationUpdater = new AnnotationUpdater(state);
             var moveToFolderAction = new MoveToFolderRefactoringAction(rewritingManager, annotationUpdater);
             var moveMultipleToFolderAction = new MoveMultipleToFolderRefactoringAction(rewritingManager, moveToFolderAction);
 

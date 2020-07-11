@@ -426,4 +426,19 @@
   <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
     <value>Überflüssige Annotationsargumente</value>
   </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>OnErrorGoto -1</value>
+  </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Schlüsselwort wird als Methoden- oder Variablenname verwendet</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Zeilenfortsetzung zwischen Schüsselworten</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Negative Zeilennummer</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>Name, der ein geschütztes Leerzeichen enthält</value>
+  </data>
 </root>

@@ -5,6 +5,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
 
@@ -16,23 +17,28 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             typeof(CodeExplorerProjectViewModel),
             typeof(CodeExplorerComponentViewModel),
-            typeof(CodeExplorerMemberViewModel)
+            typeof(CodeExplorerMemberViewModel),
+            typeof(CodeExplorerCustomFolderViewModel)
         };
 
         private readonly IParserStatusProvider _parserStatusProvider;
         private readonly IRefactoring _refactoring;
         private readonly IRefactoringFailureNotifier _failureNotifier;
 
+        private readonly CommandBase _renameFolderCommand;
+
         public RenameCommand(
             RenameRefactoring refactoring, 
             RenameFailedNotifier renameFailedNotifier, 
             IParserStatusProvider parserStatusProvider, 
-            IVbeEvents vbeEvents) 
+            IVbeEvents vbeEvents,
+            RenameFolderCommand renameFolderCommand) 
             : base(vbeEvents)
         {
             _refactoring = refactoring;
             _failureNotifier = renameFailedNotifier;
             _parserStatusProvider = parserStatusProvider;
+            _renameFolderCommand = renameFolderCommand;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
@@ -41,14 +47,26 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
-            return _parserStatusProvider.Status == ParserState.Ready;
+            return _parserStatusProvider.Status == ParserState.Ready
+                && (!(parameter is CodeExplorerCustomFolderViewModel folderModel)
+                    || _renameFolderCommand.CanExecute(folderModel));
         }
 
         protected override void OnExecute(object parameter)
         {
             if (!CanExecute(parameter) ||
-                !(parameter is CodeExplorerItemViewModel node) ||
-                node.Declaration == null)
+                !(parameter is CodeExplorerItemViewModel node))
+            {
+                return;
+            }
+
+            if (node is CodeExplorerCustomFolderViewModel folderNode)
+            {
+                _renameFolderCommand.Execute(folderNode);
+                return;
+            }
+
+            if (node.Declaration == null)
             {
                 return;
             }

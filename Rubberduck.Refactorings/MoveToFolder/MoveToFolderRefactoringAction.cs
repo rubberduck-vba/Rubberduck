@@ -47,9 +47,7 @@ namespace Rubberduck.Refactorings.MoveToFolder
 
         private static (IAnnotation annotation, IReadOnlyList<string> annotationArguments) NewAnnotation(string targetFolder)
         {
-            var targetFolderLiteral = targetFolder
-                .Replace("\"", "\"\"")
-                .EnQuote();
+            var targetFolderLiteral = targetFolder.ToVbaStringLiteral();
 
             var annotation = new FolderAnnotation();
             var annotationValues = new List<string> { targetFolderLiteral };

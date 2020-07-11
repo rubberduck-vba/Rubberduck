@@ -56,11 +56,13 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void EvaluateDragInitialization(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton != MouseButtonState.Pressed)
+            if (e.LeftButton != MouseButtonState.Pressed
+                || !(DataContext is CodeExplorerViewModel viewModel)
+                || !viewModel.AllowDragAndDrop)
             {
                 return;
             }
-
+            
             var currentPosition = e.GetPosition(null);
             var fromLeftClick = currentPosition - _lastLeftClickPosition;
 

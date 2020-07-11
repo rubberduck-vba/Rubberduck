@@ -11,7 +11,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete.Refactoring
     /// <inspections>
     /// <inspection name="ParameterNotUsedInspection" />
     /// </inspections>
-    /// <canfix procedure="false" module="false" project="false" />
+    /// <canfix multiple="false" procedure="false" module="false" project="false" all="false" />
     /// <example>
     /// <before>
     /// <![CDATA[

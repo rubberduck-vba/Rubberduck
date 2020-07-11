@@ -21,6 +21,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <CollectionViewSource x:Key="BuiltInTemplatesViewSource" x:Name="BuiltInTemplatesView" Source="{Binding BuiltInTemplates}" />
+            <CollectionViewSource x:Key="AnnotationsViewSource" x:Name="AnnotationsView" Source="{Binding Annotations}" />
 
             <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
             <BitmapImage x:Key="CollapseNodesImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/folder.png" />
@@ -51,6 +52,9 @@
             <converters:InvertBoolValueConverter x:Key="NotBool" />
             <converters:CodeExplorerNodeToIconConverter x:Key="NodeToIcon" />
             <converters:AccessibilityToIconConverter x:Key="AccessibilityToIcon" />
+            <converters:AnnotationToCodeStringConverter x:Key="AnnotationToCodeString" />
+            <converters:AnnotateDeclarationCommandParameterToTupleConverter x:Key="AnnotateDeclarationCommandParameterToTuple" />
+            <converters:AnnotateDeclarationCommandCEVisibilityConverter x:Key="AnnotateDeclarationCommandVisibility" />
 
             <CompositeCollection x:Key="AddModuleCommands" x:Shared="False">
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddExistingFileText}"
@@ -385,7 +389,7 @@
                 Padding="2">
             <controls:SearchBox x:Name="SearchBox"
                       Background="{x:Static SystemColors.WindowBrush}"
-                      Text="{Binding Search, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      Text="{Binding Search, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}"
                       Hint="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI,
                           Key=CodeExplorer_SearchPlaceholder}"
                       Grid.Column="0"
@@ -430,6 +434,35 @@
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_MoveToFolder}"
                               Command="{Binding MoveToFolderCommand}"
                               CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Annotate}" IsEnabled="{Binding CanBeAnnotated}">
+                        <MenuItem.ItemsSource>
+                            <CompositeCollection>
+                                <CollectionContainer Collection="{Binding Source={StaticResource AnnotationsViewSource}}" />
+                            </CompositeCollection>
+                        </MenuItem.ItemsSource>
+                        <MenuItem.ItemContainerStyle>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Command" Value="{Binding DataContext.AnnotateDeclarationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                <Setter Property="Header" Value="{Binding Path=., Converter={StaticResource AnnotationToCodeString}}" />
+                                <Setter Property="CommandParameter">
+                                    <Setter.Value>
+                                        <MultiBinding Converter="{StaticResource AnnotateDeclarationCommandParameterToTuple}">
+                                            <Binding Path="." />
+                                            <Binding Path="DataContext.SelectedItem" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
+                                        </MultiBinding>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Visibility">
+                                    <Setter.Value>
+                                        <MultiBinding Converter ="{StaticResource AnnotateDeclarationCommandVisibility}">
+                                            <Binding Path="." />
+                                            <Binding Path="DataContext.SelectedItem" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
+                                        </MultiBinding>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </MenuItem.ItemContainerStyle>
+                    </MenuItem>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_ExtractInterfaceText}"
                           Command="{Binding CodeExplorerExtractInterfaceCommand}"
                           CommandParameter="{Binding SelectedItem, Mode=OneWay}">

@@ -19,7 +19,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// <inspection name="NonReturningFunctionInspection" />
     /// <inspection name="FunctionReturnValueNotUsedInspection" />
     /// </inspections>
-    /// <canfix procedure="false" module="true" project="false" />
+    /// <canfix multiple="true" procedure="false" module="true" project="false" all="false" />
     /// <example>
     /// <before>
     /// <![CDATA[
@@ -182,9 +182,11 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.ConvertFunctionToProcedureQuickFix;
 
+        public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => true;
         public override bool CanFixInProject => false;
+        public override bool CanFixAll => false;
 
         private IEnumerable<ParserRuleContext> GetReturnStatements(Declaration declaration)
         {

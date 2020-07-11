@@ -12,7 +12,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete.Refactoring
     /// <inspections>
     /// <inspection name="MoveFieldCloserToUsageInspection" />
     /// </inspections>
-    /// <canfix procedure="true" module="true" project="true" />
+    /// <canfix multiple="false" procedure="false" module="false" project="false" all="false" />
     /// <example>
     /// <before>
     /// <![CDATA[

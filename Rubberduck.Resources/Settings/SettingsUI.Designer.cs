@@ -322,7 +322,7 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure indenter settings..
+        ///   Looks up a localized string similar to Configure indenter settings.
         /// </summary>
         public static string PageInstructions_IndenterSettings {
             get {

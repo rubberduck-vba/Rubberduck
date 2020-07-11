@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.ChangeFolder;
 using Rubberduck.Refactorings.MoveFolder;
 using Rubberduck.Refactorings.MoveToFolder;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -367,9 +368,10 @@ End Sub
             RefactoringUserInteraction<IMoveMultipleFoldersPresenter, MoveMultipleFoldersModel> userInteraction, 
             ISelectionService selectionService)
         {
-            var annotationUpdater = new AnnotationUpdater();
+            var annotationUpdater = new AnnotationUpdater(state);
             var moveToFolderAction = new MoveToFolderRefactoringAction(rewritingManager, annotationUpdater);
-            var moveFolderAction = new MoveFolderRefactoringAction(rewritingManager, moveToFolderAction);
+            var changeFolderAction = new ChangeFolderRefactoringAction(rewritingManager, moveToFolderAction);
+            var moveFolderAction = new MoveFolderRefactoringAction(rewritingManager, changeFolderAction);
             var moveMultipleFoldersAction = new MoveMultipleFoldersRefactoringAction(rewritingManager, moveFolderAction);
 
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);

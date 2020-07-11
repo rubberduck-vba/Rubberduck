@@ -772,7 +772,7 @@ End Sub
 
         protected override IRefactoringAction<ImplementInterfaceModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            var addInterfaceImplementationsAction = new AddInterfaceImplementationsRefactoringAction(rewritingManager);
+            var addInterfaceImplementationsAction = new AddInterfaceImplementationsRefactoringAction(rewritingManager, new CodeBuilder());
             return new ImplementInterfaceRefactoringAction(addInterfaceImplementationsAction, rewritingManager);
         }
     }

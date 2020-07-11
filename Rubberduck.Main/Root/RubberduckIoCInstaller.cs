@@ -60,6 +60,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.VbeRuntime;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.UI.Refactorings.AnnotateDeclaration;
 
 namespace Rubberduck.Root
 {
@@ -376,6 +377,9 @@ namespace Rubberduck.Root
             container.Register(Component.For<IAddRemoveReferencesPresenterFactory>()
                 .ImplementedBy<AddRemoveReferencesPresenterFactory>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IAnnotationArgumentViewModelFactory>()
+                .ImplementedBy<AnnotationArgumentViewModelFactory>()
+                .LifestyleSingleton());
             RegisterUnreachableCaseFactories(container);
             RegisterConflictDetectionFactories(container);
         }
@@ -542,7 +546,8 @@ namespace Rubberduck.Root
         {
             return new Type[]
             {
-                typeof(RefactoringsParentMenu),
+                typeof(CodePaneRefactoringsParentMenu),
+                typeof(AnnotateParentMenu),
                 typeof(SmartIndenterParentMenu),
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
@@ -646,8 +651,10 @@ namespace Rubberduck.Root
         {
             RegisterParentMenu<UnitTestingParentMenu>(container, UnitTestingMenuItems());
             RegisterParentMenu<RefactoringsParentMenu>(container, RefactoringsMenuItems());
+            RegisterParentMenu<CodePaneRefactoringsParentMenu>(container, RefactoringsMenuItems());
             RegisterParentMenu<NavigateParentMenu>(container, NavigateMenuItems());
             RegisterParentMenu<SmartIndenterParentMenu>(container, SmartIndenterMenuItems());
+            RegisterParentMenu<AnnotateParentMenu>(container, AnnotateMenuItems());
             RegisterParentMenu<ToolsParentMenu>(container, ToolsMenuItems());
         }
 
@@ -711,6 +718,16 @@ namespace Rubberduck.Root
                 typeof(IndentCurrentModuleCommandMenuItem),
                 typeof(IndentCurrentProjectCommandMenuItem),
                 typeof(NoIndentAnnotationCommandMenuItem)
+            };
+        }
+
+        private Type[] AnnotateMenuItems()
+        {
+            return new[]
+            {
+                typeof(AnnotateSelectedDeclarationCommandMenuItem),
+                typeof(AnnotateSelectedModuleCommandMenuItem),
+                typeof(AnnotateSelectedMemberCommandMenuItem)
             };
         }
 

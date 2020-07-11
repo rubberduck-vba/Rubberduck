@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NLog;
@@ -61,6 +62,26 @@ namespace Rubberduck.UI.Refactorings
                 return VBAIdentifierValidator.IsValidIdentifier(_newModuleProxy.IdentifierName, DeclarationType.Module)
                         && _newModuleProxy.IdentifierName.Length > 1
                         && !_conflictSession.NewEntityConflictDetector.HasConflictingName(_newModuleProxy, out _);
+            }
+        }
+
+        public bool CanChooseInterfaceInstancing => Model.ImplementingClassInstancing != ClassInstancing.Public;
+
+        public IEnumerable<ClassInstancing> ClassInstances => Enum.GetValues(typeof(ClassInstancing)).Cast<ClassInstancing>();
+
+        public ClassInstancing InterfaceInstancing
+        {
+            get => Model.InterfaceInstancing;
+
+            set
+            {
+                if (value == Model.InterfaceInstancing)
+                {
+                    return;
+                }
+
+                Model.InterfaceInstancing = value;
+                OnPropertyChanged();
             }
         }
 
