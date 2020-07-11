@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Interaction;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;
-using Rubberduck.Common;
 using Rubberduck.Refactorings.Common;
 
 namespace Rubberduck.UI.Refactorings.Rename
@@ -50,43 +47,67 @@ namespace Rubberduck.UI.Refactorings.Rename
             set
             {
                 Model.NewName = value;
+                ValidateName();
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsValidName));
             }
         }
         
-        public bool IsValidName
+        private void ValidateName()
         {
-            get
+            if (Target == null)
             {
-                if (Target == null) { return false; }
+                return;
+            }
 
-                if (VBAIdentifierValidator.IsValidIdentifier(NewName, Target.DeclarationType))
-                {
-                    return !NewName.Equals(Target.IdentifierName, StringComparison.InvariantCultureIgnoreCase);
-                }
+            var errors = VBAIdentifierValidator.SatisfiedInvalidIdentifierCriteria(NewName, Target.DeclarationType).ToList();
 
-                return false;
+            var originalName = Model.Target.IdentifierName;
+            if (!originalName.Equals(NewName)
+                && originalName.Equals(NewName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                errors.Add(RubberduckUI.RenameDialog_OnlyCasingDifferent);
+            }
+
+            if (errors.Any())
+            {
+                SetErrors(nameof(NewName), errors);
+            }
+            else
+            {
+                ClearErrors();
             }
         }
 
+        public bool IsValidName => !HasErrors;
+
         protected override void DialogOk()
         {
-            if (Target == null
-                || (_declarationFinderProvider.DeclarationFinder.FindNewDeclarationNameConflicts(NewName, Model.Target).Any()
-                    && !UserConfirmsToProceedWithConflictingName(Model.NewName, Model.Target)))
+            if (Target == null)
             {
                 base.DialogCancel();
             }
             else
             {
-                base.DialogOk();
+                var firstConflictingDeclaration = _declarationFinderProvider.DeclarationFinder
+                    .FindNewDeclarationNameConflicts(NewName, Model.Target)
+                    .FirstOrDefault();
+
+                if (firstConflictingDeclaration != null
+                    && !UserConfirmsToProceedWithConflictingName(Model.NewName, Model.Target, firstConflictingDeclaration))
+                {
+                    base.DialogCancel();
+                }
+                else
+                {
+                    base.DialogOk();
+                }
             }
         }
 
-        private bool UserConfirmsToProceedWithConflictingName(string newName, Declaration target)
+        private bool UserConfirmsToProceedWithConflictingName(string newName, Declaration target, Declaration conflictingDeclaration)
         {
-            var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, newName, target.IdentifierName);
+            var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, newName, target.IdentifierName, conflictingDeclaration.QualifiedName.ToString());
             return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_Caption) ?? false;
         }
     }

@@ -169,7 +169,7 @@
     <value>Coincide con los caracteres que no son espacios en blanco. Equivalente a "[^\s]"</value>
   </data>
   <data name="AtomDescription_NonWordBoundary" xml:space="preserve">
-    <value>Asegura que la posición actual esté en un "límite sin palabra"</value>
+    <value>Asegura que la posición actual no esté en un "límite de palabra"</value>
   </data>
   <data name="AtomDescription_NonWordCharacter" xml:space="preserve">
     <value>Coincide con "caracteres que no son palabras". Equivalente a "[^\w]"</value>
@@ -193,7 +193,7 @@
     <value>Coincide con la secuencia literal</value>
   </data>
   <data name="ExpressionDescription_ErrorExpression" xml:space="preserve">
-    <value>No se pudo analizar '{0}' como literal. Revise su entrada, por favor</value>
+    <value>No se pudo analizar '{0}' como literal.</value>
   </data>
   <data name="PatternDescription_AnchorEnd" xml:space="preserve">
     <value>$ asegura que todos los caracteres de la cadena son consumidos</value>
@@ -208,13 +208,13 @@
     <value>^ asegura que el emparejador comience al principio de una línea</value>
   </data>
   <data name="PatternDescription_IgnoreCase" xml:space="preserve">
-    <value>Todos los partidos ignoran el caso (superior o inferior) de los literales.</value>
+    <value>Todas las coincidencias ignoran mayúsculas/minúsculas en los literales</value>
   </data>
   <data name="Quantifer_Plus" xml:space="preserve">
-    <value>al menos una vez</value>
+    <value>al menos una vez (1+)</value>
   </data>
   <data name="Quantifier_Asterisk" xml:space="preserve">
-    <value>cualquier cantidad de veces</value>
+    <value>cualquier cantidad de veces (0+)</value>
   </data>
   <data name="Quantifier_ClosedRange" xml:space="preserve">
     <value>entre {0} y {1} veces</value>
@@ -223,12 +223,12 @@
     <value>exactamente {0} veces</value>
   </data>
   <data name="Quantifier_None" xml:space="preserve">
-    <value>exactamente una vez</value>
+    <value>exactamente una vez (1)</value>
   </data>
   <data name="Quantifier_OpenRange" xml:space="preserve">
     <value>al menos {0} veces</value>
   </data>
   <data name="Quantifier_Optional" xml:space="preserve">
-    <value>como máximo una vez</value>
+    <value>como máximo una vez (1-)</value>
   </data>
 </root>

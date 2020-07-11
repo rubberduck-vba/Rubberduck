@@ -237,6 +237,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Annotate.
+        /// </summary>
+        public static string CodeExplorer_Annotate {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Annotate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck User Declarations - {0}.
         /// </summary>
         public static string CodeExplorer_AppendHeader {

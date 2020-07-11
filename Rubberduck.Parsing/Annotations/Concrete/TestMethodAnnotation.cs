@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common;
 
 namespace Rubberduck.Parsing.Annotations
 {
@@ -10,7 +9,7 @@ namespace Rubberduck.Parsing.Annotations
     public sealed class TestMethodAnnotation : AnnotationBase, ITestAnnotation
     {
         public TestMethodAnnotation()
-            : base("TestMethod", AnnotationTarget.Member)
+            : base("TestMethod", AnnotationTarget.Member, allowedArguments: 1, allowedArgumentTypes: new []{AnnotationArgumentType.Text})
         {}
 
         public IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments)

@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
 using Rubberduck.Resources.Registration;
 
 namespace Rubberduck.Parsing.Annotations
@@ -13,7 +9,6 @@ namespace Rubberduck.Parsing.Annotations
     {
         public DefaultMemberAnnotation()
             : base("DefaultMember", AnnotationTarget.Member, "VB_UserMemId", new[] { WellKnownDispIds.Value.ToString() })
-        {
-        }
+        {}
     }
 }

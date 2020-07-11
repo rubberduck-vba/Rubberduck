@@ -14,7 +14,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// <inspection name="VariableNotUsedInspection" />
     /// <inspection name="LineLabelNotUsedInspection" />
     /// </inspections>
-    /// <canfix procedure="true" module="true" project="true" />
+    /// <canfix multiple="true" procedure="false" module="true" project="true" all="true" />
     /// <example>
     /// <before>
     /// <![CDATA[
@@ -54,8 +54,10 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveUnusedDeclarationQuickFix;
 
+        public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => true;
         public override bool CanFixInProject => true;
+        public override bool CanFixAll => true;
     }
 }

@@ -53,11 +53,12 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             return reference?.Declaration != null
-                && !reference.IsAssignment
-                && !reference.IsArrayAccess
-                && !reference.IsInnerRecursiveDefaultMemberAccess
-                && reference.Declaration.DeclarationType == DeclarationType.Function
-                && IsCalledAsProcedure(reference.Context);
+                   && reference.Declaration.IsUserDefined
+                   && !reference.IsAssignment
+                   && !reference.IsArrayAccess
+                   && !reference.IsInnerRecursiveDefaultMemberAccess
+                   && reference.Declaration.DeclarationType == DeclarationType.Function
+                   && IsCalledAsProcedure(reference.Context);
         }
 
         private static bool IsCalledAsProcedure(ParserRuleContext context)

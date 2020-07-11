@@ -5,14 +5,14 @@ namespace Rubberduck.Refactorings.MoveFolder
 {
     public class MoveFolderModel : IRefactoringModel
     {
-        public string SourceFolder { get; }
-        public ICollection<ModuleDeclaration> ContainedModules { get; }
+        public string FolderToMove { get; }
+        public ICollection<ModuleDeclaration> ModulesToMove { get; }
         public string TargetFolder { get; set; }
 
-        public MoveFolderModel(string sourceFolder, ICollection<ModuleDeclaration> containedModules, string targetFolder)
+        public MoveFolderModel(string folderToMove, ICollection<ModuleDeclaration> modulesToMove, string targetFolder)
         {
-            SourceFolder = sourceFolder;
-            ContainedModules = containedModules;
+            FolderToMove = folderToMove;
+            ModulesToMove = modulesToMove;
             TargetFolder = targetFolder;
         }
     }

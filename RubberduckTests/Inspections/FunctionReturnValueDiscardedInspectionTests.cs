@@ -4,6 +4,7 @@ using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -308,8 +309,20 @@ Public Sub Dummy()
     MsgBox ""Test""
     Workbooks.Add
 End Sub
+
+Public Sub Baz()
+    Err.Raise -1, ""Foo"", ""Bar""
+End Sub
 ";
-            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code)
+                .AddReference(ReferenceLibrary.VBA)
+                .AddReference(ReferenceLibrary.Excel)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+            Assert.AreEqual(0, InspectionResults(vbe).Count());
         }
 
         [Test]
