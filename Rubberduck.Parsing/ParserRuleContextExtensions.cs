@@ -427,6 +427,61 @@ namespace Rubberduck.Parsing
             return followingContext != null;
         }
 
+        /// <summary>
+        /// Checks a block of code for executable statments and returns true if are present.
+        /// </summary>
+        /// <param name="block">The block to inspect</param>
+        /// <param name="considerAllocations">Determines wheather Dim or Const statements should be considered executables</param>
+        /// <returns></returns>
+        public static bool ContainsExecutableStatements(this VBAParser.BlockContext block, bool considerAllocations = false)
+        {
+            return block?.children != null && ContainsExecutableStatements(block.children, considerAllocations);
+        }
+
+        private static bool ContainsExecutableStatements(
+            IList<IParseTree> blockChildren,
+            bool considerAllocations = false)
+        {
+            foreach (var child in blockChildren)
+            {
+                if (child is VBAParser.BlockStmtContext blockStmt)
+                {
+                    var mainBlockStmt = blockStmt.mainBlockStmt();
+
+                    if (mainBlockStmt == null)
+                    {
+                        continue;   //We have a lone line label, which is not executable.
+                    }
+
+                    // if inspection does not consider allocations as executables,
+                    // exclude variables and consts because they are not executable statements
+                    if (!considerAllocations && IsConstOrVariable(mainBlockStmt.GetChild(0)))
+                    {
+                        continue;
+                    }
+
+                    return true;
+                }
+
+                if (child is VBAParser.RemCommentContext ||
+                    child is VBAParser.CommentContext ||
+                    child is VBAParser.CommentOrAnnotationContext ||
+                    child is VBAParser.EndOfStatementContext)
+                {
+                    continue;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool IsConstOrVariable(IParseTree block)
+        {
+            return block is VBAParser.VariableStmtContext || block is VBAParser.ConstStmtContext;
+        }
+
         private class ChildNodeListener<TContext> : VBAParserBaseListener where TContext : ParserRuleContext
         {
             private readonly HashSet<TContext> _matches = new HashSet<TContext>();
