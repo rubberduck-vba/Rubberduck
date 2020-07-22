@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
@@ -21,6 +23,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private readonly IParseTreeProvider _parseTreeProvider;
         private readonly IProjectsProvider _projectsProvider;
         private readonly IAddComponentService _addComponentService;
+        private readonly IRewritingManager _rewritingManager;
+
+        private static List<Declaration> _selectedDeclarations;
 
         public ExtractInterfaceRefactoringAction(
             AddInterfaceImplementationsRefactoringAction addImplementationsRefactoringAction,
@@ -31,10 +36,12 @@ namespace Rubberduck.Refactorings.ExtractInterface
             IAddComponentService addComponentService) 
             : base(parseManager, rewritingManager)
         {
+            _selectedDeclarations = new List<Declaration>();
             _addImplementationsRefactoringAction = addImplementationsRefactoringAction;
             _parseTreeProvider = parseTreeProvider;
             _projectsProvider = projectsProvider;
             _addComponentService = addComponentService;
+            _rewritingManager = rewritingManager;
         }
 
         protected override bool RequiresSuspension(ExtractInterfaceModel model)
@@ -44,10 +51,11 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         protected override void Refactor(ExtractInterfaceModel model, IRewriteSession rewriteSession)
         {
-            AddInterface(model, rewriteSession);
+            _selectedDeclarations = model.SelectedMembers.Select(m => m.Member).ToList();
+            AddInterface(model, rewriteSession, _rewritingManager.CheckOutCodePaneSession());
         }
 
-        private void AddInterface(ExtractInterfaceModel model, IRewriteSession rewriteSession)
+        private void AddInterface(ExtractInterfaceModel model, IRewriteSession rewriteSession, IRewriteSession scratchPadRewriteSession)
         {
             var targetProject = _projectsProvider.Project(model.TargetDeclaration.ProjectId);
             if (targetProject == null)
@@ -55,9 +63,12 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 return; //The target project is not available.
             }
 
+            ModifyMembers(model, rewriteSession);
             AddInterfaceClass(model);
             AddImplementsStatement(model, rewriteSession);
-            AddInterfaceMembersToClass(model, rewriteSession);
+
+            var interfaceMemberImplementations = InterfaceMemberBlocks(model, scratchPadRewriteSession);
+            AddInterfaceMembersToClass(model, rewriteSession, interfaceMemberImplementations);
         }
 
         private void AddInterfaceClass(ExtractInterfaceModel model)
@@ -168,14 +179,180 @@ Attribute VB_Exposed = True";
             return (-1, false);
         }
 
-        private void AddInterfaceMembersToClass(ExtractInterfaceModel model, IRewriteSession rewriteSession)
+        private void AddInterfaceMembersToClass(ExtractInterfaceModel model, IRewriteSession rewriteSession, IEnumerable<(Declaration, string)> interfaceMemberImplementations)
         {
-            var targetModule = model.TargetDeclaration.QualifiedModuleName;
-            var interfaceName = model.InterfaceName;
-            var membersToImplement = model.SelectedMembers.Select(m => m.Member).ToList();
+            var addMembersModel = new AddInterfaceImplementationsModel(model.TargetDeclaration.QualifiedModuleName, model.InterfaceName, _selectedDeclarations);
+            foreach ((Declaration member, string implementation) in interfaceMemberImplementations)
+            {
+                addMembersModel.SetMemberImplementation(member, implementation);
+            }
 
-            var addMembersModel = new AddInterfaceImplementationsModel(targetModule, interfaceName, membersToImplement);
             _addImplementationsRefactoringAction.Refactor(addMembersModel, rewriteSession);
+        }
+
+        private static void ModifyMembers(ExtractInterfaceModel model, IRewriteSession rewriteSession)
+        {
+            if (model.ImplementationOption == ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface)
+            {
+                RedirectMemberReferencesToImplementingMember(model, rewriteSession);
+                ForwardMembers(model, rewriteSession);
+            }
+            else if (model.ImplementationOption == ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface)
+            {
+                RedirectMemberReferencesToImplementingMember(model, rewriteSession);
+                DeleteMembers(model, rewriteSession);
+            }
+        }
+
+        private static IEnumerable<(Declaration, string)> InterfaceMemberBlocks(ExtractInterfaceModel model, IRewriteSession scratchPadRewriteSession)
+        {
+            switch (model.ImplementationOption)
+            {
+                case ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface:
+                case ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface:
+                    return ReplicateBlockToImplementingMember(model, scratchPadRewriteSession);
+                case ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers:
+                    return CreateForwardingBlocks(model);
+                default:
+                    return Enumerable.Empty<(Declaration, string)>();
+            }
+        }
+
+        private static IEnumerable<(Declaration, string)> CreateForwardingBlocks(ExtractInterfaceModel model)
+        {
+            string ForwardingBlock(ModuleBodyElementDeclaration member) =>
+                member.DeclarationType.HasFlag(DeclarationType.Function)
+                    ? ForwardFunction(member.IdentifierName, model.ImplementingMemberName(member.IdentifierName), member)
+                    : ForwardProcedure(member.IdentifierName, member);
+
+            return _selectedDeclarations.OfType<ModuleBodyElementDeclaration>()
+                .Select(m => (m as Declaration, ForwardingBlock(m)));
+        }
+
+        private static IEnumerable<(Declaration, string)> ReplicateBlockToImplementingMember(ExtractInterfaceModel model, IRewriteSession scratchPadRewriteSession)
+        {
+            if (!_selectedDeclarations.Any())
+            {
+                return Enumerable.Empty<(Declaration, string)>();
+            }
+
+            var scratchPadRewriter = scratchPadRewriteSession.CheckOutModuleRewriter(_selectedDeclarations.First().QualifiedModuleName);
+            foreach (IdentifierReference identifierReference in _selectedDeclarations.SelectMany(m => m.References).Where(rf => rf.QualifiedModuleName == rf.Declaration.QualifiedModuleName))
+            {
+                scratchPadRewriter.Replace(identifierReference.Context, model.ImplementingMemberName(identifierReference.IdentifierName));
+            }
+
+            return _selectedDeclarations.OfType<ModuleBodyElementDeclaration>()
+                .Where(m => m.Block.ContainsExecutableStatements(true))
+                .Select(m => (m as Declaration, $"{Spaces(m.Block.Start.Column)}{scratchPadRewriter.GetText(m.Block.Start.TokenIndex, m.Block.Stop.TokenIndex).Trim()}"));
+        }
+
+        private static void RedirectMemberReferencesToImplementingMember(ExtractInterfaceModel model, IRewriteSession rewriteSession)
+        {
+            var nonSelectedMembers = model.DeclarationFinderProvider.DeclarationFinder.Members(model.TargetDeclaration.QualifiedModuleName)
+                .OfType<ModuleBodyElementDeclaration>()
+                .Except(_selectedDeclarations);
+
+            var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetDeclaration.QualifiedModuleName);
+            foreach (var member in nonSelectedMembers)
+            {
+                var otherInterfaceMemberReferences = _selectedDeclarations.SelectMany(m => m.References).Where(rf => rf.ParentScoping == member);
+                foreach (IdentifierReference identifierReference in otherInterfaceMemberReferences)
+                {
+                    rewriter.Replace(identifierReference.Context, model.ImplementingMemberName(identifierReference.IdentifierName));
+                }
+            }
+        }
+
+        private static void ForwardMembers(ExtractInterfaceModel model, IRewriteSession rewriteSession)
+        {
+            var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetDeclaration.QualifiedModuleName);
+            foreach (var member in _selectedDeclarations.OfType<ModuleBodyElementDeclaration>())
+            {
+                var forwardingStatement = member.DeclarationType.HasFlag(DeclarationType.Function)
+                    ? ForwardFunction(model.ImplementingMemberName(member.IdentifierName), member.IdentifierName, member)
+                    : ForwardProcedure(model.ImplementingMemberName(member.IdentifierName), member);
+
+                if (member.Block.ContainsExecutableStatements(true))
+                {
+                    rewriter.Replace(member.Block, $"{forwardingStatement}{Environment.NewLine}");
+                    continue;
+                }
+                rewriter.InsertBefore(member.Block.Start.TokenIndex, $"    {forwardingStatement}{Environment.NewLine}");
+            }
+        }
+
+        private static string ForwardFunction(string targetMemberIdentifier, string forwardingMemberIdentifier, ModuleBodyElementDeclaration member)
+        {
+            var forwardStatementLHS = !member.IsObject
+                ? forwardingMemberIdentifier
+                : $"{Tokens.Set} {forwardingMemberIdentifier}";
+
+            var forwardStatementRHS = IsParameterlessPropertyGet(member)
+                ? targetMemberIdentifier
+                : $"{targetMemberIdentifier}({string.Join(", ", member.Parameters.Select(p => p.IdentifierName))})";
+
+            return $"{forwardStatementLHS} = {forwardStatementRHS}";
+        }
+
+        private static string ForwardProcedure(string targetMemberIdentifier, ModuleBodyElementDeclaration member)
+        {
+            if (member.DeclarationType.Equals(DeclarationType.Procedure))
+            {
+                return ($"{targetMemberIdentifier} {string.Join(", ", member.Parameters.Select(p => p.IdentifierName))}");
+            }
+
+            var forwardStatementLHS = (member.Parameters.Count != 1)
+                                            ? $"{targetMemberIdentifier}{$"({string.Join(", ", member.Parameters.Take(member.Parameters.Count - 1).Select(p => p.IdentifierName))})"}"
+                                            : targetMemberIdentifier;
+
+            var forwardStatementRHS = $"{member.Parameters.Last().IdentifierName}";
+
+            return member.DeclarationType.Equals(DeclarationType.PropertySet)
+                ? $"{Tokens.Set} {forwardStatementLHS} = {forwardStatementRHS}"
+                : $"{forwardStatementLHS} = {forwardStatementRHS}";
+        }
+
+        private static void DeleteMembers(ExtractInterfaceModel model, IRewriteSession rewriteSession)
+        {
+            var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetDeclaration.QualifiedModuleName);
+            foreach (var member in _selectedDeclarations)
+            {
+                var moduleBodyElementContext = member.Context.GetAncestor<VBAParser.ModuleBodyElementContext>();
+                rewriter.Remove(moduleBodyElementContext);
+            }
+
+            var moduleBodyContext = model.SelectedMembers.FirstOrDefault()?.Member.Context.GetAncestor<VBAParser.ModuleBodyContext>();
+            if (moduleBodyContext != null)
+            {
+                var moduleBodyContent = rewriter.GetText(moduleBodyContext.Start.TokenIndex, moduleBodyContext.Stop.TokenIndex);
+                moduleBodyContent = ConstrainNewlineSequences(moduleBodyContent, 2).Trim();
+                Interval moduleBodyInterval = new Interval(moduleBodyContext.Start.TokenIndex, moduleBodyContext.Stop.TokenIndex);
+                rewriter.Replace(moduleBodyInterval, moduleBodyContent);
+            }
+        }
+
+        private static bool IsParameterlessPropertyGet(ModuleBodyElementDeclaration member)
+            => member.DeclarationType.Equals(DeclarationType.PropertyGet) && member.Parameters.Count == 0;
+
+        private static string Spaces(int count) 
+            => string.Concat(Enumerable.Repeat(" ", count));
+
+        private static string ConstrainNewlineSequences(string content, int maxConsecutiveNewLines)
+        {
+            if (maxConsecutiveNewLines <= 0)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            var targetNewlineSequence = string.Concat(Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines + 1));
+            var maxNewlineSequence = string.Concat(Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines));
+            var guard = 0;
+            while (content.Contains(targetNewlineSequence) && ++guard < 100)
+            {
+                content = content.Replace(targetNewlineSequence, maxNewlineSequence);
+            }
+            return content;
         }
     }
 }

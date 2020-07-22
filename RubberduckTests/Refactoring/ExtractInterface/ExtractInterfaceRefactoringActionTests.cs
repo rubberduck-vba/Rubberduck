@@ -709,6 +709,7 @@ End Sub
             {
                 var modifiedModel = SelectAllMembers(model);
                 modifiedModel.InterfaceInstancing = ClassInstancing.Public;
+                modifiedModel.ImplementationOption = ExtractInterfaceImplementationOption.NoInterfaceImplementation;
                 return modifiedModel;
             };
             ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, modelAdjustment);
@@ -731,6 +732,7 @@ End Sub
                 interfaceMember.IsSelected = true;
             }
 
+            model.ImplementationOption = ExtractInterfaceImplementationOption.NoInterfaceImplementation;
             return model;
         }
 
@@ -745,7 +747,7 @@ End Sub
             {
                 interfaceMember.IsSelected = true;
             }
-
+            model.ImplementationOption = ExtractInterfaceImplementationOption.NoInterfaceImplementation;
             return model;
         }
 
