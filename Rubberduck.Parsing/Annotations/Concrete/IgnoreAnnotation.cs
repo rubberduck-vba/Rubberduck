@@ -17,13 +17,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Option Explicit
     /// Private InternalState As VBA.Collection
     ///
-    /// '@Ignore
-    /// Public Sub DoSomething(ByRef foo As Long)
-    ///     foo = 42
-    /// End Sub
-    /// 
     /// '@Ignore ProcedureNotUsed
-    /// Public Sub DoSomethingElse()
+    /// Public Sub DoSomething()
     ///     '@Ignore VariableNotAssigned
     ///     Dim result As Variant
     ///     DoSomething result
