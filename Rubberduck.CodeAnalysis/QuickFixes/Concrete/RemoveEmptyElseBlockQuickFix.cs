@@ -12,7 +12,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// <inspections>
     /// <inspection name="EmptyElseBlockInspection" />
     /// </inspections>
-    /// <canfix procedure="false" module="false" project="false" />
+    /// <canfix multiple="false" procedure="false" module="false" project="false" all="false" />
     /// <example>
     /// <before>
     /// <![CDATA[
@@ -63,8 +63,10 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
         
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveEmptyElseBlockQuickFix;
 
+        public override bool CanFixMultiple => false;
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => false;
         public override bool CanFixInProject => false;
+        public override bool CanFixAll => false;
     }
 }

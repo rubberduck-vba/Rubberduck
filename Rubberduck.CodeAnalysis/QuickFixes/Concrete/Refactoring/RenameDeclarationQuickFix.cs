@@ -17,7 +17,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete.Refactoring
     /// <inspection name="UnderscoreInPublicClassModuleMemberInspection" />
     /// <inspection name="ExcelUdfNameIsValidCellReferenceInspection" />
     /// </inspections>
-    /// <canfix procedure="false" module="false" project="false" />
+    /// <canfix multiple="false" procedure="false" module="false" project="false" all="false" />
     /// <example>
     /// <before>
     /// <![CDATA[

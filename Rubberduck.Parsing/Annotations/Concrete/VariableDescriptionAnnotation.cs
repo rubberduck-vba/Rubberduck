@@ -44,7 +44,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     public class VariableDescriptionAnnotation : DescriptionAttributeAnnotationBase
     {
         public VariableDescriptionAnnotation()
-            : base("VariableDescription", AnnotationTarget.Variable, "VB_VarDescription", 1)
+            : base("VariableDescription", AnnotationTarget.Variable, "VB_VarDescription")
         {}
     }
 }

@@ -57,8 +57,10 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Abstract
         public abstract void Fix(IInspectionResult result, IRewriteSession rewriteSession);
         public abstract string Description(IInspectionResult result);
 
+        public abstract bool CanFixMultiple { get; }
         public abstract bool CanFixInProcedure { get; }
         public abstract bool CanFixInModule { get; }
         public abstract bool CanFixInProject { get; }
+        public abstract bool CanFixAll { get; }
     }
 }

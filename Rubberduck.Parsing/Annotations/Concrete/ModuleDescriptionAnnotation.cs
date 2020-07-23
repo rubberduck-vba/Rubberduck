@@ -41,7 +41,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     public sealed class ModuleDescriptionAnnotation : DescriptionAttributeAnnotationBase
     {
         public ModuleDescriptionAnnotation()
-            : base("ModuleDescription", AnnotationTarget.Module, "VB_Description", 1)
+            : base("ModuleDescription", AnnotationTarget.Module, "VB_Description")
         {}
     }
 }

@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     public sealed class TestMethodAnnotation : AnnotationBase, ITestAnnotation
     {
         public TestMethodAnnotation()
-            : base("TestMethod", AnnotationTarget.Member)
+            : base("TestMethod", AnnotationTarget.Member, allowedArguments: 1, allowedArgumentTypes: new []{AnnotationArgumentType.Text})
         {}
 
         public IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments)

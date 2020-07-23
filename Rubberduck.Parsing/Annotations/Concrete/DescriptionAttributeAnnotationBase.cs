@@ -8,8 +8,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
 {
     public abstract class DescriptionAttributeAnnotationBase : FlexibleAttributeValueAnnotationBase
     {
-        public DescriptionAttributeAnnotationBase(string name, AnnotationTarget target, string attribute, int valueCount)
-            : base(name, target, attribute, valueCount)
-        { }
+        public DescriptionAttributeAnnotationBase(string name, AnnotationTarget target, string attribute)
+            : base(name, target, attribute, 1, new List<AnnotationArgumentType> { AnnotationArgumentType.Text })
+        {}
     }
 }

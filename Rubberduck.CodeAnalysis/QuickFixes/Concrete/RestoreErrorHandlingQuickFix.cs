@@ -16,7 +16,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// <inspections>
     /// <inspection name="UnhandledOnErrorResumeNextInspection" />
     /// </inspections>
-    /// <canfix procedure="true" module="true" project="true" />
+    /// <canfix multiple="true" procedure="true" module="true" project="true" all="true" />
     /// <example>
     /// <before>
     /// <![CDATA[
@@ -125,9 +125,11 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.UnhandledOnErrorResumeNextInspectionQuickFix;
 
+        public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;
         public override bool CanFixInProject => true;
+        public override bool CanFixAll => true;
 
         private static int GetMaximumExistingLabelIndex(IEnumerable<VBAParser.IdentifierStatementLabelContext> labelContexts)
         {

@@ -16,7 +16,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// <inspection name="MissingModuleAnnotationInspection" />
     /// <inspection name="MissingMemberAnnotationInspection" />
     /// </inspections>
-    /// <canfix procedure="false" module="false" project="false" />
+    /// <canfix multiple="true" procedure="false" module="false" project="false" all="false" />
     /// <example>
     /// <before>
     /// <![CDATA[
@@ -69,8 +69,10 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 
         public override CodeKind TargetCodeKind => CodeKind.AttributesCode;
 
+        public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => false;
         public override bool CanFixInProject => false;
+        public override bool CanFixAll => false;
     }
 }

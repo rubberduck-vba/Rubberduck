@@ -1,34 +1,26 @@
-﻿using System.Linq;
-using Rubberduck.JunkDrawer.Extensions;
+﻿using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Refactorings.MoveToFolder;
+using Rubberduck.Refactorings.ChangeFolder;
 
 namespace Rubberduck.Refactorings.MoveFolder
 {
     public class MoveFolderRefactoringAction : CodeOnlyRefactoringActionBase<MoveFolderModel>
     {
-        private readonly ICodeOnlyRefactoringAction<MoveToFolderModel> _moveToFolder;
+        private readonly ICodeOnlyRefactoringAction<ChangeFolderModel> _changeFolder;
 
         public MoveFolderRefactoringAction(
             IRewritingManager rewritingManager,
-            MoveToFolderRefactoringAction moveToFolder)
+            ChangeFolderRefactoringAction changeFolder)
             : base(rewritingManager)
         {
-            _moveToFolder = moveToFolder;
+            _changeFolder = changeFolder;
         }
 
         public override void Refactor(MoveFolderModel model, IRewriteSession rewriteSession)
         {
-            var sourceFolderParent = model.SourceFolder.ParentFolder();
-
-            foreach (var module in model.ContainedModules.Distinct())
-            {
-                var currentFolder = module.CustomFolder;
-                var subPath = currentFolder.SubFolderPathRelativeTo(sourceFolderParent);
-                var newFolder = $"{model.TargetFolder}{FolderExtensions.FolderDelimiter}{subPath}";
-                var moduleModel = new MoveToFolderModel(module, newFolder);
-                _moveToFolder.Refactor(moduleModel, rewriteSession);
-            }
+            var sourceFolderParent = model.FolderToMove.ParentFolder();
+            var changeFolderModel = new ChangeFolderModel(sourceFolderParent, model.ModulesToMove, model.TargetFolder);
+            _changeFolder.Refactor(changeFolderModel, rewriteSession);
         }
     }
 }

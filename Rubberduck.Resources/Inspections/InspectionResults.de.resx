@@ -183,7 +183,7 @@
     <value>Der Variable '{0}' wird kein Wert zugewiesen.</value>
   </data>
   <data name="EmptyStringLiteralInspection" xml:space="preserve">
-    <value>vbNullString' sollte statt einem leeren String-Literal verwendet werden.</value>
+    <value>'vbNullString' sollte statt einem leeren String-Literal verwendet werden.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
     <value>Objektvariable '{0}' wird ohne das 'Set'-Schlüsselwort zugewiesen.</value>

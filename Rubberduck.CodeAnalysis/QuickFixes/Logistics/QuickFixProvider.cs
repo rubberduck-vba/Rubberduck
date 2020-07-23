@@ -53,9 +53,10 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Logistics
                 .OrderBy(fix => fix.SupportedInspections.Count); // most specific fixes first; keeps "ignore once" last
         }
 
-        private bool CanFix(IQuickFix fix, IInspectionResult result)
+        public bool CanFix(IQuickFix fix, IInspectionResult result)
         {
-            return QuickFixes(result).Contains(fix);
+            return fix.SupportedInspections.Contains(result.Inspection.GetType())
+                && !result.DisabledQuickFixes.Contains(fix.GetType().Name);
         }
 
         public void Fix(IQuickFix fix, IInspectionResult result)
@@ -73,6 +74,28 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Logistics
             catch (RewriteFailedException)
             {
                 _failureNotifier.NotifyQuickFixExecutionFailure(rewriteSession.Status);
+            }
+            Apply(rewriteSession);
+        }
+
+        public void Fix(IQuickFix fix, IEnumerable<IInspectionResult> resultsToFix)
+        {
+            var results = resultsToFix.ToList();
+
+            if (!results.Any())
+            {
+                return;
+            }
+
+            var rewriteSession = RewriteSession(fix.TargetCodeKind);
+            foreach (var result in results)
+            {
+                if (!CanFix(fix, result))
+                {
+                    continue;
+                }
+
+                fix.Fix(result, rewriteSession);
             }
             Apply(rewriteSession);
         }
@@ -98,94 +121,42 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Logistics
             }
         }
 
-        public void FixInProcedure(IQuickFix fix, QualifiedMemberName? qualifiedMember, Type inspectionType, IEnumerable<IInspectionResult> results)
+        public void FixInProcedure(IQuickFix fix, QualifiedMemberName? qualifiedMember, Type inspectionType, IEnumerable<IInspectionResult> allResults)
         {
             Debug.Assert(qualifiedMember.HasValue, "Null qualified member.");
 
-            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType && result.QualifiedMemberName == qualifiedMember).ToList();
+            var filteredResults = allResults
+                .Where(result => result.Inspection.GetType() == inspectionType
+                                 && result.QualifiedMemberName == qualifiedMember);
 
-            if (!filteredResults.Any())
-            {
-                return;
-            }
-
-            var rewriteSession = RewriteSession(fix.TargetCodeKind);
-            foreach (var result in filteredResults)
-            {
-                if (!CanFix(fix, result))
-                {
-                    continue;
-                }
-
-                fix.Fix(result, rewriteSession);
-            }
-            Apply(rewriteSession);
+            Fix(fix, filteredResults);
         }
 
-        public void FixInModule(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> results)
+        public void FixInModule(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> allResults)
         {
-            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType && result.QualifiedSelection.QualifiedName == selection.QualifiedName).ToList();
-
-            if (!filteredResults.Any())
-            {
-                return;
-            }
-
-            var rewriteSession = RewriteSession(fix.TargetCodeKind);
-            foreach (var result in filteredResults)
-            {
-                if (!CanFix(fix, result))
-                {
-                    continue;
-                }
-
-                fix.Fix(result, rewriteSession);
-            }
-            Apply(rewriteSession);
+            var filteredResults = allResults
+                .Where(result => result.Inspection.GetType() == inspectionType
+                                 && result.QualifiedSelection.QualifiedName == selection.QualifiedName);
+            
+            Fix(fix, filteredResults);
         }
 
-        public void FixInProject(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> results)
+        public void FixInProject(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> allResults)
         {
-            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType && result.QualifiedSelection.QualifiedName.ProjectId == selection.QualifiedName.ProjectId).ToList();
+            var filteredResults = allResults
+                .Where(result => result.Inspection.GetType() == inspectionType 
+                                 && result.QualifiedSelection.QualifiedName.ProjectId == selection.QualifiedName.ProjectId)
+                .ToList();
 
-            if (!filteredResults.Any())
-            {
-                return;
-            }
-
-            var rewriteSession = RewriteSession(fix.TargetCodeKind);
-            foreach (var result in filteredResults)
-            {
-                if (!CanFix(fix, result))
-                {
-                    continue;
-                }
-
-                fix.Fix(result, rewriteSession);
-            }
-            Apply(rewriteSession);
+            Fix(fix, filteredResults);
         }
 
-        public void FixAll(IQuickFix fix, Type inspectionType, IEnumerable<IInspectionResult> results)
+        public void FixAll(IQuickFix fix, Type inspectionType, IEnumerable<IInspectionResult> allResults)
         {
-            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType).ToArray();
+            var filteredResults = allResults
+                .Where(result => result.Inspection.GetType() == inspectionType);
 
-            if (!filteredResults.Any())
-            {
-                return;
-            }
-
-            var rewriteSession = RewriteSession(fix.TargetCodeKind);
-            foreach (var result in filteredResults)
-            {
-                if (!CanFix(fix, result))
-                {
-                    continue;
-                }
-
-                fix.Fix(result, rewriteSession);
-            }
-            Apply(rewriteSession);
+            Fix(fix, filteredResults);
         }
 
         public bool HasQuickFixes(IInspectionResult inspectionResult)

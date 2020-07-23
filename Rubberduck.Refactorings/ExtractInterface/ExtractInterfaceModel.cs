@@ -34,7 +34,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             DeclarationType.PropertySet,
         };
 
-        public ExtractInterfaceModel(IDeclarationFinderProvider declarationFinderProvider, ClassModuleDeclaration target)
+        public ExtractInterfaceModel(IDeclarationFinderProvider declarationFinderProvider, ClassModuleDeclaration target, ICodeBuilder codeBuilder)
         {
             TargetDeclaration = target;
             DeclarationFinderProvider = declarationFinderProvider;
@@ -47,10 +47,10 @@ namespace Rubberduck.Refactorings.ExtractInterface
             InterfaceName = $"I{TargetDeclaration.IdentifierName}";
             InterfaceInstancing = ImplementingClassInstancing;
 
-            LoadMembers();
+            LoadMembers(codeBuilder);
         }
 
-        private void LoadMembers()
+        private void LoadMembers(ICodeBuilder codeBuilder)
         {
             Members = new ObservableCollection<InterfaceMember>(DeclarationFinderProvider.DeclarationFinder
                 .Members(TargetDeclaration.QualifiedModuleName)
@@ -59,7 +59,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                     && MemberTypes.Contains(item.DeclarationType))
                 .OrderBy(o => o.Selection.StartLine)
                 .ThenBy(t => t.Selection.StartColumn)
-                .Select(d => new InterfaceMember(d))
+                .Select(d => new InterfaceMember(d, codeBuilder))
                 .ToList());
         }
     }

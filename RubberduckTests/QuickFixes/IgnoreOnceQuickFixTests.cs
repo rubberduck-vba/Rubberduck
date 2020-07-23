@@ -759,7 +759,7 @@ End Sub";
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                new IgnoreOnceQuickFix(new AnnotationUpdater(), state, new[] { inspection }).Fix(inspectionResults.First(), rewriteSession);
+                new IgnoreOnceQuickFix(new AnnotationUpdater(state), state, new[] { inspection }).Fix(inspectionResults.First(), rewriteSession);
                 var actualCode = rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName).GetText();
 
                 Assert.AreEqual(expectedCode, actualCode);
@@ -793,7 +793,7 @@ End Sub";
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                new IgnoreOnceQuickFix(new AnnotationUpdater(), state, new[] { inspection }).Fix(inspectionResults.First(), rewriteSession);
+                new IgnoreOnceQuickFix(new AnnotationUpdater(state), state, new[] { inspection }).Fix(inspectionResults.First(), rewriteSession);
                 var actualCode = rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName).GetText();
 
                 Assert.AreEqual(expectedCode, actualCode);
@@ -1110,7 +1110,7 @@ End Sub";
                 var resultToFix = inspectionResults.First();
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                var quickFix = new IgnoreOnceQuickFix(new AnnotationUpdater(), state, new[] {inspection});
+                var quickFix = new IgnoreOnceQuickFix(new AnnotationUpdater(state), state, new[] {inspection});
                 quickFix.Fix(resultToFix, rewriteSession);
 
                 return rewriteSession.CheckOutModuleRewriter(moduleName).GetText();
@@ -1186,7 +1186,7 @@ End Sub";
                 var inspectionResults = InspectionResults(inspection, state);
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                var quickFix = new IgnoreOnceQuickFix(new AnnotationUpdater(), state, new[] { inspection });
+                var quickFix = new IgnoreOnceQuickFix(new AnnotationUpdater(state), state, new[] { inspection });
 
                 foreach (var resultToFix in inspectionResults)
                 {

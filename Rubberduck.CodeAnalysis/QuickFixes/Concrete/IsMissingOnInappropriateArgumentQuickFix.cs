@@ -18,7 +18,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// <inspections>
     /// <inspection name="IsMissingOnInappropriateArgumentInspection" />
     /// </inspections>
-    /// <canfix procedure="true" module="false" project="false" />
+    /// <canfix multiple="true" procedure="true" module="false" project="false" all="false" />
     /// <example>
     /// <before>
     /// <![CDATA[
@@ -154,8 +154,10 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.IsMissingOnInappropriateArgumentQuickFix;
 
+        public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => false;
         public override bool CanFixInProject => false;
+        public override bool CanFixAll => false;
     }
 }

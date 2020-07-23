@@ -16,7 +16,7 @@
     &lt;CodeInspection Name="IllegalAnnotationInspection" Severity="Error" InspectionType="RubberduckOpportunities" /&gt;
     &lt;CodeInspection Name="RedundantByRefModifierInspection" Severity="DoNotShow" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="MissingAttributeInspection" Severity="Warning" InspectionType="RubberduckOpportunities" /&gt;
-    &lt;CodeInspection Name="AttributeOutOfSyncInspection" Severity="Warning" InspectionType="RubberduckOpportunities" /&gt;
+    &lt;CodeInspection Name="AttributeValueOutOfSyncInspection" Severity="Warning" InspectionType="RubberduckOpportunities" /&gt;
     &lt;CodeInspection Name="MissingAnnotationArgumentInspection" Severity="Error" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="MissingMemberAnnotationInspection" Severity="Error" InspectionType="RubberduckOpportunities" /&gt;
     &lt;CodeInspection Name="ModuleScopeDimKeywordInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;

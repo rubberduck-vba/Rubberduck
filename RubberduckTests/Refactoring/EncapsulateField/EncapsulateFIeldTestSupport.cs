@@ -119,7 +119,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         {
             var indenter = CreateIndenter();
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            return new EncapsulateFieldRefactoring(state, indenter, userInteraction, rewritingManager, selectionService, selectedDeclarationProvider);
+            return new EncapsulateFieldRefactoring(state, indenter, userInteraction, rewritingManager, selectionService, selectedDeclarationProvider, new CodeBuilder());
         }
 
         public IEncapsulateFieldCandidate RetrieveEncapsulateFieldCandidate(string inputCode, string fieldName)

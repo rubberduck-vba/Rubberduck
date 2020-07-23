@@ -40,7 +40,13 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     public class ModuleAttributeAnnotation : FlexibleAttributeAnnotationBase
     {
         public ModuleAttributeAnnotation() 
-        : base("ModuleAttribute", AnnotationTarget.Module)
+        : base("ModuleAttribute", AnnotationTarget.Module, _argumentTypes, true)
         {}
+
+        private static AnnotationArgumentType[] _argumentTypes = new[]
+        {
+            AnnotationArgumentType.Attribute,
+            AnnotationArgumentType.Text | AnnotationArgumentType.Number | AnnotationArgumentType.Boolean
+        };
     }
 }

@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
-
 namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>

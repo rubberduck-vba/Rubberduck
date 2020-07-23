@@ -74,7 +74,7 @@ End Sub
 
         protected override IRefactoringAction<MoveMultipleToFolderModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            var annotationUpdater = new AnnotationUpdater();
+            var annotationUpdater = new AnnotationUpdater(state);
             var moveToFolderAction = new MoveToFolderRefactoringAction(rewritingManager, annotationUpdater);
             return new MoveMultipleToFolderRefactoringAction(rewritingManager, moveToFolderAction);
         }

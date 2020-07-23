@@ -23,7 +23,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// <inspections>
     /// <inspection name="AssignedByValParameterInspection" />
     /// </inspections>
-    /// <canfix procedure="true" module="true" project="true" />
+    /// <canfix multiple="false" procedure="false" module="false" project="false" all="false" />
     /// <example>
     /// <before>
     /// <![CDATA[
@@ -79,9 +79,11 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.AssignedByValParameterMakeLocalCopyQuickFix;
 
+        public override bool CanFixMultiple => false;
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => false;
         public override bool CanFixInProject => false;
+        public override bool CanFixAll => false;
 
         private string PromptForLocalVariableName(Declaration target)
         {

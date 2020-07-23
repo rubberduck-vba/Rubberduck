@@ -111,7 +111,7 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add.
+        ///   Looks up a localized string similar to Add....
         /// </summary>
         public static string CodeExplorer_Add {
             get {
@@ -233,6 +233,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         public static string CodeExplorer_AddVBFormText {
             get {
                 return ResourceManager.GetString("CodeExplorer_AddVBFormText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotate.
+        /// </summary>
+        public static string CodeExplorer_Annotate {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Annotate", resourceCulture);
             }
         }
         

@@ -30,7 +30,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     public sealed class IgnoreAnnotation : AnnotationBase
     {
         public IgnoreAnnotation()
-            : base("Ignore", AnnotationTarget.General, 1, null, true)
+            : base("Ignore", AnnotationTarget.General, 1, null, new[] { AnnotationArgumentType.Inspection}, true)
         {}
     }
 }

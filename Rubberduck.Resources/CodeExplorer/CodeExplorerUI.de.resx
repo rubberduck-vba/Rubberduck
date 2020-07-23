@@ -317,7 +317,7 @@ Fortfahren?</value>
     <value>Komponenten aus Dateien aktualisieren...</value>
   </data>
   <data name="ReplaceFromFiles" xml:space="preserve">
-    <value>Projektinhalt durch Dateiinhalt ersetzen... </value>
+    <value>Projektinhalt durch Dateiinhalt ersetzen...</value>
   </data>
   <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
     <value>Interface extrahieren...</value>
@@ -327,5 +327,8 @@ Fortfahren?</value>
   </data>
   <data name="CodeExplorer_MoveToFolder" xml:space="preserve">
     <value>In Ordner verschieben...</value>
+  </data>
+  <data name="CodeExplorer_Annotate" xml:space="preserve">
+    <value>Annotation hinzufügen</value>
   </data>
 </root>

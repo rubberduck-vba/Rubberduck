@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
@@ -42,8 +41,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     public sealed class ExcelHotKeyAnnotation : FlexibleAttributeValueAnnotationBase
     {
         public ExcelHotKeyAnnotation()
-            : base("ExcelHotkey", AnnotationTarget.Member, "VB_ProcData.VB_Invoke_Func", 1)
-        { }
+            : base("ExcelHotkey", AnnotationTarget.Member, "VB_ProcData.VB_Invoke_Func", 1, new[] { AnnotationArgumentType.Text})
+        {}
 
         public override IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues)
         {

@@ -127,7 +127,7 @@
     <value>Número de línea</value>
   </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Etiqueta:</value>
+    <value>Texto de Etiqueta:</value>
   </data>
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>Lista de Etiquetas:</value>
@@ -136,12 +136,12 @@
     <value>Texto</value>
   </data>
   <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Artículos de TODO de Rubberduck - {0}
-{1} artículos encontrados.</value>
+    <value>Ítems de TODO de Rubberduck - {0}
+{1} ítems encontrados.</value>
   </data>
   <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Artículos de TODO de Rubberduck - {0}
-{1} artículos encontrados.</value>
+    <value>Ítems de TODO de Rubberduck - {0}
+{1} ítems encontrados.</value>
   </data>
   <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
     <value>{0}: {1} - {2}. {3} línea {4}.</value>

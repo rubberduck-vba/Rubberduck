@@ -374,7 +374,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Rubberduck - Parameter entfernen</value>
   </data>
   <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Wählen Sie einen Parameter und benutzen Sie die Schaltflächen oder doppelklicken Sie um ihn zu bewegen oder zu löschen</value>
+    <value>Wählen Sie einen Parameter und benutzen Sie die Schaltflächen oder doppelklicken Sie um ihn zu bewegen oder zu löschen.</value>
   </data>
   <data name="Restore" xml:space="preserve">
     <value>Wiederherstellen</value>
@@ -465,7 +465,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Neu</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>Das Umbenenen zu '{0}' wird einen Konflikt mit '{1}' auslösen.'
+    <value>Der neue Name '{0}' kollidiert mit dem Namen des existierenden Elements '{1}'. '{2}' in '{0}' umzubenennen kann zu nicht kompilierbarem Code oder einer Änderung der Logik führen.
 Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
@@ -489,7 +489,7 @@ Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck Code Untersuchung - {0} 
-{1} Probleme gefunden</value>
+{1} Probleme gefunden.</value>
   </data>
   <data name="Language_DE" xml:space="preserve">
     <value>Deutsch</value>
@@ -558,10 +558,10 @@ Wollen Sie trotzdem fortfahren?</value>
     <value>Mitglieder</value>
   </data>
   <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
-    <value>Bitte spezifizieren Sie den Interface-Namen und die Mitglieder</value>
+    <value>Bitte spezifizieren Sie den Interface-Namen und die Mitglieder.</value>
   </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
-    <value>Die Auswahl ist keine Variable</value>
+    <value>Die Auswahl ist keine Variable.</value>
   </data>
   <data name="EncapsulateField_Caption" xml:space="preserve">
     <value>Rubberduck - Gekapseltes Feld</value>
@@ -594,7 +594,7 @@ Wollen Sie trotzdem fortfahren?</value>
     <value>Rubberduck - Näher an die Nutzung führen</value>
   </data>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">
-    <value>Spezifizierung des Eigenschaftsnamen, Parameterverfügbarkeit und 'Setter type' notwendig.</value>
+    <value>Bitte wählen Sie ein oder mehrere Felder, die gekapselt werden sollen. Die Eigenschaftsnamen könne vor dem bestätigen geändert werden.</value>
   </data>
   <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Ungültige Auswahl.</value>
@@ -753,7 +753,7 @@ Wollen Sie trotzdem fortfahren?</value>
     <value>Fertig analysiert</value>
   </data>
   <data name="ParserState_Parsing" xml:space="preserve">
-    <value>Parsing …</value>
+    <value>Parsing…</value>
   </data>
   <data name="ParserState_Pending" xml:space="preserve">
     <value>Wartend</value>
@@ -816,7 +816,7 @@ Wollen Sie trotzdem fortfahren?</value>
     <value>Parserfehler</value>
   </data>
   <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
-    <value>Minimale Logging-Empfindlichkeit</value>
+    <value>Minimale Logging-Empfindlichkeit:</value>
   </data>
   <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
     <value>Debugging</value>
@@ -1031,7 +1031,7 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
     <value>Quellcode aus Datei importieren</value>
   </data>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
-    <value>Rubberduck sieht noch nichts</value>
+    <value>Rubberduck sieht noch nichts.</value>
   </data>
   <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Auf eigene Verantwortung und Gefahr aktivieren. Aktivierung und / oder Verwendung von Funktionalitäten in dieser Sektion kann zu unvorhergesehenen Fehlern und unwiederbringlichem Datenverlust führen.</value>
@@ -1114,10 +1114,10 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
     <value>Aktives Projekt exportieren</value>
   </data>
   <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
-    <value>Tastenkürzel sollten Alt und/oder Strg verwenden</value>
+    <value>Tastenkürzel sollten Alt und/oder Strg verwenden.</value>
   </data>
   <data name="GeneralSettings_HotkeyRestrictionToolTip" xml:space="preserve">
-    <value>Die aktuellen Tastenkürzeleinstellungen könnten ungewollte Nebeneffekte erzeugen</value>
+    <value>Die aktuellen Tastenkürzeleinstellungen könnten ungewollte Nebeneffekte haben.</value>
   </data>
   <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
     <value>Warnung</value>
@@ -1245,7 +1245,7 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
     <value>Referenzen hinzufügen/entfernen - {0}</value>
   </data>
   <data name="References_Caption" xml:space="preserve">
-    <value>Referenzen hinzufügen/entfernen</value>
+    <value>Referenzen hinzufügen/entfernen...</value>
   </data>
   <data name="References_BrowseFilterVisio" xml:space="preserve">
     <value>Alle Visio-Dateien ({0})|{0}</value>
@@ -1311,7 +1311,7 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
     <value>Publisher-Dateien ({0}|{0}</value>
   </data>
   <data name="ReferenceSettings_RecentTracked" xml:space="preserve">
-    <value>Zuletzt verfolgte Referenzen</value>
+    <value>Zuletzt verfolgte Referenzen:</value>
   </data>
   <data name="References_Recent" xml:space="preserve">
     <value>Zuletzt verwendet</value>
@@ -1332,7 +1332,7 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
     <value>Wiederherstellen der Elementattribute fehlgeschlagen</value>
   </data>
   <data name="MemberAttributeRecoveryMembersNotFoundMessage" xml:space="preserve">
-    <value>Die Elementattribute für die folgenden Elemente konnten nicht wiederhergestellt werden, da sie nicht mehr aufgefunden wurden: {0} </value>
+    <value>Die Elementattribute für die folgenden Elemente konnten nicht wiederhergestellt werden, da sie nicht mehr aufgefunden wurden: {0}</value>
   </data>
   <data name="AllReferences_NoneFoundReference" xml:space="preserve">
     <value>Es wurden keine Verwendungen der Projektreferenz '{0}' gefunden.</value>
@@ -1490,7 +1490,7 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
 Import abgebrochen.</value>
   </data>
   <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
-    <value>Projektinhalt durch Inhalt von Dateien ersetzen </value>
+    <value>Projektinhalt durch Inhalt von Dateien ersetzen</value>
   </data>
   <data name="ReplaceProjectContentsFromFilesCommand_ConfirmationMessage" xml:space="preserve">
     <value>Soll der Inhalt von Project '{0}' wirklich gelöscht und durch den Inhalt der ausgewählten Dateien ersetzt werden?</value>
@@ -1572,7 +1572,7 @@ Import abgebrochen.</value>
     <value>Es war nicht möglich den Parser zum Ausführen des Refactorings temporär zu deaktivieren.</value>
   </data>
   <data name="MoveToFolderDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - In Ordner verschieben </value>
+    <value>Rubberduck - In Ordner verschieben</value>
   </data>
   <data name="MoveToFolderDialog_InstructionsLabelText" xml:space="preserve">
     <value>Bitte geben Sie einen neuen Ordner für {0} '{1}' im Ordner '{2}' an.</value>
@@ -1606,5 +1606,164 @@ Import abgebrochen.</value>
   </data>
   <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
     <value>Die Komponente '{0}' würde durch das Refactoring verändert, aber ihr Inhalt ist in Rubberduck veraltet. Bitte lassen Sie Rubberduck seinen Stand aktualisieren und versuchen Sie es erneut.</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Annotation hinzufügen</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_TitleText" xml:space="preserve">
+    <value>Annotation hinzufügen</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentsLabel" xml:space="preserve">
+    <value>Annotationsarguments:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_AnnotationLabel" xml:space="preserve">
+    <value>Hinzuzufügende Annotation:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_DeclarationLabel" xml:space="preserve">
+    <value>Deklaration, zu welcher eine Annotation hinzugefügt werden soll:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentValueHeader" xml:space="preserve">
+    <value>Wert</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentTypeHeader" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_RemoveArgumentButtonLabel" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_AddArgumentButtonLabel" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_Instructions" xml:space="preserve">
+    <value>Wählen Sie eine Annotation (und Werte), die zu der Deklaration hinzugefügt werden soll.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
+    <value>Annotationsargumente dürfen keine Kontrollzeichen enthalten.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_InspectionName" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Inspektionsname' müssen der Name einer existierenden Inspektion sein.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_AttributeNameStart" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Attributname' müssen mit 'VB_' anfangen.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Zahl' müssen eine ganze Zahl oder eine Gleitkommazahl sein.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Wahrheitswert' müssen entweder 'True' oder 'False' sein.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_EmptyArgument" xml:space="preserve">
+    <value>Annotationsargumente können nicht leer sein.</value>
+  </data>
+  <data name="AnnotationArgumentType_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="AnnotationArgumentType_Number" xml:space="preserve">
+    <value>Zahl</value>
+  </data>
+  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
+    <value>Inspektionsname</value>
+  </data>
+  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
+    <value>Wahrheitswert</value>
+  </data>
+  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
+    <value>Attribut</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_Newline" xml:space="preserve">
+    <value>Annotationsargumente können nur aus einer einzigen Zeile bestehen.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Attributname' dürfen keine Leerzeichen enthalten.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_TooLong" xml:space="preserve">
+    <value>Annotationsargumente dürfen nicht länger als {0} Zeihen sein.</value>
+  </data>
+  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
+    <value>Das Refactoring kann Annotationen nur zu Komponenten, Methoden und Variablen hinzufügen. Die Zieldeklaration hatte allerdings den Typ '{0}'.</value>
+  </data>
+  <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
+    <value>Es ist in VBA nicht möglich nur die Groß- und Kleinschreibung eines Namens zu ändern.</value>
+  </data>
+  <data name="MoveFolders_SameNameSubfolder" xml:space="preserve">
+    <value>Der Zielordner '{0}' enthält bereits einen Unterordner '{1}'. Die Ordner werden verschmolzen, wenn der Ordner verschoben wird.
+Wollen Sie fortfahren?</value>
+  </data>
+  <data name="MoveFolders_SameNameSubfolders" xml:space="preserve">
+    <value>Der Zielordner '{0}' enthält bereits die Unterordner {1}. Gleichnamige Ordner werden verschmolzen, wenn die Ordner verschoben werden.
+Wollen Sie fortfahren?</value>
+  </data>
+  <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
+    <value>Mehrere Ordner mit demselben Namenfolders werden verschoben. Dies verschmilzt sie.
+Wollen Sie fortfahren?</value>
+  </data>
+  <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
+    <value>Ordnernamen dürfen nicht leer sein.</value>
+  </data>
+  <data name="MoveFolders_ControlCharacter" xml:space="preserve">
+    <value>Ordnernamen dürfen keine Kontrollzeichen wie etwa Zeilenumbrüche enthalten.</value>
+  </data>
+  <data name="MoveFolders_EmptySubfolderName" xml:space="preserve">
+    <value>Die Namen individueller Unterordner dürfen nicht leer sein.</value>
+  </data>
+  <data name="RenameDialog_Folder" xml:space="preserve">
+    <value>Ordner</value>
+  </data>
+  <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
+    <value>Der Ordner '{0}' existiert bereits. '{1}' in '{2}. umzubenennen wird die Ordner verschmelzen.
+Wollen Sie fortfahren?</value>
+  </data>
+  <data name="RenameDialog_FolderLabel" xml:space="preserve">
+    <value>Ordner:</value>
+  </data>
+  <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
+    <value>Kompletter Ordnername:</value>
+  </data>
+  <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
+    <value>Ordner umbenennen</value>
+  </data>
+  <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
+    <value>Drag and Drop im Code Explorer aktivieren</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
+    <value>Attribut hinzufügen / anpassen</value>
+  </data>
+  <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
+    <value>Das Kapseln von '{0}' ist nicht möglich. Es existieren ReDim({0})-Anweisungen in anderen Modulen.</value>
+  </data>
+  <data name="EncapsulateField_ParameterName" xml:space="preserve">
+    <value>Parametername:</value>
+  </data>
+  <data name="EncapsulateField_PreviewMarker" xml:space="preserve">
+    <value>'&lt;===== Eigenschafts- und Deklarationsänderungen oberhalb dieser Zeile =====&gt;</value>
+  </data>
+  <data name="EncapsulateField_PrivateUDTPropertyText" xml:space="preserve">
+    <value>Erstellt eine Eigenschaft für jedes UDT-Mitglied</value>
+  </data>
+  <data name="EncapsulateField_ReadOnlyCheckBoxContent" xml:space="preserve">
+    <value>Schreibgeschützt</value>
+  </data>
+  <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
+    <value>Felder in einem privaten Typ kapseln</value>
+  </data>
+  <data name="ExtractInterface_Private" xml:space="preserve">
+    <value>Privat</value>
+  </data>
+  <data name="ExtractInterface_Public" xml:space="preserve">
+    <value>Öffentlich</value>
+  </data>
+  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
+    <value>Die implementierende Klasse ist öffentlich, was es notwendig macht, dass die Schnittstelle ebenfalls öffentlich ist.
+Falls Sie eine 'private' Schnittstelle benötigen, machen Sie bitte die implementierende Klasse ebenfalls privat.
+Eine private Klasse kann eine private Schnittstelle implementieren.</value>
+  </data>
+  <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
+    <value>Namenskonflikt</value>
+  </data>
+  <data name="EncapsulateField_SetterType" xml:space="preserve">
+    <value>Typ des Schreibzugriffs:</value>
+  </data>
+  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
+    <value>Sichtbarkeit</value>
   </data>
 </root>

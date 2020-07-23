@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
 using Rubberduck.Resources.Registration;
 using Rubberduck.Parsing.Annotations;
 

@@ -15,7 +15,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// <inspections>
     /// <inspection name="WriteOnlyPropertyInspection" />
     /// </inspections>
-    /// <canfix procedure="false" module="true" project="true" />
+    /// <canfix multiple="true" procedure="false" module="true" project="true" all="true" />
     /// <example>
     /// <before>
     /// <![CDATA[
@@ -65,9 +65,11 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.IntroduceGetAccessorQuickFix;
 
+        public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => true;
         public override bool CanFixInProject => true;
+        public override bool CanFixAll => true;
 
         private string GetParamText(ParameterDeclaration param)
         {
