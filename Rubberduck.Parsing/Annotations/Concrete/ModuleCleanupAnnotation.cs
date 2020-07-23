@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Annotations
+﻿using Rubberduck.Parsing.Annotations;
+
+namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
     /// @ModuleCleanup annotation, marks a procedure that Rubberduck executes after all tests of a module have completed.

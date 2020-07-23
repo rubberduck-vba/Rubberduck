@@ -4,8 +4,9 @@ using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Annotations;
 
-namespace Rubberduck.Parsing.Annotations
+namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
     /// @ExcelHotkey annotation, indicates the presence of a VB_ProcData.VB_Invoke_Func metadata attribute value that maps a hotkey to a standard module procedure ("macro"). Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
@@ -15,6 +16,7 @@ namespace Rubberduck.Parsing.Annotations
     /// </parameter>
     /// <example>
     /// <module name="Module1" type="Standard Module">
+    /// <before>
     /// <![CDATA[
     /// Option Explicit
     ///
@@ -23,6 +25,18 @@ namespace Rubberduck.Parsing.Annotations
     ///     '...
     /// End Sub
     /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    ///
+    /// @ExcelHotkey("D")
+    /// Public Sub DoSomething()
+    /// Attribute DoSomething.VB_ProcData.VB_Invoke_Func = "D\n14"
+    ///     '...
+    /// End Sub
+    /// ]]>
+    /// </after>
     /// </module>
     /// </example>
     public sealed class ExcelHotKeyAnnotation : FlexibleAttributeValueAnnotationBase

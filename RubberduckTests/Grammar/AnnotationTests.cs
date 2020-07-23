@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using RubberduckTests.Mocks;
 using System;
 using System.Linq;

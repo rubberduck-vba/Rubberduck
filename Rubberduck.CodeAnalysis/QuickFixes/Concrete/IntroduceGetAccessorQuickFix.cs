@@ -63,7 +63,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             rewriter.InsertBefore(result.Target.Context.Start.TokenIndex, propertyGet);
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.WriteOnlyPropertyQuickFix;
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.IntroduceGetAccessorQuickFix;
 
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => true;

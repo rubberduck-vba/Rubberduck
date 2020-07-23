@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Annotations
+﻿using Rubberduck.Parsing.Annotations;
+
+namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
     /// @Folder annotation, used by Rubberduck to represent and organize modules under a custom folder structure.

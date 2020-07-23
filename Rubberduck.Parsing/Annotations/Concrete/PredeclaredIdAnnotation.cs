@@ -12,6 +12,7 @@ namespace Rubberduck.Parsing.Annotations
     /// </remarks>
     /// <example>
     /// <module name="Class1" type="Class Module">
+    /// <before>
     /// <![CDATA[
     /// '@PredeclaredId
     /// Option Explicit
@@ -20,6 +21,18 @@ namespace Rubberduck.Parsing.Annotations
     ///     Set Create = New Class1
     /// End Sub
     /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Attribute VB_PredeclaredId = True
+    /// '@PredeclaredId
+    /// Option Explicit
+    ///
+    /// Public Function Create() As Class1
+    ///     Set Create = New Class1
+    /// End Sub
+    /// ]]>
+    /// </after>
     /// </module>
     /// </example>
     public sealed class PredeclaredIdAnnotation : FixedAttributeValueAnnotationBase

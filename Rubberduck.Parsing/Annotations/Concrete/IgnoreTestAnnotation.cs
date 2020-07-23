@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Annotations
+﻿using Rubberduck.Parsing.Annotations;
+
+namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
     /// @IgnoreTest annotation, used by Rubberduck for skipping a particular test when running the tests of a test module.

@@ -11,7 +11,6 @@ using RubberduckTests.Inspections;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
-using Rubberduck.CodeAnalysis.Inspections.Concrete.Excel;
 using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 
 namespace RubberduckTests.QuickFixes

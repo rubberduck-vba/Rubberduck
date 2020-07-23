@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Annotations
+﻿using Rubberduck.Parsing.Annotations;
+
+namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
     /// @ModuleInitialize annotation, marks a procedure that Rubberduck executes before running the first test of a module.

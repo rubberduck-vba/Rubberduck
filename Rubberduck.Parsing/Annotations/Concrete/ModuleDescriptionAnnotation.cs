@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Annotations;
 
-namespace Rubberduck.Parsing.Annotations
+namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
     /// @ModuleDescription annotation, indicates the presence of a VB_Description module attribute value providing a docstring for the module. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
@@ -16,6 +17,7 @@ namespace Rubberduck.Parsing.Annotations
     /// </remarks>
     /// <example>
     /// <module name="Class1" type="Class Module">
+    /// <before>
     /// <![CDATA[
     /// '@ModuleDescription("Represents an object responsible for doing something.")
     /// Option Explicit
@@ -23,6 +25,17 @@ namespace Rubberduck.Parsing.Annotations
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Attribute VB_Description = "Represents an object responsible for doing something."
+    /// '@ModuleDescription("Represents an object responsible for doing something.")
+    /// Option Explicit
+    ///
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </after>
     /// </module>
     /// </example>
     public sealed class ModuleDescriptionAnnotation : DescriptionAttributeAnnotationBase

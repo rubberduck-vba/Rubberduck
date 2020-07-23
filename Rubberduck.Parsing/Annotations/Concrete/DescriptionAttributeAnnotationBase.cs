@@ -2,8 +2,9 @@
 using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Annotations;
 
-namespace Rubberduck.Parsing.Annotations
+namespace Rubberduck.Parsing.Annotations.Concrete
 {
     public abstract class DescriptionAttributeAnnotationBase : FlexibleAttributeValueAnnotationBase
     {

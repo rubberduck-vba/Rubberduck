@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Annotations;
 
-namespace Rubberduck.Parsing.Annotations
+namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
     /// @ModuleAttribute annotation, allows specifying arbitrary VB_Attribute for modules. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
@@ -15,6 +16,7 @@ namespace Rubberduck.Parsing.Annotations
     /// </parameter>
     /// <example>
     /// <module name="Class1" type="Class Module">
+    /// <before>
     /// <![CDATA[
     /// '@ModuleAttribute VB_Ext_Key, "Key", "Value"
     /// Option Explicit
@@ -22,6 +24,17 @@ namespace Rubberduck.Parsing.Annotations
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Attribute VB_Ext_KEY = "Key", "Value"
+    /// '@ModuleAttribute VB_Ext_Key, "Key", "Value"
+    /// Option Explicit
+    ///
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </after>
     /// </module>
     /// </example>
     public class ModuleAttributeAnnotation : FlexibleAttributeAnnotationBase

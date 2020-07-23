@@ -10,11 +10,11 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.QuickFixes
 {
     [TestFixture]
-    public class WriteOnlyPropertyQuickFixTests : QuickFixTestBase
+    public class IntroduceGetAccessorQuickFixTests : QuickFixTestBase
     {
         [Test]
         [Category("QuickFixes")]
-        public void WriteOnlyProperty_AddPropertyGetQuickFixWorks_ImplicitTypesAndAccessibility()
+        public void IntroduceGetAccessor_AddPropertyGetQuickFixWorks_ImplicitTypesAndAccessibility()
         {
             const string inputCode =
                 @"Property Let Foo(value)
@@ -33,7 +33,7 @@ End Property";
 
         [Test]
         [Category("QuickFixes")]
-        public void WriteOnlyProperty_AddPropertyGetQuickFixWorks_ExlicitTypesAndAccessibility()
+        public void IntroduceGetAccessor_AddPropertyGetQuickFixWorks_ExlicitTypesAndAccessibility()
         {
             const string inputCode =
                 @"Public Property Let Foo(ByVal value As Integer)
@@ -52,7 +52,7 @@ End Property";
 
         [Test]
         [Category("QuickFixes")]
-        public void WriteOnlyProperty_AddPropertyGetQuickFixWorks_MultipleParams()
+        public void IntroduceGetAccessor_AddPropertyGetQuickFixWorks_MultipleParams()
         {
             const string inputCode =
                 @"Public Property Let Foo(value1, ByVal value2 As Integer, ByRef value3 As Long, value4 As Date, ByVal value5, value6 As String)

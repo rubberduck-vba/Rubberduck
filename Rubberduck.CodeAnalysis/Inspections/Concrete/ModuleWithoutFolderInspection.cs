@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
-using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
