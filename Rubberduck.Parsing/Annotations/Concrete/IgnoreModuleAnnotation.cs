@@ -1,13 +1,13 @@
 ﻿namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// @IgnoreModule annotation, used for ignoring inspection results module-wide.
+    /// @IgnoreModule annotation, used by Rubberduck to filter inspection results module-wide.
     /// </summary>
-    /// <parameter name="Inspections" type="ParamArray (Identifier)">
-    /// This annotation optionally takes a comma-separated list of inspection names as argument. If no specific inspection is provided, then all inspections would ignore the annotated module.
+    /// <parameter name="Inspections" type="InspectionNames">
+    /// This annotation optionally takes a comma-separated list of inspection names as argument. If no specific inspection name is provided, then all inspections should ignore the annotated module.
     /// </parameter>
     /// <remarks>
-    /// Use this annotation judiciously: while it silences false positives, it also silences legitimate inspection results.
+    /// Use this annotation judiciously: while it silences false positives, it also silences legitimate inspection results; useful for muting results in legacy code while still inspecting new code.
     /// </remarks>
     /// <example>
     /// <module name="Class1" type="Class Module">

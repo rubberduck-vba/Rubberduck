@@ -5,8 +5,11 @@ using Rubberduck.VBEditor;
 namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// @VariableDescription annotation, uses the VB_VarDescription attribute to provide a docstring for a module-level variable or constant. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
+    /// @VariableDescription annotation, indicates the presence of a VB_VarDescription attribute value providing a docstring for a module-level variable or constant. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
+    /// <parameter name="DocString" type="Text">
+    /// This string literal parameter does not support expressions and/or multiline inputs. The string literal is used as-is as the value of the hidden member attribute.
+    /// </parameter>
     /// <remarks>
     /// The @Description annotation cannot be used at the module variable level. This separate annotation disambiguates any potential scoping issues that present themselves when the same name is used for both scopes.
     /// </remarks>

@@ -4,7 +4,7 @@
     /// @TestModule annotation, marks a module for unit test discovery.
     /// </summary>
     /// <remarks>
-    /// The test engine only scans modules with this annotation when discovering unit tests.
+    /// Rubberduck only scans modules with this annotation when discovering unit tests in a project.
     /// </remarks>
     /// <example>
     /// <module name="TestModule1" type="Standard Module">

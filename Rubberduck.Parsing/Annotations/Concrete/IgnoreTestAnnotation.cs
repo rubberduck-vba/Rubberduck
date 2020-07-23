@@ -1,10 +1,13 @@
 ﻿namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// @IgnoreTest annotation, used for ignoring a particular unit test in a test module.
+    /// @IgnoreTest annotation, used by Rubberduck for skipping a particular test when running the tests of a test module.
     /// </summary>
+    /// <parameter name="Reason" type="Text">
+    /// An optional argument/comment describing the reason for ignoring the test.
+    /// </parameter>
     /// <remarks>
-    /// Test Explorer will skip tests decorated with this annotation.
+    /// Test Explorer will skip tests decorated with this annotation. Use the ignore/un-ignore commands to automatically add or remove this annotation to a particular test without browsing to its source.
     /// </remarks>
     /// <example>
     /// <module name="Tests" type="Standard Module">
@@ -14,7 +17,7 @@
     ///
     /// '...
     /// 
-    /// '@IgnoreTest
+    /// '@IgnoreTest("Foo is currently breaking this test, see issue #42")
     /// '@TestMethod("Category")
     /// Private Sub GivenFoo_DoesBar()
     ///     '...

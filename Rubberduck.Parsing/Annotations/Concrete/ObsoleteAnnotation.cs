@@ -7,8 +7,8 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// @Obsolete annotation, marks a procedure as "obsolete". Rubberduck inspections can then warn about code that references them.
     /// </summary>
-    /// <parameter name="Message" type="String" required="False">
-    /// If provided, the first argument becomes additional metadata that Rubberduck can use in inspection results, for example.
+    /// <parameter name="Message" type="Text" required="False">
+    /// If provided, the first argument becomes additional metadata that Rubberduck can use in inspection results, and remains a valid and useful in-place comment.
     /// </parameter>
     /// <example>
     /// <module name="Class1" type="Class Module">

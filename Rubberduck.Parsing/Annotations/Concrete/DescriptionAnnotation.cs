@@ -7,7 +7,7 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// @Description annotation, uses the VB_Description member attribute to provide a docstring for a module member. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
-    /// <parameter name="DocString" type="String">
+    /// <parameter name="DocString" type="Text">
     /// This string literal parameter does not support expressions and/or multiline inputs. The string literal is used as-is as the value of the hidden member attribute.
     /// </parameter>
     /// <remarks>

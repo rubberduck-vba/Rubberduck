@@ -5,7 +5,7 @@ using Rubberduck.VBEditor;
 namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// @Exposed annotation, uses the VB_Exposed module attribute to make a class visible to a referencing project (classes are otherwise private). Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
+    /// @Exposed annotation, indicates the presence of a VB_Exposed module attribute value (True) to make a class visible to a referencing project (classes are otherwise private by default). Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
     /// <example>
     /// <module name="Class1" type="Class Module">

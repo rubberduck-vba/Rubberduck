@@ -1,7 +1,7 @@
 ﻿namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// @ModuleInitialize annotation, marks a procedure that the unit testing engine executes before running the first test of a module.
+    /// @ModuleInitialize annotation, marks a procedure that Rubberduck executes before running the first test of a module.
     /// </summary>
     /// <example>
     /// <module name="TestModule1" type="Standard Module">

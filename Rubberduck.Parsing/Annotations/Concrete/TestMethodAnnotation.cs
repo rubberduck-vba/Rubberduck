@@ -5,9 +5,9 @@ using Rubberduck.Common;
 namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// @TestMethod annotation, identifies procedures that contain unit tests.
+    /// @TestMethod annotation, identifies a procedure that constitutes a unit test.
     /// </summary>
-    /// <parameter name="TestCategory" type="String">
+    /// <parameter name="TestCategory" type="Text">
     /// If arguments are supplied, the current implementation makes the first provided argument be the test category.
     /// </parameter>
     /// <example>

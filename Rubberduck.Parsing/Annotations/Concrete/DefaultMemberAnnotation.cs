@@ -7,7 +7,7 @@ using Rubberduck.Resources.Registration;
 namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// @DefaultMember annotation, uses the VB_UserMemId attribute to make a class member the default member of that class. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
+    /// @DefaultMember annotation, indicates that the member should have a VB_UserMemId attribute value (0) making it the default member of that class. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
     /// <example>
     /// <module name="Class1" type="Class Module">

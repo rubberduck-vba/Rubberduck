@@ -6,7 +6,7 @@ using Rubberduck.Resources.Registration;
 namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// @Enumerator annotation, uses the VB_UserMemId attribute to make a class member the enumerator-provider member of that class, enabling For Each iteration of custom collections. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
+    /// @Enumerator annotation, indicates that the member should have a VB_UserMemId attribute value (-4) making it the enumerator-provider member of that class, enabling 'For Each' iteration of custom collections. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
     /// <example>
     /// <module name="Class1" type="Class Module">

@@ -1,7 +1,7 @@
 ﻿namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// @ModuleCleanup annotation, marks a procedure that the unit testing engine executes after all tests of a module have completed.
+    /// @ModuleCleanup annotation, marks a procedure that Rubberduck executes after all tests of a module have completed.
     /// </summary>
     /// <example>
     /// <module name="TestModule1" type="Standard Module">

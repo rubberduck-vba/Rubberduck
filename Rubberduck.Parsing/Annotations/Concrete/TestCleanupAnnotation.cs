@@ -1,7 +1,7 @@
 ﻿namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// @TestCleanup annotation, marks a procedure that the unit testing engine executes once after running each of the tests in a module.
+    /// @TestCleanup annotation, marks a procedure that Rubberduck executes once after running each of the tests in a module.
     /// </summary>
     /// <example>
     /// <module name="TestModule1" type="Standard Module">
