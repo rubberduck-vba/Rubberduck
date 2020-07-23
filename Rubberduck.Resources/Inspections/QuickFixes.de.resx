@@ -192,7 +192,7 @@
   <data name="IntroduceLocalVariableQuickFix" xml:space="preserve">
     <value>Lokale Variable einführen</value>
   </data>
-  <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
+  <data name="IntroduceGetAccessorQuickFix" xml:space="preserve">
     <value>'Property Get' Zugriff hinzufügen</value>
   </data>
   <data name="ChangeDimToPrivateQuickFix" xml:space="preserve">

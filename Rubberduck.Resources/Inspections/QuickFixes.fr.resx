@@ -195,7 +195,7 @@
   <data name="IntroduceLocalVariableQuickFix" xml:space="preserve">
     <value>Introduire une variable locale</value>
   </data>
-  <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
+  <data name="IntroduceGetAccessorQuickFix" xml:space="preserve">
     <value>Ajouter un accesseur 'Property Get'</value>
   </data>
   <data name="ApplicationWorksheetFunctionQuickFix" xml:space="preserve">

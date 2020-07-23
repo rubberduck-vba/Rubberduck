@@ -72,7 +72,7 @@ End Property";
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            return new WriteOnlyPropertyQuickFix();
+            return new IntroduceGetAccessorQuickFix();
         }
 
         protected override IVBE TestVbe(string code, out IVBComponent component)

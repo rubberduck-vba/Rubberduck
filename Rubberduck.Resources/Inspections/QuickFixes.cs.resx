@@ -201,7 +201,7 @@
   <data name="SetObjectVariableQuickFix" xml:space="preserve">
     <value>Použij klíčové slovo 'Set'</value>
   </data>
-  <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
+  <data name="IntroduceGetAccessorQuickFix" xml:space="preserve">
     <value>Přidej accessor 'property get'</value>
   </data>
   <data name="ChangeDimToPrivateQuickFix" xml:space="preserve">

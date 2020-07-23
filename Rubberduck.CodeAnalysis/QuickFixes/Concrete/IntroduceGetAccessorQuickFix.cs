@@ -41,9 +41,9 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// ]]>
     /// </after>
     /// </example>
-    internal sealed class WriteOnlyPropertyQuickFix : QuickFixBase
+    internal sealed class IntroduceGetAccessorQuickFix : QuickFixBase
     {
-        public WriteOnlyPropertyQuickFix()
+        public IntroduceGetAccessorQuickFix()
             : base(typeof(WriteOnlyPropertyInspection))
         {}
 
