@@ -8,6 +8,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace RubberduckCodeAnalysis
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
+    public class ParsingXmlDocAnalyzer : DiagnosticAnalyzer
+    {
+        public const string 
+    }
+
+    [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class InspectionXmlDocAnalyzer : DiagnosticAnalyzer
     {
         public const string MissingInspectionSummaryElement = "MissingInspectionSummaryElement";
@@ -377,8 +383,10 @@ namespace RubberduckCodeAnalysis
         {
             "Standard Module",
             "Class Module",
-            "Document",
-            "User Form"
+            "Predeclared Class",
+            "Interface Module",
+            "Document Module",
+            "UserForm Module",
         };
     }
 }
