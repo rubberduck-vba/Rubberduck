@@ -19,7 +19,7 @@ namespace RubberduckCodeAnalysis {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -147,6 +147,15 @@ namespace RubberduckCodeAnalysis {
         public static string InvalidTypeAttributeMessageFormat {
             get {
                 return ResourceManager.GetString("InvalidTypeAttributeMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All annotations must have a short &lt;summary&gt; xml-doc comment describing what the annotation is used for, that reads comfortably in IntelliSense..
+        /// </summary>
+        public static string MissingAnnotationSummaryElementDescription {
+            get {
+                return ResourceManager.GetString("MissingAnnotationSummaryElementDescription", resourceCulture);
             }
         }
         
@@ -367,29 +376,11 @@ namespace RubberduckCodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Missing xml-doc &apos;summary&apos; element.
-        /// </summary>
-        public static string MissingInspectionSummaryElement {
-            get {
-                return ResourceManager.GetString("MissingInspectionSummaryElement", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to All inspections must have a short &lt;summary&gt; xml-doc comment describing what the inspection is looking for, that reads comfortably in IntelliSense..
         /// </summary>
         public static string MissingInspectionSummaryElementDescription {
             get {
                 return ResourceManager.GetString("MissingInspectionSummaryElementDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to XML documentation for type &apos;{0}&apos; is missing a &lt;summary&gt; element..
-        /// </summary>
-        public static string MissingInspectionSummaryElementMessageFormat {
-            get {
-                return ResourceManager.GetString("MissingInspectionSummaryElementMessageFormat", resourceCulture);
             }
         }
         
@@ -597,6 +588,24 @@ namespace RubberduckCodeAnalysis {
         public static string MissingRequiredLibAttributeMessageFormat {
             get {
                 return ResourceManager.GetString("MissingRequiredLibAttributeMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing xml-doc &apos;summary&apos; element.
+        /// </summary>
+        public static string MissingSummaryElement {
+            get {
+                return ResourceManager.GetString("MissingSummaryElement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML documentation for type &apos;{0}&apos; is missing a &lt;summary&gt; element..
+        /// </summary>
+        public static string MissingSummaryElementMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingSummaryElementMessageFormat", resourceCulture);
             }
         }
         

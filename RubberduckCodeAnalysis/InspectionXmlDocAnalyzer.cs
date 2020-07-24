@@ -8,19 +8,13 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace RubberduckCodeAnalysis
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class ParsingXmlDocAnalyzer : DiagnosticAnalyzer
-    {
-        public const string 
-    }
-
-    [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class InspectionXmlDocAnalyzer : DiagnosticAnalyzer
     {
         public const string MissingInspectionSummaryElement = "MissingInspectionSummaryElement";
         private static readonly DiagnosticDescriptor MissingSummaryElementRule = new DiagnosticDescriptor(
             MissingInspectionSummaryElement,
-            new LocalizableResourceString(nameof(Resources.MissingInspectionSummaryElement), Resources.ResourceManager, typeof(Resources)),
-            new LocalizableResourceString(nameof(Resources.MissingInspectionSummaryElementMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingSummaryElement), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingSummaryElementMessageFormat), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
             DiagnosticSeverity.Error,
             true,
