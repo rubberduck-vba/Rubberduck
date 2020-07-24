@@ -121,7 +121,7 @@
     <value>Einstellung für die Unit Tests</value>
   </data>
   <data name="PageInstructions" xml:space="preserve">
-    <value>Einstellungen für neue Unit Test Module und Methoden</value>
+    <value>Einstellungen für neue Unit Test Module und Methoden.</value>
   </data>
   <data name="UnitTestSettings_AssertMode" xml:space="preserve">
     <value>Typ-Sicherheit:</value>

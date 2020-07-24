@@ -202,7 +202,7 @@
     <value>Extrahovat metodu</value>
   </data>
   <data name="AllImplementations_NoneFound" xml:space="preserve">
-    <value>Třída nebo člen '{0}' ještě není implementován</value>
+    <value>Třída nebo člen '{0}' ještě není implementován.</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Domů</value>
@@ -220,7 +220,7 @@
 {2}
 
 Chcete obnovit původní konfiguraci?
-Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý soubor bude uložen v '{3}'</value>
+Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý soubor bude uložen v '{3}'.</value>
   </data>
   <data name="ResolutionProgress" xml:space="preserve">
     <value>Pokouším se vyřešit...</value>
@@ -750,10 +750,10 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
     <value>Parsováno</value>
   </data>
   <data name="ParserState_Parsing" xml:space="preserve">
-    <value>Parsuji...</value>
+    <value>Parsuji…</value>
   </data>
   <data name="ParserState_Pending" xml:space="preserve">
-    <value>Čekám...</value>
+    <value>Čekám</value>
   </data>
   <data name="ParserState_Ready" xml:space="preserve">
     <value>Připraven</value>
@@ -888,7 +888,7 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
     <value>Dovolené Identifikátory</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>Tyto identifikátory budou ignorovány inspekcí 'Použij smysluplné názvy'</value>
+    <value>Tyto identifikátory budou ignorovány inspekcí 'Použij smysluplné názvy'.</value>
   </data>
   <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refaktorovat / Zapouzdřit Pole</value>
@@ -927,7 +927,7 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
     <value>Přiřazen ByVal parametr QuickFix - Udělat Lokální Kopii</value>
   </data>
   <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Prosím specifikujte název, který se má použít na lokální kopii ByVal {0} '{1}'</value>
+    <value>Prosím specifikujte název, který se má použít na lokální kopii ByVal {0} '{1}'.</value>
   </data>
   <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
     <value>Specifikujte Název Kopie Lokální Proměnné</value>
@@ -944,7 +944,7 @@ Chcete-li se podívat na změny a ručně aktualizovat Rubberduck, klikněte na 
 Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí. Tuto funkci můžete vypnout v Rubberduck &gt; Nastavení.</value>
   </data>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
-    <value>Při startu zkontrolovat, zda je dostupná nová verze</value>
+    <value>Při startu zkontrolovat, zda je dostupná nová verze.</value>
   </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' je již přístupný v tomto rozsahu.</value>
@@ -1039,7 +1039,7 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
     <value>Následující projekt(y) nemohou být zkompilovány, což je s největší pravděpodobností kvůli parsovacím chybám. I přesto pokračovat? {0}</value>
   </data>
   <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
-    <value>Není možno zkompilovat pro parsování</value>
+    <value>Není možno zkompilovat pro parsování.</value>
   </data>
   <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
     <value>Zkompilovat kód před parsováním</value>
@@ -1212,7 +1212,7 @@ End Enum</value>
     <value>Hledat referenci...</value>
   </data>
   <data name="References_SubCaption" xml:space="preserve">
-    <value>Vybrat knihovny a VB projekty pro přidání nebo odebrání</value>
+    <value>Vybrat knihovny a VB projekty pro přidání nebo odebrání.</value>
   </data>
   <data name="References_TypeLibs" xml:space="preserve">
     <value>Knihovny</value>
@@ -1303,7 +1303,7 @@ End Enum</value>
     <value>Atributy členů pro následující moduly se nepodařilo obnovit, protože je jich nelze nalézt. {0}</value>
   </data>
   <data name="AllReferences_NoneFoundReference" xml:space="preserve">
-    <value>V projektu nebylo nalezeno žádné využití pro referenci '{0}'</value>
+    <value>V projektu nebylo nalezeno žádné využití pro referenci '{0}'.</value>
   </data>
   <data name="AllReferences_PerformanceWarning" xml:space="preserve">
     <value>Výsledek hledání využití reference '{0}' vrátilo {1} výsledků. Jejich zobrazení může mít negativní dopad na výkon. Pokračovat?</value>
@@ -1383,9 +1383,6 @@ End Enum</value>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Uložit a Zavřít</value>
   </data>
-  <data name="RegexAssistant_EncloseWhitespace_EnclosingFormat" xml:space="preserve">
-    <value>&lt;{0}&gt;</value>
-  </data>
   <data name="RegexAssistant_SpelledOut_NewLine" xml:space="preserve">
     <value>nový-řádek</value>
   </data>
@@ -1411,16 +1408,16 @@ End Enum</value>
     <value>Bezvýsledný</value>
   </data>
   <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
-    <value>'{0}' nezačíná písmenem</value>
+    <value>'{0}' nezačíná písmenem.</value>
   </data>
   <data name="InvalidNameCriteria_ExceedsMaximumLengthFormat" xml:space="preserve">
-    <value>'{0}' překročil maximální povolenou délku řetězce</value>
+    <value>'{0}' překročil maximální povolenou délku řetězce.</value>
   </data>
   <data name="InvalidNameCriteria_InvalidCharactersFormat" xml:space="preserve">
     <value>'{0}' obsahuje speciální znak(y) jiné než podtržítka.</value>
   </data>
   <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">
-    <value>Identifikátory VBA nemohou být prázdné, nebo mít nulovou délku</value>
+    <value>Identifikátory VBA nemohou být prázdné, nebo mít nulovou délku.</value>
   </data>
   <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
     <value>'{0}' je vyhrazené klíčové slovo.</value>
@@ -1451,9 +1448,6 @@ End Enum</value>
   </data>
   <data name="TestExplorer_AppendHeader" xml:space="preserve">
     <value>Rubberduck: Výsledky Testů - {0}</value>
-  </data>
-  <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
-    <value>{0} {1} {2} {3} {4} {5}</value>
   </data>
   <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
     <value>Nelze přerušit Parser k provedení operace refaktoringu</value>

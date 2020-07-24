@@ -193,7 +193,7 @@
     <value>[{0}] zum Schließen und Speichern oder [{1}] zum Verwerfen der Änderungen klicken.</value>
   </data>
   <data name="PageInstructions_IndenterSettings" xml:space="preserve">
-    <value>Konfiguration der Einrückungseinstellungen</value>
+    <value>Konfiguration der Einrückungseinstellungen.</value>
   </data>
   <data name="PageInstructions_InspectionSettings" xml:space="preserve">
     <value>Konfiguriere Untersuchungssensitivität. Zum Deaktivieren einer Untersuchungsart "Nicht anzeigen" auswählen.</value>
@@ -202,7 +202,7 @@
     <value>Zu erkennende Markierungen in Kommentaren konfigurieren.</value>
   </data>
   <data name="PageInstructions_UnitTestSettings" xml:space="preserve">
-    <value>Einstellungen für neue Unit Test Module und Methoden</value>
+    <value>Einstellungen für neue Unit Test Module und Methoden.</value>
   </data>
   <data name="PageInstructions_WindowSettings" xml:space="preserve">
     <value>Die Einstellungen für Fenstersichtbarkeit anpassen.</value>
@@ -223,7 +223,7 @@
     <value>Einstellungen der automatischen Vervollständigung speichern</value>
   </data>
   <data name="PageInstructions_ReferenceSettings" xml:space="preserve">
-    <value>Einstellungen bzgl. des Hinzufügens und Entfernens von Referenzen verwalten</value>
+    <value>Einstellungen bzgl. des Hinzufügens und Entfernens von Referenzen verwalten.</value>
   </data>
   <data name="PageHeader_ReferenceSettings" xml:space="preserve">
     <value>Referenzeinstellingen</value>

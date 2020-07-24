@@ -190,7 +190,7 @@
     <value>Zde se jedná nejspíše o bug. Proměnná je referována, avšak nikdy jí není nic přiděleno.</value>
   </data>
   <data name="MultilineParameterInspection" xml:space="preserve">
-    <value>Rozdělení deklarace parametru na více řádků velmi zraňuje čitelnost. I když je parametr dlouhý, zvažte jeho deklaraci na jeden řádek. </value>
+    <value>Rozdělení deklarace parametru na více řádků velmi zraňuje čitelnost. I když je parametr dlouhý, zvažte jeho deklaraci na jeden řádek.</value>
   </data>
   <data name="ObsoleteTypeHintInspection" xml:space="preserve">
     <value>Type nápovědní písmena v jazyku existují jen pro podporu zastaralého kódu, který je vyžaduje; můžou být bez obav nahrazeny deklaracemi jako "As", které specifikují typ explicitně a mohou být vynechány v jiných referencích identifikátoru.</value>
@@ -323,7 +323,7 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
     <value>Anotace je specifikována vícenásobně, avšak měla by být zadána pouze jednou.</value>
   </data>
   <data name="ModuleWithoutFolderInspection" xml:space="preserve">
-    <value>Moduly bez '@Folder' anotace nelze v Code Exploreru uživatelsky seskupovat do skupin</value>
+    <value>Moduly bez '@Folder' anotace nelze v Code Exploreru uživatelsky seskupovat do skupin.</value>
   </data>
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>Přiřazení je okamžitě přepsáno jiným přiřazením nebo na něj není nikdy odkazováno.</value>
