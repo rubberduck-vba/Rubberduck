@@ -9,8 +9,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// @Exposed annotation, indicates the presence of a VB_Exposed module attribute value (True) to make a class visible to a referencing project (classes are otherwise private by default). Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
     /// <example>
-    /// <module name="Class1" type="Class Module">
     /// <before>
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// '@Exposed
     /// Option Explicit
@@ -18,8 +18,10 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
+    /// </module>
     /// </before>
     /// <after>
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Attribute VB_Exposed = True
     /// '@Exposed
@@ -28,8 +30,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
-    /// </after>
     /// </module>
+    /// </after>
     /// </example>
     public sealed class ExposedModuleAnnotation : FixedAttributeValueAnnotationBase
     {

@@ -7,8 +7,8 @@ namespace Rubberduck.Parsing.Annotations
     /// Consider keeping the default/predeclared instance stateless.
     /// </remarks>
     /// <example>
-    /// <module name="Class1" type="Class Module">
     /// <before>
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// '@PredeclaredId
     /// Option Explicit
@@ -17,8 +17,10 @@ namespace Rubberduck.Parsing.Annotations
     ///     Set Create = New Class1
     /// End Sub
     /// ]]>
+    /// </module>
     /// </before>
     /// <after>
+    /// <module name="Class1" type="Predeclared Class">
     /// <![CDATA[
     /// Attribute VB_PredeclaredId = True
     /// '@PredeclaredId
@@ -28,8 +30,8 @@ namespace Rubberduck.Parsing.Annotations
     ///     Set Create = New Class1
     /// End Sub
     /// ]]>
-    /// </after>
     /// </module>
+    /// </after>
     /// </example>
     public sealed class PredeclaredIdAnnotation : FixedAttributeValueAnnotationBase
     {

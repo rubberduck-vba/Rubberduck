@@ -7,8 +7,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// @DefaultMember annotation, indicates that the member should have a VB_UserMemId attribute value (0) making it the default member of that class. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
     /// <example>
-    /// <module name="Class1" type="Class Module">
     /// <before>
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
     /// Private InternalState As VBA.Collection
@@ -27,8 +27,10 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     ///     Set InternalState = New VBA.Collection
     /// End Sub
     /// ]]>
+    /// </module>
     /// </before>
     /// <after>
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
     /// Private InternalState As VBA.Collection
@@ -48,8 +50,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     ///     Set InternalState = New VBA.Collection
     /// End Sub
     /// ]]>
-    /// </after>
     /// </module>
+    /// </after>
     /// </example>
     public sealed class DefaultMemberAnnotation : FixedAttributeValueAnnotationBase
     {

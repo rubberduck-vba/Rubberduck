@@ -14,8 +14,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// A single-letter string argument maps the hotkey. If the letter is in UPPER CASE, the hotkey is Ctrl+Shift+letter; if the letter is lower case, the hotkey is Ctrl+letter. Avoid remapping commonly used keyboard shortcuts!
     /// </parameter>
     /// <example>
-    /// <module name="Module1" type="Standard Module">
     /// <before>
+    /// <module name="Module1" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     ///
@@ -24,8 +24,10 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     ///     '...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </before>
     /// <after>
+    /// <module name="Module1" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     ///
@@ -35,8 +37,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     ///     '...
     /// End Sub
     /// ]]>
-    /// </after>
     /// </module>
+    /// </after>
     /// </example>
     public sealed class ExcelHotKeyAnnotation : FlexibleAttributeValueAnnotationBase
     {
