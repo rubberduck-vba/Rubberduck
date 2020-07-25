@@ -16,8 +16,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// This documentation string appears in the VBE's own Object Browser, as well as in various Rubberduck UI elements.
     /// </remarks>
     /// <example>
-    /// <module name="Class1" type="Class Module">
     /// <before>
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// '@ModuleDescription("Represents an object responsible for doing something.")
     /// Option Explicit
@@ -25,8 +25,10 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
+    /// </module>
     /// </before>
     /// <after>
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Attribute VB_Description = "Represents an object responsible for doing something."
     /// '@ModuleDescription("Represents an object responsible for doing something.")
@@ -35,8 +37,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
-    /// </after>
     /// </module>
+    /// </after>
     /// </example>
     public sealed class ModuleDescriptionAnnotation : DescriptionAttributeAnnotationBase
     {

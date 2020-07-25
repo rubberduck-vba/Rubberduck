@@ -15,8 +15,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// The @VariableDescription annotation complements the @description annotation, which can be applied to methods. Having separate annotations for variables and members disambiguates any potential scoping issues presenting themselves when the same name is used for both scopes.
     /// </remarks>
     /// <example>
-    /// <module name="Class1" type="Class Module">
     /// <before>
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -26,8 +26,10 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
+    /// </module>
     /// </before>
     /// <after>
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -38,8 +40,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
-    /// </after>
     /// </module>
+    /// </after>
     /// </example>
     public class VariableDescriptionAnnotation : DescriptionAttributeAnnotationBase
     {

@@ -6,7 +6,7 @@ using Rubberduck.Parsing.Annotations;
 namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
-    /// @Description annotation, uses the VB_Description member attribute to provide a docstring for a module member. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
+    /// @Description annotation, indicates that the member should have a VB_Description attribute to provide a docstring. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
     /// <parameter name="DocString" type="Text">
     /// This string literal parameter does not support expressions and/or multiline inputs. The string literal is used as-is as the value of the hidden member attribute.
@@ -15,8 +15,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// This documentation string appears in the VBE's own Object Browser, as well as in various Rubberduck UI elements.
     /// </remarks>
     /// <example>
-    /// <module name="Class1" type="Class Module">
     /// <before>
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
     ///
@@ -24,8 +24,10 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
+    /// </module>
     /// </before>
     /// <after>
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
     ///
@@ -34,8 +36,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Attribute DoSomething.VB_Description = "Does something"
     /// End Sub
     /// ]]>
-    /// </after>
     /// </module>
+    /// </after>
     /// </example>
     public sealed class DescriptionAnnotation : DescriptionAttributeAnnotationBase
     {

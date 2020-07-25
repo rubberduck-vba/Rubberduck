@@ -6,7 +6,7 @@ using Rubberduck.Parsing.Annotations;
 namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
-    /// @MemberAttribute annotation, allows specifying arbitrary VB_Attribute for members. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
+    /// @MemberAttribute annotation, indicates the presence of a hidden member attribute; allows specifying arbitrary VB_Attribute for members. Use the quick-fixes to "Rubberduck Opportunities" code inspections to synchronize annotations and attributes.
     /// </summary>
     /// <parameter name="VB_Attribute" type="Identifier">
     /// The literal identifier name of the member VB_Attribute.
@@ -19,8 +19,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// This annotation may be used with module variable targets.
     /// </remarks>
     /// <example>
-    /// <module name="Class1" type="Class Module">
     /// <before>
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
     ///
@@ -28,8 +28,10 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
+    /// </module>
     /// </before>
     /// <after>
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
     ///
@@ -38,8 +40,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Attribute DoSomething.VB_Description = "Does something"
     /// End Sub
     /// ]]>
-    /// </after>
     /// </module>
+    /// </after>
     /// </example>
     public class MemberAttributeAnnotation : FlexibleAttributeAnnotationBase
     {
