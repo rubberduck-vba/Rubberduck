@@ -20,7 +20,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// <![CDATA[
     /// Option Explicit
     ///
-    /// @Description("Does something")
+    /// '@Description("Does something")
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// <![CDATA[
     /// Option Explicit
     ///
-    /// @Description("Does something")
+    /// '@Description("Does something")
     /// Public Sub DoSomething()
     /// Attribute DoSomething.VB_Description = "Does something"
     /// End Sub

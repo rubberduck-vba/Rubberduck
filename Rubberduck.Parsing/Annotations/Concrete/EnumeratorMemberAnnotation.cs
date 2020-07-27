@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Option Explicit
     /// Private InternalState As VBA.Collection
     ///
-    /// @Enumerator
+    /// '@Enumerator
     /// Public Property Get NewEnum() As IUnknown
     ///     Set NewEnum = InternalState.[_NewEnum]
     /// End Sub
@@ -28,7 +28,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Option Explicit
     /// Private InternalState As VBA.Collection
     ///
-    /// @Enumerator
+    /// '@Enumerator
     /// Public Property Get NewEnum() As IUnknown
     /// Attribute NewEnum.VB_UserMemId = -4
     ///     Set NewEnum = InternalState.[_NewEnum]

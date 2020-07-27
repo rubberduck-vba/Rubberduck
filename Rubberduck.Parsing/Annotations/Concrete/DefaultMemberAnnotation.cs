@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Option Explicit
     /// Private InternalState As VBA.Collection
     ///
-    /// @DefaultMember
+    /// '@DefaultMember
     /// Public Property Get Item(ByVal Index As Variant) As Variant
     ///     Item = InternalState(Index)
     /// End Sub
@@ -35,7 +35,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// Option Explicit
     /// Private InternalState As VBA.Collection
     ///
-    /// @DefaultMember
+    /// '@DefaultMember
     /// Public Property Get Item(ByVal Index As Variant) As Variant
     /// Attribute Item.VB_UserMemId = 0
     ///     Item = InternalState(Index)

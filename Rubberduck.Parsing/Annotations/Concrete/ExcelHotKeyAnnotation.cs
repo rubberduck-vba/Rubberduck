@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// <![CDATA[
     /// Option Explicit
     ///
-    /// @ExcelHotkey("D")
+    /// '@ExcelHotkey("D")
     /// Public Sub DoSomething()
     ///     '...
     /// End Sub
@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// <![CDATA[
     /// Option Explicit
     ///
-    /// @ExcelHotkey("D")
+    /// '@ExcelHotkey("D")
     /// Public Sub DoSomething()
     /// Attribute DoSomething.VB_ProcData.VB_Invoke_Func = "D\n14"
     ///     '...
