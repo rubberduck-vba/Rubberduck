@@ -144,6 +144,8 @@ namespace Rubberduck.UI.Inspections
             OpenInspectionSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
+            
+            OpenInspectionDetailsPageCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteOpenInspectionDetailsPageCommand);
 
             QuickFixCommands = new List<(ICommand command, string key, Func<IQuickFix, bool> visibility)>
             {
@@ -195,6 +197,8 @@ namespace Rubberduck.UI.Inspections
             get => _selectedItem;
             set
             {
+                SelectedInspection = null;
+                CanQuickFix = false;
                 if (value == _selectedItem)
                 {
                     return;
@@ -203,8 +207,6 @@ namespace Rubberduck.UI.Inspections
                 _selectedItem = value; 
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(QuickFixes));
-                SelectedInspection = null;
-                CanQuickFix = false;
 
                 if (_selectedItem is IInspectionResult inspectionResult)
                 {
@@ -225,6 +227,7 @@ namespace Rubberduck.UI.Inspections
             {
                 _selectedInspection = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(InspectionDetailsUrl));
             }
         }
 
@@ -354,6 +357,7 @@ namespace Rubberduck.UI.Inspections
         public CommandBase OpenInspectionSettings { get; }
         public CommandBase CollapseAllCommand { get; }
         public CommandBase ExpandAllCommand { get; }
+        public CommandBase OpenInspectionDetailsPageCommand { get; }
 
         private void ExecuteCollapseAll(object parameter)
         {
@@ -766,6 +770,12 @@ namespace Rubberduck.UI.Inspections
                 OnPropertyChanged();
             }
         }
+
+        public string InspectionDetailsUrl => _selectedInspection == null 
+            ? "https://rubberduckvba.com/inspections"
+            : $"https://rubberduckvba.com/inspections/details/{_selectedInspection.AnnotationName}";
+
+        private void ExecuteOpenInspectionDetailsPageCommand(object parameter) => Process.Start(new ProcessStartInfo(InspectionDetailsUrl));
 
         private static readonly List<(string Name, hAlignment alignment)> ResultColumns = new List<(string Name, hAlignment alignment)>
         {
