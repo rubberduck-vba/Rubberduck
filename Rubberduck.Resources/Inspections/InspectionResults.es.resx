@@ -229,7 +229,7 @@
     <value>La variable local '{0}' no está declarada.</value>
   </data>
   <data name="AggregateInspection" xml:space="preserve">
-    <value>{0} ({1} resultados).</value>
+    <value>{0} ({1} resultados)</value>
   </data>
   <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
     <value>El miembro '{0}' no se encontró en la interfaz de tiempo de compilación para el tipo '{1}'.</value>
@@ -292,7 +292,7 @@
     <value>Se genera un error en tiempo de ejecución utilizando la declaración 'Error' obsoleta.</value>
   </data>
   <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
-    <value>Literal booleano '{0}' asignado en condicional.</value>
+    <value>Literal booleano '{0}' asignado en condicional</value>
   </data>
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>El módulo/clase '{0}' está vacío.</value>

@@ -202,7 +202,7 @@
     <value>Haga clic en [{0}] para cerrar la ventana y aplicar los cambios, o [{1}] para descartarlos.</value>
   </data>
   <data name="PageInstructions_IndenterSettings" xml:space="preserve">
-    <value>Configurar los ajustes del indentador</value>
+    <value>Configurar los ajustes del indentador.</value>
   </data>
   <data name="PageInstructions_InspectionSettings" xml:space="preserve">
     <value>Configurar la severidad de la inspección. Utilice "DoNotShow" para deshabilitar una inspección.</value>

@@ -275,14 +275,13 @@
   </data>
   <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Inspections Rubberduck - {0}
-{1} problèmes trouvés.
-</value>
+{1} problèmes trouvés.</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Accueil</value>
   </data>
   <data name="LoadConfigError" xml:space="preserve">
-    <value>Une erreur est survenue lors du chargement des configurations de Rubberduck.</value>
+    <value>Une erreur est survenue lors du chargement des configurations de Rubberduck</value>
   </data>
   <data name="ParseProgress" xml:space="preserve">
     <value>Analyse de '{0}'...</value>
@@ -303,7 +302,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Résolution...</value>
   </data>
   <data name="RubberduckLoadFailure" xml:space="preserve">
-    <value>Une erreur est survenue lors du chargement du complément Rubberduck.</value>
+    <value>Une erreur est survenue lors du chargement du complément Rubberduck</value>
   </data>
   <data name="Rubberduck_AboutBuild" xml:space="preserve">
     <value>Version {0}</value>
@@ -486,7 +485,8 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Nouveau</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>Le nom '{0}' entre en collision avec '{1}', ayant la même portée. Continuer?</value>
+    <value>Le nom '{0}' entre en collision avec '{1}', ayant la même portée. Renommer '{2}' à '{0}' peut résulter en code non-compilable ou sournoisement modifier la logique du code appelant.
+Continuer?</value>
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Renommer {0}</value>
@@ -532,7 +532,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Rubberduck - Extraire une interface</value>
   </data>
   <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
-    <value>'{0}' n'est pas utilisé</value>
+    <value>'{0}' n'est jamais utilisé.</value>
   </data>
   <data name="EncapsulateField_TitleText" xml:space="preserve">
     <value>Encapsuler le champ</value>
@@ -610,7 +610,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Remplacer tout</value>
   </data>
   <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
-    <value>Sélection invalide</value>
+    <value>Sélection invalide.</value>
   </data>
   <data name="IntroduceField_Caption" xml:space="preserve">
     <value>Rubberduck - Introduire un champ</value>
@@ -745,7 +745,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Nombre d'espaces:</value>
   </data>
   <data name="CommonHotkey_InvalidKey" xml:space="preserve">
-    <value>Clé invalide</value>
+    <value>Touche invalide.</value>
   </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Sévérité:</value>
@@ -799,7 +799,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Par type d'inspection</value>
   </data>
   <data name="ParserState_Parsing" xml:space="preserve">
-    <value>Analyse...</value>
+    <value>Analyse…</value>
   </data>
   <data name="CodeInspectionResults_Location" xml:space="preserve">
     <value>Emplacement</value>
@@ -847,7 +847,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Délimiteur de dossiers:</value>
   </data>
   <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
-    <value>Niveau minimum du journal</value>
+    <value>Niveau minimum du journal:</value>
   </data>
   <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
     <value>Désactivé</value>
@@ -915,7 +915,7 @@ End Sub</value>
     <value>(pas d'expression)</value>
   </data>
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
-    <value>Rubberduck ne redémarre pas.</value>
+    <value>Rubberduck ne redémarre pas</value>
   </data>
   <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
     <value>Global</value>
@@ -927,7 +927,7 @@ End Sub</value>
     <value>Analyseur d'expressions Regex</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Identifiants en liste blanche</value>
+    <value>Identifiants permis</value>
   </data>
   <data name="RegexAssistant_Instructions" xml:space="preserve">
     <value>Entrer une expression Regex à analyser dans l'espace ci-dessous.</value>
@@ -939,7 +939,7 @@ End Sub</value>
     <value>Les fenêtres ancrables n'ont probablement pas été correctement détruites, et/ou n'ont pas pu être recréées. l'environnement peut ne pas être dans un état stable. Rubberduck démerrera normalement à la prochaine initialisation du VBE.</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>L'inspection des noms ignorera ces identifiants</value>
+    <value>L'inspection des noms ignorera ces identifiants.</value>
   </data>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Résolution des références...</value>
@@ -966,7 +966,7 @@ End Sub</value>
     <value>références</value>
   </data>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
-    <value>Vérifier si une nouvelle version est diponible au démarrage</value>
+    <value>Vérifier si une nouvelle version est diponible au démarrage.</value>
   </data>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
     <value>Vous utilisez présentement la version {0}.
@@ -1217,7 +1217,7 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
     <value>Appliquer</value>
   </data>
   <data name="References_AddFailedCaption" xml:space="preserve">
-    <value>La référence n'a pu être ajoutée.</value>
+    <value>La référence n'a pu être ajoutée</value>
   </data>
   <data name="References_BrowseCaption" xml:space="preserve">
     <value>Parcourir...</value>
@@ -1238,7 +1238,7 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
     <value>Bibliothêques (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll</value>
   </data>
   <data name="References_Caption" xml:space="preserve">
-    <value>Ajouter/Supprimer Références</value>
+    <value>Ajouter/Supprimer Références...</value>
   </data>
   <data name="AllReferences_NoneFoundReference" xml:space="preserve">
     <value>Aucune utilisation de '{0}' n'a été trouvée dans le projet.</value>
@@ -1352,7 +1352,7 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
     <value>Échec de la récupération des attributs</value>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
-    <value>'{0}' n'est pas défini par l'utilisateur</value>
+    <value>'{0}' n'est pas défini par l'utilisateur.</value>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
     <value>'{0}' doit être défini dans le même projet que la cible.</value>
@@ -1382,7 +1382,7 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
     <value>Développer tout</value>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
-    <value>'{0}' est accessible globalement, et est utilisé</value>
+    <value>'{0}' est accessible globalement, et est utilisé.</value>
   </data>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Enregistrer &amp; Fermer</value>
@@ -1513,7 +1513,7 @@ Confirmer?</value>
   <data name="ImportCommand_DuplicateModule" xml:space="preserve">
     <value>Plus d'un fichier contient du code pour le componsant '{0}'.
 
-Mise à jour annulée.</value>
+Échec de l'importation.</value>
   </data>
   <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
     <value>Le type de composant de '{0}' ne correspond pas au type indiqué par l'extension du fichier '{1}'.
@@ -1523,6 +1523,187 @@ Mise à jour annulée.</value>
   <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
     <value>Aucun module document existant avec le nom '{0}'; le fichier '{1}' ne pourra pas être importé.
 
-Mise à jour annulée.</value>
+Échec de l'importation.</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_AddArgumentButtonLabel" xml:space="preserve">
+    <value>Ajouter</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
+    <value>Ajouter/Ajuster l'Attribut</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_AnnotationLabel" xml:space="preserve">
+    <value>Annotation à ajouter:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentsLabel" xml:space="preserve">
+    <value>Arguments de l'annotation:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentTypeHeader" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentValueHeader" xml:space="preserve">
+    <value>Valeur</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Annoter la Déclaration</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_DeclarationLabel" xml:space="preserve">
+    <value>Déclaration:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_Instructions" xml:space="preserve">
+    <value>Sélectionner une annotation et les valeurs associées.</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_RemoveArgumentButtonLabel" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_TitleText" xml:space="preserve">
+    <value>Annoter la déclaration</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_AttributeNameStart" xml:space="preserve">
+    <value>Les arguments de type 'Attribute Name' doivent débuter par 'VB_'.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_EmptyArgument" xml:space="preserve">
+    <value>Les arguments ne peuvent être laissés vides.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_InspectionName" xml:space="preserve">
+    <value>Les arguments de type 'Inspection Name' doivent correspondre au nom d'une inspection existante.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_Newline" xml:space="preserve">
+    <value>Les arguments d'annotations doivent tenir sur une seule ligne.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
+    <value>La valeur des arguments de type 'Boolean' doit être 'True' ou 'False'.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
+    <value>La valeur des arguments de type 'Number' doit être un nombre entier ou décimal valide.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
+    <value>La valeur des arguments ne doit pas contenir de caractères de contrôle.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_TooLong" xml:space="preserve">
+    <value>La valeur des arguments ne peut dépasser {0} caractères.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
+    <value>Les arguments de type 'Attribute Name' ne peuvent contenir d'espaces.</value>
+  </data>
+  <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
+    <value>Impossible d'encapsuler le champ '{0}'. Une ou plusieurs instructions ReDim({0}) existent dans d'autres modules.</value>
+  </data>
+  <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
+    <value>Conflit de nom</value>
+  </data>
+  <data name="EncapsulateField_ParameterName" xml:space="preserve">
+    <value>Nom du paramètre:</value>
+  </data>
+  <data name="EncapsulateField_PreviewMarker" xml:space="preserve">
+    <value>'&lt;===== modifications aux propriétés et déclarations au-dessus de cette ligne =====&gt;</value>
+  </data>
+  <data name="EncapsulateField_ReadOnlyCheckBoxContent" xml:space="preserve">
+    <value>Lecture seule</value>
+  </data>
+  <data name="EncapsulateField_SetterType" xml:space="preserve">
+    <value>Type d'assignation:</value>
+  </data>
+  <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
+    <value>Envelopper les champs dans une structure 'Private Type'</value>
+  </data>
+  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
+    <value>Instanciation</value>
+  </data>
+  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
+    <value>La classe est publique, l'interface extraite sera donc publique également.
+Si une interface privée est nécessaire, veuillez modifier le mode d'instanciation ("instancing") du module de classe pour 'Private'.
+Une classe privée peut toujours implémenter une interface publique.</value>
+  </data>
+  <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
+    <value>Permettre glisser-déposer dans l'Explorateur de Code</value>
+  </data>
+  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>Le fichier binaire '{1}' associé à '{0}' est manquant, et le module cible '{2}' n'existe pas déjà dans le projet.
+
+Échec de l'importation.</value>
+  </data>
+  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>Le fichier '{0}' requiert le fichier binaire '{1}', qui est manquant.
+
+Échec de l'importation.</value>
+  </data>
+  <data name="MoveToFolderDialog_FolderLabelText" xml:space="preserve">
+    <value>Dossier:</value>
+  </data>
+  <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
+    <value>Déplacer vers un dossier</value>
+  </data>
+  <data name="MoveToFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Veuillez spécifier un nouveau dossier pour {0} '{1}' dans le dossier '{2}'.</value>
+  </data>
+  <data name="MoveToFolderDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Déplacer vers un Dossier</value>
+  </data>
+  <data name="MoveFoldersDialog_TitleText" xml:space="preserve">
+    <value>Déplacer les dossiers</value>
+  </data>
+  <data name="MoveFoldersDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Déplacer les Dossiers</value>
+  </data>
+  <data name="MoveFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Veuillez spécifier un nouveau dossier parent pour le sous-dossier '{0}' de '{1}'.</value>
+  </data>
+  <data name="MoveFolders_ControlCharacter" xml:space="preserve">
+    <value>Un nom de dossier ne peut pas contenir certains caractères de contrôle, tels qu'un saut de ligne.</value>
+  </data>
+  <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
+    <value>Un nom de dossier ne peut être vide.</value>
+  </data>
+  <data name="MoveFolders_EmptySubfolderName" xml:space="preserve">
+    <value>Les noms des sous-dossiers ne peuvent pas être vides.</value>
+  </data>
+  <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
+    <value>Plusieurs dossiers portant le même nom seront déplacés. Cette action les fusionnera.
+Procéder?</value>
+  </data>
+  <data name="MoveFolders_SameNameSubfolder" xml:space="preserve">
+    <value>Le dossier cible '{0}' contient déjà un sous-dossier nommé '{1}'. Déplacer ce dossier le fusionnera au dossier existant.
+Procéder?</value>
+  </data>
+  <data name="MoveFolders_SameNameSubfolders" xml:space="preserve">
+    <value>Le dossier cible '{0}' contient déjà les dossiers {1}. Déplacer ces dossiers les fusionnera aux dossiers existants.
+Procéder?</value>
+  </data>
+  <data name="MoveFoldersDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Veuillez spécifier un nouveau dossier parent.</value>
+  </data>
+  <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Veuillez spécifier le dossier où déplacer ces composants.</value>
+  </data>
+  <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Veuillez spécifier un nouveau dossier parent pour '{0}'.</value>
+  </data>
+  <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
+    <value>Le composant '{0}' aurait été affecté par la refactorisation, mais sa représentation interne à Rubberduck est périmée. Veuillez actualiser Rubberduck et réessayer.</value>
+  </data>
+  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
+    <value>Le refactoring ne peut annoter que les composants, les membres et les variables, mais la cible était de type '{0}'.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
+    <value>Aucune cible n'a été spécifiée.</value>
+  </data>
+  <data name="RenameDialog_Folder" xml:space="preserve">
+    <value>dossier</value>
+  </data>
+  <data name="RenameDialog_FolderLabel" xml:space="preserve">
+    <value>Dossier:</value>
+  </data>
+  <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
+    <value>Nouveau dossier (chemin complet):</value>
+  </data>
+  <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
+    <value>Le dossier '{0}' existe déjà. Renommer '{1}' à '{2}' fusionnera les deux dossiers.
+Procéder?</value>
+  </data>
+  <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
+    <value>Impossible de modifier la casse d'un identifiant VBA (le language est insensible à la casse).</value>
+  </data>
+  <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
+    <value>Renommer le dossier</value>
   </data>
 </root>

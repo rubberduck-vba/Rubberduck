@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;

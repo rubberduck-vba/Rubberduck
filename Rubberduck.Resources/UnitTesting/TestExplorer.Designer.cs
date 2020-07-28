@@ -700,7 +700,7 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to this method runs before every test in the module.
+        ///   Looks up a localized string similar to This method runs before every test in the module..
         /// </summary>
         public static string UnitTest_NewModule_RunBeforeTest {
             get {

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.CodeAnalysis.Inspections.Concrete.Excel;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
 using Rubberduck.Parsing;

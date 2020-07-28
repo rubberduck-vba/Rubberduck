@@ -465,7 +465,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please specify a name to use for the local copy of ByVal {0} &apos;{1}&apos;.
+        ///   Looks up a localized string similar to Please specify a name to use for the local copy of ByVal {0} &apos;{1}&apos;..
         /// </summary>
         public static string AssignedByValParamQFixDialog_InstructionsLabelText {
             get {
@@ -759,7 +759,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to These identifiers will be ignored by the &apos;Use meaningful names&apos; inspection.
+        ///   Looks up a localized string similar to These identifiers will be ignored by the &apos;Use meaningful names&apos; inspection..
         /// </summary>
         public static string CodeInspectionSettings_WhitelistedIdentifiersDescription {
             get {
@@ -768,7 +768,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Whitelisted Identifiers.
+        ///   Looks up a localized string similar to Allowed Identifiers.
         /// </summary>
         public static string CodeInspectionSettings_WhitelistedIdentifiersLabel {
             get {
@@ -822,7 +822,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to compile for parsing.
+        ///   Looks up a localized string similar to Unable to compile for parsing..
         /// </summary>
         public static string Command_Reparse_CannotCompile_Caption {
             get {
@@ -1437,7 +1437,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to encapsulate {0}. Redim({0}) statement(s) exist in other modules.
+        ///   Looks up a localized string similar to Unable to encapsulate &apos;{0}&apos;. ReDim({0}) statement(s) exist in other modules..
         /// </summary>
         public static string EncapsulateField_ArrayHasExternalRedimFormat {
             get {
@@ -1473,7 +1473,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select one or more fields to encapsulate.  Accept the default values or edit property names.
+        ///   Looks up a localized string similar to Select one or more fields to encapsulate.  Accept the default values or edit property names..
         /// </summary>
         public static string EncapsulateField_InstructionText {
             get {
@@ -1828,7 +1828,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check if a newer version is available at startup.
+        ///   Looks up a localized string similar to Check if a newer version is available at startup..
         /// </summary>
         public static string GeneralSettings_CheckVersion {
             get {
@@ -2019,7 +2019,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tell me if a newer pre-release build is available.
+        ///   Looks up a localized string similar to Tell me if a newer pre-release build is available..
         /// </summary>
         public static string GeneralSettings_IncludePreRelease {
             get {
@@ -2745,7 +2745,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; does not begin with a letter.
+        ///   Looks up a localized string similar to &apos;{0}&apos; does not start with a letter..
         /// </summary>
         public static string InvalidNameCriteria_DoesNotStartWithLetterFormat {
             get {
@@ -2754,7 +2754,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; exceeds the maximum allowed string length.
+        ///   Looks up a localized string similar to &apos;{0}&apos; exceeds the maximum allowed string length..
         /// </summary>
         public static string InvalidNameCriteria_ExceedsMaximumLengthFormat {
             get {
@@ -2772,7 +2772,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to VBA Identifiers cannot be null or zero-length.
+        ///   Looks up a localized string similar to VBA Identifiers cannot be null or zero-length..
         /// </summary>
         public static string InvalidNameCriteria_IsNullOrEmpty {
             get {
@@ -2929,7 +2929,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Member Attribute Recovery Failure .
+        ///   Looks up a localized string similar to Member Attribute Recovery Failure.
         /// </summary>
         public static string MemberAttributeRecoveryFailureCaption {
             get {
@@ -3167,7 +3167,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please specify a new parent folder for the older &apos;{0}&apos;..
+        ///   Looks up a localized string similar to Please specify a new parent folder for the folder &apos;{0}&apos;..
         /// </summary>
         public static string MoveRootFolderDialog_InstructionsLabelText {
             get {
@@ -3402,7 +3402,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parsing....
+        ///   Looks up a localized string similar to Parsing….
         /// </summary>
         public static string ParserState_Parsing {
             get {
@@ -4486,7 +4486,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to It is not possible to change only the case of an identifier in VBA..
+        ///   Looks up a localized string similar to It is not possible to change only the case of an identifier in VBA (language is case-insensitive)..
         /// </summary>
         public static string RenameDialog_OnlyCasingDifferent {
             get {

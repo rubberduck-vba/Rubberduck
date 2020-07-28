@@ -111,7 +111,7 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add.
+        ///   Looks up a localized string similar to Add....
         /// </summary>
         public static string CodeExplorer_Add {
             get {

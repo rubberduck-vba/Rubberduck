@@ -232,7 +232,7 @@
     <value>Seskupit podle Typu</value>
   </data>
   <data name="CodeExplorer_Add" xml:space="preserve">
-    <value>Přidat</value>
+    <value>Přidat...</value>
   </data>
   <data name="ExportBeforeRemove_Caption" xml:space="preserve">
     <value>Potvrdit Export</value>

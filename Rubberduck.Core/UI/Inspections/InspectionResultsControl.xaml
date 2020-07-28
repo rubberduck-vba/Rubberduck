@@ -278,6 +278,11 @@
                         Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
                         Command="{Binding DisableInspectionCommand}"
                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=DisableThisInspection}" />
+
+                    <controls:LinkButton Margin="4"
+                        Command="{Binding OpenInspectionDetailsPageCommand}"
+                        Content="{Binding InspectionDetailsUrl}" />
+
                 </StackPanel>
             </ScrollViewer>
         </Border>

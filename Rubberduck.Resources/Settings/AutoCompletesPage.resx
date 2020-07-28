@@ -133,7 +133,7 @@
     <value>Block Completion</value>
   </data>
   <data name="ConcatVbNewLine" xml:space="preserve">
-    <value>Concatenate 'vbNewLine' on Ctrl+Enter</value>
+    <value>Concatenate 'vbNewLine' on Ctrl+Enter.</value>
   </data>
   <data name="EnableAutocompleteLabel" xml:space="preserve">
     <value>Enable autocompletion features</value>

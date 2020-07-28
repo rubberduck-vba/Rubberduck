@@ -13,7 +13,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.ThunderCode
     /// <why>
     /// This inpection is flagging code we dubbed "ThunderCode", 
     /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
-    /// 'On Error GoTo -1' is poorly documented and uselessly complicates error handling.
+    /// 'On Error GoTo -1' is poorly documented and uselessly complicates error handling. Consider using 'On Error GoTo 0' instead.
     /// </why>
     internal sealed class OnErrorGoToMinusOneInspection : ParseTreeInspectionBase<VBAParser.OnErrorStmtContext>
     {

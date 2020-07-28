@@ -972,8 +972,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         [Category("InspectionXmlDoc")]
         [TestCase("Standard Module")]
         [TestCase("Class Module")]
-        [TestCase("Document")]
-        [TestCase("User Form")]
+        [TestCase("Predeclared Class")]
+        [TestCase("Interface Module")]
+        [TestCase("Document Module")]
+        [TestCase("UserForm Module")]
         public void InvalidTypeAttribute_Negative(string typeName)
         {
             var test = $@"
