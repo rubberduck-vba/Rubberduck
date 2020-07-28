@@ -797,7 +797,7 @@ Do you want to proceed with this rename?</value>
     <value>Parsed</value>
   </data>
   <data name="ParserState_Parsing" xml:space="preserve">
-    <value>Parsing...</value>
+    <value>Parsing…</value>
   </data>
   <data name="ParserState_Pending" xml:space="preserve">
     <value>Pending</value>
@@ -938,7 +938,7 @@ Do you want to proceed with this rename?</value>
     <value>Regular Expression Analyzer</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Whitelisted Identifiers</value>
+    <value>Allowed Identifiers</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
     <value>These identifiers will be ignored by the 'Use meaningful names' inspection.</value>
@@ -1036,7 +1036,7 @@ Would you like to import them to Rubberduck?</value>
     <value>Assigned ByVal parameter QuickFix - Make Local Copy</value>
   </data>
   <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Please specify a name to use for the local copy of ByVal {0} '{1}'</value>
+    <value>Please specify a name to use for the local copy of ByVal {0} '{1}'.</value>
     <comment>0: DeclarationType; 1: IdentifierName</comment>
   </data>
   <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
@@ -1589,6 +1589,7 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="RegexAssistant_EncloseWhitespace_EnclosingFormat" xml:space="preserve">
     <value>&lt;{0}&gt;</value>
+    <comment>no need to translate</comment>
   </data>
   <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
     <value>carriage-return</value>
@@ -1755,14 +1756,16 @@ Import aborted.</value>
     <value>VB Form</value>
   </data>
   <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
-    <value>Unable to encapsulate '{0}'. Redim({0}) statement(s) exist in other modules.</value>
+    <value>Unable to encapsulate '{0}'. ReDim({0}) statement(s) exist in other modules.</value>
     <comment>{0} = selected field IdentifierName</comment>
   </data>
   <data name="EncapsulateField_DefaultObjectStateUDTFieldName" xml:space="preserve">
     <value>this</value>
+    <comment>VBA identifier; should not be translated</comment>
   </data>
   <data name="EncapsulateField_DefaultPropertyParameter" xml:space="preserve">
     <value>value</value>
+    <comment>VBA identifier; should not be translated</comment>
   </data>
   <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
     <value>Name conflict</value>
@@ -1796,7 +1799,7 @@ Import aborted.</value>
     <value>Please specify new folder for the components.</value>
   </data>
   <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Please specify a new parent folder for the older '{0}'.</value>
+    <value>Please specify a new parent folder for the folder '{0}'.</value>
     <comment>{0} folder</comment>
   </data>
   <data name="MoveFoldersDialog_InstructionsLabelText" xml:space="preserve">
@@ -1824,9 +1827,11 @@ Import aborted.</value>
   </data>
   <data name="ExtractInterface_Private" xml:space="preserve">
     <value>Private</value>
+    <comment>keyword.. no translations.</comment>
   </data>
   <data name="ExtractInterface_Public" xml:space="preserve">
     <value>Public</value>
+    <comment>keyword.. no translation.</comment>
   </data>
   <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
     <value>The implementing class is 'Public' mandating the interface be public as well.
@@ -1911,7 +1916,7 @@ A private class can still implement a public interface.</value>
     <comment>{0} declaration type</comment>
   </data>
   <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
-    <value>It is not possible to change only the case of an identifier in VBA.</value>
+    <value>It is not possible to change only the case of an identifier in VBA (language is case-insensitive).</value>
   </data>
   <data name="MoveFolders_SameNameSubfolder" xml:space="preserve">
     <value>The target folder '{0}' already contains a subfolder '{1}'. Moving the folder will merge it with the existing folder.

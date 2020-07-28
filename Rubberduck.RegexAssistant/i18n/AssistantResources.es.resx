@@ -208,7 +208,7 @@
     <value>^ asegura que el emparejador comience al principio de una línea</value>
   </data>
   <data name="PatternDescription_IgnoreCase" xml:space="preserve">
-    <value>Todos los partidos ignoran el caso (superior o inferior) de los literales.</value>
+    <value>Todos los partidos ignoran el caso (superior o inferior) de los literales</value>
   </data>
   <data name="Quantifer_Plus" xml:space="preserve">
     <value>al menos una vez</value>

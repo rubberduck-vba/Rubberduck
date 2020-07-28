@@ -119,5 +119,6 @@
   </resheader>
   <data name="ImplementInterface_TODO" xml:space="preserve">
     <value>'TODO implement interface member</value>
+    <comment>VBA code (comment)</comment>
   </data>
 </root>

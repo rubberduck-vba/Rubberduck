@@ -966,7 +966,7 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
     <value>Eingerücktes Codebeispiel</value>
   </data>
   <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Bitte geben Sie einen Namen für die lokale Kopie von ByVal {0} '{1}'</value>
+    <value>Bitte geben Sie einen Namen für die lokale Kopie von ByVal {0} '{1}'.</value>
   </data>
   <data name="IndenterSettings_VerticalSpacing" xml:space="preserve">
     <value>Vertikalen Abstand aufrecht erhalten</value>

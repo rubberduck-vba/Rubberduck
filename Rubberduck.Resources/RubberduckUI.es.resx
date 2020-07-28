@@ -569,7 +569,7 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
     <value>Rubberduck - Campo Encapsulado</value>
   </data>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">
-    <value>Seleccione uno o más campos para encapsular.  Acepte los valores por default o edite los nommbres de las propiedades</value>
+    <value>Seleccione uno o más campos para encapsular.  Acepte los valores por default o edite los nommbres de las propiedades.</value>
   </data>
   <data name="EncapsulateField_Preview" xml:space="preserve">
     <value>Vista previa:</value>
@@ -788,7 +788,7 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
     <value>Analizado</value>
   </data>
   <data name="ParserState_Parsing" xml:space="preserve">
-    <value>Analizando ...</value>
+    <value>Analizando …</value>
   </data>
   <data name="ParserState_Pending" xml:space="preserve">
     <value>Pendiente</value>
@@ -932,7 +932,7 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
     <value>Identificadores en lista blanca</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>Estos identificadores serán ignorados por la inspección 'Usar nombres significativos'</value>
+    <value>Estos identificadores serán ignorados por la inspección 'Usar nombres significativos'.</value>
   </data>
   <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refactorizar / Encapsular Campo</value>
@@ -1027,7 +1027,7 @@ End Sub</value>
     <value>Parámetro ByVal asignado. Solución rápida: Hacer una copia local</value>
   </data>
   <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Especifique un nombre para usar para la copia local de ByVal {0} '{1}'</value>
+    <value>Especifique un nombre para usar para la copia local de ByVal {0} '{1}'.</value>
     <comment>0: Tipo de declaración; 1: Nombre del identificador</comment>
   </data>
   <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
@@ -1148,7 +1148,7 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
     <value>Los siguientes proyectos no pueden compilarse, lo que probablemente resultará en errores del analizador. ¿Continua de todas maneras? {0}</value>
   </data>
   <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
-    <value>No se puede compilar para analizar</value>
+    <value>No se puede compilar para analizar.</value>
   </data>
   <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
     <value>Compilar código antes de analizar</value>
@@ -1366,7 +1366,7 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
     <value>Falló al recuperar los atributos de los miembros.</value>
   </data>
   <data name="MemberAttributeRecoveryFailureCaption" xml:space="preserve">
-    <value>Error de recuperación de atributo de miembro </value>
+    <value>Error de recuperación de atributo de miembro</value>
   </data>
   <data name="MemberAttributeRecoveryMembersNotFoundMessage" xml:space="preserve">
     <value>Los atributos de los miembros para los siguientes módulos no se pudieron recuperar porque no se pudieron encontrar. {0}</value>
@@ -1492,9 +1492,6 @@ Importación cancelada.</value>
   <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
     <value>No se seleccionaron implementaciones.</value>
   </data>
-  <data name="RegexAssistant_EncloseWhitespace_EnclosingFormat" xml:space="preserve">
-    <value>&lt;{0}&gt;</value>
-  </data>
   <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
     <value>retorno-carro</value>
   </data>
@@ -1529,16 +1526,16 @@ Importación cancelada.</value>
     <value>La descripción contiene espacios en blanco</value>
   </data>
   <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
-    <value>'{0}' no comienza con una letra</value>
+    <value>'{0}' no comienza con una letra.</value>
   </data>
   <data name="InvalidNameCriteria_ExceedsMaximumLengthFormat" xml:space="preserve">
-    <value>'{0}' excede el máximo de caracteres permitido</value>
+    <value>'{0}' excede el máximo de caracteres permitido.</value>
   </data>
   <data name="InvalidNameCriteria_InvalidCharactersFormat" xml:space="preserve">
     <value>'{0}' contiene caracteres especiales distintos al guión bajo '_'.</value>
   </data>
   <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">
-    <value>Los identificadores VBA no pueden ser nulos o de longitud cero</value>
+    <value>Los identificadores VBA no pueden ser nulos o de longitud cero.</value>
   </data>
   <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
     <value>'{0}' es una palabra reservada.</value>
@@ -1548,9 +1545,6 @@ Importación cancelada.</value>
   </data>
   <data name="TestExplorer_AppendHeader" xml:space="preserve">
     <value>Rubberduck Resultados de pruebas - {0}</value>
-  </data>
-  <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
-    <value>{0} {1} {2} {3} {4} {5}</value>
   </data>
   <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
     <value>No se puede suspender el analizador para ejecutar la operación de refactorización.</value>
@@ -1641,13 +1635,7 @@ Importación cancelada.</value>
     <value>Formulario VB</value>
   </data>
   <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
-    <value>No se puede encapsular {0}. Sentencias Redim({0}) existen en otros módulos</value>
-  </data>
-  <data name="EncapsulateField_DefaultObjectStateUDTFieldName" xml:space="preserve">
-    <value>este</value>
-  </data>
-  <data name="EncapsulateField_DefaultPropertyParameter" xml:space="preserve">
-    <value>valor</value>
+    <value>No se puede encapsular {0}. Sentencias ReDim({0}) existen en otros módulos.</value>
   </data>
   <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
     <value>Conflicto de nombres</value>
@@ -1680,7 +1668,7 @@ Importación cancelada.</value>
     <value>Por favor especificar nueva carpeta para los componentes.</value>
   </data>
   <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Por favor especificar una nueva carpeta padre para la anterior '{0}'.</value>
+    <value>Por favor especificar una nueva carpeta padre para la carpeta '{0}'.</value>
   </data>
   <data name="MoveFoldersDialog_InstructionsLabelText" xml:space="preserve">
     <value>Por favor especificar una nueva carpeta padre para las carpetas.</value>
@@ -1699,12 +1687,6 @@ Importación cancelada.</value>
   </data>
   <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
     <value>Instanciación</value>
-  </data>
-  <data name="ExtractInterface_Private" xml:space="preserve">
-    <value>Private</value>
-  </data>
-  <data name="ExtractInterface_Public" xml:space="preserve">
-    <value>Public</value>
   </data>
   <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
     <value>La clase que implementa es 'Public' obligando a la interfaz a ser pública también.

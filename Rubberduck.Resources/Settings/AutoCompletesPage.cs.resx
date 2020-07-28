@@ -139,7 +139,7 @@
     <value>Povolit funkce automatického doplňování</value>
   </data>
   <data name="ConcatVbNewLine" xml:space="preserve">
-    <value>Přidat 'vbNewLine' po stisku Ctrl+Enter</value>
+    <value>Přidat 'vbNewLine' po stisku Ctrl+Enter.</value>
   </data>
   <data name="EnableBlockCompletion" xml:space="preserve">
     <value>Povolit doplňování bloků</value>

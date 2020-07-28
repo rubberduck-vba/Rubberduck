@@ -121,7 +121,7 @@
     <value>Unit Test Nastavení</value>
   </data>
   <data name="PageInstructions" xml:space="preserve">
-    <value>Konfigurovat nastavení pro nové unit test moduly a metody</value>
+    <value>Konfigurovat nastavení pro nové unit test moduly a metody.</value>
   </data>
   <data name="UnitTestSettings_AssertMode" xml:space="preserve">
     <value>Typ zabezpečení:</value>

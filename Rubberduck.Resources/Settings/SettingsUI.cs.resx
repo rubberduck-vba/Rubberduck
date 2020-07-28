@@ -145,7 +145,7 @@
     <value>Nastavení Oken</value>
   </data>
   <data name="PageInstructions_AutoCompleteSettings" xml:space="preserve">
-    <value>Konfigurovat nastavení pro povolení individuálních automatických doplňování</value>
+    <value>Konfigurovat nastavení pro povolení individuálních automatických doplňování.</value>
   </data>
   <data name="PageInstructions_GeneralSettings" xml:space="preserve">
     <value>Klikněte [{0}] pro uzavření okna a aplikování změn, nebo [{1}] pro jejich zrušení.</value>
