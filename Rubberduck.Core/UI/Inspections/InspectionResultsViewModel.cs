@@ -89,6 +89,7 @@ namespace Rubberduck.UI.Inspections
 
     public sealed class InspectionResultsViewModel : ViewModelBase, INavigateSelection, IComparer<IInspectionResult>, IComparer, IDisposable
     {
+        private readonly IWebNavigator _web;
         private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
         private readonly IQuickFixProvider _quickFixProvider;
@@ -106,10 +107,12 @@ namespace Rubberduck.UI.Inspections
             INavigateCommand navigateCommand, 
             ReparseCommand reparseCommand,
             IClipboardWriter clipboard,
+            IWebNavigator web,
             IConfigurationService<Configuration> configService,
             ISettingsFormFactory settingsFormFactory,
             IUiDispatcher uiDispatcher)
         {
+            _web = web;
             _state = state;
             _inspector = inspector;
             _quickFixProvider = quickFixProvider;
@@ -771,11 +774,13 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        public string InspectionDetailsUrl => _selectedInspection == null 
-            ? "https://rubberduckvba.com/inspections"
-            : $"https://rubberduckvba.com/inspections/details/{_selectedInspection.AnnotationName}";
+        private static readonly Uri _inspectionsHomeUrl = new Uri("https://rubberduckvba.com/inspections");
 
-        private void ExecuteOpenInspectionDetailsPageCommand(object parameter) => Process.Start(new ProcessStartInfo(InspectionDetailsUrl));
+        public Uri InspectionDetailsUrl => _selectedInspection == null 
+            ? _inspectionsHomeUrl 
+            : new Uri($"https://rubberduckvba.com/inspections/details/{_selectedInspection.AnnotationName}");
+
+        private void ExecuteOpenInspectionDetailsPageCommand(object parameter) => _web.Navigate(InspectionDetailsUrl);
 
         private static readonly List<(string Name, hAlignment alignment)> ResultColumns = new List<(string Name, hAlignment alignment)>
         {
