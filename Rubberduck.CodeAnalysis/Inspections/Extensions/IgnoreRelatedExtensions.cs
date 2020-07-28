@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;

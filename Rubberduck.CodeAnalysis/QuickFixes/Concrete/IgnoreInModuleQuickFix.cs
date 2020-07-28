@@ -3,6 +3,7 @@ using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;

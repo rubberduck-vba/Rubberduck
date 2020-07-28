@@ -195,7 +195,7 @@
   <data name="SetObjectVariableQuickFix" xml:space="preserve">
     <value>Usar la palabra clave 'Set'</value>
   </data>
-  <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
+  <data name="IntroduceGetAccessorQuickFix" xml:space="preserve">
     <value>Añadir Get a propiedad</value>
   </data>
   <data name="ChangeDimToPrivateQuickFix" xml:space="preserve">

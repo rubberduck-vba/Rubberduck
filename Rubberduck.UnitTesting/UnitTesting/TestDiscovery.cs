@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;

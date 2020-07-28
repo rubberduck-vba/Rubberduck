@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Resources.CodeExplorer;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

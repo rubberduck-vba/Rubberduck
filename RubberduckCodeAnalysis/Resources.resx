@@ -195,13 +195,13 @@
   <data name="MissingInspectionReferenceElementMessageFormat" xml:space="preserve">
     <value>XML documentation for type '{0}' is missing a 'reference' element.</value>
   </data>
-  <data name="MissingInspectionSummaryElement" xml:space="preserve">
+  <data name="MissingSummaryElement" xml:space="preserve">
     <value>Missing xml-doc 'summary' element</value>
   </data>
   <data name="MissingInspectionSummaryElementDescription" xml:space="preserve">
     <value>All inspections must have a short &lt;summary&gt; xml-doc comment describing what the inspection is looking for, that reads comfortably in IntelliSense.</value>
   </data>
-  <data name="MissingInspectionSummaryElementMessageFormat" xml:space="preserve">
+  <data name="MissingSummaryElementMessageFormat" xml:space="preserve">
     <value>XML documentation for type '{0}' is missing a &lt;summary&gt; element.</value>
   </data>
   <data name="MissingInspectionWhyElement" xml:space="preserve">
@@ -311,5 +311,8 @@
   </data>
   <data name="MissingInspectionHostAppElementMessageFormat" xml:space="preserve">
     <value>XML documentation for type '{0}' is missing a 'hostApp' element.</value>
+  </data>
+  <data name="MissingAnnotationSummaryElementDescription" xml:space="preserve">
+    <value>All annotations must have a short &lt;summary&gt; xml-doc comment describing what the annotation is used for, that reads comfortably in IntelliSense.</value>
   </data>
 </root>

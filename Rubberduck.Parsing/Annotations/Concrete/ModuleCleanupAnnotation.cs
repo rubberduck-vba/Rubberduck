@@ -1,8 +1,25 @@
-﻿namespace Rubberduck.Parsing.Annotations
+﻿using Rubberduck.Parsing.Annotations;
+
+namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
-    /// Marks a method that the test engine will execute after all unit tests in a test module have executed.
+    /// @ModuleCleanup annotation, marks a procedure that Rubberduck executes after all tests of a module have completed.
     /// </summary>
+    /// <example>
+    /// <module name="TestModule1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// '@TestModule
+    /// 
+    /// Private Assert As Rubberduck.AssertClass
+    /// 
+    /// '@ModuleCleanup
+    /// Private Sub ModuleCleanup()
+    ///     Set Assert = Nothing
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
     public sealed class ModuleCleanupAnnotation : AnnotationBase, ITestAnnotation
     {
         public ModuleCleanupAnnotation()
