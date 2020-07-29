@@ -101,7 +101,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 try
                 {
                     var path = System.IO.Path.GetDirectoryName(dialog.FileName);
-                    component.ExportAsSourceFile(path);
+                    component.ExportAsSourceFile(path, false, true); // skipped optional parameters interfere with mock setup
                 }
                 catch (Exception ex)
                 {
