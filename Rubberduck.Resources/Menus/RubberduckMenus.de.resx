@@ -157,7 +157,7 @@
     <value>To&amp;Do Liste</value>
   </data>
   <data name="ToolsMenu_ExportProject" xml:space="preserve">
-    <value>Aktives Projekt exportieren</value>
+    <value>Aktives Projekt exportieren...</value>
   </data>
   <data name="RubberduckMenu_Refresh" xml:space="preserve">
     <value>Aktualisieren</value>

@@ -10,16 +10,18 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class AboutCommand : CommandBase
     {
-        public AboutCommand(IVersionCheck versionService)
+        public AboutCommand(IVersionCheck versionService, IWebNavigator web)
         {
             _versionService = versionService;
+            _web = web;
         }
 
         private readonly IVersionCheck _versionService;
+        private readonly IWebNavigator _web;
 
         protected override void OnExecute(object parameter)
         {
-            using (var window = new AboutDialog(_versionService))
+            using (var window = new AboutDialog(_versionService, _web))
             {
                 window.ShowDialog();
             }

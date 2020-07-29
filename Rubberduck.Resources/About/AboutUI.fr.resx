@@ -157,7 +157,7 @@ Tous ceux qui nous ont donné une étoile ou un "like"
     <value>Cliquer ici pour copier les informations dans le presse-papier</value>
   </data>
   <data name="AboutWindow_CopyVersionCaption" xml:space="preserve">
-    <value>Copie complétée.</value>
+    <value>Copie complétée</value>
   </data>
   <data name="AboutWindow_HostExecutable" xml:space="preserve">
     <value>Exécutable hôte : {0}</value>

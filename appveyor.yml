@@ -120,6 +120,8 @@ artifacts:
     name: Rubberduck
   - path: Rubberduck.Deployment\bin\Rubberduck.CodeAnalysis.xml
     name: InspectionDocs
+  - path: Rubberduck.Deployment\bin\Rubberduck.Parsing.xml
+    name: AnnotationDocs
   - path: Rubberduck.Deployment\InnoSetup\Installers\*.hash
     name: InstallerHashes
   - path: Rubberduck_Coverage.xml
@@ -135,7 +137,7 @@ deploy:
     description: "Built with :heart: by AppVeyor CI on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
-    artifact: Rubberduck, InspectionDocs, InstallerHashes
+    artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
     on: 
       branch: master
   - provider: GitHub
@@ -146,7 +148,7 @@ deploy:
     description: "AppVeyor build on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
-    artifact: Rubberduck, InspectionDocs, InstallerHashes
+    artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
     on: 
       branch: next
 

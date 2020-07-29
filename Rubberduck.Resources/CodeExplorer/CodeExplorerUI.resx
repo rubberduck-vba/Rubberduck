@@ -317,7 +317,7 @@
     <value>Group by Type</value>
   </data>
   <data name="CodeExplorer_Add" xml:space="preserve">
-    <value>Add</value>
+    <value>Add...</value>
   </data>
   <data name="ExportBeforeRemove_Caption" xml:space="preserve">
     <value>Confirm Export</value>

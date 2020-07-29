@@ -148,7 +148,7 @@
     <value>Cliquez [{0}] pour appliquer les modifications, ou [{1}] pour conserver la configuration actuelle.</value>
   </data>
   <data name="PageInstructions_IndenterSettings" xml:space="preserve">
-    <value>Configuration des options d'indentation</value>
+    <value>Configuration des options d'indentation.</value>
   </data>
   <data name="PageInstructions_InspectionSettings" xml:space="preserve">
     <value>Configuration des niveaux de sévérité des inspections. Utiliser "DoNotShow" pour désactiver une inspection.</value>
@@ -157,7 +157,7 @@
     <value>Configuration des marqueurs à reconnaître dans les commentaires.</value>
   </data>
   <data name="PageInstructions_WindowSettings" xml:space="preserve">
-    <value>Configurer la visibilité des fenêtres</value>
+    <value>Configurer la visibilité des fenêtres.</value>
   </data>
   <data name="Settings_Caption" xml:space="preserve">
     <value>Configuration de Rubberduck</value>
@@ -169,7 +169,7 @@
     <value>Réinitialiser les paramètres par défaut?</value>
   </data>
   <data name="PageInstructions_AutoCompleteSettings" xml:space="preserve">
-    <value>Activer ou désactiver les autocomplétions</value>
+    <value>Activer ou désactiver les autocomplétions.</value>
   </data>
   <data name="SelectAll" xml:space="preserve">
     <value>Tous</value>

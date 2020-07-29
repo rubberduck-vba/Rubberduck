@@ -133,7 +133,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Project name is not specified..
+        ///   Looks up a localized string similar to Project name is not specified.
         /// </summary>
         public static string DefaultProjectNameInspection {
             get {

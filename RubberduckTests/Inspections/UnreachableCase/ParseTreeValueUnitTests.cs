@@ -2,7 +2,7 @@
 using Rubberduck.Parsing.Grammar;
 using System;
 using System.Collections.Generic;
-using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {

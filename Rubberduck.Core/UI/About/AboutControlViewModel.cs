@@ -13,10 +13,12 @@ namespace Rubberduck.UI.About
     public class AboutControlViewModel
     {
         private readonly IVersionCheck _version;
+        private readonly IWebNavigator _web;
 
-        public AboutControlViewModel(IVersionCheck version)
+        public AboutControlViewModel(IVersionCheck version, IWebNavigator web)
         {
             _version = version;
+            _web = web;
 
             UriCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUri);
             ViewLogCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteViewLog);
@@ -42,10 +44,7 @@ namespace Rubberduck.UI.About
 
         public CommandBase ViewLogCommand { get; }
 
-        private void ExecuteUri(object parameter)
-        {
-            Process.Start(new ProcessStartInfo(((Uri)parameter).AbsoluteUri));
-        }
+        private void ExecuteUri(object parameter) => _web.Navigate(((Uri)parameter));
 
         private void ExecuteViewLog(object parameter)
         {

@@ -13,8 +13,8 @@ namespace RubberduckCodeAnalysis
         public const string MissingInspectionSummaryElement = "MissingInspectionSummaryElement";
         private static readonly DiagnosticDescriptor MissingSummaryElementRule = new DiagnosticDescriptor(
             MissingInspectionSummaryElement,
-            new LocalizableResourceString(nameof(Resources.MissingInspectionSummaryElement), Resources.ResourceManager, typeof(Resources)),
-            new LocalizableResourceString(nameof(Resources.MissingInspectionSummaryElementMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingSummaryElement), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingSummaryElementMessageFormat), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
             DiagnosticSeverity.Error,
             true,
@@ -377,8 +377,10 @@ namespace RubberduckCodeAnalysis
         {
             "Standard Module",
             "Class Module",
-            "Document",
-            "User Form"
+            "Predeclared Class",
+            "Interface Module",
+            "Document Module",
+            "UserForm Module",
         };
     }
 }

@@ -5,7 +5,7 @@ using System.Threading;
 using System.Windows.Input;
 using NUnit.Framework;
 using Moq;
-using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;

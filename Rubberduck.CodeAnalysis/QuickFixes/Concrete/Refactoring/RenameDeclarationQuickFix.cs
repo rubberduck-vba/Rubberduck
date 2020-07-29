@@ -1,7 +1,6 @@
 using System.Globalization;
 using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
-using Rubberduck.CodeAnalysis.Inspections.Concrete.Excel;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;

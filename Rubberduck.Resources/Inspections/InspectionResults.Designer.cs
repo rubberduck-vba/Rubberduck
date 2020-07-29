@@ -61,7 +61,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} ({1} results)..
+        ///   Looks up a localized string similar to {0} ({1} results).
         /// </summary>
         public static string AggregateInspection {
             get {
@@ -115,7 +115,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Boolean literal &apos;{0}&apos; assigned in conditional..
+        ///   Looks up a localized string similar to Boolean literal &apos;{0}&apos; assigned in conditional.
         /// </summary>
         public static string BooleanAssignedInIfElseInspection {
             get {
@@ -133,7 +133,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Project &apos;{0}&apos; has default name..
+        ///   Looks up a localized string similar to Project &apos;{0}&apos; has the default project name..
         /// </summary>
         public static string DefaultProjectNameInspection {
             get {

@@ -100,5 +100,6 @@
   <data name="StringExtensionsArgumentException" xml:space="preserve">
     <value>Not {0} instances of '{1}' in '{2}'</value>
     
+    <comment>not user-facing</comment>
   </data>
 </root>
