@@ -220,7 +220,7 @@
     <value>tato metoda běží na konci každého testu v modulu</value>
   </data>
   <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
-    <value>tato metoda běží před začátkem každého testu v modulu</value>
+    <value>tato metoda běží před začátkem každého testu v modulu.</value>
   </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>tato metoda běží jedenkrát v modulu</value>

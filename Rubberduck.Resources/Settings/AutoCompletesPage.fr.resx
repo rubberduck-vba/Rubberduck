@@ -136,7 +136,7 @@
     <value>Compléter les blocs avec TAB</value>
   </data>
   <data name="ConcatVbNewLine" xml:space="preserve">
-    <value>Concaténer 'vbNewLine' avec Ctrl+Entrée</value>
+    <value>Concaténer 'vbNewLine' avec Ctrl+Entrée.</value>
   </data>
   <data name="EnableAutocompleteLabel" xml:space="preserve">
     <value>Activer l'autocomplétion</value>

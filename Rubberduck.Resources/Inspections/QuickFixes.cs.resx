@@ -196,12 +196,12 @@
     <value>Odděl více deklarací do několika instrukcí</value>
   </data>
   <data name="InvalidContextTypeInspectionFix" xml:space="preserve">
-    <value>Kontexový typ '{0}' není platný pro '{1}'</value>
+    <value>Kontexový typ '{0}' není platný pro '{1}'.</value>
   </data>
   <data name="SetObjectVariableQuickFix" xml:space="preserve">
     <value>Použij klíčové slovo 'Set'</value>
   </data>
-  <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
+  <data name="IntroduceGetAccessorQuickFix" xml:space="preserve">
     <value>Přidej accessor 'property get'</value>
   </data>
   <data name="ChangeDimToPrivateQuickFix" xml:space="preserve">
@@ -217,7 +217,7 @@
     <value>Použij early-bound metodu Application.WorksheetFunction.</value>
   </data>
   <data name="AssignedByValParameterMakeLocalCopyQuickFix" xml:space="preserve">
-    <value>Vytvoř a použij lokální kopii tohoto parametru.</value>
+    <value>Vytvoř a použij lokální kopii tohoto parametru</value>
   </data>
   <data name="RemoveOptionBaseStatementQuickFix" xml:space="preserve">
     <value>Odstraň prohlášení 'Option Base'</value>

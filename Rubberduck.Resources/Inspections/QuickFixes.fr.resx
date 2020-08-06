@@ -127,7 +127,7 @@
     <value>Ignorer à cet emplacement</value>
   </data>
   <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
-    <value>Implémenter comme une fonction, et mettre à jour les appels</value>
+    <value>Implémenter comme une fonction, et mettre à jour les appels.</value>
   </data>
   <data name="ConvertFunctionToProcedureQuickFix" xml:space="preserve">
     <value>Convertir la fonction en procédure</value>
@@ -195,7 +195,7 @@
   <data name="IntroduceLocalVariableQuickFix" xml:space="preserve">
     <value>Introduire une variable locale</value>
   </data>
-  <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
+  <data name="IntroduceGetAccessorQuickFix" xml:space="preserve">
     <value>Ajouter un accesseur 'Property Get'</value>
   </data>
   <data name="ApplicationWorksheetFunctionQuickFix" xml:space="preserve">
@@ -241,13 +241,13 @@
     <value>Introduire une routine de gestion d'erreurs</value>
   </data>
   <data name="RemoveStepOneQuickFix" xml:space="preserve">
-    <value>Supprimer le 'Step' redondant.</value>
+    <value>Supprimer le 'Step' redondant</value>
   </data>
   <data name="AddStepOneQuickFix" xml:space="preserve">
     <value>Ajouter une clause 'Step' explicite</value>
   </data>
   <data name="AccessSheetUsingCodeNameQuickFix" xml:space="preserve">
-    <value>Utiliser le nom de code pour référer à une feuille statiquement accessible.</value>
+    <value>Utiliser le nom de code pour référer à une feuille statiquement accessible</value>
   </data>
   <data name="InvalidContextTypeInspectionFix" xml:space="preserve">
     <value>Le contexte '{0}' est invalide pour '{1}'.</value>
@@ -292,9 +292,12 @@
     <value>Remplacer 'While...Wend' par 'Do While...Loop'</value>
   </data>
   <data name="ExpandBangNotationQuickFix" xml:space="preserve">
-    <value>Rendre explicite le code caché par l'opérateur !</value>
+    <value>Rendre explicite le code caché par l'opérateur '!'</value>
   </data>
   <data name="ExpandDefaultMemberQuickFix" xml:space="preserve">
     <value>Rendre explicite l'accès au membre par défaut</value>
+  </data>
+  <data name="IgnoreInModuleQuickFix" xml:space="preserve">
+    <value>Ignorer dans le module</value>
   </data>
 </root>

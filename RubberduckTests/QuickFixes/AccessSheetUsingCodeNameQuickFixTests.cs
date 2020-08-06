@@ -1,6 +1,6 @@
 ﻿using Moq;
 using NUnit.Framework;
-using Rubberduck.CodeAnalysis.Inspections.Concrete.Excel;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 using Rubberduck.Parsing.VBA;

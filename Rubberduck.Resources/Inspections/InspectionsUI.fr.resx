@@ -201,4 +201,10 @@
   <data name="CodeInspection_SeverityFilter" xml:space="preserve">
     <value>Sévérité</value>
   </data>
+  <data name="QuickFix_Instance" xml:space="preserve">
+    <value>Occurrence sélectionnée</value>
+  </data>
+  <data name="QuickFix_Selection" xml:space="preserve">
+    <value>Occurrences sélectionnées</value>
+  </data>
 </root>

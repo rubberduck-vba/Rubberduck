@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Annotations;
+﻿using Rubberduck.Parsing.Annotations.Concrete;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.VBEditor;
 using System;

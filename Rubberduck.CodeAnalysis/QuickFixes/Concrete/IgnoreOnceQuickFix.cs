@@ -4,7 +4,7 @@ using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;

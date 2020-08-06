@@ -250,6 +250,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add &apos;Property Get&apos; accessor.
+        /// </summary>
+        public static string IntroduceGetAccessorQuickFix {
+            get {
+                return ResourceManager.GetString("IntroduceGetAccessorQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Introduce local variable.
         /// </summary>
         public static string IntroduceLocalVariableQuickFix {
@@ -597,15 +606,6 @@ namespace Rubberduck.Resources.Inspections {
         public static string WhiteListIdentifierQuickFix {
             get {
                 return ResourceManager.GetString("WhiteListIdentifierQuickFix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add property get accessor.
-        /// </summary>
-        public static string WriteOnlyPropertyQuickFix {
-            get {
-                return ResourceManager.GetString("WriteOnlyPropertyQuickFix", resourceCulture);
             }
         }
     }

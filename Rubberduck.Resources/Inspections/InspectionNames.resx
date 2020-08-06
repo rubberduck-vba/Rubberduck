@@ -124,7 +124,7 @@
     <value>Constant is not used</value>
   </data>
   <data name="DefaultProjectNameInspection" xml:space="preserve">
-    <value>Project name is not specified.</value>
+    <value>Project name is not specified</value>
   </data>
   <data name="EmptyStringLiteralInspection" xml:space="preserve">
     <value>Empty string literal</value>
