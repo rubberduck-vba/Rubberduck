@@ -13,7 +13,8 @@ using System.Linq;
 using System.Threading;
 using Moq;
 using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 

@@ -199,7 +199,7 @@
     <value>Este método se ejecuta una vez por módulo</value>
   </data>
   <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
-    <value>Este método se ejecuta antes de cada prueba en el módulo</value>
+    <value>Este método se ejecuta antes de cada prueba en el módulo.</value>
   </data>
   <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
     <value>Este método se ejecuta después de cada prueba en el módulo</value>

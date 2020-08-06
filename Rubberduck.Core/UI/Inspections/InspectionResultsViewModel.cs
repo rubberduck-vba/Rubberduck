@@ -89,6 +89,7 @@ namespace Rubberduck.UI.Inspections
 
     public sealed class InspectionResultsViewModel : ViewModelBase, INavigateSelection, IComparer<IInspectionResult>, IComparer, IDisposable
     {
+        private readonly IWebNavigator _web;
         private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
         private readonly IQuickFixProvider _quickFixProvider;
@@ -106,10 +107,12 @@ namespace Rubberduck.UI.Inspections
             INavigateCommand navigateCommand, 
             ReparseCommand reparseCommand,
             IClipboardWriter clipboard,
+            IWebNavigator web,
             IConfigurationService<Configuration> configService,
             ISettingsFormFactory settingsFormFactory,
             IUiDispatcher uiDispatcher)
         {
+            _web = web;
             _state = state;
             _inspector = inspector;
             _quickFixProvider = quickFixProvider;
@@ -144,6 +147,8 @@ namespace Rubberduck.UI.Inspections
             OpenInspectionSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
+            
+            OpenInspectionDetailsPageCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteOpenInspectionDetailsPageCommand);
 
             QuickFixCommands = new List<(ICommand command, string key, Func<IQuickFix, bool> visibility)>
             {
@@ -195,6 +200,8 @@ namespace Rubberduck.UI.Inspections
             get => _selectedItem;
             set
             {
+                SelectedInspection = null;
+                CanQuickFix = false;
                 if (value == _selectedItem)
                 {
                     return;
@@ -203,8 +210,6 @@ namespace Rubberduck.UI.Inspections
                 _selectedItem = value; 
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(QuickFixes));
-                SelectedInspection = null;
-                CanQuickFix = false;
 
                 if (_selectedItem is IInspectionResult inspectionResult)
                 {
@@ -225,6 +230,7 @@ namespace Rubberduck.UI.Inspections
             {
                 _selectedInspection = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(InspectionDetailsUrl));
             }
         }
 
@@ -354,6 +360,7 @@ namespace Rubberduck.UI.Inspections
         public CommandBase OpenInspectionSettings { get; }
         public CommandBase CollapseAllCommand { get; }
         public CommandBase ExpandAllCommand { get; }
+        public CommandBase OpenInspectionDetailsPageCommand { get; }
 
         private void ExecuteCollapseAll(object parameter)
         {
@@ -766,6 +773,14 @@ namespace Rubberduck.UI.Inspections
                 OnPropertyChanged();
             }
         }
+
+        private static readonly Uri _inspectionsHomeUrl = new Uri("https://rubberduckvba.com/inspections");
+
+        public Uri InspectionDetailsUrl => _selectedInspection == null 
+            ? _inspectionsHomeUrl 
+            : new Uri($"https://rubberduckvba.com/inspections/details/{_selectedInspection.AnnotationName}");
+
+        private void ExecuteOpenInspectionDetailsPageCommand(object parameter) => _web.Navigate(InspectionDetailsUrl);
 
         private static readonly List<(string Name, hAlignment alignment)> ResultColumns = new List<(string Name, hAlignment alignment)>
         {

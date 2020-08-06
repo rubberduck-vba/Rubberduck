@@ -2,6 +2,7 @@
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols

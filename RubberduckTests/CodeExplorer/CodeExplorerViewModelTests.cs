@@ -1847,14 +1847,17 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void ExportModule_ExpectExecution()
         {
-            const string path = @"C:\Users\Rubberduck\Desktop\StdModule1.bas";
+            const string folder = @"C:\Users\Rubberduck\Desktop";
+            const string filename = "StdModule1.bas";
+            var path = Path.Combine(folder, filename);
 
             using (var explorer = new MockedCodeExplorer(ProjectType.HostProject)
                 .ConfigureSaveDialog(path, DialogResult.OK)
                 .SelectFirstModule())
             {
+                explorer.VbComponent.Setup(c => c.ExportAsSourceFile(folder, It.IsAny<bool>(), It.IsAny<bool>()));
                 explorer.ExecuteExportCommand();
-                explorer.VbComponent.Verify(c => c.Export(path), Times.Once);
+                explorer.VbComponent.Verify(c => c.ExportAsSourceFile(folder, false, true), Times.Once);
             }
         }
 
@@ -1868,8 +1871,11 @@ namespace RubberduckTests.CodeExplorer
                 .ConfigureSaveDialog(path, DialogResult.Cancel)
                 .SelectFirstModule())
             {
+                explorer.VbComponent.Setup(c => c.Export(path));
+                explorer.VbComponent.Setup(c => c.ExportAsSourceFile(path, It.IsAny<bool>(), It.IsAny<bool>()));
                 explorer.ExecuteExportCommand();
                 explorer.VbComponent.Verify(c => c.Export(path), Times.Never);
+                explorer.VbComponent.Verify(c => c.ExportAsSourceFile(path, It.IsAny<bool>(), It.IsAny<bool>()), Times.Never);
             }
         }
 

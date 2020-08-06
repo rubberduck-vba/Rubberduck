@@ -202,7 +202,7 @@
     <value>Click [{0}] to close the window and apply changes, or [{1}] to discard them.</value>
   </data>
   <data name="PageInstructions_IndenterSettings" xml:space="preserve">
-    <value>Configure indenter settings</value>
+    <value>Configure indenter settings.</value>
   </data>
   <data name="PageInstructions_InspectionSettings" xml:space="preserve">
     <value>Configure inspection severity. Use "DoNotShow" to disable an inspection.</value>

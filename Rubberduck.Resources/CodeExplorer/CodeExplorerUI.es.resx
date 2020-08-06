@@ -232,7 +232,7 @@
     <value>Agrupar por tipo</value>
   </data>
   <data name="CodeExplorer_Add" xml:space="preserve">
-    <value>Añadir</value>
+    <value>Añadir...</value>
   </data>
   <data name="ExportBeforeRemove_Caption" xml:space="preserve">
     <value>Confirmar exportación</value>

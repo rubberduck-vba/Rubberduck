@@ -88,7 +88,7 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Concatenate &apos;vbNewLine&apos; on Ctrl+Enter.
+        ///   Looks up a localized string similar to Concatenate &apos;vbNewLine&apos; on Ctrl+Enter..
         /// </summary>
         public static string ConcatVbNewLine {
             get {
