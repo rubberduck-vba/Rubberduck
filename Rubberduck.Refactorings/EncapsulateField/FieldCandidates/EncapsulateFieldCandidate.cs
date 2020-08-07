@@ -5,12 +5,23 @@ using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
-using System;
 using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
+    public struct PropertyAttributeSet
+    {
+        public string PropertyName { get; set; }
+        public string BackingField { get; set; }
+        public string AsTypeName { get; set; }
+        public string ParameterName { get; set; }
+        public bool GenerateLetter { get; set; }
+        public bool GenerateSetter { get; set; }
+        public bool UsesSetAssignment { get; set; }
+        public bool IsUDTProperty { get; set; }
+        public Declaration Declaration { get; set; }
+    }
+
     public interface IEncapsulateFieldRefactoringElement
     {
         string IdentifierName { get; }

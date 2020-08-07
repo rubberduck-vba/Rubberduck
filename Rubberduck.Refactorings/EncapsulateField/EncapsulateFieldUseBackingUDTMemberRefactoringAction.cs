@@ -1,57 +1,51 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.Common;
-using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public class ConvertFieldsToUDTMembers : EncapsulateFieldStrategyBase
+    public class EncapsulateFieldUseBackingUDTMemberRefactoringAction : EncapsulateFieldRefactoringActionImplBase
     {
         private IObjectStateUDT _stateUDTField;
 
-        public ConvertFieldsToUDTMembers(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter, ICodeBuilder codeBuilder)
-            : base(declarationFinderProvider, model, indenter, codeBuilder)
+        public EncapsulateFieldUseBackingUDTMemberRefactoringAction(
+                IDeclarationFinderProvider declarationFinderProvider,
+                IIndenter indenter,
+                IRewritingManager rewritingManager,
+                ICodeBuilder codeBuilder)
+            : base(declarationFinderProvider, indenter, rewritingManager, codeBuilder)
+        {}
+
+        public override void Refactor(EncapsulateFieldModel model, IRewriteSession rewriteSession)
         {
             _stateUDTField = model.ObjectStateUDTField;
+
+            RefactorImpl(model, rewriteSession);
         }
 
-        protected override void ModifyFields(IEncapsulateFieldRewriteSession refactorRewriteSession)
+        protected override void ModifyFields(IRewriteSession rewriteSession)
         {
-            var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
-
-            foreach (var field in SelectedFields)
-            {
-                refactorRewriteSession.Remove(field.Declaration, rewriter);
-            }
+            RemoveFields(SelectedFields.Select(sf => sf.Declaration), rewriteSession);
 
             if (_stateUDTField.IsExistingDeclaration)
             {
                 _stateUDTField.AddMembers(SelectedFields.Cast<IConvertToUDTMember>());
 
+                var rewriter = rewriteSession.CheckOutModuleRewriter(_targetQMN);
                 rewriter.Replace(_stateUDTField.AsTypeDeclaration, _stateUDTField.TypeDeclarationBlock(_indenter));
             }
         }
 
-        protected override void ModifyReferences(IEncapsulateFieldRewriteSession refactorRewriteSession)
+        protected override void ModifyReferences(IRewriteSession rewriteSession)
         {
             foreach (var field in SelectedFields)
             {
                 LoadFieldReferenceContextReplacements(field);
             }
 
-            RewriteReferences(refactorRewriteSession);
+            RewriteReferences(rewriteSession);
         }
 
         protected override void LoadNewDeclarationBlocks()
@@ -60,9 +54,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             _stateUDTField.AddMembers(SelectedFields.Cast<IConvertToUDTMember>());
 
-            AddContentBlock(NewContentTypes.TypeDeclarationBlock, _stateUDTField.TypeDeclarationBlock(_indenter));
+            AddContentBlock(NewContentType.TypeDeclarationBlock, _stateUDTField.TypeDeclarationBlock(_indenter));
 
-            AddContentBlock(NewContentTypes.DeclarationBlock, _stateUDTField.FieldDeclarationBlock);
+            AddContentBlock(NewContentType.DeclarationBlock, _stateUDTField.FieldDeclarationBlock);
             return;
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField.Extensions
 {
@@ -20,6 +21,20 @@ namespace Rubberduck.Refactorings.EncapsulateField.Extensions
                 return string.Join("_", fragments);
             }
             return $"{identifier}_1"; ;
+        }
+
+        public static string LimitNewLines(this string content, int maxConsecutiveNewLines)
+        {
+            if (maxConsecutiveNewLines < 2) { throw new ArgumentOutOfRangeException(); }
+
+            var target = string.Concat(Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines + 1).ToList());
+            var replacement = string.Concat(Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines).ToList());
+
+            for (var counter = 1; counter < 100 && content.Contains(target); counter++)
+            {
+                content = content.Replace(target, replacement);
+            }
+            return content;
         }
     }
 }
