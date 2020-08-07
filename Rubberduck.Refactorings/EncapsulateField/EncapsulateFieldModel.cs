@@ -44,9 +44,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IRefactoringPreviewProvider<EncapsulateFieldModel> PreviewProvider { set; get; }
         
-        ////TODO: Remove method from model and have clients use PreviewProvider property directly
-        public string PreviewRefactoring() => PreviewProvider?.Preview(this) ?? string.Empty;
-
         public IEnumerable<IObjectStateUDT> ObjectStateUDTCandidates => _objStateCandidates;
 
         private EncapsulateFieldStrategy _encapsulationFieldStategy;
