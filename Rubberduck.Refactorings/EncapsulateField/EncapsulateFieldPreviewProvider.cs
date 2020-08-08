@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.VBEditor;
+using System;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -31,8 +32,23 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public EncapsulateFieldUseBackingFieldPreviewProvider(EncapsulateFieldUseBackingFieldRefactoringAction refactoringAction,
             IRewritingManager rewritingManager)
             : base(refactoringAction, rewritingManager)
-        {
+        {}
 
+        public override string Preview(EncapsulateFieldModel model)
+        {
+            var preview = string.Empty;
+            var initialFlagValue = model.IncludeNewContentMarker;
+            model.IncludeNewContentMarker = true;
+            try
+            {
+                preview = base.Preview(model);
+            }
+            catch (Exception e) { }
+            finally
+            {
+                model.IncludeNewContentMarker = initialFlagValue;
+            }
+            return preview;
         }
 
         protected override QualifiedModuleName ComponentToShow(EncapsulateFieldModel model)
@@ -46,8 +62,23 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public EncapsulateFieldUseBackingUDTMemberPreviewProvider(EncapsulateFieldUseBackingUDTMemberRefactoringAction refactoringAction,
             IRewritingManager rewritingManager)
             : base(refactoringAction, rewritingManager)
-        {
+        {}
 
+        public override string Preview(EncapsulateFieldModel model)
+        {
+            var preview = string.Empty;
+            var initialFlagValue = model.IncludeNewContentMarker;
+            model.IncludeNewContentMarker = true;
+            try
+            {
+                preview = base.Preview(model);
+            }
+            catch (Exception e) { }
+            finally
+            {
+                model.IncludeNewContentMarker = initialFlagValue;
+            }
+            return preview;
         }
 
         protected override QualifiedModuleName ComponentToShow(EncapsulateFieldModel model)

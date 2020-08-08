@@ -40,6 +40,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _activeObjectStateUDT = ObjectStateUDTField;
         }
 
+        public bool IncludeNewContentMarker { set; get; } = false;
+
         public QualifiedModuleName QualifiedModuleName => _targetQMN;
 
         public IRefactoringPreviewProvider<EncapsulateFieldModel> PreviewProvider { set; get; }

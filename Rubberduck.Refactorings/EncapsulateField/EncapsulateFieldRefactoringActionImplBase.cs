@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
+using Rubberduck.Resources;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System;
@@ -24,7 +25,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             TypeDeclarationBlock,
             DeclarationBlock,
-            MethodBlock,
+            CodeSectionBlock,
             PostContentMessage
         };
 
@@ -60,7 +61,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             ModifyReferences(rewriteSession);
 
-            InsertNewContent(rewriteSession);
+            InsertNewContent(rewriteSession, model.IncludeNewContentMarker);
 
             return rewriteSession;
         }
@@ -181,15 +182,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
             IdentifierReplacements.Add(idRef, (context, replacementText));
         }
 
-        private void InsertNewContent(IRewriteSession refactorRewriteSession)
+        private void InsertNewContent(IRewriteSession refactorRewriteSession, bool addNewContentMarker)
         {
             _newContent = new Dictionary<NewContentType, List<string>>
             {
                 { NewContentType.PostContentMessage, new List<string>() },
                 { NewContentType.DeclarationBlock, new List<string>() },
-                { NewContentType.MethodBlock, new List<string>() },
+                { NewContentType.CodeSectionBlock, new List<string>() },
                 { NewContentType.TypeDeclarationBlock, new List<string>() }
             };
+
+            if (addNewContentMarker)
+            {
+                AddContentBlock(NewContentType.PostContentMessage, RubberduckUI.EncapsulateField_PreviewMarker);
+            }
 
             LoadNewDeclarationBlocks();
 
@@ -198,18 +204,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var newContentBlock = string.Join(_doubleSpace,
                             (_newContent[NewContentType.TypeDeclarationBlock])
                             .Concat(_newContent[NewContentType.DeclarationBlock])
-                            .Concat(_newContent[NewContentType.MethodBlock])
+                            .Concat(_newContent[NewContentType.CodeSectionBlock])
                             .Concat(_newContent[NewContentType.PostContentMessage]))
                             .Trim();
 
-            var maxConsecutiveNewLines = 3;
-            var target = string.Join(string.Empty, Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines).ToList());
-            var replacement = string.Join(string.Empty, Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines - 1).ToList());
-            for (var counter = 1; counter < 10 && newContentBlock.Contains(target); counter++)
-            {
-                newContentBlock = newContentBlock.Replace(target, replacement);
-            }
-
+            newContentBlock = newContentBlock.LimitNewLines(3);
 
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
             if (_codeSectionStartIndex.HasValue)
@@ -282,7 +281,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 throw new ArgumentException();
             }
-            AddContentBlock(NewContentType.MethodBlock, propertyGet);
+            AddContentBlock(NewContentType.CodeSectionBlock, propertyGet);
 
             if (!(propertyAttributes.GenerateLetter || propertyAttributes.GenerateSetter))
             {
@@ -295,7 +294,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 {
                     throw new ArgumentException();
                 }
-                AddContentBlock(NewContentType.MethodBlock, propertyLet);
+                AddContentBlock(NewContentType.CodeSectionBlock, propertyLet);
             }
 
             if (propertyAttributes.GenerateSetter)
@@ -304,7 +303,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 {
                     throw new ArgumentException();
                 }
-                AddContentBlock(NewContentType.MethodBlock, propertySet);
+                AddContentBlock(NewContentType.CodeSectionBlock, propertySet);
             }
         }
     }
