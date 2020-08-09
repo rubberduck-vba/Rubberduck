@@ -106,25 +106,28 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             var tree = walker.GenerateTree(localVariable.ParentScopeDeclaration.Context, localVariable);
 
             var allAssignmentsAndReferences = tree.Nodes(new[] { typeof(AssignmentNode), typeof(ReferenceNode) })
-                                    .Where(node => localVariable.References.Contains(node.Reference));
+                                    .Where(node => localVariable.References.Contains(node.Reference))
+                                    .ToList();
 
             var unusedAssignmentNodes = allAssignmentsAndReferences.Any(n => n is ReferenceNode)
                         ? FindUnusedAssignmentNodes(tree, localVariable, allAssignmentsAndReferences)
                         : allAssignmentsAndReferences.OfType<AssignmentNode>();
 
-            return unusedAssignmentNodes.Except(FindDescendantsOfNeverFlagNodeTypes(unusedAssignmentNodes))
+            return unusedAssignmentNodes.Where(n => !IsDescendentOfNeverFlagNode(n))
                                         .Select(n => n.Reference);
         }
 
         private static IEnumerable<AssignmentNode> FindUnusedAssignmentNodes(INode node, Declaration localVariable, IEnumerable<INode> allAssignmentsAndReferences)
         {
             var assignmentExprNodes = node.Nodes(new[] { typeof(AssignmentExpressionNode) })
-                                                .Where(n => localVariable.References.Contains(n.Children.FirstOrDefault()?.Reference));
+                                                .Where(n => localVariable.References.Contains(n.Children.FirstOrDefault()?.Reference))
+                                                .ToList();
 
             var usedAssignments = new List<AssignmentNode>();
             foreach (var refNode in allAssignmentsAndReferences.OfType<ReferenceNode>().Reverse())
             {
-                var assignmentExprNodesWithReference = assignmentExprNodes.Where(n => n.Nodes(new[] { typeof(ReferenceNode) })
+                var assignmentExprNodesWithReference = assignmentExprNodes
+                                                            .Where(n => n.Nodes(new[] { typeof(ReferenceNode) })
                                                             .Contains(refNode));
 
                 var assignmentsPrecedingReference = assignmentExprNodesWithReference.Any()
@@ -144,30 +147,14 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                                                 .Except(usedAssignments);
         }
 
-        private static IEnumerable<AssignmentNode> FindDescendantsOfNeverFlagNodeTypes(IEnumerable<AssignmentNode> flaggedAssignments)
+        private static bool IsDescendentOfNeverFlagNode(AssignmentNode assignment)
         {
-            var filteredResults = new List<AssignmentNode>();
-
-            foreach (var assignment in flaggedAssignments)
-            {
-                if (assignment.TryGetAncestorNode<BranchNode>(out _))
-                {
-                    filteredResults.Add(assignment);
-                }
-                if (assignment.TryGetAncestorNode<LoopNode>(out _))
-                {
-                    filteredResults.Add(assignment);
-                }
-            }
-            return filteredResults;
+            return assignment.TryGetAncestorNode<BranchNode>(out _)
+                || assignment.TryGetAncestorNode<LoopNode>(out _);
         }
 
         private static bool IsAssignmentOfNothing(IdentifierReference reference)
         {
-            if (reference.Context.Parent is VBAParser.SetStmtContext setStmtContext2)
-            {
-                var test = setStmtContext2.expression();
-            }
             return reference.IsSetAssignment
                 && reference.Context.Parent is VBAParser.SetStmtContext setStmtContext
                 && setStmtContext.expression().GetText().Equals(Tokens.Nothing);
@@ -179,25 +166,25 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         /// </summary>
         /// <remarks>
         /// Filters Assignment references that meet the following conditions:
-        /// 1. Precedes a GoTo or Resume statement that branches execution to a line before the 
-        ///     assignment reference, and
+        /// 1. Reference precedes a GoTo or Resume statement that branches execution to a line before the 
+        ///     assignment reference, AND
         /// 2. A non-assignment reference is present on a line that is:
-        ///     a) At or below the start of the execution branch, and 
+        ///     a) At or below the start of the execution branch, AND 
         ///     b) Above the next ExitStatement line (if one exists) or the end of the procedure
         /// </remarks>
         private static bool IsPotentiallyUsedViaJump(IdentifierReference resultCandidate, DeclarationFinder finder)
         {
             if (!resultCandidate.Declaration.References.Any(rf => !rf.IsAssignment)) { return false; }
 
-            var labelIdLineNumberPairs = finder.DeclarationsWithType(DeclarationType.LineLabel)
+            var labelIdLineNumberPairs = finder.Members(resultCandidate.QualifiedModuleName, DeclarationType.LineLabel)
                                                 .Where(label => resultCandidate.ParentScoping.Equals(label.ParentDeclaration))
-                                                .Select(lbl => (lbl.IdentifierName, lbl.Context.Start.Line));
+                                                .ToDictionary(key => key.IdentifierName, v => v.Context.Start.Line);
 
             return JumpStmtPotentiallyUsesVariable<VBAParser.GoToStmtContext>(resultCandidate, labelIdLineNumberPairs)
                 || JumpStmtPotentiallyUsesVariable<VBAParser.ResumeStmtContext>(resultCandidate, labelIdLineNumberPairs);
         }
 
-        private static bool JumpStmtPotentiallyUsesVariable<T>(IdentifierReference resultCandidate, IEnumerable<(string IdentifierName, int Line)> labelIdLineNumberPairs) where T : ParserRuleContext
+        private static bool JumpStmtPotentiallyUsesVariable<T>(IdentifierReference resultCandidate, Dictionary<string,int> labelIdLineNumberPairs) where T: ParserRuleContext
         {
             if (TryGetRelevantJumpContext<T>(resultCandidate, out var jumpStmt))
             {
@@ -210,25 +197,27 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         private static bool TryGetRelevantJumpContext<T>(IdentifierReference resultCandidate, out T ctxt) where T : ParserRuleContext
         {
             ctxt = resultCandidate.ParentScoping.Context.GetDescendents<T>()
-                                    .Where(sc => sc.Start.Line > resultCandidate.Context.Start.Line
-                                                    || (sc.Start.Line == resultCandidate.Context.Start.Line
-                                                            && sc.Start.Column > resultCandidate.Context.Start.Column))
-                                    .OrderBy(sc => sc.Start.Line - resultCandidate.Context.Start.Line)
-                                    .ThenBy(sc => sc.Start.Column - resultCandidate.Context.Start.Column)
+                                    .Where(descendent => descendent.GetSelection() > resultCandidate.Selection)
+                                    .OrderBy(descendent => descendent.GetSelection())
                                     .FirstOrDefault();
             return ctxt != null;
         }
 
-        private static bool IsPotentiallyUsedAssignment<T>(T jumpContext, IdentifierReference resultCandidate, IEnumerable<(string, int)> labelIdLineNumberPairs)
+        private static bool IsPotentiallyUsedAssignment<T>(T jumpContext, IdentifierReference resultCandidate, Dictionary<string, int> labelIdLineNumberPairs) where T : ParserRuleContext
         {
             int? executionBranchLine = null;
-            if (jumpContext is VBAParser.GoToStmtContext gotoCtxt)
+
+            switch (jumpContext)
             {
-                executionBranchLine = DetermineLabeledExecutionBranchLine(gotoCtxt.expression().GetText(), labelIdLineNumberPairs);
-            }
-            else
-            {
-                executionBranchLine = DetermineResumeStmtExecutionBranchLine(jumpContext as VBAParser.ResumeStmtContext, resultCandidate, labelIdLineNumberPairs);
+                case VBAParser.GoToStmtContext gotoStmt:
+                    executionBranchLine = labelIdLineNumberPairs[gotoStmt.expression().GetText()];
+                    break;
+                case VBAParser.ResumeStmtContext resume:
+                    executionBranchLine = DetermineResumeStmtExecutionBranchLine(resume, resultCandidate, labelIdLineNumberPairs);
+                    break;
+                default:
+                    executionBranchLine = null;
+                    break;
             }
 
             return executionBranchLine.HasValue
@@ -256,49 +245,57 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return !(sortedContextsAfterBranch.FirstOrDefault() is VBAParser.ExitStmtContext);
         }
 
-        private static int? DetermineResumeStmtExecutionBranchLine(VBAParser.ResumeStmtContext resumeStmt, IdentifierReference resultCandidate, IEnumerable<(string IdentifierName, int Line)> labelIdLineNumberPairs)
+        private static int? DetermineResumeStmtExecutionBranchLine(VBAParser.ResumeStmtContext resumeStmt, IdentifierReference resultCandidate, Dictionary<string, int> labelIdLineNumberPairs)
         {
             var onErrorGotoLabelToLineNumber = resultCandidate.ParentScoping.Context.GetDescendents<VBAParser.OnErrorStmtContext>()
-                    .Where(errorStmtCtxt => !errorStmtCtxt.expression().GetText().Equals("0"))
+                    .Where(errorStmtCtxt => IsBranchingOnErrorGoToLabel(errorStmtCtxt))
                     .ToDictionary(k => k.expression()?.GetText() ?? "No Label", v => v.Start.Line);
 
             var errorHandlerLabelsAndLines = labelIdLineNumberPairs
-                                                    .Where(pair => onErrorGotoLabelToLineNumber.ContainsKey(pair.IdentifierName));
+                                                    .Where(pair => onErrorGotoLabelToLineNumber.ContainsKey(pair.Key));
 
             //Labels must be located at the start of a line.
             //If the resultCandidate line precedes all error handling related labels, 
             //a Resume statement cannot be invoked (successfully) for the resultCandidate
-            if (!errorHandlerLabelsAndLines.Any(s => s.Line <= resultCandidate.Context.Start.Line))
+            if (!errorHandlerLabelsAndLines.Any(kvp => kvp.Value <= resultCandidate.Context.Start.Line))
             {
                 return null;
             }
 
-            var expression = resumeStmt.expression()?.GetText();
+            var resumeStmtExpression = resumeStmt.expression()?.GetText();
 
             //For Resume and Resume Next, expression() is null
-            if (string.IsNullOrEmpty(expression))
+            if (string.IsNullOrEmpty(resumeStmtExpression))
             {
-                //Get errorHandlerLabel for the Resume statement
-                string errorHandlerLabel = errorHandlerLabelsAndLines
-                                                .Where(pair => resumeStmt.Start.Line >= pair.Line)
-                                                .OrderBy(pair => resumeStmt.Start.Line - pair.Line)
-                                                .Select(pair => pair.IdentifierName)
+                var errorHandlerLabelForTheResumeStatement = errorHandlerLabelsAndLines
+                                                .Where(kvp => resumeStmt.Start.Line >= kvp.Value)
+                                                .OrderBy(kvp => resumeStmt.Start.Line - kvp.Value)
+                                                .Select(kvp => kvp.Key)
                                                 .FirstOrDefault();
 
                 //Since the execution branch line for Resume and Resume Next statements 
                 //is indeterminant by static analysis, the On***GoTo statement
                 //is used as the execution branch line
-                return onErrorGotoLabelToLineNumber[errorHandlerLabel];
+                return onErrorGotoLabelToLineNumber[errorHandlerLabelForTheResumeStatement];
             }
             //Resume <label>
-            return DetermineLabeledExecutionBranchLine(expression, labelIdLineNumberPairs);
+            return labelIdLineNumberPairs[resumeStmtExpression];
         }
 
-        private static int DetermineLabeledExecutionBranchLine(string expression, IEnumerable<(string IdentifierName, int Line)> IDandLinePairs)
-                        => int.TryParse(expression, out var parsedLineNumber)
-                                        ? parsedLineNumber
-                                        : IDandLinePairs.Single(v => v.IdentifierName.Equals(expression)).Line;
+        private static bool IsBranchingOnErrorGoToLabel(VBAParser.OnErrorStmtContext errorStmtCtxt)
+        {
+            var label = errorStmtCtxt.expression()?.GetText();
+            if (string.IsNullOrEmpty(label))
+            {
+                return false;
+            }
+            //The VBE will complain about labels other than:
+            //1. Numerics less than int.MaxValue (VBA: 'Long' max value).  '0' returns false because it cause a branch
+            //2. Or, Any alphanumeric string beginning with a letter (VBE or the Debugger will choke on special characters, spaces, etc).
+            return !(int.TryParse(label, out var numberLabel) && numberLabel <= 0);
+        }
 
+        //TODO: Add IsStatic member to VariableDeclaration
         private static bool IsStatic(Declaration declaration)
         {
             var ctxt = declaration.Context.GetAncestor<VBAParser.VariableStmtContext>();

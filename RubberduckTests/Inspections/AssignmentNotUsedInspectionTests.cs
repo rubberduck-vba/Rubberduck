@@ -423,8 +423,8 @@ End Sub";
         //https://github.com/rubberduck-vba/Rubberduck/issues/5456
         [TestCase("Resume CleanExit")]
         [TestCase("GoTo CleanExit")]
-        [TestCase("Resume 8")] //Inverse = ratio
-        [TestCase("GoTo 8")] //Inverse = ratio
+        [TestCase("Resume 850")]
+        [TestCase("GoTo 850")]
         public void IgnoresAssignmentWhereUsedByJumpStatement(string statement)
         {
             string code =
@@ -435,6 +435,7 @@ Public Function Inverse(value As Double) As Double
 On Error Goto ErrorHandler
     ratio = 1# / value
 CleanExit:
+850:
     Inverse = ratio
     Exit Function
 ErrorHandler:
@@ -449,8 +450,8 @@ End Function
 
         [TestCase("Resume CleanExit")]
         [TestCase("GoTo CleanExit")]
-        [TestCase("Resume 8")] //Inverse = ratio
-        [TestCase("GoTo 8")] //Inverse = ratio
+        [TestCase("Resume 850")]
+        [TestCase("GoTo 850")]
         public void IgnoresAssignmentWhereUsedByJumpStatement_JumpOnSameLineAsAssignment(string statement)
         {
             string code =
@@ -461,6 +462,7 @@ Public Function Inverse(value As Double) As Double
 On Error Goto ErrorHandler
     ratio = 1# / value
 CleanExit:
+850:
     Inverse = ratio
     Exit Function
 ErrorHandler:
