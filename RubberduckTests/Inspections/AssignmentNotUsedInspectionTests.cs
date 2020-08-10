@@ -789,6 +789,27 @@ End Function
             Assert.AreEqual(expected, results.Count());
         }
 
+        [Test]
+        public void ResumeStmt_SingleResult()
+        {
+            string code =
+$@"
+Public Function Inverse(value As Double) As Double
+On Error GoTo ErrorHandler:
+    Dim ratio As Double
+    ratio = 0# '<== unused
+    ratio = 1# / value '<== used
+    Inverse = ratio
+    Exit Function
+ErrorHandler: 
+    ratio = 0#  '<== possibly used
+    Resume
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(1, results.Count());
+        }
+
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
             return new AssignmentNotUsedInspection(state, new Walker());
