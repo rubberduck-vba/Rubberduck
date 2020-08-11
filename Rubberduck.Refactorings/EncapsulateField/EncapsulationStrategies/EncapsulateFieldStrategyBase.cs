@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
@@ -12,8 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -33,7 +32,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public interface IEncapsulateStrategy
     {
-        IEncapsulateFieldRewriteSession RefactorRewrite(IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview);
+        IRewriteSession RefactorRewrite(IRewriteSession refactorRewriteSession, bool asPreview);
     }
 
     public abstract class EncapsulateFieldStrategyBase : IEncapsulateStrategy
@@ -57,7 +56,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _targetQMN = model.QualifiedModuleName;
             _indenter = indenter;
             _codeBuilder = codeBuilder;
-            SelectedFields = model.SelectedFieldCandidates;
+            SelectedFields = model.SelectedFieldCandidates.ToList();
 
             _codeSectionStartIndex = declarationFinderProvider.DeclarationFinder
                 .Members(_targetQMN).Where(m => m.IsMember())
@@ -65,7 +64,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
         }
 
-        public IEncapsulateFieldRewriteSession RefactorRewrite(IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview)
+        public IRewriteSession RefactorRewrite(IRewriteSession refactorRewriteSession, bool asPreview)
         {
             ModifyFields(refactorRewriteSession);
 
@@ -76,13 +75,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return refactorRewriteSession;
         }
 
-        protected abstract void ModifyFields(IEncapsulateFieldRewriteSession rewriteSession);
+        protected abstract void ModifyFields(IRewriteSession rewriteSession);
 
-        protected abstract void ModifyReferences(IEncapsulateFieldRewriteSession refactorRewriteSession);
+        protected abstract void ModifyReferences(IRewriteSession refactorRewriteSession);
 
         protected abstract void LoadNewDeclarationBlocks();
 
-        protected void RewriteReferences(IEncapsulateFieldRewriteSession refactorRewriteSession)
+        protected void RewriteReferences(IRewriteSession refactorRewriteSession)
         {
             foreach (var replacement in IdentifierReplacements)
             {
@@ -95,7 +94,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected void AddContentBlock(NewContentTypes contentType, string block)
             => _newContent[contentType].Add(block);
 
-        private void InsertNewContent(IEncapsulateFieldRewriteSession refactorRewriteSession, bool isPreview = false)
+        private void InsertNewContent(IRewriteSession refactorRewriteSession, bool isPreview = false)
         {
             _newContent = new Dictionary<NewContentTypes, List<string>>
             {
@@ -119,16 +118,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                             .Concat(_newContent[NewContentTypes.DeclarationBlock])
                             .Concat(_newContent[NewContentTypes.MethodBlock])
                             .Concat(_newContent[NewContentTypes.PostContentMessage]))
-                            .Trim();
-
-            var maxConsecutiveNewLines = 3;
-            var target = string.Join(string.Empty, Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines).ToList());
-            var replacement = string.Join(string.Empty, Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines - 1).ToList());
-            for (var counter = 1; counter < 10 && newContentBlock.Contains(target); counter++)
-            {
-                newContentBlock = newContentBlock.Replace(target, replacement);
-            }
-
+                            .Trim()
+                            .LimitNewlines();
 
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
             if (_codeSectionStartIndex.HasValue)

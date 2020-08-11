@@ -1,19 +1,10 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
+﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
-using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -27,14 +18,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _stateUDTField = model.ObjectStateUDTField;
         }
 
-        protected override void ModifyFields(IEncapsulateFieldRewriteSession refactorRewriteSession)
+        protected override void ModifyFields(IRewriteSession refactorRewriteSession)
         {
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
-            foreach (var field in SelectedFields)
-            {
-                refactorRewriteSession.Remove(field.Declaration, rewriter);
-            }
+            rewriter.RemoveVariables(SelectedFields.Select(f => f.Declaration).Cast<VariableDeclaration>());
 
             if (_stateUDTField.IsExistingDeclaration)
             {
@@ -44,7 +32,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        protected override void ModifyReferences(IEncapsulateFieldRewriteSession refactorRewriteSession)
+        protected override void ModifyReferences(IRewriteSession refactorRewriteSession)
         {
             foreach (var field in SelectedFields)
             {

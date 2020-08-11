@@ -6,7 +6,6 @@ using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.Utility;
-using System;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -91,26 +90,26 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override void RefactorImpl(EncapsulateFieldModel model)
         {
-            var refactorRewriteSession = new EncapsulateFieldRewriteSession(_rewritingManager.CheckOutCodePaneSession()) as IEncapsulateFieldRewriteSession;
+            var refactorRewriteSession = _rewritingManager.CheckOutCodePaneSession();
 
-            refactorRewriteSession = RefactorRewrite(model, refactorRewriteSession);
+            RefactorRewrite(model, refactorRewriteSession as IRewriteSession);
 
             if (!refactorRewriteSession.TryRewrite())
             {
-                throw new RewriteFailedException(refactorRewriteSession.RewriteSession);
+                throw new RewriteFailedException(refactorRewriteSession);
             }
         }
 
         private string PreviewRewrite(EncapsulateFieldModel model)
         {
-            var previewSession = new EncapsulateFieldRewriteSession(_rewritingManager.CheckOutCodePaneSession()) as IEncapsulateFieldRewriteSession; ;
-
+            var previewSession = _rewritingManager.CheckOutCodePaneSession() as IRewriteSession;
             previewSession = RefactorRewrite(model, previewSession, true);
 
-            return previewSession.CreatePreview(model.QualifiedModuleName);
+            var rewriter = previewSession.CheckOutModuleRewriter(model.QualifiedModuleName);
+            return rewriter.GetText();
         }
 
-        private IEncapsulateFieldRewriteSession RefactorRewrite(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview = false)
+        private IRewriteSession RefactorRewrite(EncapsulateFieldModel model, IRewriteSession refactorRewriteSession, bool asPreview = false)
         {
             if (!model.SelectedFieldCandidates.Any()) { return refactorRewriteSession; }
 
