@@ -2,7 +2,6 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
-using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
@@ -16,12 +15,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private QualifiedModuleName _targetQMN;
         private string _defaultObjectStateUDTTypeName;
+        private ICodeBuilder _codeBuilder;
 
         public EncapsulateFieldElementsBuilder(IDeclarationFinderProvider declarationFinderProvider, QualifiedModuleName targetQMN)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _targetQMN = targetQMN;
             _defaultObjectStateUDTTypeName = $"T{_targetQMN.ComponentName}";
+            _codeBuilder = new CodeBuilder();
             CreateRefactoringElements();
         }
 
@@ -110,7 +111,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             if (target.IsUserDefinedType())
             {
                 var udtValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedType);
-                var udtField = new UserDefinedTypeCandidate(target, udtValidator) as IUserDefinedTypeCandidate;
+                var udtField = new UserDefinedTypeCandidate(target, udtValidator, _codeBuilder.DefaultPropertyValueParamIdentifier) as IUserDefinedTypeCandidate;
 
                 (Declaration udtDeclaration, IEnumerable<Declaration> udtMembers) = GetUDTAndMembersForField(udtField);
 
@@ -125,7 +126,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     {
                         udtMemberValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMemberArray);
                     }
-                    var candidateUDTMember = new UserDefinedTypeMemberCandidate(CreateCandidate(udtMemberDeclaration, udtMemberValidator), udtField) as IUserDefinedTypeMemberCandidate;
+                    var candidateUDTMember = new UserDefinedTypeMemberCandidate(CreateCandidate(udtMemberDeclaration, udtMemberValidator), udtField, _codeBuilder.DefaultPropertyValueParamIdentifier) as IUserDefinedTypeMemberCandidate;
 
                     udtField.AddMember(candidateUDTMember);
                 }
@@ -141,10 +142,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
             else if (target.IsArray)
             {
-                return new ArrayCandidate(target, validator);
+                return new ArrayCandidate(target, validator, _codeBuilder.DefaultPropertyValueParamIdentifier);
             }
 
-            var candidate = new EncapsulateFieldCandidate(target, validator);
+            var candidate = new EncapsulateFieldCandidate(target, validator, _codeBuilder.DefaultPropertyValueParamIdentifier);
             return candidate;
         }
 

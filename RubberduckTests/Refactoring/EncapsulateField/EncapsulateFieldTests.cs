@@ -21,6 +21,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 
+        private static Func<string, string> Param = EncapsulateFieldTestSupport.ParamNameBuilder;
+
         [TestCase("fizz", true, "baz", true, "buzz", true)]
         [TestCase("fizz", false, "baz", true, "buzz", true)]
         [TestCase("fizz", false, "baz", false, "buzz", true)]
@@ -69,8 +71,8 @@ Public {var3} As Integer";
             {
                 StringAssert.Contains($"Private {variable} As", actualCode);
                 StringAssert.Contains($"{variable}Prop = {variable}", actualCode);
-                StringAssert.Contains($"{variable} = value", actualCode);
-                StringAssert.Contains($"Let {variable}Prop(ByVal value As", actualCode);
+                StringAssert.Contains($"{variable} = {Param($"{variable}Prop")}", actualCode);
+                StringAssert.Contains($"Let {variable}Prop(ByVal {Param($"{variable}Prop")} As", actualCode);
                 StringAssert.Contains($"Property Get {variable}Prop()", actualCode);
             }
         }
@@ -133,8 +135,8 @@ $@"Public {var1} As Integer, {var2} As Integer, {var3} As Integer, {var4} As Int
                 {
                     StringAssert.Contains($"Private {key} As", actualCode);
                     StringAssert.Contains($"{key}Prop = {key}", actualCode);
-                    StringAssert.Contains($"{key} = value", actualCode);
-                    StringAssert.Contains($"Let {key}Prop(ByVal value As", actualCode);
+                    StringAssert.Contains($"{key} = {Param($"{key}Prop")}", actualCode);
+                    StringAssert.Contains($"Let {key}Prop(ByVal {Param($"{key}Prop")} As", actualCode);
                     StringAssert.Contains($"Property Get {key}Prop()", actualCode);
                 }
             }
@@ -232,8 +234,8 @@ End Property";
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            Assert.Greater(actualCode.IndexOf("fizz = value"), actualCode.IndexOf("fizz As Integer"));
-            Assert.Less(actualCode.IndexOf("fizz = value"), actualCode.IndexOf("Get Foo"));
+            Assert.Greater(actualCode.IndexOf($"fizz = {Param("Name")}"), actualCode.IndexOf("fizz As Integer"));
+            Assert.Less(actualCode.IndexOf($"fizz = {Param("Name")}"), actualCode.IndexOf("Get Foo"));
         }
 
         [TestCase("|Public fizz As Integer\r\nPublic buzz As Boolean", "Private fizz As Integer\r\nPublic buzz As Boolean")]
@@ -251,8 +253,8 @@ Public Property Get Name() As Integer
     Name = fizz
 End Property
 
-Public Property Let Name(ByVal value As Integer)
-    fizz = value
+Public Property Let Name(ByVal nameValue As Integer)
+    fizz = nameValue
 End Property
 ";
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
@@ -295,9 +297,9 @@ bazz As Date";
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Public Property Get Name() As Integer", actualCode);
             StringAssert.Contains("Public Property Let Name(", actualCode);
-            StringAssert.Contains("(ByVal value As Integer)", actualCode);
+            StringAssert.Contains($"(ByVal {Param("Name")} As Integer)", actualCode);
             StringAssert.Contains("Name = fizz", actualCode);
-            StringAssert.Contains("fizz = value", actualCode);
+            StringAssert.Contains($"fizz = {Param("Name")}", actualCode);
             StringAssert.Contains("End Property", actualCode);
         }
 
@@ -363,26 +365,26 @@ Private numberT|ype As NumberTypes{declarationList ?? string.Empty}
             const string inputCode =
                 @"Private fi|zz As Integer, fuzz As Integer, fazz As Integer";
 
-            const string expectedCode =
-                @"
-Private fizz_1 As Integer, fuzz As Integer, fazz As Integer
+//            const string expectedCode =
+//                @"
+//Private fizz_1 As Integer, fuzz As Integer, fazz As Integer
 
-Public Property Get Fizz() As Integer
-    Fizz = fizz_1
-End Property
+//Public Property Get Fizz() As Integer
+//    Fizz = fizz_1
+//End Property
 
-Public Property Let Fizz(ByVal value As Integer)
-    fizz_1 = value
-End Property
-";
+//Public Property Let Fizz(ByVal value As Integer)
+//    fizz_1 = value
+//End Property
+//";
             var presenterAction = Support.SetParametersForSingleTarget("fizz");
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Private fizz_1 As Integer, fuzz As Integer,", actualCode);
             StringAssert.Contains("Public Property Get Fizz() As Integer", actualCode);
             StringAssert.Contains("Public Property Let Fizz(", actualCode);
-            StringAssert.Contains("(ByVal value As Integer)", actualCode);
+            StringAssert.Contains($"(ByVal {Param("Fizz")} As Integer)", actualCode);
             StringAssert.Contains("Fizz = fizz_1", actualCode);
-            StringAssert.Contains("fizz_1 = value", actualCode);
+            StringAssert.Contains($"fizz_1 = {Param("Fizz")}", actualCode);
             StringAssert.Contains("End Property", actualCode);
             //Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
@@ -395,24 +397,24 @@ End Property
             const string inputCode =
                 @"|Private fizz As Integer";
 
-            const string expectedCode =
-                @"Private fizz_1 As Integer
+//            const string expectedCode =
+//                @"Private fizz_1 As Integer
 
-Public Property Get Fizz() As Integer
-    Fizz = fizz_1
-End Property
+//Public Property Get Fizz() As Integer
+//    Fizz = fizz_1
+//End Property
 
-Public Property Let Fizz(ByVal value As Integer)
-    fizz_1 = value
-End Property
-";
+//Public Property Let Fizz(ByVal value As Integer)
+//    fizz_1 = value
+//End Property
+//";
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Public Property Get Fizz() As Integer", actualCode);
             StringAssert.Contains("Public Property Let Fizz(", actualCode);
-            StringAssert.Contains("(ByVal value As Integer)", actualCode);
+            StringAssert.Contains($"(ByVal {Param("Fizz")} As Integer)", actualCode);
             StringAssert.Contains("Fizz = fizz_1", actualCode);
-            StringAssert.Contains("fizz_1 = value", actualCode);
+            StringAssert.Contains($"fizz_1 = {Param("Fizz")}", actualCode);
             StringAssert.Contains("End Property", actualCode);
             //Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
@@ -429,7 +431,7 @@ End Property
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Fizz As Integer", actualCode);
             StringAssert.Contains($"this As {Support.StateUDTDefaultType}", actualCode);
-            StringAssert.Contains("this.Fizz = value", actualCode);
+            StringAssert.Contains($"this.Fizz = {Param("Fizz")}", actualCode);
         }
 
         [Test]
@@ -459,7 +461,7 @@ End Sub";
             StringAssert.Contains("Property Get Name", actualCode);
             StringAssert.Contains("Property Let Name", actualCode);
             StringAssert.Contains($"Name = {enapsulationIdentifiers.TargetFieldName}", actualCode);
-            StringAssert.Contains($"{enapsulationIdentifiers.TargetFieldName} = value", actualCode);
+            StringAssert.Contains($"{enapsulationIdentifiers.TargetFieldName} = {Param("Name")}", actualCode);
         }
 
         [Test]

@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Moq;
 using Rubberduck.Refactorings.EncapsulateField;
 using RubberduckTests.Mocks;
 using Rubberduck.Refactorings;
