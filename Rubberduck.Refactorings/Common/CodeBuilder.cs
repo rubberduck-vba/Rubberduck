@@ -77,10 +77,8 @@ namespace Rubberduck.Refactorings
 
     public class CodeBuilder : ICodeBuilder
     {
-        private static string ParameterSuffix => Resources.RubberduckUI.EncapsulateField_DefaultPropertyParameter.Capitalize();
-
         public string DefaultPropertyValueParamIdentifier(string propertyIdentifier)
-            => $"{propertyIdentifier.ToLowerCaseFirstLetter()}{ParameterSuffix}";
+            => string.Format(Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParamFormat, propertyIdentifier.ToLowerCaseFirstLetter());
 
         public string BuildMemberBlockFromPrototype(ModuleBodyElementDeclaration declaration, 
                                         string content = null, 
