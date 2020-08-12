@@ -33,6 +33,10 @@ namespace Rubberduck.Inspections.CodePathAnalysis
                 case VBAParser.BlockContext _:
                     node = new BlockNode(tree);
                     break;
+                case VBAParser.LetStmtContext _:
+                case VBAParser.SetStmtContext _:
+                    node = new AssignmentExpressionNode(tree);
+                    break;
             }
 
             if (declaration.Context == tree)
