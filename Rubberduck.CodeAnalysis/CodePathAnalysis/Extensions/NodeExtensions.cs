@@ -55,5 +55,21 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
 
             return GetFirstNode(node.Children[0], excludedTypes);
         }
+
+        public static bool TryGetAncestorNode<T>(this INode node, out T ancestor) where T: INode
+        {
+            ancestor = default;
+            if (node.Parent is null)
+            {
+                return false;
+            }
+
+            if (node.Parent is T result)
+            {
+                ancestor = result;
+                return true;
+            }
+            return TryGetAncestorNode(node.Parent, out ancestor);
+        }
     }
 }
