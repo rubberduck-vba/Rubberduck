@@ -90,23 +90,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override void RefactorImpl(EncapsulateFieldModel model)
         {
-            var refactorRewriteSession = _rewritingManager.CheckOutCodePaneSession();
+            var executableRewriteSession = _rewritingManager.CheckOutCodePaneSession();
 
-            RefactorRewrite(model, refactorRewriteSession as IRewriteSession);
+            RefactorRewrite(model, executableRewriteSession);
 
-            if (!refactorRewriteSession.TryRewrite())
+            if (!executableRewriteSession.TryRewrite())
             {
-                throw new RewriteFailedException(refactorRewriteSession);
+                throw new RewriteFailedException(executableRewriteSession);
             }
         }
 
         private string PreviewRewrite(EncapsulateFieldModel model)
         {
-            var previewSession = _rewritingManager.CheckOutCodePaneSession() as IRewriteSession;
-            previewSession = RefactorRewrite(model, previewSession, true);
+            var previewSession = RefactorRewrite(model, _rewritingManager.CheckOutCodePaneSession(), true);
 
-            var rewriter = previewSession.CheckOutModuleRewriter(model.QualifiedModuleName);
-            return rewriter.GetText();
+            return previewSession.CheckOutModuleRewriter(model.QualifiedModuleName)
+                .GetText();
         }
 
         private IRewriteSession RefactorRewrite(EncapsulateFieldModel model, IRewriteSession refactorRewriteSession, bool asPreview = false)

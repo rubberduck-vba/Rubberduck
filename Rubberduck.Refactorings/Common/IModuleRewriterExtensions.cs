@@ -25,28 +25,32 @@ namespace Rubberduck.Refactorings.Common
         /// </remarks>
         public static void RemoveVariables(this IModuleRewriter rewriter, IEnumerable<VariableDeclaration> toRemove, bool removeEndOfStmtContext = true)
         {
-            if (!toRemove.Any()) { return; }
-
-            var fieldsByListContext = toRemove.Distinct()
-                                                .GroupBy(f => f.Context.GetAncestor<VBAParser.VariableListStmtContext>());
-
-            foreach (var fieldsGroup in fieldsByListContext)
+            if (!toRemove.Any())
             {
-                var variables = fieldsGroup.Key.children.Where(ch => ch is VBAParser.VariableSubStmtContext);
-                if (variables.Count() == fieldsGroup.Count())
+                return;
+            }
+
+            var fieldsToDeleteByListContext = toRemove.Distinct()
+                .ToLookup(f => f.Context.GetAncestor<VBAParser.VariableListStmtContext>());
+
+            foreach (var fieldsToDelete in fieldsToDeleteByListContext)
+            {
+                var variableList = fieldsToDelete.Key.children.OfType<VBAParser.VariableSubStmtContext>();
+
+                if (variableList.Count() == fieldsToDelete.Count())
                 {
-                    if (fieldsGroup.First().ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
+                    if (fieldsToDelete.First().ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
                     {
-                        rewriter.RemoveDeclaration<VBAParser.ModuleDeclarationsElementContext>(fieldsGroup.First(), removeEndOfStmtContext);
+                        rewriter.RemoveDeclarationContext<VBAParser.ModuleDeclarationsElementContext>(fieldsToDelete.First(), removeEndOfStmtContext);
                     }
                     else
                     {
-                        rewriter.RemoveDeclaration<VBAParser.BlockStmtContext>(fieldsGroup.First(), removeEndOfStmtContext);
+                        rewriter.RemoveDeclarationContext<VBAParser.BlockStmtContext>(fieldsToDelete.First(), removeEndOfStmtContext);
                     }
                     continue;
                 }
 
-                foreach (var target in fieldsGroup)
+                foreach (var target in fieldsToDelete)
                 {
                     rewriter.Remove(target);
                 }
@@ -76,15 +80,18 @@ namespace Rubberduck.Refactorings.Common
         /// </remarks>
         public static void RemoveMembers(this IModuleRewriter rewriter, IEnumerable<ModuleBodyElementDeclaration> toRemove, bool removeEndOfStmtContext = true)
         {
-            if (!toRemove.Any()) { return; }
+            if (!toRemove.Any())
+            {
+                return;
+            }
 
             foreach (var member in toRemove)
             {
-                rewriter.RemoveDeclaration<VBAParser.ModuleBodyElementContext>(member, removeEndOfStmtContext);
+                rewriter.RemoveDeclarationContext<VBAParser.ModuleBodyElementContext>(member, removeEndOfStmtContext);
             }
         }
 
-        private static void RemoveDeclaration<T>(this IModuleRewriter rewriter, Declaration declaration, bool removeEndOfStmtContext = true) where T : ParserRuleContext
+        private static void RemoveDeclarationContext<T>(this IModuleRewriter rewriter, Declaration declaration, bool removeEndOfStmtContext = true) where T : ParserRuleContext
         {
             if (!declaration.Context.TryGetAncestor<T>(out var elementContext))
             {

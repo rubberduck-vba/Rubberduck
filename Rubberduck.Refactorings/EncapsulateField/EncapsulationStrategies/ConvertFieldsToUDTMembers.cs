@@ -22,7 +22,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
-            rewriter.RemoveVariables(SelectedFields.Select(f => f.Declaration).Cast<VariableDeclaration>());
+            rewriter.RemoveVariables(SelectedFields.Select(f => f.Declaration)
+                .Cast<VariableDeclaration>());
 
             if (_stateUDTField.IsExistingDeclaration)
             {

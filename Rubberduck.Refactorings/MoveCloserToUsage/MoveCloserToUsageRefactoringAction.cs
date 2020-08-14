@@ -16,15 +16,14 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         protected override void Refactor(MoveCloserToUsageModel model, IRewriteSession rewriteSession)
         {
-            var target = model.Target;
-            if (target is VariableDeclaration variable)
+            if (!(model.Target is VariableDeclaration variable))
             {
-                InsertNewDeclaration(variable, rewriteSession);
-                RemoveOldDeclaration(variable, rewriteSession);
-                UpdateQualifiedCalls(variable, rewriteSession);
-                return;
+                throw new ArgumentException("Invalid type - VariableDeclaration required");
             }
-            throw new ArgumentException("Invalid target declaration type");
+
+            InsertNewDeclaration(variable, rewriteSession);
+            RemoveOldDeclaration(variable, rewriteSession);
+            UpdateQualifiedCalls(variable, rewriteSession);
         }
 
         private void InsertNewDeclaration(VariableDeclaration target, IRewriteSession rewriteSession)
