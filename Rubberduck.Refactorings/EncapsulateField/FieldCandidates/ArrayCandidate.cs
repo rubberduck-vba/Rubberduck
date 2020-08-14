@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing;
+﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources;
@@ -17,8 +16,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class ArrayCandidate : EncapsulateFieldCandidate, IArrayCandidate
     {
         private string _subscripts;
-        public ArrayCandidate(Declaration declaration, IValidateVBAIdentifiers validator, Func<string,string> paramNameBuilder)
-            :base(declaration, validator, paramNameBuilder)
+        public ArrayCandidate(Declaration declaration, IValidateVBAIdentifiers validator, Func<string,string> parameterNameBuilder)
+            :base(declaration, validator, parameterNameBuilder)
         {
             ImplementLet = false;
             ImplementSet = false;

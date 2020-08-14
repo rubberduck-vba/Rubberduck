@@ -111,7 +111,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             if (target.IsUserDefinedType())
             {
                 var udtValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedType);
-                var udtField = new UserDefinedTypeCandidate(target, udtValidator, _codeBuilder.DefaultPropertyValueParamIdentifier) as IUserDefinedTypeCandidate;
+                var udtField = new UserDefinedTypeCandidate(target, udtValidator, _codeBuilder.BuildPropertyRhsParameterName) as IUserDefinedTypeCandidate;
 
                 (Declaration udtDeclaration, IEnumerable<Declaration> udtMembers) = GetUDTAndMembersForField(udtField);
 
@@ -126,7 +126,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     {
                         udtMemberValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMemberArray);
                     }
-                    var candidateUDTMember = new UserDefinedTypeMemberCandidate(CreateCandidate(udtMemberDeclaration, udtMemberValidator), udtField, _codeBuilder.DefaultPropertyValueParamIdentifier) as IUserDefinedTypeMemberCandidate;
+                    var candidateUDTMember = new UserDefinedTypeMemberCandidate(CreateCandidate(udtMemberDeclaration, udtMemberValidator), udtField, _codeBuilder.BuildPropertyRhsParameterName) as IUserDefinedTypeMemberCandidate;
 
                     udtField.AddMember(candidateUDTMember);
                 }
@@ -142,10 +142,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
             else if (target.IsArray)
             {
-                return new ArrayCandidate(target, validator, _codeBuilder.DefaultPropertyValueParamIdentifier);
+                return new ArrayCandidate(target, validator, _codeBuilder.BuildPropertyRhsParameterName);
             }
 
-            var candidate = new EncapsulateFieldCandidate(target, validator, _codeBuilder.DefaultPropertyValueParamIdentifier);
+            var candidate = new EncapsulateFieldCandidate(target, validator, _codeBuilder.BuildPropertyRhsParameterName);
             return candidate;
         }
 

@@ -1,12 +1,8 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Common;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -21,8 +17,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class UserDefinedTypeCandidate : EncapsulateFieldCandidate, IUserDefinedTypeCandidate
     {
-        public UserDefinedTypeCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator, Func<string,string> paramNameBuilder)
-            : base(declaration, identifierValidator, paramNameBuilder)
+        public UserDefinedTypeCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator, Func<string,string> parameterNameBuilder)
+            : base(declaration, identifierValidator, parameterNameBuilder)
         {
         }
 

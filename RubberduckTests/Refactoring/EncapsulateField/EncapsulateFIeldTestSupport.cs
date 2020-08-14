@@ -19,7 +19,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 {
     public class EncapsulateFieldTestSupport : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
-        public static string ParamNameBuilder(string property) => $"{property.ToLowerCaseFirstLetter()}Value";
+        public string RhsParameterNameBuilder(string property) => $"{property.ToLowerCaseFirstLetter()}Value";
 
         public string StateUDTDefaultType => $"T{MockVbeBuilder.TestModuleName}";
 

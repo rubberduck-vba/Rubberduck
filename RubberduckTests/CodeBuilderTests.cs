@@ -339,7 +339,7 @@ End {procType.endStmt}
 
         private static string PropertyGetBlockFromPrototypeTest<T>(T target, PropertyBlockFromPrototypeParams testParams) where T : Declaration
         {
-            new CodeBuilder().TryBuildPropertyGetCodeBlock(target, testParams.Identifier, out string result, testParams.Accessibility, testParams.Content); //, testParams.WriteParam);
+            new CodeBuilder().TryBuildPropertyGetCodeBlock(target, testParams.Identifier, out string result, testParams.Accessibility, testParams.Content);
             return result;
         }
 
