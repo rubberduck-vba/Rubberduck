@@ -51,9 +51,13 @@ namespace Rubberduck.UI
 
         public IEnumerable GetErrors(string propertyName)
         {
-            return _errors.TryGetValue(propertyName, out var errorList)
-                ? errorList
-                : null;
+            if (propertyName != null)
+            {
+                return _errors.TryGetValue(propertyName, out var errorList)
+                    ? errorList
+                    : null;
+            }
+            return null;
         }
 
         public bool HasErrors => _errors.Any();
