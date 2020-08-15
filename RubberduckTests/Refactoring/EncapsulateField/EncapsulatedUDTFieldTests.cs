@@ -31,15 +31,18 @@ End Type
 
 
             var presenterAction = Support.UserAcceptsDefaults();
+            var rhsParameterNameFirst = Support.RhsParameterNameBuilder("First");
+            var rhsParameterNameSecond = Support.RhsParameterNameBuilder("Second");
+
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Private this As TBar", actualCode);
             StringAssert.DoesNotContain("this = value", actualCode);
             StringAssert.DoesNotContain($"This = this", actualCode);
             StringAssert.Contains($"Public Property Get First", actualCode);
             StringAssert.Contains($"Public Property Get Second", actualCode);
-            StringAssert.Contains($"this.First = value", actualCode);
+            StringAssert.Contains($"this.First = {rhsParameterNameFirst}", actualCode);
             StringAssert.Contains($"First = this.First", actualCode);
-            StringAssert.Contains($"this.Second = value", actualCode);
+            StringAssert.Contains($"this.Second = {rhsParameterNameSecond}", actualCode);
             StringAssert.Contains($"Second = this.Second", actualCode);
         }
 
@@ -70,22 +73,27 @@ Public that As TBar";
                     .AddUserInputSet(expectedThat.TargetFieldName, encapsulationFlag: encapsulateThat);
 
             var presenterAction = Support.SetParameters(userInput);
+            var rhsParameterNameFirst = Support.RhsParameterNameBuilder("First");
+            var rhsParameterNameSecond = Support.RhsParameterNameBuilder("Second");
+            var rhsParameterNameFirst1 = Support.RhsParameterNameBuilder("First_1");
+            var rhsParameterNameSecond1 = Support.RhsParameterNameBuilder("Second_1");
+
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             if (encapsulateThis && encapsulateThat)
             {
                 StringAssert.Contains($"Private {expectedThis.TargetFieldName} As TBar", actualCode);
                 StringAssert.Contains($"First = {expectedThis.TargetFieldName}.First", actualCode);
                 StringAssert.Contains($"Second = {expectedThis.TargetFieldName}.Second", actualCode);
-                StringAssert.Contains($"{expectedThis.TargetFieldName}.First = value", actualCode);
-                StringAssert.Contains($"{expectedThis.TargetFieldName}.Second = value", actualCode);
+                StringAssert.Contains($"{expectedThis.TargetFieldName}.First = {rhsParameterNameFirst}", actualCode);
+                StringAssert.Contains($"{expectedThis.TargetFieldName}.Second = {rhsParameterNameSecond}", actualCode);
                 StringAssert.Contains($"Property Get First", actualCode);
                 StringAssert.Contains($"Property Get Second", actualCode);
 
                 StringAssert.Contains($"Private {expectedThat.TargetFieldName} As TBar", actualCode);
                 StringAssert.Contains($"First_1 = {expectedThat.TargetFieldName}.First", actualCode);
                 StringAssert.Contains($"Second_1 = {expectedThat.TargetFieldName}.Second", actualCode);
-                StringAssert.Contains($"{expectedThat.TargetFieldName}.First = value", actualCode);
-                StringAssert.Contains($"{expectedThat.TargetFieldName}.Second = value", actualCode);
+                StringAssert.Contains($"{expectedThat.TargetFieldName}.First = {rhsParameterNameFirst1}", actualCode);
+                StringAssert.Contains($"{expectedThat.TargetFieldName}.Second = {rhsParameterNameSecond1}", actualCode);
                 StringAssert.Contains($"Property Get First_1", actualCode);
                 StringAssert.Contains($"Property Get Second_1", actualCode);
 
@@ -96,8 +104,8 @@ Public that As TBar";
             {
                 StringAssert.Contains($"First = {expectedThis.TargetFieldName}.First", actualCode);
                 StringAssert.Contains($"Second = {expectedThis.TargetFieldName}.Second", actualCode);
-                StringAssert.Contains($"{expectedThis.TargetFieldName}.First = value", actualCode);
-                StringAssert.Contains($"{expectedThis.TargetFieldName}.Second = value", actualCode);
+                StringAssert.Contains($"{expectedThis.TargetFieldName}.First = {rhsParameterNameFirst}", actualCode);
+                StringAssert.Contains($"{expectedThis.TargetFieldName}.Second = {rhsParameterNameSecond}", actualCode);
                 StringAssert.Contains($"Property Get First", actualCode);
                 StringAssert.Contains($"Property Get Second", actualCode);
 
@@ -108,8 +116,8 @@ Public that As TBar";
             {
                 StringAssert.Contains($"First = {expectedThat.TargetFieldName}.First", actualCode);
                 StringAssert.Contains($"Second = {expectedThat.TargetFieldName}.Second", actualCode);
-                StringAssert.Contains($"{expectedThat.TargetFieldName}.First = value", actualCode);
-                StringAssert.Contains($"{expectedThat.TargetFieldName}.Second = value", actualCode);
+                StringAssert.Contains($"{expectedThat.TargetFieldName}.First = {rhsParameterNameFirst}", actualCode);
+                StringAssert.Contains($"{expectedThat.TargetFieldName}.Second = {rhsParameterNameSecond}", actualCode);
                 StringAssert.Contains($"Property Get First", actualCode);
                 StringAssert.Contains($"Property Get Second", actualCode);
 
@@ -149,11 +157,13 @@ End Sub
 
 
             var presenterAction = Support.UserAcceptsDefaults();
+            var rhsParameterNameFirst = Support.RhsParameterNameBuilder("First");
+            var rhsParameterNameSecond = Support.RhsParameterNameBuilder("Second");
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("this.First = value", actualCode);
+            StringAssert.Contains($"this.First = {rhsParameterNameFirst}", actualCode);
             StringAssert.Contains($"First = this.First", actualCode);
-            StringAssert.Contains("this.Second = value", actualCode);
+            StringAssert.Contains($"this.Second = {rhsParameterNameSecond}", actualCode);
             StringAssert.Contains($"Second = this.Second", actualCode);
             StringAssert.Contains($" First = arg1", actualCode);
             StringAssert.Contains($" Second = arg2", actualCode);
@@ -283,13 +293,15 @@ Private mFizz
             var presenterAction = Support.SetParameters(userInput);
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var rhsParameterNameFirst = Support.RhsParameterNameBuilder("First");
+            var rhsParameterNameSecond = Support.RhsParameterNameBuilder("Second");
 
             StringAssert.Contains("Private this As TBar", actualCode);
             StringAssert.DoesNotContain("this = value", actualCode);
             StringAssert.DoesNotContain("MyType = this", actualCode);
-            StringAssert.Contains($"this.First = value", actualCode);
+            StringAssert.Contains($"this.First = {rhsParameterNameFirst}", actualCode);
             StringAssert.Contains($"First = this.First", actualCode);
-            StringAssert.Contains($"this.Second = value", actualCode);
+            StringAssert.Contains($"this.Second = {rhsParameterNameSecond}", actualCode);
             StringAssert.Contains($"Second = this.Second", actualCode);
             StringAssert.DoesNotContain($"Second = Second", actualCode);
             StringAssert.Contains($"Private mFoo As String", actualCode);
@@ -340,19 +352,22 @@ End Sub
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Module1", codeString.Code, ComponentType.StandardModule));
 
+            var rhsParameterNameFirst = Support.RhsParameterNameBuilder("First");
+            var rhsParameterNameSecond = Support.RhsParameterNameBuilder("Second");
+            var rhsParameterNameThis = Support.RhsParameterNameBuilder("this");
             var actualCode = actualModuleCode["Module1"];
 
             StringAssert.Contains("Private this As TBar", actualCode);
-            StringAssert.DoesNotContain("this = value", actualCode);
+            StringAssert.DoesNotContain($"this = {rhsParameterNameThis}", actualCode);
             StringAssert.DoesNotContain("MyType = this", actualCode);
-            StringAssert.Contains("Property Set First(ByVal value As Class1)", actualCode);
+            StringAssert.Contains($"Property Set First(ByVal {rhsParameterNameFirst} As Class1)", actualCode);
             StringAssert.Contains("Property Get First() As Class1", actualCode);
-            StringAssert.Contains($"Set this.First = value", actualCode);
+            StringAssert.Contains($"Set this.First = {rhsParameterNameFirst}", actualCode);
             StringAssert.Contains($"Set First = this.First", actualCode);
-            StringAssert.Contains($"this.Second = value", actualCode);
+            StringAssert.Contains($"this.Second = {rhsParameterNameSecond}", actualCode);
             StringAssert.Contains($"Second = this.Second", actualCode);
             StringAssert.DoesNotContain($"Second = Second", actualCode);
-            Assert.AreEqual(actualCode.IndexOf("this.First = value"), actualCode.LastIndexOf("this.First = value"));
+            Assert.AreEqual(actualCode.IndexOf($"this.First = {rhsParameterNameFirst}"), actualCode.LastIndexOf($"this.First = {rhsParameterNameFirst}"));
         }
 
         [TestCase("Public")]
@@ -374,15 +389,18 @@ End Type
                 .UserSelectsField("this", "MyType");
 
             var presenterAction = Support.SetParameters(userInput);
+            var rhsParameterNameFirst = Support.RhsParameterNameBuilder("First");
+            var rhsParameterNameSecond = Support.RhsParameterNameBuilder("Second");
+            var rhsParameterNameThis = Support.RhsParameterNameBuilder("this");
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Private this As TBar", actualCode);
-            StringAssert.DoesNotContain("this = value", actualCode);
+            StringAssert.DoesNotContain($"this = {rhsParameterNameThis}", actualCode);
             StringAssert.DoesNotContain("MyType = this", actualCode);
-            StringAssert.Contains($"this.First = value", actualCode);
+            StringAssert.Contains($"this.First = {rhsParameterNameFirst}", actualCode);
             StringAssert.Contains($"First = this.First", actualCode);
             StringAssert.Contains($"IsObject", actualCode);
-            StringAssert.Contains($"this.Second = value", actualCode);
+            StringAssert.Contains($"this.Second = {rhsParameterNameSecond}", actualCode);
             StringAssert.Contains($"Second = this.Second", actualCode);
             StringAssert.DoesNotContain($"Second = Second", actualCode);
         }
@@ -407,14 +425,16 @@ End Type
                 .UserSelectsField("this", "MyType");
 
             var presenterAction = Support.SetParameters(userInput);
+            var rhsParameterNameFirst = Support.RhsParameterNameBuilder("First");
+            var rhsParameterNameThis = Support.RhsParameterNameBuilder("this");
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains($"Private this As TBar", actualCode);
-            StringAssert.DoesNotContain("this = value", actualCode);
-            StringAssert.DoesNotContain($"this.First = value", actualCode);
+            StringAssert.DoesNotContain($"this = {rhsParameterNameThis}", actualCode);
+            StringAssert.DoesNotContain($"this.First = {rhsParameterNameFirst}", actualCode);
             StringAssert.Contains($"Property Get First() As Variant", actualCode);
             StringAssert.Contains($"First = this.First", actualCode);
-            StringAssert.DoesNotContain($"this.Second = value", actualCode);
+            StringAssert.DoesNotContain($"this.Second = {rhsParameterNameFirst}", actualCode);
             StringAssert.Contains($"Second = this.Second", actualCode);
             StringAssert.Contains($"Property Get Second() As Variant", actualCode);
             StringAssert.Contains($"Third = this.Third", actualCode);
@@ -461,16 +481,20 @@ End Type
 
             var actualCode = actualModuleCode["Class1"];
             StringAssert.Contains("Private this As TBar", actualCode);
+
+            var rhsParameterNameFirst = Support.RhsParameterNameBuilder("First");
+            var rhsParameterNameSecond = Support.RhsParameterNameBuilder("Second");
+            var rhsParameterNameMyType = Support.RhsParameterNameBuilder("MyType");
+            if (accessibility == "Public")
             {
-                StringAssert.Contains("this = value", actualCode);
+                StringAssert.Contains($"this = {rhsParameterNameMyType}", actualCode);
                 StringAssert.Contains("MyType = this", actualCode);
                 StringAssert.Contains($"Public Property Get MyType", actualCode);
-                StringAssert.Contains($"Private this As TBar", actualCode);
                 Assert.AreEqual(actualCode.IndexOf("MyType = this"), actualCode.LastIndexOf("MyType = this"));
-                StringAssert.DoesNotContain($"this.First = value", actualCode);
-                StringAssert.DoesNotContain($"this.Second = value", actualCode);
+                StringAssert.DoesNotContain($"this.First = {rhsParameterNameFirst}", actualCode);
+                StringAssert.DoesNotContain($"this.Second = {rhsParameterNameSecond}", actualCode);
                 StringAssert.DoesNotContain($"Second = Second", actualCode);
-                StringAssert.Contains($"Public Property Let MyType(ByRef value As TBar", actualCode);
+                StringAssert.Contains($"Public Property Let MyType(ByRef {rhsParameterNameMyType} As TBar", actualCode);
             }
         }
 
@@ -495,6 +519,7 @@ End Sub
 ";
 
             var presenterAction = Support.UserAcceptsDefaults();
+            var rhsParameterName = Support.RhsParameterNameBuilder("TheClass");
 
             var codeString = inputCode.ToCodeString();
             var actualModuleCode = RefactoredCode(
@@ -509,7 +534,7 @@ End Sub
             var actualCode = actualModuleCode["Module1"];
 
             StringAssert.Contains($"Private mTheClass As Class1", actualCode);
-            StringAssert.Contains($"Set mTheClass = value", actualCode);
+            StringAssert.Contains($"Set mTheClass = {rhsParameterName}", actualCode);
             StringAssert.Contains($"Set TheClass = mTheClass", actualCode);
             StringAssert.Contains($"Public Property Set TheClass", actualCode);
         }
@@ -912,7 +937,7 @@ Private my|Bar As TBar
 
             StringAssert.Contains("Public Property Let Foo(", actualCode);
             StringAssert.Contains("Public Property Let Bar(", actualCode);
-            StringAssert.Contains("myBar.FooBar.Foo = value", actualCode);
+            StringAssert.Contains("myBar.FooBar.Foo = fooValue", actualCode);
         }
 
         [Test]
@@ -944,8 +969,8 @@ Private my|Bar As TBar
             StringAssert.Contains("Public Property Let Bar(", actualCode);
             StringAssert.Contains("Public Property Let Foo_1(", actualCode);
             StringAssert.Contains("Public Property Let Bar_1(", actualCode);
-            StringAssert.Contains("myBar.FooBar.Foo = value", actualCode);
-            StringAssert.Contains("myBar.ReBar.Foo = value", actualCode);
+            StringAssert.Contains("myBar.FooBar.Foo = fooValue", actualCode);
+            StringAssert.Contains("myBar.ReBar.Foo = foo_1Value", actualCode);
         }
 
         [Test]
@@ -973,7 +998,7 @@ Private my|Bar As TBar
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
 
             StringAssert.Contains("Public Property Let FooBar(", actualCode);
-            StringAssert.Contains("myBar.FooBar = value", actualCode);
+            StringAssert.Contains("myBar.FooBar = fooBarValue", actualCode);
         }
 
         protected override IRefactoring TestRefactoring(

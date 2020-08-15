@@ -1763,10 +1763,6 @@ Import aborted.</value>
     <value>this</value>
     <comment>VBA identifier; should not be translated</comment>
   </data>
-  <data name="EncapsulateField_DefaultPropertyParameter" xml:space="preserve">
-    <value>value</value>
-    <comment>VBA identifier; should not be translated</comment>
-  </data>
   <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
     <value>Name conflict</value>
   </data>
@@ -1930,7 +1926,7 @@ Do you want to proceed?</value>
   </data>
   <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
     <value>Several folders with the same name are being moved. This will merge them.
-Do you want to proceed?</value>    
+Do you want to proceed?</value>
   </data>
   <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
     <value>A folder name cannot be empty.</value>
