@@ -20,11 +20,75 @@ namespace RubberduckTests.Refactoring
         [Test]
         [Category("Refactorings")]
         [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_ModuleVariable_ClearsResidualNewLines()
+        {
+            //Input
+            const string inputCode =
+@"Private bar As Boolean
+
+
+
+
+
+Private Sub Foo()
+    bar = True
+End Sub";
+            var selection = new Selection(1, 1);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo()
+    Dim bar As Boolean
+    bar = True
+End Sub";
+
+            var actualCode = RefactoredCode(inputCode, selection);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_LocalVariable_ClearsResidualNewLines()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo()
+    Dim bar As Boolean
+
+    Dim var1 As Long
+
+    Dim var2 As String
+
+    bar = True
+End Sub";
+            var selection = new Selection(2, 10);
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo()
+    Dim var1 As Long
+
+    Dim var2 As String
+
+    Dim bar As Boolean
+    bar = True
+End Sub";
+
+            var actualCode = RefactoredCode(inputCode, selection);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_Field()
         {
             //Input
             const string inputCode =
                 @"Private bar As Boolean
+
+
 Private Sub Foo()
     bar = True
 End Sub";
@@ -550,7 +614,6 @@ End Sub";
             var selection = new Selection(2, 1);
             const string expectedCode =
                 @"
-
 Public Sub Test()
     Dim foo As Long
     SomeSub someParam:=foo
@@ -581,8 +644,8 @@ End Sub";
 
             var selection = new Selection(1, 1);
             const string expectedCode =
-                @"
-Public Sub Test(): Dim foo As Long : SomeSub someParam:=foo: End Sub
+
+@"Public Sub Test(): Dim foo As Long : SomeSub someParam:=foo: End Sub
 
 Public Sub SomeSub(ByVal someParam As Long)
     Debug.Print someParam
@@ -929,9 +992,7 @@ End Sub";
 
             var selection = new Selection(1, 1);
 
-            const string expectedCode = @"
-
-Public Sub Test()
+            const string expectedCode = @"Public Sub Test()
     Debug.Print ""Some statements between""
     Debug.Print ""Declaration and first usage!""
     Dim foo As Class1

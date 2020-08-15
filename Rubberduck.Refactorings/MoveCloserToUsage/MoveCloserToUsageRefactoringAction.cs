@@ -4,6 +4,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Common;
 
 namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
@@ -15,13 +16,17 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         protected override void Refactor(MoveCloserToUsageModel model, IRewriteSession rewriteSession)
         {
-            var target = model.Target;
-            InsertNewDeclaration(target, rewriteSession);
-            RemoveOldDeclaration(target, rewriteSession);
-            UpdateQualifiedCalls(target, rewriteSession);
+            if (!(model.Target is VariableDeclaration variable))
+            {
+                throw new ArgumentException("Invalid type - VariableDeclaration required");
+            }
+
+            InsertNewDeclaration(variable, rewriteSession);
+            RemoveOldDeclaration(variable, rewriteSession);
+            UpdateQualifiedCalls(variable, rewriteSession);
         }
 
-        private void InsertNewDeclaration(Declaration target, IRewriteSession rewriteSession)
+        private void InsertNewDeclaration(VariableDeclaration target, IRewriteSession rewriteSession)
         {
             var subscripts = target.Context.GetDescendent<VBAParser.SubscriptsContext>()?.GetText() ?? string.Empty;
             var identifier = target.IsArray ? $"{target.IdentifierName}({subscripts})" : target.IdentifierName;
@@ -75,13 +80,22 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             return $"{declarationText}{Environment.NewLine}";
         }
 
-        private void RemoveOldDeclaration(Declaration target, IRewriteSession rewriteSession)
+        private void RemoveOldDeclaration(VariableDeclaration target, IRewriteSession rewriteSession)
         {
             var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
-            rewriter.Remove(target);
+
+            //If a label precedes the declaration, then delete just the variable so that the line and label are retained.
+            if (target.Context.TryGetAncestor<VBAParser.BlockStmtContext>(out var blockContext)
+                && blockContext.children.Any(c => c is VBAParser.StatementLabelDefinitionContext))
+            {
+                rewriter.Remove(target);
+                return;
+            }
+
+            rewriter.RemoveVariables(new VariableDeclaration[] { target });
         }
 
-        private void UpdateQualifiedCalls(Declaration target, IRewriteSession rewriteSession)
+        private void UpdateQualifiedCalls(VariableDeclaration target, IRewriteSession rewriteSession)
         {
             var references = target.References.ToList();
             var rewriter = rewriteSession.CheckOutModuleRewriter(references.First().QualifiedModuleName);

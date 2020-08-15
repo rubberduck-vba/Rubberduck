@@ -4,24 +4,11 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
 using System;
-using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField.Extensions
 {
     public static class IModuleRewriterExtensions
     {
-        public static string GetText(this IModuleRewriter rewriter, int maxConsecutiveNewLines)
-        {
-            var result = rewriter.GetText();
-            var target = string.Join(string.Empty, Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines).ToList());
-            var replacement = string.Join(string.Empty, Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines - 1).ToList());
-            for (var counter = 1; counter < 10 && result.Contains(target); counter++)
-            {
-                result = result.Replace(target, replacement);
-            }
-            return result;
-        }
-
         public static void InsertAtEndOfFile(this IModuleRewriter rewriter, string content)
         {
             if (content == string.Empty) { return; }
