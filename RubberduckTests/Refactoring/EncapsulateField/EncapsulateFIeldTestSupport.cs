@@ -1,4 +1,5 @@
 ﻿using Moq;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
@@ -18,6 +19,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 {
     public class EncapsulateFieldTestSupport : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
+        public string RhsParameterNameBuilder(string property) => $"{property.ToLowerCaseFirstLetter()}Value";
+
         public string StateUDTDefaultType => $"T{MockVbeBuilder.TestModuleName}";
 
         private TestEncapsulationAttributes UserModifiedEncapsulationAttributes(string field, string property = null, bool isReadonly = false, bool encapsulateFlag = true)

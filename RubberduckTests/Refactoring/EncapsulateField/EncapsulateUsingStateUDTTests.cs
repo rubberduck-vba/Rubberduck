@@ -27,8 +27,10 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", asUDT: true);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var rhsParameterName = Support.RhsParameterNameBuilder("Name");
+
             StringAssert.Contains("Name As Integer", actualCode);
-            StringAssert.Contains("this.Name = value", actualCode);
+            StringAssert.Contains($"this.Name = {rhsParameterName}", actualCode);
         }
 
         [TestCase("Public")]
@@ -76,11 +78,13 @@ Private my|Bar As TBar";
             userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
+            var rhsParameterNameFirst = Support.RhsParameterNameBuilder("First");
+            var rhsParameterNameSecond = Support.RhsParameterNameBuilder("Second");
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("this.MyBar.First = value", actualCode);
+            StringAssert.Contains($"this.MyBar.First = {rhsParameterNameFirst}", actualCode);
             StringAssert.Contains($"First = this.MyBar.First", actualCode);
-            StringAssert.Contains("this.MyBar.Second = value", actualCode);
+            StringAssert.Contains($"this.MyBar.Second = {rhsParameterNameSecond}", actualCode);
             StringAssert.Contains($"Second = this.MyBar.Second", actualCode);
             StringAssert.Contains($"MyBar As TBar", actualCode);
             StringAssert.Contains($"MyBar As TBar", actualCode);
@@ -245,10 +249,13 @@ Public myBar As TBar
             userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
+            var rhsParameterNameFirst = Support.RhsParameterNameBuilder("First");
+            var rhsParameterNameSecond = Support.RhsParameterNameBuilder("Second");
+
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("this.MyBar.First = value", actualCode);
+            StringAssert.Contains($"this.MyBar.First = {rhsParameterNameFirst}", actualCode);
             StringAssert.Contains("First = this.MyBar.First", actualCode);
-            StringAssert.Contains("this.MyBar.Second = value", actualCode);
+            StringAssert.Contains($"this.MyBar.Second = {rhsParameterNameSecond}", actualCode);
             StringAssert.Contains("Second = this.MyBar.Second", actualCode);
             var index = actualCode.IndexOf("Get Second", StringComparison.InvariantCultureIgnoreCase);
             var indexLast = actualCode.LastIndexOf("Get Second", StringComparison.InvariantCultureIgnoreCase);
@@ -459,12 +466,13 @@ Private my|Bar As TBar
             userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
+            var rhsParameterName = Support.RhsParameterNameBuilder("Foo");
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
 
             StringAssert.Contains("Public Property Let Foo(", actualCode);
             StringAssert.Contains("Public Property Let Bar(", actualCode);
-            StringAssert.Contains("this.MyBar.FooBar.Foo = value", actualCode);
+            StringAssert.Contains($"this.MyBar.FooBar.Foo = {rhsParameterName}", actualCode);
         }
 
         [Test]
@@ -492,11 +500,11 @@ Private my|Bar As TBar
             userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
+            var rhsParameterName = Support.RhsParameterNameBuilder("FooBar");
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-
             StringAssert.Contains("Public Property Let FooBar(", actualCode);
-            StringAssert.Contains("this.MyBar.FooBar = value", actualCode);
+            StringAssert.Contains($"this.MyBar.FooBar = {rhsParameterName}", actualCode);
         }
 
         [Test]
@@ -527,13 +535,15 @@ Private my|Bar As TBar
             var presenterAction = Support.SetParameters(userInput);
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var rhsParameterNameFoo = Support.RhsParameterNameBuilder("Foo");
+            var rhsParameterNameFoo_1 = Support.RhsParameterNameBuilder("Foo_1");
 
             StringAssert.Contains("Public Property Let Foo(", actualCode);
             StringAssert.Contains("Public Property Let Bar(", actualCode);
             StringAssert.Contains("Public Property Let Foo_1(", actualCode);
             StringAssert.Contains("Public Property Let Bar_1(", actualCode);
-            StringAssert.Contains("this.MyBar.FooBar.Foo = value", actualCode);
-            StringAssert.Contains("this.MyBar.ReBar.Foo = value", actualCode);
+            StringAssert.Contains($"this.MyBar.FooBar.Foo = {rhsParameterNameFoo}", actualCode);
+            StringAssert.Contains($"this.MyBar.ReBar.Foo = {rhsParameterNameFoo_1}", actualCode);
         }
 
         [Test]
