@@ -17,7 +17,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// do not have a Rubberduck annotation corresponding to the hidden VB attribute.
     /// </why>
     /// <example hasResult="true">
-    /// <module name="MyModule" type="Class Module">
+    /// <module name="MyModule" type="Predeclared Class">
     /// <![CDATA[
     /// Attribute VB_PredeclaredId = True
     /// Option Explicit
@@ -26,7 +26,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// </module>
     /// </example>
     /// <example hasResult="false">
-    /// <module name="MyModule" type="Class Module">
+    /// <module name="MyModule" type="Predeclared Class">
     /// <![CDATA[
     /// Attribute VB_PredeclaredId = True
     /// '@PredeclaredId
