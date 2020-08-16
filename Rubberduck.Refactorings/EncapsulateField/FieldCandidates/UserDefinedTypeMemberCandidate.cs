@@ -1,11 +1,9 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing;
+﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.VBEditor;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -22,9 +20,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private int _hashCode;
         private readonly string _uniqueID;
-        public UserDefinedTypeMemberCandidate(IEncapsulateFieldCandidate candidate, IUserDefinedTypeCandidate udtField)
+        private Func<string, string> _parameterNameBuilder;
+        public UserDefinedTypeMemberCandidate(IEncapsulateFieldCandidate candidate, IUserDefinedTypeCandidate udtField, Func<string,string> parameterNameBuilder)
         {
             _wrappedCandidate = candidate;
+            _parameterNameBuilder = parameterNameBuilder;
             UDTField = udtField;
             PropertyIdentifier = IdentifierName;
             BackingIdentifier = IdentifierName;
@@ -203,11 +203,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string PropertyAsTypeName => _wrappedCandidate.PropertyAsTypeName;
 
-        public string ParameterName
-        {
-            set => _wrappedCandidate.ParameterName = value;
-            get => _wrappedCandidate.ParameterName;
-        }
+        public string ParameterName => _parameterNameBuilder(PropertyIdentifier);
 
         public bool ImplementLet => _wrappedCandidate.ImplementLet;
 

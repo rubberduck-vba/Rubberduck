@@ -1464,15 +1464,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to value.
-        /// </summary>
-        public static string EncapsulateField_DefaultPropertyParameter {
-            get {
-                return ResourceManager.GetString("EncapsulateField_DefaultPropertyParameter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Select one or more fields to encapsulate.  Accept the default values or edit property names..
         /// </summary>
         public static string EncapsulateField_InstructionText {
