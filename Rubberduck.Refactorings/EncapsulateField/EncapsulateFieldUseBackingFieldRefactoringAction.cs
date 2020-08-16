@@ -1,10 +1,12 @@
-﻿using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
-using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.SmartIndenter;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -12,11 +14,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class EncapsulateFieldUseBackingFieldRefactoringAction : EncapsulateFieldRefactoringActionImplBase
     {
         public EncapsulateFieldUseBackingFieldRefactoringAction(
-                IDeclarationFinderProvider declarationFinderProvider,
-                IIndenter indenter,
-                IRewritingManager rewritingManager,
-                ICodeBuilder codeBuilder)
-            : base(declarationFinderProvider, indenter, rewritingManager, codeBuilder)
+            IDeclarationFinderProvider declarationFinderProvider,
+            IIndenter indenter,
+            IRewritingManager rewritingManager,
+            ICodeBuilder codeBuilder)
+                : base(declarationFinderProvider, indenter, rewritingManager, codeBuilder)
         {}
 
         public override void Refactor(EncapsulateFieldModel model, IRewriteSession rewriteSession)
@@ -26,35 +28,70 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override void ModifyFields(IRewriteSession rewriteSession)
         {
-            var fieldsToDeleteAndReplace = SelectedFields.Where(f => IsFieldToDeleteAndReplace(f));
+            var fieldDeclarationsToDeleteAndReplace = SelectedFields.Where(f => IsFieldToDeleteAndReplace(f));
             var rewriter = rewriteSession.CheckOutModuleRewriter(_targetQMN);
 
-            RemoveFields(fieldsToDeleteAndReplace.Select(f => f.Declaration), rewriteSession);
+            rewriter.RemoveVariables(fieldDeclarationsToDeleteAndReplace.Select(f => f.Declaration).Cast<VariableDeclaration>());
 
-            foreach (var field in SelectedFields.Except(fieldsToDeleteAndReplace))
+            var fieldDeclaraionsToRetain = SelectedFields.Except(fieldDeclarationsToDeleteAndReplace).ToList();
+
+            if (fieldDeclaraionsToRetain.Any())
             {
-                rewriter.MakeImplicitDeclarationTypeExplicit(field.Declaration);
+                MakeImplicitDeclarationTypeExplicit(fieldDeclaraionsToRetain, rewriter);
 
-                if (!field.Declaration.HasPrivateAccessibility())
-                {
-                    rewriter.SetVariableVisiblity(field.Declaration, Accessibility.Private.TokenString());
-                }
 
-                if (!field.BackingIdentifier.Equals(field.Declaration.IdentifierName))
+                SetPrivateVariableVisiblity(fieldDeclaraionsToRetain, rewriter);
+
+                Rename(fieldDeclaraionsToRetain, rewriter);
+            }
+        }
+
+        private static void MakeImplicitDeclarationTypeExplicit(IEnumerable<IEncapsulateFieldCandidate> fields, IModuleRewriter rewriter)
+        {
+            foreach (var element in fields.Select(f => f.Declaration))
+            {
+                if (!element.Context.TryGetChildContext<VBAParser.AsTypeClauseContext>(out _))
                 {
-                    rewriter.Rename(field.Declaration, field.BackingIdentifier);
+                    rewriter.InsertAfter(element.Context.Stop.TokenIndex, $" {Tokens.As} {element.AsTypeName}");
                 }
             }
         }
 
-        protected override void ModifyReferences(IRewriteSession rewriteSession)
+        private static void SetPrivateVariableVisiblity(IEnumerable<IEncapsulateFieldCandidate> fields, IModuleRewriter rewriter)
         {
-            foreach (var field in SelectedFields)
+            var visibility = Accessibility.Private.TokenString();
+            foreach (var element in fields.Where(f => !f.Declaration.HasPrivateAccessibility()).Select(f => f.Declaration))
             {
-                LoadFieldReferenceContextReplacements(field);
-            }
+                if (!element.IsVariable())
+                {
+                    throw new ArgumentException();
+                }
 
-            RewriteReferences(rewriteSession);
+                var variableStmtContext = element.Context.GetAncestor<VBAParser.VariableStmtContext>();
+                var visibilityContext = variableStmtContext.GetChild<VBAParser.VisibilityContext>();
+
+                if (visibilityContext != null)
+                {
+                    rewriter.Replace(visibilityContext, visibility);
+                    continue;
+                }
+                rewriter.InsertBefore(element.Context.Start.TokenIndex, $"{visibility} ");
+            }
+        }
+
+        private static void Rename(IEnumerable<IEncapsulateFieldCandidate> fields, IModuleRewriter rewriter)
+        {
+            var fieldsToRename = fields.Where(f => !f.BackingIdentifier.Equals(f.Declaration.IdentifierName));
+
+            foreach (var field in fieldsToRename)
+            {
+                if (!(field.Declaration.Context is IIdentifierContext context))
+                {
+                    throw new ArgumentException();
+                }
+
+                rewriter.Replace(context.IdentifierTokens, field.BackingIdentifier);
+            }
         }
 
         protected override void LoadNewDeclarationBlocks()

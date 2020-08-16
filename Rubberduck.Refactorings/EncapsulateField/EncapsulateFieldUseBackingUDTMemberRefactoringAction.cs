@@ -13,11 +13,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private IObjectStateUDT _stateUDTField;
 
         public EncapsulateFieldUseBackingUDTMemberRefactoringAction(
-                IDeclarationFinderProvider declarationFinderProvider,
-                IIndenter indenter,
-                IRewritingManager rewritingManager,
-                ICodeBuilder codeBuilder)
-            : base(declarationFinderProvider, indenter, rewritingManager, codeBuilder)
+            IDeclarationFinderProvider declarationFinderProvider,
+            IIndenter indenter,
+            IRewritingManager rewritingManager,
+            ICodeBuilder codeBuilder)
+                : base(declarationFinderProvider, indenter, rewritingManager, codeBuilder)
         {}
 
         public override void Refactor(EncapsulateFieldModel model, IRewriteSession rewriteSession)
@@ -40,16 +40,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 rewriter.Replace(_stateUDTField.AsTypeDeclaration, _stateUDTField.TypeDeclarationBlock(_indenter));
             }
-        }
-
-        protected override void ModifyReferences(IRewriteSession rewriteSession)
-        {
-            foreach (var field in SelectedFields)
-            {
-                LoadFieldReferenceContextReplacements(field);
-            }
-
-            RewriteReferences(rewriteSession);
         }
 
         protected override void LoadNewDeclarationBlocks()

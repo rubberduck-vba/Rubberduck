@@ -40,11 +40,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
 
         public EncapsulateFieldRefactoringActionImplBase(
-                IDeclarationFinderProvider declarationFinderProvider,
-                IIndenter indenter,
-                IRewritingManager rewritingManager,
-                ICodeBuilder codeBuilder)
-            : base(rewritingManager)
+            IDeclarationFinderProvider declarationFinderProvider,
+            IIndenter indenter,
+            IRewritingManager rewritingManager,
+            ICodeBuilder codeBuilder)
+                : base(rewritingManager)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _indenter = indenter;
@@ -68,8 +68,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected abstract void ModifyFields(IRewriteSession rewriteSession);
 
-        protected abstract void ModifyReferences(IRewriteSession refactorRewriteSession);
-
         protected abstract void LoadNewDeclarationBlocks();
 
         protected void RewriteReferences(IRewriteSession rewriteSession)
@@ -84,6 +82,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected void AddContentBlock(NewContentType contentType, string block)
             => _newContent[contentType].Add(block);
+
+        protected void ModifyReferences(IRewriteSession rewriteSession)
+        {
+            foreach (var field in SelectedFields)
+            {
+                LoadFieldReferenceContextReplacements(field);
+            }
+
+            RewriteReferences(rewriteSession);
+        }
 
         protected virtual void LoadFieldReferenceContextReplacements(IEncapsulateFieldCandidate field)
         {
@@ -115,12 +123,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected bool IsExternalReferenceRequiringModuleQualification(IdentifierReference idRef)
         {
             var isLHSOfMemberAccess =
-                        (idRef.Context.Parent is VBAParser.MemberAccessExprContext
-                            || idRef.Context.Parent is VBAParser.WithMemberAccessExprContext)
-                        && !(idRef.Context == idRef.Context.Parent.GetChild(0));
+                (idRef.Context.Parent is VBAParser.MemberAccessExprContext
+                    || idRef.Context.Parent is VBAParser.WithMemberAccessExprContext)
+                && !(idRef.Context == idRef.Context.Parent.GetChild(0));
 
             return idRef.QualifiedModuleName != idRef.Declaration.QualifiedModuleName
-                        && !isLHSOfMemberAccess;
+                && !isLHSOfMemberAccess;
         }
 
         protected virtual void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText)
@@ -202,13 +210,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
             LoadNewPropertyBlocks();
 
             var newContentBlock = string.Join(_doubleSpace,
-                            (_newContent[NewContentType.TypeDeclarationBlock])
-                            .Concat(_newContent[NewContentType.DeclarationBlock])
-                            .Concat(_newContent[NewContentType.CodeSectionBlock])
-                            .Concat(_newContent[NewContentType.PostContentMessage]))
-                            .Trim();
+                (_newContent[NewContentType.TypeDeclarationBlock])
+                .Concat(_newContent[NewContentType.DeclarationBlock])
+                .Concat(_newContent[NewContentType.CodeSectionBlock])
+                .Concat(_newContent[NewContentType.PostContentMessage]))
+                .Trim();
 
             newContentBlock = newContentBlock.LimitNewlines(3);
+
+            if (string.IsNullOrEmpty(newContentBlock))
+            {
+                return;
+            }
 
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
             if (_codeSectionStartIndex.HasValue)
@@ -217,7 +230,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
             else
             {
-                rewriter.InsertAtEndOfFile($"{_doubleSpace}{newContentBlock}");
+                rewriter.InsertBefore(rewriter.TokenStream.Size - 1, $"{_doubleSpace}{newContentBlock}");
             }
         }
 
@@ -226,33 +239,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             foreach (var propertyAttributes in SelectedFields.SelectMany(f => f.PropertyAttributeSets))
             {
                 AddPropertyCodeBlocks(propertyAttributes);
-            }
-        }
-        /// <summary>
-        /// RemoveFields handles the special case of field declaration removal where 
-        /// each field of a VariableListStmtContext is specified for removal.  In this
-        /// special case the Parent context is removed rather than the individual declarations.
-        /// </summary>
-        protected static void RemoveFields(IEnumerable<Declaration> toRemove, IRewriteSession rewriteSession)
-        {
-            if (!toRemove.Any()) { return; }
-
-            var fieldsByListContext = toRemove.Distinct().GroupBy(f => f.Context.GetAncestor<VBAParser.VariableListStmtContext>());
-
-            var rewriter = rewriteSession.CheckOutModuleRewriter(toRemove.First().QualifiedModuleName);
-            foreach (var fieldsGroup in fieldsByListContext)
-            {
-                var variables = fieldsGroup.Key.children.Where(ch => ch is VBAParser.VariableSubStmtContext);
-                if (variables.Count() == fieldsGroup.Count())
-                {
-                    rewriter.Remove(fieldsGroup.Key.Parent);
-                    continue;
-                }
-
-                foreach (var target in fieldsGroup)
-                {
-                    rewriter.Remove(target);
-                }
             }
         }
 
@@ -269,12 +255,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             if (propertyAttributes.AsTypeName.Equals(Tokens.Variant) && !propertyAttributes.Declaration.IsArray)
             {
                 getContent = string.Join(Environment.NewLine,
-                                    $"{Tokens.If} IsObject({propertyAttributes.BackingField}) {Tokens.Then}",
-                                    $"{_defaultIndent}{Tokens.Set} {propertyAttributes.PropertyName} = {propertyAttributes.BackingField}",
-                                    Tokens.Else,
-                                    $"{_defaultIndent}{propertyAttributes.PropertyName} = {propertyAttributes.BackingField}",
-                                    $"{Tokens.End} {Tokens.If}",
-                                    Environment.NewLine);
+                    $"{Tokens.If} IsObject({propertyAttributes.BackingField}) {Tokens.Then}",
+                    $"{_defaultIndent}{Tokens.Set} {propertyAttributes.PropertyName} = {propertyAttributes.BackingField}",
+                    Tokens.Else,
+                    $"{_defaultIndent}{propertyAttributes.PropertyName} = {propertyAttributes.BackingField}",
+                    $"{Tokens.End} {Tokens.If}",
+                    Environment.NewLine);
             }
 
             if (!_codeBuilder.TryBuildPropertyGetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out var propertyGet, content: $"{_defaultIndent}{getContent}"))

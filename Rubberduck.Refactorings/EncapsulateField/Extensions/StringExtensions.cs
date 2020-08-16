@@ -11,7 +11,10 @@ namespace Rubberduck.Refactorings.EncapsulateField.Extensions
         public static string IncrementEncapsulationIdentifier(this string identifier)
         {
             var fragments = identifier.Split('_');
-            if (fragments.Length == 1) { return $"{identifier}_1"; }
+            if (fragments.Length == 1)
+            {
+                return $"{identifier}_1";
+            }
 
             var lastFragment = fragments[fragments.Length - 1];
             if (long.TryParse(lastFragment, out var number))
