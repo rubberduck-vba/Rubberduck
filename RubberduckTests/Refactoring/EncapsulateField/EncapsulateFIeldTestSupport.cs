@@ -120,9 +120,9 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction, 
             ISelectionService selectionService)
         {
-            var indenter = CreateIndenter();
+            var resolver = new EncapsulateFieldTestComponentResolver(state, rewritingManager);
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            return new EncapsulateFieldRefactoring(state, indenter, userInteraction, rewritingManager, selectionService, selectedDeclarationProvider, new CodeBuilder());
+            return new EncapsulateFieldRefactoring(resolver.Resolve<EncapsulateFieldRefactoringAction>(), resolver.Resolve<EncapsulateFieldPreviewProvider>(), state, userInteraction, rewritingManager, selectionService, selectedDeclarationProvider);
         }
 
         public IEncapsulateFieldCandidate RetrieveEncapsulateFieldCandidate(string inputCode, string fieldName)
@@ -162,11 +162,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         {
             var initialModel = InitialModel(vbe, declarationName, declarationType);
             return presenterAdjustment(initialModel);
-        }
-
-        public static IIndenter CreateIndenter(IVBE vbe = null)
-        {
-            return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());
         }
 
         protected override IRefactoring TestRefactoring(

@@ -7,12 +7,14 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
+using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
+using RubberduckTests.Refactoring.EncapsulateField;
 
 namespace RubberduckTests.Commands.RefactorCommands
 {
@@ -56,6 +58,8 @@ End Sub";
 
         protected override CommandBase TestCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
+            var resolver = new EncapsulateFieldTestComponentResolver(state, rewritingManager);
+
             var msgBox = new Mock<IMessageBox>().Object;
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
@@ -64,7 +68,7 @@ End Sub";
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
             var userInteraction = new RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel>(factory, uiDispatcherMock.Object);
-            var refactoring = new EncapsulateFieldRefactoring(state, null, userInteraction, rewritingManager, selectionService, selectedDeclarationProvider, new CodeBuilder());
+            var refactoring = new EncapsulateFieldRefactoring(resolver.Resolve<EncapsulateFieldRefactoringAction>(), resolver.Resolve<EncapsulateFieldPreviewProvider>(), state, userInteraction, rewritingManager, selectionService, selectedDeclarationProvider);
             var notifier = new EncapsulateFieldFailedNotifier(msgBox);
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
             return new RefactorEncapsulateFieldCommand(refactoring, notifier, state, selectionService, selectedDeclarationService);

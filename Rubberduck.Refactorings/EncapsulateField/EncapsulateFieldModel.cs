@@ -9,7 +9,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldModel : IRefactoringModel
     {
-        private readonly Func<EncapsulateFieldModel, string> _previewDelegate;
         private QualifiedModuleName _targetQMN;
         private IDeclarationFinderProvider _declarationFinderProvider;
         private IEncapsulateFieldValidationsProvider _validationsProvider;
@@ -21,15 +20,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
 
         public EncapsulateFieldModel(
-            Declaration target, 
-            IEnumerable<IEncapsulateFieldCandidate> candidates, 
-            IEnumerable<IObjectStateUDT> objectStateUDTCandidates, 
-            IObjectStateUDT stateUDTField, 
-            Func<EncapsulateFieldModel, string> previewDelegate, 
-            IDeclarationFinderProvider declarationFinderProvider, 
+            Declaration target,
+            IEnumerable<IEncapsulateFieldCandidate> candidates,
+            IEnumerable<IObjectStateUDT> objectStateUDTCandidates,
+            IObjectStateUDT stateUDTField,
+            IDeclarationFinderProvider declarationFinderProvider,
             IEncapsulateFieldValidationsProvider validationsProvider)
         {
-            _previewDelegate = previewDelegate;
             _targetQMN = target.QualifiedModuleName;
             _newObjectStateUDT = stateUDTField;
             _declarationFinderProvider = declarationFinderProvider;
@@ -43,10 +40,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _activeObjectStateUDT = ObjectStateUDTField;
         }
 
+        public bool IncludeNewContentMarker { set; get; } = false;
+
         public QualifiedModuleName QualifiedModuleName => _targetQMN;
 
-        public string PreviewRefactoring() => _previewDelegate(this);
-
+        public IRefactoringPreviewProvider<EncapsulateFieldModel> PreviewProvider { set; get; }
+        
         public IEnumerable<IObjectStateUDT> ObjectStateUDTCandidates => _objStateCandidates;
 
         private EncapsulateFieldStrategy _encapsulationFieldStategy;

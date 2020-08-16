@@ -8,14 +8,23 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public class ConvertFieldsToUDTMembers : EncapsulateFieldStrategyBase
+    public class EncapsulateFieldUseBackingUDTMemberRefactoringAction : EncapsulateFieldRefactoringActionImplBase
     {
         private IObjectStateUDT _stateUDTField;
 
-        public ConvertFieldsToUDTMembers(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter, ICodeBuilder codeBuilder)
-            : base(declarationFinderProvider, model, indenter, codeBuilder)
+        public EncapsulateFieldUseBackingUDTMemberRefactoringAction(
+                IDeclarationFinderProvider declarationFinderProvider,
+                IIndenter indenter,
+                IRewritingManager rewritingManager,
+                ICodeBuilder codeBuilder)
+            : base(declarationFinderProvider, indenter, rewritingManager, codeBuilder)
+        {}
+
+        public override void Refactor(EncapsulateFieldModel model, IRewriteSession rewriteSession)
         {
             _stateUDTField = model.ObjectStateUDTField;
+
+            RefactorImpl(model, rewriteSession);
         }
 
         protected override void ModifyFields(IRewriteSession refactorRewriteSession)
@@ -33,14 +42,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        protected override void ModifyReferences(IRewriteSession refactorRewriteSession)
+        protected override void ModifyReferences(IRewriteSession rewriteSession)
         {
             foreach (var field in SelectedFields)
             {
                 LoadFieldReferenceContextReplacements(field);
             }
 
-            RewriteReferences(refactorRewriteSession);
+            RewriteReferences(rewriteSession);
         }
 
         protected override void LoadNewDeclarationBlocks()
@@ -49,9 +58,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             _stateUDTField.AddMembers(SelectedFields.Cast<IConvertToUDTMember>());
 
-            AddContentBlock(NewContentTypes.TypeDeclarationBlock, _stateUDTField.TypeDeclarationBlock(_indenter));
+            AddContentBlock(NewContentType.TypeDeclarationBlock, _stateUDTField.TypeDeclarationBlock(_indenter));
 
-            AddContentBlock(NewContentTypes.DeclarationBlock, _stateUDTField.FieldDeclarationBlock);
+            AddContentBlock(NewContentType.DeclarationBlock, _stateUDTField.FieldDeclarationBlock);
             return;
         }
 
