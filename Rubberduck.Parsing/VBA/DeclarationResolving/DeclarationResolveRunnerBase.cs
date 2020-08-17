@@ -206,7 +206,9 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                         qualifiedModuleName.ComponentName,
                         true,
                         moduleAnnotations,
-                        moduleAttributes, isUserForm:true);
+                        moduleAttributes, 
+                        hasDefaultInstanceVariable:true, 
+                        isUserForm:true);
                 case ComponentType.Document:
                     return new DocumentModuleDeclaration(
                         qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
