@@ -29,12 +29,13 @@ namespace Rubberduck.Parsing.Symbols
                   bool isWithEvents = false,
                   bool hasDefaultInstanceVariable = false,
                   bool isControl = false,
-                  bool isDocument = false)
+                  bool isDocument = false,
+                  bool isUserForm = false)
             : base(
                   qualifiedName,
                   projectDeclaration,
                   name,
-                  isDocument ? DeclarationType.Document : DeclarationType.ClassModule,
+                  isDocument ? DeclarationType.Document : isUserForm ? DeclarationType.UserForm : DeclarationType.ClassModule,
                   isUserDefined,
                   annotations,
                   attributes,

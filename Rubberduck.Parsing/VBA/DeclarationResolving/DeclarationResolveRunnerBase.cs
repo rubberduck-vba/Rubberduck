@@ -199,6 +199,14 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                         true,
                         moduleAnnotations,
                         moduleAttributes);
+                case ComponentType.UserForm:
+                    return new ClassModuleDeclaration(
+                        qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
+                        projectDeclaration,
+                        qualifiedModuleName.ComponentName,
+                        true,
+                        moduleAnnotations,
+                        moduleAttributes, isUserForm:true);
                 case ComponentType.Document:
                     return new DocumentModuleDeclaration(
                         qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
