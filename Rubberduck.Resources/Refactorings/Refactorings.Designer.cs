@@ -61,11 +61,11 @@ namespace Rubberduck.Resources.Refactorings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}Value.
+        ///   Looks up a localized string similar to RHS.
         /// </summary>
-        public static string CodeBuilder_DefaultPropertyRHSParamFormat {
+        public static string CodeBuilder_DefaultPropertyRHSParam {
             get {
-                return ResourceManager.GetString("CodeBuilder_DefaultPropertyRHSParamFormat", resourceCulture);
+                return ResourceManager.GetString("CodeBuilder_DefaultPropertyRHSParam", resourceCulture);
             }
         }
         
