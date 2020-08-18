@@ -1759,6 +1759,10 @@ Import aborted.</value>
     <value>Unable to encapsulate '{0}'. ReDim({0}) statement(s) exist in other modules.</value>
     <comment>{0} = selected field IdentifierName</comment>
   </data>
+  <data name="EncapsulateField_DefaultObjectStateUDTFieldName" xml:space="preserve">
+    <value>this</value>
+    <comment>VBA identifier; should not be translated</comment>
+  </data>
   <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
     <value>Name conflict</value>
   </data>
