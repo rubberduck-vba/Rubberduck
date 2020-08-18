@@ -191,6 +191,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                         true,
                         moduleAnnotations,
                         moduleAttributes);
+
                 case ComponentType.ClassModule:
                     return new ClassModuleDeclaration(
                         qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
@@ -199,16 +200,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                         true,
                         moduleAnnotations,
                         moduleAttributes);
-                case ComponentType.UserForm:
-                    return new ClassModuleDeclaration(
-                        qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
-                        projectDeclaration,
-                        qualifiedModuleName.ComponentName,
-                        true,
-                        moduleAnnotations,
-                        moduleAttributes, 
-                        hasDefaultInstanceVariable:true, 
-                        isUserForm:true);
+
                 case ComponentType.Document:
                     return new DocumentModuleDeclaration(
                         qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
@@ -216,7 +208,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                         qualifiedModuleName.ComponentName,
                         moduleAnnotations,
                         moduleAttributes);
-                default:
+
+                default: /*ComponentType.UserForm*/
                     return new ClassModuleDeclaration(
                         qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
                         projectDeclaration,

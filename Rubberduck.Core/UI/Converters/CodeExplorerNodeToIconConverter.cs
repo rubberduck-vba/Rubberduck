@@ -98,8 +98,9 @@ namespace Rubberduck.UI.Converters
                         return InterfaceIcon;
                     }
 
+                    var isUserForm = component.Declaration.QualifiedModuleName.ComponentType == VBEditor.SafeComWrappers.ComponentType.UserForm; 
                     return DeclarationIcons.ContainsKey(component.Declaration.DeclarationType)
-                        ? DeclarationIcons[component.Declaration.DeclarationType]
+                        ? DeclarationIcons[isUserForm ? DeclarationType.UserForm : component.Declaration.DeclarationType]
                         : ExceptionIcon;
                 default:
                     return value is ICodeExplorerNode node &&
