@@ -17,8 +17,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class UserDefinedTypeCandidate : EncapsulateFieldCandidate, IUserDefinedTypeCandidate
     {
-        public UserDefinedTypeCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator, Func<string,string> parameterNameBuilder)
-            : base(declaration, identifierValidator, parameterNameBuilder)
+        public UserDefinedTypeCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator, string rhsParameterIdentifierName)
+            : base(declaration, identifierValidator, rhsParameterIdentifierName)
         {
         }
 

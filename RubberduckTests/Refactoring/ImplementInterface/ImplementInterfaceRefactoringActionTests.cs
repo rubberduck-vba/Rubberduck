@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -16,7 +15,7 @@ namespace RubberduckTests.Refactoring
     {
         private string _todoImplementMessage = "Err.Raise 5 'TODO implement interface member";
 
-        private static string Param(string property) => $"{property.ToLowerCaseFirstLetter()}Value";
+        private const string RHSIdentifier = "RHS";
 
         [Test]
         [Category("Refactorings")]
@@ -495,7 +494,7 @@ Private Property Get Interface1_Foo() As Long
     {_todoImplementMessage}
 End Property
 
-Private Property Let Interface1_Foo(ByVal {Param("Interface1_Foo")} As Long)
+Private Property Let Interface1_Foo(ByVal {RHSIdentifier} As Long)
     {_todoImplementMessage}
 End Property
 ";
@@ -520,7 +519,7 @@ Private Property Get Interface1_Foo() As Object
     {_todoImplementMessage}
 End Property
 
-Private Property Set Interface1_Foo(ByVal {Param("Interface1_Foo")} As Object)
+Private Property Set Interface1_Foo(ByVal {RHSIdentifier} As Object)
     {_todoImplementMessage}
 End Property
 ";
@@ -547,11 +546,11 @@ Private Property Get Interface1_Foo() As Variant
     {_todoImplementMessage}
 End Property
 
-Private Property Let Interface1_Foo(ByVal {Param("Interface1_Foo")} As Variant)
+Private Property Let Interface1_Foo(ByVal {RHSIdentifier} As Variant)
     {_todoImplementMessage}
 End Property
 
-Private Property Set Interface1_Foo(ByVal {Param("Interface1_Foo")} As Variant)
+Private Property Set Interface1_Foo(ByVal {RHSIdentifier} As Variant)
     {_todoImplementMessage}
 End Property
 ";
