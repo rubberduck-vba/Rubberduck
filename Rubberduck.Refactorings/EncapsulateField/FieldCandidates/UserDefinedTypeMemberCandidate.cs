@@ -21,10 +21,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private int _hashCode;
         private readonly string _uniqueID;
         private string _rhsParameterIdentifierName;
-        public UserDefinedTypeMemberCandidate(IEncapsulateFieldCandidate candidate, IUserDefinedTypeCandidate udtField, string rhsParameterIdentifierName)
+        public UserDefinedTypeMemberCandidate(IEncapsulateFieldCandidate candidate, IUserDefinedTypeCandidate udtField)
         {
             _wrappedCandidate = candidate;
-            _rhsParameterIdentifierName = rhsParameterIdentifierName;
+            _rhsParameterIdentifierName = Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
             UDTField = udtField;
             PropertyIdentifier = IdentifierName;
             BackingIdentifier = IdentifierName;

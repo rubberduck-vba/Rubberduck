@@ -47,11 +47,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected EncapsulationIdentifiers _fieldAndProperty;
         private string _rhsParameterIdentifierName;
 
-        public EncapsulateFieldCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator, string rhsParameterIdentifierName)
+        public EncapsulateFieldCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator)
         {
             _target = declaration;
             NameValidator = identifierValidator;
-            _rhsParameterIdentifierName = rhsParameterIdentifierName;
+            _rhsParameterIdentifierName = Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
 
             _fieldAndProperty = new EncapsulationIdentifiers(declaration.IdentifierName, identifierValidator);
             IdentifierName = declaration.IdentifierName;
