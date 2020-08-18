@@ -193,7 +193,7 @@
     <value>Odpovídá písmenové sekvenci</value>
   </data>
   <data name="ExpressionDescription_ErrorExpression" xml:space="preserve">
-    <value>Nebylo možné zpracovat '{0}' jako písmeno. Prosím, zkontrolujte zadaný text</value>
+    <value>Nebylo možné zpracovat '{0}' jako písmeno. Prosím, zkontrolujte zadaný text.</value>
   </data>
   <data name="PatternDescription_AnchorEnd" xml:space="preserve">
     <value>$ zajistí, že jsou veškeré znaky řetězce zkonzumovány</value>
