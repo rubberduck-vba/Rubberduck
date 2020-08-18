@@ -1,8 +1,5 @@
-﻿using Moq;
-using Rubberduck.Common;
-using Rubberduck.Parsing.Rewriter;
+﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
@@ -19,7 +16,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 {
     public class EncapsulateFieldTestSupport : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
-        public string RHSIdentifier => "RHS";
+        public string RHSIdentifier => Rubberduck.Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
 
         public string StateUDTDefaultType => $"T{MockVbeBuilder.TestModuleName}";
 
