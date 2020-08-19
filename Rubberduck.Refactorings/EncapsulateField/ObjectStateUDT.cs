@@ -6,9 +6,6 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.Resources;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -30,10 +27,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
     //newly inserted declaration
     public class ObjectStateUDT : IObjectStateUDT
     {
-        private static string _defaultNewFieldName = RubberduckUI.EncapsulateField_DefaultObjectStateUDTFieldName; // EncapsulateFieldResources.DefaultStateUDTFieldName;
+        private static string _defaultNewFieldName = RubberduckUI.EncapsulateField_DefaultObjectStateUDTFieldName;
         private List<IConvertToUDTMember> _convertedMembers;
 
         private readonly IUserDefinedTypeCandidate _wrappedUDT;
+        private readonly ICodeBuilder _codeBuilder;
         private int _hashCode;
 
         public ObjectStateUDT(IUserDefinedTypeCandidate udt)
@@ -60,6 +58,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             FieldIdentifier = _defaultNewFieldName;
             TypeIdentifier = typeIdentifier;
             _convertedMembers = new List<IConvertToUDTMember>();
+            _codeBuilder = new CodeBuilder();
         }
 
         public string IdentifierName => _wrappedUDT?.IdentifierName ?? FieldIdentifier;
@@ -97,7 +96,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-
         private QualifiedModuleName _qmn;
         public QualifiedModuleName QualifiedModuleName
         {
@@ -132,11 +130,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string TypeDeclarationBlock(IIndenter indenter = null)
         {
-            if (indenter != null)
-            {
-                return string.Join(Environment.NewLine, indenter?.Indent(BlockLines(Accessibility.Private) ?? BlockLines(Accessibility.Private), true));
-            }
-            return string.Join(Environment.NewLine, BlockLines(Accessibility.Private));
+            var udtMembers = _convertedMembers.Where(m => m.Declaration is VariableDeclaration)
+                .Select(m => (m.Declaration as VariableDeclaration, m.BackingIdentifier));
+
+            return _codeBuilder.BuildUserDefinedTypeDeclaration(AsTypeName, udtMembers);
         }
 
         public override bool Equals(object obj)
@@ -153,18 +150,5 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
        public override int GetHashCode() => _hashCode;
-
-        private IEnumerable<string> BlockLines(Accessibility accessibility)
-        {
-            var blockLines = new List<string>();
-
-            blockLines.Add($"{accessibility.TokenString()} {Tokens.Type} {TypeIdentifier}");
-
-            _convertedMembers.ForEach(m => blockLines.Add($"{m.UDTMemberDeclaration}"));
-
-            blockLines.Add($"{Tokens.End} {Tokens.Type}");
-
-            return blockLines;
-        }
     }
 }

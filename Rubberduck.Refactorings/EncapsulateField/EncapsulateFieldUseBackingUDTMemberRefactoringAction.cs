@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings.MoveFieldsToUDT;
 using Rubberduck.SmartIndenter;
 using System.Diagnostics;
 using System.Linq;
@@ -11,14 +12,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class EncapsulateFieldUseBackingUDTMemberRefactoringAction : EncapsulateFieldRefactoringActionImplBase
     {
         private IObjectStateUDT _stateUDTField;
+        private readonly DeclareFieldsAsUDTMembersRefactoringAction _convertFieldToUDTMemberRefactoringAction;
 
         public EncapsulateFieldUseBackingUDTMemberRefactoringAction(
+            DeclareFieldsAsUDTMembersRefactoringAction convertFieldToUDTMemberRefactoringAction,
             IDeclarationFinderProvider declarationFinderProvider,
             IIndenter indenter,
             IRewritingManager rewritingManager,
             ICodeBuilder codeBuilder)
                 : base(declarationFinderProvider, indenter, rewritingManager, codeBuilder)
-        {}
+        {
+            _convertFieldToUDTMemberRefactoringAction = convertFieldToUDTMemberRefactoringAction;
+        }
 
         public override void Refactor(EncapsulateFieldModel model, IRewriteSession rewriteSession)
         {
@@ -27,24 +32,31 @@ namespace Rubberduck.Refactorings.EncapsulateField
             RefactorImpl(model, rewriteSession);
         }
 
-        protected override void ModifyFields(IRewriteSession refactorRewriteSession)
+        protected override void ModifyFields(IRewriteSession rewriteSession)
         {
-            var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(_targetQMN);
 
             rewriter.RemoveVariables(SelectedFields.Select(f => f.Declaration)
                 .Cast<VariableDeclaration>());
 
             if (_stateUDTField.IsExistingDeclaration)
             {
-                _stateUDTField.AddMembers(SelectedFields.Cast<IConvertToUDTMember>());
+                var model = new DeclareFieldsAsUDTMembersModel();
 
-                rewriter.Replace(_stateUDTField.AsTypeDeclaration, _stateUDTField.TypeDeclarationBlock(_indenter));
+                foreach (var field in SelectedFields)
+                {
+                    model.AssignFieldToUserDefinedType(_stateUDTField.AsTypeDeclaration, field.Declaration as VariableDeclaration, field.PropertyIdentifier);
+                }
+                _convertFieldToUDTMemberRefactoringAction.Refactor(model, rewriteSession);
             }
         }
 
         protected override void LoadNewDeclarationBlocks()
         {
-            if (_stateUDTField.IsExistingDeclaration) { return; }
+            if (_stateUDTField.IsExistingDeclaration)
+            {
+                return;
+            }
 
             _stateUDTField.AddMembers(SelectedFields.Cast<IConvertToUDTMember>());
 

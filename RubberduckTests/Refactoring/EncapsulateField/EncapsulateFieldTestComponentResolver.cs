@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.MoveFieldsToUDT;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -31,7 +32,9 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 case nameof(EncapsulateFieldUseBackingFieldRefactoringAction):
                     return new EncapsulateFieldUseBackingFieldRefactoringAction(_declarationFinderProvider, CreateIndenter(), _rewritingManager, new CodeBuilder()) as T;
                 case nameof(EncapsulateFieldUseBackingUDTMemberRefactoringAction):
-                    return new EncapsulateFieldUseBackingUDTMemberRefactoringAction(_declarationFinderProvider, CreateIndenter(), _rewritingManager, new CodeBuilder()) as T;
+                    return new EncapsulateFieldUseBackingUDTMemberRefactoringAction(ResolveImpl<DeclareFieldsAsUDTMembersRefactoringAction>(), _declarationFinderProvider, CreateIndenter(), _rewritingManager, new CodeBuilder()) as T;
+                case nameof(DeclareFieldsAsUDTMembersRefactoringAction):
+                    return new DeclareFieldsAsUDTMembersRefactoringAction(_declarationFinderProvider, _rewritingManager, new CodeBuilder()) as T;
                 case nameof(EncapsulateFieldPreviewProvider):
                     return new EncapsulateFieldPreviewProvider(ResolveImpl<EncapsulateFieldUseBackingFieldPreviewProvider>(), ResolveImpl<EncapsulateFieldUseBackingUDTMemberPreviewProvider>()) as T;
                 case nameof(EncapsulateFieldUseBackingFieldPreviewProvider):
