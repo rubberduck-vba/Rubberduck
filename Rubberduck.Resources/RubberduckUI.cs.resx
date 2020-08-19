@@ -1579,7 +1579,7 @@ Import přerušen.</value>
     <value>Argumenty anotace typu 'Boolean' musejí být buď 'True' nebo 'False'.</value>
   </data>
   <data name="AnnotationArgument_ValidationError_InspectionName" xml:space="preserve">
-    <value>Argumenty anotace typu 'Inspection Name' musejí mít jméno existující inspekce.</value>
+    <value>Argumenty anotace typu 'Inspection Name' musejí být jméno existující inspekce.</value>
   </data>
   <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
     <value>Argumenty anotace typu 'Number' musejí být validní číslo ve formátu integer nebo float.</value>

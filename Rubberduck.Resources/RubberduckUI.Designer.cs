@@ -271,7 +271,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Annotation arguments of type &apos;Inspection Name&apos; have to the name of an existing inspection..
+        ///   Looks up a localized string similar to Annotation arguments of type &apos;Inspection Name&apos; have to be the name of an existing inspection..
         /// </summary>
         public static string AnnotationArgument_ValidationError_InspectionName {
             get {

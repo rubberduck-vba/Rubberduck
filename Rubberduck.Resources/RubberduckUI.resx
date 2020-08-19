@@ -1868,7 +1868,7 @@ A private class can still implement a public interface.</value>
     <value>Annotation arguments must not contain control characters.</value>
   </data>
   <data name="AnnotationArgument_ValidationError_InspectionName" xml:space="preserve">
-    <value>Annotation arguments of type 'Inspection Name' have to the name of an existing inspection.</value>
+    <value>Annotation arguments of type 'Inspection Name' have to be the name of an existing inspection.</value>
   </data>
   <data name="AnnotationArgument_ValidationError_AttributeNameStart" xml:space="preserve">
     <value>Annotation arguments of type 'Attribute Name' have to start with 'VB_'.</value>
