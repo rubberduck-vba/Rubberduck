@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Common;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
@@ -20,9 +21,9 @@ namespace Rubberduck.Refactorings
         /// </summary>
         /// <param name="content">Main body content/logic of the member</param>
         string BuildMemberBlockFromPrototype(ModuleBodyElementDeclaration declaration,
-                                            string content = null,
-                                            string accessibility = null,
-                                            string newIdentifier = null);
+            string content = null,
+            string accessibility = null,
+            string newIdentifier = null);
 
         /// <summary>
         /// Returns the argument list for the input ModuleBodyElementDeclaration with the following improvements:
@@ -38,10 +39,10 @@ namespace Rubberduck.Refactorings
         /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
         /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
         bool TryBuildPropertyGetCodeBlock(Declaration prototype,
-                                            string propertyIdentifier,
-                                            out string codeBlock,
-                                            string accessibility = null,
-                                            string content = null);
+            string propertyIdentifier,
+            out string codeBlock,
+            string accessibility = null,
+            string content = null);
 
         /// <summary>
         /// Generates a Property Let codeblock based on the prototype declaration 
@@ -50,11 +51,11 @@ namespace Rubberduck.Refactorings
         /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
         /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
         bool TryBuildPropertyLetCodeBlock(Declaration prototype,
-                                            string propertyIdentifier,
-                                            out string codeBlock,
-                                            string accessibility = null,
-                                            string content = null,
-                                            string parameterIdentifier = null);
+            string propertyIdentifier,
+            out string codeBlock,
+            string accessibility = null,
+            string content = null,
+            string parameterIdentifier = null);
 
         /// <summary>
         /// Generates a Property Set codeblock based on the prototype declaration 
@@ -63,16 +64,29 @@ namespace Rubberduck.Refactorings
         /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
         /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
         bool TryBuildPropertySetCodeBlock(Declaration prototype,
-                                            string propertyIdentifier,
-                                            out string codeBlock,
-                                            string accessibility = null,
-                                            string content = null,
-                                            string parameterIdentifier = null);
+            string propertyIdentifier,
+            out string codeBlock,
+            string accessibility = null,
+            string content = null,
+            string parameterIdentifier = null);
+
         /// <summary>
         /// Generates a default RHS property parameter IdentifierName
         /// </summary>
         /// <param name="propertyIdentifier">Let/Set Property IdentifierName</param>
         string BuildPropertyRhsParameterName(string propertyIdentifier);
+
+        /// <summary>
+        /// Generates a UserDefinedType (UDT) declaration using a <c>VariableDeclaration</c> as the prototype for
+        /// creating the UserDefinedTypeMember.
+        /// </summary>
+        /// <remarks>  At least one <c>VariableDeclaration</c> must be provided and 
+        /// all <c>UDTMemberIdentifiers</c> must be unique
+        /// </remarks>
+        /// <param name="memberPrototypes">Collection of prototypes and their required identifier.  Must have 1 or more elements</param>
+        string BuildUserDefinedTypeDeclaration(string udtIdentifier, IEnumerable<(VariableDeclaration Field, string UDTMemberIdentifier)> memberPrototypes, Accessibility accessibility = Accessibility.Private);
+
+        string UDTMemberDeclaration(string identifier, string typeName, string indention = null);
     }
 
     public class CodeBuilder : ICodeBuilder
@@ -81,9 +95,9 @@ namespace Rubberduck.Refactorings
             => string.Format(Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParamFormat, propertyIdentifier.ToLowerCaseFirstLetter());
 
         public string BuildMemberBlockFromPrototype(ModuleBodyElementDeclaration declaration, 
-                                        string content = null, 
-                                        string accessibility = null, 
-                                        string newIdentifier = null)
+            string content = null, 
+            string accessibility = null, 
+            string newIdentifier = null)
         {
 
             var elements = new List<string>()
@@ -91,7 +105,7 @@ namespace Rubberduck.Refactorings
                 ImprovedFullMemberSignatureInternal(declaration, accessibility, newIdentifier),
                 Environment.NewLine,
                 string.IsNullOrEmpty(content) ? null : $"{content}{Environment.NewLine}",
-                ProcedureEndStatement(declaration.DeclarationType),
+                EndStatement(declaration.DeclarationType),
                 Environment.NewLine,
             };
             return string.Concat(elements);
@@ -124,8 +138,8 @@ namespace Rubberduck.Refactorings
             var asType = prototype.IsArray
                 ? $"{Tokens.Variant}"
                 : IsEnumField(prototype) && prototype.AsTypeDeclaration.Accessibility.Equals(Accessibility.Private)
-                        ? $"{Tokens.Long}"
-                        : $"{prototype.AsTypeName}";
+                    ? $"{Tokens.Long}"
+                    : $"{prototype.AsTypeName}";
 
             var asTypeClause = $"{Tokens.As} {asType}";
 
@@ -134,8 +148,8 @@ namespace Rubberduck.Refactorings
             var letSetParamExpression = $"{paramMechanism} {propertyValueParam} {asTypeClause}";
 
             codeBlock = letSetGetType.HasFlag(DeclarationType.PropertyGet)
-                ? string.Join(Environment.NewLine, $"{accessibility ?? Tokens.Public} {ProcedureTypeStatement(letSetGetType)} {propertyIdentifier}() {asTypeClause}", content, ProcedureEndStatement(letSetGetType))
-                : string.Join(Environment.NewLine, $"{accessibility ?? Tokens.Public} {ProcedureTypeStatement(letSetGetType)} {propertyIdentifier}({letSetParamExpression})", content, ProcedureEndStatement(letSetGetType));
+                ? string.Join(Environment.NewLine, $"{accessibility ?? Tokens.Public} {TypeToken(letSetGetType)} {propertyIdentifier}() {asTypeClause}", content, EndStatement(letSetGetType))
+                : string.Join(Environment.NewLine, $"{accessibility ?? Tokens.Public} {TypeToken(letSetGetType)} {propertyIdentifier}({letSetParamExpression})", content, EndStatement(letSetGetType));
             return true;
         }
 
@@ -145,17 +159,17 @@ namespace Rubberduck.Refactorings
         private string ImprovedFullMemberSignatureInternal(ModuleBodyElementDeclaration declaration, string accessibility = null, string newIdentifier = null)
         {
             var accessibilityToken = declaration.Accessibility.Equals(Accessibility.Implicit)
-                                                    ? Tokens.Public
-                                                    : $"{declaration.Accessibility.ToString()}";
+                ? Tokens.Public
+                : $"{declaration.Accessibility.ToString()}";
 
             var asTypeName = string.IsNullOrEmpty(declaration.AsTypeName)
-                                                            ? string.Empty
-                                                            : $" {Tokens.As} {declaration.AsTypeName}";
-
+                ? string.Empty
+                : $" {Tokens.As} {declaration.AsTypeName}";
+            
             var elements = new List<string>()
             {
                 accessibility ?? accessibilityToken,
-                $" {ProcedureTypeStatement(declaration.DeclarationType)} ",
+                $" {TypeToken(declaration.DeclarationType)} ",
                 newIdentifier ?? declaration.IdentifierName,
                 $"({ImprovedArgumentList(declaration)})",
                 asTypeName
@@ -172,10 +186,10 @@ namespace Rubberduck.Refactorings
                 arguments = parameterizedDeclaration.Parameters
                     .OrderBy(parameter => parameter.Selection)
                     .Select(parameter => BuildParameterDeclaration(
-                            parameter,
-                            parameter.Equals(parameterizedDeclaration.Parameters.LastOrDefault())
-                                && declaration.DeclarationType.HasFlag(DeclarationType.Property)
-                                && !declaration.DeclarationType.Equals(DeclarationType.PropertyGet)));
+                        parameter,
+                        parameter.Equals(parameterizedDeclaration.Parameters.LastOrDefault())
+                            && declaration.DeclarationType.HasFlag(DeclarationType.Property)
+                            && !declaration.DeclarationType.Equals(DeclarationType.PropertyGet)));
             }
             return $"{string.Join(", ", arguments)}";
         }
@@ -191,8 +205,8 @@ namespace Rubberduck.Refactorings
                 : parameter.IsByRef ? Tokens.ByRef : Tokens.ByVal;
 
             if (forceExplicitByValAccess
-                    && (string.IsNullOrEmpty(paramMechanism) || paramMechanism.Equals(Tokens.ByRef))
-                    && !IsUserDefinedType(parameter))
+                && (string.IsNullOrEmpty(paramMechanism) || paramMechanism.Equals(Tokens.ByRef))
+                && !IsUserDefinedType(parameter))
             {
                 paramMechanism = Tokens.ByVal;
             }
@@ -214,49 +228,71 @@ namespace Rubberduck.Refactorings
         }
 
         private static string FormatOptionalElement(string element)
-                                => string.IsNullOrEmpty(element) ? string.Empty : $"{element} ";
+            => string.IsNullOrEmpty(element) ? string.Empty : $"{element} ";
 
         private static string FormatAsTypeName(string AsTypeName) 
-                                => string.IsNullOrEmpty(AsTypeName) ? string.Empty : $"As {AsTypeName} ";
+            => string.IsNullOrEmpty(AsTypeName) ? string.Empty : $"As {AsTypeName} ";
 
         private static string FormatDefaultValue(string DefaultValue) 
-                                => string.IsNullOrEmpty(DefaultValue) ? string.Empty : $"= {DefaultValue}";
+            => string.IsNullOrEmpty(DefaultValue) ? string.Empty : $"= {DefaultValue}";
 
-        private static string ProcedureEndStatement(DeclarationType declarationType)
-        {
-            switch (declarationType)
+        private static Dictionary<DeclarationType, (string TypeToken, string EndStatement)> _declarationTypeTokens
+            = new Dictionary<DeclarationType, (string TypeToken, string EndStatement)>()
             {
-                case DeclarationType.Function:
-                    return $"{Tokens.End} {Tokens.Function}";
-                case DeclarationType.Procedure:
-                    return $"{Tokens.End} {Tokens.Sub}";
-                case DeclarationType.PropertyGet:
-                case DeclarationType.PropertyLet:
-                case DeclarationType.PropertySet:
-                    return $"{Tokens.End} {Tokens.Property}";
-                default:
-                    throw new ArgumentException();
+                [DeclarationType.Function] = (Tokens.Function, $"{Tokens.End} {Tokens.Function}"),
+                [DeclarationType.Procedure] = (Tokens.Sub, $"{Tokens.End} {Tokens.Sub}"),
+                [DeclarationType.PropertyGet] = ($"{Tokens.Property} {Tokens.Get}", $"{Tokens.End} {Tokens.Property}"),
+                [DeclarationType.PropertyLet] = ($"{Tokens.Property} {Tokens.Let}", $"{Tokens.End} {Tokens.Property}"),
+                [DeclarationType.PropertySet] = ($"{Tokens.Property} {Tokens.Set}", $"{Tokens.End} {Tokens.Property}"),
+            };
+
+        private static string EndStatement(DeclarationType declarationType)
+            => _declarationTypeTokens[declarationType].EndStatement;
+
+        private static string TypeToken(DeclarationType declarationType)
+            => _declarationTypeTokens[declarationType].TypeToken;
+
+        public string BuildUserDefinedTypeDeclaration(string udtIdentifier, IEnumerable<(VariableDeclaration Field, string UDTMemberIdentifier)> memberPrototypes, Accessibility accessibility = Accessibility.Private)
+        {
+            if (!memberPrototypes.Any())
+            {
+                throw new ArgumentOutOfRangeException();
             }
+
+            var hasDuplicateMemberNames = memberPrototypes.Select(pr => pr.UDTMemberIdentifier.ToUpperInvariant())
+                .GroupBy(uc => uc).Any(g => g.Count() > 1);
+            if (hasDuplicateMemberNames)
+            {
+                throw new ArgumentException();
+            }
+
+            var newMemberTokenPairs = memberPrototypes.Select(m => (GetDeclarationIdentifier(m.Field, m.UDTMemberIdentifier), m.Field.AsTypeName))
+                .Cast<(string Identifier, string AsTypeName)>();
+
+            var blockLines = new List<string>();
+
+            blockLines.Add($"{accessibility.TokenString()} {Tokens.Type} {udtIdentifier}");
+
+            blockLines.AddRange(newMemberTokenPairs.Select(m => UDTMemberDeclaration(m.Identifier, m.AsTypeName)));
+
+            blockLines.Add($"{Tokens.End} {Tokens.Type}");
+
+            return string.Join(Environment.NewLine, blockLines);
         }
 
-        private static string ProcedureTypeStatement(DeclarationType declarationType)
+        private static string GetDeclarationIdentifier(Declaration field, string udtMemberIdentifier)
         {
-            switch (declarationType)
+            if (field.IsArray)
             {
-                case DeclarationType.Function:
-                    return Tokens.Function;
-                case DeclarationType.Procedure:
-                    return Tokens.Sub;
-                case DeclarationType.PropertyGet:
-                    return $"{Tokens.Property} {Tokens.Get}";
-                case DeclarationType.PropertyLet:
-                    return $"{Tokens.Property} {Tokens.Let}";
-                case DeclarationType.PropertySet:
-                    return $"{Tokens.Property} {Tokens.Set}";
-                default:
-                    throw new ArgumentException();
+                return field.Context.TryGetChildContext<VBAParser.SubscriptsContext>(out var ctxt)
+                    ? $"{udtMemberIdentifier}({ctxt.GetText()})"
+                    : $"{udtMemberIdentifier}()";
             }
+            return udtMemberIdentifier;
         }
+
+        public string UDTMemberDeclaration(string identifier, string typeName, string indention = null)
+            => $"{indention ?? "    "}{identifier} {Tokens.As} {typeName}";
 
         private static bool IsEnumField(VariableDeclaration declaration)
             => IsMemberVariable(declaration)
@@ -267,10 +303,10 @@ namespace Rubberduck.Refactorings
                 && (declaration.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.Enumeration) ?? false);
 
         private static bool IsUserDefinedType(Declaration declaration)
-                    => (declaration.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.UserDefinedType) ?? false);
+            => (declaration.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.UserDefinedType) ?? false);
 
         private static bool IsMemberVariable(Declaration declaration)
             => declaration.DeclarationType.HasFlag(DeclarationType.Variable)
-                    && !declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
+                && !declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
     }
 }

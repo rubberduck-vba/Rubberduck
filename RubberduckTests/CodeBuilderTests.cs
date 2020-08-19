@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using RubberduckTests.Mocks;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RubberduckTests
@@ -46,10 +47,10 @@ Private fazz As ETestType
 Private fuzz As ETestType2
 ";
             var result = ParseAndTest<Declaration>(inputCode,
-                                                        targetIdentifier,
-                                                        declarationType,
-                                                        testParams,
-                                                        PropertyGetBlockFromPrototypeTest);
+                targetIdentifier,
+                declarationType,
+                testParams,
+                PropertyGetBlockFromPrototypeTest);
 
             StringAssert.Contains($"Property Get {testParams.Identifier}() As {typeName}", result);
         }
@@ -87,10 +88,10 @@ Private fazz As ETestType
 Private fuzz As ETestType2
 ";
             var result = ParseAndTest<Declaration>(inputCode,
-                                                        targetIdentifier,
-                                                        declarationType,
-                                                        testParams,
-                                                        PropertyGetBlockFromPrototypeTest);
+                targetIdentifier,
+                declarationType,
+                testParams,
+                PropertyGetBlockFromPrototypeTest);
 
             StringAssert.Contains($"{accessibility} Property Get {testParams.Identifier}() As {typeName}", result);
         }
@@ -130,14 +131,13 @@ Private fazz As ETestType
 Private fuzz As TTestType2
 ";
             var result = ParseAndTest<Declaration>(inputCode,
-                                                        targetIdentifier,
-                                                        declarationType,
-                                                        testParams,
-                                                        PropertyGetBlockFromPrototypeTest);
+                targetIdentifier,
+                declarationType,
+                testParams,
+                PropertyGetBlockFromPrototypeTest);
 
             StringAssert.Contains(content, result);
         }
-
 
         [TestCase("fizz", DeclarationType.Variable, "Integer", "Bazz = fizz")]
         [Category(nameof(CodeBuilder))]
@@ -149,10 +149,10 @@ $@"
 Private fizz As Integer
 ";
             var result = ParseAndTest<Declaration>(inputCode,
-                                                        targetIdentifier,
-                                                        declarationType,
-                                                        testParams,
-                                                        PropertyGetBlockFromPrototypeTest);
+                targetIdentifier,
+                declarationType,
+                testParams,
+                PropertyGetBlockFromPrototypeTest);
 
             StringAssert.Contains("Property Get Bazz() As Integer", result);
         }
@@ -190,10 +190,10 @@ Private fazz As ETestType
 Private fuzz As ETestType2
 ";
             var result = ParseAndTest<Declaration>(inputCode,
-                                                        targetIdentifier,
-                                                        declarationType,
-                                                        testParams,
-                                                        PropertyLetBlockFromPrototypeTest);
+                targetIdentifier,
+                declarationType,
+                testParams,
+                PropertyLetBlockFromPrototypeTest);
             StringAssert.Contains($"Property Let {testParams.Identifier}(ByVal {Param(testParams.Identifier)} As {typeName})", result);
         }
 
@@ -215,10 +215,10 @@ Private fizz As Variant
 
 ";
             var result = ParseAndTest<Declaration>(inputCode,
-                                                        targetIdentifier,
-                                                        declarationType,
-                                                        testParams,
-                                                        PropertySetBlockFromPrototypeTest);
+                targetIdentifier,
+                declarationType,
+                testParams,
+                PropertySetBlockFromPrototypeTest);
 
             StringAssert.Contains($"Property Set {testParams.Identifier}(ByVal {Param(testParams.Identifier)} As {typeName})", result);
         }
@@ -238,10 +238,10 @@ Public {procType.procType} {procedureIdentifier}(arg1 As Long, arg2 As String)
 End {procType.endStmt}
 ";
             var result = ParseAndTest<ModuleBodyElementDeclaration>(inputCode,
-                                        procedureIdentifier,
-                                        declarationType,
-                                        new MemberBlockFromPrototypeTestParams(),
-                                        MemberBlockFromPrototypeTest);
+                procedureIdentifier,
+                declarationType,
+                new MemberBlockFromPrototypeTestParams(),
+                MemberBlockFromPrototypeTest);
 
             var expected = declarationType.HasFlag(DeclarationType.Property)
                 ? "(arg1 As Long, ByVal arg2 As String)"
@@ -265,9 +265,9 @@ Public {procType.procType} {procedureIdentifier}(arg1 As Long, arg2 As String)
 End {procType.endStmt}
 ";
             var result = ParseAndTest<ModuleBodyElementDeclaration>(inputCode,
-                                        procedureIdentifier,
-                                        declarationType,
-                                        ImprovedArgumentListTest);
+                procedureIdentifier,
+                declarationType,
+                ImprovedArgumentListTest);
 
             var expected = declarationType.HasFlag(DeclarationType.Property)
                 ? "arg1 As Long, ByVal arg2 As String"
@@ -275,7 +275,6 @@ End {procType.endStmt}
 
             StringAssert.AreEqualIgnoringCase(expected, result);
         }
-
 
         [TestCase(DeclarationType.PropertyGet)]
         [TestCase(DeclarationType.Function)]
@@ -291,11 +290,104 @@ Public {procType.procType} {procedureIdentifier}(arg1 As Long, arg2 As String) A
 End {procType.endStmt}
 ";
             var result = ParseAndTest<ModuleBodyElementDeclaration>(inputCode,
-                                        procedureIdentifier,
-                                        declarationType,
-                                        ImprovedArgumentListTest);
+                procedureIdentifier,
+                declarationType,
+                ImprovedArgumentListTest);
 
             StringAssert.AreEqualIgnoringCase($"arg1 As Long, arg2 As String", result);
+        }
+
+        [Test]
+        [Category(nameof(CodeBuilder))]
+        public void UDT_CreateFromFields()
+        {
+            var inputCode =
+@"
+    Public field1 As Long
+    Public field2 As String";
+
+            var expected =
+@"Private Type TestUDT
+    Field1 As Long
+    Field2 As String
+End Type";
+            var actual = CodeBuilderUDTResult(inputCode, "field1", "field2");
+            StringAssert.AreEqualIgnoringCase(expected, actual);
+        }
+
+        [TestCase("Duplicate", "Duplicate")]
+        [TestCase("Duplicate", "DuplicATE")]
+        [Category(nameof(CodeBuilder))]
+        public void UDT_DuplicateMemberIdentifiers_Throws(string field1Identifier, string field2Identifier)
+        {
+            var inputCode = "Public field1 : Public field2";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            var state = MockParser.CreateAndParse(vbe);
+            using (state)
+            {
+                var targets = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+                    .OfType<VariableDeclaration>()
+                    .Where(d => new string[] { "field1", "field2" }.Contains(d.IdentifierName));
+
+                var inputPairs = new List<(VariableDeclaration, string)>();
+                inputPairs.Add((targets.First(), field1Identifier));
+                inputPairs.Add((targets.Last(), field2Identifier));
+                ICodeBuilder codeBuilder = new CodeBuilder();
+                Assert.Throws<ArgumentException>(() => { codeBuilder.BuildUserDefinedTypeDeclaration("TestUDT", inputPairs); });
+            }
+
+        }
+
+        [Test]
+        [Category(nameof(CodeBuilder))]
+        public void UDT_EmptyMembersList_Throws()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => { new CodeBuilder().BuildUserDefinedTypeDeclaration("TestUDT", Enumerable.Empty<(VariableDeclaration, string)>()); });
+        }
+
+        [Test]
+        [Category(nameof(CodeBuilder))]
+        public void UDT_ImplicitTypeMadeExplicit()
+        {
+            var inputCode = "Public field1";
+            var actual = CodeBuilderUDTResult(inputCode, "field1");
+            StringAssert.Contains("Field1 As Variant", actual);
+        }
+
+        [TestCase("()", "Long")]
+        [TestCase("(50)", "Long")]
+        [TestCase("(1 To 10)", "Long")]
+        [TestCase("()", "")]
+        [TestCase("(50)", "")]
+        [TestCase("(1 To 10)", "")]
+        [Category(nameof(CodeBuilder))]
+        public void UDT_FromArrayField(string dimensions, string type)
+        {
+            var field = "field1";
+
+            var inputCode = string.IsNullOrEmpty(type)
+                ? $"Public {field}{dimensions}"
+                : $"Public {field}{dimensions} As {type}";
+
+            var expectedType = string.IsNullOrEmpty(type)
+                ? "Variant"
+                : type;
+
+            var actual = CodeBuilderUDTResult(inputCode, field);
+            StringAssert.Contains($"Field1{dimensions} As {expectedType}", actual);
+        }
+
+        private string CodeBuilderUDTResult(string inputCode, params string[] fields)
+        {
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            var state = MockParser.CreateAndParse(vbe);
+            using (state)
+            {
+                var targets = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
+                    .Where(d => fields.Contains(d.IdentifierName))
+                    .Select(field => (field as VariableDeclaration, field.IdentifierName.CapitalizeFirstLetter()));
+                return new CodeBuilder().BuildUserDefinedTypeDeclaration("TestUDT", targets);
+            }
         }
 
         private string ParseAndTest<T>(string inputCode, string targetIdentifier, DeclarationType declarationType, Func<T, string> theTest)
@@ -305,8 +397,8 @@ End {procType.endStmt}
             using (state)
             {
                 var target = state.DeclarationFinder.DeclarationsWithType(declarationType)
-                        .Where(d => d.IdentifierName == targetIdentifier).OfType<T>()
-                        .Single();
+                    .Where(d => d.IdentifierName == targetIdentifier).OfType<T>()
+                    .Single();
                 return theTest(target);
             }
         }
@@ -318,8 +410,8 @@ End {procType.endStmt}
             using (state)
             {
                 var target = state.DeclarationFinder.DeclarationsWithType(declarationType)
-                        .Where(d => d.IdentifierName == targetIdentifier).OfType<T>()
-                        .Single();
+                    .Where(d => d.IdentifierName == targetIdentifier).OfType<T>()
+                    .Single();
                 return theTest(target, testParams);
             }
         }
@@ -331,8 +423,8 @@ End {procType.endStmt}
             using (state)
             {
                 var target = state.DeclarationFinder.DeclarationsWithType(declarationType)
-                        .Where(d => d.IdentifierName == targetIdentifier).OfType<T>()
-                        .Single();
+                    .Where(d => d.IdentifierName == targetIdentifier).OfType<T>()
+                    .Single();
                 return theTest(target, testParams);
             }
         }
@@ -356,10 +448,10 @@ End {procType.endStmt}
         }
 
         private static string ImprovedArgumentListTest(ModuleBodyElementDeclaration mbed)
-                => new CodeBuilder().ImprovedArgumentList(mbed);
+            => new CodeBuilder().ImprovedArgumentList(mbed);
 
         private static string MemberBlockFromPrototypeTest(ModuleBodyElementDeclaration mbed, MemberBlockFromPrototypeTestParams testParams)
-                => new CodeBuilder().BuildMemberBlockFromPrototype(mbed, testParams.Accessibility, testParams.Content, testParams.NewIdentifier);
+            => new CodeBuilder().BuildMemberBlockFromPrototype(mbed, testParams.Accessibility, testParams.Content, testParams.NewIdentifier);
 
         private (string procType, string endStmt) ProcedureTypeIdentifier(DeclarationType declarationType)
         {
