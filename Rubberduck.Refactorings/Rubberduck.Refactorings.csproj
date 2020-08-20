@@ -23,7 +23,4 @@
       <Version>4.6.4</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="EncapsulateField\EncapsulationStrategies\" />
-  </ItemGroup>
 </Project>
