@@ -151,7 +151,7 @@
     <value>Přiřazení používá zastaralý 'Let' modifikátor.</value>
   </data>
   <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
-    <value>Veřejné pole '{0}' porušuje zapouzdření</value>
+    <value>Veřejné pole '{0}' porušuje zapouzdření.</value>
   </data>
   <data name="IdentifierNotUsedInspection" xml:space="preserve">
     <value>{0} '{1}' není použito.</value>
@@ -193,7 +193,7 @@
     <value>Property '{0}' nemá žádný 'getter'.</value>
   </data>
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
-    <value>Reference '{0}' objektu je automaticky instancovaná</value>
+    <value>Reference '{0}' objektu je automaticky instancovaná.</value>
   </data>
   <data name="AssignedByValParameterInspection" xml:space="preserve">
     <value>Parametr '{0}' je předán pomocí ByVal a je mu přiřazena hodnota.</value>
@@ -220,7 +220,7 @@
     <value>{0} '{1}' je implicitně typu 'Variant'.</value>
   </data>
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
-    <value>Výraz '{0}' očekával parametr, ale žádný nebyl specifikován.</value>
+    <value>Anotace '{0}' očekávala více argumentů.</value>
   </data>
   <data name="ModuleScopeDimKeywordInspection" xml:space="preserve">
     <value>Proměnná '{0}' na úrovni modulu je deklarována klíčovým slovem 'Dim'.</value>
@@ -256,7 +256,7 @@
     <value>'{0}' nemá žádný efekt.</value>
   </data>
   <data name="RedundantByRefModifierInspection" xml:space="preserve">
-    <value>Parametr má '{0}' má nadbytečný modifikátor 'ByRef'</value>
+    <value>Parametr má '{0}' má nadbytečný modifikátor 'ByRef'.</value>
   </data>
   <data name="LineLabelNotUsedInspection" xml:space="preserve">
     <value>Nálepka '{0}' řádku není použita.</value>
@@ -268,7 +268,7 @@
     <value>{0} '{1}' je deklarován jako Integer.</value>
   </data>
   <data name="StopKeywordInspection" xml:space="preserve">
-    <value>Klíčové slovo 'Stop' pozastavuje vykonávání</value>
+    <value>Klíčové slovo 'Stop' pozastavuje vykonávání.</value>
   </data>
   <data name="EmptyCaseBlockInspection" xml:space="preserve">
     <value>'Case' blok neobsahuje žádné spustitelné příkazy.</value>
@@ -286,7 +286,7 @@
     <value>'While...Wend' smyčka neobsahuje žádné spustitelné příkazy.</value>
   </data>
   <data name="ShadowedDeclarationInspection" xml:space="preserve">
-    <value>{0} '{1}' skrývá {2} '{3}'</value>
+    <value>{0} '{1}' skrývá {2} '{3}'.</value>
   </data>
   <data name="ObsoleteErrorSyntaxInspection" xml:space="preserve">
     <value>Run-time error byl vyvolán použitím zastaralého 'Error' příkazu.</value>
@@ -304,7 +304,7 @@
     <value>Zvažte explicitní použití 'As {0}' místo '{1}'.</value>
   </data>
   <data name="StepOneIsRedundantInspection" xml:space="preserve">
-    <value>1 je výchozí krok pro 'for-next' smyčku a je tedy zbytečné ho definovat</value>
+    <value>1 je výchozí krok pro 'for-next' smyčku a je tedy zbytečné ho definovat.</value>
   </data>
   <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
     <value>'Step' není specifikován.</value>
@@ -452,5 +452,17 @@ In memoriam, 1972-2018</value>
   </data>
   <data name="ObjectWhereProcedureIsRequiredInspection_Unbound" xml:space="preserve">
     <value>Výraz '{0}' je použit v kontextu, který požaduje 'proceduru', což vede k volání výchozího člena, kterého nelze určit při kompilaci.</value>
+  </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>Anotace '{0}' očekávala méně argumentů.</value>
+  </data>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>Návratová hodnota funkce '{0}' není nikdy použita.</value>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>Návratová hodnota funkce '{0}' je zahozena.</value>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Konstanta '{0}' je implicitně typována.</value>
   </data>
 </root>
