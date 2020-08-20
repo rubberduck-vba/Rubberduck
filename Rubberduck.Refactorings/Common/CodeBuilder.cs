@@ -68,18 +68,10 @@ namespace Rubberduck.Refactorings
                                             string accessibility = null,
                                             string content = null,
                                             string parameterIdentifier = null);
-        /// <summary>
-        /// Generates a default RHS property parameter IdentifierName
-        /// </summary>
-        /// <param name="propertyIdentifier">Let/Set Property IdentifierName</param>
-        string BuildPropertyRhsParameterName(string propertyIdentifier);
     }
 
     public class CodeBuilder : ICodeBuilder
     {
-        public string BuildPropertyRhsParameterName(string propertyIdentifier)
-            => string.Format(Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParamFormat, propertyIdentifier.ToLowerCaseFirstLetter());
-
         public string BuildMemberBlockFromPrototype(ModuleBodyElementDeclaration declaration, 
                                         string content = null, 
                                         string accessibility = null, 
@@ -119,7 +111,7 @@ namespace Rubberduck.Refactorings
                 return false;
             }
 
-            var propertyValueParam = parameterIdentifier ?? BuildPropertyRhsParameterName(propertyIdentifier);
+            var propertyValueParam = parameterIdentifier ?? Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
 
             var asType = prototype.IsArray
                 ? $"{Tokens.Variant}"

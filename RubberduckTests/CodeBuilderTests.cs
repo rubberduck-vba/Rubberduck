@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using RubberduckTests.Mocks;
@@ -11,7 +10,7 @@ namespace RubberduckTests
     [TestFixture]
     public class CodeBuilderTests
     {
-        private static string Param(string property) => $"{property.ToLowerCaseFirstLetter()}Value";
+        private static string _rhsIdentifier = Rubberduck.Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
 
         [TestCase("fizz", DeclarationType.Variable, "Integer")]
         [TestCase("FirstValue", DeclarationType.UserDefinedTypeMember, "Long")]
@@ -194,7 +193,7 @@ Private fuzz As ETestType2
                                                         declarationType,
                                                         testParams,
                                                         PropertyLetBlockFromPrototypeTest);
-            StringAssert.Contains($"Property Let {testParams.Identifier}(ByVal {Param(testParams.Identifier)} As {typeName})", result);
+            StringAssert.Contains($"Property Let {testParams.Identifier}(ByVal {_rhsIdentifier} As {typeName})", result);
         }
 
         [TestCase("fizz", DeclarationType.Variable, "Variant")]
@@ -220,7 +219,7 @@ Private fizz As Variant
                                                         testParams,
                                                         PropertySetBlockFromPrototypeTest);
 
-            StringAssert.Contains($"Property Set {testParams.Identifier}(ByVal {Param(testParams.Identifier)} As {typeName})", result);
+            StringAssert.Contains($"Property Set {testParams.Identifier}(ByVal {_rhsIdentifier} As {typeName})", result);
         }
 
         [TestCase(DeclarationType.PropertyLet)]

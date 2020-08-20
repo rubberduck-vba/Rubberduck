@@ -2,7 +2,6 @@
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources;
-using System;
 using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -16,8 +15,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class ArrayCandidate : EncapsulateFieldCandidate, IArrayCandidate
     {
         private string _subscripts;
-        public ArrayCandidate(Declaration declaration, IValidateVBAIdentifiers validator, Func<string,string> parameterNameBuilder)
-            :base(declaration, validator, parameterNameBuilder)
+        public ArrayCandidate(Declaration declaration, IValidateVBAIdentifiers validator)
+            :base(declaration, validator)
         {
             ImplementLet = false;
             ImplementSet = false;
