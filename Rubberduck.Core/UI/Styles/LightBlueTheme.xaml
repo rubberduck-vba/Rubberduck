@@ -31,12 +31,13 @@
     <Color x:Key="CaptionHyperlinkVisitedColor">#FFFF0000</Color>
     <Color x:Key="BackgroundDarkColor">#FFA9A9A9</Color>
     <Color x:Key="BackgroundLightColor">#FFF5F5F5</Color>
+    <Color x:Key="BackgroundWhiteColor">#FFFFFFFF</Color>
     <Color x:Key="BackgroundSoftColor">#FFF8F8FF</Color>
     <Color x:Key="HeaderBackgroundDarkColor">#FFA9A9A9</Color>
     <Color x:Key="TabSelectionUnderlineColor">#FF0000FF</Color>
     <Color x:Key="GrayColor">#FF696969</Color>
-    <Color x:Key="BlackColor">#FFFFFFFF</Color>
-    <Color x:Key="WhiteColor">#FF000000</Color>
+    <Color x:Key="BlackColor">#FFFFFFFF</Color> <!-- FIXME white is black... -->
+    <Color x:Key="WhiteColor">#FF000000</Color> <!-- FIXME black is white... -->
     <Color x:Key="BusyIndicatorFillColor">#FF00569A</Color>
 
     <Color x:Key="ToolBarButtonHoverColor">#210080FF</Color>
