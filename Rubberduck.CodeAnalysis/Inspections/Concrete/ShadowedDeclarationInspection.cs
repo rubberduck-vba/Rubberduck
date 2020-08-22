@@ -197,7 +197,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 return false;
             }
 
-            if (userDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule))
+            if (userDeclaration.DeclarationType == DeclarationType.ClassModule || userDeclaration.DeclarationType == DeclarationType.Document)
             {
                 switch (userDeclarationEnclosingType)
                 {
@@ -208,7 +208,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 }
             }
 
-            if (!userDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule))
+            if ((userDeclaration.DeclarationType != DeclarationType.ClassModule && userDeclaration.DeclarationType != DeclarationType.Document) ||
+                (userDeclarationEnclosingType != ComponentType.UserForm && userDeclarationEnclosingType != ComponentType.Document))
             {
                 if (!ReferencedProjectTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(userDeclaration.DeclarationType))
                 {
@@ -255,7 +256,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             // It is not possible to directly access any declarations placed inside a Class Module.
             if (originalDeclaration.DeclarationType != DeclarationType.ClassModule &&
                 originalDeclaration.DeclarationType != DeclarationType.Document &&
-                originalDeclaration.DeclarationType != DeclarationType.UserForm &&
                 originalDeclarationEnclosingType == ComponentType.ClassModule)
             {
                 return false;
@@ -264,7 +264,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             // It is not possible to directly access any declarations placed inside a Document Module. (Document Modules have DeclarationType ClassMoodule.)
             if (originalDeclaration.DeclarationType != DeclarationType.ClassModule &&
                 originalDeclaration.DeclarationType != DeclarationType.Document &&
-                originalDeclaration.DeclarationType != DeclarationType.UserForm &&
                 originalDeclarationEnclosingType == ComponentType.Document)
             {
                 return false;
@@ -273,7 +272,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             // It is not possible to directly access any declarations placed inside a User Form.
             if (originalDeclaration.DeclarationType != DeclarationType.ClassModule &&
                 originalDeclaration.DeclarationType != DeclarationType.Document &&
-                originalDeclaration.DeclarationType != DeclarationType.UserForm &&
                 originalDeclarationEnclosingType == ComponentType.UserForm)
             {
                 return false;
@@ -314,14 +312,12 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         private static bool DeclarationInTheSameComponentCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration)
         {
             // Shadowing the component containing the declaration is not a problem, because it is possible to directly access declarations inside that component
-            if (originalDeclaration.DeclarationType == DeclarationType.ProceduralModule || 
+            if (originalDeclaration.DeclarationType == DeclarationType.ProceduralModule ||
                 originalDeclaration.DeclarationType == DeclarationType.ClassModule ||
                 originalDeclaration.DeclarationType == DeclarationType.Document ||
-                originalDeclaration.DeclarationType == DeclarationType.UserForm ||
-                userDeclaration.DeclarationType == DeclarationType.ProceduralModule || 
+                userDeclaration.DeclarationType == DeclarationType.ProceduralModule ||
                 userDeclaration.DeclarationType == DeclarationType.ClassModule ||
-                userDeclaration.DeclarationType == DeclarationType.Document ||
-                userDeclaration.DeclarationType == DeclarationType.UserForm)
+                userDeclaration.DeclarationType == DeclarationType.Document)
             {
                 return false;
             }
