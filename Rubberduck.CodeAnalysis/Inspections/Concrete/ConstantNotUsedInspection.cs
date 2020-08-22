@@ -1,17 +1,12 @@
-using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Locates 'Const' declarations that are never referenced.
@@ -19,7 +14,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Declarations that are never used should be removed.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Const foo As Long = 42
     ///
@@ -27,8 +23,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' no reference to 'foo' anywhere...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Const foo As Long = 42
     ///
@@ -36,24 +34,28 @@ namespace Rubberduck.Inspections.Concrete
     ///     Debug.Print foo
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ConstantNotUsedInspection : InspectionBase
+    internal sealed class ConstantNotUsedInspection : DeclarationInspectionBase
     {
-        public ConstantNotUsedInspection(RubberduckParserState state)
-            : base(state) { }
+        public ConstantNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Constant)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var results = State.DeclarationFinder.UserDeclarations(DeclarationType.Constant)
-                .Where(declaration => declaration.Context != null
-                    && !declaration.References.Any())
-                .ToList();
+            return declaration?.Context != null 
+                   && !declaration.References.Any();
+        }
 
-            return results.Select(issue => 
-                new DeclarationInspectionResult(this,
-                                     string.Format(InspectionResults.IdentifierNotUsedInspection, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
-                                     issue,
-                                     new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, ((dynamic)issue.Context).identifier())));
+        protected override string ResultDescription(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType.ToLocalizedString();
+            var declarationName = declaration.IdentifierName;
+            return string.Format(
+                InspectionResults.IdentifierNotUsedInspection,
+                declarationType,
+                declarationName);
         }
     }
 }

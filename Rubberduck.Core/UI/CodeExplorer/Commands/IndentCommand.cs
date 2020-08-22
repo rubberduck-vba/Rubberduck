@@ -4,7 +4,7 @@ using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
 using System.Linq;
-using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.VBEditor.Events;

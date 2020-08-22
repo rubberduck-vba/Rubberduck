@@ -1,16 +1,34 @@
 ﻿<UserControl x:Class="Rubberduck.UI.Refactorings.EncapsulateField.EncapsulateFieldView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             mc:Ignorable="d"
+             MinHeight="600"
+             d:DesignHeight="600"
+             d:DesignWidth="600">
     <UserControl.Resources>
-        <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
-
-        <BitmapImage x:Key="InvalidEntryImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Controls/ToolBar.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+	        <converters:BoolToVisibleVisibilityConverter x:Key="BoolToVisibleVisibility" />
+	        <BitmapImage x:Key="InvalidNameImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
+	        <Style TargetType="Image" x:Key="InvalidNameIconStyle">
+	            <Setter Property="Source" Value="{StaticResource InvalidNameImage}" />
+	            <Setter Property="Height" Value="16" />
+	            <Setter Property="Margin" Value="0,0,-8,0" />
+	            <Setter Property="HorizontalAlignment" Value="Right" />
+	            <Setter Property="VerticalAlignment" Value="Top" />
+	        </Style>
+	        <Style TargetType="Button" x:Key="CommandButtonStyle">
+	            <Setter Property="Height" Value="22" />
+	            <Setter Property="Margin" Value="5,0" />
+	            <Setter Property="Padding" Value="10,0" />
+	        </Style>
+		</ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -18,133 +36,165 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <StackPanel Background="White">
-            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_TitleText}" FontWeight="Bold" />
+        <StackPanel Grid.Row="0" Background="{StaticResource BackgroundLightBrush}">
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_TitleText}"
+                   FontWeight="Bold" />
             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_InstructionText}"
                        Margin="5,0" />
         </StackPanel>
-        <Grid Grid.Row="1" Margin="5,0">
+        <Grid Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid Margin="0,0,0,5">
+            <StackPanel Grid.Row="0" Margin="5" Orientation="Vertical">
+                    <CheckBox Name="WrapAsUDTCheckBox" 
+                                Grid.Row="1"
+                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_WrapFieldsInPrivateType}"
+                                IsChecked="{Binding ConvertFieldsToUDTMembers, Mode=TwoWay}"
+                                FontWeight="Bold"
+                                VerticalAlignment="Top"
+                                IsTabStop="False"
+                                Width="200"
+                                HorizontalAlignment="Left"
+                                Margin="2"/>
+                    <ComboBox ItemsSource="{Binding UDTFields}"
+                                Margin="2"
+                                Width="300"
+                                HorizontalAlignment="Left"
+                                DisplayMemberPath="FieldDeclarationBlock"
+                                SelectedItem="{Binding SelectedObjectStateUDT, Mode=TwoWay}"
+                                Visibility="{Binding ShowStateUDTSelections, Converter={StaticResource BoolToVisibleVisibility}}">
+                    </ComboBox>
+                </StackPanel>
+            <Grid Grid.Row="1" Margin="5">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Grid Margin="0,0,5,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" VerticalAlignment="Top">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-                        <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_PropertyName}" />
-                        <TextBox Grid.Row="1"
-                                 Margin="5,-2,0,0"
-                                 Height="22"
-                                 VerticalAlignment="Top"
-                                 VerticalContentAlignment="Center"
-                                 Text="{Binding PropertyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <Image Grid.Row="1"
-                               Source="{StaticResource InvalidEntryImage}"
-                               Height="16"
-                               Margin="0,-10,-8,0"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Top"
-                               Visibility="{Binding IsValidPropertyName, Converter={StaticResource BoolToHiddenVisibility}}"/>
-                    </Grid>
-                    <Grid Grid.Row="1"  VerticalAlignment="Top">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-                        <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_ParameterName}" />
-                        <TextBox Grid.Row="1"
-                                 Margin="5,-2,0,0"
-                                 Height="22"
-                                 VerticalAlignment="Top"
-                                 VerticalContentAlignment="Center"
-                                 Text="{Binding ParameterName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <Image Grid.Row="1"
-                               Source="{StaticResource InvalidEntryImage}"
-                               Height="16"
-                               Margin="0,-10,-8,0"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Top"
-                               Visibility="{Binding IsValidParameterName, Converter={StaticResource BoolToHiddenVisibility}}"/>
-                    </Grid>
-                </Grid>
-                <GroupBox Grid.Column="1"
-                          Height="55"
-                          Margin="5"
-                          VerticalAlignment="Top"
-                          Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_SetterType}">
+                <StackPanel Grid.Column="0" Orientation="Vertical" Margin="5">
                     <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-                        <CheckBox IsThreeState="False"
-                                  Content="Let"
-                                  VerticalContentAlignment="Center"
-                                  IsEnabled="{Binding CanHaveLet}"
-                                  IsChecked="{Binding IsLetSelected}" />
-                        <CheckBox Grid.Row="1"
-                                  IsThreeState="False"
-                                  Content="Set"
-                                  VerticalContentAlignment="Center"
-                                  IsEnabled="{Binding CanHaveSet}"
-                                  IsChecked="{Binding IsSetSelected}" />
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Margin="0,5"
+                                   Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_MembersGroupBox}" />
+                        <StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal">
+                            <Button Style="{StaticResource CommandButtonStyle}" TabIndex="2"
+                                    Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SelectAll_Button}"
+                                    Command="{Binding SelectAllCommand}" />
+                            <Button Style="{StaticResource CommandButtonStyle}" TabIndex="3"
+                                    Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=DeselectAll_Button}"
+                                    Command="{Binding DeselectAllCommand}">
+                            </Button>
+                        </StackPanel>                       
                     </Grid>
-                </GroupBox>
+                    <ListBox TabIndex="0" Height="150"
+                             ItemsSource="{Binding Path=EncapsulationFields}"
+                             SelectedItem="{Binding Path= SelectedField, Mode=TwoWay}"
+                             SelectionMode="Single"
+                             ScrollViewer.VerticalScrollBarVisibility="Visible"
+                             ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding EncapsulateFlag, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            FontWeight="Bold"
+                                            Command="{Binding Path=DataContext.EncapsulateFlagChangeCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                            CommandParameter="{Binding ElementName=EncapsulationFields, Path=SelectedField}">
+                                    </CheckBox>
+                                    <TextBlock Grid.Column="1"
+                                            Margin="10,0,0,0"
+                                            Text="{Binding TargetDeclarationExpression, Mode=OneWay}"
+                                            FontWeight="Bold">
+                                    </TextBlock>
+                                    <Image Style="{StaticResource InvalidNameIconStyle}"
+                                           Visibility="{Binding Path=HasValidEncapsulationAttributes, Converter={StaticResource BoolToHiddenVisibility}}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
             </Grid>
-            <Expander Grid.Row="1"
-                      Grid.ColumnSpan="2"
-                      IsExpanded="{Binding ExpansionState}"
-                      Background="#FFFFFFFF"
-                      BorderBrush="#FFA9A9A9"
-                      Margin="5,0,5,5">
-                <Expander.Header>
-                    <Label FontWeight="SemiBold">
-                        <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="Preview"/>
-                    </Label>
-                </Expander.Header>
-                <controls:BindableTextEditor Margin="10,10,10,10"
-                                             FontFamily="Courier New "
-                                             ShowLineNumbers="False"
-                                             HorizontalScrollBarVisibility="Auto"
-                                             VerticalScrollBarVisibility="Auto"
-                                             MinHeight="200"
-                                             IsReadOnly="True"
-                                             Text="{Binding PropertyPreview,Mode=OneWay}"/>
-            </Expander>
+            <Grid Grid.Row="2" Margin="5" Visibility="{Binding Path=SelectedFieldIsNotFlagged, Converter={StaticResource BoolToHiddenVisibility}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <GroupBox Visibility="{Binding Path=IsEmptyList, Converter={StaticResource BoolToHiddenVisibility}}"
+                              Margin="5">
+                        <GroupBox.Header>
+                            <TextBlock Text="{Binding Path=GroupBoxHeaderContent}" FontWeight="Bold" />
+                        </GroupBox.Header>
+                        <StackPanel>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Visibility="{Binding Path=SelectedFieldIsPrivateUDT, Converter={StaticResource BoolToVisibleVisibility}}"
+                                           Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_PrivateUDTPropertyText}"
+                                           Margin="10,5" />
+                                <TextBox Grid.Row="1" Visibility="{Binding Path=SelectedFieldHasEditablePropertyName, Converter={StaticResource BoolToVisibleVisibility}}"
+                                         Text="{Binding Path=PropertyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         TabIndex="1" Margin="10,5"
+                                         VerticalAlignment="Center" 
+                                         VerticalContentAlignment="Center"
+                                         Height="22" />
+                                <Image Grid.Row="1" Style="{StaticResource InvalidNameIconStyle}"
+                                       Visibility="{Binding Path=SelectionHasValidEncapsulationAttributes, Converter={StaticResource BoolToHiddenVisibility}}" />
+                            </Grid>
+                            <CheckBox IsChecked="{Binding Path=IsReadOnly, Mode=TwoWay}"
+                                IsEnabled="{Binding Path=EnableReadOnlyOption}"
+                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_ReadOnlyCheckBoxContent}"
+                                Margin="10,2" FontWeight="Bold"
+                                Command="{Binding Path=ReadOnlyChangeCommand}"
+                                CommandParameter="{Binding ElementName=EncapsulationFields, Path=SelectedField}" />
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+                <Grid Grid.Column="1">
+                    <TextBlock Margin="5" Text="{Binding Path=ValidationErrorMessage, Mode=OneWay}"
+                        Visibility="{Binding ElementName=PropertyInvalidIcon, Path=Visibility}"
+                        TextWrapping="Wrap">
+                    </TextBlock>
+                </Grid>
+            </Grid>
+            <StackPanel Grid.Row="3" Margin="10,5" Orientation="Horizontal">
+                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_Preview}" 
+                               FontSize="14" FontWeight="Bold" />
+                    <Image Style="{StaticResource InvalidNameIconStyle}" Margin="0,-4"
+                           Visibility="{Binding Path=HasValidNames, Converter={StaticResource BoolToHiddenVisibility}}" />
+            </StackPanel>
+            <controls:BindableTextEditor Grid.Row="4" Margin="10" BorderThickness="1"
+                FontFamily="Courier New "
+                ShowLineNumbers="False"
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Visible"
+                IsReadOnly="True" IsTabStop="False"
+                Text="{Binding PropertiesPreview,Mode=OneWay}" />
         </Grid>
+
         <Grid Grid.Row="2" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
-            <Grid HorizontalAlignment="Right"
-                          Margin="5,0">
+            <Grid HorizontalAlignment="Right" Margin="5,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                     <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                 </Grid.ColumnDefinitions>
                 <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
-                            Grid.Column="0"
-                            Height="20"
-                            Margin="5,0"
-                            Padding="10,0"
-                            IsEnabled="{Binding HasValidNames}"
-                            Command="{Binding OkButtonCommand}" />
+                        Grid.Column="0"
+                        Style="{StaticResource CommandButtonStyle}"
+                        IsEnabled="{Binding IsValidInterfaceName}"
+                        Command="{Binding OkButtonCommand}" />
                 <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}"
-                            Grid.Column="1"
-                            Height="20"
-                            Margin="5,0"
-                            Padding="10,0"
-                            Command="{Binding CancelButtonCommand}">
-                </Button>
+                        Grid.Column="1"
+                        Style="{StaticResource CommandButtonStyle}"
+                        Command="{Binding CancelButtonCommand}"/>
             </Grid>
         </Grid>
     </Grid>

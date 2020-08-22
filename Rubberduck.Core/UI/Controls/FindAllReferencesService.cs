@@ -22,9 +22,13 @@ namespace Rubberduck.UI.Controls
         private readonly SearchResultPresenterInstanceManager _presenterService;
         private readonly IUiDispatcher _uiDispatcher;
 
-        public FindAllReferencesService(INavigateCommand navigateCommand, IMessageBox messageBox,
-            RubberduckParserState state, ISearchResultsWindowViewModel viewModel,
-            SearchResultPresenterInstanceManager presenterService, IUiDispatcher uiDispatcher)
+        public FindAllReferencesService(
+            INavigateCommand navigateCommand, 
+            IMessageBox messageBox,
+            RubberduckParserState state, 
+            ISearchResultsWindowViewModel viewModel,
+            SearchResultPresenterInstanceManager presenterService, 
+            IUiDispatcher uiDispatcher)
         {
             _navigateCommand = navigateCommand;
             _messageBox = messageBox;

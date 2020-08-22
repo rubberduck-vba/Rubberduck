@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.CodeExplorer;
 
@@ -62,7 +62,7 @@ namespace Rubberduck.UI.Converters
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((value as ICodeExplorerNode )?.Declaration is null)
+            if ((value as ICodeExplorerNode)?.Declaration is null)
             {
                 return NullIcon;
             }
@@ -93,19 +93,20 @@ namespace Rubberduck.UI.Converters
                     }
 
                     if (component.Declaration is ClassModuleDeclaration classModule && 
-                        (classModule.IsInterface || classModule.Annotations.Any(annotation => annotation is InterfaceAnnotation)))
+                        (classModule.IsInterface || classModule.Annotations.Any(annotation => annotation.Annotation is InterfaceAnnotation)))
                     {
                         return InterfaceIcon;
                     }
 
+                    var isUserForm = component.Declaration.QualifiedModuleName.ComponentType == VBEditor.SafeComWrappers.ComponentType.UserForm; 
                     return DeclarationIcons.ContainsKey(component.Declaration.DeclarationType)
-                        ? DeclarationIcons[component.Declaration.DeclarationType]
+                        ? DeclarationIcons[isUserForm ? DeclarationType.UserForm : component.Declaration.DeclarationType]
                         : ExceptionIcon;
                 default:
                     return value is ICodeExplorerNode node &&
                            node.Declaration != null &&
                            DeclarationIcons.ContainsKey(node.Declaration.DeclarationType)
-                        ? node.Declaration.Annotations.Any(a => a is TestMethodAnnotation)
+                        ? node.Declaration.Annotations.Any(a => a.Annotation is TestMethodAnnotation)
                             ? TestMethodIcon
                             : DeclarationIcons[node.Declaration.DeclarationType]
                         : ExceptionIcon;

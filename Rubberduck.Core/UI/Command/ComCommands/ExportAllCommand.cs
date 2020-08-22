@@ -2,6 +2,7 @@ using System.IO;
 using System.Windows.Forms;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Resources;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -12,15 +13,18 @@ namespace Rubberduck.UI.Command.ComCommands
     {
         private readonly IVBE _vbe;
         private readonly IFileSystemBrowserFactory _factory;
+        private readonly IProjectsProvider _projectsProvider;
 
         public ExportAllCommand(
             IVBE vbe, 
             IFileSystemBrowserFactory folderBrowserFactory, 
-            IVbeEvents vbeEvents) 
+            IVbeEvents vbeEvents,
+            IProjectsProvider projectsProvider) 
             : base(vbeEvents)
         {
             _vbe = vbe;
             _factory = folderBrowserFactory;
+            _projectsProvider = projectsProvider;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
@@ -32,7 +36,8 @@ namespace Rubberduck.UI.Command.ComCommands
                 return false;
             }
 
-            if (!(parameter is CodeExplorerProjectViewModel) && parameter is CodeExplorerItemViewModel)
+            if (!(parameter is CodeExplorerProjectViewModel) 
+                && parameter is CodeExplorerItemViewModel)
             {
                 return false;
             }
@@ -40,7 +45,10 @@ namespace Rubberduck.UI.Command.ComCommands
             switch (parameter)
             {
                 case CodeExplorerProjectViewModel projectNode:
-                    return Evaluate(projectNode.Declaration.Project);
+                    var nodeProject = projectNode.Declaration != null
+                        ? _projectsProvider.Project(projectNode.Declaration.ProjectId)
+                        : null;
+                    return Evaluate(nodeProject);
                 case IVBProject project:
                     return Evaluate(project);
             }
@@ -69,8 +77,15 @@ namespace Rubberduck.UI.Command.ComCommands
         {
             switch (parameter)
             {
-                case CodeExplorerProjectViewModel projectNode when projectNode.Declaration.Project != null:
-                    Export(projectNode.Declaration.Project);
+                case CodeExplorerProjectViewModel projectNode:
+                    var nodeProject = projectNode.Declaration != null
+                        ? _projectsProvider.Project(projectNode.Declaration.ProjectId)
+                        : null;
+                    if (nodeProject == null)
+                    {
+                        return;
+                    }
+                    Export(nodeProject);
                     break;
                 case IVBProject vbproject:
                     Export(vbproject);
@@ -92,11 +107,9 @@ namespace Rubberduck.UI.Command.ComCommands
 
             // If .GetDirectoryName is passed an empty string for a RootFolder, 
             // it defaults to the Documents library (Win 7+) or equivalent.
-            var path = string.Empty;
-            if (!string.IsNullOrWhiteSpace(project.FileName))
-            {
-                path = Path.GetDirectoryName(project.FileName);
-            }
+            var path = string.IsNullOrWhiteSpace(project.FileName)
+                ? string.Empty
+                : Path.GetDirectoryName(project.FileName);
 
             using (var _folderBrowser = _factory.CreateFolderBrowser(desc, true, path))
             {

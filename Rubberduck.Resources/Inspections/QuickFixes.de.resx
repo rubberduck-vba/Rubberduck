@@ -136,7 +136,7 @@
     <value>Als explizit 'Variant' deklarieren</value>
   </data>
   <data name="MakeSingleLineParameterQuickFix" xml:space="preserve">
-    <value>Variable in einer Zeile schreiben </value>
+    <value>Variable in einer Zeile schreiben</value>
   </data>
   <data name="ObsoleteGlobalInspectionQuickFix" xml:space="preserve">
     <value>'Global' durch 'Public' ersetzen</value>
@@ -192,7 +192,7 @@
   <data name="IntroduceLocalVariableQuickFix" xml:space="preserve">
     <value>Lokale Variable einführen</value>
   </data>
-  <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
+  <data name="IntroduceGetAccessorQuickFix" xml:space="preserve">
     <value>'Property Get' Zugriff hinzufügen</value>
   </data>
   <data name="ChangeDimToPrivateQuickFix" xml:space="preserve">
@@ -220,7 +220,7 @@
     <value>Leeren 'If'-Block entfernen</value>
   </data>
   <data name="ImplicitByRefModifierQuickFix" xml:space="preserve">
-    <value>Parameter explizit als Referenz übergeben.</value>
+    <value>Parameter explizit als Referenz übergeben</value>
   </data>
   <data name="ReplaceObsoleteErrorStatementQuickFix" xml:space="preserve">
     <value>'Error' durch 'Err.Raise' ersetzen</value>
@@ -280,7 +280,7 @@
     <value>Attributannotation hinzufügen</value>
   </data>
   <data name="ApplyQuickFixesFailedMessage" xml:space="preserve">
-    <value>Die Ausführen des Quickfixes ist fehlgeschlagen. </value>
+    <value>Die Ausführen des Quickfixes ist fehlgeschlagen.</value>
   </data>
   <data name="StaleModuleFailureReason" xml:space="preserve">
     <value>Ein betroffenes Module wurde seit dem letzten Parse modifiziert.</value>
@@ -296,5 +296,8 @@
   </data>
   <data name="ExpandDefaultMemberQuickFix" xml:space="preserve">
     <value>Füge einen expliziten Zugriff auf den Standardmember ein</value>
+  </data>
+  <data name="IgnoreInModuleQuickFix" xml:space="preserve">
+    <value>In Modul ignorieren</value>
   </data>
 </root>

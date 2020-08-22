@@ -1,19 +1,12 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
-using Rubberduck.Resources.Experimentals;
 using Rubberduck.Parsing.VBA;
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies empty 'If' blocks.
@@ -21,7 +14,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Conditional expression is inverted; there would not be a need for an 'Else' block otherwise.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If foo Then
@@ -30,8 +24,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If Not foo Then
@@ -39,25 +35,24 @@ namespace Rubberduck.Inspections.Concrete
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal class EmptyIfBlockInspection : ParseTreeInspectionBase
+    internal sealed class EmptyIfBlockInspection : EmptyBlockInspectionBase<ParserRuleContext>
     {
-        public EmptyIfBlockInspection(RubberduckParserState state)
-            : base(state) { }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        public EmptyIfBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            return Listener.Contexts
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionResults.EmptyIfBlockInspection,
-                                                        result));
+            ContextListener = new EmptyIfBlockListener();
         }
 
-        public override IInspectionListener Listener { get; } =
-            new EmptyIfBlockListener();
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        {
+            return InspectionResults.EmptyIfBlockInspection;
+        }
 
-        public class EmptyIfBlockListener : EmptyBlockInspectionListenerBase
+        protected override IInspectionListener<ParserRuleContext> ContextListener { get; }
+
+        private class EmptyIfBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterIfStmt([NotNull] VBAParser.IfStmtContext context)
             {
@@ -73,7 +68,7 @@ namespace Rubberduck.Inspections.Concrete
             {
                 if (context.ifWithEmptyThen() != null)
                 {
-                    AddResult(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context.ifWithEmptyThen()));
+                    SaveContext(context.ifWithEmptyThen());
                 }
             }
         }

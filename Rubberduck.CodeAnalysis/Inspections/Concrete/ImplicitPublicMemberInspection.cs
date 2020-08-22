@@ -1,13 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Highlights implicit Public access modifiers in user code.
@@ -16,24 +13,28 @@ namespace Rubberduck.Inspections.Concrete
     /// In modern VB (VB.NET), the implicit access modifier is Private, as it is in most other programming languages.
     /// Making the Public modifiers explicit can help surface potentially unexpected language defaults.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Sub DoSomething()
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ImplicitPublicMemberInspection : InspectionBase
+    internal sealed class ImplicitPublicMemberInspection : DeclarationInspectionBase
     {
-        public ImplicitPublicMemberInspection(RubberduckParserState state)
-            : base(state) { }
+        public ImplicitPublicMemberInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, ProcedureTypes) { }
 
         private static readonly DeclarationType[] ProcedureTypes = 
         {
@@ -44,15 +45,14 @@ namespace Rubberduck.Inspections.Concrete
             DeclarationType.PropertySet
         };
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var issues = from item in UserDeclarations
-                         where ProcedureTypes.Contains(item.DeclarationType)
-                               && item.Accessibility == Accessibility.Implicit
-                         select new DeclarationInspectionResult(this,
-                                                     string.Format(InspectionResults.ImplicitPublicMemberInspection, item.IdentifierName),
-                                                     item);
-            return issues;
+            return declaration.Accessibility == Accessibility.Implicit;
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.ImplicitPublicMemberInspection, declaration.IdentifierName);
         }
     }
 }

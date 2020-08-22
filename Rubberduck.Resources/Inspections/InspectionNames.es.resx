@@ -130,7 +130,7 @@
     <value>Cadena vacía</value>
   </data>
   <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
-    <value>Campo público rompe la encapsulación</value>
+    <value>Campo público rompe el encapsulamiento</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspection" xml:space="preserve">
     <value>Referencia implícita a ActiveSheet</value>
@@ -148,19 +148,19 @@
     <value>El tipo de devolución del miembro es implícitamente 'Variant'</value>
   </data>
   <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
-    <value>El alcance de la variable es más amplio de lo que necesita ser</value>
+    <value>El alcance de la variable es más amplio de lo que necesita ser.</value>
   </data>
   <data name="MultilineParameterInspection" xml:space="preserve">
-    <value>La declaración de parámetros se divide en varias líneas</value>
+    <value>La declaración de parámetros se divide en varias líneas.</value>
   </data>
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
-    <value>Múltiples declaraciones en una sola instrucción.</value>
+    <value>Múltiples declaraciones en una sola instrucción</value>
   </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
-    <value>Función de no devolución o captador de propiedad.</value>
+    <value>Función de no devolución o getter de propiedad</value>
   </data>
   <data name="ObsoleteCallStatementInspection" xml:space="preserve">
-    <value>Uso de declaración 'Call' obsoleta </value>
+    <value>Uso de declaración 'Call' obsoleta</value>
   </data>
   <data name="ObsoleteCommentSyntaxInspection" xml:space="preserve">
     <value>Uso de la declaración 'Rem' obsoleta</value>
@@ -175,16 +175,16 @@
     <value>Usa una sugerencia obsoleta</value>
   </data>
   <data name="OptionBaseInspection" xml:space="preserve">
-    <value>Se especifica 'Opción Base 1'</value>
+    <value>Se especifica 'Option Base 1'.</value>
   </data>
   <data name="OptionExplicitInspection" xml:space="preserve">
-    <value>'Opción explícita' no se especifica</value>
+    <value>'Option Explicit' no se especifica.</value>
   </data>
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
-    <value>El parámetro se puede pasar por valor</value>
+    <value>El parámetro se puede pasar por valor.</value>
   </data>
   <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>No se hace referencia al parámetro</value>
+    <value>No se hace referencia al parámetro.</value>
   </data>
   <data name="ProcedureNotUsedInspection" xml:space="preserve">
     <value>No se hace referencia al procedimiento.</value>
@@ -196,13 +196,13 @@
     <value>Utiliza una función de string que devuelve 'Variant'</value>
   </data>
   <data name="UseMeaningfulNameInspection" xml:space="preserve">
-    <value>Use nombres significativos</value>
+    <value>Usar nombres significativos</value>
   </data>
   <data name="VariableNotAssignedInspection" xml:space="preserve">
-    <value>La variable no esta asignada</value>
+    <value>La variable no esta asignada.</value>
   </data>
   <data name="VariableNotUsedInspection" xml:space="preserve">
-    <value>La variable no es referida</value>
+    <value>La variable no es referida.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>Variable 'Variant' implicita</value>
@@ -214,13 +214,10 @@
     <value>El procedimiento puede ser escrito como una función.</value>
   </data>
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
-    <value>La referencia de la variable de objeto es una instancia automática</value>
-  </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>El valor de retorno de la función nunca se usa</value>
+    <value>La referencia de la variable de objeto es una instancia automática.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
-    <value>La asignación de variables de objeto requiere la palabra clave 'Set'</value>
+    <value>La asignación de variables de objeto requiere la palabra clave 'Set'.</value>
   </data>
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
     <value>Falta el parámetro de anotación</value>
@@ -241,10 +238,10 @@
     <value>La expresión entre corchetes específica del host solo se evalúa en tiempo de ejecución</value>
   </data>
   <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
-    <value>Enlace tardío para 'WorksheetFunction'</value>
+    <value>Enlace tardío para 'WorksheetFunction'.</value>
   </data>
   <data name="OptionBaseZeroInspection" xml:space="preserve">
-    <value>'Opción Base 0' es redundante</value>
+    <value>'Option Base 0' es redundante</value>
   </data>
   <data name="IllegalAnnotationInspection" xml:space="preserve">
     <value>Anotación ilegal</value>
@@ -265,13 +262,13 @@
     <value>No se usa la etiqueta de línea</value>
   </data>
   <data name="EmptyElseBlockInspection" xml:space="preserve">
-    <value>Bloque 'Else' Bloque vacío 'Else'</value>
+    <value>Bloque 'Else' vacío</value>
   </data>
   <data name="IntegerDataTypeInspection" xml:space="preserve">
-    <value>Uso de tipo entero de 16 bits.</value>
+    <value>Uso de tipo entero de 16 bits</value>
   </data>
   <data name="StopKeywordInspection" xml:space="preserve">
-    <value>Palabra clave 'Stop'</value>
+    <value>Palabra reservada 'Stop'</value>
   </data>
   <data name="EmptyCaseBlockInspection" xml:space="preserve">
     <value>Bloque 'Case' vacío</value>
@@ -289,10 +286,10 @@
     <value>Bucle 'While...Wend' vacio</value>
   </data>
   <data name="ShadowedDeclarationInspection" xml:space="preserve">
-    <value>Declaración sombreada</value>
+    <value>Declaración ambigua en distintos ámbitos</value>
   </data>
   <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
-    <value>Asignación literal booleana en condicional.</value>
+    <value>Asignación literal booleana en condicional</value>
   </data>
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Módulo vacío</value>
@@ -301,7 +298,7 @@
     <value>Uso de la declaración 'Error' obsoleta</value>
   </data>
   <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>No se puede acceder a la(s) cláusula(s) del case</value>
+    <value>No se puede acceder a la(s) cláusula(s) del Case.</value>
   </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>No manejado 'On Error Resume Next'</value>
@@ -310,10 +307,10 @@
     <value>Uso de la declaración 'Def [Type]'</value>
   </data>
   <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
-    <value>No se especifica Step del bucle 'For...Next'</value>
+    <value>No se especifica incremento del bucle 'For...Next'</value>
   </data>
   <data name="StepOneIsRedundantInspection" xml:space="preserve">
-    <value>'For...Next' loop step 1 es redundante</value>
+    <value>El incremento 1 en el bucle 'For...Next' es redundante</value>
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Se accede a la hoja estáticamente usando una cadena</value>
@@ -325,13 +322,13 @@
     <value>Uso de la convención de llamada 'CDecl' en Windows</value>
   </data>
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
-    <value>La anotación está duplicada.</value>
+    <value>La anotación está duplicada</value>
   </data>
   <data name="ModuleWithoutFolderInspection" xml:space="preserve">
     <value>Módulo sin anotación '@Folder'</value>
   </data>
   <data name="OnLocalErrorInspection" xml:space="preserve">
-    <value>Declaración de error local</value>
+    <value>Sentencia 'On Local Error'</value>
   </data>
   <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
     <value>Uso inapropiado de 'IsMissing' - El parámetro no es 'Variant'</value>
@@ -343,7 +340,7 @@
     <value>No se usa la asignacion</value>
   </data>
   <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
-    <value>Subrayado en miembro de módulo de clase pública</value>
+    <value>Guión bajo en miembro de módulo de clase pública</value>
   </data>
   <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
     <value>El acceso de los miembros puede devolver "Nothing"</value>
@@ -361,6 +358,84 @@
     <value>Falta la anotación del módulo</value>
   </data>
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
-    <value>Uso de declaración 'While...Wend' obsoleta </value>
+    <value>Uso de declaración 'While...Wend' obsoleta</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Argumento con tipo de objeto incompatible</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>Objeto sin miembro default usado donde se requiere un procedimiento</value>
+  </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Asignación Set con objeto de tipo incompatible</value>
+  </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>Argumentos de anotaciones sobrantes</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Asignación Let dudosa</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Uso de notación Bang</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Uso de notación Bang recursiva</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>Objeto usado donde se requiere un valor</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Uso de notación Bang sin vincular</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Acceso a miembro default indexado sin vincular</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Acceso a miembro default implícito sin vincular</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>Acceso a miembro default indexado sin miembro default</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>Método vacío</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Objeto usado donde se requiere un procedimiento</value>
+  </data>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>El valor de retorno de la función siempre se descarta.</value>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>El valor de retorno de la función se descarta.</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Miembro implementado de la clase Interfaz</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Acceso a miembro default implícito</value>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Constante tipada implícitamente</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Acceso a miembro default implícito recursivo</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Acceso a miembro default indexado recursivo</value>
+  </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Palabra reservada usada como nombre de miembro</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Continuación de líneas entre palabras reservadas</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Número de línea negativo</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>Identificador contiene un espacio NBSP</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Acceso a miembro default indexado</value>
   </data>
 </root>

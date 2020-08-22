@@ -1,17 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor.SafeComWrappers;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Indicates that the value of a hidden VB attribute is out of sync with the corresponding Rubberduck annotation comment.
@@ -20,7 +18,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Keeping Rubberduck annotation comments in sync with the hidden VB attribute values, surfaces these hidden attributes in the VBE code panes; 
     /// Rubberduck can rewrite the attributes to match the corresponding annotation comment.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
@@ -28,8 +27,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
@@ -37,47 +38,38 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [CannotAnnotate]
-    public sealed class AttributeValueOutOfSyncInspection : InspectionBase
+    internal sealed class AttributeValueOutOfSyncInspection : DeclarationInspectionMultiResultBase<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)>
     {
-        public AttributeValueOutOfSyncInspection(RubberduckParserState state) 
-        :base(state)
-        {
-        }
+        public AttributeValueOutOfSyncInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)> ResultProperties(Declaration declaration, DeclarationFinder finder)
         {
-            var declarationsWithAttributeAnnotations = State.DeclarationFinder.AllUserDeclarations
-                .Where(declaration => declaration.Annotations.Any(pta => pta.Annotation is IAttributeAnnotation));
-            var results = new List<DeclarationInspectionResult>();
-            foreach (var declaration in declarationsWithAttributeAnnotations.Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document))
+            if (declaration.QualifiedModuleName.ComponentType == ComponentType.Document)
             {
-                foreach (var annotationInstance in declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation))
-                {
-                    // cast is safe given the predicate in the foreach
-                    var annotation = (IAttributeAnnotation)annotationInstance.Annotation;
-                    if (HasDifferingAttributeValues(declaration, annotationInstance, out var attributeValues))
-                    {
-                        var attributeName = annotation.Attribute(annotationInstance);
-
-                        var description = string.Format(InspectionResults.AttributeValueOutOfSyncInspection, 
-                            attributeName, 
-                            string.Join(", ", attributeValues), 
-                            annotation.Name);
-
-                        var result = new DeclarationInspectionResult(this, description, declaration,
-                            new QualifiedContext(declaration.QualifiedModuleName, annotationInstance.Context));
-                        result.Properties.Annotation = annotationInstance;
-                        result.Properties.AttributeName = attributeName;
-                        result.Properties.AttributeValues = attributeValues;
-
-                        results.Add(result);
-                    }
-                }
+                return Enumerable.Empty<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)>();
             }
 
-            return results;
+            return OutOfSyncAttributeAnnotations(declaration);
+        }
+
+        private static IEnumerable<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)> OutOfSyncAttributeAnnotations(Declaration declaration)
+        {
+            foreach (var pta in declaration.Annotations)
+            {
+                if (!(pta.Annotation is IAttributeAnnotation annotation) 
+                    || !HasDifferingAttributeValues(declaration, pta, out var attributeValues))
+                {
+                    continue;
+                }
+
+                var attributeName = annotation.Attribute(pta);
+                yield return (pta, attributeName, attributeValues);
+            }
         }
 
         private static bool HasDifferingAttributeValues(Declaration declaration, IParseTreeAnnotation annotationInstance, out IReadOnlyList<string> attributeValues)
@@ -87,10 +79,10 @@ namespace Rubberduck.Inspections.Concrete
                 attributeValues = new List<string>();
                 return false;
             }
-            var attribute = annotation.Attribute(annotationInstance);
+
             var attributeNodes = declaration.DeclarationType.HasFlag(DeclarationType.Module)
-                                    ? declaration.Attributes.AttributeNodesFor(annotationInstance)
-                                    : declaration.Attributes.AttributeNodesFor(annotationInstance, declaration.IdentifierName);
+                ? declaration.Attributes.AttributeNodesFor(annotationInstance)
+                : declaration.Attributes.AttributeNodesFor(annotationInstance, declaration.IdentifierName);
 
             foreach (var attributeNode in attributeNodes)
             {
@@ -103,6 +95,16 @@ namespace Rubberduck.Inspections.Concrete
             }
             attributeValues = new List<string>();
             return false;
+        }
+
+        protected override string ResultDescription(Declaration declaration, (IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues) properties)
+        {
+            var (pta, attributeName, attributeValues) = properties;
+            var annotationName = pta.Annotation.Name;
+            return string.Format(InspectionResults.AttributeValueOutOfSyncInspection,
+                attributeName,
+                string.Join(", ", attributeValues),
+                annotationName);
         }
     }
 }

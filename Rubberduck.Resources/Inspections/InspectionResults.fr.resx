@@ -118,114 +118,111 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
-    <value>Le champ public '{0}' rompt l'encapsulation</value>
+    <value>Le champ public '{0}' rompt l'encapsulation.</value>
   </data>
   <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
-    <value>Restreindre la portée du champ '{0}'</value>
+    <value>Restreindre la portée du champ '{0}'.</value>
   </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
-    <value>La procédure '{0}' pourrait être une fonction</value>
+    <value>La procédure '{0}' pourrait être une fonction.</value>
     <comment>{0} Procedure name</comment>
   </data>
   <data name="IdentifierNameInspection" xml:space="preserve">
-    <value>Considérez renommer {0} '{1}'</value>
+    <value>Considérez renommer {0} '{1}'.</value>
   </data>
   <data name="WriteOnlyPropertyInspection" xml:space="preserve">
-    <value>La propriété '{0}' n'a pas d'accesseur (Get)</value>
+    <value>La propriété '{0}' n'a pas d'accesseur (Get).</value>
     <comment>{0} Property name</comment>
   </data>
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
-    <value>La variable '{0}' est assignée lors de sa déclaration</value>
-  </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>La valeur de retour de la fonction '{0}' n'est jamais utilisée.</value>
+    <value>La variable '{0}' est assignée lors de sa déclaration.</value>
   </data>
   <data name="AssignedByValParameterInspection" xml:space="preserve">
-    <value>Le paramètre '{0}' passé par valeur est assigné</value>
+    <value>Le paramètre '{0}' passé par valeur est assigné.</value>
   </data>
   <data name="IdentifierNotUsedInspection" xml:space="preserve">
     <value>{0} '{1}' n'est pas utilisé(e).</value>
   </data>
   <data name="ImplicitPublicMemberInspection" xml:space="preserve">
-    <value>Le membre '{0}' est implicitement public</value>
+    <value>Le membre '{0}' est implicitement public.</value>
   </data>
   <data name="ImplicitVariantDeclarationInspection" xml:space="preserve">
-    <value>{0} '{1}' est implicitement de type Variant</value>
+    <value>{0} '{1}' est implicitement de type Variant.</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspection" xml:space="preserve">
-    <value>La valeur de retour du membre '{0}' est implicitement 'Variant'</value>
+    <value>La valeur de retour du membre '{0}' est implicitement 'Variant'.</value>
   </data>
   <data name="MultilineParameterInspection" xml:space="preserve">
-    <value>Le paramètre '{0}' est déclaré sur plusieurs lignes</value>
+    <value>Le paramètre '{0}' est déclaré sur plusieurs lignes.</value>
   </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
-    <value>La valeur de retour du membre '{0}' n'est pas assignée</value>
+    <value>La valeur de retour du membre '{0}' n'est pas assignée.</value>
   </data>
   <data name="ObsoleteGlobalInspection" xml:space="preserve">
-    <value>{0} '{1}' utilise le modificateur obsolète 'Global'</value>
+    <value>{0} '{1}' utilise le modificateur obsolète 'Global'.</value>
   </data>
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
-    <value>Le paramètre '{0}' peut être passé par valeur</value>
+    <value>Le paramètre '{0}' peut être passé par valeur.</value>
   </data>
   <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Le paramètre '{0}' n'est pas utilisé</value>
+    <value>Le paramètre '{0}' n'est pas utilisé.</value>
   </data>
   <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
-    <value>La procédure '{0}' pourrait être une fonction</value>
+    <value>La procédure '{0}' pourrait être une fonction.</value>
   </data>
   <data name="UnassignedVariableUsageInspection" xml:space="preserve">
-    <value>La variable '{0}' est utilisée, mais non assignée</value>
+    <value>La variable '{0}' est utilisée, mais non assignée.</value>
   </data>
   <data name="OptionExplicitInspection" xml:space="preserve">
     <value>'Option Explicit' n'est pas spécifiée dans le module '{0}'.</value>
   </data>
   <data name="VariableNotAssignedInspection" xml:space="preserve">
-    <value>La variable '{0}' n'est jamais assignée</value>
+    <value>La variable '{0}' n'est jamais assignée.</value>
   </data>
   <data name="EmptyStringLiteralInspection" xml:space="preserve">
-    <value>Préférez 'vbNullString' à une chaîne de caractères vide</value>
+    <value>Préférez 'vbNullString' à une chaîne de caractères vide.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
-    <value>La variable '{0}' est assignée dans le mot-clé 'Set'</value>
+    <value>La variable '{0}' est assignée dans le mot-clé 'Set'.</value>
   </data>
   <data name="ImplicitActiveWorkbookReferenceInspection" xml:space="preserve">
-    <value>Le membre '{0}' réfère implicitement au classeur actif</value>
+    <value>Le membre '{0}' réfère implicitement au classeur actif.</value>
   </data>
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
-    <value>L'instruction comporte plusieurs déclarations</value>
+    <value>L'instruction comporte plusieurs déclarations.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
-    <value>{0} '{1}' est implicitement de type 'Variant'</value>
+    <value>{0} '{1}' est implicitement de type 'Variant'.</value>
   </data>
   <data name="DefaultProjectNameInspection" xml:space="preserve">
-    <value>Le projet '{0}' n'est pas nommé</value>
+    <value>Le projet '{0}' n'est pas nommé.</value>
   </data>
   <data name="ObsoleteCallStatementInspection" xml:space="preserve">
-    <value>L'assignation utilise le mot-clé obsolète 'Call'</value>
+    <value>L'assignation utilise le mot-clé obsolète 'Call'.</value>
   </data>
   <data name="ObsoleteLetStatementInspection" xml:space="preserve">
-    <value>L'assignation utilise le mot-clé obsolète 'Let'</value>
+    <value>L'assignation utilise le mot-clé obsolète 'Let'.</value>
   </data>
   <data name="OptionBaseInspection" xml:space="preserve">
-    <value>Le module '{0}' utilise 'Option Base 1'</value>
+    <value>Le module '{0}' utilise 'Option Base 1'.</value>
   </data>
   <data name="ObsoleteCommentSyntaxInspection" xml:space="preserve">
-    <value>Le commentaire utilise la forme obsolète 'Rem'</value>
+    <value>Le commentaire utilise la forme obsolète 'Rem'.</value>
   </data>
   <data name="ObsoleteTypeHintInspection" xml:space="preserve">
-    <value>{0} de {1} '{2}' utilise un indicateur de type</value>
+    <value>{0} de {1} '{2}' utilise un indicateur de type.</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspection" xml:space="preserve">
-    <value>Le membre '{0}' réfère implicitement à la feuille active</value>
+    <value>Le membre '{0}' réfère implicitement à la feuille active.</value>
   </data>
   <data name="UntypedFunctionUsageInspection" xml:space="preserve">
-    <value>Remplacer la fonction '{0}' par la fonction typée équivalente</value>
+    <value>Remplacer la fonction '{0}' par la fonction typée équivalente.</value>
   </data>
   <data name="ModuleScopeDimKeywordInspection" xml:space="preserve">
-    <value>La variable module '{0}' est déclarée avec le mot-clé 'Dim'</value>
+    <value>La variable module '{0}' est déclarée avec le mot-clé 'Dim'.</value>
   </data>
   <data name="UndeclaredVariableInspection" xml:space="preserve">
-    <value>La variable locale '{0}' n'est pas déclarée</value>
+    <value>La variable locale '{0}' n'est pas déclarée.</value>
     <comment>{0} variable name</comment>
   </data>
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
@@ -244,22 +241,22 @@
     <value>Le membre '{0}' n'est pas exposé par l'interface du type '{1}'.</value>
   </data>
   <data name="EmptyCaseBlockInspection" xml:space="preserve">
-    <value>Un block 'Case' ne contient aucune instruction exécutable</value>
+    <value>Un bloc 'Case' ne contient aucune instruction exécutable.</value>
   </data>
   <data name="ImplicitByRefModifierInspection" xml:space="preserve">
-    <value>Le paramètre '{0}' est passé implicitement par référence</value>
+    <value>Le paramètre '{0}' est passé implicitement par référence.</value>
   </data>
   <data name="LineLabelNotUsedInspection" xml:space="preserve">
-    <value>L'étiquette de ligne '{0}' n'est pas utilisée</value>
+    <value>L'étiquette de ligne '{0}' n'est pas utilisée.</value>
   </data>
   <data name="StopKeywordInspection" xml:space="preserve">
-    <value>Le mot-clé 'Stop' halte l'exécution</value>
+    <value>Le mot-clé 'Stop' halte l'exécution.</value>
   </data>
   <data name="ShadowedDeclarationInspection" xml:space="preserve">
-    <value>{0} '{1}' cache {2} '{3}'</value>
+    <value>{0} '{1}' cache {2} '{3}'.</value>
   </data>
   <data name="ObsoleteErrorSyntaxInspection" xml:space="preserve">
-    <value>Une erreur d'exécution est générée à l'aide de l'instruction obsolète 'Error'</value>
+    <value>Une erreur d'exécution est générée à l'aide de l'instruction obsolète 'Error'.</value>
   </data>
   <data name="RedundantByRefModifierInspection" xml:space="preserve">
     <value>Le paramètre '{0}' a un modificateur 'ByRef' redondant.</value>
@@ -268,22 +265,22 @@
     <value>Boucle 'For Each...Next' n'exécute aucune instruction.</value>
   </data>
   <data name="EmptyElseBlockInspection" xml:space="preserve">
-    <value>Bloc 'Else' n'exécute aucune instruction</value>
+    <value>Bloc 'Else' n'exécute aucune instruction.</value>
   </data>
   <data name="EmptyForLoopBlockInspection" xml:space="preserve">
-    <value>Boucle 'For...Next' n'exécute aucune instruction</value>
+    <value>Boucle 'For...Next' n'exécute aucune instruction.</value>
   </data>
   <data name="IntegerDataTypeInspection" xml:space="preserve">
-    <value>{0} '{1}' est déclarée 'As Integer'</value>
+    <value>{0} '{1}' est déclarée 'As Integer'.</value>
   </data>
   <data name="EmptyWhileWendBlockInspection" xml:space="preserve">
     <value>Boucle 'While...Wend' n'exécute aucune instruction.</value>
   </data>
   <data name="EmptyIfBlockInspection" xml:space="preserve">
-    <value>Bloc 'If' n'exécute aucune instruction</value>
+    <value>Bloc 'If' n'exécute aucune instruction.</value>
   </data>
   <data name="OptionBaseZeroInspection" xml:space="preserve">
-    <value>Le module '{0}' spécifie 'Option Base 0'</value>
+    <value>Le module '{0}' spécifie 'Option Base 0'.</value>
   </data>
   <data name="EmptyDoWhileBlockInspection" xml:space="preserve">
     <value>Une boucle 'Do...While' vide, qui ne contient aucune instruction exécutable, laisse songeur quant aux intentions de l'auteur. Évitez d'écrire du code qui n'a pas besoin d'être écrit.</value>
@@ -292,13 +289,13 @@
     <value>L'annotation '{0}' est illégale dans ce contexte.</value>
   </data>
   <data name="RedundantOptionInspection" xml:space="preserve">
-    <value>'{0}' n'a aucun effet</value>
+    <value>'{0}' n'a aucun effet.</value>
   </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
-    <value>Le module ou membre '{0}' a l'annotation '{1}', mais pas l'attribut correspondant</value>
+    <value>Le module ou membre '{0}' a l'annotation '{1}', mais pas l'attribut correspondant.</value>
   </data>
   <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
-    <value>Valeur Booléenne littérale '{0}' assignée dans une structure conditionnelle.</value>
+    <value>Valeur Booléenne littérale '{0}' assignée dans une structure conditionnelle</value>
   </data>
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Le module/classe {0} est vide.</value>
@@ -310,13 +307,13 @@
     <value>Considérez l'utilisation de clause explicite 'As {0}' plutôt que '{1}'.</value>
   </data>
   <data name="StepOneIsRedundantInspection" xml:space="preserve">
-    <value>1 est la valeur d'incrémentation par défaut pour toute boucle 'For...Next'</value>
+    <value>1 est la valeur d'incrémentation par défaut pour toute boucle 'For...Next'.</value>
   </data>
   <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
-    <value>Clause 'Step' non spécifiée</value>
+    <value>Clause 'Step' non spécifiée.</value>
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
-    <value>Une feuille Excel </value>
+    <value>Une feuille Excel accessible statiquement peut être référée en utilisant son nom de code.</value>
   </data>
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>Une assignation est écrasée par une assignation subséquente, ou la valeur assignée n'est jamais utilisée.</value>
@@ -337,7 +334,7 @@
     <value>'IsMissing' reçoit une expression qui n'est pas l'un des paramètres de la procédure.</value>
   </data>
   <data name="ModuleWithoutFolderInspection" xml:space="preserve">
-    <value>Le module '{0}' n'a pas d'annotation '@Folder'</value>
+    <value>Le module '{0}' n'a pas d'annotation '@Folder'.</value>
   </data>
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
     <value>'{0}' est déclarée avec la convention d'appel 'CDecl'.</value>
@@ -376,25 +373,25 @@ Vous voyez ce résultat d'inspection parce qu'il n'y a aucune raison que ce soit
 In memoriam, 1972-2018</value>
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
-    <value>L'identifiant '{0}' comporte un espace insécable</value>
+    <value>L'identifiant '{0}' comporte un espace insécable.</value>
   </data>
   <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
-    <value>Le nom du membre '{0}' est un mot-clé</value>
+    <value>Le nom du membre '{0}' est un mot-clé.</value>
   </data>
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
-    <value>La boucle conditionelle 'While...Wend' pourrait être 'Do While...Loop'</value>
+    <value>La boucle conditionelle 'While...Wend' pourrait être 'Do While...Loop'.</value>
   </data>
   <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Le bloc sous la condition '{0}' est inatteignable</value>
+    <value>Le bloc sous la condition '{0}' est inatteignable.</value>
   </data>
   <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
-    <value>Le bloc 'Case Else' est inatteignable</value>
+    <value>Le bloc 'Case Else' est inatteignable.</value>
   </data>
   <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
     <value>L'expression du bloc 'Case' causera une erreur d'exécution 13 (type mismatch).</value>
   </data>
   <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
-    <value>Le bloc 'Case' est inatteignable</value>
+    <value>Le bloc 'Case' est inatteignable.</value>
   </data>
   <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
     <value>L'expression du bloc 'Case' causera une erreur d'exécution 6 (overflow).</value>
@@ -458,5 +455,17 @@ In memoriam, 1972-2018</value>
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Le résultat de l'expression '{1}' est assigné à celui de l'expression '{0}'.</value>
+  </data>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>La valeur renvoyée par la fonction '{0}' n'est jamais utilisée.</value>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>La valeur renvoyée par la fonction '{0}' est ignorée.</value>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>La constante '{0}' est implicitement typée.</value>
+  </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>L'annotation '{0}' demande moins d'arguments que ce qui est spécifié.</value>
   </data>
 </root>

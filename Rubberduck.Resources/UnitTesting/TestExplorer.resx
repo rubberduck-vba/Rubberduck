@@ -200,7 +200,7 @@
     <comment>Comment text.</comment>
   </data>
   <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
-    <value>this method runs before every test in the module</value>
+    <value>This method runs before every test in the module.</value>
     <comment>Comment text.</comment>
   </data>
   <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
@@ -350,5 +350,17 @@
   </data>
   <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
     <value>Unignore test</value>
+  </data>
+  <data name="TestExplorer_ContextMenuIgnoreGroup" xml:space="preserve">
+    <value>Ignore all tests in group</value>
+  </data>
+  <data name="TestExplorer_ContextMenuUnignoreGroup" xml:space="preserve">
+    <value>Unignore all tests in group</value>
+  </data>
+  <data name="TestExplorer_ContextMenuUnignoreSelectedTests" xml:space="preserve">
+    <value>Unignore selected tests</value>
+  </data>
+  <data name="TestExplorer_ContextMenuIgnoreSelectedTests" xml:space="preserve">
+    <value>Ignore selected tests</value>
   </data>
 </root>

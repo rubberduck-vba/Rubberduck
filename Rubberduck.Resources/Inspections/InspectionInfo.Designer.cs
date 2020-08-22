@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Inspections {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InspectionInfo {
@@ -277,11 +277,20 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A member is written as a function, but used as a procedure. Unless the function is recursive, consider converting the &apos;Function&apos; into a &apos;Sub&apos;. If the function is recursive, none of its external callers are using the returned value..
+        ///   Looks up a localized string similar to A member is written as a function, but always used as a procedure. Consider converting the &apos;Function&apos; into a &apos;Sub&apos;..
         /// </summary>
-        public static string FunctionReturnValueNotUsedInspection {
+        public static string FunctionReturnValueAlwaysDiscardedInspection {
             get {
-                return ResourceManager.GetString("FunctionReturnValueNotUsedInspection", resourceCulture);
+                return ResourceManager.GetString("FunctionReturnValueAlwaysDiscardedInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The return value of a function gets discarded, i.e. the function is used like a &apos;Sub&apos; procedure. This is either an oversight or the function is used for its side-effects, whose existence would also be a code smell..
+        /// </summary>
+        public static string FunctionReturnValueDiscardedInspection {
+            get {
+                return ResourceManager.GetString("FunctionReturnValueDiscardedInspection", resourceCulture);
             }
         }
         
@@ -354,6 +363,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ImplicitDefaultMemberAccessInspection {
             get {
                 return ResourceManager.GetString("ImplicitDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If the &apos;As&apos; type clause for a &apos;Const&apos; declaration isn&apos;t included it is implicitly typed. Include an explicit &apos; As &lt;Type&gt;&apos; replacing &apos;&lt;Type&gt;&apos; with the correct data type to explicitly type your constant value..
+        /// </summary>
+        public static string ImplicitlyTypedConstInspection {
+            get {
+                return ResourceManager.GetString("ImplicitlyTypedConstInspection", resourceCulture);
             }
         }
         
@@ -529,7 +547,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Modules without the &apos;@Folder&apos; annotation cannot receive custom groupings in the Code Explorer. .
+        ///   Looks up a localized string similar to Modules without the &apos;@Folder&apos; annotation cannot receive custom groupings in the Code Explorer..
         /// </summary>
         public static string ModuleWithoutFolderInspection {
             get {
@@ -858,6 +876,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string StopKeywordInspection {
             get {
                 return ResourceManager.GetString("StopKeywordInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An annotation has more arguments than allowed; superfluous arguments are ignored..
+        /// </summary>
+        public static string SuperfluousAnnotationArgumentInspection {
+            get {
+                return ResourceManager.GetString("SuperfluousAnnotationArgumentInspection", resourceCulture);
             }
         }
         

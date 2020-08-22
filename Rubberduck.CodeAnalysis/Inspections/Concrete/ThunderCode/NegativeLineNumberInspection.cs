@@ -1,17 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
-using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.ThunderCode
 {
     /// <summary hidden="true">
     /// A ThunderCode inspection that locates negative line numbers.
@@ -21,31 +16,23 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
     /// The VBE does allow rather strange and unbelievable things to happen.
     /// </why>
-    public class NegativeLineNumberInspection : ParseTreeInspectionBase
+    internal sealed class NegativeLineNumberInspection : ParseTreeInspectionBase<ParserRuleContext>
     {
-        public NegativeLineNumberInspection(RubberduckParserState state) : base(state)
+        public NegativeLineNumberInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            Listener = new NegativeLineNumberKeywordsListener();
+            ContextListener = new NegativeLineNumberKeywordsListener();
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IInspectionListener<ParserRuleContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            return Listener.Contexts.Select(c => new QualifiedContextInspectionResult(
-                this, InspectionResults.NegativeLineNumberInspection.ThunderCodeFormat(), c));
+            return InspectionResults.NegativeLineNumberInspection.ThunderCodeFormat();
         }
 
-        public override IInspectionListener Listener { get; }
-
-        public class NegativeLineNumberKeywordsListener : VBAParserBaseListener, IInspectionListener
+        private class NegativeLineNumberKeywordsListener : InspectionListenerBase<ParserRuleContext>
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public void ClearContexts() => _contexts.Clear();
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
             public override void EnterOnErrorStmt(VBAParser.OnErrorStmtContext context)
             {
                 CheckContext(context, context.expression());
@@ -69,7 +56,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
                 var target = expression?.GetText().Trim() ?? string.Empty;
                 if (target.StartsWith("-") && int.TryParse(target.Substring(1), out _))
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    SaveContext(context);
                 }
             }
         }

@@ -2,10 +2,9 @@
 using System.Threading;
 using NUnit.Framework;
 using Moq;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete.Refactoring;
 using RubberduckTests.Mocks;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.VBEditor;
@@ -55,8 +54,7 @@ End Sub
 ";
 
             const string expectedCode =
-                @"
-Public Sub Foo()
+                @"Public Sub Foo()
     Dim bar As String
     If bar = ""test"" Then Baz Else Foobar
 End Sub
@@ -84,8 +82,7 @@ Public Sub Foo()
 End Sub";
 
             const string expectedCode =
-                @"
-Public Sub Foo()
+                @"Public Sub Foo()
     Dim bar As String
     If True Then bar = ""test""
 End Sub";
@@ -106,8 +103,7 @@ Public Sub Foo()
 End Sub";
 
             const string expectedCode =
-                @"
-Public Sub Foo()
+                @"Public Sub Foo()
     Dim bar As String
     If True Then Else bar = ""test""
 End Sub";
@@ -128,7 +124,8 @@ End Sub";
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
                 var selectionService = MockedSelectionService();
                 var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-                var refactoring = new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService, selectedDeclarationProvider);
+                var baseRefactoring = new MoveCloserToUsageRefactoringAction(rewritingManager);
+                var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
                 var quickFix = new MoveFieldCloserToUsageQuickFix(refactoring);
 
                 quickFix.Fix(resultToFix, rewriteSession);

@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags publicly exposed instance fields.
@@ -17,12 +13,15 @@ namespace Rubberduck.Inspections.Concrete
     /// Instance fields are the implementation details of a object's internal state; exposing them directly breaks encapsulation. 
     /// Often, an object only needs to expose a 'Get' procedure to expose an internal instance field.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Foo As Long
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private internalFoo As Long
     /// 
@@ -30,26 +29,25 @@ namespace Rubberduck.Inspections.Concrete
     ///     Foo = internalFoo
     /// End Property
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class EncapsulatePublicFieldInspection : InspectionBase
+    internal sealed class EncapsulatePublicFieldInspection : DeclarationInspectionBase
     {
-        public EncapsulatePublicFieldInspection(RubberduckParserState state)
-            : base(state) { }
+        public EncapsulatePublicFieldInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Variable)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            // we're creating a public field for every control on a form, needs to be ignored.
-            var fields = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(item => item.DeclarationType != DeclarationType.Control
-                               && (item.Accessibility == Accessibility.Public ||
-                                   item.Accessibility == Accessibility.Global))
-                .ToList();
+            // we're creating a public field for every control on a form, needs to be ignored
+            return declaration.DeclarationType != DeclarationType.Control
+                   && (declaration.Accessibility == Accessibility.Public
+                   || declaration.Accessibility == Accessibility.Global);
+        }
 
-            return fields
-                .Select(issue => new DeclarationInspectionResult(this,
-                                                      string.Format(InspectionResults.EncapsulatePublicFieldInspection, issue.IdentifierName),
-                                                      issue))
-                .ToList();
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.EncapsulatePublicFieldInspection, declaration.IdentifierName);
         }
     }
 }

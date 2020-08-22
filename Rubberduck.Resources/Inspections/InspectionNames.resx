@@ -148,10 +148,10 @@
     <value>Member return type is implicitly 'Variant'</value>
   </data>
   <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
-    <value>Scope of variable is broader than it needs to be</value>
+    <value>Scope of variable is broader than it needs to be.</value>
   </data>
   <data name="MultilineParameterInspection" xml:space="preserve">
-    <value>Parameter declaration is split on multiple lines</value>
+    <value>Parameter declaration is split on multiple lines.</value>
   </data>
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Multiple declarations in single instruction</value>
@@ -175,22 +175,22 @@
     <value>Obsolete Type hint usage</value>
   </data>
   <data name="OptionBaseInspection" xml:space="preserve">
-    <value>'Option Base 1' is specified</value>
+    <value>'Option Base 1' is specified.</value>
   </data>
   <data name="OptionExplicitInspection" xml:space="preserve">
-    <value>'Option Explicit' is not specified</value>
+    <value>'Option Explicit' is not specified.</value>
   </data>
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
-    <value>Parameter can be passed by value</value>
+    <value>Parameter can be passed by value.</value>
   </data>
   <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Parameter is not referred to</value>
+    <value>Parameter is not referred to.</value>
   </data>
   <data name="ProcedureNotUsedInspection" xml:space="preserve">
-    <value>Procedure is not referred to</value>
+    <value>Procedure is not referred to.</value>
   </data>
   <data name="UnassignedVariableUsageInspection" xml:space="preserve">
-    <value>Variable is used but not assigned</value>
+    <value>Variable is used but not assigned.</value>
   </data>
   <data name="UntypedFunctionUsageInspection" xml:space="preserve">
     <value>Use of variant-returning string function</value>
@@ -199,10 +199,10 @@
     <value>Use meaningful names</value>
   </data>
   <data name="VariableNotAssignedInspection" xml:space="preserve">
-    <value>Variable is not assigned</value>
+    <value>Variable is not assigned.</value>
   </data>
   <data name="VariableNotUsedInspection" xml:space="preserve">
-    <value>Variable is not referred to</value>
+    <value>Variable is not referred to.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>Implicitly 'Variant' variable</value>
@@ -211,16 +211,16 @@
     <value>Write-only property</value>
   </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
-    <value>Procedure can be written as a function</value>
+    <value>Procedure can be written as a function.</value>
   </data>
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
-    <value>Object variable reference is auto-instantiated</value>
+    <value>Object variable reference is auto-instantiated.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>Function return value is never used</value>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>Function return value is always discarded.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
-    <value>Object variable assignment requires 'Set' keyword</value>
+    <value>Object variable assignment requires 'Set' keyword.</value>
   </data>
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
     <value>Missing annotation parameter</value>
@@ -301,7 +301,7 @@
     <value>Use of obsolete 'Error' statement</value>
   </data>
   <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Case Clause(s) cannot be reached</value>
+    <value>Case Clause(s) cannot be reached.</value>
   </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Unhandled 'On Error Resume Next'</value>
@@ -361,23 +361,23 @@
     <value>Missing module annotation</value>
   </data>
   <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
-    <value>ThunderCode 1</value>
-    <comment>meta easter egg; do not translate</comment>
+    <value>Keyword used as member name</value>
+    
   </data>
   <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
-    <value>ThunderCode 10</value>
-    <comment>meta easter egg; do not translate</comment>
+    <value>Line continuation between keywords</value>
+    
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
-    <value>ThunderCode 11</value>
-    <comment>meta easter egg; do not translate</comment>
+    <value>Identifier containing a non-breaking space</value>
+    
   </data>
   <data name="NegativeLineNumberInspection" xml:space="preserve">
-    <value>ThunderCode 100</value>
-    <comment>meta easter egg; do not translate</comment>
+    <value>Negative line number</value>
+    
   </data>
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
-    <value>ThunderCode 101</value>
+    <value>OnErrorGoto -1</value>
     <comment>meta easter egg; do not translate</comment>
   </data>
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
@@ -436,5 +436,14 @@
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Suspicious Let assignment</value>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>Function return value gets discarded.</value>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Implicitly typed Const</value>
+  </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>Superfluous annotation arguments</value>
   </data>
 </root>

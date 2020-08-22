@@ -1,7 +1,4 @@
 codecov:
-  branch: next
-  ci:
-    - appveyor
   max_report_age: off
   
 ignore:
@@ -19,10 +16,19 @@ coverage:
   precision: 2
   range: 40..80 
   status:
-    # don't check patch coverage
-    patch: off
+    # status information for PRs only
+    only_pulls: true
+    patch: 
+      default:
+        # don't block mindlessly on coverage failures
+        informational: true
+        # strongly suggest more than 60% of changes be covered
+        target: 60
+        threshold: 10
     project:
       default:
+        # don't block mindlessly on coverage failures
+        informational: true
         target: 0 # don't force a minimum coverage
         # allow decrease by up to 5 %
         threshold: 5
@@ -31,4 +37,6 @@ coverage:
 comment:
   layout: "flags, diff, files"
   behavior: once
-  require_changes: yes
+  require_head: no
+  require_base: no
+  

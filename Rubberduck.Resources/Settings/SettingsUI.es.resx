@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ConfirmResetSettings" xml:space="preserve">
-    <value>¿Restablecer la configuración a la configuración predeterminada?</value>
+    <value>¿Restablecer los ajustes a la configuración predeterminada?</value>
   </data>
   <data name="DialogCaption_LoadAutocompletionSettings" xml:space="preserve">
     <value>Cargar ajustes de autocompletado</value>
@@ -130,37 +130,37 @@
     <value>Cargar ajustes de indentador</value>
   </data>
   <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
-    <value>Configuraciones de inspección de carga</value>
+    <value>Cargar ajustes de inspección</value>
   </data>
   <data name="DialogCaption_LoadToDoSettings" xml:space="preserve">
-    <value>Cargar configuración de lista de tareas pendientes</value>
+    <value>Cargar ajustes de la lista TODO</value>
   </data>
   <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
-    <value>Configuración de prueba de unidad de carga</value>
+    <value>Cargar ajustes de prueba unitaria</value>
   </data>
   <data name="DialogCaption_LoadWindowSettings" xml:space="preserve">
     <value>Cargar ajustes de ventana</value>
   </data>
   <data name="DialogCaption_SaveAutocompletionSettings" xml:space="preserve">
-    <value>Guardar configuraciones de autocompletado</value>
+    <value>Guardar ajustes de autocompletado</value>
   </data>
   <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
-    <value>Guardar configuración general</value>
+    <value>Guardar ajustes generales</value>
   </data>
   <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
-    <value>Guardar la configuración del indentador</value>
+    <value>Guardar ajustes del indentador</value>
   </data>
   <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
-    <value>Guardar configuración de inspección</value>
+    <value>Guardar ajustes de inspección</value>
   </data>
   <data name="DialogCaption_SaveToDoSettings" xml:space="preserve">
-    <value>Guardar la configuración de la lista de tareas</value>
+    <value>Guardar ajustes de la lista TODO</value>
   </data>
   <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
-    <value>Guardar la configuración de prueba de la unidad</value>
+    <value>Guardar ajustes de prueba unitaria</value>
   </data>
   <data name="DialogCaption_SaveWindowSettings" xml:space="preserve">
-    <value>Guardar configuración de ventana</value>
+    <value>Guardar ajustes de ventana</value>
   </data>
   <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
     <value>Archivo XML (.xml)|*.xml|Archivo de configuración de Rubberduck|*.config</value>
@@ -172,37 +172,37 @@
     <value>Importar</value>
   </data>
   <data name="PageHeader_AutoCompleteSettings" xml:space="preserve">
-    <value>Configuración de autocompletado</value>
+    <value>Ajustes de autocompletado</value>
   </data>
   <data name="PageHeader_GeneralSettings" xml:space="preserve">
-    <value>Configuración general</value>
+    <value>Ajustes generales</value>
   </data>
   <data name="PageHeader_IndenterSettings" xml:space="preserve">
-    <value>Configuraciones de indentador</value>
+    <value>Ajustes del indentador</value>
   </data>
   <data name="PageHeader_InspectionSettings" xml:space="preserve">
-    <value>Configuración de inspección de código</value>
+    <value>Ajustes de inspección de código</value>
   </data>
   <data name="PageHeader_ReferenceSettings" xml:space="preserve">
     <value>Ajustes de referencia</value>
   </data>
   <data name="PageHeader_TodoSettings" xml:space="preserve">
-    <value>TODO ajustes</value>
+    <value>Ajustes de TODO</value>
   </data>
   <data name="PageHeader_UnitTestSettings" xml:space="preserve">
     <value>Ajustes de prueba unitaria</value>
   </data>
   <data name="PageHeader_WindowSettings" xml:space="preserve">
-    <value>Configuraciones de ventana</value>
+    <value>Ajustes de ventana</value>
   </data>
   <data name="PageInstructions_AutoCompleteSettings" xml:space="preserve">
     <value>Configurar qué autocompletaciones están habilitadas.</value>
   </data>
   <data name="PageInstructions_GeneralSettings" xml:space="preserve">
-    <value>Haga clic en [Ok] para cerrar la ventana y aplicar los cambios, o [Cancelar] para descartarlos.</value>
+    <value>Haga clic en [{0}] para cerrar la ventana y aplicar los cambios, o [{1}] para descartarlos.</value>
   </data>
   <data name="PageInstructions_IndenterSettings" xml:space="preserve">
-    <value>Configure los ajustes del indentador.</value>
+    <value>Configurar los ajustes del indentador.</value>
   </data>
   <data name="PageInstructions_InspectionSettings" xml:space="preserve">
     <value>Configurar la severidad de la inspección. Utilice "DoNotShow" para deshabilitar una inspección.</value>
@@ -214,7 +214,7 @@
     <value>Configurar marcadores para ser reconocidos en los comentarios.</value>
   </data>
   <data name="PageInstructions_UnitTestSettings" xml:space="preserve">
-    <value>Configure los ajustes para nuevos módulos y métodos de prueba de unidad.</value>
+    <value>Configure los ajustes para nuevos módulos y métodos de prueba unitaria.</value>
   </data>
   <data name="PageInstructions_WindowSettings" xml:space="preserve">
     <value>Configure los ajustes para la visibilidad de la ventana.</value>
@@ -227,5 +227,8 @@
   </data>
   <data name="Settings_Caption" xml:space="preserve">
     <value>Ajustes de Rubberduck</value>
+  </data>
+  <data name="HotKeys_Exclamation" xml:space="preserve">
+    <value>¡Atención! ¡Sin modificador!</value>
   </data>
 </root>

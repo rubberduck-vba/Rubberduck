@@ -195,8 +195,8 @@
   <data name="SetObjectVariableQuickFix" xml:space="preserve">
     <value>Use 'Set' keyword</value>
   </data>
-  <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
-    <value>Add property get accessor</value>
+  <data name="IntroduceGetAccessorQuickFix" xml:space="preserve">
+    <value>Add 'Property Get' accessor</value>
   </data>
   <data name="ChangeDimToPrivateQuickFix" xml:space="preserve">
     <value>Replace 'Dim' with 'Private'</value>
@@ -296,5 +296,8 @@
   </data>
   <data name="ExpandDefaultMemberQuickFix" xml:space="preserve">
     <value>Make default member access explicit</value>
+  </data>
+  <data name="IgnoreInModuleQuickFix" xml:space="preserve">
+    <value>Ignore in module</value>
   </data>
 </root>

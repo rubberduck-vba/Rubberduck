@@ -1,17 +1,11 @@
 ﻿using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Common;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Resources.Experimentals;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies empty 'Case' blocks that can be safely removed.
@@ -19,7 +13,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Case blocks in VBA do not "fall through"; an empty 'Case' block might be hiding a bug.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Select Case foo
@@ -29,8 +24,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     End Select
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Select Case foo
@@ -41,25 +38,24 @@ namespace Rubberduck.Inspections.Concrete
     ///     End Select
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal class EmptyCaseBlockInspection : ParseTreeInspectionBase
+    internal sealed class EmptyCaseBlockInspection : EmptyBlockInspectionBase<VBAParser.CaseClauseContext>
     {
-        public EmptyCaseBlockInspection(RubberduckParserState state)
-            : base(state) { }
-
-        public override IInspectionListener Listener { get; } =
-            new EmptyCaseBlockListener();
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        public EmptyCaseBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            return Listener.Contexts
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionResults.EmptyCaseBlockInspection,
-                                                        result));
+            ContextListener = new EmptyCaseBlockListener();
         }
 
-        public class EmptyCaseBlockListener : EmptyBlockInspectionListenerBase
+        protected override IInspectionListener<VBAParser.CaseClauseContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.CaseClauseContext> context)
+        {
+            return InspectionResults.EmptyCaseBlockInspection;
+        }
+
+        private class EmptyCaseBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterCaseClause([NotNull] VBAParser.CaseClauseContext context)
             {

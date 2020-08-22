@@ -1,9 +1,10 @@
 ﻿using System.Linq;
 using NUnit.Framework;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -382,7 +383,7 @@ End Function
                 ("Module1", moduleCode, ComponentType.StandardModule),
             };
 
-            Assert.IsFalse(InspectionResultsForModules(modules, "VBA").Any());
+            Assert.IsFalse(InspectionResultsForModules(modules, ReferenceLibrary.VBA).Any());
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)

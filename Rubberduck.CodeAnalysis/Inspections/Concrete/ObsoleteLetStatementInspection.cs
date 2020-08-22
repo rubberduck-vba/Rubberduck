@@ -1,17 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Locates explicit 'Let' assignments.
@@ -19,55 +12,48 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// The legacy syntax is obsolete/redundant; prefer implicit Let-coercion instead.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
     ///     Let foo = 42 ' explicit Let is redundant
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
     ///     foo = 42 ' [Let] is implicit
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ObsoleteLetStatementInspection : ParseTreeInspectionBase
+    internal sealed class ObsoleteLetStatementInspection : ParseTreeInspectionBase<VBAParser.LetStmtContext>
     {
-        public ObsoleteLetStatementInspection(RubberduckParserState state)
-            : base(state)
+        public ObsoleteLetStatementInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            Listener = new ObsoleteLetStatementListener();
+            ContextListener = new ObsoleteLetStatementListener();
         }
         
-        public override IInspectionListener Listener { get; }
+        protected override IInspectionListener<VBAParser.LetStmtContext> ContextListener { get; }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<VBAParser.LetStmtContext> context)
         {
-            return Listener.Contexts
-                .Select(context => new QualifiedContextInspectionResult(this, InspectionResults.ObsoleteLetStatementInspection, context));
+            return InspectionResults.ObsoleteLetStatementInspection;
         }
 
-        public class ObsoleteLetStatementListener : VBAParserBaseListener, IInspectionListener
+        private class ObsoleteLetStatementListener : InspectionListenerBase<VBAParser.LetStmtContext>
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
             public override void ExitLetStmt(VBAParser.LetStmtContext context)
             {
                 if (context.LET() != null)
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                   SaveContext(context);
                 }
             }
         }

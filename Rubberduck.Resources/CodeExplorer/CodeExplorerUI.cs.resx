@@ -232,7 +232,7 @@
     <value>Seskupit podle Typu</value>
   </data>
   <data name="CodeExplorer_Add" xml:space="preserve">
-    <value>Přidat</value>
+    <value>Přidat...</value>
   </data>
   <data name="ExportBeforeRemove_Caption" xml:space="preserve">
     <value>Potvrdit Export</value>
@@ -259,7 +259,7 @@
     <value>Form (.frm)</value>
   </data>
   <data name="CodeExplorer_Rename" xml:space="preserve">
-    <value>Přejmenovat</value>
+    <value>Přejmenovat...</value>
   </data>
   <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
     <value>Startovací projekt</value>
@@ -317,7 +317,7 @@ Pokračovat?</value>
     <value>Rubberduck: Uživatelské Deklarace - {0}</value>
   </data>
   <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
-    <value>Extrahovat Interface</value>
+    <value>Extrahovat Interface...</value>
   </data>
   <data name="SyncProject" xml:space="preserve">
     <value>Synchronizovat Projekt</value>
@@ -327,5 +327,11 @@ Pokračovat?</value>
   </data>
   <data name="ReplaceFromFiles" xml:space="preserve">
     <value>Nahradit Obsahy ze Souborů...</value>
+  </data>
+  <data name="CodeExplorer_MoveToFolder" xml:space="preserve">
+    <value>Přesunout do složky...</value>
+  </data>
+  <data name="CodeExplorer_Annotate" xml:space="preserve">
+    <value>Okomentovat</value>
   </data>
 </root>

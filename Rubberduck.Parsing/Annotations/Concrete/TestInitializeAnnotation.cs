@@ -1,16 +1,30 @@
-﻿using Rubberduck.VBEditor;
-using System.Collections.Generic;
-using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.Parsing.Annotations;
 
-namespace Rubberduck.Parsing.Annotations
+namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
-    /// Marks a method that the test engine will execute before executing each unit test in a test module.
+    /// @TestInitialize annotation, marks a procedure that Rubberduck executes once before running each of the tests in a module.
     /// </summary>
-    public sealed class TestInitializeAnnotation : AnnotationBase
+    /// <example>
+    /// <module name="TestModule1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// '@TestModule
+    /// 
+    /// '...
+    /// Private SUT As Class1
+    /// 
+    /// '@TestInitialize
+    /// Private Sub TestInitialize()
+    ///     Set SUT = New Class1
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    public sealed class TestInitializeAnnotation : AnnotationBase, ITestAnnotation
     {
         public TestInitializeAnnotation()
             : base("TestInitialize", AnnotationTarget.Member)
-        { }
+        {}
     }
 }

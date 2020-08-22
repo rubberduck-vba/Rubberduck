@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.UnitTesting {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class TestExplorer {
@@ -124,6 +124,24 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore all tests in group.
+        /// </summary>
+        public static string TestExplorer_ContextMenuIgnoreGroup {
+            get {
+                return ResourceManager.GetString("TestExplorer_ContextMenuIgnoreGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore selected tests.
+        /// </summary>
+        public static string TestExplorer_ContextMenuIgnoreSelectedTests {
+            get {
+                return ResourceManager.GetString("TestExplorer_ContextMenuIgnoreSelectedTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run all tests.
         /// </summary>
         public static string TestExplorer_ContextMenuRunAll {
@@ -156,6 +174,24 @@ namespace Rubberduck.Resources.UnitTesting {
         public static string TestExplorer_ContextMenuRunSingle {
             get {
                 return ResourceManager.GetString("TestExplorer_ContextMenuRunSingle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unignore all tests in group.
+        /// </summary>
+        public static string TestExplorer_ContextMenuUnignoreGroup {
+            get {
+                return ResourceManager.GetString("TestExplorer_ContextMenuUnignoreGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unignore selected tests.
+        /// </summary>
+        public static string TestExplorer_ContextMenuUnignoreSelectedTests {
+            get {
+                return ResourceManager.GetString("TestExplorer_ContextMenuUnignoreSelectedTests", resourceCulture);
             }
         }
         
@@ -664,7 +700,7 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to this method runs before every test in the module.
+        ///   Looks up a localized string similar to This method runs before every test in the module..
         /// </summary>
         public static string UnitTest_NewModule_RunBeforeTest {
             get {

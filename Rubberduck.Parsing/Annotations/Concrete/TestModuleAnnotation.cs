@@ -1,19 +1,28 @@
-﻿using Rubberduck.VBEditor;
-using System.Collections.Generic;
-using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.Parsing.Annotations;
 
-namespace Rubberduck.Parsing.Annotations
+namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
-    /// Marks a module that the test engine treat as a test module.
+    /// @TestModule annotation, marks a module for unit test discovery.
     /// </summary>
     /// <remarks>
-    /// Unit test discovery only inspects modules with a <c>@TestModule</c> annotation.
+    /// Rubberduck only scans modules with this annotation when discovering unit tests in a project.
     /// </remarks>
+    /// <example>
+    /// <module name="TestModule1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// '@TestModule
+    /// 
+    /// Private Assert As Rubberduck.AssertClass
+    /// '...
+    /// ]]>
+    /// </module>
+    /// </example>
     public sealed class TestModuleAnnotation : AnnotationBase
     {
         public TestModuleAnnotation()
             : base("TestModule", AnnotationTarget.Module)
-        { }
+        {}
     }
 }

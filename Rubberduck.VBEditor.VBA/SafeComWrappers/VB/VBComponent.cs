@@ -95,14 +95,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// Exports the component to the folder. The file name matches the component name and file extension is based on the component's type.
         /// </summary>
         /// <param name="folder">Destination folder for the resulting source file.</param>
-        /// <param name="tempFile">True if a unique temp file name should be generated. WARNING: filenames generated with this flag are not persisted.</param>
+        /// <param name="isTempFile">True if a unique temp file name should be generated. WARNING: filenames generated with this flag are not persisted.</param>
         /// <param name="specialCaseDocumentModules">If reimport of a document file is required later, it has to receive special treatment.</param>
-        public string ExportAsSourceFile(string folder, bool tempFile = false, bool specialCaseDocumentModules = true)
+        public string ExportAsSourceFile(string folder, bool isTempFile = false, bool specialCaseDocumentModules = true)
         {
             //TODO: this entire thign needs to be reworked. IO is not the class' concern.
             //We probably need to leverage IPersistancePathProvider? ITempSourceFileHandler? 
             //Just not here.
-            var fullPath = tempFile
+            var fullPath = isTempFile
                 ? Path.Combine(folder, Path.GetRandomFileName())
                 : Path.Combine(folder, SafeName + Type.FileExtension());
 
@@ -160,7 +160,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
             var tempFile = ExportToTempFile();
             var tempFilePath = Directory.GetParent(tempFile).FullName;
-            var fileEncoding = System.Text.Encoding.Default;    //We use the current ANSI codepage because that is what the VBE does.
+            var fileEncoding = Encoding.Default;    //We use the current ANSI codepage because that is what the VBE does.
             var contents = File.ReadAllLines(tempFile, fileEncoding);
             var nonAttributeLines = contents.TakeWhile(line => !line.StartsWith("Attribute")).Count();
             var attributeLines = contents.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();

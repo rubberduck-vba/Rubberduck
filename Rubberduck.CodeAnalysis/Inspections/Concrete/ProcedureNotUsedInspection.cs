@@ -1,53 +1,130 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
-using Rubberduck.JunkDrawer.Extensions;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Locates procedures that are never invoked from user code.
     /// </summary>
     /// <why>
     /// Unused procedures are dead code that should probably be removed. Note, a procedure may be effectively "not used" in code, but attached to some
-    /// Shape object in the host document: in such cases the inspection result should be ignored. An event handler procedure that isn't being
-    /// resolved as such, may also wrongly trigger this inspection.
+    /// Shape object in the host document: in such cases the inspection result should be ignored.
     /// </why>
     /// <remarks>
     /// Not all unused procedures can/should be removed: ignore any inspection results for 
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
+    /// Public procedures of Standard Modules are not flagged by this inspection regardless of
+    /// the presence or absence of user code references.
     /// </remarks>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Private Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="false">
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// '@Ignore ProcedureNotUsed
+    /// Private Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="false">
+    /// <module name="Macros" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
     /// Public Sub DoSomething()
-    ///     ' macro is attached to a worksheet Shape.
+    ///     'a public procedure in a standard module may be a macro 
+    ///     'attached to a worksheet Shape or invoked by means other than user code.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="true">
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
-    ///
-    /// '@Ignore ProcedureNotUsed
+    /// 
     /// Public Sub DoSomething()
-    ///     ' macro is attached to a worksheet Shape.
+    /// End Sub
+    /// 
+    /// Public Sub DoSomethingElse()
     /// End Sub
     /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub ReferenceOneClass1Procedure()
+    ///     Dim target As Class1
+    ///     Set target = new Class1
+    ///     target.DoSomething
+    /// End Sub
+    /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ProcedureNotUsedInspection : InspectionBase
+    /// <example hasResult="false">
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// 
+    /// Public Sub DoSomethingElse()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub ReferenceAllClass1Procedures()
+    ///     Dim target As Class1
+    ///     Set target = new Class1
+    ///     target.DoSomething
+    ///     target.DoSomethingElse
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    internal sealed class ProcedureNotUsedInspection : DeclarationInspectionBase
     {
-        public ProcedureNotUsedInspection(RubberduckParserState state) : base(state) { }
+        public ProcedureNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, ProcedureTypes)
+        {}
+
+        private static readonly DeclarationType[] ProcedureTypes =
+        {
+            DeclarationType.Procedure,
+            DeclarationType.Function,
+            DeclarationType.LibraryProcedure,
+            DeclarationType.LibraryFunction,
+            DeclarationType.Event
+        };
+
+        private static readonly string[] ClassLifeCycleHandlers =
+        {
+            "Class_Initialize",
+            "Class_Terminate"
+        };
 
         private static readonly string[] DocumentEventHandlerPrefixes =
         {
@@ -59,59 +136,26 @@ namespace Rubberduck.Inspections.Concrete
             "Session_"
         };
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var classes = State.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule)
-                .Concat(State.DeclarationFinder.UserDeclarations(DeclarationType.Document))
-                .ToList(); 
-            var modules = State.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).ToList();
-
-            var handlers = State.DeclarationFinder.FindEventHandlers().ToHashSet();
-
-            var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToHashSet();
-            var implementingMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers().ToHashSet();
-
-            var items = State.AllUserDeclarations
-                .Where(item => !IsIgnoredDeclaration(item, interfaceMembers, implementingMembers, handlers, classes, modules))
-                .ToList();
-            var issues = items.Select(issue => new DeclarationInspectionResult(this,
-                                                                    string.Format(InspectionResults.IdentifierNotUsedInspection, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
-                                                                    issue));
-
-            issues = DocumentEventHandlerPrefixes
-                .Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains($"'{item}")));
-
-            return issues.ToList();
-        }
-
-        private static readonly DeclarationType[] ProcedureTypes =
-        {
-            DeclarationType.Procedure,
-            DeclarationType.Function,
-            DeclarationType.LibraryProcedure,
-            DeclarationType.LibraryFunction,
-            DeclarationType.Event
-        };
-
-        private bool IsIgnoredDeclaration(Declaration declaration, IEnumerable<Declaration> interfaceMembers, IEnumerable<Declaration> interfaceImplementingMembers , IEnumerable<Declaration> handlers, IEnumerable<Declaration> classes, IEnumerable<Declaration> modules)
-        {
-            var enumerable = classes as IList<Declaration> ?? classes.ToList();
-            var result = !ProcedureTypes.Contains(declaration.DeclarationType)
-                || declaration.References.Any(r => !r.IsAssignment && !r.ParentScoping.Equals(declaration)) // recursive calls don't count
-                || handlers.Contains(declaration)
-                || IsPublicModuleMember(modules, declaration)
-                || IsClassLifeCycleHandler(enumerable, declaration)
-                || interfaceMembers.Contains(declaration)
-                || interfaceImplementingMembers.Contains(declaration);
-
-            return result;
+            return !declaration.References
+                       .Any(reference => !reference.ParentScoping.Equals(declaration)) // ignore recursive/self-referential calls
+                   && !finder.FindEventHandlers().Contains(declaration)
+                   && !IsPublicModuleMember(declaration)
+                   && !IsClassLifeCycleHandler(declaration)
+                   && !(declaration is ModuleBodyElementDeclaration member 
+                        && (member.IsInterfaceMember 
+                            || member.IsInterfaceImplementation))
+                   && !declaration.Annotations
+                       .Any(pta => pta.Annotation is ITestAnnotation) 
+                   && !IsDocumentEventHandler(declaration);
         }
 
         /// <remarks>
         /// We cannot determine whether exposed members of standard modules are called or not,
         /// so we assume they are instead of flagging them as "never called".
         /// </remarks>
-        private bool IsPublicModuleMember(IEnumerable<Declaration> modules, Declaration procedure)
+        private static bool IsPublicModuleMember(Declaration procedure)
         {
             if ((procedure.Accessibility != Accessibility.Implicit
                  && procedure.Accessibility != Accessibility.Public))
@@ -119,30 +163,38 @@ namespace Rubberduck.Inspections.Concrete
                 return false;
             }
 
-            var parent = modules.Where(item => item.ProjectId == procedure.ProjectId)
-                        .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
-
-            return parent != null;
+            var parent = Declaration.GetModuleParent(procedure);
+            return parent != null 
+                   && parent.DeclarationType.HasFlag(DeclarationType.ProceduralModule);
         }
 
-        // TODO: Put this into grammar?
-        private static readonly string[] ClassLifeCycleHandlers =
-        {
-            "Class_Initialize",
-            "Class_Terminate"
-        };
-
-        private bool IsClassLifeCycleHandler(IEnumerable<Declaration> classes, Declaration procedure)
+        private static bool IsClassLifeCycleHandler(Declaration procedure)
         {
             if (!ClassLifeCycleHandlers.Contains(procedure.IdentifierName))
             {
                 return false;
             }
 
-            var parent = classes.Where(item => item.ProjectId == procedure.ProjectId)
-                        .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
+            var parent = Declaration.GetModuleParent(procedure);
+            return parent != null 
+                   && parent.DeclarationType.HasFlag(DeclarationType.ClassModule);
+        }
 
-            return parent != null;
+        private static bool IsDocumentEventHandler(Declaration declaration)
+        {
+            var declarationName = declaration.IdentifierName;
+            return DocumentEventHandlerPrefixes
+                .Any(prefix => declarationName.StartsWith(prefix));
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType.ToLocalizedString();
+            var declarationName = declaration.IdentifierName;
+            return string.Format(
+                InspectionResults.IdentifierNotUsedInspection, 
+                declarationType, 
+                declarationName);
         }
     }
 }

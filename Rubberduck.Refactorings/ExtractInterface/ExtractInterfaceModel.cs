@@ -6,14 +6,24 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
+    public enum ClassInstancing
+    {
+        Private,
+        Public
+    }
+
     public class ExtractInterfaceModel : IRefactoringModel
     {
         public IDeclarationFinderProvider DeclarationFinderProvider { get; }
 
-        public Declaration TargetDeclaration { get; }
+        public ClassModuleDeclaration TargetDeclaration { get; }
         public string InterfaceName { get; set; }
         public ObservableCollection<InterfaceMember> Members { get; set; } = new ObservableCollection<InterfaceMember>();
         public IEnumerable<InterfaceMember> SelectedMembers => Members.Where(m => m.IsSelected);
+        public ClassInstancing InterfaceInstancing { get; set; }
+        public ClassInstancing ImplementingClassInstancing => TargetDeclaration.IsExposed 
+            ? ClassInstancing.Public 
+            : ClassInstancing.Private;
 
         public static readonly DeclarationType[] MemberTypes =
         {
@@ -24,7 +34,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             DeclarationType.PropertySet,
         };
 
-        public ExtractInterfaceModel(IDeclarationFinderProvider declarationFinderProvider, Declaration target)
+        public ExtractInterfaceModel(IDeclarationFinderProvider declarationFinderProvider, ClassModuleDeclaration target, ICodeBuilder codeBuilder)
         {
             TargetDeclaration = target;
             DeclarationFinderProvider = declarationFinderProvider;
@@ -35,11 +45,12 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
 
             InterfaceName = $"I{TargetDeclaration.IdentifierName}";
+            InterfaceInstancing = ImplementingClassInstancing;
 
-            LoadMembers();
+            LoadMembers(codeBuilder);
         }
 
-        private void LoadMembers()
+        private void LoadMembers(ICodeBuilder codeBuilder)
         {
             Members = new ObservableCollection<InterfaceMember>(DeclarationFinderProvider.DeclarationFinder
                 .Members(TargetDeclaration.QualifiedModuleName)
@@ -48,7 +59,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                     && MemberTypes.Contains(item.DeclarationType))
                 .OrderBy(o => o.Selection.StartLine)
                 .ThenBy(t => t.Selection.StartColumn)
-                .Select(d => new InterfaceMember(d))
+                .Select(d => new InterfaceMember(d, codeBuilder))
                 .ToList());
         }
     }

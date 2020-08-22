@@ -1,8 +1,8 @@
 using System.Linq;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
@@ -43,7 +43,7 @@ End Property
 Property Set Foo(value)
 End Property";
 
-            Assert.AreEqual(2, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule)).Count());
+            Assert.AreEqual(1, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule)).Count());
         }
 
         [Test]
@@ -72,6 +72,25 @@ Property Set Foo(value)
 End Property";
 
             Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule)).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void WriteOnlyProperty_ReturnsResult_GetInOtherModule()
+        {
+            const string classCode =
+                @"Property Let Foo(value)
+End Property";
+
+            const string otherClassCode =
+                @"Property Get Foo()
+End Property";
+
+            var inspectionResults = InspectionResultsForModules(
+                ("MyClass", classCode, ComponentType.ClassModule),
+                ("MyOtherClass", otherClassCode, ComponentType.ClassModule));
+
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [Test]

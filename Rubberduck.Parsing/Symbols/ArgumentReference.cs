@@ -9,7 +9,7 @@ namespace Rubberduck.Parsing.Symbols
 {
     public class ArgumentReference : IdentifierReference
     {
-        public ArgumentReference(
+        internal ArgumentReference(
             QualifiedModuleName qualifiedName,
             Declaration parentScopingDeclaration,
             Declaration parentNonScopingDeclaration,

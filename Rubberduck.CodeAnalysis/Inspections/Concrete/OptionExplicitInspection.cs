@@ -1,18 +1,14 @@
 using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags modules that omit Option Explicit.
@@ -21,7 +17,8 @@ namespace Rubberduck.Inspections.Concrete
     /// This option makes variable declarations mandatory. Without it, a typo gets compiled as a new on-the-spot Variant/Empty variable with a new name. 
     /// Omitting this option amounts to refusing the little help the VBE can provide with compile-time validation.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     ///
     /// 
@@ -29,8 +26,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -38,59 +37,63 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class OptionExplicitInspection : ParseTreeInspectionBase
+    internal sealed class OptionExplicitInspection : ParseTreeInspectionBase<VBAParser.ModuleContext>
     {
-        public OptionExplicitInspection(RubberduckParserState state)
-            : base(state)
+        public OptionExplicitInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            Listener = new MissingOptionExplicitListener();
+            ContextListener = new MissingOptionExplicitListener();
         }
 
-        public override IInspectionListener Listener { get; }
+        protected  override IInspectionListener<VBAParser.ModuleContext> ContextListener { get; }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultContext(QualifiedContext<VBAParser.ModuleContext> context, DeclarationFinder finder)
         {
-            return Listener.Contexts
-                .Select(context => new QualifiedContextInspectionResult(this,
-                    string.Format(InspectionResults.OptionExplicitInspection, context.ModuleName.ComponentName),
-                    context));
+            var moduleBody = context.Context.moduleBody();
+            return moduleBody != null && moduleBody.ChildCount != 0;
         }
 
-        public class MissingOptionExplicitListener : VBAParserBaseListener, IInspectionListener
+        protected override string ResultDescription(QualifiedContext<VBAParser.ModuleContext> context)
         {
-            private readonly IDictionary<string, QualifiedContext<ParserRuleContext>> _contexts = new Dictionary<string,QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts.Values.ToList();
+            var moduleName = context.ModuleName.ComponentName;
+            return string.Format(
+                InspectionResults.OptionExplicitInspection,
+                moduleName);
+        }
 
-            public QualifiedModuleName CurrentModuleName { get; set; }
+        private class MissingOptionExplicitListener : InspectionListenerBase<VBAParser.ModuleContext>
+        {
+            private readonly IDictionary<QualifiedModuleName, bool> _hasOptionExplicit = new Dictionary<QualifiedModuleName, bool>();
 
-            public void ClearContexts()
+            public override void ClearContexts()
             {
-                _contexts.Clear();
+                _hasOptionExplicit.Clear();
+                base.ClearContexts();
             }
 
-            public override void ExitModuleBody(VBAParser.ModuleBodyContext context)
+            public override void ClearContexts(QualifiedModuleName module)
             {
-                if (context.ChildCount == 0 && _contexts.ContainsKey(CurrentModuleName.Name))
-                {
-                    _contexts.Remove(CurrentModuleName.Name);
-                }
+                _hasOptionExplicit.Remove(module);
+                base.ClearContexts(module);
+            }
+
+            public override void EnterModuleDeclarations(VBAParser.ModuleDeclarationsContext context)
+            {
+                _hasOptionExplicit[CurrentModuleName] = false;
+            }
+
+            public override void ExitOptionExplicitStmt(VBAParser.OptionExplicitStmtContext context)
+            {
+                _hasOptionExplicit[CurrentModuleName] = true;
             }
 
             public override void ExitModuleDeclarations([NotNull] VBAParser.ModuleDeclarationsContext context)
             {
-                var hasOptionExplicit = false;
-                foreach (var element in context.moduleDeclarationsElement())
+                if (!_hasOptionExplicit.TryGetValue(CurrentModuleName, out var hasOptionExplicit) || !hasOptionExplicit)
                 {
-                    if (element.moduleOption() is VBAParser.OptionExplicitStmtContext)
-                    {
-                        hasOptionExplicit = true;
-                    }
-                }
-
-                if (!hasOptionExplicit)
-                {
-                    _contexts.Add(CurrentModuleName.Name, new QualifiedContext<ParserRuleContext>(CurrentModuleName, (ParserRuleContext)context.Parent));
+                    SaveContext((VBAParser.ModuleContext)context.Parent);
                 }
             }
         }

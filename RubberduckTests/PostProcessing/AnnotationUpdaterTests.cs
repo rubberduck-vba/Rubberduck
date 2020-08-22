@@ -2,9 +2,11 @@
 using System.Linq;
 using NUnit.Framework;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -52,7 +54,7 @@ End Sub
                 var fooDeclaration = state.DeclarationFinder
                     .UserDeclarations(DeclarationType.Procedure)
                     .First(decl => decl.IdentifierName == "Foo");
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.AddAnnotation(rewriteSession, fooDeclaration, annotationToAdd, annotationValues);
                 rewriteSession.TryRewrite();
@@ -64,7 +66,7 @@ End Sub
 
         [Test]
         [Category("AnnotationUpdater")]
-        public void AddAnnotationAddsModuleAnnotationAboveTheFirstLine()
+        public void AddAnnotationAddsModuleAnnotationAboveTheFirstLineForCodePaneRewriteSession()
         {
             const string inputCode =
                 @"'@PredeclaredId
@@ -106,7 +108,73 @@ End Sub
                 var moduleDeclaration = state.DeclarationFinder
                     .UserDeclarations(DeclarationType.ProceduralModule)
                     .First();
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
+
+                annotationUpdater.AddAnnotation(rewriteSession, moduleDeclaration, annotationToAdd, annotationValues);
+                rewriteSession.TryRewrite();
+
+                actualCode = component.CodeModule.Content();
+            }
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("AnnotationUpdater")]
+        public void AddAnnotationAddsModuleAnnotationBelowTheLastAttributeForAttributeRewriteSession()
+        {
+            const string inputCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""ClassKeys""
+Attribute VB_GlobalNameSpace = False
+'@PredeclaredId
+Option Explicit
+'@Folder ""folder""
+
+Private Sub FooBar() 
+End Sub
+
+
+'@Obsolete
+    Public Sub Foo(bar As String)
+        bar = vbNullString
+    End Sub
+";
+
+            const string expectedCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""ClassKeys""
+Attribute VB_GlobalNameSpace = False
+'@ModuleAttribute VB_Ext_Key, ""Key"", ""Value""
+'@PredeclaredId
+Option Explicit
+'@Folder ""folder""
+
+Private Sub FooBar() 
+End Sub
+
+
+'@Obsolete
+    Public Sub Foo(bar As String)
+        bar = vbNullString
+    End Sub
+";
+            var annotationToAdd = new ModuleAttributeAnnotation();
+            var annotationValues = new List<string> { "VB_Ext_Key", "\"Key\"", "\"Value\"" };
+
+            string actualCode;
+            var (component, rewriteSession, state) = TestSetup(inputCode, ComponentType.ClassModule, CodeKind.AttributesCode);
+            using (state)
+            {
+                var moduleDeclaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.ClassModule)
+                    .First();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.AddAnnotation(rewriteSession, moduleDeclaration, annotationToAdd, annotationValues);
                 rewriteSession.TryRewrite();
@@ -153,7 +221,7 @@ End Sub
                 var fooDeclaration = state.DeclarationFinder
                     .UserDeclarations(DeclarationType.Procedure)
                     .First(decl => decl.IdentifierName == "Foo");
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.AddAnnotation(rewriteSession, fooDeclaration, annotationToAdd, annotationValues);
                 rewriteSession.TryRewrite();
@@ -206,7 +274,7 @@ End Sub
                 var moduleDeclaration = state.DeclarationFinder
                     .UserDeclarations(DeclarationType.ProceduralModule)
                     .First();
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.AddAnnotation(rewriteSession, moduleDeclaration, annotationToAdd, annotationValues);
                 rewriteSession.TryRewrite();
@@ -265,7 +333,7 @@ End Sub
                     .UserDeclarations(DeclarationType.Procedure)
                     .First(decl => decl.IdentifierName == "Foo")
                     .References.First();
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.AddAnnotation(rewriteSession, fooReference, annotationToAdd, annotationValues);
                 rewriteSession.TryRewrite();
@@ -310,7 +378,7 @@ End Sub
                 var fooBarDeclaration = state.DeclarationFinder
                     .UserDeclarations(DeclarationType.Procedure)
                     .First(decl => decl.IdentifierName == "FooBar");
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.AddAnnotation(rewriteSession, fooBarDeclaration, annotationToAdd);
                 rewriteSession.TryRewrite();
@@ -356,7 +424,7 @@ baz As Variant
                 var bazDeclaration = state.DeclarationFinder
                     .UserDeclarations(DeclarationType.Variable)
                     .First(decl => decl.IdentifierName == "baz");
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.AddAnnotation(rewriteSession, bazDeclaration, annotationToAdd);
                 rewriteSession.TryRewrite();
@@ -407,7 +475,7 @@ End Sub
                     .UserDeclarations(DeclarationType.Procedure)
                     .First(decl => decl.IdentifierName == "Foo");
                 var annotationToRemove = fooDeclaration.Annotations.First();
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.RemoveAnnotation(rewriteSession, annotationToRemove);
                 rewriteSession.TryRewrite();
@@ -458,7 +526,7 @@ End Sub
                     .UserDeclarations(DeclarationType.Procedure)
                     .First(decl => decl.IdentifierName == "Foo");
                 var annotationToRemove = fooDeclaration.Annotations.First();
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.RemoveAnnotation(rewriteSession, annotationToRemove);
                 rewriteSession.TryRewrite();
@@ -509,7 +577,7 @@ End Sub
                     .UserDeclarations(DeclarationType.Procedure)
                     .First(decl => decl.IdentifierName == "Foo");
                 var annotationToRemove = fooDeclaration.Annotations.Last();
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.RemoveAnnotation(rewriteSession, annotationToRemove);
                 rewriteSession.TryRewrite();
@@ -559,7 +627,7 @@ End Sub
                     .UserDeclarations(DeclarationType.Procedure)
                     .First(decl => decl.IdentifierName == "Foo");
                 var annotationToRemove = fooDeclaration.Annotations.First();
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.RemoveAnnotation(rewriteSession, annotationToRemove);
                 rewriteSession.TryRewrite();
@@ -607,7 +675,7 @@ End Sub
                     .UserDeclarations(DeclarationType.ProceduralModule)
                     .First();
                 var annotationToRemove = moduleDeclaration.Annotations.First();
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.RemoveAnnotation(rewriteSession, annotationToRemove);
                 rewriteSession.TryRewrite();
@@ -639,7 +707,7 @@ Option Explicit
                     .UserDeclarations(DeclarationType.ProceduralModule)
                     .First();
                 var annotationToRemove = moduleDeclaration.Annotations.First();
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.RemoveAnnotation(rewriteSession, annotationToRemove);
                 rewriteSession.TryRewrite();
@@ -675,7 +743,7 @@ Option Explicit
                     .UserDeclarations(DeclarationType.ProceduralModule)
                     .First();
                 var annotationsToRemove = moduleDeclaration.Annotations.Where(pta => !(pta.Annotation is ExposedModuleAnnotation));
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.RemoveAnnotations(rewriteSession, annotationsToRemove);
                 rewriteSession.TryRewrite();
@@ -729,7 +797,7 @@ End Sub
                     .UserDeclarations(DeclarationType.Procedure)
                     .First(decl => decl.IdentifierName == "Foo");
                 var annotationToUpdate = fooDeclaration.Annotations.First(pta => pta.Annotation is DescriptionAnnotation);
-                var annotationUpdater = new AnnotationUpdater();
+                var annotationUpdater = new AnnotationUpdater(state);
 
                 annotationUpdater.UpdateAnnotation(rewriteSession, annotationToUpdate, newAnnotation, newAnnotationValues);
                 rewriteSession.TryRewrite();
@@ -739,11 +807,14 @@ End Sub
             Assert.AreEqual(expectedCode, actualCode);
         }
 
-        private (IVBComponent component, IExecutableRewriteSession rewriteSession, RubberduckParserState state) TestSetup(string inputCode, ComponentType componentType = ComponentType.StandardModule)
+        private (IVBComponent component, IExecutableRewriteSession rewriteSession, RubberduckParserState state) TestSetup(string inputCode, ComponentType componentType = ComponentType.StandardModule, CodeKind codeKind = CodeKind.CodePaneCode)
         {
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, componentType, out var component).Object;
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            return (component, rewritingManager.CheckOutCodePaneSession(), state);
+            var rewriteSession = codeKind == CodeKind.AttributesCode
+                ? rewritingManager.CheckOutAttributesSession()
+                : rewritingManager.CheckOutCodePaneSession();
+            return (component, rewriteSession, state);
         }
     }
 }

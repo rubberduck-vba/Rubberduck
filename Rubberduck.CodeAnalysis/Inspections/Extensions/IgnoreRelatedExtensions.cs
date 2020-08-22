@@ -1,15 +1,14 @@
-﻿using Rubberduck.Inspections.Results;
+﻿using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
-using System.Linq;
 
-namespace Rubberduck.Inspections.Inspections.Extensions
+namespace Rubberduck.CodeAnalysis.Inspections.Extensions
 {
-    static class IgnoreRelatedExtensions
+    internal static class IgnoreRelatedExtensions
     {
         public static bool IsIgnoringInspectionResultFor(this IdentifierReference reference, string inspectionName)
         {

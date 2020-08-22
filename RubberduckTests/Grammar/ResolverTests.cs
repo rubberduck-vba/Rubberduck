@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -1495,10 +1496,11 @@ End Sub
             using (var state = Resolve(code))
             {
 
-                var declaration = state.AllUserDeclarations.Single(item =>
-                    item.DeclarationType == DeclarationType.UserDefinedType);
+                var declaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.UserDefinedType)
+                    .Single();
 
-                if (declaration.Project.Name != declaration.IdentifierName)
+                if (Declaration.GetProjectParent(declaration).IdentifierName != declaration.IdentifierName)
                 {
                     Assert.Inconclusive("UDT should be named after project.");
                 }
@@ -1534,7 +1536,7 @@ End Sub
                 var declaration = state.AllUserDeclarations.Single(item =>
                     item.DeclarationType == DeclarationType.UserDefinedType);
 
-                if (declaration.Project.Name != declaration.IdentifierName)
+                if (Declaration.GetProjectParent(declaration).IdentifierName != declaration.IdentifierName)
                 {
                     Assert.Inconclusive("UDT should be named after project.");
                 }
@@ -1568,7 +1570,7 @@ End Sub
                 var declaration = state.AllUserDeclarations.Single(item =>
                     item.DeclarationType == DeclarationType.Variable);
 
-                if (declaration.Project.Name != declaration.AsTypeName)
+                if (Declaration.GetProjectParent(declaration).IdentifierName != declaration.AsTypeName)
                 {
                     Assert.Inconclusive("variable should be named after project.");
                 }
@@ -1636,7 +1638,7 @@ End Sub
                 var declaration = state.AllUserDeclarations.Single(item =>
                     item.DeclarationType == DeclarationType.UserDefinedTypeMember
                     && item.IdentifierName == "Foo"
-                    && item.AsTypeName == item.Project.Name
+                    && item.AsTypeName == Declaration.GetProjectParent(item).IdentifierName
                     && item.IdentifierName == item.ParentDeclaration.IdentifierName);
 
                 var usages = declaration.References.Where(item =>
@@ -1857,7 +1859,7 @@ End Sub
 
                 var declaration = state.AllUserDeclarations.Single(item =>
                     item.DeclarationType == DeclarationType.Project
-                    && item.IdentifierName == item.Project.Name);
+                    && item.IdentifierName == Declaration.GetProjectParent(item).IdentifierName);
 
                 var usages = declaration.References.Where(item =>
                     item.ParentScoping.IdentifierName == "DoSomething");
@@ -6820,7 +6822,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -6853,7 +6855,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -6890,7 +6892,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -6927,7 +6929,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -6964,7 +6966,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -7298,6 +7300,78 @@ End Function
                     .Single(reference => reference.Declaration.DeclarationType.HasFlag(DeclarationType.Member));
 
                 Assert.AreEqual(expectedReferenceText, enumMemberReference.IdentifierName);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void OneUndeclaredVariablePerMemberAndUndeclaredIdentifier_DifferentMemberName()
+        {
+            var moduleCode = @"
+Private Sub Foo
+    bar = 42 + 23
+    bar = bar + bar 
+    bar = bar * bar
+    fooBar = 42
+End Sub
+
+Private Sub DoSomething
+    bar = 42 + 23
+    bar = bar + bar 
+    bar = bar * bar
+    fooBaz = 42
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+                var module = finder.UserDeclarations(DeclarationType.ProceduralModule)
+                    .Single();
+                var undeclared = finder.Members(module.QualifiedModuleName)
+                    .Where(declaration => declaration.IsUndeclared)
+                    .ToList();
+                
+                Assert.AreEqual(4, undeclared.Count);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void OneUndeclaredVariablePerMemberAndUndeclaredIdentifier_DifferentDeclarationType()
+        {
+            var moduleCode = @"
+Private Property Get Foo() As Variant
+    bar = 42 + 23
+    bar = bar + bar 
+    bar = bar * bar
+    fooBar = 42
+End Property
+
+Private Property Let Foo(arg As Variant)
+    bar = 42 + 23
+    bar = bar + bar 
+    bar = bar * bar
+    fooBaz = 42
+End Property
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+                var module = finder.UserDeclarations(DeclarationType.ProceduralModule)
+                    .Single();
+                var undeclared = finder.Members(module.QualifiedModuleName)
+                    .Where(declaration => declaration.IsUndeclared)
+                    .ToList();
+
+                Assert.AreEqual(4, undeclared.Count);
             }
         }
     }

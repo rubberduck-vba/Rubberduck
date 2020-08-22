@@ -1,17 +1,11 @@
 ﻿using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Common;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Resources.Experimentals;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies empty 'While...Wend' blocks that can be safely removed.
@@ -19,7 +13,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Dead code should be removed. A loop without a body is usually redundant.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     While foo < 100
@@ -27,8 +22,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     Wend
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     While foo < 100
@@ -36,25 +33,24 @@ namespace Rubberduck.Inspections.Concrete
     ///     Wend
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal class EmptyWhileWendBlockInspection : ParseTreeInspectionBase
+    internal sealed class EmptyWhileWendBlockInspection : EmptyBlockInspectionBase<VBAParser.WhileWendStmtContext>
     {
-        public EmptyWhileWendBlockInspection(RubberduckParserState state)
-            : base(state) { }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        public EmptyWhileWendBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            return Listener.Contexts
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionResults.EmptyWhileWendBlockInspection,
-                                                        result));
+            ContextListener = new EmptyWhileWendBlockListener();
         }
 
-        public override IInspectionListener Listener { get; } =
-            new EmptyWhileWendBlockListener();
+        protected override IInspectionListener<VBAParser.WhileWendStmtContext> ContextListener { get; }
 
-        public class EmptyWhileWendBlockListener : EmptyBlockInspectionListenerBase
+        protected override string ResultDescription(QualifiedContext<VBAParser.WhileWendStmtContext> context)
+        {
+            return InspectionResults.EmptyWhileWendBlockInspection;
+        }
+
+        private class EmptyWhileWendBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterWhileWendStmt([NotNull] VBAParser.WhileWendStmtContext context)
             {

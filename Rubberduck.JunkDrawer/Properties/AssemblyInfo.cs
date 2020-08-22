@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -9,5 +8,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("d7a3f7a3-bd90-4845-b098-ac3afbf0e16f")]
+
 [assembly: InternalsVisibleTo("RubberduckTests")]
+//This is the assembly name of the project Rubberduck.Main.
 [assembly: InternalsVisibleTo("Rubberduck")]

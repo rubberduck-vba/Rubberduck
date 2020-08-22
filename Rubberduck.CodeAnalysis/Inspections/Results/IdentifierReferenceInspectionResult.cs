@@ -1,34 +1,38 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Results
+namespace Rubberduck.CodeAnalysis.Inspections.Results
 {
-    public class IdentifierReferenceInspectionResult : InspectionResultBase
+    internal class IdentifierReferenceInspectionResult : InspectionResultBase
     {
         public IdentifierReference Reference { get; }
 
-        public IdentifierReferenceInspectionResult(IInspection inspection, string description, IDeclarationFinderProvider declarationFinderProvider, IdentifierReference reference, dynamic properties = null) :
-            base(inspection,
+        public IdentifierReferenceInspectionResult(
+            IInspection inspection, 
+            string description, 
+            DeclarationFinder finder, 
+            IdentifierReference reference,
+            ICollection<string> disabledQuickFixes = null) 
+            : base(inspection,
                  description,
                  reference.QualifiedModuleName,
                  reference.Context,
                  reference.Declaration,
                  new QualifiedSelection(reference.QualifiedModuleName, reference.Context.GetSelection()),
-                 GetQualifiedMemberName(declarationFinderProvider, reference),
-                 (object)properties)
+                 GetQualifiedMemberName(finder, reference),
+                 disabledQuickFixes)
         {
             Reference = reference;
         }
 
-        private static QualifiedMemberName? GetQualifiedMemberName(IDeclarationFinderProvider declarationFinderProvider, IdentifierReference reference)
+        private static QualifiedMemberName? GetQualifiedMemberName(DeclarationFinder finder, IdentifierReference reference)
         {
-            var members = declarationFinderProvider.DeclarationFinder.Members(reference.QualifiedModuleName);
+            var members = finder.Members(reference.QualifiedModuleName);
             return members.SingleOrDefault(m => reference.Context.IsDescendentOf(m.Context))?.QualifiedName;
         }
 
@@ -37,5 +41,27 @@ namespace Rubberduck.Inspections.Results
             return Target != null && modifiedModules.Contains(Target.QualifiedModuleName)
                    || base.ChangesInvalidateResult(modifiedModules);
         }
+    }
+
+    internal class IdentifierReferenceInspectionResult<T> : IdentifierReferenceInspectionResult, IWithInspectionResultProperties<T>
+    {
+        public IdentifierReferenceInspectionResult(
+            IInspection inspection, 
+            string description, 
+            DeclarationFinder finder, 
+            IdentifierReference reference, 
+            T properties,
+            ICollection<string> disabledQuickFixes = null) 
+            : base(
+                inspection,
+                description,
+                finder, 
+                reference,
+                disabledQuickFixes)
+        {
+            Properties = properties;
+        }
+
+        public T Properties { get; }
     }
 }

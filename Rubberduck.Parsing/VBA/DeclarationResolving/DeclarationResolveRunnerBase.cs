@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Threading;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using NLog;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -80,7 +80,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
             var qualifiedModuleName = new QualifiedModuleName(project);
             var qualifiedName = qualifiedModuleName.QualifyMemberName(project.Name);
-            var projectDeclaration = new ProjectDeclaration(qualifiedName, qualifiedName.MemberName, true, project);
+            var projectDeclaration = new ProjectDeclaration(qualifiedName, qualifiedName.MemberName, true);
 
             return projectDeclaration;
         }
@@ -139,7 +139,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 }
                 Logger.Debug($"Creating declarations for module {module.Name}.");
 
-                var annotationsOnWhiteSpaceLines = _state.GetModuleAnnotations(module)
+                var annotationsOnWhiteSpaceLines = _state.GetAnnotations(module)
                     .Where(a => a.AnnotatedLine.HasValue)
                     .GroupBy(a => a.AnnotatedLine.Value)
                     .ToDictionary();
@@ -191,6 +191,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                         true,
                         moduleAnnotations,
                         moduleAttributes);
+
                 case ComponentType.ClassModule:
                     return new ClassModuleDeclaration(
                         qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
@@ -199,6 +200,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                         true,
                         moduleAnnotations,
                         moduleAttributes);
+
                 case ComponentType.Document:
                     return new DocumentModuleDeclaration(
                         qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
@@ -206,7 +208,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                         qualifiedModuleName.ComponentName,
                         moduleAnnotations,
                         moduleAttributes);
-                default:
+
+                default: /*ComponentType.UserForm*/
                     return new ClassModuleDeclaration(
                         qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
                         projectDeclaration,

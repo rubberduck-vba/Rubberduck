@@ -289,7 +289,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 string literalDescription;
 
-                var memberAttribute = Attributes.SingleOrDefault(a => a.Name == $"{IdentifierName}.VB_Description");
+                var memberAttribute = Attributes.SingleOrDefault(a => a.Name == Attributes.MemberAttributeName("VB_Description", IdentifierName));
                 if (memberAttribute != null)
                 {
                     literalDescription = memberAttribute.Values.SingleOrDefault() ?? string.Empty;
@@ -415,14 +415,6 @@ namespace Rubberduck.Parsing.Symbols
         public QualifiedSelection QualifiedSelection => new QualifiedSelection(QualifiedName.QualifiedModuleName, Selection);
 
         /// <summary>
-        /// Gets a reference to the VBProject the declaration is made in.
-        /// </summary>
-        /// <remarks>
-        /// This property is intended to differenciate identically-named VBProjects.
-        /// </remarks>
-        public virtual IVBProject Project => ParentDeclaration.Project;
-
-        /// <summary>
         /// Gets a unique identifier for the VBProject the declaration is made in.
         /// </summary>
         public string ProjectId { get; }
@@ -478,7 +470,7 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     return AsTypeName;
                 }
-                return AsTypeName.Replace("(", "").Replace(")", "").Trim();
+                return AsTypeName.Replace("(", string.Empty).Replace(")", string.Empty).Trim();
             }
         }
 

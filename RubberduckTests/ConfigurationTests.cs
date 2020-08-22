@@ -2,9 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Moq;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Settings;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.CodeAnalysis.Settings;
 
 namespace RubberduckTests

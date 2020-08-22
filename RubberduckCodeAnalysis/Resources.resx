@@ -195,13 +195,13 @@
   <data name="MissingInspectionReferenceElementMessageFormat" xml:space="preserve">
     <value>XML documentation for type '{0}' is missing a 'reference' element.</value>
   </data>
-  <data name="MissingInspectionSummaryElement" xml:space="preserve">
+  <data name="MissingSummaryElement" xml:space="preserve">
     <value>Missing xml-doc 'summary' element</value>
   </data>
   <data name="MissingInspectionSummaryElementDescription" xml:space="preserve">
     <value>All inspections must have a short &lt;summary&gt; xml-doc comment describing what the inspection is looking for, that reads comfortably in IntelliSense.</value>
   </data>
-  <data name="MissingInspectionSummaryElementMessageFormat" xml:space="preserve">
+  <data name="MissingSummaryElementMessageFormat" xml:space="preserve">
     <value>XML documentation for type '{0}' is missing a &lt;summary&gt; element.</value>
   </data>
   <data name="MissingInspectionWhyElement" xml:space="preserve">
@@ -266,5 +266,53 @@
   </data>
   <data name="XmlDocAnalyzerCategory" xml:space="preserve">
     <value>Project website compatibility</value>
+  </data>
+  <data name="MissingTypeAttribute" xml:space="preserve">
+    <value>Missing 'type' attribute.</value>
+  </data>
+  <data name="MissingTypeAttributeDescription" xml:space="preserve">
+    <value>This attribute value will be used to determine the component type of each module in a code example.</value>
+  </data>
+  <data name="MissingTypeAttributeMessageFormat" xml:space="preserve">
+    <value>A '{0}' element requires a 'type' attribute value.</value>
+  </data>
+  <data name="InvalidTypeAttribute" xml:space="preserve">
+    <value>Invalid value for 'type' attribute.</value>
+  </data>
+  <data name="InvalidTypeAttributeDescription" xml:space="preserve">
+    <value>The values of the 'type' attribute are restricted to the value 'Standard Module', 'Class Module', 'Document' and 'User Form'.</value>
+  </data>
+  <data name="InvalidTypeAttributeMessageFormat" xml:space="preserve">
+    <value>The value '{0}' is not legal for the 'type' attribute.</value>
+  </data>
+  <data name="DuplicateNameAttribute" xml:space="preserve">
+    <value>Duplicate value in 'name' attribute</value>
+  </data>
+  <data name="DuplicateNameAttributeDescription" xml:space="preserve">
+    <value>The 'name' attribute is used to uniquely identify an element. Consequently, it has to be unique.</value>
+  </data>
+  <data name="DuplicateNameAttributeMessageFormat" xml:space="preserve">
+    <value>The value '{0}' is used in the 'name' attribute of multiple '{1}' elements.</value>
+  </data>
+  <data name="MissingRequiredHostAttribute" xml:space="preserve">
+    <value>Missing 'RequiredHost' attribute</value>
+  </data>
+  <data name="MissingRequiredHostAttributeDescription" xml:space="preserve">
+    <value>The &lt;hostApp name="RequiredHost" /&gt; element means to document the presence of a [RequiredHostAttribute]. If the attribute is correctly missing, the xml-doc element should be removed.</value>
+  </data>
+  <data name="MissingRequiredHostAttributeMessageFormat" xml:space="preserve">
+    <value>XML documentation of type '{0}' includes a &lt;hostApp&gt; element, but no corresponding [RequiredHostAttribute] is decorating the inspection type. Expected: [RequiredHost("{1}")].</value>
+  </data>
+  <data name="MissingInspectionHostAppElement" xml:space="preserve">
+    <value>Missing xml-doc 'hostApp' element</value>
+  </data>
+  <data name="MissingInspectionHostAppElementDescription" xml:space="preserve">
+    <value>XML documentation for inspections with a [RequiredHostAttribute] must include a &lt;hostApp&gt; element with a 'name' attribute with the same value as the [RequiredHostAttribute]. For example [RequiredHost("Excel")] mandates &lt;hostApp name="Excel" /&gt;.</value>
+  </data>
+  <data name="MissingInspectionHostAppElementMessageFormat" xml:space="preserve">
+    <value>XML documentation for type '{0}' is missing a 'hostApp' element.</value>
+  </data>
+  <data name="MissingAnnotationSummaryElementDescription" xml:space="preserve">
+    <value>All annotations must have a short &lt;summary&gt; xml-doc comment describing what the annotation is used for, that reads comfortably in IntelliSense.</value>
   </data>
 </root>

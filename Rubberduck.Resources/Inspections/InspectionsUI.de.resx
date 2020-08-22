@@ -121,10 +121,10 @@
     <value>TODO</value>
   </data>
   <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value>Alle Vorkommnisse im Modul beheben</value>
+    <value>Vorkommnisse im Modul</value>
   </data>
   <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value>Alle Vorkommnisse im Projekt beheben</value>
+    <value>Vorkommnisse im Projekt</value>
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Deaktiviere diese Überprüfung</value>
@@ -139,10 +139,10 @@
     <value>Deklaration</value>
   </data>
   <data name="QuickFix_All" xml:space="preserve">
-    <value>Alle Vorkommnisse beheben</value>
+    <value>Alle Vorkommnisse</value>
   </data>
   <data name="QuickFix_ThisProcedure" xml:space="preserve">
-    <value>Alle Vorkommnisse in der Prozedur beheben</value>
+    <value>Vorkommnisse in der Prozedur</value>
   </data>
   <data name="CodeInspectionSettings_RubberduckOpportunities" xml:space="preserve">
     <value>Optimalere Ausnutzung von Rubberduck</value>
@@ -200,5 +200,11 @@
   </data>
   <data name="CodeInspection_SeverityFilter" xml:space="preserve">
     <value>Schweregrad</value>
+  </data>
+  <data name="QuickFix_Instance" xml:space="preserve">
+    <value>Ausgewähltes Vorkommnis</value>
+  </data>
+  <data name="QuickFix_Selection" xml:space="preserve">
+    <value>Ausgewählte Vorkommnis</value>
   </data>
 </root>

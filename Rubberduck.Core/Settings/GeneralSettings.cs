@@ -21,6 +21,7 @@ namespace Rubberduck.Settings
         bool UserEditedLogLevel { get; set; }
         int MinimumLogLevel { get; set; }
         bool SetDpiUnaware { get; set; }
+        bool EnableFolderDragAndDrop { get; set; }
         List<ExperimentalFeature> EnableExperimentalFeatures { get; set; }
     }
 
@@ -74,6 +75,7 @@ namespace Rubberduck.Settings
         }
 
         public bool SetDpiUnaware { get; set; }
+        public bool EnableFolderDragAndDrop { get; set; }
 
         public List<ExperimentalFeature> EnableExperimentalFeatures { get; set; } = new List<ExperimentalFeature>();
 
@@ -100,7 +102,8 @@ namespace Rubberduck.Settings
                    MinimumLogLevel == other.MinimumLogLevel &&                   
                    EnableExperimentalFeatures.Count == other.EnableExperimentalFeatures.Count &&
                    EnableExperimentalFeatures.All(other.EnableExperimentalFeatures.Contains) &&
-                   SetDpiUnaware == other.SetDpiUnaware;
+                   SetDpiUnaware == other.SetDpiUnaware &&
+                   EnableFolderDragAndDrop == other.EnableFolderDragAndDrop;
         }
     }
 }

@@ -1,71 +1,69 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+﻿using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
-    /// Identifies redundant Boolean expressions in conditionals.
+    /// Identifies conditional assignments to mutually exclusive Boolean literal values in conditional branches.
     /// </summary>
     /// <why>
-    /// A Boolean expression never needs to be compared to a Boolean literal in a conditional expression.
+    /// The assignment could be made directly to the result of the conditional Boolean expression instead.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
-    /// Public Sub DoSomething(ByVal foo As Boolean)
-    ///     If foo = True Then ' foo is known to already be a Boolean value.
-    ///         ' ...
+    /// Public Sub DoSomething(ByVal value As Long)
+    ///     Dim result As Boolean
+    ///     If value > 10 Then
+    ///         result = True
+    ///     Else
+    ///         result = False
     ///     End If
+    ///     Debug.Print result
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
-    /// Public Sub DoSomething(ByVal foo As Boolean)
-    ///     If foo Then
-    ///         ' ...
-    ///     End If
+    /// Public Sub DoSomething(ByVal value As Long)
+    ///     Dim result As Boolean
+    ///     result = value > 10
+    ///     Debug.Print result
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class BooleanAssignedInIfElseInspection : ParseTreeInspectionBase
+    internal sealed class BooleanAssignedInIfElseInspection : ParseTreeInspectionBase<VBAParser.IfStmtContext>
     {
-        public BooleanAssignedInIfElseInspection(RubberduckParserState state)
-            : base(state) { }
-        
-        public override IInspectionListener Listener { get; } =
-            new BooleanAssignedInIfElseListener();
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        public BooleanAssignedInIfElseInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            return Listener.Contexts
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                       string.Format(InspectionResults.BooleanAssignedInIfElseInspection,
-                                                            (((VBAParser.IfStmtContext)result.Context).block().GetDescendent<VBAParser.LetStmtContext>()).lExpression().GetText().Trim()),
-                                                       result));
+            ContextListener = new BooleanAssignedInIfElseListener();
+        }
+        
+        protected override IInspectionListener<VBAParser.IfStmtContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.IfStmtContext> context)
+        {
+            var literalText = context.Context
+                .block()
+                .GetDescendent<VBAParser.LetStmtContext>()
+                .lExpression()
+                .GetText()
+                .Trim();
+            return string.Format(
+                InspectionResults.BooleanAssignedInIfElseInspection, 
+                literalText);
         }
 
-        public class BooleanAssignedInIfElseListener : VBAParserBaseListener, IInspectionListener
+        private class BooleanAssignedInIfElseListener : InspectionListenerBase<VBAParser.IfStmtContext>
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-            
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
             public override void ExitIfStmt(VBAParser.IfStmtContext context)
             {
                 if (context.elseIfBlock() != null && context.elseIfBlock().Any())
@@ -98,10 +96,10 @@ namespace Rubberduck.Inspections.Concrete
                     return;
                 }
 
-                _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                SaveContext(context);
             }
 
-            private bool IsSingleBooleanAssignment(VBAParser.BlockContext block)
+            private static bool IsSingleBooleanAssignment(VBAParser.BlockContext block)
             {
                 if (block.ChildCount != 2)
                 {

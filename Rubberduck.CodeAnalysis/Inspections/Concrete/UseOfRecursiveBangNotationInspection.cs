@@ -1,12 +1,11 @@
-﻿using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies the use of bang notation, formally known as dictionary access expression, for which a recursive default member resolution is necessary.
@@ -16,13 +15,16 @@ namespace Rubberduck.Inspections.Concrete
     /// This is especially misleading if the parameterized default member is not on the object itself and can only be reached by calling the parameterless default member first.  
     /// </why>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As ADODB.Recordset) As Variant
     ///     MyName = rst!Name.Value
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As ADODB.Recordset) As Variant
     ///     With rst
@@ -30,29 +32,37 @@ namespace Rubberduck.Inspections.Concrete
     ///     End With
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As ADODB.Recordset) As Variant
     ///     MyName = rst.Fields.Item("Name").Value
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As ADODB.Recordset) As Variant
     ///     MyName = rst("Name").Value
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As ADODB.Recordset) As Variant
     ///     MyName = rst.Fields!Name.Value 'see "UseOfBangNotation" inspection
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As ADODB.Recordset) As Variant
     ///     With rst
@@ -60,16 +70,17 @@ namespace Rubberduck.Inspections.Concrete
     ///     End With
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class UseOfRecursiveBangNotationInspection : IdentifierReferenceInspectionBase
+    internal sealed class UseOfRecursiveBangNotationInspection : IdentifierReferenceInspectionBase
     {
-        public UseOfRecursiveBangNotationInspection(RubberduckParserState state)
-            : base(state)
+        public UseOfRecursiveBangNotationInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        protected override bool IsResultReference(IdentifierReference reference)
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             return reference.IsIndexedDefaultMemberAccess
                    && reference.DefaultMemberRecursionDepth > 1

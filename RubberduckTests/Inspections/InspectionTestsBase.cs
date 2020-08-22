@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Antlr4.Runtime.Tree;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -31,13 +35,13 @@ namespace RubberduckTests.Inspections
             return InspectionResults(vbe);
         }
 
-        public IEnumerable<IInspectionResult> InspectionResultsForModules((string name, string content, ComponentType componentType) module, params string[] libraries)
+        public IEnumerable<IInspectionResult> InspectionResultsForModules((string name, string content, ComponentType componentType) module, params ReferenceLibrary[] libraries)
             => InspectionResultsForModules(new (string, string, ComponentType)[] { module }, libraries);
 
-        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, string library)
-            => InspectionResultsForModules(modules, new string[] { library });
+        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, ReferenceLibrary library)
+            => InspectionResultsForModules(modules, new ReferenceLibrary[] { library });
 
-        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraries)
+        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<ReferenceLibrary> libraries)
         {
             var vbe = MockVbeBuilder.BuildFromModules(modules, libraries).Object;
             return InspectionResults(vbe);
@@ -54,13 +58,37 @@ namespace RubberduckTests.Inspections
 
         private static IEnumerable<IInspectionResult> InspectionResults(IInspection inspection, RubberduckParserState state)
         {
-            if (inspection is IParseTreeInspection)
+            if (inspection is IParseTreeInspection parseTreeInspection)
             {
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                return inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                WalkTrees(parseTreeInspection, state);
             }
 
             return inspection.GetInspectionResults(CancellationToken.None);
+        }
+
+        protected static void WalkTrees(IParseTreeInspection inspection, RubberduckParserState state)
+        {
+            var codeKind = inspection.TargetKindOfCode;
+            var listener = inspection.Listener;
+            
+            List<KeyValuePair<QualifiedModuleName, IParseTree>> trees;
+            switch (codeKind)
+            {
+                case CodeKind.AttributesCode:
+                    trees = state.AttributeParseTrees;
+                    break;
+                case CodeKind.CodePaneCode:
+                    trees = state.ParseTrees;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(codeKind), codeKind, null);
+            }
+
+            foreach (var (module, tree) in trees)
+            {
+                listener.CurrentModuleName = module;
+                ParseTreeWalker.Default.Walk(listener, tree);
+            }
         }
     }
 }

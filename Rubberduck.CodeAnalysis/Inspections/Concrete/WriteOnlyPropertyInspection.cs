@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
+using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about properties that don't expose a 'Property Get' accessor.
@@ -17,7 +16,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Write-only properties are suspicious: if the client code is able to set a property, it should be allowed to read that property as well. 
     /// Class design guidelines and best practices generally recommend against write-only properties.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private internalFoo As Long
     ///
@@ -25,8 +25,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     internalFoo = value
     /// End Property
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private internalFoo As Long
     ///
@@ -38,27 +40,38 @@ namespace Rubberduck.Inspections.Concrete
     ///     Foo = internalFoo
     /// End Property
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class WriteOnlyPropertyInspection : InspectionBase
+    internal sealed class WriteOnlyPropertyInspection : DeclarationInspectionBase
     {
-        public WriteOnlyPropertyInspection(RubberduckParserState state)
-            : base(state) { }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        public WriteOnlyPropertyInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.PropertyLet, DeclarationType.PropertySet) { }
+        
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var setters = State.DeclarationFinder.UserDeclarations(DeclarationType.Property | DeclarationType.Procedure)
-                .Where(item => 
-                       (item.Accessibility == Accessibility.Implicit || 
-                        item.Accessibility == Accessibility.Public || 
-                        item.Accessibility == Accessibility.Global)
-                    && State.DeclarationFinder.MatchName(item.IdentifierName).All(accessor => accessor.DeclarationType != DeclarationType.PropertyGet))
-                .GroupBy(item => new {item.QualifiedName, item.DeclarationType})
+            var setters = RelevantDeclarationsInModule(module, finder)
+                .Where(declaration => IsResultDeclaration(declaration, finder))
+                .GroupBy(declaration => declaration.QualifiedName)
                 .Select(grouping => grouping.First()); // don't get both Let and Set accessors
 
-            return setters.Select(setter =>
-                new DeclarationInspectionResult(this,
-                                                string.Format(InspectionResults.WriteOnlyPropertyInspection, setter.IdentifierName),
-                                                setter));
+            return setters
+                .Select(InspectionResult)
+                .ToList();
+        }
+
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
+        {
+            return (declaration.Accessibility == Accessibility.Implicit
+                       || declaration.Accessibility == Accessibility.Public
+                       || declaration.Accessibility == Accessibility.Global)
+                   && finder.MatchName(declaration.IdentifierName)
+                       .Where(otherDeclaration => otherDeclaration.QualifiedModuleName.Equals(declaration.QualifiedModuleName))
+                       .All(accessor => accessor.DeclarationType != DeclarationType.PropertyGet);
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.WriteOnlyPropertyInspection, declaration.IdentifierName);
         }
     }
 }

@@ -1,19 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
+using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies assignments without Set for which both sides are objects.
@@ -23,57 +21,49 @@ namespace Rubberduck.Inspections.Concrete
     /// Although this might be intentional, in many situations it will just mask an erroneously forgotten Set. 
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal rng As Excel.Range, ByVal arg As ADODB Field)
     ///     rng = arg
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal rng As Excel.Range, ByVal arg As ADODB Field)
     ///     rng.Value = arg.Value
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal rng As Excel.Range, ByVal arg As ADODB Field)
     ///     Let rng = arg
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class SuspiciousLetAssignmentInspection : InspectionBase
+    internal sealed class SuspiciousLetAssignmentInspection : InspectionBase
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
-
-        public SuspiciousLetAssignmentInspection(RubberduckParserState state)
-            : base(state)
+        public SuspiciousLetAssignmentInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            _declarationFinderProvider = state;
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
-            var results = new List<IInspectionResult>();
-            foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
-            {
-                if (moduleDeclaration == null || moduleDeclaration.IsIgnoringInspectionResultFor(AnnotationName))
-                {
-                    continue;
-                }
-
-                var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module));
-            }
-
-            return results;
+            return finder.UserDeclarations(DeclarationType.Module)
+                .Where(module => module != null)
+                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder));
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var finder = _declarationFinderProvider.DeclarationFinder;
             return BoundLhsInspectionResults(module, finder)
                 .Concat(UnboundLhsInspectionResults(module, finder));
         }
@@ -92,7 +82,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 if (rhsDefaultMemberAccess != null)
                 {
-                    var result = InspectionResult(assignment, rhsDefaultMemberAccess, isUnbound, _declarationFinderProvider);
+                    var result = InspectionResult(assignment, rhsDefaultMemberAccess, isUnbound, finder);
                     results.Add(result);
                 }
             }
@@ -133,20 +123,18 @@ namespace Rubberduck.Inspections.Concrete
             return (unboundRhsDefaultMemberAccess, true);
         }
 
-        private IInspectionResult InspectionResult(IdentifierReference lhsReference, IdentifierReference rhsReference, bool isUnbound, IDeclarationFinderProvider declarationFinderProvider)
+        private IInspectionResult InspectionResult(IdentifierReference lhsReference, IdentifierReference rhsReference, bool isUnbound, DeclarationFinder finder)
         {
-            var result = new IdentifierReferenceInspectionResult(
+            var disabledQuickFixes = isUnbound
+                ? new List<string> {"ExpandDefaultMemberQuickFix"}
+                : new List<string>();
+            return new IdentifierReferenceInspectionResult<IdentifierReference>(
                 this,
                 ResultDescription(lhsReference, rhsReference),
-                declarationFinderProvider,
-                lhsReference);
-            result.Properties.RhSReference = rhsReference;
-            if (isUnbound)
-            {
-                result.Properties.DisableFixes = "ExpandDefaultMemberQuickFix";
-            }
-
-            return result;
+                finder,
+                lhsReference,
+                rhsReference,
+                disabledQuickFixes);
         }
 
         private string ResultDescription(IdentifierReference lhsReference, IdentifierReference rhsReference)
@@ -169,7 +157,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 if (rhsDefaultMemberAccess != null)
                 {
-                    var result = InspectionResult(assignment, rhsDefaultMemberAccess, true, _declarationFinderProvider);
+                    var result = InspectionResult(assignment, rhsDefaultMemberAccess, true, finder);
                     results.Add(result);
                 }
             }

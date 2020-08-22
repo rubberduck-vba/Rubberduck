@@ -1,18 +1,13 @@
-using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about 'Function' and 'Property Get' procedures whose return value is not assigned.
@@ -20,7 +15,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Both 'Function' and 'Property Get' accessors should always return something. Omitting the return assignment is likely a bug.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function GetFoo() As Long
     ///     Dim foo As Long
@@ -28,8 +24,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     'function will always return 0
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function GetFoo() As Long
     ///     Dim foo As Long
@@ -37,62 +35,71 @@ namespace Rubberduck.Inspections.Concrete
     ///     GetFoo = foo
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class NonReturningFunctionInspection : InspectionBase
+    internal sealed class NonReturningFunctionInspection : DeclarationInspectionBase
     {
-        public NonReturningFunctionInspection(RubberduckParserState state)
-            : base(state) { }
+        public NonReturningFunctionInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Function)
+        {}
 
-        private static readonly DeclarationType[] ReturningMemberTypes =
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            DeclarationType.Function,
-            DeclarationType.PropertyGet
-        };
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
-        {
-            var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToHashSet();
-
-            var functions = State.DeclarationFinder.UserDeclarations(DeclarationType.Function)
-                .Where(declaration => !interfaceMembers.Contains(declaration));
-
-            var unassigned = functions.Where(function => IsReturningUserDefinedType(function) 
-                                                            && !IsUserDefinedTypeAssigned(function)
-                                                          || !IsReturningUserDefinedType(function) 
-                                                            && !IsAssigned(function));
-
-            return unassigned
-                .Select(issue =>
-                    new DeclarationInspectionResult(this,
-                                         string.Format(InspectionResults.NonReturningFunctionInspection, issue.IdentifierName),
-                                         issue));
+            return declaration is ModuleBodyElementDeclaration member
+                   && !member.IsInterfaceMember
+                   && (IsReturningUserDefinedType(member)
+                       && !IsUserDefinedTypeAssigned(member)
+                       || !IsReturningUserDefinedType(member)
+                       && !IsAssigned(member, finder));
         }
 
-        private bool IsAssigned(Declaration function)
+        private bool IsAssigned(Declaration member, DeclarationFinder finder)
         {
-            var inScopeIdentifierReferences = function.References.Where(r => r.ParentScoping.Equals(function));
-            return inScopeIdentifierReferences.Any(reference => reference.IsAssignment 
-                                                                || IsAssignedByRefArgument(function, reference));
+            var inScopeIdentifierReferences = member.References
+                .Where(reference => reference.ParentScoping.Equals(member));
+            return inScopeIdentifierReferences
+                .Any(reference => reference.IsAssignment 
+                                  || IsAssignedByRefArgument(member, reference, finder));
         }
 
-        private bool IsAssignedByRefArgument(Declaration enclosingProcedure, IdentifierReference reference)
+        private bool IsAssignedByRefArgument(Declaration enclosingProcedure, IdentifierReference reference, DeclarationFinder finder)
         {
-            var argExpression = reference.Context.GetAncestor<VBAParser.ArgumentExpressionContext>();
-            var parameter = State.DeclarationFinder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, enclosingProcedure);
+            var argExpression = ImmediateArgumentExpressionContext(reference);
+
+            if (argExpression is null)
+            {
+                return false;
+            }
+
+            var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, enclosingProcedure);
 
             // note: not recursive, by design.
             return parameter != null
-                   && (parameter.IsImplicitByRef || parameter.IsByRef)
-                   && parameter.References.Any(r => r.IsAssignment);
+                    && (parameter.IsImplicitByRef || parameter.IsByRef)
+                    && parameter.References.Any(r => r.IsAssignment);
+        }
+
+        private static VBAParser.ArgumentExpressionContext ImmediateArgumentExpressionContext(IdentifierReference reference)
+        {
+            var context = reference.Context;
+            //The context is either already a simpleNameExprContext or an IdentifierValueContext used in a sub-rule of some other lExpression alternative. 
+            var lExpressionNameContext = context is VBAParser.SimpleNameExprContext simpleName
+                ? simpleName
+                : context.GetAncestor<VBAParser.LExpressionContext>();
+
+            //To be an immediate argument and, thus, assignable by ref, the structure must be argumentExpression -> expression -> lExpression.
+            return lExpressionNameContext?
+                .Parent?
+                .Parent as VBAParser.ArgumentExpressionContext;
         }
 
         private static bool IsReturningUserDefinedType(Declaration member)
         {
-            return member.AsTypeDeclaration != null &&
-                   member.AsTypeDeclaration.DeclarationType == DeclarationType.UserDefinedType;
+            return member.AsTypeDeclaration != null 
+                   && member.AsTypeDeclaration.DeclarationType == DeclarationType.UserDefinedType;
         }
 
-        private bool IsUserDefinedTypeAssigned(Declaration member)
+        private static bool IsUserDefinedTypeAssigned(Declaration member)
         {
             // ref. #2257:
             // A function returning a UDT type shouldn't trip this inspection if
@@ -102,7 +109,12 @@ namespace Rubberduck.Inspections.Concrete
             var result = visitor.VisitBlock(block);
             return result;
         }
-        
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.NonReturningFunctionInspection, declaration.IdentifierName);
+        }
+
         /// <summary>
         /// A visitor that visits a member's body and returns <c>true</c> if any <c>LET</c> statement (assignment) is assigning the specified <c>name</c>.
         /// </summary>

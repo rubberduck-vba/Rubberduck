@@ -1,19 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
+<Project Sdk="Sunburst.NET.Sdk.WPF.Patched/1.0.49">
   <PropertyGroup>
+    <Product>Rubberduck.Parsing</Product>
+    <Description>This assembly contains the parts responsible for turning VBA code into tokens and parse trees.</Description>
+    <Copyright>Copyright © 2015-2019</Copyright>
     <AssemblyName>Rubberduck.Parsing</AssemblyName>
     <Title>Rubberduck.Parsing</Title>
-    <Product>Rubberduck.Parsing</Product>
-    <Copyright>Copyright © 2015-2019</Copyright>
+    <RootNamespace>Rubberduck.Parsing</RootNamespace>
     <ProjectGuid>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</ProjectGuid>
+    <UnifyOutputPath>true</UnifyOutputPath>
   </PropertyGroup>
-  <Import Project="..\RubberduckBaseProject.csproj" />
-
+  <PropertyGroup>
+    <DocumentationFile>Rubberduck.Parsing.xml</DocumentationFile>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <WarningLevel>1</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <NoWarn>1701;1702;1591;4011;1001;7035;1053</NoWarn>
   </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
   <PropertyGroup>
     <Antlr4UseCSharpGenerator>True</Antlr4UseCSharpGenerator>
   </PropertyGroup>

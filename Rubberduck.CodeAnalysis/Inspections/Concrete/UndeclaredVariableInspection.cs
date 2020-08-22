@@ -1,14 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about implicit local variables that are used but never declared.
@@ -16,15 +12,18 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// If this code compiles, then Option Explicit is omitted and compile-time validation is easily forfeited, even accidentally (e.g. typos). 
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     foo = 42 ' foo is not declared
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
@@ -32,17 +31,22 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class UndeclaredVariableInspection : InspectionBase
+    internal sealed class UndeclaredVariableInspection : DeclarationInspectionBase
     {
-        public UndeclaredVariableInspection(RubberduckParserState state)
-            : base(state) { }
+        public UndeclaredVariableInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Variable)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            return State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(item => item.IsUndeclared)
-                .Select(item => new DeclarationInspectionResult(this, string.Format(InspectionResults.UndeclaredVariableInspection, item.IdentifierName), item));
+            return declaration.IsUndeclared;
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.UndeclaredVariableInspection, declaration.IdentifierName);
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using Moq;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.QuickFixes;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -27,43 +27,25 @@ Public Sub Foo()
     Sheet1.Range(""A1"") = ""foo""
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
         [Category("QuickFixes")]
-        public void SheetAccessedUsingString_QuickFixWorks_UsingSheetThroughApplicationModule()
+        public void SheetAccessedUsingString_QuickFixWorks_SheetNameContainingDoubleQuotes()
         {
             const string inputCode = @"
 Public Sub Foo()
-    Application.Sheets(""Sheet1"").Range(""A1"") = ""foo""
+    ThisWorkbook.Sheets(""She""""et1"").Range(""A1"") = ""foo""
 End Sub";
 
             const string expectedCode = @"
 Public Sub Foo()
     Sheet1.Range(""A1"") = ""foo""
 End Sub";
-
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-
-        [Test]
-        [Category("QuickFixes")]
-        public void SheetAccessedUsingString_QuickFixWorks_UsingSheetThroughGlobalModule()
-        {
-            const string inputCode = @"
-Public Sub Foo()
-    Sheets(""Sheet1"").Range(""A1"") = ""foo""
-End Sub";
-
-            const string expectedCode = @"
-Public Sub Foo()
-    Sheet1.Range(""A1"") = ""foo""
-End Sub";
-
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var vbe = TestVbe(inputCode, "She\"et1", out _);
+            var actualCode = ApplyQuickFixToFirstInspectionResult(vbe, "Module1", state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -93,7 +75,7 @@ End Sub
 Public Sub Bar(ws As Worksheet)
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -113,7 +95,7 @@ Public Sub Foo()
     
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -135,7 +117,7 @@ Public Sub Foo()
     Sheet1.Cells(1, 1) = ""foo""
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -157,7 +139,7 @@ Public Sub Foo()
     Sheet1.Cells(1, 1) = ""foo""
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -187,7 +169,7 @@ Public Sub ws()
     Dim ws As Worksheet
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -217,71 +199,7 @@ Public Sub ws()
     Dim ws As Worksheet
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-        
-        [Test]
-        [Category("QuickFixes")]
-        public void SheetAccessedUsingString_QuickFixWorks_TransientReferenceSetStatement()
-        {
-            const string inputCode = @"
-Sub Test()
-    Dim ws As Worksheet
-    Set ws = Worksheets.Add(Worksheets(""Sheet1""))
-    Debug.Print ws.Name
-End Sub";
-
-            const string expectedCode = @"
-Sub Test()
-    Dim ws As Worksheet
-    Set ws = Worksheets.Add(Sheet1)
-    Debug.Print ws.Name
-End Sub";
-
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-
-        [Test]
-        [Category("QuickFixes")]
-        public void SheetAccessedUsingString_QuickFixWorks_TransientReferenceNoSetStatement()
-        {
-            const string inputCode = @"
-Sub Test()
-    If Not Worksheets.Add(Worksheets(""Sheet1"")) Is Nothing Then
-        Debug.Print ""Added""
-    End If
-End Sub";
-
-            const string expectedCode = @"
-Sub Test()
-    If Not Worksheets.Add(Sheet1) Is Nothing Then
-        Debug.Print ""Added""
-    End If
-End Sub";
-
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-
-        [Test]
-        [Category("QuickFixes")]
-        public void SheetAccessedUsingString_QuickFixWorks_ImplicitVariableAssignment()
-        {
-            const string inputCode = @"
-Sub Test()
-    Set ws = Worksheets(""Sheet1"")
-    ws.Name = ""Foo""
-End Sub";
-
-            const string expectedCode = @"
-Sub Test()
-    
-    Sheet1.Name = ""Foo""
-End Sub";
-
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -292,13 +210,18 @@ End Sub";
 
         protected override IVBE TestVbe(string code, out IVBComponent component)
         {
+            return TestVbe(code, "Sheet1", out component);
+        }
+
+        private IVBE TestVbe(string code, string sheetName, out IVBComponent component)
+        {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, code)
                 .AddComponent("Sheet1", ComponentType.Document, "",
                     properties: new[]
                     {
-                        CreateVBComponentPropertyMock("Name", "Sheet1").Object,
+                        CreateVBComponentPropertyMock("Name", sheetName).Object,
                         CreateVBComponentPropertyMock("CodeName", "Sheet1").Object
                     })
                 .AddComponent("SheetWithDifferentCodeName", ComponentType.Document, "",
@@ -307,7 +230,7 @@ End Sub";
                         CreateVBComponentPropertyMock("Name", "Name").Object,
                         CreateVBComponentPropertyMock("CodeName", "CodeName").Object
                     })
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddReference(ReferenceLibrary.Excel)
                 .Build();
 
             component = project.Object.VBComponents[0];

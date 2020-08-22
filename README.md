@@ -1,12 +1,6 @@
 <img alt="Rubberduck Open-Source VBE Add-In - VBA6 | VBA7 x86/x64 | VB6" src="https://user-images.githubusercontent.com/5751684/48656196-a507af80-e9ef-11e8-9c09-1ce3c619c019.png" />
-    
-<!-- campaign is no longer accepting donations
-### Donate!
 
-If you like this project and would like to thank its contributors, you are welcome to support our GoFundMe campaign to finance Rubberduck swag and international shipping - contributors will be getting t-shirts, mugs, and other cool things.
-
-[![GoFundMe campaign](https://user-images.githubusercontent.com/5751684/29191799-e3d20b72-7dec-11e7-8ec6-0c69da4a3135.png)](https://www.gofundme.com/rubberduckvba)
--->
+---
 
 |Branch     | Description | Build Status | Download link |
 |------------|---|--------------|-|
@@ -20,9 +14,15 @@ If you like this project and would like to thank its contributors, you are welco
 [![Chat on stackexchange](https://img.shields.io/badge/chat-on%20stackexchange-blue.svg)](https://chat.stackexchange.com/rooms/14929/vba-rubberducking)
 [![License](https://img.shields.io/github/license/rubberduck-vba/Rubberduck.svg)](https://github.com/rubberduck-vba/Rubberduck/blob/next/LICENSE)
 
-> **[rubberduckvba.com](http://rubberduckvba.com)** [Wiki](https://github.com/rubberduck-vba/Rubberduck/wiki) [Rubberduck News](https://rubberduckvba.wordpress.com/) 
-> devs@rubberduckvba.com  
-> Follow [@rubberduckvba](https://twitter.com/rubberduckvba) on Twitter 
+
+> **[rubberduckvba.com](http://rubberduckvba.com)** | **[Rubberduck News](https://rubberduckvba.wordpress.com/)** 
+| **[Twitter (@rubberduckvba)](https://twitter.com/rubberduckvba)** | **[Wiki](https://github.com/rubberduck-vba/Rubberduck/wiki)**  
+
+Rubberduck is free, but keeping it visible online isn't. Donate to help us pay for hosting and keep the blog free of ads!
+
+|Donate|Note |
+|:------:|-|
+|<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=UY5K5X36B7T2S&currency_code=CAD&source=url"><img alt="Donate via PayPal" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a><p><sub>via PayPal</sub></p>|Donations in excess of what's needed to cover our fees will be donated to the <a href="https://mssociety.ca/">Multiple Sclerosis Society of Canada</a>.|
 
 ---
 

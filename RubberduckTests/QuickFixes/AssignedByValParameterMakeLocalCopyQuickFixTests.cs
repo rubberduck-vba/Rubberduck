@@ -1,14 +1,14 @@
 using NUnit.Framework;
 using System.Linq;
 using System.Threading;
-using Rubberduck.Inspections.QuickFixes;
 using Moq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.UI.Refactorings;
 using System.Windows.Forms;
-using Rubberduck.Inspections.Concrete;
 using System;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 
 namespace RubberduckTests.QuickFixes
 {

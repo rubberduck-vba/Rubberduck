@@ -1,18 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
-using Rubberduck.VBEditor.SafeComWrappers;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Indicates that a hidden VB attribute is present for a module, but no Rubberduck annotation is documenting it.
@@ -21,71 +16,52 @@ namespace Rubberduck.Inspections.Concrete
     /// Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags modules that
     /// do not have a Rubberduck annotation corresponding to the hidden VB attribute.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Predeclared Class">
     /// <![CDATA[
     /// Attribute VB_PredeclaredId = True
     /// Option Explicit
     /// ' ...
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Predeclared Class">
     /// <![CDATA[
     /// Attribute VB_PredeclaredId = True
     /// '@PredeclaredId
     /// Option Explicit
     /// ' ...
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class MissingModuleAnnotationInspection : InspectionBase
+    internal sealed class MissingModuleAnnotationInspection : DeclarationInspectionMultiResultBase<(string AttributeName, IReadOnlyList<string> AttributeValues)>
     {
-        public MissingModuleAnnotationInspection(RubberduckParserState state) 
-        :base(state)
+        public MissingModuleAnnotationInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, new []{DeclarationType.Module}, new []{DeclarationType.Document})
         {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<(string AttributeName, IReadOnlyList<string> AttributeValues)> ResultProperties(Declaration declaration, DeclarationFinder finder)
         {
-            var moduleDeclarationsWithAttributes = State.DeclarationFinder
-                .UserDeclarations(DeclarationType.Module)
-                .Where(decl => decl.Attributes.Any());
+            return declaration.Attributes
+                .Where(attribute => IsResultAttribute(attribute, declaration))
+                .Select(PropertiesFromAttribute);
+        }
 
-            var declarationsToInspect = moduleDeclarationsWithAttributes
-                // prefilter declarations to reduce searchspace
-                .Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document
-                               && !decl.IsIgnoringInspectionResultFor(AnnotationName));
+        private static bool IsResultAttribute(AttributeNode attribute, Declaration declaration)
+        {
+            return !IsDefaultAttribute(declaration, attribute) 
+                   && MissesCorrespondingModuleAnnotation(declaration, attribute);
+        }
 
-            var results = new List<DeclarationInspectionResult>();
-            foreach (var declaration in declarationsToInspect)
-            {
-                foreach (var attribute in declaration.Attributes)
-                {
-                    if (IsDefaultAttribute(declaration, attribute))
-                    {
-                        continue;
-                    }
-
-                    if (MissesCorrespondingModuleAnnotation(declaration, attribute))
-                    {
-                        var description = string.Format(InspectionResults.MissingMemberAnnotationInspection,
-                            declaration.IdentifierName,
-                            attribute.Name,
-                            string.Join(", ", attribute.Values));
-
-                        var result = new DeclarationInspectionResult(this, description, declaration,
-                            new QualifiedContext(declaration.QualifiedModuleName, declaration.Context));
-                        result.Properties.AttributeName = attribute.Name;
-                        result.Properties.AttributeValues = attribute.Values;
-
-                        results.Add(result);
-                    }
-                }
-            }
-
-            return results;
+        private static (string AttributeName, IReadOnlyList<string> AttributeValues) PropertiesFromAttribute(AttributeNode attribute)
+        {
+            return (attribute.Name, attribute.Values);
         }
 
         private static bool IsDefaultAttribute(Declaration declaration, AttributeNode attribute)
         {
-            return Attributes.IsDefaultAttribute(declaration.QualifiedModuleName.ComponentType, attribute.Name, attribute.Values);
+            return Parsing.Symbols.Attributes.IsDefaultAttribute(declaration.QualifiedModuleName.ComponentType, attribute.Name, attribute.Values);
         }
 
         private static bool MissesCorrespondingModuleAnnotation(Declaration declaration, AttributeNode attribute)
@@ -106,6 +82,14 @@ namespace Rubberduck.Inspections.Concrete
 
             return !declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation)
                 .Any(pta => ((IAttributeAnnotation)pta.Annotation).Attribute(pta).Equals(attribute.Name));
+        }
+
+        protected override string ResultDescription(Declaration declaration, (string AttributeName, IReadOnlyList<string> AttributeValues) properties)
+        {
+            return string.Format(InspectionResults.MissingMemberAnnotationInspection,
+                declaration.IdentifierName,
+                properties.AttributeName,
+                string.Join(", ", properties.AttributeValues));
         }
     }
 }

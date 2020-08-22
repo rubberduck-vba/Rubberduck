@@ -190,7 +190,7 @@
     <value>Renommer le test</value>
   </data>
   <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
-    <value>cette procédure s'exécute avant chaque test dans le module</value>
+    <value>cette procédure s'exécute avant chaque test dans le module.</value>
   </data>
   <data name="TestOutcome_Inconclusive" xml:space="preserve">
     <value>Non concluant</value>
@@ -269,5 +269,26 @@
   </data>
   <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
     <value>Réactiver le test</value>
+  </data>
+  <data name="TestExplorer_ContextMenuIgnoreGroup" xml:space="preserve">
+    <value>Ignorer tous les tests du groupe</value>
+  </data>
+  <data name="TestExplorer_ContextMenuIgnoreSelectedTests" xml:space="preserve">
+    <value>Ignorer les tests sélectionnés</value>
+  </data>
+  <data name="TestExplorer_ContextMenuUnignoreGroup" xml:space="preserve">
+    <value>Désignorer tous les tests du groupe</value>
+  </data>
+  <data name="TestExplorer_ContextMenuUnignoreSelectedTests" xml:space="preserve">
+    <value>Désignorer les tests sélectionnés</value>
+  </data>
+  <data name="TestOutcome_DurationHour" xml:space="preserve">
+    <value>hr</value>
+  </data>
+  <data name="TestOutcome_DurationMillisecond" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="TestOutcome_DurationMinute" xml:space="preserve">
+    <value>min</value>
   </data>
 </root>

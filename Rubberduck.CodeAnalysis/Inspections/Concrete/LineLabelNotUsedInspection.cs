@@ -1,18 +1,13 @@
-using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using static Rubberduck.Parsing.Grammar.VBAParser;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies line labels that are never referenced, and therefore superfluous.
@@ -21,7 +16,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Line labels are useful for GoTo, GoSub, Resume, and On Error statements; but the intent of a line label
     /// can be confusing if it isn't referenced by any such instruction.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     /// '    On Error GoTo ErrHandler ' (commented-out On Error statement leaves line label unreferenced)
@@ -31,8 +27,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error GoTo ErrHandler
@@ -42,25 +40,30 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class LineLabelNotUsedInspection : InspectionBase
+    internal sealed class LineLabelNotUsedInspection : DeclarationInspectionBase
     {
-        public LineLabelNotUsedInspection(RubberduckParserState state) : base(state) { }
+        public LineLabelNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.LineLabel)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var labels = State.DeclarationFinder.UserDeclarations(DeclarationType.LineLabel);
-            var declarations = labels
-                .Where(declaration =>
-                    !declaration.IsWithEvents
-                    && declaration.Context is IdentifierStatementLabelContext
-                    && (!declaration.References.Any() || declaration.References.All(reference => reference.IsAssignment)));
+            return declaration != null
+                   && !declaration.IsWithEvents
+                   && declaration.Context is VBAParser.IdentifierStatementLabelContext
+                   && declaration.References.All(reference => reference.IsAssignment);
+        }
 
-            return declarations.Select(issue => 
-                new DeclarationInspectionResult(this,
-                                     string.Format(InspectionResults.IdentifierNotUsedInspection, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
-                                     issue,
-                                     new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, ((IdentifierStatementLabelContext)issue.Context).legalLabelIdentifier())));
+        protected override string ResultDescription(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType.ToLocalizedString();
+            var declarationName = declaration.IdentifierName;
+            return string.Format(
+                InspectionResults.IdentifierNotUsedInspection, 
+                declarationType, 
+                declarationName);
         }
     }
 }

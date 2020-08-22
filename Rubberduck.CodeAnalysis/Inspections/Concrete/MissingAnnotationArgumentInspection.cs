@@ -1,85 +1,86 @@
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
-    /// Warns about a malformed Rubberduck annotation that is missing an argument.
+    /// Warns about a malformed Rubberduck annotation that is missing one or more arguments.
     /// </summary>
     /// <why>
-    /// Some annotations require arguments; if the argument isn't specified, the annotation is nothing more than an obscure comment.
+    /// Some annotations require arguments; if the required number of arguments isn't specified, the annotation is nothing more than an obscure comment.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Folder
     /// '@ModuleDescription
     /// Option Explicit
     /// ' ...
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Folder("MyProject.XYZ")
     /// '@ModuleDescription("This module does XYZ")
     /// Option Explicit
     /// ' ...
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class MissingAnnotationArgumentInspection : ParseTreeInspectionBase
+    internal sealed class MissingAnnotationArgumentInspection : InspectionBase
     {
-        public MissingAnnotationArgumentInspection(RubberduckParserState state)
-            : base(state) { }
+        public MissingAnnotationArgumentInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
-        public override CodeKind TargetKindOfCode => CodeKind.AttributesCode;
-
-        public override IInspectionListener Listener { get; } =
-            new InvalidAnnotationStatementListener();
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
-            // FIXME don't actually use listeners here, iterate the Annotations instead
-            // FIXME don't maintain a separate list for annotations that require arguments, instead use AnnotationAttribute to store that information
-            return (from result in Listener.Contexts
-                    let context = (VBAParser.AnnotationContext)result.Context 
-                    where context.annotationName().GetText() == "Ignore"
-                       || context.annotationName().GetText() == "Folder" 
-                    where context.annotationArgList() == null 
-                    select new QualifiedContextInspectionResult(this,
-                                                string.Format(InspectionResults.MissingAnnotationArgumentInspection,
-                                                              ((VBAParser.AnnotationContext)result.Context).annotationName().GetText()),
-                                                result));
+            return finder.UserDeclarations(DeclarationType.Module)
+                .Where(module => module != null)
+                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder))
+                .ToList();
         }
 
-        public class InvalidAnnotationStatementListener : VBAParserBaseListener, IInspectionListener
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
+            var objectionableAnnotations = finder.FindAnnotations(module)
+                .Where(IsResultAnnotation);
 
-            public QualifiedModuleName CurrentModuleName { get; set; }
+            return objectionableAnnotations
+                .Select(InspectionResult)
+                .ToList();
+        }
 
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
+        private static bool IsResultAnnotation(IParseTreeAnnotation pta)
+        {
+            return pta.Annotation.RequiredArguments > pta.AnnotationArguments.Count;
+        }
 
-            public override void ExitAnnotation(VBAParser.AnnotationContext context)
-            {
-                if (context.annotationName() != null)
-                {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
-                }
-            }
+        private IInspectionResult InspectionResult(IParseTreeAnnotation pta)
+        {
+            var qualifiedContext = new QualifiedContext(pta.QualifiedSelection.QualifiedName, pta.Context);
+            return new QualifiedContextInspectionResult(
+                this,
+                ResultDescription(pta),
+                qualifiedContext);
+        }
+
+        private static string ResultDescription(IParseTreeAnnotation pta)
+        {
+            return string.Format(
+                InspectionResults.MissingAnnotationArgumentInspection,
+                pta.Annotation.Name);
         }
     }
 }

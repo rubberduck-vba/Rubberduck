@@ -148,10 +148,10 @@
     <value>Návratový typ člena je implicitně 'Variant'</value>
   </data>
   <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
-    <value>Rozsah proměnné je širší, než je třeba</value>
+    <value>Rozsah proměnné je širší, než je třeba.</value>
   </data>
   <data name="MultilineParameterInspection" xml:space="preserve">
-    <value>Deklarace parametru je rozdělena na více řádků</value>
+    <value>Deklarace parametru je rozdělena na více řádků.</value>
   </data>
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Vícenásobná deklarace v jediné instrukci</value>
@@ -172,22 +172,22 @@
     <value>Použití zastaralé nápovědy Typu</value>
   </data>
   <data name="OptionBaseInspection" xml:space="preserve">
-    <value>Je specifikováno 'Option Base 1'</value>
+    <value>Je specifikováno 'Option Base 1'.</value>
   </data>
   <data name="OptionExplicitInspection" xml:space="preserve">
-    <value>'Option Explicit' není specifikován</value>
+    <value>'Option Explicit' není specifikován.</value>
   </data>
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
-    <value>Parametr je možné předat jako hodnotu</value>
+    <value>Parametr je možné předat jako hodnotu.</value>
   </data>
   <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Neexistující reference k parametru</value>
+    <value>Neexistující reference k parametru.</value>
   </data>
   <data name="ProcedureNotUsedInspection" xml:space="preserve">
-    <value>Neexistující reference k proceduře</value>
+    <value>Neexistující reference k proceduře.</value>
   </data>
   <data name="UnassignedVariableUsageInspection" xml:space="preserve">
-    <value>Proměnná je použita, avšak není přiřazena</value>
+    <value>Proměnná je použita, avšak není přiřazena.</value>
   </data>
   <data name="UntypedFunctionUsageInspection" xml:space="preserve">
     <value>Použití řetězcové funkce, která vrací 'Variant'</value>
@@ -196,10 +196,10 @@
     <value>Použij smysluplné názvy</value>
   </data>
   <data name="VariableNotAssignedInspection" xml:space="preserve">
-    <value>Proměnná není přiřazena</value>
+    <value>Proměnná není přiřazena.</value>
   </data>
   <data name="VariableNotUsedInspection" xml:space="preserve">
-    <value>Neexistující reference k proměnné</value>
+    <value>Neexistující reference k proměnné.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>Implicitně proměnná typu 'Variant'</value>
@@ -208,19 +208,16 @@
     <value>Vlastnost pouze-zápis</value>
   </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
-    <value>Proceduru je možno napsat jako funkci</value>
+    <value>Proceduru je možno napsat jako funkci.</value>
   </data>
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
-    <value>Reference k objektu proměnné je automaticky instancovaná</value>
-  </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>Vratná hodnota funkce není nikdy použita</value>
+    <value>Reference k objektu proměnné je automaticky instancovaná.</value>
   </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>Funkce, která nic nevrací, nebo property getter</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
-    <value>Pro přiřazení proměnné objektu je zapotřebí klíčového slova 'Set'</value>
+    <value>Pro přiřazení proměnné objektu je zapotřebí klíčového slova 'Set'.</value>
   </data>
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
     <value>Chybějící parametr anotace</value>
@@ -241,7 +238,7 @@
     <value>Hranatý výraz specifický pro hostitele je vyhodnocen pouze při běhu</value>
   </data>
   <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
-    <value>Pozdní vázání pro volání 'WorksheetFunction'</value>
+    <value>Pozdní vázání pro volání 'WorksheetFunction'.</value>
   </data>
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>'Option Base 0' je nadbytečná</value>
@@ -301,7 +298,7 @@
     <value>Použití zastaralého 'Error' prohlášení</value>
   </data>
   <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Klauzule případů nelze dosáhnout</value>
+    <value>Klauzule případů nelze dosáhnout.</value>
   </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Neošetřený 'On Error Resume Next'</value>
@@ -334,10 +331,10 @@
     <value>výraz On Local Error</value>
   </data>
   <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
-    <value>Nevhodné použití funkce 'IsMissing'</value>
+    <value>Nevhodné použití funkce 'IsMissing' - Parametr není 'Variant'</value>
   </data>
   <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
-    <value>Nevhodné použití funkce 'IsMissing'</value>
+    <value>Nevhodné použití funkce 'IsMissing' - Parametr je lokální proměnná</value>
   </data>
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>Přiřazení není použito</value>
@@ -349,7 +346,7 @@
     <value>Je možné, že členský přístup může vrátit 'Nothing'</value>
   </data>
   <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
-    <value>Hodnota nesedí mezi atributem a anotací.</value>
+    <value>Hodnota nesedí mezi atributem a anotací</value>
   </data>
   <data name="MissingMemberAnnotationInspection" xml:space="preserve">
     <value>Chybějící anotace členu</value>
@@ -359,21 +356,6 @@
   </data>
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>Funkce je schována referencí Excelovské buňky</value>
-  </data>
-  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
-    <value>ThunderCode 101</value>
-  </data>
-  <data name="NegativeLineNumberInspection" xml:space="preserve">
-    <value>ThunderCode 100</value>
-  </data>
-  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
-    <value>ThunderCode 11</value>
-  </data>
-  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
-    <value>ThunderCode 10</value>
-  </data>
-  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
-    <value>ThunderCode 1</value>
   </data>
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
     <value>Použití zastaralého příkazu 'While...Wend'</value>
@@ -431,5 +413,29 @@
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Podezřelé přiřazení 'Let'</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Záporné číslo řádku</value>
+  </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>Přebytečné argumenty anotace</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Pokračování řádku mezi klíčovými slovy</value>
+  </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Klíčové slovo použito jako jméno členu</value>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Implicitně typovaná konstanta</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>Identifikátor obsahující pevnou mezeru</value>
+  </data>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>Návratová hodnota funkce je vždy zahozena.</value>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>Návratová hodnota funkce je zahozena.</value>
   </data>
 </root>

@@ -18,6 +18,10 @@ using RubberduckTests.Mocks;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Annotations;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.AddInterfaceImplementations;
+using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.UnitTesting;
@@ -30,6 +34,7 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Settings;
+using Rubberduck.Refactorings;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -183,7 +188,8 @@ namespace RubberduckTests.CodeExplorer
                 _windowSettingsProvider.Object,
                 _uiDispatcher.Object, Vbe.Object,
                 null,
-                new CodeExplorerSyncProvider(Vbe.Object, State, VbeEvents.Object));
+                new CodeExplorerSyncProvider(Vbe.Object, State, VbeEvents.Object), 
+                new List<IAnnotation>());
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error)
@@ -210,7 +216,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddStdModuleCommand()
         {
-            ViewModel.AddStdModuleCommand = new AddStdModuleCommand(AddComponentService(), VbeEvents.Object);
+            ViewModel.AddStdModuleCommand = new AddStdModuleCommand(AddComponentService(), VbeEvents.Object, State.ProjectsProvider);
             return this;
         }
 
@@ -234,7 +240,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddClassModuleCommand()
         {
-            ViewModel.AddClassModuleCommand = new AddClassModuleCommand(AddComponentService(), VbeEvents.Object);
+            ViewModel.AddClassModuleCommand = new AddClassModuleCommand(AddComponentService(), VbeEvents.Object, State.ProjectsProvider);
             return this;
         }
 
@@ -249,7 +255,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserFormCommand()
         {
-            ViewModel.AddUserFormCommand = new AddUserFormCommand(AddComponentService(), VbeEvents.Object);
+            ViewModel.AddUserFormCommand = new AddUserFormCommand(AddComponentService(), VbeEvents.Object, State.ProjectsProvider);
             return this;
         }
 
@@ -264,7 +270,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddVbFormCommand()
         {
-            ViewModel.AddVBFormCommand = new AddVBFormCommand(AddComponentService(), VbeEvents.Object);
+            ViewModel.AddVBFormCommand = new AddVBFormCommand(AddComponentService(), VbeEvents.Object, State.ProjectsProvider);
             return this;
         }
 
@@ -279,7 +285,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddMdiFormCommand()
         {
-            ViewModel.AddMDIFormCommand = new AddMDIFormCommand(AddComponentService(), VbeEvents.Object);
+            ViewModel.AddMDIFormCommand = new AddMDIFormCommand(AddComponentService(), VbeEvents.Object, State.ProjectsProvider);
             return this;
         }
 
@@ -294,7 +300,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserControlCommand()
         {
-            ViewModel.AddUserControlCommand = new AddUserControlCommand(AddComponentService(), VbeEvents.Object);
+            ViewModel.AddUserControlCommand = new AddUserControlCommand(AddComponentService(), VbeEvents.Object, State.ProjectsProvider);
             return this;
         }
 
@@ -309,7 +315,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddPropertyPageCommand()
         {
-            ViewModel.AddPropertyPageCommand = new AddPropertyPageCommand(AddComponentService(), VbeEvents.Object);
+            ViewModel.AddPropertyPageCommand = new AddPropertyPageCommand(AddComponentService(), VbeEvents.Object, State.ProjectsProvider);
             return this;
         }
 
@@ -324,7 +330,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserDocumentCommand()
         {
-            ViewModel.AddUserDocumentCommand = new AddUserDocumentCommand(AddComponentService(), VbeEvents.Object);
+            ViewModel.AddUserDocumentCommand = new AddUserDocumentCommand(AddComponentService(), VbeEvents.Object, State.ProjectsProvider);
             return this;
         }
 
@@ -341,7 +347,7 @@ namespace RubberduckTests.CodeExplorer
         {
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var codeGenerator = new TestCodeGenerator(Vbe.Object, State, MessageBox.Object, _interaction.Object, _unitTestSettingsProvider.Object, indenter, null);
-            ViewModel.AddTestModuleCommand = new AddTestComponentCommand(Vbe.Object, State, codeGenerator, VbeEvents.Object);
+            ViewModel.AddTestModuleCommand = new AddTestComponentCommand(Vbe.Object, State, codeGenerator, VbeEvents.Object, State.ProjectsProvider);
             return this;
         }
 
@@ -450,7 +456,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementExportAllCommand()
         {
-            ViewModel.ExportAllCommand = new ExportAllCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object);
+            ViewModel.ExportAllCommand = new ExportAllCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State.ProjectsProvider);
             return this;
         }
 
@@ -501,11 +507,20 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementExtractInterfaceCommand()
         {
+            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(null, new CodeBuilder());
+            var addComponentService = TestAddComponentService(State.ProjectsProvider);
+            var extractInterfaceBaseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, State, State, null, State.ProjectsProvider, addComponentService);
+            var userInteraction = new RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel>(null, _uiDispatcher.Object);
             ViewModel.CodeExplorerExtractInterfaceCommand = new CodeExplorerExtractInterfaceCommand(
-                new Rubberduck.Refactorings.ExtractInterface.ExtractInterfaceRefactoring(
-                    State, State, null, null, null, _uiDispatcher.Object),
+                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, userInteraction, null, new CodeBuilder()),
                 State, null, VbeEvents.Object);
             return this;
+        }
+
+        private static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)
+        {
+            var sourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
+            return new AddComponentService(projectsProvider, sourceCodeHandler, sourceCodeHandler);
         }
 
         public MockedCodeExplorer ConfigureSaveDialog(string path, DialogResult result)

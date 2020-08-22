@@ -1,159 +1,359 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
+using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.SmartIndenter;
+using Rubberduck.Resources;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldViewModel : RefactoringViewModelBase<EncapsulateFieldModel>
     {
-        public RubberduckParserState State { get; }
-        public IIndenter Indenter { get; }
+        private MasterDetailSelectionManager _masterDetailManager;
 
-        public EncapsulateFieldViewModel(EncapsulateFieldModel model, RubberduckParserState state, IIndenter indenter) : base(model)
+        public EncapsulateFieldViewModel(EncapsulateFieldModel model) : base(model)
         {
-            State = state;
-            Indenter = indenter;
+            SelectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(true));
+            DeselectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(false));
 
-            IsLetSelected = true;
-            PropertyName = model.TargetDeclaration.IdentifierName;
+            IsReadOnlyCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => UpdatePreview());
+            PropertyChangeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => UpdatePreview());
+            EncapsulateFlagChangeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ManageEncapsulationFlagsAndSelectedItem);
+            ReadOnlyChangeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ChangeIsReadOnlyFlag);
+
+            _lastCheckedBoxes = EncapsulationFields.Where(ef => ef.EncapsulateFlag).ToList();
+
+            _masterDetailManager = new MasterDetailSelectionManager(model.SelectedFieldCandidates.SingleOrDefault());
+
+            ManageEncapsulationFlagsAndSelectedItem();
+
+            RefreshValidationResults();
         }
 
-        public Declaration TargetDeclaration
+        public ObservableCollection<IEncapsulatedFieldViewData> EncapsulationFields
         {
-            get => Model.TargetDeclaration;
-            set
+            get
             {
-                Model.TargetDeclaration = value;
-                PropertyName = value.IdentifierName;
+                var viewableFields = new ObservableCollection<IEncapsulatedFieldViewData>();
+
+                var orderedFields = Model.EncapsulationCandidates.OrderBy(efd => efd.Declaration.Selection).ToList();
+                if (_selectedObjectStateUDT != null && _selectedObjectStateUDT.IsExistingDeclaration)
+                {
+                    orderedFields = Model.EncapsulationCandidates.Where(ec => !_selectedObjectStateUDT.FieldIdentifier.Equals(ec.IdentifierName))
+                                                .OrderBy(efd => efd.Declaration.Selection).ToList();
+                }
+                IsEmptyList = orderedFields.Count() == 0;
+                foreach (var efd in orderedFields)
+                {
+                    viewableFields.Add(new ViewableEncapsulatedField(efd));
+                }
+
+                return viewableFields;
             }
         }
 
-        private bool _expansionState = true;
-        public bool ExpansionState
+        public bool IsEmptyList { set; get; }
+
+        public ObservableCollection<IObjectStateUDT> UDTFields
         {
-            get => _expansionState;
-            set
+            get
             {
-                _expansionState = value;
-                OnPropertyChanged();
-                OnExpansionStateChanged(value);
+                var viewableFields = new ObservableCollection<IObjectStateUDT>();
+
+                foreach (var state in Model.ObjectStateUDTCandidates)
+                {
+                    viewableFields.Add(state);
+                }
+                return viewableFields;
             }
         }
 
-        public bool CanHaveLet => Model.CanImplementLet;
-        public bool CanHaveSet => Model.CanImplementSet;
-
-        public bool IsLetSelected
+        public bool ShowStateUDTSelections
         {
-            get => Model.ImplementLetSetterType;
-            set
+            get
             {
-                Model.ImplementLetSetterType = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(PropertyPreview));
+                return Model.ObjectStateUDTCandidates.Count() > 1
+                    && ConvertFieldsToUDTMembers;
             }
         }
 
-        public bool IsSetSelected
+        private IObjectStateUDT _selectedObjectStateUDT;
+        public IObjectStateUDT SelectedObjectStateUDT
         {
-            get => Model.ImplementSetSetterType;
+            get
+            {
+                    _selectedObjectStateUDT = UDTFields.Where(f => f.IsSelected)
+                        .SingleOrDefault() ?? UDTFields.FirstOrDefault();
+                return _selectedObjectStateUDT;
+            }
             set
             {
-                Model.ImplementSetSetterType = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(PropertyPreview));
+                _selectedObjectStateUDT = value;
+                Model.ObjectStateUDTField = _selectedObjectStateUDT;
+                SetObjectStateUDT();
             }
+        }
+
+        public IEncapsulatedFieldViewData SelectedField
+        {
+            set
+            {
+                if (value is null) { return; }
+
+                _masterDetailManager.SelectionTargetID = value.TargetID;
+                OnPropertyChanged(nameof(SelectedField));
+                if (_masterDetailManager.DetailUpdateRequired)
+                {
+                    _masterDetailManager.DetailField = SelectedField;
+                    UpdateDetailForSelection();
+                }
+
+                OnPropertyChanged(nameof(PropertiesPreview));
+            }
+
+            get => EncapsulationFields.FirstOrDefault(f => f.TargetID.Equals(_masterDetailManager.SelectionTargetID));
         }
 
         public string PropertyName
         {
-            get => Model.PropertyName;
             set
             {
-                Model.PropertyName = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsValidPropertyName));
-                OnPropertyChanged(nameof(HasValidNames));
-                OnPropertyChanged(nameof(PropertyPreview));
+                if (SelectedField is null || value is null) { return; }
+
+                _masterDetailManager.DetailField.PropertyName = value;
+                UpdateDetailForSelection();
             }
+
+            get => _masterDetailManager.DetailField?.PropertyName ?? SelectedField?.PropertyName ?? string.Empty;
         }
 
-        public string ParameterName
+        public bool SelectedFieldIsNotFlagged
+            => !(_masterDetailManager.DetailField?.EncapsulateFlag ?? false);
+
+        public bool SelectedFieldIsPrivateUDT
+            => (_masterDetailManager.DetailField?.IsPrivateUserDefinedType ?? false);
+
+        public bool SelectedFieldHasEditablePropertyName => !SelectedFieldIsPrivateUDT;
+
+        public bool EnableReadOnlyOption 
+            => !(_masterDetailManager.DetailField?.IsRequiredToBeReadOnly ?? false);
+
+        public string GroupBoxHeaderContent
+            => $"{_masterDetailManager.DetailField?.TargetID ?? string.Empty} {RubberduckUI.EncapsulateField_PropertyName} ";
+
+        private string _validationErrorMessage;
+        public string ValidationErrorMessage => _validationErrorMessage;
+
+        private string _fieldDescriptor;
+        public string FieldDescriptor
         {
-            get => Model.ParameterName;
             set
             {
-                Model.ParameterName = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsValidParameterName));
-                OnPropertyChanged(nameof(HasValidNames));
-                OnPropertyChanged(nameof(PropertyPreview));
+                _fieldDescriptor = value;
+                OnPropertyChanged(nameof(FieldDescriptor));
+            }
+            get => _fieldDescriptor;
+        }
+
+        private string _targetID;
+        public string TargetID
+        {
+            set
+            {
+                _targetID = value;
+            }
+            get => _targetID;
+        }
+
+        public bool IsReadOnly
+        {
+            set
+            {
+                _masterDetailManager.DetailField.IsReadOnly = value;
+            }
+            get => _masterDetailManager.DetailField?.IsReadOnly ?? SelectedField?.IsReadOnly ?? false;
+        }
+
+        public bool ConvertFieldsToUDTMembers
+        {
+            get => Model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers;
+            set
+            {
+                Model.EncapsulateFieldStrategy = value
+                    ? EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
+                    : EncapsulateFieldStrategy.UseBackingFields;
+                ReloadListAndPreview();
+                RefreshValidationResults();
+                UpdateDetailForSelection();
+                OnPropertyChanged(nameof(ShowStateUDTSelections));
             }
         }
 
-        public bool IsValidPropertyName
-        {
-            get
-            {
-                var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
+        private bool _hasValidNames;
+        public bool HasValidNames => _hasValidNames;
 
-                return TargetDeclaration != null
-                       && !PropertyName.Equals(TargetDeclaration.IdentifierName, StringComparison.InvariantCultureIgnoreCase)
-                       && !PropertyName.Equals(ParameterName, StringComparison.InvariantCultureIgnoreCase)
-                       && char.IsLetter(PropertyName.FirstOrDefault())
-                       && !tokenValues.Contains(PropertyName, StringComparer.InvariantCultureIgnoreCase)
-                       && PropertyName.All(c => char.IsLetterOrDigit(c) || c == '_');
+        private bool _selectionHasValidEncapsulationAttributes;
+        public bool SelectionHasValidEncapsulationAttributes => _selectionHasValidEncapsulationAttributes;
+
+        public string PropertiesPreview => Model.PreviewRefactoring();
+
+        public CommandBase SelectAllCommand { get; }
+
+        public CommandBase DeselectAllCommand { get; }
+
+        public CommandBase IsReadOnlyCommand { get; }
+
+        public CommandBase PropertyChangeCommand { get; }
+
+        public CommandBase EncapsulateFlagChangeCommand { get; }
+
+        public CommandBase ReadOnlyChangeCommand { get; }
+
+        private void SetObjectStateUDT()
+        {
+            foreach (var field in UDTFields)
+            {
+                field.IsSelected = _selectedObjectStateUDT == field;
             }
+            OnPropertyChanged(nameof(SelectedObjectStateUDT));
+            OnPropertyChanged(nameof(EncapsulationFields));
+            OnPropertyChanged(nameof(PropertiesPreview));
         }
 
-        public bool IsValidParameterName
+        private void ToggleSelection(bool value)
         {
-            get
+            _lastCheckedBoxes.Clear();
+            foreach (var item in EncapsulationFields)
             {
-                var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
-
-                return TargetDeclaration != null
-                       && !ParameterName.Equals(TargetDeclaration.IdentifierName, StringComparison.InvariantCultureIgnoreCase)
-                       && !ParameterName.Equals(PropertyName, StringComparison.InvariantCultureIgnoreCase)
-                       && char.IsLetter(ParameterName.FirstOrDefault())
-                       && !tokenValues.Contains(ParameterName, StringComparer.InvariantCultureIgnoreCase)
-                       && ParameterName.All(c => char.IsLetterOrDigit(c) || c == '_');
+                item.EncapsulateFlag = value;
             }
+            _lastCheckedBoxes = EncapsulationFields.Where(ef => ef.EncapsulateFlag).ToList();
+            if (value)
+            {
+                SelectedField = _lastCheckedBoxes.FirstOrDefault();
+            }
+            else
+            {
+                _masterDetailManager.DetailField = null;
+            }
+            ReloadListAndPreview();
+            RefreshValidationResults();
+            UpdateDetailForSelection();
         }
 
-        public bool HasValidNames => IsValidPropertyName && IsValidParameterName;
-
-        public string PropertyPreview
+        private Dictionary<string, string> _failedValidationResults = new Dictionary<string, string>();
+        private void RefreshValidationResults()
         {
-            get
+            _failedValidationResults.Clear();
+            _hasValidNames = true;
+            _selectionHasValidEncapsulationAttributes = true;
+            _validationErrorMessage = string.Empty;
+
+            foreach (var field in EncapsulationFields.Where(ef => ef.EncapsulateFlag))
             {
-                if (TargetDeclaration == null)
+                if (!field.TryValidateEncapsulationAttributes(out var errorMessage))
                 {
-                    return string.Empty;
+                    _failedValidationResults.Add(field.TargetID, errorMessage);
                 }
+            }
 
-                var previewGenerator = new PropertyGenerator
-                {
-                    PropertyName = PropertyName,
-                    AsTypeName = TargetDeclaration.AsTypeName,
-                    BackingField = TargetDeclaration.IdentifierName,
-                    ParameterName = ParameterName,
-                    GenerateSetter = IsSetSelected,
-                    GenerateLetter = IsLetSelected
-                };
-
-                var field = $"{Tokens.Private} {TargetDeclaration.IdentifierName} {Tokens.As} {TargetDeclaration.AsTypeName}{Environment.NewLine}{Environment.NewLine}";
-
-                var propertyText = previewGenerator.AllPropertyCode.Insert(0, field).Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-                return string.Join(Environment.NewLine, Indenter.Indent(propertyText, true));
+            _hasValidNames = !_failedValidationResults.Any();
+            if (_failedValidationResults.TryGetValue(_masterDetailManager.SelectionTargetID, out var errorMsg))
+            {
+                _validationErrorMessage = errorMsg;
+                _selectionHasValidEncapsulationAttributes = false;
             }
         }
 
-        public event EventHandler<bool> ExpansionStateChanged;
-        private void OnExpansionStateChanged(bool value) => ExpansionStateChanged?.Invoke(this, value);
+        private void UpdateDetailForSelection()
+        {
+
+            RefreshValidationResults();
+
+            OnPropertyChanged(nameof(SelectedFieldIsNotFlagged));
+            OnPropertyChanged(nameof(GroupBoxHeaderContent));
+            OnPropertyChanged(nameof(PropertyName));
+            OnPropertyChanged(nameof(IsReadOnly));
+            OnPropertyChanged(nameof(HasValidNames));
+            OnPropertyChanged(nameof(EnableReadOnlyOption));
+            OnPropertyChanged(nameof(SelectedFieldIsPrivateUDT));
+            OnPropertyChanged(nameof(SelectedFieldHasEditablePropertyName));
+            OnPropertyChanged(nameof(SelectionHasValidEncapsulationAttributes));
+            OnPropertyChanged(nameof(PropertiesPreview));
+            OnPropertyChanged(nameof(EncapsulationFields));
+            OnPropertyChanged(nameof(ValidationErrorMessage));
+        }
+
+        private void ChangeIsReadOnlyFlag(object param)
+        {
+            if (SelectedField is null) { return; }
+
+            _masterDetailManager.DetailField.IsReadOnly = SelectedField.IsReadOnly;
+            OnPropertyChanged(nameof(IsReadOnly));
+            OnPropertyChanged(nameof(PropertiesPreview));
+        }
+
+        private List<IEncapsulatedFieldViewData> _lastCheckedBoxes = new List<IEncapsulatedFieldViewData>();
+        private void ManageEncapsulationFlagsAndSelectedItem(object param = null)
+        {
+            var selected = _lastCheckedBoxes.FirstOrDefault();
+            if (_lastCheckedBoxes.Count == EncapsulationFields.Where(f => f.EncapsulateFlag).Count())
+            {
+                _lastCheckedBoxes = EncapsulationFields.Where(f => f.EncapsulateFlag).ToList();
+                if (EncapsulationFields.Where(f => f.EncapsulateFlag).Count() == 0
+                    && EncapsulationFields.Count() > 0)
+                {
+                    SetSelectedField(EncapsulationFields.First());
+                    return;
+                }
+                SetSelectedField(_lastCheckedBoxes.First());
+                return;
+            }
+
+            var nowChecked = EncapsulationFields.Where(ef => ef.EncapsulateFlag).ToList();
+            var beforeChecked = _lastCheckedBoxes.ToList();
+
+            nowChecked.RemoveAll(c => _lastCheckedBoxes.Contains(c));
+            beforeChecked.RemoveAll(c => EncapsulationFields.Where(ec => ec.EncapsulateFlag).Select(nc => nc).Contains(c));
+            if (nowChecked.Any())
+            {
+                selected = nowChecked.First();
+            }
+            else if (beforeChecked.Any())
+            {
+                selected = beforeChecked.First();
+            }
+            else
+            {
+                selected = null;
+            }
+
+            _lastCheckedBoxes = EncapsulationFields.Where(ef => ef.EncapsulateFlag).ToList();
+
+            SetSelectedField(selected);
+        }
+
+        private void SetSelectedField(IEncapsulatedFieldViewData selected)
+        {
+            _masterDetailManager.SelectionTargetID = selected?.TargetID ?? null;
+            OnPropertyChanged(nameof(SelectedField));
+            if (_masterDetailManager.DetailUpdateRequired)
+            {
+                _masterDetailManager.DetailField = SelectedField;
+                UpdateDetailForSelection();
+            }
+        }
+
+        private void UpdatePreview() 
+            => OnPropertyChanged(nameof(PropertiesPreview));
+
+        private void ReloadListAndPreview()
+        {
+            OnPropertyChanged(nameof(EncapsulationFields));
+            OnPropertyChanged(nameof(PropertiesPreview));
+        }
     }
 }

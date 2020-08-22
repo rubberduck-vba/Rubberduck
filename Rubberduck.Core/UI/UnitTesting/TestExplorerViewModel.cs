@@ -5,15 +5,13 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
-using System.Windows.Annotations;
 using System.Windows.Data;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
-using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
@@ -24,7 +22,6 @@ using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Utility;
-using Rubberduck.Formatters;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -66,29 +63,36 @@ namespace Rubberduck.UI.UnitTesting
 
             NavigateCommand = new NavigateCommand(selectionService);  
             RunSingleTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSingleTestCommand, CanExecuteSingleTest);
-            RunSelectedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSelectedTestsCommand, CanExecuteSelectedTestsCommand);
-            RunSelectedGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunSelectedGroupCommand, CanExecuteSelectedGroupCommand);
+            RunSelectedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSelectedTestsCommand, CanExecuteSelectedCommands);
+            RunSelectedGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunSelectedGroupCommand, CanExecuteGroupCommand);
             CancelTestRunCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCancelTestRunCommand, CanExecuteCancelTestRunCommand);
             ResetResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteResetResultsCommand, CanExecuteResetResultsCommand);
             CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand);
             OpenTestSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
-            IgnoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreTestCommand);
-            UnignoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreTestCommand);
+            IgnoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreTestCommand, CanExecuteIgnoreTestCommand);
+            UnignoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreTestCommand, CanExecuteUnignoreTestCommand);
+            IgnoreSelectedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreSelectedTestsCommand, CanExecuteIgnoreSelectedTests);
+            UnignoreSelectedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreSelectedTestsCommand, CanExecuteUnignoreSelectedTests);
+            IgnoreGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreGroupCommand, CanExecuteIgnoreGroupCommand);
+            UnignoreGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreGroupCommand, CanExecuteUnignoreGroupCommand);
 
             RewritingManager = rewritingManager;
             AnnotationUpdater = annotationUpdater;
 
             Model = model;
-            Model.TestCompleted += HandleTestCompletion;
 
             if (CollectionViewSource.GetDefaultView(Model.Tests) is ListCollectionView tests)
             {
                 tests.SortDescriptions.Add(new SortDescription("QualifiedName.QualifiedModuleName.Name", ListSortDirection.Ascending));
                 tests.SortDescriptions.Add(new SortDescription("QualifiedName.MemberName", ListSortDirection.Ascending));
+                tests.IsLiveFiltering = true;
+                tests.IsLiveGrouping = true;
                 Tests = tests;
             }
+
+            
 
             OnPropertyChanged(nameof(Tests));
             TestGrouping = TestExplorerGrouping.Outcome;
@@ -136,8 +140,10 @@ namespace Rubberduck.UI.UnitTesting
 
         private void RefreshContextMenu()
         {
-            OnPropertyChanged(nameof(DisplayUnignoreTestLabel));
-            OnPropertyChanged(nameof(DisplayIgnoreTestLabel));
+            OnPropertyChanged(nameof(CanExecuteUnignoreTestCommand));
+            OnPropertyChanged(nameof(CanExecuteIgnoreTestCommand));
+            OnPropertyChanged(nameof(CanExecuteUnignoreGroupCommand));
+            OnPropertyChanged(nameof(CanExecuteIgnoreGroupCommand));
         }
 
         private static readonly Dictionary<TestExplorerGrouping, PropertyGroupDescription> GroupDescriptions = new Dictionary<TestExplorerGrouping, PropertyGroupDescription>
@@ -227,22 +233,49 @@ namespace Rubberduck.UI.UnitTesting
             return passesNameFilter && passesOutcomeFilter;
         }
 
-        private void HandleTestCompletion(object sender, TestCompletedEventArgs e)
-        {
-            if (TestGrouping != TestExplorerGrouping.Outcome)
-            {
-                return;
-            }
-
-            Tests.Refresh();
-        }
-
         public IRewritingManager RewritingManager { get; }
         public IAnnotationUpdater AnnotationUpdater { get; }
 
         private TestMethod _mousedOverTestMethod => ((TestMethodViewModel)SelectedItem).Method;
-        public bool DisplayUnignoreTestLabel => SelectedItem != null && _mousedOverTestMethod.IsIgnored;
-        public bool DisplayIgnoreTestLabel => SelectedItem != null && !_mousedOverTestMethod.IsIgnored;
+        public bool CanExecuteUnignoreTestCommand(object obj) => SelectedItem != null && _mousedOverTestMethod.IsIgnored;
+        public bool CanExecuteIgnoreTestCommand(object obj) => SelectedItem != null && !_mousedOverTestMethod.IsIgnored;
+
+        public bool CanExecuteIgnoreSelectedTests(object obj)
+        {
+            if (!Model.IsBusy && obj is IList viewModels && viewModels.Count > 0)
+            {
+                return viewModels.Cast<TestMethodViewModel>().Count(test => test.Method.IsIgnored) != viewModels.Count;
+            }
+
+            return false;
+        }
+
+        public bool CanExecuteUnignoreSelectedTests(object obj)
+        {
+            if (!Model.IsBusy && obj is IList viewModels && viewModels.Count > 0)
+            {
+                return viewModels.Cast<TestMethodViewModel>().Any(test => test.Method.IsIgnored);
+            }
+
+            return false;
+        }
+
+        public bool CanExecuteIgnoreGroupCommand(object obj)
+        {
+            var groupItems = MouseOverGroup?.Items
+                             ?? GroupContainingSelectedTest(MouseOverTest).Items;
+
+            return groupItems.Cast<TestMethodViewModel>().Count(test => test.Method.IsIgnored) != groupItems.Count;
+        }
+
+        public bool CanExecuteUnignoreGroupCommand(object obj)
+        {
+            var groupItems = MouseOverGroup?.Items
+                             ?? GroupContainingSelectedTest(MouseOverTest)?.Items;
+            
+            return groupItems != null 
+                   && groupItems.Cast<TestMethodViewModel>().Any(test => test.Method.IsIgnored);
+        }
         
         #region Commands
 
@@ -278,6 +311,12 @@ namespace Rubberduck.UI.UnitTesting
         public CommandBase IgnoreTestCommand { get; }
         public CommandBase UnignoreTestCommand { get; }
 
+        public CommandBase IgnoreGroupCommand { get; }
+        public CommandBase UnignoreGroupCommand { get; }
+
+        public CommandBase IgnoreSelectedTestsCommand { get; }
+        public CommandBase UnignoreSelectedTestsCommand { get; }
+
         #endregion
 
         #region Delegates
@@ -287,12 +326,12 @@ namespace Rubberduck.UI.UnitTesting
             return !Model.IsBusy && MouseOverTest != null;
         }
 
-        private bool CanExecuteSelectedTestsCommand(object obj)
+        private bool CanExecuteSelectedCommands(object obj)
         {
             return !Model.IsBusy && obj is IList viewModels && viewModels.Count > 0;
         }
 
-        private bool CanExecuteSelectedGroupCommand(object obj)
+        private bool CanExecuteGroupCommand(object obj)
         {
             return !Model.IsBusy && (MouseOverTest != null || MouseOverGroup != null);
         }
@@ -346,9 +385,7 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteRunSelectedGroupCommand(object obj)
         {
-            var tests = MouseOverTest is null
-                ? MouseOverGroup
-                : Tests.Groups.OfType<CollectionViewGroup>().FirstOrDefault(group => group.Items.Contains(MouseOverTest));
+            var tests = GroupContainingSelectedTest(MouseOverTest);
 
             if (tests is null)
             {
@@ -356,6 +393,13 @@ namespace Rubberduck.UI.UnitTesting
             }
 
             Model.ExecuteTests(tests.Items.OfType<TestMethodViewModel>().ToList());
+        }
+
+        private CollectionViewGroup GroupContainingSelectedTest(TestMethodViewModel selectedTest)
+        {
+            return selectedTest is null
+                ? MouseOverGroup
+                : Tests.Groups.OfType<CollectionViewGroup>().FirstOrDefault(group => group.Items.Contains(selectedTest));
         }
 
         private void ExecuteCancelTestRunCommand(object parameter)
@@ -377,20 +421,116 @@ namespace Rubberduck.UI.UnitTesting
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, new IgnoreTestAnnotation());
+            var testMethod = parameter is null
+                ? _mousedOverTestMethod
+                : (TestMethod)parameter;
+
+            AnnotationUpdater.AddAnnotation(rewriteSession, testMethod.Declaration, new IgnoreTestAnnotation());
 
             rewriteSession.TryRewrite();
         }
 
         private void ExecuteUnignoreTestCommand(object parameter)
         {
-            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
-            var ignoreTestAnnotations = _mousedOverTestMethod.Declaration.Annotations
+            var testMethod = parameter is null
+                ? _mousedOverTestMethod
+                : (TestMethod)parameter;
+
+            var ignoreTestAnnotations = testMethod.Declaration.Annotations
                 .Where(pta => pta.Annotation is IgnoreTestAnnotation);
 
-            foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+
+            AnnotationUpdater.RemoveAnnotations(rewriteSession, ignoreTestAnnotations);
+
+            rewriteSession.TryRewrite();
+        }
+
+        private void ExecuteIgnoreGroupCommand(object parameter)
+        {
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+            var testGroup = GroupContainingSelectedTest(MouseOverTest);
+            var ignoreTestAnnotation = new IgnoreTestAnnotation();
+            
+            foreach (TestMethodViewModel test in testGroup.Items)
             {
-                AnnotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
+                if (!test.Method.IsIgnored)
+                {
+                    AnnotationUpdater.AddAnnotation(rewriteSession, test.Method.Declaration, ignoreTestAnnotation);
+                }
+            }
+
+            rewriteSession.TryRewrite();
+        }
+
+        private void ExecuteUnignoreGroupCommand(object parameter)
+        {
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+            var testGroup = GroupContainingSelectedTest(MouseOverTest);
+
+            foreach (TestMethodViewModel test in testGroup.Items)
+            {
+                var ignoreTestAnnotations = test.Method.Declaration.Annotations
+                    .Where(pta => pta.Annotation is IgnoreTestAnnotation);
+
+                foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
+                {
+                    AnnotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
+                }
+            }
+
+            rewriteSession.TryRewrite();
+        }
+
+        private void ExecuteUnignoreSelectedTestsCommand(object parameter)
+        {
+            if (Model.IsBusy || !(parameter is IList viewModels && viewModels.Count > 0))
+            {
+                return;
+            }
+
+            var ignoredModels = viewModels.OfType<TestMethodViewModel>()
+                .Where(model => model.Method.IsIgnored);
+
+            if (!ignoredModels.Any())
+            {
+                return; 
+            }
+
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+
+            foreach (var test in ignoredModels)
+            {
+                var ignoreTestAnnotations = test.Method.Declaration.Annotations
+                    .Where(pta => pta.Annotation is IgnoreTestAnnotation);
+
+                AnnotationUpdater.RemoveAnnotations(rewriteSession, ignoreTestAnnotations);
+            }
+
+            rewriteSession.TryRewrite();
+        }
+
+        private void ExecuteIgnoreSelectedTestsCommand(object parameter)
+        {
+            if (Model.IsBusy || !(parameter is IList viewModels && viewModels.Count > 0))
+            {
+                return;
+            }
+
+            var unignoredModels = viewModels.OfType<TestMethodViewModel>()
+                .Where(model => !model.Method.IsIgnored);
+
+            if (!unignoredModels.Any())
+            {
+                return;
+            }
+
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+            var ignoreTestAnnotation = new IgnoreTestAnnotation();
+
+            foreach (var test in unignoredModels)
+            {
+                AnnotationUpdater.AddAnnotation(rewriteSession, test.Method.Declaration, ignoreTestAnnotation);
             }
 
             rewriteSession.TryRewrite();
@@ -458,7 +598,6 @@ namespace Rubberduck.UI.UnitTesting
 
         public void Dispose()
         {
-            Model.TestCompleted -= HandleTestCompletion;
             Model.Dispose();
         }
     }

@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about duplicated annotations.
@@ -14,7 +15,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Rubberduck annotations should not be specified more than once for a given module, member, variable, or expression.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Folder("Bar")
     /// '@Folder("Foo")
@@ -23,8 +25,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Folder("Foo.Bar")
     ///
@@ -32,34 +36,25 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class DuplicatedAnnotationInspection : InspectionBase
+    internal sealed class DuplicatedAnnotationInspection : DeclarationInspectionMultiResultBase<IAnnotation>
     {
-        public DuplicatedAnnotationInspection(RubberduckParserState state) : base(state)
+        public DuplicatedAnnotationInspection(IDeclarationFinderProvider declarationFinderProvider) 
+            : base(declarationFinderProvider)
+        {}
+
+        protected override IEnumerable<IAnnotation> ResultProperties(Declaration declaration, DeclarationFinder finder)
         {
+            return declaration.Annotations
+                .GroupBy(pta => pta.Annotation)
+                .Where(group => !group.First().Annotation.AllowMultiple && group.Count() > 1)
+                .Select(group => group.Key);
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(Declaration declaration, IAnnotation annotation)
         {
-            var issues = new List<DeclarationInspectionResult>();
-
-            foreach (var declaration in State.AllUserDeclarations)
-            {
-                var duplicateAnnotations = declaration.Annotations
-                    .GroupBy(pta => pta.Annotation)
-                    .Where(group => !group.First().Annotation.AllowMultiple && group.Count() > 1);
-
-                issues.AddRange(duplicateAnnotations.Select(duplicate =>
-                {
-                    var result = new DeclarationInspectionResult(
-                        this, string.Format(InspectionResults.DuplicatedAnnotationInspection, duplicate.Key.ToString()), declaration);
-
-                    result.Properties.Annotation = duplicate.Key;
-                    return result;
-                }));
-            }
-
-            return issues;
+            return string.Format(InspectionResults.DuplicatedAnnotationInspection, annotation);
         }
     }
 }

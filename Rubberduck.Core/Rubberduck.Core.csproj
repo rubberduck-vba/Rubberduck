@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
+<Project Sdk="Sunburst.NET.Sdk.WPF.Patched/1.0.49">
   <PropertyGroup>
     <RootNamespace>Rubberduck</RootNamespace>
     <AssemblyName>Rubberduck.Core</AssemblyName>
@@ -13,7 +13,7 @@
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
     <!-- Give a fixed version to not blow XAML generated code to smithereens -->
     <!-- This also fixes "Input string was not in the correct format" error message when referring to the current assembly in an XAML-Namespace -->
-    <AssemblyVersion>2.5.0</AssemblyVersion>
+    <AssemblyVersion>2.5.1</AssemblyVersion>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
@@ -116,6 +116,18 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Refactorings\AnnotateDeclaration\AnnotateDeclarationView.xaml.cs">
+      <DependentUpon>AnnotateDeclarationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Refactorings\MoveFolder\MoveMultipleFoldersView.xaml.cs">
+      <DependentUpon>MoveMultipleFoldersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Refactorings\MoveToFolder\MoveMultipleToFolderView.xaml.cs">
+      <DependentUpon>MoveMultipleToFolderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Refactorings\RenameFolder\RenameFolderView.xaml.cs">
+      <DependentUpon>RenameFolderView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

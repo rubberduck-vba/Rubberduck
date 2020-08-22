@@ -1,59 +1,18 @@
 ﻿<UserControl x:Class="Rubberduck.UI.Refactorings.ExtractInterfaceView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
-             mc:Ignorable="d" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Controls/ToolBar.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFD9F4FF" Offset="0"/>
-            <GradientStop Color="#FF9BDDFB" Offset="1"/>
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFEEEDED" Offset="0"/>
-            <GradientStop Color="#FFDDDDDD" Offset="1"/>
-        </LinearGradientBrush>
-        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
-
-        <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
-            <Style.Resources>
-                <Style TargetType="{x:Type Border}">
-                    <Setter Property="CornerRadius" Value="2"/>
-                </Style>
-            </Style.Resources>
-            <Setter Property="BorderThickness" Value="0,.5,0,0" />
-            <Setter Property="BorderBrush" Value="DarkGray" />
-            <Setter Property="Height" Value="26" />
-            <Setter Property="TextBlock.FontWeight" Value="Normal" />
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="BorderThickness" Value="1.5" />
-                </Trigger>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsSelected" Value="True" />
-                        <Condition Property="Selector.IsSelectionActive" Value="True" />
-                    </MultiTrigger.Conditions>
-                    <Setter Property="BorderBrush" Value="#adc6e5"/>
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                </MultiTrigger>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsSelected" Value="True" />
-                        <Condition Property="Selector.IsSelectionActive" Value="False" />
-                    </MultiTrigger.Conditions>
-                    <Setter Property="BorderBrush" Value="LightGray"/>
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
-                </MultiTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <BitmapImage x:Key="InvalidInterfaceImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
+            <BitmapImage x:Key="InvalidInterfaceImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -61,7 +20,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <DockPanel Dock="Top" Background="White">
+        <DockPanel Dock="Top" Background="{StaticResource BackgroundLightBrush}">
             <StackPanel>
 
             <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_TitleLabel}" FontWeight="Bold" />
@@ -71,6 +30,7 @@
         </DockPanel>
         <Grid Grid.Row="1" Margin="5">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
@@ -90,8 +50,21 @@
                        Visibility="{Binding IsValidInterfaceName, Converter={StaticResource BoolToHiddenVisibility}}"/>
             </StackPanel>
 
-            <GroupBox Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_MembersGroupBox}"
+            <GroupBox Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_InstancingGroupBox}"
                       Grid.Row="1" Margin="5" Padding="5">
+                <Grid>
+                    <ComboBox ItemsSource="{Binding ClassInstances}"
+                              SelectedValue="{Binding InterfaceInstancing, Mode=TwoWay}"
+                              Visibility="{Binding CanChooseInterfaceInstancing, Converter={StaticResource BoolToVisibility}}">
+                    </ComboBox>
+                    <TextBlock Visibility="{Binding CanChooseInterfaceInstancing, Converter={StaticResource BoolToHiddenVisibility}}"
+                               Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_PublicInstancingMandatedByPublicClass}"
+                               TextWrapping="Wrap" />
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_MembersGroupBox}"
+                      Grid.Row="2" Margin="5" Padding="5">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />

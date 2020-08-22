@@ -1,9 +1,10 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using Rubberduck.Inspections.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -29,6 +30,20 @@ End Function
 ";
 
             Assert.AreEqual(1, InspectionResultCount(string.Format(codeTemplate, identifier), ComponentType.StandardModule));
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ExcelUdfNameIsValidCellReferenceInspection_ReturnsResult_ValidCellsInPrivateModule()
+        {
+            const string code =
+                @"Option Private Module
+Public Function A1() As Long
+    A1 = 42
+End Function
+";
+
+            Assert.AreEqual(0, InspectionResultCount(code, ComponentType.StandardModule));
         }
 
         [TestCase("Foo")]
@@ -106,7 +121,7 @@ End {1}
         }
 
         private int InspectionResultCount(string inputCode, ComponentType moduleType)
-            => InspectionResultsForModules(("UnderTest", inputCode, moduleType), "Excel").Count();
+            => InspectionResultsForModules(("UnderTest", inputCode, moduleType), ReferenceLibrary.Excel).Count();
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {

@@ -1,31 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
-    public class Parameter
-    {
-        public string ParamAccessibility { get; set; }
-        public string ParamName { get; set; }
-        public string ParamType { get; set; }
-
-        public override string ToString()
-        {
-            return $"{ParamAccessibility} {ParamName} As {ParamType}";
-        }
-    }
-
     public class InterfaceMember : INotifyPropertyChanged
     {
+        private readonly ModuleBodyElementDeclaration _element;
+        private readonly ICodeBuilder _codeBuilder;
+
+        public InterfaceMember(Declaration member, ICodeBuilder codeBuilder)
+        {
+            Member = member;
+            if (!(member is ModuleBodyElementDeclaration mbed))
+            {
+                throw new ArgumentException();
+            }
+            _element = mbed;
+            _codeBuilder = codeBuilder;
+        }
+
         public Declaration Member { get; }
-        public IEnumerable<Parameter> MemberParams { get; }
-        private string Type { get; }
-        private string MemberType { get; set; }
 
         private bool _isSelected;
         public bool IsSelected
@@ -38,82 +34,10 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
         }
 
-        public string Identifier { get; }
+        public string FullMemberSignature => _codeBuilder.ImprovedFullMemberSignature(_element);
 
-        public string FullMemberSignature
-        {
-            get
-            {
-                var signature = $"{MemberType} {Member.IdentifierName}({string.Join(", ", MemberParams)})";
+        public string Body => _codeBuilder.BuildMemberBlockFromPrototype(_element);
 
-                return Type == null ? signature : $"{signature} As {Type}";
-            }
-        }
-
-        public InterfaceMember(Declaration member)
-        {
-            Member = member;
-            Identifier = member.IdentifierName;
-            Type = member.AsTypeName;
-            
-            GetMethodType();
-
-            if (member is IParameterizedDeclaration memberWithParams)
-            {
-                MemberParams = memberWithParams.Parameters
-                    .OrderBy(o => o.Selection.StartLine)
-                    .ThenBy(t => t.Selection.StartColumn)
-                    .Select(p => new Parameter
-                    {
-                        ParamAccessibility =
-                            ((VBAParser.ArgContext) p.Context).BYVAL() != null ? Tokens.ByVal : Tokens.ByRef,
-                        ParamName = p.IdentifierName,
-                        ParamType = p.AsTypeName
-                    })
-                    .ToList();
-            }
-            else
-            {
-                MemberParams = new List<Parameter>();
-            }
-
-            if (MemberType == "Property Get")
-            {
-                MemberParams = MemberParams.Take(MemberParams.Count() - 1);
-            }
-        }
-
-        private void GetMethodType()
-        {
-            var context = Member.Context;
-
-            if (context is VBAParser.SubStmtContext)
-            {
-                MemberType = Tokens.Sub;
-            }
-
-            if (context is VBAParser.FunctionStmtContext)
-            {
-                MemberType = Tokens.Function;
-            }
-
-            if (context is VBAParser.PropertyGetStmtContext)
-            {
-                MemberType = $"{Tokens.Property} {Tokens.Get}";
-            }
-
-            if (context is VBAParser.PropertyLetStmtContext)
-            {
-                MemberType = $"{Tokens.Property} {Tokens.Let}";
-            }
-
-            if (context is VBAParser.PropertySetStmtContext)
-            {
-                MemberType = $"{Tokens.Property} {Tokens.Set}";
-            }
-        }
-
-        public string Body => string.Format("Public {0}{1}End {2}{1}", FullMemberSignature, Environment.NewLine, MemberType.Split(' ').First());
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

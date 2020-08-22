@@ -33,7 +33,14 @@ namespace Rubberduck.Parsing.Rewriter
                 return;
             }
 
-            var newCode = _rewriter.GetText();
+            var tentativeCode = _rewriter.GetText();
+
+            while (tentativeCode.EndsWith(Environment.NewLine + Environment.NewLine))
+            {
+                tentativeCode = tentativeCode.Remove(tentativeCode.Length - Environment.NewLine.Length);
+            };
+            var newCode = tentativeCode;
+
             _sourceCodeHandler.SubstituteCode(_module, newCode);
         }
 

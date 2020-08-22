@@ -127,7 +127,7 @@
     <value>Esperado: desbordamiento de pila ?; Actual: cláusula de guardia.</value>
   </data>
   <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
-    <value>Yo también verifico</value>
+    <value>IVerify también.</value>
   </data>
   <data name="Assert_FailedMessageFormat" xml:space="preserve">
     <value>La afirmación {0} ha fallado. {1}</value>
@@ -142,13 +142,13 @@
     <value>Los valores [esperado] y [real] no son del mismo tipo.</value>
   </data>
   <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
-    <value>Ni [esperado] ni [real] es una matriz.</value>
+    <value>Ni [esperado] ni [real] son arreglos.</value>
   </data>
   <data name="Assert_NotImplemented" xml:space="preserve">
     <value>No se ha implementado.</value>
   </data>
   <data name="Assert_ParameterIsNotArrayFormat" xml:space="preserve">
-    <value>{0} no es un array.</value>
+    <value>{0} no es un arreglo.</value>
   </data>
   <data name="Assert_ParameterResultFormat" xml:space="preserve">
     <value>Esperado: {0}; Actual: {1}. {2}</value>
@@ -160,13 +160,13 @@
     <value>Dimensión {0}: se espera que tenga un UBound de {1}; real tiene un límite de {2}. {3}</value>
   </data>
   <data name="Assert_UnexpectedArrayFormat" xml:space="preserve">
-    <value>[esperado] y [actual] son matrices. Considera utilizar {0}.</value>
+    <value>[esperado] y [actual] son arreglos. Considera utilizar {0}.</value>
   </data>
   <data name="Assert_UnexpectedNullArraysFormat" xml:space="preserve">
     <value>[esperado] y [actual] son Nada. Considera utilizar {0}.</value>
   </data>
   <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
-    <value>[esperado] y [actual] son Nada. Considera utilizar {0}.</value>
+    <value>[esperado] y [actual] son tipos de referencia. Considera utilizar {0}.</value>
   </data>
   <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
     <value>[esperado] y [real] son tipos de valor. Considera utilizar {0}.</value>
@@ -187,7 +187,7 @@
     <value>El parámetro {0} no se pasó en la invocación {1}. {2}</value>
   </data>
   <data name="Prerequisite_EarlyBindingReferenceMissing" xml:space="preserve">
-    <value>La referencia a Rubberduck requerida para las pruebas de unión temprana no se pudo resolver. Puede ser corrupto.</value>
+    <value>La referencia a Rubberduck requerida para las pruebas de unión temprana no se pudo resolver. Puede estar corrupta.</value>
   </data>
   <data name="TestRunner_ComException" xml:space="preserve">
     <value>Excepción de COM inesperada al ejecutar pruebas.</value>
@@ -196,7 +196,7 @@
     <value>La ejecución de un método de prueba falló con una excepción.</value>
   </data>
   <data name="TestRunner_GenericException" xml:space="preserve">
-    <value>Unexpected exception while running tests.</value>
+    <value>Excepción inesperada al ejecutar pruebas.</value>
   </data>
   <data name="TestRunner_ModuleInitializeFailure" xml:space="preserve">
     <value>Algo salió mal al intentar ejecutar @ModuleInitialize. Se saltó el módulo.</value>

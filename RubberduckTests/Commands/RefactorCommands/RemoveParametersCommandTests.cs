@@ -170,7 +170,9 @@ End Property";
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            var refactoring = new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
+            var baseRefactoring = new RemoveParameterRefactoringAction(state, rewritingManager);
+            var userInteraction = new RefactoringUserInteraction<IRemoveParametersPresenter, RemoveParametersModel>(factory, uiDispatcherMock.Object);
+            var refactoring = new RemoveParametersRefactoring(baseRefactoring, state, userInteraction, selectionService, selectedDeclarationProvider);
             var notifier = new RemoveParameterFailedNotifier(msgBox);
             return new RefactorRemoveParametersCommand(refactoring, notifier, state, selectionService, selectedDeclarationProvider);
         }

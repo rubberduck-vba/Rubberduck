@@ -12,7 +12,6 @@ using Rubberduck.VBEditor.VbeRuntime.Settings;
 using Rubberduck.Resources;
 using Rubberduck.Resources.Settings;
 using Rubberduck.Parsing.Common;
-using System.Collections.Specialized;
 using Rubberduck.UI.WPF;
 
 namespace Rubberduck.UI.Settings
@@ -103,6 +102,7 @@ namespace Rubberduck.UI.Settings
                 }
             }
         }
+
         private void InvalidateShouldDisplayWarning(object sender, ElementPropertyChangedEventArgs<HotkeySettingViewModel> e)
         {
             OnPropertyChanged(nameof(ShouldDisplayHotkeyModificationLabel));
@@ -112,7 +112,7 @@ namespace Rubberduck.UI.Settings
         {
             get
             {
-                return _hotkeys.Any(s => !s.IsValid);
+                return _hotkeys.Any(s => !s.IsValid && s.IsEnabled);
             }
         }
 
@@ -193,6 +193,20 @@ namespace Rubberduck.UI.Settings
 
                 _compileBeforeParse = value;
                 OnPropertyChanged();
+            }
+        }
+
+        private bool _enableFolderDragAndDrop;
+        public bool EnableFolderDragAndDrop
+        {
+            get => _enableFolderDragAndDrop;
+            set
+            {
+                if (_enableFolderDragAndDrop != value)
+                {
+                    _enableFolderDragAndDrop = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -306,6 +320,7 @@ namespace Rubberduck.UI.Settings
                 IncludePreRelease = IncludePreRelease,
                 CompileBeforeParse = CompileBeforeParse,
                 SetDpiUnaware =  SetDpiUnaware,
+                EnableFolderDragAndDrop = EnableFolderDragAndDrop,
                 IsSmartIndenterPrompted = _indenterPrompted,
                 IsAutoSaveEnabled = AutoSaveEnabled,
                 AutoSavePeriod = AutoSavePeriod,
@@ -332,6 +347,7 @@ namespace Rubberduck.UI.Settings
             IncludePreRelease = general.IncludePreRelease;
             CompileBeforeParse = general.CompileBeforeParse;
             SetDpiUnaware = general.SetDpiUnaware;
+            EnableFolderDragAndDrop = general.EnableFolderDragAndDrop;
             _indenterPrompted = general.IsSmartIndenterPrompted;
             AutoSaveEnabled = general.IsAutoSaveEnabled;
             AutoSavePeriod = general.AutoSavePeriod;

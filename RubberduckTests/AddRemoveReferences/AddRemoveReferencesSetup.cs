@@ -14,6 +14,7 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.UI;
 using Rubberduck.UI.AddRemoveReferences;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -112,7 +113,12 @@ namespace RubberduckTests.AddRemoveReferences
 
         public static ReferenceReconciler ArrangeReferenceReconciler(ReferenceSettings settings = null)
         {
-            return ArrangeReferenceReconciler(settings, out _, out _);
+            return ArrangeReferenceReconciler(settings, null, out _, out _);
+        }
+
+        public static ReferenceReconciler ArrangeReferenceReconciler(IProjectsProvider projectsProvider, ReferenceSettings settings = null)
+        {
+            return ArrangeReferenceReconciler(settings, projectsProvider, out _, out _);
         }
 
         public static ReferenceReconciler ArrangeReferenceReconciler(
@@ -120,9 +126,18 @@ namespace RubberduckTests.AddRemoveReferences
             out Mock<IMessageBox> messageBox,
             out Mock<IComLibraryProvider> libraryProvider)
         {
+            return ArrangeReferenceReconciler(settings, null, out messageBox, out libraryProvider);
+        }
+
+        public static ReferenceReconciler ArrangeReferenceReconciler(
+            ReferenceSettings settings,
+            IProjectsProvider projectsprovider,
+            out Mock<IMessageBox> messageBox,
+            out Mock<IComLibraryProvider> libraryProvider)
+        {
             messageBox = new Mock<IMessageBox>();
             libraryProvider = new Mock<IComLibraryProvider>();
-            return new ReferenceReconciler(messageBox.Object, GetReferenceSettingsProvider(settings), libraryProvider.Object);
+            return new ReferenceReconciler(messageBox.Object, GetReferenceSettingsProvider(settings), libraryProvider.Object, projectsprovider);
         }
 
         public static void SetupIComLibraryProvider(Mock<IComLibraryProvider> provider, ReferenceInfo reference, string path, string description = "")
@@ -164,10 +179,10 @@ namespace RubberduckTests.AddRemoveReferences
 
         public static ProjectDeclaration ArrangeMocksAndGetProject()
         {
-            return ArrangeMocksAndGetProject(out _, out _);
+            return ArrangeMocksAndGetProject(out _, out _, out _);
         }
 
-        public static ProjectDeclaration ArrangeMocksAndGetProject(out MockProjectBuilder projectBuilder, out Mock<IReferences> references)
+        public static ProjectDeclaration ArrangeMocksAndGetProject(out MockProjectBuilder projectBuilder, out Mock<IReferences> references, out IProjectsProvider projectsProvider)
         {
             var builder = new MockVbeBuilder();
 
@@ -183,8 +198,14 @@ namespace RubberduckTests.AddRemoveReferences
 
             builder.AddProject(projectBuilder.Build());
 
-            var parser = MockParser.CreateAndParse(builder.Build().Object);
-            return parser.AllUserDeclarations.OfType<ProjectDeclaration>().Single();
+            var state = MockParser.CreateAndParse(builder.Build().Object);
+
+            projectsProvider = state.ProjectsProvider;
+
+            return state.DeclarationFinder
+                .UserDeclarations(DeclarationType.Project)
+                .OfType<ProjectDeclaration>()
+                .Single();
         }
 
         public static Mock<IAddRemoveReferencesModel> ArrangeParsedAddRemoveReferencesModel(
@@ -192,9 +213,10 @@ namespace RubberduckTests.AddRemoveReferences
             List<ReferenceModel> output, 
             List<ReferenceModel> registered, 
             out Mock<IReferences> references,
-            out MockProjectBuilder projectBuilder)
+            out MockProjectBuilder projectBuilder,
+            out IProjectsProvider projectsProvider)
         {
-            var declaration = ArrangeMocksAndGetProject(out projectBuilder, out references);
+            var declaration = ArrangeMocksAndGetProject(out projectBuilder, out references, out projectsProvider);
 
             var model = ArrangeAddRemoveReferencesModel(input, output, GetDefaultReferenceSettings());
             model.Setup(m => m.Project).Returns(declaration);
@@ -233,7 +255,7 @@ namespace RubberduckTests.AddRemoveReferences
         {
             var registered = LibraryReferenceInfoList.Select(reference => new ReferenceModel(reference, ReferenceKind.TypeLibrary)).ToList();
 
-            var declaration = ArrangeMocksAndGetProject(out _, out var references);
+            var declaration = ArrangeMocksAndGetProject(out _, out var references, out var projectsProvider);
             var settings = GetNonDefaultReferenceSettings();
 
             var priority = 1;
@@ -258,10 +280,10 @@ namespace RubberduckTests.AddRemoveReferences
             }
 
             var model = new AddRemoveReferencesModel(null, declaration, allReferences, settings);
-            var reconciler = ArrangeReferenceReconciler(settings, out _, out libraryProvider);
+            var reconciler = ArrangeReferenceReconciler(settings, projectsProvider, out _, out libraryProvider);
             browserFactory = new Mock<IFileSystemBrowserFactory>();
 
-            return new AddRemoveReferencesViewModel(model, reconciler, browserFactory.Object);
+            return new AddRemoveReferencesViewModel(model, reconciler, browserFactory.Object, projectsProvider);
         }
 
         public static void SetupMockedOpenDialog(this Mock<IFileSystemBrowserFactory> factory, string filename, DialogResult result)

@@ -1,9 +1,10 @@
 ﻿using System;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.QuickFixes;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
@@ -182,7 +183,8 @@ End Sub";
 '@TestMethod
 Public Sub Foo
 End Sub";
-            Func<IInspectionResult, bool> conditionToFix = result => result.Properties.Annotation is ObsoleteAnnotation;
+            Func<IInspectionResult, bool> conditionToFix = result => result is IWithInspectionResultProperties<IAnnotation> resultProperties 
+                                                                     && resultProperties.Properties is ObsoleteAnnotation;
             var actualCode = ApplyQuickFixToFirstInspectionResultSatisfyingPredicate(inputCode, state => new DuplicatedAnnotationInspection(state), conditionToFix);
             Assert.AreEqual(expectedCode, actualCode);
         }
@@ -190,7 +192,7 @@ End Sub";
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            return new RemoveDuplicatedAnnotationQuickFix(new AnnotationUpdater());
+            return new RemoveDuplicatedAnnotationQuickFix(new AnnotationUpdater(state));
         }
     }
 }

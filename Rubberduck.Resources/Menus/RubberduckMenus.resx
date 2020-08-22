@@ -244,4 +244,25 @@
   <data name="ContextMenu_RunSelectedTestModule" xml:space="preserve">
     <value>Run tests in module</value>
   </data>
+  <data name="RefactorMenu_MoveToFolder" xml:space="preserve">
+    <value>Move To Folder</value>
+  </data>
+  <data name="RefactorMenu_MoveContainingFolder" xml:space="preserve">
+    <value>Move Containing Folder</value>
+  </data>
+  <data name="AnnotateMenu" xml:space="preserve">
+    <value>Annotate</value>
+  </data>
+  <data name="AnnotateMenu_SelectedDeclaration" xml:space="preserve">
+    <value>Selected Declaration</value>
+  </data>
+  <data name="AnnotateMenu_SelectedModule" xml:space="preserve">
+    <value>Selected Module</value>
+  </data>
+  <data name="AnnotateMenu_SelectedMember" xml:space="preserve">
+    <value>Selected Member</value>
+  </data>
+  <data name="RubberduckMenu_CodePaneRefactor" xml:space="preserve">
+    <value>&amp;Refactor</value>
+  </data>
 </root>

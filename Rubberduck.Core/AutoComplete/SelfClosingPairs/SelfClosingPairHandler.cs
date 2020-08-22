@@ -40,7 +40,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairs
         public override bool Handle(AutoCompleteEventArgs e, AutoCompleteSettings settings, out CodeString result)
         {
             result = null;
-            if (!_scpInputLookup.TryGetValue(e.Character, out var pair) && e.Character != '\b')
+            if (!settings.SelfClosingPairs.IsEnabled || !_scpInputLookup.TryGetValue(e.Character, out var pair) && e.Character != '\b')
             {
                 // not an interesting keypress.
                 return false;

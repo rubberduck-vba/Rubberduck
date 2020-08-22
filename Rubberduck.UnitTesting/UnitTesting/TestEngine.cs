@@ -6,12 +6,13 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using NLog;
 using Rubberduck.JunkDrawer.Extensions;
-using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Resources.UnitTesting;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -33,6 +34,7 @@ namespace Rubberduck.UnitTesting
         private readonly ITypeLibWrapperProvider _wrapperProvider;
         private readonly IUiDispatcher _uiDispatcher;
         private readonly IVBE _vbe;
+        private readonly IProjectsProvider _projectsProvider;
 
         private Dictionary<TestMethod, TestOutcome> _knownOutcomes = new Dictionary<TestMethod, TestOutcome>();
         private List<TestMethod> _lastRun = new List<TestMethod>();
@@ -53,7 +55,8 @@ namespace Rubberduck.UnitTesting
             IVBEInteraction declarationRunner, 
             ITypeLibWrapperProvider wrapperProvider, 
             IUiDispatcher uiDispatcher,
-            IVBE vbe)
+            IVBE vbe,
+            IProjectsProvider projectsProvider)
         {
             Debug.WriteLine("TestEngine created.");
             _state = state;
@@ -62,6 +65,7 @@ namespace Rubberduck.UnitTesting
             _wrapperProvider = wrapperProvider;
             _uiDispatcher = uiDispatcher;
             _vbe = vbe;
+            _projectsProvider = projectsProvider;
 
             _state.StateChanged += StateChangedHandler;
         }
@@ -209,11 +213,11 @@ namespace Rubberduck.UnitTesting
                 .Where(member => member.AsTypeName == "Rubberduck.PermissiveAssertClass"
                                  || member.AsTypeName == "Rubberduck.AssertClass")
                 .Select(member => member.ProjectId)
-                .ToHashSet();
-            var projectsUsingAddInLibrary = _state.DeclarationFinder
-                .UserDeclarations(DeclarationType.Project)
-                .Where(declaration => projectIdsOfMembersUsingAddInLibrary.Contains(declaration.ProjectId))
-                .Select(declaration => declaration.Project);
+                .Distinct();
+
+            var projectsUsingAddInLibrary = projectIdsOfMembersUsingAddInLibrary
+                .Select(projectId => _projectsProvider.Project(projectId))
+                .Where(project => project != null);
 
             foreach (var project in projectsUsingAddInLibrary)
             {

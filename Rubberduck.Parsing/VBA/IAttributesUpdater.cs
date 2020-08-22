@@ -9,5 +9,6 @@ namespace Rubberduck.Parsing.VBA
         void AddAttribute(IRewriteSession rewriteSession, Declaration declaration, string attribute, IReadOnlyList<string> values);
         void RemoveAttribute(IRewriteSession rewriteSession, Declaration declaration, string attribute, IReadOnlyList<string> values = null);
         void UpdateAttribute(IRewriteSession rewriteSession, Declaration declaration, string attribute, IReadOnlyList<string> newValues, IReadOnlyList<string> oldValues = null);
+        void AddOrUpdateAttribute(IRewriteSession rewriteSession, Declaration declaration, string attribute, IReadOnlyList<string> values);
     }
 }

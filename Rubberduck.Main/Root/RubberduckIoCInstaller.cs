@@ -13,14 +13,16 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Rubberduck.AutoComplete;
 using Rubberduck.CodeAnalysis.CodeMetrics;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation;
+using Rubberduck.CodeAnalysis.Inspections.Logistics;
+using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.ComClientLibrary.UnitTesting;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
-using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.ComReflection;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.Rewriter;
@@ -58,6 +60,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.VbeRuntime;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.UI.Refactorings.AnnotateDeclaration;
 
 namespace Rubberduck.Root
 {
@@ -149,6 +152,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
 
             RegisterSettingsViewModel(container);
+            RegisterRefactoringPreviewProviders(container);
             RegisterRefactoringDialogs(container);
 
             container.Register(Component.For<ISearchResultsWindowViewModel>()
@@ -156,8 +160,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<SearchResultPresenterInstanceManager>()
                 .LifestyleSingleton());
-
-            RegisterRefactoringDialogs(container);
+            
             RegisterDockablePresenters(container);
             RegisterDockableUserControls(container);
 
@@ -253,6 +256,7 @@ namespace Rubberduck.Root
             foreach (var assembly in assembliesToRegister)
             {
                 container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
                     .BasedOn(typeof(ConfigurationServiceBase<>))
                     .WithServiceSelect((type, hierarchy) =>
                     {
@@ -373,7 +377,19 @@ namespace Rubberduck.Root
             container.Register(Component.For<IAddRemoveReferencesPresenterFactory>()
                 .ImplementedBy<AddRemoveReferencesPresenterFactory>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IAnnotationArgumentViewModelFactory>()
+                .ImplementedBy<AnnotationArgumentViewModelFactory>()
+                .LifestyleSingleton());
+            RegisterUnreachableCaseFactories(container);
         }
+
+        private void RegisterUnreachableCaseFactories(IWindsorContainer container)
+        {
+            container.Register(Component.For<IParseTreeValueFactory>()
+                .ImplementedBy<ParseTreeValueFactory>()
+                .LifestyleSingleton());
+        }
+
 
         private void RegisterQuickFixes(IWindsorContainer container, Assembly[] assembliesToRegister)
         {
@@ -514,7 +530,8 @@ namespace Rubberduck.Root
         {
             return new Type[]
             {
-                typeof(RefactoringsParentMenu),
+                typeof(CodePaneRefactoringsParentMenu),
+                typeof(AnnotateParentMenu),
                 typeof(SmartIndenterParentMenu),
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
@@ -618,8 +635,10 @@ namespace Rubberduck.Root
         {
             RegisterParentMenu<UnitTestingParentMenu>(container, UnitTestingMenuItems());
             RegisterParentMenu<RefactoringsParentMenu>(container, RefactoringsMenuItems());
+            RegisterParentMenu<CodePaneRefactoringsParentMenu>(container, RefactoringsMenuItems());
             RegisterParentMenu<NavigateParentMenu>(container, NavigateMenuItems());
             RegisterParentMenu<SmartIndenterParentMenu>(container, SmartIndenterMenuItems());
+            RegisterParentMenu<AnnotateParentMenu>(container, AnnotateMenuItems());
             RegisterParentMenu<ToolsParentMenu>(container, ToolsMenuItems());
         }
 
@@ -657,7 +676,9 @@ namespace Rubberduck.Root
                 typeof(RefactorEncapsulateFieldCommandMenuItem),
                 typeof(RefactorMoveCloserToUsageCommandMenuItem),
                 typeof(RefactorExtractInterfaceCommandMenuItem),
-                typeof(RefactorImplementInterfaceCommandMenuItem)
+                typeof(RefactorImplementInterfaceCommandMenuItem),
+                typeof(CodePaneRefactorMoveToFolderCommandMenuItem),
+                typeof(CodePaneRefactorMoveContainingFolderCommandMenuItem)
             };
         }
 
@@ -681,6 +702,16 @@ namespace Rubberduck.Root
                 typeof(IndentCurrentModuleCommandMenuItem),
                 typeof(IndentCurrentProjectCommandMenuItem),
                 typeof(NoIndentAnnotationCommandMenuItem)
+            };
+        }
+
+        private Type[] AnnotateMenuItems()
+        {
+            return new[]
+            {
+                typeof(AnnotateSelectedDeclarationCommandMenuItem),
+                typeof(AnnotateSelectedModuleCommandMenuItem),
+                typeof(AnnotateSelectedMemberCommandMenuItem)
             };
         }
 
@@ -709,6 +740,23 @@ namespace Rubberduck.Root
                 {
                     var face = type.GetInterfaces().FirstOrDefault(i =>
                         i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ISettingsViewModel<>));
+
+                    return face == null ? new[] { type } : new[] { type, face };
+                })
+            );
+        }
+
+        private void RegisterRefactoringPreviewProviders(IWindsorContainer container)
+        {
+            container.Register(Types
+                .FromAssemblyInThisApplication()
+                .IncludeNonPublicTypes()
+                .BasedOn(typeof(IRefactoringPreviewProvider<>))
+                .LifestyleSingleton()
+                .WithServiceSelect((type, types) =>
+                {
+                    var face = type.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringPreviewProvider<>));
 
                     return face == null ? new[] { type } : new[] { type, face };
                 })

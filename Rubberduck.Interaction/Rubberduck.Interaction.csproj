@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
+<Project Sdk="Sunburst.NET.Sdk.WPF.Patched/1.0.49">
   <PropertyGroup>
     <Copyright>Copyright © 2018-2019</Copyright>
     <Product>Rubberduck.Interaction</Product>
@@ -24,8 +24,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Refactorings\IAssignedByValParameterQuickFixDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Refactorings\IAssignedByValParameterQuickFixDialog.cs" />
   </ItemGroup>
 </Project>

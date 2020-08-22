@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
+using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about member calls against an extensible interface, that cannot be validated at compile-time.
@@ -18,14 +18,17 @@ namespace Rubberduck.Inspections.Concrete
     /// Extensible COM types can have members attached at run-time; VBA cannot bind these member calls at compile-time.
     /// If there is an early-bound alternative way to achieve the same result, it should be preferred.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
     ///     adoConnection.SomeStoredProcedure 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
     ///     Dim adoCommand As ADODB.Command
@@ -36,37 +39,64 @@ namespace Rubberduck.Inspections.Concrete
     ///     adoCommand.Execute
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class MemberNotOnInterfaceInspection : InspectionBase
+    internal sealed class MemberNotOnInterfaceInspection : DeclarationInspectionBase<Declaration>
     {
-        public MemberNotOnInterfaceInspection(RubberduckParserState state)
-            : base(state) { }
+        public MemberNotOnInterfaceInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<Declaration> RelevantDeclarationsInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            // prefilter to reduce searchspace
-            var unresolved = State.DeclarationFinder.UnresolvedMemberDeclarations()
-                .Where(decl => !decl.IsIgnoringInspectionResultFor(AnnotationName)).ToList();
+            return finder.UnresolvedMemberDeclarations(module);
+        }
 
-            var targets = Declarations.Where(decl => decl.AsTypeDeclaration != null &&
-                                                     !decl.AsTypeDeclaration.IsUserDefined &&
-                                                     decl.AsTypeDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule) &&                                                    
-                                                     ((ClassModuleDeclaration)decl.AsTypeDeclaration).IsExtensible)
-                                       .SelectMany(decl => decl.References).ToList();
-            return unresolved
-                .Select(access => new
-                {
-                    access,
-                    callingContext = targets.FirstOrDefault(usage => usage.Context.Equals(access.CallingContext)
-                                                                     || (access.CallingContext is VBAParser.NewExprContext && 
-                                                                         usage.Context.Parent.Parent.Equals(access.CallingContext))
-                                                                     )
-                })
-                .Where(memberAccess => memberAccess.callingContext != null &&
-                                       memberAccess.callingContext.Declaration.DeclarationType != DeclarationType.Control)    //TODO - remove this exception after resolving #2592)
-                .Select(memberAccess => new DeclarationInspectionResult(this,
-                    string.Format(InspectionResults.MemberNotOnInterfaceInspection, memberAccess.access.IdentifierName,
-                        memberAccess.callingContext.Declaration.AsTypeDeclaration.IdentifierName), memberAccess.access));
+        protected override (bool isResult, Declaration properties) IsResultDeclarationWithAdditionalProperties(Declaration declaration, DeclarationFinder finder)
+        {
+            if (!(declaration is UnboundMemberDeclaration member))
+            {
+                return (false, null);
+            }
+
+            var callingContext = member.CallingContext is VBAParser.NewExprContext newExprContext
+                ? (newExprContext.expression() as VBAParser.LExprContext)?.lExpression()
+                : member.CallingContext;
+
+            if (callingContext == null)
+            {
+                return (false, null);
+            }
+
+            var callingContextSelection = new QualifiedSelection(declaration.QualifiedModuleName, callingContext.GetSelection());
+            var usageReferences = finder.IdentifierReferences(callingContextSelection);
+            var calledDeclaration = usageReferences
+                .Select(reference => reference.Declaration)
+                .FirstOrDefault(usageDeclaration => usageDeclaration != null
+                                                    && HasResultType(usageDeclaration));
+            var isResult = calledDeclaration != null
+                           && calledDeclaration.DeclarationType != DeclarationType.Control; //TODO - remove this exception after resolving #2592. Also simplify to inspect the type directly.
+
+            return (isResult, calledDeclaration?.AsTypeDeclaration);
+        }
+
+        private static bool HasResultType(Declaration declaration)
+        {
+            var typeDeclaration = declaration.AsTypeDeclaration;
+            return typeDeclaration != null
+                   && !typeDeclaration.IsUserDefined
+                   && typeDeclaration is ClassModuleDeclaration classTypeDeclaration
+                   && classTypeDeclaration.IsExtensible;
+        }
+
+        protected override string ResultDescription(Declaration declaration, Declaration typeDeclaration)
+        {
+            var memberName = declaration.IdentifierName;
+            var typeName = typeDeclaration?.IdentifierName ?? string.Empty;
+            return string.Format(
+                InspectionResults.MemberNotOnInterfaceInspection,
+                memberName,
+                typeName);
         }
     }
 }

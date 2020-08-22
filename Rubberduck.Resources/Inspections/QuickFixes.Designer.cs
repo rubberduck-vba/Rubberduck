@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Inspections {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class QuickFixes {
@@ -214,6 +214,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore in module.
+        /// </summary>
+        public static string IgnoreInModuleQuickFix {
+            get {
+                return ResourceManager.GetString("IgnoreInModuleQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignore once.
         /// </summary>
         public static string IgnoreOnce {
@@ -237,6 +246,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string IntegerDataTypeQuickFix {
             get {
                 return ResourceManager.GetString("IntegerDataTypeQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add &apos;Property Get&apos; accessor.
+        /// </summary>
+        public static string IntroduceGetAccessorQuickFix {
+            get {
+                return ResourceManager.GetString("IntroduceGetAccessorQuickFix", resourceCulture);
             }
         }
         
@@ -588,15 +606,6 @@ namespace Rubberduck.Resources.Inspections {
         public static string WhiteListIdentifierQuickFix {
             get {
                 return ResourceManager.GetString("WhiteListIdentifierQuickFix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add property get accessor.
-        /// </summary>
-        public static string WriteOnlyPropertyQuickFix {
-            get {
-                return ResourceManager.GetString("WriteOnlyPropertyQuickFix", resourceCulture);
             }
         }
     }

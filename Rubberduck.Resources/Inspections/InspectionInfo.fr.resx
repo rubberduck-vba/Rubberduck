@@ -196,7 +196,7 @@
     <value>Une variable n'est pas assignée. Si ceci n'est pas intentionnel, il s'agit probablement d'un bogue. Ignorez ce résultat d'inspection si la variable est passée par référence à une procédure.</value>
   </data>
   <data name="VariableNotUsedInspection" xml:space="preserve">
-    <value>Une variable est déclarée, mais rien n'y réfère.</value>
+    <value>Une variable est déclarée, mais rien n'y réfère</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>Une variable dont le type n'est pas déclaré explicitement, est implicitement de type 'Variant'. Considérez spécifier un type explicitement.</value>
@@ -209,9 +209,6 @@
   </data>
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Une variable objet assignée lors de sa déclaration dans une procédure, modifie comment VBA gère cet objet, ce qui peut mener à un comportement inattendu.</value>
-  </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>Un membre est implémenté comme une fonction, mais utilisé comme une procédure. À moins que la fonction soit récursive, considérez la convertir en procédure. Si la fonction est récursive, aucun appelant externe n'utilise sa valeur de retour.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
     <value>Rubberduck voit cette variable comme étant une référence à un objet, assignée sans le mot-clé 'Set'. Ceci cause une erreur d'exécution (#91 'Object or With block variable not set').</value>
@@ -302,7 +299,7 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
     <value>Les modules et classes vides démontrent des fonctionnalités pas encore implémentées ou représentent un fardeau non nécessaire pouvant nuire à la maintenance du projet.</value>
   </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
-    <value>La gestion d'erreurs devrait être restaurée après l'utilisation de 'On Error Resume Next'</value>
+    <value>La gestion d'erreurs devrait être restaurée après l'utilisation de 'On Error Resume Next'.</value>
   </data>
   <data name="DefTypeStatementInspection" xml:space="preserve">
     <value>L'utilisation d'instructions 'Def[Type]' permet le typage implicite d'après un préfixe. Ce type de nommage est fortement découragé dans du code moderne.</value>
@@ -311,7 +308,7 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
     <value>La clause 'Step' d'une boucle 'For...Next' est implicite.</value>
   </data>
   <data name="StepOneIsRedundantInspection" xml:space="preserve">
-    <value>1 est la valeur d'incrémentation par défaut pour toute boucle 'For...Next'</value>
+    <value>1 est la valeur d'incrémentation par défaut pour toute boucle 'For...Next'.</value>
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Excel définit une variable objet globale avec cette référence. Considérez utiliser le nom de code ('CodeName') de la feuille.</value>
@@ -432,5 +429,17 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
+  </data>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>Un membre est défini comme étant une fonction, mais son utilisation ne diffère en rien d'une procédure 'Sub' standard. Considérez convertir cette function en procédure.</value>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>La valeur renvoyée par une fonction est ignorée; la fonction est utilisée comme une procédure ('Sub'). Ceci peut être le résultat d'un simple oubli, ou alors la fonction est utilisée pour ses effets secondaires, l'existence desquels peut constituer un 'code smell'.</value>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Lorsque la clause 'As' de la déclaration de constante 'Const' n'est pas spécifiée, le type est implicite et dérivé du type de la valeur assignée. Préférez les déclarations explicites, en incluant une clause 'As &lt;Type&gt;', où '&lt;Type&gt;' est le type explicite à utiliser pour cette déclaration.</value>
+  </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>Une annotation a plus d'arguments que permis; les arguments superflus seront ignorés.</value>
   </data>
 </root>

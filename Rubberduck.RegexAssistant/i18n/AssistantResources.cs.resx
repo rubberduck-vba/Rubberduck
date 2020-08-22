@@ -148,7 +148,7 @@
     <value>$ zajišťuje, že byly použity všechny znaky řetězce</value>
   </data>
   <data name="ExpressionDescription_ErrorExpression" xml:space="preserve">
-    <value>Nebylo možno parsovat '{0}' jako písmeno. Ověřte svůj vstup, prosím</value>
+    <value>Nebylo možno parsovat '{0}' jako písmeno.</value>
   </data>
   <data name="ExpressionDescription_ConcatenatedExpression" xml:space="preserve">
     <value>Odpovídá sekvenci písmen</value>

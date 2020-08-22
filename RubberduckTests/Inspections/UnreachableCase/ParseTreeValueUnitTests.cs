@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing.Grammar;
 using System;
 using System.Collections.Generic;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {
@@ -18,31 +18,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
     {
         private const string VALUE_TYPE_SEPARATOR = "?";
 
-        private IUnreachableCaseInspectionFactoryProvider _factoryProvider;
-        private IParseTreeValueFactory _valueFactory;
-        private IUnreachableCaseInspectionFactoryProvider FactoryProvider
-        {
-            get
-            {
-                if (_factoryProvider is null)
-                {
-                    _factoryProvider = new UnreachableCaseInspectionFactoryProvider();
-                }
-                return _factoryProvider;
-            }
-        }
-
-        private IParseTreeValueFactory ValueFactory
-        {
-            get
-            {
-                if (_valueFactory is null)
-                {
-                    _valueFactory = FactoryProvider.CreateIParseTreeValueFactory();
-                }
-                return _valueFactory;
-            }
-        }
+        private readonly Lazy<IParseTreeValueFactory> _valueFactory = new Lazy<IParseTreeValueFactory>(() => new ParseTreeValueFactory());
+        private IParseTreeValueFactory ValueFactory => _valueFactory.Value;
 
         [TestCase("2", "2")]
         [TestCase("2.54", "2.54")]

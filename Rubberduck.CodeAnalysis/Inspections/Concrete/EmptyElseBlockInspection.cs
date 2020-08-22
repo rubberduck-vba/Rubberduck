@@ -1,17 +1,11 @@
 ﻿using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Common;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Resources.Experimentals;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies empty 'Else' blocks that can be safely removed.
@@ -20,7 +14,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Empty code blocks are redundant, dead code that should be removed. They can also be misleading about their intent:
     /// an empty block may be signalling an unfinished thought or an oversight.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If foo Then
@@ -29,8 +24,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If foo Then
@@ -38,25 +35,24 @@ namespace Rubberduck.Inspections.Concrete
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal class EmptyElseBlockInspection : ParseTreeInspectionBase
+    internal sealed class EmptyElseBlockInspection : EmptyBlockInspectionBase<VBAParser.ElseBlockContext>
     {
-        public EmptyElseBlockInspection(RubberduckParserState state)
-            : base(state) { }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        public EmptyElseBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            return Listener.Contexts
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionResults.EmptyElseBlockInspection,
-                                                        result));
+            ContextListener = new EmptyElseBlockListener();
         }
 
-        public override IInspectionListener Listener { get; } 
-            = new EmptyElseBlockListener();
-        
-        public class EmptyElseBlockListener : EmptyBlockInspectionListenerBase
+        protected override IInspectionListener<VBAParser.ElseBlockContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.ElseBlockContext> context)
+        {
+            return InspectionResults.EmptyElseBlockInspection;
+        }
+
+        private class EmptyElseBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterElseBlock([NotNull] VBAParser.ElseBlockContext context)
             {

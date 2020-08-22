@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing.Grammar;
 using System;
 using System.Globalization;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {
@@ -31,45 +31,17 @@ namespace RubberduckTests.Inspections.UnreachableCase
         private const string VALUE_TYPE_SEPARATOR = "?";
         private const string OPERAND_SEPARATOR = "_";
 
-        private IUnreachableCaseInspectionFactoryProvider _factoryProvider;
-        private IParseTreeValueFactory _valueFactory;
-        private IParseTreeExpressionEvaluator _calculator;
+        private readonly Lazy<IParseTreeValueFactory> _valueFactory = new Lazy<IParseTreeValueFactory>(() => new ParseTreeValueFactory());
+        private readonly Lazy<IParseTreeExpressionEvaluator> _calculator;
 
-        private IUnreachableCaseInspectionFactoryProvider FactoryProvider
+        public ParseTreeExpressionEvaluatorUnitTests()
         {
-            get
-            {
-                if (_factoryProvider is null)
-                {
-                    _factoryProvider = new UnreachableCaseInspectionFactoryProvider();
-                }
-                return _factoryProvider;
-            }
+            _calculator = new Lazy<IParseTreeExpressionEvaluator>(() => new ParseTreeExpressionEvaluator(ValueFactory));
         }
 
-        private IParseTreeValueFactory ValueFactory
-        {
-            get
-            {
-                if (_valueFactory is null)
-                {
-                    _valueFactory = FactoryProvider.CreateIParseTreeValueFactory();
-                }
-                return _valueFactory;
-            }
-        }
+        private IParseTreeValueFactory ValueFactory => _valueFactory.Value;
+        private IParseTreeExpressionEvaluator Calculator => _calculator.Value;
 
-        private IParseTreeExpressionEvaluator Calculator
-        {
-            get
-            {
-                if (_calculator is null)
-                {
-                    _calculator = new ParseTreeExpressionEvaluator(ValueFactory);
-                }
-                return _calculator;
-            }
-        }
 
         [TestCase("Boolean", "Byte", "Integer")]
         [TestCase("Boolean", "Boolean", "Integer")]

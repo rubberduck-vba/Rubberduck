@@ -8,50 +8,41 @@
              d:DataContext="{d:DesignInstance {x:Type assistant:RegexAssistantViewModel}, IsDesignTimeCreatable=False}" Height="302">
 
     <UserControl.Resources>
-        
-        <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFD9F4FF" Offset="0"/>
-            <GradientStop Color="#FF9BDDFB" Offset="1"/>
-        </LinearGradientBrush>
-        
-        <LinearGradientBrush x:Key="{x:Static SystemColors.ControlBrushKey}" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFEEEDED" Offset="0"/>
-            <GradientStop Color="#FFDDDDDD" Offset="1"/>
-        </LinearGradientBrush>
-        
-        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style x:Key="ShinyTreeView" TargetType="{x:Type TreeViewItem}">
-            <Setter Property="BorderThickness" Value="1.5"/>
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="Margin" Value="2" />
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="BorderBrush" Value="#adc6e5"/>
-                </Trigger>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsSelected" Value="True"/>
-                        <Condition Property="IsSelectionActive" Value="False"/>
-                    </MultiTrigger.Conditions>
-                    <Setter Property="BorderBrush" Value="LightGray"/>
-                </MultiTrigger>
-            </Style.Triggers>
-            <Style.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="2"/>
-                </Style>
-            </Style.Resources>
-        </Style>
+            <Style x:Key="ShinyTreeView" TargetType="{x:Type TreeViewItem}">
+                <Setter Property="BorderThickness" Value="1.5"/>
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="Margin" Value="2" />
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="BorderBrush" Value="{StaticResource HighlightBorderActiveBrush}"/>
+                    </Trigger>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsSelected" Value="True"/>
+                            <Condition Property="IsSelectionActive" Value="False"/>
+                        </MultiTrigger.Conditions>
+                        <Setter Property="BorderBrush" Value="{StaticResource HighlightInactiveBorderBrush}"/>
+                    </MultiTrigger>
+                </Style.Triggers>
+                <Style.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="2"/>
+                    </Style>
+                </Style.Resources>
+            </Style>
 
-        <HierarchicalDataTemplate
+            <HierarchicalDataTemplate
             x:Key="RecursiveData" 
             DataType="TreeViewItem"
             ItemContainerStyle="{StaticResource ShinyTreeView}"
             ItemsSource="{Binding Items}">
-        </HierarchicalDataTemplate>
-        
+            </HierarchicalDataTemplate>
+        </ResourceDictionary>
     </UserControl.Resources>
     
     <Grid Margin="5">

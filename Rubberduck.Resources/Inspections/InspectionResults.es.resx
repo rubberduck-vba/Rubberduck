@@ -121,7 +121,7 @@
     <value>Es recomendable usar 'vbNullString' para cadenas vacías.</value>
   </data>
   <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
-    <value>El campo público '{0}' rompe la encapsulación.</value>
+    <value>El campo público '{0}' rompe el encapsulamiento.</value>
   </data>
   <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
     <value>Mueva la variable de nivel de módulo '{0}' a un ámbito más pequeño.</value>
@@ -133,13 +133,10 @@
     <value>Considere cambiar el nombre de {0} '{1}'.</value>
   </data>
   <data name="WriteOnlyPropertyInspection" xml:space="preserve">
-    <value>La propiedad '{0}' no tiene captador.</value>
+    <value>La propiedad '{0}' no tiene Getter.</value>
   </data>
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>La referencia de objeto '{0}' se crea automáticamente.</value>
-  </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>El valor de retorno de la función '{0}' nunca se usa.</value>
   </data>
   <data name="AssignedByValParameterInspection" xml:space="preserve">
     <value>El parámetro '{0}' se pasa 'ByVal' y se le asigna un valor.</value>
@@ -154,7 +151,7 @@
     <value>El miembro '{0}' es implícitamente público.</value>
   </data>
   <data name="ImplicitVariantDeclarationInspection" xml:space="preserve">
-    <value>{0} '{1}' es implícitamente 'Variante'.</value>
+    <value>{0} '{1}' es implícitamente 'Variant'.</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspection" xml:space="preserve">
     <value>El tipo de devolución del miembro '{0}' es implícitamente 'Variant'.</value>
@@ -217,13 +214,13 @@
     <value>El componente '{0}' usa 'Option Base 1'.</value>
   </data>
   <data name="UntypedFunctionUsageInspection" xml:space="preserve">
-    <value>Reemplace la función '{0}' con la función escrita existente.</value>
+    <value>Reemplace la función '{0}' con la función tipada existente.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>{0} '{1}' es implícitamente 'Variant'.</value>
   </data>
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
-    <value>Se esperaba que la expresión '{0}' contuviera un parámetro, pero no se especificó ninguno.</value>
+    <value>Se esparaba que la anotación '{0}' tuviera más argumentos.</value>
   </data>
   <data name="ModuleScopeDimKeywordInspection" xml:space="preserve">
     <value>La variable de nivel de módulo '{0}' se declara con la palabra clave 'Dim'.</value>
@@ -232,7 +229,7 @@
     <value>La variable local '{0}' no está declarada.</value>
   </data>
   <data name="AggregateInspection" xml:space="preserve">
-    <value>{0} ({1} resultados).</value>
+    <value>{0} ({1} resultados)</value>
   </data>
   <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
     <value>El miembro '{0}' no se encontró en la interfaz de tiempo de compilación para el tipo '{1}'.</value>
@@ -295,7 +292,7 @@
     <value>Se genera un error en tiempo de ejecución utilizando la declaración 'Error' obsoleta.</value>
   </data>
   <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
-    <value>El literal booleano '{0}' asignado en condicional.</value>
+    <value>Literal booleano '{0}' asignado en condicional</value>
   </data>
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>El módulo/clase '{0}' está vacío.</value>
@@ -307,10 +304,10 @@
     <value>Considere el uso explícito de 'As {0}' en lugar de '{1}'.</value>
   </data>
   <data name="StepOneIsRedundantInspection" xml:space="preserve">
-    <value>1 es el Step predeterminado en un bucle 'For ... Next' y, por lo tanto, es redundante.</value>
+    <value>1 es el incremento predeterminado en un bucle 'For ... Next' y, por lo tanto, es redundante.</value>
   </data>
   <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
-    <value>'Step' no especificado.</value>
+    <value>'Step' (incremento) no especificado.</value>
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>La hoja estáticamente accesible puede ser referida por su nombre en código.</value>
@@ -325,7 +322,7 @@
     <value>La anotación '{0}' está duplicada.</value>
   </data>
   <data name="ModuleWithoutFolderInspection" xml:space="preserve">
-    <value>El módulo '{0}' no tiene una anotación '@Folder'</value>
+    <value>El módulo '{0}' no tiene una anotación '@Folder'.</value>
   </data>
   <data name="OnLocalErrorInspection" xml:space="preserve">
     <value>Se detectó una declaración 'On Local Error'.</value>
@@ -334,7 +331,7 @@
     <value>'IsMissing' siempre devolverá false con el argumento pasado.</value>
   </data>
   <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
-    <value>'IsMissing' se pasa una expresión que no es un argumento para el procedimiento adjunto.</value>
+    <value>'IsMissing' se pasa una expresión que no es un argumento para el procedimiento que la contiene.</value>
   </data>
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>Una asignación es anulada inmediatamente por otra asignación o nunca se hace referencia.</value>
@@ -358,13 +355,13 @@
     <value>El módulo '{0}' tiene un atributo '{1}' con valor (es) '{2}', pero no tiene la anotación correspondiente.</value>
   </data>
   <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
-    <value>Palabra clave utilizada como identificador para el miembro '{0}'</value>
+    <value>Palabra reservada usada como identificador para el miembro '{0}'.</value>
   </data>
   <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
-    <value>Línea de continuacion(es) en lugares inesperados.</value>
+    <value>Continuación de línea en lugares inesperados.</value>
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
-    <value>No se ha encontrado espacio de ruptura en el identificador '{0}'</value>
+    <value>Se han encontrado espacios NBSP en el identificador '{0}'.</value>
   </data>
   <data name="ThunderCode_Base" xml:space="preserve">
     <value>{0}
@@ -377,5 +374,95 @@ En memoria, 1972-2018</value>
   </data>
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>En error GoTo -1 encontrado</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>El argumento '{2}' de tipo '{3}' se pasó al parámetro '{0}' de tipo '{1}' (incompatible).</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>La expresión '{0}' usa un operador Bang sin vincular.</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>La expresión '{0}' contiene un acceso a miembro default indexado sin vincular.</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>En la expresión '{0}' hay un acceso a miembro default implícito sin vincular.</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>La expresión '{0}' requiere un acceso a miembro default, pero el tipo '{1}' no tiene un miembro default adecuado.</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>En un contexto que requiere un procedimiento, la expresión '{0}' de tipo '{1}' no tiene un miembro default adecuado.</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>En un contexto que requiere un tipo de valor, la expresión '{0}' de tipo '{1}' no tiene un miembro default adecuado.</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>{0} '{1}' no contiene sentencias ejecutables.</value>
+  </data>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>El valor de retorno de la función '{0}' no se usa nunca.</value>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>El valor de retorno de la función '{0}' se descarta.</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>El módulo de clase Interfaz '{2}' contiene una implementación concreta para {0} '{1}'.</value>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Constante '{0}' tipada implícitamente.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>En la expresión '{0}' hay un acceso a miembro default implícito a '{1}'.</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>En la expresión '{0}' hay un acceso a miembro default implícito recursivo a '{1}'.</value>
+  </data>
+  <data name="UnreachableCaseInspection" xml:space="preserve">
+    <value>No se puede acceder a la cláusula '{0}' del Case.</value>
+  </data>
+  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
+    <value>La sentencia 'Case Else' es inaccesible.</value>
+  </data>
+  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
+    <value>La sentencia 'Case' es inaccesible.</value>
+  </data>
+  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
+    <value>La sentencia rango del 'Case' debe expresarse como '[x] To [y]' donde [x] es menor o igual que [y]'.</value>
+  </data>
+  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
+    <value>La sentencia 'Case' ocasionará un error en tiempo de ejecución 13 (type mismatch).</value>
+  </data>
+  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
+    <value>La sentencia 'Case' ocasionará un error en tiempo de ejecución 6 (Overflow).</value>
+  </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>Se esparaba que la anotación '{0}' tuviera menos argumentos.</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>La expresión '{0}' usa notación Bang.</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>La expresión '{0}' usa un operador Bang recursivo.</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>La expresión '{0}' contiene un acceso a miembro default indexado recursivo a '{1}'.</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>La expresión '{0}' contiene un acceso a miembro default indexado a '{1}'.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>La expresión '{0}' se usa en un contexto que requiere un procedimiento, lo cual conduce a una llamada al miembro default '{1}'.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection_Unbound" xml:space="preserve">
+    <value>La expresión '{0}' se usa en un contexto que requiere un procedimiento, lo cual conduce a una llamada a un miembro default que no se puede determinar en tiempo de compilación.</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Hay una asignación desde el miembro default del resultado de la expresión '{1}' al miembro default de la expresión '{0}'.</value>
+  </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Se asignó un valor a la variable '{0}' del tipo declarado '{1}' con el tipo declarado '{2}' incompatible.</value>
+  </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>El bucle condicional 'While...Wend' puede ser escrito como un bloque 'Do While...Loop'.</value>
   </data>
 </root>

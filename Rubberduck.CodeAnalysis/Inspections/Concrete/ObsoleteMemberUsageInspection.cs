@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+﻿using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags usages of members marked as obsolete with an @Obsolete("justification") Rubberduck annotation.
@@ -16,7 +14,8 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// <why>
     /// Marking members as obsolete can help refactoring a legacy code base. This inspection is a tool that makes it easy to locate obsolete member calls.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     DoStuff ' member is marked as obsolete
@@ -31,8 +30,10 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     DoThing
@@ -47,35 +48,33 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ObsoleteMemberUsageInspection : InspectionBase
+    internal sealed class ObsoleteMemberUsageInspection : IdentifierReferenceInspectionBase
     {
-        public ObsoleteMemberUsageInspection(RubberduckParserState state) : base(state)
+        public ObsoleteMemberUsageInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
+
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
+            var declaration = reference?.Declaration;
+            return declaration != null
+                   && declaration.IsUserDefined
+                   && declaration.DeclarationType.HasFlag(DeclarationType.Member)
+                   && declaration.Annotations.Any(pta => pta.Annotation is ObsoleteAnnotation);
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(IdentifierReference reference)
         {
-            var declarations = State.AllUserDeclarations
-                .Where(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Member) &&
-                                      declaration.Annotations.Any(pta => pta.Annotation is ObsoleteAnnotation));
-
-            var issues = new List<IdentifierReferenceInspectionResult>();
-
-            foreach (var declaration in declarations)
-            {
-                var replacementDocumentation = declaration.Annotations
-                    .First(pta => pta.Annotation is ObsoleteAnnotation)
-                    .AnnotationArguments
-                    .FirstOrDefault() ?? string.Empty;
-
-                issues.AddRange(declaration.References.Select(reference =>
-                    new IdentifierReferenceInspectionResult(this,
-                        string.Format(InspectionResults.ObsoleteMemberUsageInspection, reference.IdentifierName, replacementDocumentation),
-                        State, reference)));
-            }
-
-            return issues;
+            var replacementDocumentation = reference.Declaration.Annotations
+                                               .First(pta => pta.Annotation is ObsoleteAnnotation)
+                                               .AnnotationArguments
+                                               .FirstOrDefault() ?? string.Empty;
+            return string.Format(
+                InspectionResults.ObsoleteMemberUsageInspection, 
+                reference.IdentifierName,
+                replacementDocumentation);
         }
     }
 }

@@ -1,17 +1,11 @@
 ﻿using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Common;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Resources.Experimentals;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies empty 'For Each...Next' blocks that can be safely removed.
@@ -19,7 +13,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Dead code should be removed. A loop without a body is usually redundant.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim sheet As Worksheet
@@ -28,8 +23,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     Next
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim sheet As Worksheet
@@ -38,25 +35,24 @@ namespace Rubberduck.Inspections.Concrete
     ///     Next
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal class EmptyForEachBlockInspection : ParseTreeInspectionBase
+    internal sealed class EmptyForEachBlockInspection : EmptyBlockInspectionBase<VBAParser.ForEachStmtContext>
     {
-        public EmptyForEachBlockInspection(RubberduckParserState state)
-            : base(state) { }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        public EmptyForEachBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            return Listener.Contexts
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionResults.EmptyForEachBlockInspection,
-                                                        result));
+            ContextListener = new EmptyForEachBlockListener();
         }
 
-        public override IInspectionListener Listener { get; } =
-            new EmptyForEachBlockListener();
+        protected override IInspectionListener<VBAParser.ForEachStmtContext> ContextListener { get; }
 
-        public class EmptyForEachBlockListener : EmptyBlockInspectionListenerBase
+        protected override string ResultDescription(QualifiedContext<VBAParser.ForEachStmtContext> context)
+        {
+            return InspectionResults.EmptyForEachBlockInspection;
+        }
+
+        private class EmptyForEachBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterForEachStmt([NotNull] VBAParser.ForEachStmtContext context)
             {

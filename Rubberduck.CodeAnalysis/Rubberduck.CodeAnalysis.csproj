@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
+<Project Sdk="Sunburst.NET.Sdk.WPF.Patched/1.0.49">
   <PropertyGroup>
     <Product>Rubberduck.CodeAnalysis</Product>
     <Description>Assembly Containing the Code Analysis features exposed by Rubberduck</Description>
     <Copyright>Copyright © 2017-2019</Copyright>
     <AssemblyName>Rubberduck.CodeAnalysis</AssemblyName>
+    <Title>Rubberduck.CodeAnalysis</Title>
     <RootNamespace>Rubberduck.CodeAnalysis</RootNamespace>
     <ProjectGuid>{DEF2FB9D-6E62-49D6-8E26-9983AC025768}</ProjectGuid>
   </PropertyGroup>

@@ -1,17 +1,43 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
+﻿using Rubberduck.Parsing.Annotations;
 
-namespace Rubberduck.Parsing.Annotations
+namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
-    /// This annotation allows ignoring inspection results of defined inspections for a whole module
+    /// @IgnoreModule annotation, used by Rubberduck to filter inspection results module-wide.
     /// </summary>
+    /// <parameter name="Inspections" type="InspectionNames">
+    /// This annotation optionally takes a comma-separated list of inspection names as argument. If no specific inspection name is provided, then all inspections should ignore the annotated module.
+    /// </parameter>
+    /// <remarks>
+    /// Use this annotation judiciously: while it silences false positives, it also silences legitimate inspection results; useful for muting results in legacy code while still inspecting new code.
+    /// </remarks>
+    /// <example>
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
+    /// '@IgnoreModule
+    /// Option Explicit
+    ///
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example>
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
+    /// '@IgnoreModule UndeclaredVariable, VariableNotUsed, VariableNotAssigned, UnassignedVariableUsage
+    ///
+    /// Public Sub DoSomething()
+    ///     foo = 42
+    ///     Debug.Print bar
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
     public sealed class IgnoreModuleAnnotation : AnnotationBase
     {
         public IgnoreModuleAnnotation()
-            : base("IgnoreModule", AnnotationTarget.Module, true)
-        { }
+            : base("IgnoreModule", AnnotationTarget.Module, allowedArguments: null, allowedArgumentTypes: new[] { AnnotationArgumentType.Inspection }, allowMultiple: true)
+        {}
     }
 }

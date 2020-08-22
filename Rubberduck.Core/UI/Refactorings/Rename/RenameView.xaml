@@ -7,9 +7,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
-
-        <BitmapImage x:Key="InvalidNameImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Controls/ToolBar.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -17,7 +19,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <StackPanel Background="White">
+        <StackPanel Background="{StaticResource BackgroundLightBrush}">
             <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RenameDialog_TitleText}" FontWeight="Bold" />
             <TextBlock Text="{Binding Instructions}" Margin="5,0" />
         </StackPanel>
@@ -30,19 +32,13 @@
                        VerticalAlignment="Top"
                        Margin="0,0,5,0" />
             <TextBox Name="RenameTextBox"
+                     Style="{StaticResource TextBoxErrorStyle}"
                      Grid.Column="1"
                      Text="{Binding NewName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      Height="22"
                      VerticalAlignment="Top"
                      VerticalContentAlignment="Center"
                      HorizontalAlignment="Stretch" />
-            <Image Grid.Column="1"
-                   Source="{StaticResource InvalidNameImage}"
-                   Height="16"
-                   Margin="0,-8,-8,0"
-                   HorizontalAlignment="Right"
-                   VerticalAlignment="Top"
-                   Visibility="{Binding IsValidName, Converter={StaticResource BoolToHiddenVisibility}}"/>
         </Grid>
         <Grid Grid.Row="2" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
             <Grid HorizontalAlignment="Right"

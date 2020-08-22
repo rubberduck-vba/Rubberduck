@@ -1966,15 +1966,15 @@ End Sub";
             return (codeString.Code, derivedSelection);
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state,
-            IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        protected override IRefactoring TestRefactoring(
+            IRewritingManager rewritingManager, 
+            RubberduckParserState state,
+            RefactoringUserInteraction<IRemoveParametersPresenter, RemoveParametersModel> userInteraction, 
+            ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var uiDispatcherMock = new Mock<IUiDispatcher>();
-            uiDispatcherMock
-                .Setup(m => m.Invoke(It.IsAny<Action>()))
-                .Callback((Action action) => action.Invoke());
-            return new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
+            var baseRefactoring = new RemoveParameterRefactoringAction(state, rewritingManager);
+            return new RemoveParametersRefactoring(baseRefactoring, state, userInteraction, selectionService, selectedDeclarationProvider);
         }
     }
 }

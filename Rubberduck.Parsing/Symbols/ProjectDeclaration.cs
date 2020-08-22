@@ -3,7 +3,6 @@ using Rubberduck.Parsing.ComReflection;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -14,8 +13,7 @@ namespace Rubberduck.Parsing.Symbols
         public ProjectDeclaration(
             QualifiedMemberName qualifiedName,
             string name,
-            bool isUserDefined,
-            IVBProject project)
+            bool isUserDefined)
             : base(
                   qualifiedName,
                   null,
@@ -33,12 +31,11 @@ namespace Rubberduck.Parsing.Symbols
                   null,
                   isUserDefined)
         {
-            _project = project;
             _projectReferences = new List<ProjectReference>();
         }
 
         public ProjectDeclaration(ComProject project, QualifiedModuleName module)
-            : this(module.QualifyMemberName(project.Name), project.Name, false, null)
+            : this(module.QualifyMemberName(project.Name), project.Name, false)
         {
             Guid = project.Guid;
             MajorVersion = project.MajorVersion;
@@ -57,15 +54,6 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private readonly IVBProject _project;
-        /// <summary>
-        /// Gets a reference to the VBProject the declaration is made in.
-        /// </summary>
-        /// <remarks>
-        /// This property is intended to differenciate identically-named VBProjects.
-        /// </remarks>
-        public override IVBProject Project => IsDisposed ? null : _project;
-
         public void AddProjectReference(string referencedProjectId, int priority)
         {
             if (_projectReferences.Any(p => p.ReferencedProjectId == referencedProjectId))
@@ -79,25 +67,6 @@ namespace Rubberduck.Parsing.Symbols
         {
             _projectReferences.Clear();
         }
-
-        private string _displayName;
-        /// <summary>
-        /// WARNING: This property has side effects. It changes the ActiveVBProject, which causes a flicker in the VBE.
-        /// This should only be called if it is *absolutely* necessary.
-        /// </summary>
-        public override string ProjectDisplayName
-        {
-            get
-            {
-                if (_displayName != null)
-                {
-                    return _displayName;
-                }
-                _displayName = !IsDisposed && _project != null ? _project.ProjectDisplayName : string.Empty;
-                return _displayName;
-            }
-        }
-
 
         public bool IsDisposed { get; private set; }
 

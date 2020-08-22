@@ -1,17 +1,30 @@
-﻿using Rubberduck.VBEditor;
-using System.Collections.Generic;
-using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.Parsing.Annotations;
 
-namespace Rubberduck.Parsing.Annotations
+namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
-    /// Marks a method that the test engine will execute after executing each unit test in a test module.
+    /// @TestCleanup annotation, marks a procedure that Rubberduck executes once after running each of the tests in a module.
     /// </summary>
-    public sealed class TestCleanupAnnotation : AnnotationBase
+    /// <example>
+    /// <module name="TestModule1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// '@TestModule
+    /// 
+    /// '...
+    /// Private SUT As Class1
+    /// 
+    /// '@TestCleanup
+    /// Private Sub TestCleanup()
+    ///     Set SUT = Nothing
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    public sealed class TestCleanupAnnotation : AnnotationBase, ITestAnnotation
     {
         public TestCleanupAnnotation()
             : base("TestCleanup", AnnotationTarget.Member)
-        {
-        }
+        {}
     }
 }
