@@ -20,10 +20,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string Preview(EncapsulateFieldModel model)
         {
             var preview = model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
-                                    ? _useUDTMembmerPreviewer.Preview(model)
-                                    : _useBackingFieldPreviewer.Preview(model);
+                ? _useUDTMembmerPreviewer.Preview(model)
+                : _useBackingFieldPreviewer.Preview(model);
 
-            return preview.LimitNewlines(3);
+            return preview;
         }
     }
 
