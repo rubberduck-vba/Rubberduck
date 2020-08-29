@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Refactorings.CodeBlockInsert;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -18,6 +18,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private HashSet<IObjectStateUDT> _objStateCandidates;
 
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
+
+        private Dictionary<NewContentType, List<string>> _newContent { set; get; }
 
         public EncapsulateFieldModel(
             Declaration target,
@@ -54,7 +56,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _encapsulationFieldStategy;
             set
             {
-                if (_encapsulationFieldStategy == value) { return; }
+                if (_encapsulationFieldStategy == value)
+                {
+                    return;
+                }
 
                 _encapsulationFieldStategy = value;
 
@@ -96,27 +101,36 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IEnumerable<IUserDefinedTypeCandidate> UDTFieldCandidates 
             => EncapsulationCandidates
-                    .Where(v => v is IUserDefinedTypeCandidate)
-                    .Cast<IUserDefinedTypeCandidate>();
+                .Where(v => v is IUserDefinedTypeCandidate)
+                .Cast<IUserDefinedTypeCandidate>();
 
         public IEnumerable<IUserDefinedTypeCandidate> SelectedUDTFieldCandidates 
             => SelectedFieldCandidates
-                    .Where(v => v is IUserDefinedTypeCandidate)
-                    .Cast<IUserDefinedTypeCandidate>();
+                .Where(v => v is IUserDefinedTypeCandidate)
+                .Cast<IUserDefinedTypeCandidate>();
 
         public IEncapsulateFieldCandidate this[string encapsulatedFieldTargetID]
             => EncapsulationCandidates.Where(c => c.TargetID.Equals(encapsulatedFieldTargetID)).Single();
 
         public IEncapsulateFieldCandidate this[Declaration fieldDeclaration]
             => EncapsulationCandidates.Where(c => c.Declaration == fieldDeclaration).Single();
-        
+
+        public void AddContentBlock(NewContentType contentType, string block)
+            => _newContent[contentType].Add(block);
+
+        public Dictionary<NewContentType, List<string>> NewContent
+        {
+            set => _newContent = value;
+            get => _newContent;
+        }
+
         private IObjectStateUDT _activeObjectStateUDT;
         public IObjectStateUDT ObjectStateUDTField
         {
             get
             {
                 _activeObjectStateUDT = ObjectStateUDTCandidates
-                            .SingleOrDefault(os => os.IsSelected) ?? _newObjectStateUDT;
+                    .SingleOrDefault(os => os.IsSelected) ?? _newObjectStateUDT;
 
                 return _activeObjectStateUDT;
             }

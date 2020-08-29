@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rubberduck.Refactorings.MoveFieldsToUDT
+namespace Rubberduck.Refactorings.DeclareFieldsAsUDTMembers
 {
     public class DeclareFieldsAsUDTMembersModel : IRefactoringModel
     {

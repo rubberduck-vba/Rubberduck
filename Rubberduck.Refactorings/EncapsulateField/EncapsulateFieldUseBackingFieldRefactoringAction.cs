@@ -1,59 +1,173 @@
-﻿using Rubberduck.Parsing;
+﻿using Rubberduck.Common;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
-using Rubberduck.SmartIndenter;
+using Rubberduck.Refactorings.ReplaceDeclarationIdentifier;
+using Rubberduck.Refactorings.ReplaceReferences;
+using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
+using Rubberduck.Refactorings.CodeBlockInsert;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public class EncapsulateFieldUseBackingFieldRefactoringAction : EncapsulateFieldRefactoringActionImplBase
+    public class EncapsulateFieldUseBackingFieldRefactoringAction : CodeOnlyRefactoringActionBase<EncapsulateFieldModel>
     {
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ICodeOnlyRefactoringAction<ReplacePrivateUDTMemberReferencesModel> _replaceUDTMemberReferencesRefactoringAction;
+        private readonly ICodeOnlyRefactoringAction<ReplaceReferencesModel> _replaceReferencesRefactoringAction;
+        private readonly ICodeOnlyRefactoringAction<ReplaceDeclarationIdentifierModel> _replaceDeclarationIdentifiers;
+        private readonly ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> _encapsulateFieldInsertNewCodeRefactoringAction;
+        private readonly IReplacePrivateUDTMemberReferencesModelFactory _replaceUDTMemberReferencesModelFactory;
+
         public EncapsulateFieldUseBackingFieldRefactoringAction(
+            IEncapsulateFieldRefactoringActionsProvider refactoringActionsProvider,
+            IReplacePrivateUDTMemberReferencesModelFactory replaceUDTMemberReferencesModelFactory,
             IDeclarationFinderProvider declarationFinderProvider,
-            IIndenter indenter,
-            IRewritingManager rewritingManager,
-            ICodeBuilder codeBuilder)
-                : base(declarationFinderProvider, indenter, rewritingManager, codeBuilder)
-        {}
+            IRewritingManager rewritingManager)
+                :base(rewritingManager)
+        {
+            _declarationFinderProvider = declarationFinderProvider;
+            _replaceUDTMemberReferencesRefactoringAction = refactoringActionsProvider.ReplaceUDTMemberReferences;
+            _replaceReferencesRefactoringAction = refactoringActionsProvider.ReplaceReferences;
+            _replaceDeclarationIdentifiers = refactoringActionsProvider.ReplaceDeclarationIdentifiers;
+            _encapsulateFieldInsertNewCodeRefactoringAction = refactoringActionsProvider.EncapsulateFieldInsertNewCode;
+            _replaceUDTMemberReferencesModelFactory = replaceUDTMemberReferencesModelFactory;
+        }
 
         public override void Refactor(EncapsulateFieldModel model, IRewriteSession rewriteSession)
         {
-            RefactorImpl(model, rewriteSession);
+            if (!model.SelectedFieldCandidates.Any())
+            {
+                return;
+            }
+
+            model.NewContent = new Dictionary<NewContentType, List<string>>
+            {
+                { NewContentType.PostContentMessage, new List<string>() },
+                { NewContentType.DeclarationBlock, new List<string>() },
+                { NewContentType.CodeSectionBlock, new List<string>() },
+                { NewContentType.TypeDeclarationBlock, new List<string>() }
+            };
+
+            ModifyFields(model, rewriteSession);
+
+            ModifyReferences(model, rewriteSession);
+
+            InsertNewContent(model, rewriteSession);
         }
 
-        protected override void ModifyFields(IRewriteSession rewriteSession)
+        private void ModifyFields(EncapsulateFieldModel model, IRewriteSession rewriteSession)
         {
-            var fieldDeclarationsToDeleteAndReplace = SelectedFields.Where(f => IsFieldToDeleteAndReplace(f));
-            var rewriter = rewriteSession.CheckOutModuleRewriter(_targetQMN);
+            var fieldDeclarationsToDeleteAndReplace = model.SelectedFieldCandidates
+                .Where(f => f.Declaration.IsDeclaredInList() 
+                    && !f.Declaration.HasPrivateAccessibility())
+                .ToList();
 
-            rewriter.RemoveVariables(fieldDeclarationsToDeleteAndReplace.Select(f => f.Declaration).Cast<VariableDeclaration>());
+            var rewriter = rewriteSession.CheckOutModuleRewriter(model.QualifiedModuleName);
+            rewriter.RemoveVariables(fieldDeclarationsToDeleteAndReplace.Select(f => f.Declaration)
+                .Cast<VariableDeclaration>());
 
-            var fieldDeclaraionsToRetain = SelectedFields.Except(fieldDeclarationsToDeleteAndReplace).ToList();
-
-            if (fieldDeclaraionsToRetain.Any())
+            foreach (var field in fieldDeclarationsToDeleteAndReplace)
             {
-                MakeImplicitDeclarationTypeExplicit(fieldDeclaraionsToRetain, rewriter);
+                var targetIdentifier = field.Declaration.Context.GetText().Replace(field.IdentifierName, field.BackingIdentifier);
+                var newField = field.Declaration.IsTypeSpecified
+                    ? $"{Tokens.Private} {targetIdentifier}"
+                    : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {field.Declaration.AsTypeName}";
 
+                model.AddContentBlock(NewContentType.DeclarationBlock, newField);
+            }
 
-                SetPrivateVariableVisiblity(fieldDeclaraionsToRetain, rewriter);
+            var retainedFieldDeclarations = model.SelectedFieldCandidates.Except(fieldDeclarationsToDeleteAndReplace).ToList();
 
-                Rename(fieldDeclaraionsToRetain, rewriter);
+            if (retainedFieldDeclarations.Any())
+            {
+                MakeImplicitDeclarationTypeExplicit(retainedFieldDeclarations, rewriter);
+
+                SetPrivateVariableVisiblity(retainedFieldDeclarations, rewriter);
+
+                Rename(retainedFieldDeclarations, rewriteSession);
+            }
+        }
+
+        private void ModifyReferences(EncapsulateFieldModel model, IRewriteSession rewriteSession)
+        {
+            var privateUdtInstances = model.SelectedFieldCandidates
+                .Where(f => (f.Declaration.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
+                    && f.Declaration.AsTypeDeclaration.Accessibility == Accessibility.Private);
+
+            ReplaceEncapsulatedPrivateUserDefinedTypeMemberReferences(privateUdtInstances, rewriteSession);
+
+            ReplaceEncapsulatedFieldReferences(model.SelectedFieldCandidates.Except(privateUdtInstances), rewriteSession);
+        }
+
+        private void InsertNewContent(EncapsulateFieldModel model, IRewriteSession rewriteSession)
+        {
+            var encapsulateFieldInsertNewCodeModel = new EncapsulateFieldInsertNewCodeModel(model.SelectedFieldCandidates)
+            {
+                NewContent = model.NewContent,
+                IncludeNewContentMarker = model.IncludeNewContentMarker
+            };
+            _encapsulateFieldInsertNewCodeRefactoringAction.Refactor(encapsulateFieldInsertNewCodeModel, rewriteSession);
+        }
+
+        private void ReplaceEncapsulatedFieldReferences(IEnumerable<IEncapsulateFieldCandidate> fieldCandidates, IRewriteSession rewriteSession)
+        {
+            var model = new ReplaceReferencesModel()
+            {
+                ModuleQualifyExternalReferences = true
+            };
+            foreach (var field in fieldCandidates)
+            {
+                foreach (var idRef in field.Declaration.References)
+                {
+                    var replacementExpression = idRef.QualifiedModuleName == field.QualifiedModuleName
+                        ? field.Declaration.IsArray ? field.BackingIdentifier : field.PropertyIdentifier
+                        : field.PropertyIdentifier;
+
+                    model.AssignFieldReferenceReplacementExpression(idRef, replacementExpression);
+                }
+            }
+
+            _replaceReferencesRefactoringAction.Refactor(model, rewriteSession);
+        }
+
+        private void ReplaceEncapsulatedPrivateUserDefinedTypeMemberReferences(IEnumerable<IEncapsulateFieldCandidate> udtFieldCandidates, IRewriteSession rewriteSession)
+        {
+            if (!udtFieldCandidates.Any())
+            {
+                return;
+            }
+
+            var replacePrivateUDTMemberReferencesModel = _replaceUDTMemberReferencesModelFactory.Create(udtFieldCandidates.Select(f => f.Declaration).Cast<VariableDeclaration>());
+
+            foreach (var udtfield in udtFieldCandidates)
+            {
+                foreach (var udtMember in replacePrivateUDTMemberReferencesModel.UDTMembers)
+                {
+                    var udtExpressions = new PrivateUDTMemberReferenceReplacementExpressions($"{udtfield.IdentifierName}.{udtMember.IdentifierName}")
+                    {
+                        LocalReferenceExpression = udtMember.IdentifierName.CapitalizeFirstLetter(),
+                    };
+
+                    replacePrivateUDTMemberReferencesModel.AssignUDTMemberReferenceExpressions(udtfield.Declaration as VariableDeclaration, udtMember, udtExpressions);
+                }
+                _replaceUDTMemberReferencesRefactoringAction.Refactor(replacePrivateUDTMemberReferencesModel, rewriteSession);
             }
         }
 
         private static void MakeImplicitDeclarationTypeExplicit(IEnumerable<IEncapsulateFieldCandidate> fields, IModuleRewriter rewriter)
         {
-            foreach (var element in fields.Select(f => f.Declaration))
+            var fieldsToChange = fields.Where(f => !f.Declaration.Context.TryGetChildContext<VBAParser.AsTypeClauseContext>(out _))
+                .Select(f => f.Declaration);
+
+            foreach (var field in fieldsToChange)
             {
-                if (!element.Context.TryGetChildContext<VBAParser.AsTypeClauseContext>(out _))
-                {
-                    rewriter.InsertAfter(element.Context.Stop.TokenIndex, $" {Tokens.As} {element.AsTypeName}");
-                }
+                rewriter.InsertAfter(field.Context.Stop.TokenIndex, $" {Tokens.As} {field.AsTypeName}");
             }
         }
 
@@ -79,36 +193,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        private static void Rename(IEnumerable<IEncapsulateFieldCandidate> fields, IModuleRewriter rewriter)
+        private void Rename(IEnumerable<IEncapsulateFieldCandidate> fields, IRewriteSession rewriteSession)
         {
-            var fieldsToRename = fields.Where(f => !f.BackingIdentifier.Equals(f.Declaration.IdentifierName));
+            var fieldToNewNamePairs = fields.Where(f => !f.BackingIdentifier.Equals(f.Declaration.IdentifierName, StringComparison.InvariantCultureIgnoreCase))
+                .Select(f => (f.Declaration, f.BackingIdentifier));
 
-            foreach (var field in fieldsToRename)
-            {
-                if (!(field.Declaration.Context is IIdentifierContext context))
-                {
-                    throw new ArgumentException();
-                }
-
-                rewriter.Replace(context.IdentifierTokens, field.BackingIdentifier);
-            }
+            _replaceDeclarationIdentifiers.Refactor(new ReplaceDeclarationIdentifierModel(fieldToNewNamePairs), rewriteSession);
         }
-
-        protected override void LoadNewDeclarationBlocks()
-        {
-            //Fields to create here were deleted in ModifyFields(...)
-            foreach (var field in SelectedFields.Where(f => IsFieldToDeleteAndReplace(f)))
-            {
-                var targetIdentifier = field.Declaration.Context.GetText().Replace(field.IdentifierName, field.BackingIdentifier);
-                var newField = field.Declaration.IsTypeSpecified
-                    ? $"{Tokens.Private} {targetIdentifier}"
-                    : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {field.Declaration.AsTypeName}";
-
-                AddContentBlock(NewContentType.DeclarationBlock, newField);
-            }
-        }
-
-        private static bool IsFieldToDeleteAndReplace(IEncapsulateFieldCandidate field)
-            => field.Declaration.IsDeclaredInList() && !field.Declaration.HasPrivateAccessibility();
     }
 }

@@ -201,11 +201,25 @@ End Sub
 ";
             var presenterAction = Support.UserAcceptsDefaults();
 
+            var expectedWithThis =
+@"
+    With this
+        First = arg1
+        Second = arg2
+    End With
+";
+
+            var expectedWithThat =
+@"
+    With that
+        .First = arg1
+        .Second = arg2
+    End With
+";
+
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.DoesNotContain($" First = arg1", actualCode);
-            StringAssert.DoesNotContain($" Second = arg2", actualCode);
-            StringAssert.Contains($" .First = arg1", actualCode);
-            StringAssert.Contains($" .Second = arg2", actualCode);
+            StringAssert.Contains(expectedWithThis, actualCode);
+            StringAssert.Contains(expectedWithThat, actualCode);
             StringAssert.Contains("With this", actualCode);
         }
 
@@ -757,8 +771,8 @@ End Sub
         [Category("Encapsulate Field")]
         public void ClassModuleUDTFieldSelection_ExternalReferences_StdModule()
         {
-            var sourceModuleName = "SourceModule";
-            var sourceClassName = "theClass";
+            var classModuleName = "SourceModule";
+            var classInstanceName = "theClass";
             var sourceModuleCode =
 $@"
 
@@ -772,24 +786,24 @@ Public Type TBar
     Second As Long
 End Type
 
-Private {sourceClassName} As {sourceModuleName}
+Private {classInstanceName} As {classModuleName}
 Private Const foo As String = ""Foo""
 Private Const bar As Long = 7
 
 Public Sub Initialize()
-    Set {sourceClassName} = New {sourceModuleName}
+    Set {classInstanceName} = New {classModuleName}
 End Sub
 
 Public Sub Foo()
-    {sourceClassName}.this.First = foo
+    {classInstanceName}.this.First = foo
 End Sub
 
 Public Sub Bar()
-    {sourceClassName}.this.Second = bar
+    {classInstanceName}.this.Second = bar
 End Sub
 
 Public Sub FooBar()
-    With {sourceClassName}
+    With {classInstanceName}
         .this.First = foo
         .this.Second = bar
     End With
@@ -804,17 +818,17 @@ End Sub
             var sourceCodeString = sourceModuleCode.ToCodeString();
 
             var actualModuleCode = RefactoredCode(
-                sourceModuleName,
+                classModuleName,
                 sourceCodeString.CaretPosition.ToOneBased(),
                 presenterAction,
                 null,
                 false,
                 ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule),
-                (sourceModuleName, sourceCodeString.Code, ComponentType.ClassModule));
+                (classModuleName, sourceCodeString.Code, ComponentType.ClassModule));
 
             var referencingModuleCode = actualModuleCode["StdModule"];
-            StringAssert.Contains($"{sourceClassName}.MyType.First = ", referencingModuleCode);
-            StringAssert.Contains($"{sourceClassName}.MyType.Second = ", referencingModuleCode);
+            StringAssert.Contains($"{classInstanceName}.MyType.First = ", referencingModuleCode);
+            StringAssert.Contains($"{classInstanceName}.MyType.Second = ", referencingModuleCode);
             StringAssert.Contains($"  .MyType.Second = ", referencingModuleCode);
         }
 

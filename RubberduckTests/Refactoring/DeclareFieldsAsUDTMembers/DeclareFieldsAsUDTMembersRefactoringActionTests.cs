@@ -3,7 +3,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
-using Rubberduck.Refactorings.MoveFieldsToUDT;
+using Rubberduck.Refactorings.DeclareFieldsAsUDTMembers;
 using System.Collections.Generic;
 using System.Linq;
 
