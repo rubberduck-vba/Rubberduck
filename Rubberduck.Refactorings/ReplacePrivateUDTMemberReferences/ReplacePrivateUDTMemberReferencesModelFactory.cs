@@ -1,9 +1,10 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences
+namespace Rubberduck.Refactorings
 {
     public interface IReplacePrivateUDTMemberReferencesModelFactory
     {
