@@ -5,6 +5,7 @@ using Rubberduck.Refactorings.ReplaceDeclarationIdentifier;
 using Rubberduck.Refactorings.ReplaceReferences;
 using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
 using Rubberduck.Refactorings.CodeBlockInsert;
+using Rubberduck.Refactorings.EncapsulateFieldInsertNewCode;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
