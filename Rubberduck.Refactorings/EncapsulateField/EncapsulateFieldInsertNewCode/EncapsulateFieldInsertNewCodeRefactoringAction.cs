@@ -8,8 +8,9 @@ using Rubberduck.Refactorings.CodeBlockInsert;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using Rubberduck.Refactorings.EncapsulateField;
 
-namespace Rubberduck.Refactorings.EncapsulateField
+namespace Rubberduck.Refactorings.EncapsulateFieldInsertNewCode
 {
     public class EncapsulateFieldInsertNewCodeRefactoringAction : CodeOnlyRefactoringActionBase<EncapsulateFieldInsertNewCodeModel>
     {
