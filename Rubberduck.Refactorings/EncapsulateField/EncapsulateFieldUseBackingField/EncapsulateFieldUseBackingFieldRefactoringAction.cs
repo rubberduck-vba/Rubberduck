@@ -12,10 +12,12 @@ using Rubberduck.Refactorings.CodeBlockInsert;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Refactorings.EncapsulateField;
+using Rubberduck.Refactorings.EncapsulateFieldInsertNewCode;
 
-namespace Rubberduck.Refactorings.EncapsulateField
+namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
 {
-    public class EncapsulateFieldUseBackingFieldRefactoringAction : CodeOnlyRefactoringActionBase<EncapsulateFieldModel>
+    public class EncapsulateFieldUseBackingFieldRefactoringAction : CodeOnlyRefactoringActionBase<EncapsulateFieldUseBackingFieldModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ICodeOnlyRefactoringAction<ReplacePrivateUDTMemberReferencesModel> _replaceUDTMemberReferencesRefactoringAction;
@@ -39,20 +41,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _replaceUDTMemberReferencesModelFactory = replaceUDTMemberReferencesModelFactory;
         }
 
-        public override void Refactor(EncapsulateFieldModel model, IRewriteSession rewriteSession)
+        public override void Refactor(EncapsulateFieldUseBackingFieldModel model, IRewriteSession rewriteSession)
         {
             if (!model.SelectedFieldCandidates.Any())
             {
                 return;
             }
-
-            model.NewContent = new Dictionary<NewContentType, List<string>>
-            {
-                { NewContentType.PostContentMessage, new List<string>() },
-                { NewContentType.DeclarationBlock, new List<string>() },
-                { NewContentType.CodeSectionBlock, new List<string>() },
-                { NewContentType.TypeDeclarationBlock, new List<string>() }
-            };
 
             ModifyFields(model, rewriteSession);
 
@@ -61,7 +55,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             InsertNewContent(model, rewriteSession);
         }
 
-        private void ModifyFields(EncapsulateFieldModel model, IRewriteSession rewriteSession)
+        private void ModifyFields(EncapsulateFieldUseBackingFieldModel model, IRewriteSession rewriteSession)
         {
             var fieldDeclarationsToDeleteAndReplace = model.SelectedFieldCandidates
                 .Where(f => f.Declaration.IsDeclaredInList() 
@@ -94,7 +88,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        private void ModifyReferences(EncapsulateFieldModel model, IRewriteSession rewriteSession)
+        private void ModifyReferences(EncapsulateFieldUseBackingFieldModel model, IRewriteSession rewriteSession)
         {
             var privateUdtInstances = model.SelectedFieldCandidates
                 .Where(f => (f.Declaration.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
@@ -105,7 +99,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             ReplaceEncapsulatedFieldReferences(model.SelectedFieldCandidates.Except(privateUdtInstances), rewriteSession);
         }
 
-        private void InsertNewContent(EncapsulateFieldModel model, IRewriteSession rewriteSession)
+        private void InsertNewContent(EncapsulateFieldUseBackingFieldModel model, IRewriteSession rewriteSession)
         {
             var encapsulateFieldInsertNewCodeModel = new EncapsulateFieldInsertNewCodeModel(model.SelectedFieldCandidates)
             {
