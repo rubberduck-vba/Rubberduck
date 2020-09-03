@@ -114,8 +114,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public virtual IEncapsulateFieldConflictFinder ConflictFinder { set; get; }
 
-        public virtual bool TryValidateEncapsulationAttributes(out string errorMessage) 
-            => ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
+        public virtual bool TryValidateEncapsulationAttributes(out string errorMessage)
+        {
+            errorMessage = string.Empty;
+            if (ConflictFinder is null)
+            {
+                return true;
+            }
+            return ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
+        }
 
         public virtual string TargetID => _target?.IdentifierName ?? IdentifierName;
 
@@ -124,14 +131,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             set
             {
-                var valueChanged = _encapsulateFlag != value;
+                if (_encapsulateFlag == value)
+                {
+                    return;
+                }
 
                 _encapsulateFlag = value;
                 if (!_encapsulateFlag)
                 {
                     PropertyIdentifier = _fieldAndProperty.DefaultPropertyName;
                 }
-                else if (valueChanged)
+                else if (ConflictFinder != null)
                 {
                     ConflictFinder.AssignNoConflictIdentifiers(this);
                 }

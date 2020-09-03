@@ -40,10 +40,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string BackingIdentifier
         {
-            get
-            {
-                  return _wrappedCandidate.IdentifierName;
-            }
+            get => _wrappedCandidate.IdentifierName;
             set { }
         }
 
@@ -176,17 +173,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     return;
                 }
                 var valueChanged = _encapsulateFlag != value;
-
                 _encapsulateFlag = value;
-                if (!_encapsulateFlag)
-                {
-                    _wrappedCandidate.EncapsulateFlag = value;
-                    PropertyIdentifier = _wrappedCandidate.PropertyIdentifier;
-                }
-                else if (valueChanged)
+
+                PropertyIdentifier = _wrappedCandidate.PropertyIdentifier;
+                if (_encapsulateFlag && valueChanged && ConflictFinder != null)
                 {
                     ConflictFinder.AssignNoConflictIdentifiers(this);
                 }
+
+                if (!_encapsulateFlag)
+                {
+                    _wrappedCandidate.EncapsulateFlag = value;
+                }
+
             }
             get => _encapsulateFlag;
         }

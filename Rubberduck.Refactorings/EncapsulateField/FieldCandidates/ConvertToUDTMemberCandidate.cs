@@ -89,8 +89,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IValidateVBAIdentifiers NameValidator
         {
-            set => _wrapped.NameValidator = value;
-            get => _wrapped.NameValidator;
+            set { }
+            get => _wrapped.Declaration.IsArray
+                ? EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMemberArray)
+                : EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMember);
         }
 
         public IEncapsulateFieldConflictFinder ConflictFinder

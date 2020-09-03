@@ -1,207 +1,91 @@
-﻿using System.Collections.Generic;
+﻿using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
+using Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember;
+using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Refactorings.CodeBlockInsert;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldModel : IRefactoringModel
     {
-        private QualifiedModuleName _targetQMN;
-        private IDeclarationFinderProvider _declarationFinderProvider;
-        private IEncapsulateFieldValidationsProvider _validationsProvider;
-        private IObjectStateUDT _newObjectStateUDT;
-
-        private List<IEncapsulateFieldCandidate> _convertedFields;
-        private HashSet<IObjectStateUDT> _objStateCandidates;
-
-        private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
-
-        private Dictionary<NewContentType, List<string>> _newContent { set; get; }
-
-        public EncapsulateFieldModel(
-            Declaration target,
-            IEnumerable<IEncapsulateFieldCandidate> candidates,
-            IEnumerable<IObjectStateUDT> objectStateUDTCandidates,
-            IObjectStateUDT stateUDTField,
-            IDeclarationFinderProvider declarationFinderProvider,
-            IEncapsulateFieldValidationsProvider validationsProvider)
+        public EncapsulateFieldModel(EncapsulateFieldUseBackingFieldModel backingFieldModel,
+            EncapsulateFieldUseBackingUDTMemberModel udtModel)
         {
-            _targetQMN = target.QualifiedModuleName;
-            _newObjectStateUDT = stateUDTField;
-            _declarationFinderProvider = declarationFinderProvider;
-            _validationsProvider = validationsProvider;
-
-            _useBackingFieldCandidates = candidates.ToList();
-            _objStateCandidates = new HashSet<IObjectStateUDT>(objectStateUDTCandidates);
-            _objStateCandidates.Add(_newObjectStateUDT);
-
-            EncapsulateFieldStrategy = EncapsulateFieldStrategy.UseBackingFields;
-            _activeObjectStateUDT = ObjectStateUDTField;
+            EncapsulateFieldUseBackingFieldModel = backingFieldModel;
+            EncapsulateFieldUseBackingUDTMemberModel = udtModel;
+            ResetConflictDetection(EncapsulateFieldStrategy.UseBackingFields);
         }
 
-        public bool IncludeNewContentMarker { set; get; } = false;
+        public EncapsulateFieldUseBackingUDTMemberModel EncapsulateFieldUseBackingUDTMemberModel { get; }
 
-        public QualifiedModuleName QualifiedModuleName => _targetQMN;
+        public EncapsulateFieldUseBackingFieldModel EncapsulateFieldUseBackingFieldModel { get; }
 
         public IRefactoringPreviewProvider<EncapsulateFieldModel> PreviewProvider { set; get; }
-        
-        public IEnumerable<IObjectStateUDT> ObjectStateUDTCandidates => _objStateCandidates;
 
-        private EncapsulateFieldStrategy _encapsulationFieldStategy;
+        public IEnumerable<IObjectStateUDT> ObjectStateUDTCandidates => EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTCandidates;
+
+        private EncapsulateFieldStrategy _strategy;
         public EncapsulateFieldStrategy EncapsulateFieldStrategy
         {
-            get => _encapsulationFieldStategy;
             set
             {
-                if (_encapsulationFieldStategy == value)
+                if (_strategy == value)
                 {
                     return;
                 }
-
-                _encapsulationFieldStategy = value;
-
-                if (_encapsulationFieldStategy == EncapsulateFieldStrategy.UseBackingFields)
-                {
-                    UpdateFieldCandidatesForUseBackingFieldsStrategy();
-                    return;
-                }
-                UpdateFieldCandidatesForConvertFieldsToUDTMembersStrategy();
+                _strategy = value;
+                ResetConflictDetection(_strategy);
             }
-        } 
+            get => _strategy;
+        }
 
-        public IEncapsulateFieldValidationsProvider ValidationsProvider => _validationsProvider;
-
-        private List<IEncapsulateFieldCandidate> _useBackingFieldCandidates;
-        public List<IEncapsulateFieldCandidate> EncapsulationCandidates
+        private void ResetConflictDetection(EncapsulateFieldStrategy strategy)
         {
-            get
-            {
-                if (EncapsulateFieldStrategy == EncapsulateFieldStrategy.UseBackingFields)
-                {
-                    return _useBackingFieldCandidates;
-                }
+            var conflictFinder =
+                strategy == EncapsulateFieldStrategy.UseBackingFields
+                    ? EncapsulateFieldUseBackingFieldModel.ConflictFinder
+                    : EncapsulateFieldUseBackingUDTMemberModel.ConflictFinder;
 
-                if (_convertedFields is null)
+            foreach (var candidate in EncapsulateFieldUseBackingFieldModel.EncapsulationCandidates)
+            {
+                candidate.ConflictFinder = conflictFinder;
+                ResolveConflict(conflictFinder, candidate);
+            }
+
+            return;
+        }
+
+        private void ResolveConflict(IEncapsulateFieldConflictFinder conflictFinder, IEncapsulateFieldCandidate candidate)
+        {
+            conflictFinder.AssignNoConflictIdentifiers(candidate);
+            if (candidate is IUserDefinedTypeCandidate udtCandidate)
+            {
+                foreach (var member in udtCandidate.Members)
                 {
-                    _convertedFields = new List<IEncapsulateFieldCandidate>();
-                    foreach (var field in _useBackingFieldCandidates)
+                    conflictFinder.AssignNoConflictIdentifiers(member);
+                    if (member.WrappedCandidate is IUserDefinedTypeCandidate childUDT
+                        && childUDT.Declaration.AsTypeDeclaration.HasPrivateAccessibility())
                     {
-                        _convertedFields.Add(new ConvertToUDTMember(field, ObjectStateUDTField));
+                        ResolveConflict(conflictFinder, childUDT);
                     }
                 }
-                return _convertedFields;
             }
-        } 
+        }
+
+        public IReadOnlyCollection<IEncapsulateFieldCandidate> EncapsulationCandidates => EncapsulateFieldStrategy == EncapsulateFieldStrategy.UseBackingFields
+            ? EncapsulateFieldUseBackingFieldModel.EncapsulationCandidates
+            : EncapsulateFieldUseBackingUDTMemberModel.EncapsulationCandidates;
 
         public IEnumerable<IEncapsulateFieldCandidate> SelectedFieldCandidates
             => EncapsulationCandidates.Where(v => v.EncapsulateFlag);
 
-        public IEnumerable<IUserDefinedTypeCandidate> UDTFieldCandidates 
-            => EncapsulationCandidates
-                .Where(v => v is IUserDefinedTypeCandidate)
-                .Cast<IUserDefinedTypeCandidate>();
-
-        public IEnumerable<IUserDefinedTypeCandidate> SelectedUDTFieldCandidates 
-            => SelectedFieldCandidates
-                .Where(v => v is IUserDefinedTypeCandidate)
-                .Cast<IUserDefinedTypeCandidate>();
-
         public IEncapsulateFieldCandidate this[string encapsulatedFieldTargetID]
             => EncapsulationCandidates.Where(c => c.TargetID.Equals(encapsulatedFieldTargetID)).Single();
 
-        public IEncapsulateFieldCandidate this[Declaration fieldDeclaration]
-            => EncapsulationCandidates.Where(c => c.Declaration == fieldDeclaration).Single();
-
-        public void AddContentBlock(NewContentType contentType, string block)
-            => _newContent[contentType].Add(block);
-
-        public Dictionary<NewContentType, List<string>> NewContent
-        {
-            set => _newContent = value;
-            get => _newContent;
-        }
-
-        private IObjectStateUDT _activeObjectStateUDT;
         public IObjectStateUDT ObjectStateUDTField
         {
-            get
-            {
-                _activeObjectStateUDT = ObjectStateUDTCandidates
-                    .SingleOrDefault(os => os.IsSelected) ?? _newObjectStateUDT;
-
-                return _activeObjectStateUDT;
-            }
-            set
-            {
-                if (_activeObjectStateUDT.FieldIdentifier == (value?.FieldIdentifier ?? string.Empty))
-                {
-                    return;
-                }
-
-                foreach (var objectStateUDT in ObjectStateUDTCandidates)
-                {
-                    objectStateUDT.IsSelected = false;
-                }
-
-                _activeObjectStateUDT =
-                    ObjectStateUDTCandidates.SingleOrDefault(os => os.FieldIdentifier.Equals(value?.FieldIdentifier ?? null))
-                    ?? _newObjectStateUDT;
-
-                _activeObjectStateUDT.IsSelected = true;
-
-                if (EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers)
-                {
-                    foreach (var field in EncapsulationCandidates)
-                    {
-                        if (field is IConvertToUDTMember convertedField)
-                        {
-                            convertedField.ObjectStateUDT = _activeObjectStateUDT;
-                            convertedField.ConflictFinder = _validationsProvider.ConflictDetector(EncapsulateFieldStrategy, _declarationFinderProvider);
-                            convertedField.ConflictFinder.AssignNoConflictIdentifiers(convertedField);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void UpdateFieldCandidatesForUseBackingFieldsStrategy()
-        {
-            foreach (var candidate in EncapsulationCandidates)
-            {
-                switch (candidate)
-                {
-                    case IUserDefinedTypeCandidate udt:
-                        candidate.NameValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedType);
-                        break;
-                    case IUserDefinedTypeMemberCandidate udtm:
-                        candidate.NameValidator = candidate.Declaration.IsArray
-                            ? EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMemberArray)
-                            : EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMember);
-                        break;
-                    default:
-                        candidate.NameValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
-                        break;
-                }
-                candidate.ConflictFinder = _validationsProvider.ConflictDetector(EncapsulateFieldStrategy, _declarationFinderProvider);
-                candidate.ConflictFinder.AssignNoConflictIdentifiers(candidate);
-            }
-        }
-
-        private void UpdateFieldCandidatesForConvertFieldsToUDTMembersStrategy()
-        {
-            foreach (var candidate in EncapsulationCandidates.Cast<IConvertToUDTMember>())
-            {
-                candidate.ObjectStateUDT = ObjectStateUDTField;
-                candidate.NameValidator = candidate.Declaration.IsArray
-                    ? EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMemberArray)
-                    : EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMember);
-
-                candidate.ConflictFinder = _validationsProvider.ConflictDetector(EncapsulateFieldStrategy, _declarationFinderProvider);
-                candidate.ConflictFinder.AssignNoConflictIdentifiers(candidate);
-            }
+            get => EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTField;
+            set => EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTField = value;
         }
     }
 }

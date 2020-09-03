@@ -21,22 +21,25 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IRewritingManager _rewritingManager;
         private readonly EncapsulateFieldRefactoringAction _refactoringAction;
         private readonly EncapsulateFieldPreviewProvider _previewProvider;
+        private readonly IEncapsulateFieldModelFactory _modelFactory;
 
         public EncapsulateFieldRefactoring(
-                EncapsulateFieldRefactoringAction refactoringAction,
-                EncapsulateFieldPreviewProvider previewProvider,
-                IDeclarationFinderProvider declarationFinderProvider,
-                RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
-                IRewritingManager rewritingManager,
-                ISelectionProvider selectionProvider,
-                ISelectedDeclarationProvider selectedDeclarationProvider)
-            :base(selectionProvider, userInteraction)
+            EncapsulateFieldRefactoringAction refactoringAction,
+            EncapsulateFieldPreviewProvider previewProvider,
+            IEncapsulateFieldModelFactory encapsulateFieldModelFactory,
+            IDeclarationFinderProvider declarationFinderProvider,
+            RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
+            IRewritingManager rewritingManager,
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider)
+                :base(selectionProvider, userInteraction)
         {
             _refactoringAction = refactoringAction;
             _previewProvider = previewProvider;
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _rewritingManager = rewritingManager;
+            _modelFactory = encapsulateFieldModelFactory;
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
@@ -64,35 +67,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 throw new InvalidDeclarationTypeException(target);
             }
 
-            var builder = new EncapsulateFieldElementsBuilder(_declarationFinderProvider, target.QualifiedModuleName);
+            var model = _modelFactory.Create(target);
 
-            var selected = builder.Candidates.Single(c => c.Declaration == target);
-            selected.EncapsulateFlag = true;
-
-            var model = new EncapsulateFieldModel(
-                                target,
-                                builder.Candidates,
-                                builder.ObjectStateUDTCandidates,
-                                builder.DefaultObjectStateUDT,
-                                _declarationFinderProvider,
-                                builder.ValidationsProvider)
-            {
-                PreviewProvider = _previewProvider,
-                ObjectStateUDTField = builder.ObjectStateUDT,
-                EncapsulateFieldStrategy = builder.ObjectStateUDT != null ? EncapsulateFieldStrategy.ConvertFieldsToUDTMembers : EncapsulateFieldStrategy.UseBackingFields,
-            };
+            model.PreviewProvider = _previewProvider;
 
             return model;
         }
 
-        private EncapsulateFieldStrategy ApplyStrategy(IObjectStateUDT objStateUDT)
-        {
-            return objStateUDT != null ? EncapsulateFieldStrategy.ConvertFieldsToUDTMembers : EncapsulateFieldStrategy.UseBackingFields;
-        }
-
         protected override void RefactorImpl(EncapsulateFieldModel model)
         {
-            if (!model.SelectedFieldCandidates.Any()) { return; }
+            if (!model.SelectedFieldCandidates.Any())
+            {
+                return;
+            }
 
             _refactoringAction.Refactor(model);
         }

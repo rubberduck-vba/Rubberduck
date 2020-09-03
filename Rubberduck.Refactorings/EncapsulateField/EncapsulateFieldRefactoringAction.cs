@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
+using Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember;
+using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -6,11 +9,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private readonly EncapsulateFieldUseBackingFieldRefactoringAction _useBackingField;
         private readonly EncapsulateFieldUseBackingUDTMemberRefactoringAction _useBackingUDTMember;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public EncapsulateFieldRefactoringAction(
+        public EncapsulateFieldRefactoringAction(IDeclarationFinderProvider declarationFinderProvider,
             EncapsulateFieldUseBackingFieldRefactoringAction encapsulateFieldUseBackingField,
             EncapsulateFieldUseBackingUDTMemberRefactoringAction encapsulateFieldUseUDTMember)
         {
+            _declarationFinderProvider = declarationFinderProvider;
             _useBackingField = encapsulateFieldUseBackingField;
             _useBackingUDTMember = encapsulateFieldUseUDTMember;
         }
@@ -24,11 +29,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers)
             {
-                _useBackingUDTMember.Refactor(model);
+                _useBackingUDTMember.Refactor(model.EncapsulateFieldUseBackingUDTMemberModel);
                 return;
             }
 
-            _useBackingField.Refactor(model);
+            _useBackingField.Refactor(model.EncapsulateFieldUseBackingFieldModel);
         }
     }
 }

@@ -1,30 +1,33 @@
-﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Common;
-using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Resources;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
     public interface IObjectStateUDT : IEncapsulateFieldRefactoringElement
     {
         string TypeIdentifier { set; get; }
-        string FieldIdentifier { set; get; }
-        string TypeDeclarationBlock(IIndenter indenter = null);
         string FieldDeclarationBlock { get; }
-        void AddMembers(IEnumerable<IConvertToUDTMember> fields);
+        string FieldIdentifier { set; get; }
         bool IsExistingDeclaration { get; }
         Declaration AsTypeDeclaration { get; }
         bool IsSelected { set; get; }
         IEnumerable<IUserDefinedTypeMemberCandidate> ExistingMembers { get; }
     }
 
-    //ObjectStateUDT can be an existing UDT (Private only) selected by the user, or a 
-    //newly inserted declaration
+    /// <summary>
+    /// ObjectStateUDT is a Private UserDefinedType whose UserDefinedTypeMembers represent
+    /// object state in lieu of (or in addition to) a set of Private fields.
+    /// </summary>
+    /// <remarks>
+    /// Within the EncapsulateField refactoring, the ObjectStateUDT can be an existing
+    /// UserDefinedType or an identifier that will be used to generate a new UserDefinedType
+    /// </remarks>
     public class ObjectStateUDT : IObjectStateUDT
     {
         private static string _defaultNewFieldName = RubberduckUI.EncapsulateField_DefaultObjectStateUDTFieldName;
@@ -59,7 +62,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             TypeIdentifier = typeIdentifier;
             _convertedMembers = new List<IConvertToUDTMember>();
             _codeBuilder = new CodeBuilder();
+            _convertedMembers = new List<IConvertToUDTMember>();
         }
+
+        public string FieldDeclarationBlock
+            => $"{Accessibility.Private} {IdentifierName} {Tokens.As} {AsTypeName}";
 
         public string IdentifierName => _wrappedUDT?.IdentifierName ?? FieldIdentifier;
 
@@ -74,27 +81,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 if (_wrappedUDT != null)
                 {
                     _wrappedUDT.IsSelectedObjectStateUDT = value;
-                }
-
-                if (_isSelected && IsExistingDeclaration)
-                {
-                    _wrappedUDT.EncapsulateFlag = false;
+                    if (_isSelected && IsExistingDeclaration)
+                    {
+                        _wrappedUDT.EncapsulateFlag = false;
+                    }
                 }
             }
             get => _isSelected;
         }
 
-        public IEnumerable<IUserDefinedTypeMemberCandidate> ExistingMembers
-        {
-            get
-            {
-                if (IsExistingDeclaration)
-                {
-                    return _wrappedUDT.Members;
-                }
-                return Enumerable.Empty<IUserDefinedTypeMemberCandidate>();
-            }
-        }
+        public IEnumerable<IUserDefinedTypeMemberCandidate> ExistingMembers 
+            => IsExistingDeclaration
+                ? _wrappedUDT.Members
+                : Enumerable.Empty<IUserDefinedTypeMemberCandidate>();
 
         private QualifiedModuleName _qmn;
         public QualifiedModuleName QualifiedModuleName
@@ -110,31 +109,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public Declaration AsTypeDeclaration => _wrappedUDT?.Declaration.AsTypeDeclaration;
 
         public string FieldIdentifier { set; get; }
-
-        public void AddMembers(IEnumerable<IConvertToUDTMember> fields)
-        {
-            _convertedMembers = new List<IConvertToUDTMember>();
-            if (IsExistingDeclaration)
-            {
-                foreach (var member in _wrappedUDT.Members)
-                {
-                    var convertedMember = new ConvertToUDTMember(member, this) { EncapsulateFlag = false };
-                    _convertedMembers.Add(convertedMember);
-                }
-            }
-            _convertedMembers.AddRange(fields);
-        }
-
-        public string FieldDeclarationBlock
-            => $"{Accessibility.Private} {IdentifierName} {Tokens.As} {AsTypeName}";
-
-        public string TypeDeclarationBlock(IIndenter indenter = null)
-        {
-            var udtMembers = _convertedMembers.Where(m => m.Declaration is VariableDeclaration)
-                .Select(m => (m.Declaration as VariableDeclaration, m.BackingIdentifier));
-
-            return _codeBuilder.BuildUserDefinedTypeDeclaration(AsTypeName, udtMembers);
-        }
 
         public override bool Equals(object obj)
         {

@@ -10,7 +10,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         IEnumerable<IUserDefinedTypeMemberCandidate> Members { get; }
         void AddMember(IUserDefinedTypeMemberCandidate member);
-        bool TypeDeclarationIsPrivate { set; get; }
+        bool TypeDeclarationIsPrivate { get; }
         bool CanBeObjectStateUDT { set; get; }
         bool IsSelectedObjectStateUDT { set; get; }
     }
@@ -20,6 +20,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public UserDefinedTypeCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator, Func<string,string> parameterNameBuilder)
             : base(declaration, identifierValidator, parameterNameBuilder)
         {
+            TypeDeclarationIsPrivate = declaration.HasPrivateAccessibility();
         }
 
         public void AddMember(IUserDefinedTypeMemberCandidate member)
@@ -39,12 +40,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool IsSelectedObjectStateUDT { set; get; }
 
-        private bool _canBeObjectStateUDT;
-        public bool CanBeObjectStateUDT
-        {
-            set => _canBeObjectStateUDT = value;
-            get => _canBeObjectStateUDT;
-        }
+        public bool CanBeObjectStateUDT { set; get; }
 
         public override string BackingIdentifier
         {
