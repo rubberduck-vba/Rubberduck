@@ -9,8 +9,27 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public class ConvertFieldsToUDTMembersStrategyConflictFinder : EncapsulateFieldConflictFinderBase
+    public interface IConvertFieldsToUDTMembersStrategyConflictFinder : IEncapsulateFieldConflictFinder
     {
+        IObjectStateUDT AssignNoConflictIdentifiers(IObjectStateUDT stateUDT, IDeclarationFinderProvider declarationFinderProvider);
+    }
+
+    public class ConvertFieldsToUDTMembersStrategyConflictFinder : EncapsulateFieldConflictFinderBase, IConvertFieldsToUDTMembersStrategyConflictFinder
+    {
+        private static DeclarationType[] _udtTypeIdentifierNonConflictTypes = new DeclarationType[]
+        {
+            DeclarationType.Project,
+            DeclarationType.Module,
+            DeclarationType.Property,
+            DeclarationType.Function,
+            DeclarationType.Procedure,
+            DeclarationType.Variable,
+            DeclarationType.Constant,
+            DeclarationType.UserDefinedTypeMember,
+            DeclarationType.EnumerationMember,
+            DeclarationType.Parameter
+        };
+
         private IEnumerable<IObjectStateUDT> _objectStateUDTs;
         public ConvertFieldsToUDTMembersStrategyConflictFinder(IDeclarationFinderProvider declarationFinderProvider, IEnumerable<IEncapsulateFieldCandidate> candidates, IEnumerable<IUserDefinedTypeMemberCandidate> udtCandidates, IEnumerable<IObjectStateUDT> objectStateUDTs)
             : base(declarationFinderProvider, candidates, udtCandidates)
@@ -31,6 +50,26 @@ namespace Rubberduck.Refactorings.EncapsulateField
             //Compare to existing members...they cannot change
             var objectStateUDT = _objectStateUDTs.SingleOrDefault(os => os.IsSelected);
             return !ConflictsWithExistingUDTMembers(objectStateUDT, field.BackingIdentifier);
+        }
+
+        public IObjectStateUDT AssignNoConflictIdentifiers(IObjectStateUDT stateUDT, IDeclarationFinderProvider declarationFinderProvider)
+        {
+            var members = declarationFinderProvider.DeclarationFinder.Members(stateUDT.QualifiedModuleName);
+            var guard = 0;
+            while (guard++ < 10 && members.Any(m => m.IdentifierName.IsEquivalentVBAIdentifierTo(stateUDT.FieldIdentifier)))
+            {
+                stateUDT.FieldIdentifier = stateUDT.FieldIdentifier.IncrementEncapsulationIdentifier();
+            }
+
+            members = declarationFinderProvider.DeclarationFinder.Members(stateUDT.QualifiedModuleName)
+                .Where(m => !_udtTypeIdentifierNonConflictTypes.Any(nct => m.DeclarationType.HasFlag(nct)));
+
+            guard = 0;
+            while (guard++ < 10 && members.Any(m => m.IdentifierName.IsEquivalentVBAIdentifierTo(stateUDT.TypeIdentifier)))
+            {
+                stateUDT.TypeIdentifier = stateUDT.TypeIdentifier.IncrementEncapsulationIdentifier();
+            }
+            return stateUDT;
         }
 
         public override IEncapsulateFieldCandidate AssignNoConflictIdentifiers(IEncapsulateFieldCandidate candidate)

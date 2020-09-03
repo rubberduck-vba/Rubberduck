@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public class UseBackingFieldsStrategyConflictFinder : EncapsulateFieldConflictFinderBase
+    public class UseBackingFieldsStrategyConflictFinder : EncapsulateFieldConflictFinderBase, IEncapsulateFieldConflictFinder
     {
         public UseBackingFieldsStrategyConflictFinder(IDeclarationFinderProvider declarationFinderProvider, IEnumerable<IEncapsulateFieldCandidate> candidates, IEnumerable<IUserDefinedTypeMemberCandidate> udtCandidates)
             : base(declarationFinderProvider, candidates, udtCandidates) { }

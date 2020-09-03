@@ -4,12 +4,9 @@ using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -21,23 +18,26 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool TryValidateEncapsulationAttributes(IEncapsulateFieldCandidate field, out string errorMessage);
     }
 
-    public abstract class EncapsulateFieldConflictFinderBase : IEncapsulateFieldConflictFinder
+    public abstract class EncapsulateFieldConflictFinderBase
     {
         protected readonly IDeclarationFinderProvider _declarationFinderProvider;
         protected List<IEncapsulateFieldCandidate> _fieldCandidates { set; get; } = new List<IEncapsulateFieldCandidate>();
         protected List<IUserDefinedTypeMemberCandidate> _udtMemberCandidates { set; get; } = new List<IUserDefinedTypeMemberCandidate>();
 
-        public EncapsulateFieldConflictFinderBase(IDeclarationFinderProvider declarationFinderProvider, IEnumerable<IEncapsulateFieldCandidate> candidates, IEnumerable<IUserDefinedTypeMemberCandidate> udtCandidates)
+        public EncapsulateFieldConflictFinderBase(IDeclarationFinderProvider declarationFinderProvider, IEnumerable<IEncapsulateFieldCandidate> candidates, IEnumerable<IUserDefinedTypeMemberCandidate> udtMemberCandidates)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _fieldCandidates.AddRange(candidates);
-            _udtMemberCandidates.AddRange(udtCandidates);
+            _udtMemberCandidates.AddRange(udtMemberCandidates);
         }
 
         public virtual bool TryValidateEncapsulationAttributes(IEncapsulateFieldCandidate field, out string errorMessage)
         {
             errorMessage = string.Empty;
-            if (!field.EncapsulateFlag) { return true; }
+            if (!field.EncapsulateFlag)
+            {
+                return true;
+            }
 
             if (!field.NameValidator.IsValidVBAIdentifier(field.PropertyIdentifier, out errorMessage))
             {
@@ -101,18 +101,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
             errorMessage = string.Empty;
 
             var potentialDeclarationIdentifierConflicts = new List<string>();
-            potentialDeclarationIdentifierConflicts.AddRange(PotentialConflictIdentifiers(field, declarationType));
+            var membersAndLocalReferencesMatches = PotentialConflictIdentifiers(field, declarationType);
+            potentialDeclarationIdentifierConflicts.AddRange(membersAndLocalReferencesMatches);
 
+            var propertiesOfOtherFieldCandidates = _fieldCandidates.Where(fc => fc.TargetID != field.TargetID).Select(fc => fc.PropertyIdentifier);
             if (ignoreEncapsulationFlags)
             {
-                potentialDeclarationIdentifierConflicts.AddRange(_fieldCandidates.Where(fc => fc.TargetID != field.TargetID).Select(fc => fc.PropertyIdentifier));
+                potentialDeclarationIdentifierConflicts.AddRange(propertiesOfOtherFieldCandidates);
             }
             else
             {
                 potentialDeclarationIdentifierConflicts.AddRange(FlaggedCandidates.Where(fc => fc.TargetID != field.TargetID).Select(fc => fc.PropertyIdentifier));
             }
 
-            potentialDeclarationIdentifierConflicts.AddRange(_udtMemberCandidates.Where(udtm => udtm.TargetID != field.TargetID && udtm.EncapsulateFlag).Select(udtm => udtm.PropertyIdentifier));
+            var udtMemberNameConflictCandidates = _udtMemberCandidates.Where(udtm => udtm.TargetID != field.TargetID && udtm.EncapsulateFlag).Select(udtm => udtm.PropertyIdentifier);
+
+            potentialDeclarationIdentifierConflicts.AddRange(udtMemberNameConflictCandidates);
 
             var identifierToCompare = IdentifierToCompare(field, declarationType);
 
@@ -134,10 +138,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected bool HasConflictingIdentifierIgnoreEncapsulationFlag(IEncapsulateFieldCandidate field, DeclarationType declarationType, out string errorMessage)
             => InternalHasConflictingIdentifier(field, declarationType, true, out errorMessage);
 
-        //The refactoring only inserts new code elements with the following Accessibilities:
-        //Variables => Private
-        //Properties => Public
-        //UDTs => Private
+        /// <summary>
+        ///The refactoring only inserts new code elements with the following Accessibilities:
+        ///Variables => Private
+        ///Properties => Public
+        ///UDTs => Private
+        /// </summary>
         private bool IsAlwaysIgnoreNameConflictType(Declaration d, DeclarationType toEnapsulateDeclarationType)
         {
             //5.3.1.6 Each<subroutine-declaration> and<function-declaration> must have a procedure 
@@ -179,8 +185,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 NeverCauseNameConflictTypes.Remove(DeclarationType.EnumerationMember);
             }
             return d.IsLocalVariable()
-                    || d.IsLocalConstant()
-                    || NeverCauseNameConflictTypes.Contains(d.DeclarationType);
+                || d.IsLocalConstant()
+                || NeverCauseNameConflictTypes.Contains(d.DeclarationType);
         }
 
         private List<string> PotentialConflictIdentifiers(IEncapsulateFieldCandidate candidate, DeclarationType declarationType)
