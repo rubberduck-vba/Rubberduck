@@ -39,7 +39,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 return true;
             }
 
-            if (!field.NameValidator.IsValidVBAIdentifier(field.PropertyIdentifier, out errorMessage))
+            var declarationType = field is IConvertToUDTMember udtMember
+                ? DeclarationType.UserDefinedTypeMember
+                : field.Declaration.DeclarationType;
+
+            if (VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(field.PropertyIdentifier, declarationType, out errorMessage, field.Declaration.IsArray))
             {
                 return false;
             }

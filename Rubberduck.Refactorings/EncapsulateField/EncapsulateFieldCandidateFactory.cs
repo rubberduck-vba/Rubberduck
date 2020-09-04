@@ -16,44 +16,23 @@ namespace Rubberduck.Refactorings
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ICodeBuilder _codeBuilder;
 
-        private readonly IValidateVBAIdentifiers _defaultNameValidator;
-        private readonly IValidateVBAIdentifiers _udtNameValidator;
-        private readonly IValidateVBAIdentifiers _udtMemberNameValidator;
-        private readonly IValidateVBAIdentifiers _udtMemberArrayNameValidator;
-
         public EncapsulateFieldCandidateFactory(IDeclarationFinderProvider declarationFinderProvider, ICodeBuilder codeBuilder)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _codeBuilder = codeBuilder;
-
-            _defaultNameValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
-            _udtNameValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedType);
-            _udtMemberNameValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMember);
-            _udtMemberArrayNameValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMemberArray);
         }
 
         public IEncapsulateFieldCandidate Create(Declaration target)
         {
-            var candidate= CreateCandidate(target, _defaultNameValidator);
-            return candidate;
-        }
-
-        private IEncapsulateFieldCandidate CreateCandidate(Declaration target, IValidateVBAIdentifiers validator)
-        {
             if (target.IsUserDefinedType())
             {
-                var udtField = new UserDefinedTypeCandidate(target, _udtNameValidator, _codeBuilder.BuildPropertyRhsParameterName) as IUserDefinedTypeCandidate;
+                var udtField = new UserDefinedTypeCandidate(target, _codeBuilder.BuildPropertyRhsParameterName) as IUserDefinedTypeCandidate;
 
                 (Declaration udtDeclaration, IEnumerable<Declaration> udtMembers) = GetUDTAndMembersForField(udtField);
 
                 foreach (var udtMemberDeclaration in udtMembers)
                 {
-                    var udtMemberValidator = _udtMemberNameValidator;
-                    if (udtMemberDeclaration.IsArray)
-                    {
-                        udtMemberValidator = _udtMemberArrayNameValidator;
-                    }
-                    var candidateUDTMember = new UserDefinedTypeMemberCandidate(CreateCandidate(udtMemberDeclaration, udtMemberValidator), udtField, _codeBuilder.BuildPropertyRhsParameterName) as IUserDefinedTypeMemberCandidate;
+                    var candidateUDTMember = new UserDefinedTypeMemberCandidate(Create(udtMemberDeclaration), udtField, _codeBuilder.BuildPropertyRhsParameterName) as IUserDefinedTypeMemberCandidate;
 
                     udtField.AddMember(candidateUDTMember);
                 }
@@ -69,11 +48,11 @@ namespace Rubberduck.Refactorings
             }
             else if (target.IsArray)
             {
-                var arrayCandidate = new ArrayCandidate(target, validator, _codeBuilder.BuildPropertyRhsParameterName);
+                var arrayCandidate = new ArrayCandidate(target, _codeBuilder.BuildPropertyRhsParameterName);
                 return arrayCandidate;
             }
 
-            var candidate = new EncapsulateFieldCandidate(target, validator, _codeBuilder.BuildPropertyRhsParameterName);
+            var candidate = new EncapsulateFieldCandidate(target, _codeBuilder.BuildPropertyRhsParameterName);
             return candidate;
         }
 

@@ -43,7 +43,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool ImplementSet { get; }
         bool IsReadOnly { set; get; }
         string ParameterName { get; }
-        IValidateVBAIdentifiers NameValidator { set; get; }
         IEncapsulateFieldConflictFinder ConflictFinder { set; get; }
         bool TryValidateEncapsulationAttributes(out string errorMessage);
         string IdentifierForReference(IdentifierReference idRef);
@@ -60,13 +59,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected EncapsulationIdentifiers _fieldAndProperty;
         private Func<string, string> _parameterNameBuilder;
 
-        public EncapsulateFieldCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator, Func<string, string> parameterNameBuilder)
+        public EncapsulateFieldCandidate(Declaration declaration, Func<string, string> parameterNameBuilder)
         {
             _target = declaration;
-            NameValidator = identifierValidator;
             _parameterNameBuilder = parameterNameBuilder;
 
-            _fieldAndProperty = new EncapsulationIdentifiers(declaration.IdentifierName, identifierValidator);
+            _fieldAndProperty = new EncapsulationIdentifiers(declaration.IdentifierName);
             IdentifierName = declaration.IdentifierName;
             PropertyAsTypeName = declaration.AsTypeName;
             _qmn = declaration.QualifiedModuleName;
@@ -109,8 +107,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
         public string BackingAsTypeName => Declaration.AsTypeName;
-
-        public virtual IValidateVBAIdentifiers NameValidator { set; get; }
 
         public virtual IEncapsulateFieldConflictFinder ConflictFinder { set; get; }
 

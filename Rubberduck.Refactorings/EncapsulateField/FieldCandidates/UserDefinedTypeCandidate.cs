@@ -17,8 +17,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class UserDefinedTypeCandidate : EncapsulateFieldCandidate, IUserDefinedTypeCandidate
     {
-        public UserDefinedTypeCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator, Func<string,string> parameterNameBuilder)
-            : base(declaration, identifierValidator, parameterNameBuilder)
+        public UserDefinedTypeCandidate(Declaration declaration, Func<string,string> parameterNameBuilder)
+            : base(declaration, parameterNameBuilder)
         {
             TypeDeclarationIsPrivate = declaration.HasPrivateAccessibility();
         }
@@ -46,20 +46,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             get => TypeDeclarationIsPrivate ? _fieldAndProperty.TargetFieldName : _fieldAndProperty.Field;
             set => _fieldAndProperty.Field = value;
-        }
-
-        private IValidateVBAIdentifiers _namesValidator;
-        public override IValidateVBAIdentifiers NameValidator
-        {
-            set
-            {
-                _namesValidator = value;
-                foreach (var member in Members)
-                {
-                    member.NameValidator = value;
-                }
-            }
-            get => _namesValidator;
         }
 
         private IEncapsulateFieldConflictFinder _conflictsValidator;

@@ -48,12 +48,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IUserDefinedTypeCandidate UDTField { private set; get; }
 
-        public IValidateVBAIdentifiers NameValidator
-        {
-            set => _wrappedCandidate.NameValidator = value;
-            get => _wrappedCandidate.NameValidator;
-        }
-
         public IEncapsulateFieldConflictFinder ConflictFinder
         {
             set => _wrappedCandidate.ConflictFinder = value;
