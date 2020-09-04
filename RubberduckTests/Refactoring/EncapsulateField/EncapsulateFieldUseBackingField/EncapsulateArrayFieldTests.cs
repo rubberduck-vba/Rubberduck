@@ -146,7 +146,6 @@ End Sub
             StringAssert.Contains("myArray_1(idx) = idx", actualCode);
         }
 
-
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]

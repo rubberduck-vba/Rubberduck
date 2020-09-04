@@ -10,7 +10,7 @@ using System.Collections.Generic;
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
     [TestFixture]
-    public class EncapsulatedUDTFieldTests : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
+    public class EncapsulateUDTFieldTests : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 
@@ -28,7 +28,6 @@ Private Type TBar
 End Type
 
 {accessibility} th|is As TBar";
-
 
             var presenterAction = Support.UserAcceptsDefaults();
             var rhsParameterNameFirst = Support.RhsParameterNameBuilder("First");
@@ -64,13 +63,12 @@ End Type
 Public th|is As TBar
 Public that As TBar";
 
-            var validator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
-            var expectedThis = new EncapsulationIdentifiers("this", validator);
-            var expectedThat = new EncapsulationIdentifiers("that", validator);
+            var expectedThis = new EncapsulationIdentifiers("this");
+            var expectedThat = new EncapsulationIdentifiers("that");
 
             var userInput = new UserInputDataObject()
-                    .AddUserInputSet(expectedThis.TargetFieldName, encapsulationFlag: encapsulateThis)
-                    .AddUserInputSet(expectedThat.TargetFieldName, encapsulationFlag: encapsulateThat);
+                .AddUserInputSet(expectedThis.TargetFieldName, encapsulationFlag: encapsulateThis)
+                .AddUserInputSet(expectedThat.TargetFieldName, encapsulationFlag: encapsulateThat);
 
             var presenterAction = Support.SetParameters(userInput);
             var rhsParameterNameFirst = Support.RhsParameterNameBuilder("First");
@@ -154,7 +152,6 @@ Public Sub Foo(arg1 As String, arg2 As Long)
     that.Second = arg2
 End Sub
 ";
-
 
             var presenterAction = Support.UserAcceptsDefaults();
             var rhsParameterNameFirst = Support.RhsParameterNameBuilder("First");
@@ -296,7 +293,6 @@ Public mBar As Long
 Private mFizz
 
 {accessibility} t|his As TBar";
-
 
             var userInput = new UserInputDataObject()
             .UserSelectsField("this", "MyType")
@@ -491,7 +487,6 @@ End Type
                 ("Module1", typeDefinition, ComponentType.StandardModule));
 
             Assert.AreEqual(typeDefinition, actualModuleCode["Module1"]);
-
 
             var actualCode = actualModuleCode["Class1"];
             StringAssert.Contains("Private this As TBar", actualCode);
@@ -715,7 +710,6 @@ $@"
 
 Public th|is As TBar";
 
-
             string classModuleReferencingCode =
 $@"Option Explicit
 
@@ -764,7 +758,6 @@ End Sub
             StringAssert.Contains($"{sourceClassName}.MyType.Second = ", referencingClassCode);
             StringAssert.Contains($"  .MyType.Second = ", referencingClassCode);
         }
-
 
         [Test]
         [Category("Refactorings")]
@@ -983,8 +976,8 @@ Private my|Bar As TBar
             StringAssert.Contains("Public Property Let Bar(", actualCode);
             StringAssert.Contains("Public Property Let Foo_1(", actualCode);
             StringAssert.Contains("Public Property Let Bar_1(", actualCode);
-            StringAssert.Contains("myBar.FooBar.Foo = fooValue", actualCode);
-            StringAssert.Contains("myBar.ReBar.Foo = foo_1Value", actualCode);
+            StringAssert.Contains("myBar.FooBar.Foo = foo_1Value", actualCode);
+            StringAssert.Contains("myBar.ReBar.Foo = fooValue", actualCode);
         }
 
         [Test]

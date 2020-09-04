@@ -1,12 +1,9 @@
-﻿using Moq;
-using Rubberduck.Common;
+﻿using Rubberduck.Common;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
@@ -21,7 +18,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         public string RhsParameterNameBuilder(string property) => $"{property.ToLowerCaseFirstLetter()}Value";
 
-        public string StateUDTDefaultType => $"T{MockVbeBuilder.TestModuleName}";
+        public string StateUDTDefaultTypeName => $"T{MockVbeBuilder.TestModuleName}";
 
         private TestEncapsulationAttributes UserModifiedEncapsulationAttributes(string field, string property = null, bool isReadonly = false, bool encapsulateFlag = true)
         {
@@ -122,7 +119,14 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         {
             var resolver = new EncapsulateFieldTestComponentResolver(state, rewritingManager);
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            return new EncapsulateFieldRefactoring(resolver.Resolve<EncapsulateFieldRefactoringAction>(), resolver.Resolve<EncapsulateFieldPreviewProvider>(), state, userInteraction, rewritingManager, selectionService, selectedDeclarationProvider);
+            return new EncapsulateFieldRefactoring(resolver.Resolve<EncapsulateFieldRefactoringAction>(), 
+                resolver.Resolve<EncapsulateFieldPreviewProvider>(), 
+                resolver.Resolve<IEncapsulateFieldModelFactory>(),
+                state, 
+                userInteraction, 
+                rewritingManager, 
+                selectionService, 
+                selectedDeclarationProvider);
         }
 
         public IEncapsulateFieldCandidate RetrieveEncapsulateFieldCandidate(string inputCode, string fieldName)
@@ -143,12 +147,12 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             using (state)
             {
                 var match = state.DeclarationFinder.MatchName(fieldName).Where(m => m.DeclarationType.Equals(declarationType)).Single();
-                var builder = new EncapsulateFieldElementsBuilder(state, match.QualifiedModuleName);
-                foreach (var candidate in builder.Candidates)
-                {
-                    candidate.NameValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
-                }
-                return builder.Candidates.First();
+
+                var resolver = new EncapsulateFieldTestComponentResolver(state, null);
+
+                var model = resolver.Resolve<IEncapsulateFieldModelFactory>().Create(match);
+
+                return model[match.IdentifierName];
             }
         }
 
@@ -178,8 +182,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         public TestEncapsulationAttributes(string fieldName, bool encapsulationFlag = true, bool isReadOnly = false)
         {
-            var validator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
-            _identifiers = new EncapsulationIdentifiers(fieldName, validator);
+            _identifiers = new EncapsulationIdentifiers(fieldName);
             EncapsulateFlag = encapsulationFlag;
             IsReadOnly = isReadOnly;
         }

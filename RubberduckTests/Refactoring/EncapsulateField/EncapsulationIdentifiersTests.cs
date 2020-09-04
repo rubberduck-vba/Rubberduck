@@ -61,8 +61,7 @@ $@"Public fizz As String
         [Category("Encapsulate Field")]
         public void AccountsForHungarianNamesAndMemberPrefix(string inputName, string expectedPropertyName, string expectedFieldName)
         {
-            var validator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
-            var sut = new EncapsulationIdentifiers(inputName, validator);
+            var sut = new EncapsulationIdentifiers(inputName);
 
             Assert.AreEqual(expectedPropertyName, sut.DefaultPropertyName);
             Assert.AreEqual(expectedFieldName, sut.DefaultNewFieldName);

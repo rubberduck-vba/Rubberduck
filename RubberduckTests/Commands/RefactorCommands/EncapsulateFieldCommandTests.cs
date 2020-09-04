@@ -7,7 +7,6 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
@@ -20,8 +19,9 @@ namespace RubberduckTests.Commands.RefactorCommands
 {
     public class EncapsulateFieldCommandTests : RefactorCodePaneCommandTestBase
     {
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Encapsulate Field")]
         public void EncapsulateField_CanExecute_LocalVariable()
         {
             const string input =
@@ -32,8 +32,9 @@ End Sub";
             Assert.IsFalse(CanExecute(input, selection));
         }
 
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Encapsulate Field")]
         public void EncapsulateField_CanExecute_Proc()
         {
             const string input =
@@ -44,8 +45,9 @@ End Sub";
             Assert.IsFalse(CanExecute(input, selection));
         }
 
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Encapsulate Field")]
         public void EncapsulateField_CanExecute_Field()
         {
             const string input =
@@ -68,7 +70,14 @@ End Sub";
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
             var userInteraction = new RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel>(factory, uiDispatcherMock.Object);
-            var refactoring = new EncapsulateFieldRefactoring(resolver.Resolve<EncapsulateFieldRefactoringAction>(), resolver.Resolve<EncapsulateFieldPreviewProvider>(), state, userInteraction, rewritingManager, selectionService, selectedDeclarationProvider);
+            var refactoring = new EncapsulateFieldRefactoring(resolver.Resolve<EncapsulateFieldRefactoringAction>(),
+                resolver.Resolve<EncapsulateFieldPreviewProvider>(),
+                resolver.Resolve<IEncapsulateFieldModelFactory>(),
+                state, 
+                userInteraction, 
+                rewritingManager, 
+                selectionService, 
+                selectedDeclarationProvider);
             var notifier = new EncapsulateFieldFailedNotifier(msgBox);
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
             return new RefactorEncapsulateFieldCommand(refactoring, notifier, state, selectionService, selectedDeclarationService);

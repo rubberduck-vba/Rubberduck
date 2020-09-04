@@ -50,11 +50,10 @@ End Type
 
 Private this As Long";
 
-
             var presenterAction = Support.UserAcceptsDefaults(convertFieldToUDTMember: true);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Private this As Long", actualCode);
-            StringAssert.Contains($"Private this_1 As {Support.StateUDTDefaultType}", actualCode);
+            StringAssert.Contains($"Private this_1 As {Support.StateUDTDefaultTypeName}", actualCode);
         }
 
         [Test]
@@ -70,7 +69,6 @@ Private Type TBar
 End Type
 
 Private my|Bar As TBar";
-
 
             var userInput = new UserInputDataObject()
                 .UserSelectsField("myBar");
@@ -107,7 +105,6 @@ Private my|Bar As TBar
 Public Sub Foo(newValue As String)
     myBar.First = newValue
 End Sub";
-
 
             var userInput = new UserInputDataObject()
                 .UserSelectsField("myBar");
@@ -148,7 +145,7 @@ Public foobar As Byte
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.DoesNotContain($"Private this As {Support.StateUDTDefaultType}", actualCode);
+            StringAssert.DoesNotContain($"Private this As {Support.StateUDTDefaultTypeName}", actualCode);
             StringAssert.Contains("Foo As Long", actualCode);
             StringAssert.DoesNotContain("Public foo As Long", actualCode);
             StringAssert.Contains("Bar As String", actualCode);
@@ -219,8 +216,8 @@ Public foobar As Byte
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains($"Private this As {Support.StateUDTDefaultType}", actualCode);
-            StringAssert.Contains($"Private Type {Support.StateUDTDefaultType}", actualCode);
+            StringAssert.Contains($"Private this As {Support.StateUDTDefaultTypeName}", actualCode);
+            StringAssert.Contains($"Private Type {Support.StateUDTDefaultTypeName}", actualCode);
             StringAssert.Contains("Foo As Long", actualCode);
             StringAssert.Contains("Bar As String", actualCode);
             StringAssert.Contains("Foobar As Byte", actualCode);
@@ -305,7 +302,6 @@ End Enum
 
 Public numberT|ype As NumberTypes
 ";
-
 
             var userInput = new UserInputDataObject()
                 .UserSelectsField("numberType");
@@ -400,7 +396,6 @@ Public myBar As TBar
             var userInput = new UserInputDataObject()
                 .UserSelectsField("foo")
                 .UserSelectsField("myBar");
-
 
             userInput.EncapsulateUsingUDTField();
 
@@ -505,45 +500,6 @@ Private my|Bar As TBar
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Public Property Let FooBar(", actualCode);
             StringAssert.Contains($"this.MyBar.FooBar = {rhsParameterName}", actualCode);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void UDTMemberIsPrivateUDT_RepeatedType()
-        {
-            string inputCode =
-$@"
-
-Private Type TFoo
-    Foo As Integer
-    Bar As Byte
-End Type
-
-Private Type TBar
-    FooBar As TFoo
-    ReBar As TFoo
-End Type
-
-Private my|Bar As TBar
-";
-
-            var userInput = new UserInputDataObject();
-
-            userInput.EncapsulateUsingUDTField();
-
-            var presenterAction = Support.SetParameters(userInput);
-
-            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            var rhsParameterNameFoo = Support.RhsParameterNameBuilder("Foo");
-            var rhsParameterNameFoo_1 = Support.RhsParameterNameBuilder("Foo_1");
-
-            StringAssert.Contains("Public Property Let Foo(", actualCode);
-            StringAssert.Contains("Public Property Let Bar(", actualCode);
-            StringAssert.Contains("Public Property Let Foo_1(", actualCode);
-            StringAssert.Contains("Public Property Let Bar_1(", actualCode);
-            StringAssert.Contains($"this.MyBar.FooBar.Foo = {rhsParameterNameFoo}", actualCode);
-            StringAssert.Contains($"this.MyBar.ReBar.Foo = {rhsParameterNameFoo_1}", actualCode);
         }
 
         [Test]

@@ -15,6 +15,7 @@ namespace RubberduckTests.Refactoring.MoveFieldsToUDT
         [TestCase(4)]
         [TestCase(2)]
         [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         [Category(nameof(DeclareFieldsAsUDTMembersRefactoringAction))]
         public void FormatSingleExistingMember(int indentionLevel)
         {
@@ -45,6 +46,7 @@ End Type
         [TestCase(4)]
         [TestCase(2)]
         [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         [Category(nameof(DeclareFieldsAsUDTMembersRefactoringAction))]
         public void FormatMatchesLastMemberIndent(int indentionLevel)
         {
@@ -77,8 +79,9 @@ End Type
 
         [Test]
         [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         [Category(nameof(DeclareFieldsAsUDTMembersRefactoringAction))]
-        public void FormatPreservesComment()
+        public void FormatPreservesComments()
         {
             var indention = string.Concat(Enumerable.Repeat(" ", 2));
 
@@ -103,6 +106,42 @@ End Type
 ";
 
             var results = ExecuteTest(inputCode, "TestType", ("mTest", "Test"));
+            StringAssert.Contains(expectedUDT, results);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(DeclareFieldsAsUDTMembersRefactoringAction))]
+        public void FormatMultipleInsertions()
+        {
+            var indention = string.Concat(Enumerable.Repeat(" ", 2));
+
+            string inputCode =
+$@"
+Option Explicit
+
+Private mTest As Long
+Private mTest1 As Long
+Private mTest2 As Long
+
+Private Type TestType
+    FirstValue As String
+    SecondValue As Double
+End Type
+";
+            var expectedUDT =
+$@"
+Private Type TestType
+    FirstValue As String
+    SecondValue As Double
+    Test As Long
+    Test1 As Long
+    Test2 As Long
+End Type
+";
+
+            var results = ExecuteTest(inputCode, "TestType", ("mTest", "Test"), ("mTest1", "Test1"), ("mTest2", "Test2"));
             StringAssert.Contains(expectedUDT, results);
         }
 

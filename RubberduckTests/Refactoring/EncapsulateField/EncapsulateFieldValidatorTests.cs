@@ -152,7 +152,6 @@ $@"Public fizz As String
             Assert.IsFalse(model["fizz"].TryValidateEncapsulationAttributes(out _));
         }
 
-
         [TestCase("Number", "Bazzle", true, true)]
         [TestCase("Number", "Number", false, false)]
         [TestCase("Test", "Number", false, true)]
@@ -175,7 +174,6 @@ End Property";
             var userInput = new UserInputDataObject()
                 .UserSelectsField(fieldUT, fizz_modifiedPropertyName, true)
                 .UserSelectsField("bazz", bazz_modifiedPropertyName, true);
-
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -462,7 +460,6 @@ End Type
 
 Public mF|oo As Long
 ";
-
 
             var fieldUT = "mFoo";
             var userInput = new UserInputDataObject()

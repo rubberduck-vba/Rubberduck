@@ -54,11 +54,9 @@ Public {var3} As Integer";
 
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
 
-            var notEncapsulated = flags.Keys.Where(k => !flags[k])
-                   .Select(k => k);
+            var notEncapsulated = flags.Keys.Where(k => !flags[k]).Select(k => k);
 
-            var encapsulated = flags.Keys.Where(k => flags[k])
-                   .Select(k => k);
+            var encapsulated = flags.Keys.Where(k => flags[k]).Select(k => k);
 
             foreach ( var variable in notEncapsulated)
             {
@@ -116,8 +114,7 @@ $@"Public {var1} As Integer, {var2} As Integer, {var3} As Integer, {var4} As Int
 
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
 
-            var remainInList = flags.Keys.Where(k => !flags[k])
-                   .Select(k => $"{k} As Integer");
+            var remainInList = flags.Keys.Where(k => !flags[k]).Select(k => $"{k} As Integer");
 
             if (remainInList.Any())
             {
@@ -172,7 +169,6 @@ End Function";
             var actualCode = RefactoredCode(codeString.Code, codeString.CaretPosition.ToOneBased(), presenterAction, typeof(NoDeclarationForSelectionException));
             Assert.AreEqual(codeString.Code, actualCode);
         }
-
 
         [Test]
         [Category("Refactorings")]
@@ -416,7 +412,7 @@ Private numberT|ype As NumberTypes{declarationList ?? string.Empty}
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Fizz As Integer", actualCode);
-            StringAssert.Contains($"this As {Support.StateUDTDefaultType}", actualCode);
+            StringAssert.Contains($"this As {Support.StateUDTDefaultTypeName}", actualCode);
             StringAssert.Contains($"this.Fizz = {rhsParameterName}", actualCode);
         }
 
@@ -438,8 +434,7 @@ End Sub";
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
 
-            var validator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
-            var enapsulationIdentifiers = new EncapsulationIdentifiers("fizz", validator) { Property = "Name" };
+            var enapsulationIdentifiers = new EncapsulationIdentifiers("fizz") { Property = "Name" };
             var rhsParameterName = Support.RhsParameterNameBuilder("Name");
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
