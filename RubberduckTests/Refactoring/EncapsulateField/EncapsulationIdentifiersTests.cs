@@ -1,13 +1,5 @@
 ﻿using NUnit.Framework;
-using Moq;
 using Rubberduck.Refactorings.EncapsulateField;
-using RubberduckTests.Mocks;
-using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using System.Linq;
-using Rubberduck.Parsing.Symbols;
-using System.Collections.Generic;
-using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -60,23 +52,6 @@ $@"Public fizz As String
 
             encapsulatedField.PropertyIdentifier = "Fizz";
             StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.BackingIdentifier);
-        }
-
-        [TestCase("Test", "value_1")]
-        [TestCase("Value", "value_2")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void PropertyNameChange_UniqueParamName(string PropertyName, string expectedParameterName)
-        {
-            string inputCode = "Public value As String";
-
-            var fieldUT = "value";
-
-            var presenterAction = Support.SetParametersForSingleTarget(fieldUT, PropertyName);
-
-            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, fieldUT, DeclarationType.Variable, presenterAction);
-            var encapsulatedField = model[fieldUT];
-            StringAssert.AreEqualIgnoringCase(expectedParameterName, encapsulatedField.ParameterName);
         }
 
         [TestCase("strValue", "Value", "strValue")]

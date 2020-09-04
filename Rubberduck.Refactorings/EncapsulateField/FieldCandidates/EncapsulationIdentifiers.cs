@@ -1,20 +1,13 @@
-﻿using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA.Extensions;
-using Rubberduck.Common;
+﻿using Rubberduck.Common;
 using System.Collections.Generic;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
-using System;
-using Rubberduck.Resources;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulationIdentifiers
     {
-        private static string DEFAULT_WRITE_PARAMETER = RubberduckUI.EncapsulateField_DefaultPropertyParameter;
-
         private KeyValuePair<string, string> _fieldAndProperty;
         private string _targetIdentifier;
-        private string _setLetParameter;
 
         public EncapsulationIdentifiers(string field, IValidateVBAIdentifiers identifierValidator)
         {
@@ -42,7 +35,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
 
             _fieldAndProperty = new KeyValuePair<string, string>(DefaultNewFieldName, DefaultPropertyName);
-            _setLetParameter = DEFAULT_WRITE_PARAMETER;
         }
 
         public string TargetFieldName => _targetIdentifier;
@@ -68,7 +60,5 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 _fieldAndProperty = new KeyValuePair<string, string>(_fieldAndProperty.Key, value);
             }
         }
-
-        public string SetLetParameter => DEFAULT_WRITE_PARAMETER;
     }
 }

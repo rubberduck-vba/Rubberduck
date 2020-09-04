@@ -19,7 +19,7 @@ namespace Rubberduck.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class RubberduckUI {
@@ -271,7 +271,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Annotation arguments of type &apos;Inspection Name&apos; have to the name of an existing inspection..
+        ///   Looks up a localized string similar to Annotation arguments of type &apos;Inspection Name&apos; have to be the name of an existing inspection..
         /// </summary>
         public static string AnnotationArgument_ValidationError_InspectionName {
             get {
@@ -1451,24 +1451,6 @@ namespace Rubberduck.Resources {
         public static string EncapsulateField_Caption {
             get {
                 return ResourceManager.GetString("EncapsulateField_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to this.
-        /// </summary>
-        public static string EncapsulateField_DefaultObjectStateUDTFieldName {
-            get {
-                return ResourceManager.GetString("EncapsulateField_DefaultObjectStateUDTFieldName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to value.
-        /// </summary>
-        public static string EncapsulateField_DefaultPropertyParameter {
-            get {
-                return ResourceManager.GetString("EncapsulateField_DefaultPropertyParameter", resourceCulture);
             }
         }
         

@@ -33,6 +33,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses
         {
             var toRelsolveSupertypesFor = _declarationFinder.UserDeclarations(DeclarationType.ClassModule)
                                             .Concat(_declarationFinder.UserDeclarations(DeclarationType.Document))
+                                            .Concat(_declarationFinder.UserDeclarations(DeclarationType.UserForm))
                                             .Where(decl => modules.Contains(decl.QualifiedName.QualifiedModuleName))
                                             .Concat(_declarationFinder.BuiltInDeclarations(DeclarationType.ClassModule));
             foreach (var declaration in toRelsolveSupertypesFor)

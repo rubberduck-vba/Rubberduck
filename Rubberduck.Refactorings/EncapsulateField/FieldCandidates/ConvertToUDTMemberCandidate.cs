@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Antlr4.Runtime;
 using Rubberduck.Common;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
@@ -90,11 +85,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _wrapped.IsReadOnly;
         }
 
-        public string ParameterName
-        {
-            set => _wrapped.ParameterName = value;
-            get => _wrapped.ParameterName;
-        }
+        public string ParameterName => _wrapped.ParameterName;
 
         public IValidateVBAIdentifiers NameValidator
         {

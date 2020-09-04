@@ -243,4 +243,25 @@
   <data name="ContextMenu_RunSelectedTestModule" xml:space="preserve">
     <value>Spustit testy v modulu</value>
   </data>
+  <data name="RubberduckMenu_CodePaneRefactor" xml:space="preserve">
+    <value>&amp;Refaktorovat</value>
+  </data>
+  <data name="AnnotateMenu" xml:space="preserve">
+    <value>Anotovat</value>
+  </data>
+  <data name="RefactorMenu_MoveToFolder" xml:space="preserve">
+    <value>Přesunout do složky</value>
+  </data>
+  <data name="RefactorMenu_MoveContainingFolder" xml:space="preserve">
+    <value>Přesunout obsahující složku</value>
+  </data>
+  <data name="AnnotateMenu_SelectedDeclaration" xml:space="preserve">
+    <value>Vybraná Deklarace</value>
+  </data>
+  <data name="AnnotateMenu_SelectedMember" xml:space="preserve">
+    <value>Vybraný Člen</value>
+  </data>
+  <data name="AnnotateMenu_SelectedModule" xml:space="preserve">
+    <value>Vybraný Modul</value>
+  </data>
 </root>

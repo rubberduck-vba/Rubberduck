@@ -1,8 +1,6 @@
-﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
-using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
@@ -16,12 +14,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private QualifiedModuleName _targetQMN;
         private string _defaultObjectStateUDTTypeName;
+        private ICodeBuilder _codeBuilder;
 
         public EncapsulateFieldElementsBuilder(IDeclarationFinderProvider declarationFinderProvider, QualifiedModuleName targetQMN)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _targetQMN = targetQMN;
             _defaultObjectStateUDTTypeName = $"T{_targetQMN.ComponentName}";
+            _codeBuilder = new CodeBuilder();
             CreateRefactoringElements();
         }
 

@@ -336,4 +336,16 @@
   <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
     <value>Odignorovat test</value>
   </data>
+  <data name="TestExplorer_ContextMenuIgnoreGroup" xml:space="preserve">
+    <value>Ignorovat všechny testy ve skupině</value>
+  </data>
+  <data name="TestExplorer_ContextMenuIgnoreSelectedTests" xml:space="preserve">
+    <value>Ignorovat označené testy</value>
+  </data>
+  <data name="TestExplorer_ContextMenuUnignoreGroup" xml:space="preserve">
+    <value>Zrušit ignorování všech testů ve skupině</value>
+  </data>
+  <data name="TestExplorer_ContextMenuUnignoreSelectedTests" xml:space="preserve">
+    <value>Zrušit ignorování označených testů</value>
+  </data>
 </root>
