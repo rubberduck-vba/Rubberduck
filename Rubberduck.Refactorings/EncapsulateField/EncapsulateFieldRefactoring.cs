@@ -16,7 +16,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class EncapsulateFieldRefactoring : InteractiveRefactoringBase<EncapsulateFieldModel>
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IRewritingManager _rewritingManager;
         private readonly EncapsulateFieldRefactoringAction _refactoringAction;
@@ -27,7 +26,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             EncapsulateFieldRefactoringAction refactoringAction,
             EncapsulateFieldPreviewProvider previewProvider,
             IEncapsulateFieldModelFactory encapsulateFieldModelFactory,
-            IDeclarationFinderProvider declarationFinderProvider,
             RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
             IRewritingManager rewritingManager,
             ISelectionProvider selectionProvider,
@@ -36,7 +34,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             _refactoringAction = refactoringAction;
             _previewProvider = previewProvider;
-            _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _rewritingManager = rewritingManager;
             _modelFactory = encapsulateFieldModelFactory;

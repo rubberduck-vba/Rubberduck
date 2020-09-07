@@ -122,7 +122,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return new EncapsulateFieldRefactoring(resolver.Resolve<EncapsulateFieldRefactoringAction>(), 
                 resolver.Resolve<EncapsulateFieldPreviewProvider>(), 
                 resolver.Resolve<IEncapsulateFieldModelFactory>(),
-                state, 
                 userInteraction, 
                 rewritingManager, 
                 selectionService, 

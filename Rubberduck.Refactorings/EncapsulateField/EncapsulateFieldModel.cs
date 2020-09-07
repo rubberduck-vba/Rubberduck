@@ -8,12 +8,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldModel : IRefactoringModel
     {
+        private readonly IObjectStateUDT _defaultObjectStateUDT;
+
         public EncapsulateFieldModel(EncapsulateFieldUseBackingFieldModel backingFieldModel,
-            EncapsulateFieldUseBackingUDTMemberModel udtModel)
+            EncapsulateFieldUseBackingUDTMemberModel udtModel) 
         {
             EncapsulateFieldUseBackingFieldModel = backingFieldModel;
             EncapsulateFieldUseBackingUDTMemberModel = udtModel;
             ResetConflictDetection(EncapsulateFieldStrategy.UseBackingFields);
+            ObjectStateUDTCandidates = udtModel.ObjectStateUDTCandidates;
+            _defaultObjectStateUDT = ObjectStateUDTCandidates.SingleOrDefault(os => !os.IsExistingDeclaration);
         }
 
         public EncapsulateFieldUseBackingUDTMemberModel EncapsulateFieldUseBackingUDTMemberModel { get; }
@@ -22,7 +26,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IRefactoringPreviewProvider<EncapsulateFieldModel> PreviewProvider { set; get; }
 
-        public IEnumerable<IObjectStateUDT> ObjectStateUDTCandidates => EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTCandidates;
+        public IReadOnlyCollection<IObjectStateUDT> ObjectStateUDTCandidates { private set; get; }
+
+        public IObjectStateUDT ObjectStateUDTField
+        {
+            set
+            {
+                EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTField = value;
+                foreach (var candidate in EncapsulateFieldUseBackingUDTMemberModel.SelectedFieldCandidates)
+                {
+                    EncapsulateFieldUseBackingUDTMemberModel.ConflictFinder.AssignNoConflictIdentifiers(candidate);
+                }
+            }
+            get => EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
+                ? EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTField
+                : null;
+        }
 
         private EncapsulateFieldStrategy _strategy;
         public EncapsulateFieldStrategy EncapsulateFieldStrategy
@@ -81,11 +100,5 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IEncapsulateFieldCandidate this[string encapsulatedFieldTargetID]
             => EncapsulationCandidates.Where(c => c.TargetID.Equals(encapsulatedFieldTargetID)).Single();
-
-        public IObjectStateUDT ObjectStateUDTField
-        {
-            get => EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTField;
-            set => EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTField = value;
-        }
     }
 }

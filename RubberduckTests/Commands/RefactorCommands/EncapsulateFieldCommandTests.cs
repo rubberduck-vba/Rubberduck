@@ -73,7 +73,6 @@ End Sub";
             var refactoring = new EncapsulateFieldRefactoring(resolver.Resolve<EncapsulateFieldRefactoringAction>(),
                 resolver.Resolve<EncapsulateFieldPreviewProvider>(),
                 resolver.Resolve<IEncapsulateFieldModelFactory>(),
-                state, 
                 userInteraction, 
                 rewritingManager, 
                 selectionService, 

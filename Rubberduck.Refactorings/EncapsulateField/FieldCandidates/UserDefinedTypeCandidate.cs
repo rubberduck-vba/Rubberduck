@@ -11,7 +11,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         IEnumerable<IUserDefinedTypeMemberCandidate> Members { get; }
         void AddMember(IUserDefinedTypeMemberCandidate member);
         bool TypeDeclarationIsPrivate { get; }
-        bool CanBeObjectStateUDT { set; get; }
+        bool IsObjectStateUDTCandidate { set; get; }
         bool IsSelectedObjectStateUDT { set; get; }
     }
 
@@ -40,7 +40,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool IsSelectedObjectStateUDT { set; get; }
 
-        public bool CanBeObjectStateUDT { set; get; }
+        public bool IsObjectStateUDTCandidate { set; get; }
 
         public override string BackingIdentifier
         {

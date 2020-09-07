@@ -24,11 +24,30 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected List<IEncapsulateFieldCandidate> _fieldCandidates { set; get; } = new List<IEncapsulateFieldCandidate>();
         protected List<IUserDefinedTypeMemberCandidate> _udtMemberCandidates { set; get; } = new List<IUserDefinedTypeMemberCandidate>();
 
-        public EncapsulateFieldConflictFinderBase(IDeclarationFinderProvider declarationFinderProvider, IEnumerable<IEncapsulateFieldCandidate> candidates, IEnumerable<IUserDefinedTypeMemberCandidate> udtMemberCandidates)
+        public EncapsulateFieldConflictFinderBase(IDeclarationFinderProvider declarationFinderProvider, IEnumerable<IEncapsulateFieldCandidate> candidates)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _fieldCandidates.AddRange(candidates);
-            _udtMemberCandidates.AddRange(udtMemberCandidates);
+            _fieldCandidates.ForEach(c => LoadUDTMembers(_udtMemberCandidates, c));
+        }
+
+        private void LoadUDTMembers(List<IUserDefinedTypeMemberCandidate> udtMembers, IEncapsulateFieldCandidate candidate)
+        {
+            if (!(candidate is IUserDefinedTypeCandidate udtCandidate))
+            {
+                return;
+            }
+
+            foreach (var member in udtCandidate.Members)
+            {
+                udtMembers.Add(member);
+
+                if (member.WrappedCandidate is IUserDefinedTypeCandidate childUDT
+                    && childUDT.Declaration.AsTypeDeclaration.HasPrivateAccessibility())
+                {
+                    LoadUDTMembers(udtMembers, childUDT);
+                }
+            }
         }
 
         public virtual bool TryValidateEncapsulationAttributes(IEncapsulateFieldCandidate field, out string errorMessage)
@@ -39,7 +58,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 return true;
             }
 
-            var declarationType = field is IConvertToUDTMember udtMember
+            var declarationType = field is IEncapsulateFieldAsUDTMemberCandidate udtMember
                 ? DeclarationType.UserDefinedTypeMember
                 : field.Declaration.DeclarationType;
 

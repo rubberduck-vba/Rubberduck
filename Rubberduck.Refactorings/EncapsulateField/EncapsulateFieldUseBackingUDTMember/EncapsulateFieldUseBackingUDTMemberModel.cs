@@ -1,61 +1,31 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.Refactorings.CodeBlockInsert;
 using Rubberduck.Refactorings.EncapsulateField;
-using System;
 
 namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
 {
     public class EncapsulateFieldUseBackingUDTMemberModel : IRefactoringModel
     {
-        private readonly IObjectStateUDT _defaultObjectStateUDT;
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly string _defaultObjectStateUDTTypeName;
-        private readonly IObjectStateUDT _preExistingObjectStateUDT;
+        private List<IEncapsulateFieldAsUDTMemberCandidate> _encapsulateAsUDTMemberCandidates;
 
-        private List<IConvertToUDTMember> _convertedFields;
-        private List<IObjectStateUDT> _objStateCandidates;
-
-        public EncapsulateFieldUseBackingUDTMemberModel(IEnumerable<IConvertToUDTMember> candidates,
-            IObjectStateUDT defaultObjectStateUserDefinedType,
-            IEnumerable<IObjectStateUDT> objectStateUserDefinedTypeCandidates,
-            IDeclarationFinderProvider declarationFinderProvider)
+        public EncapsulateFieldUseBackingUDTMemberModel(IObjectStateUDT targetObjectStateUserDefinedTypeField, 
+            IEnumerable<IEncapsulateFieldAsUDTMemberCandidate> encapsulateAsUDTMemberCandidates,
+            IEnumerable<IObjectStateUDT> objectStateUserDefinedTypeCandidates)
         {
-            _convertedFields = new List<IConvertToUDTMember>(candidates);
-            _declarationFinderProvider = declarationFinderProvider;
-            _defaultObjectStateUDT = defaultObjectStateUserDefinedType;
+            _encapsulateAsUDTMemberCandidates = new List<IEncapsulateFieldAsUDTMemberCandidate>(encapsulateAsUDTMemberCandidates);
 
-            QualifiedModuleName = candidates.First().QualifiedModuleName;
-            _defaultObjectStateUDTTypeName = $"T{QualifiedModuleName.ComponentName}";
+            ObjectStateUDTField = targetObjectStateUserDefinedTypeField;
 
-            _objStateCandidates = new List<IObjectStateUDT>();
+            ObjectStateUDTCandidates = objectStateUserDefinedTypeCandidates.ToList();
 
-            if (objectStateUserDefinedTypeCandidates.Any())
-            {
-                _objStateCandidates.AddRange(objectStateUserDefinedTypeCandidates.Distinct());
-
-                _preExistingObjectStateUDT = objectStateUserDefinedTypeCandidates
-                    .FirstOrDefault(os => os.AsTypeDeclaration.IdentifierName.StartsWith(_defaultObjectStateUDTTypeName, StringComparison.InvariantCultureIgnoreCase));
-
-                if (_preExistingObjectStateUDT != null)
-                {
-                    HasPreExistingObjectStateUDT = true;
-                    _defaultObjectStateUDT.IsSelected = false;
-                    _preExistingObjectStateUDT.IsSelected = true;
-                    _convertedFields.ForEach(c => c.ObjectStateUDT = _preExistingObjectStateUDT);
-                }
-            }
-
-            _objStateCandidates.Add(_defaultObjectStateUDT);
+            QualifiedModuleName = encapsulateAsUDTMemberCandidates.First().QualifiedModuleName;
 
             ResetNewContent();
-
-            _convertedFields.ForEach(c => c.ObjectStateUDT = ObjectStateUDTField);
         }
 
-        private void ResetNewContent()
+        public void ResetNewContent()
         {
             NewContent = new Dictionary<NewContentType, List<string>>
             {
@@ -66,17 +36,17 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             };
         }
 
-        public bool HasPreExistingObjectStateUDT { get; }
+        public IReadOnlyCollection<IObjectStateUDT> ObjectStateUDTCandidates { get; }
 
         public IEncapsulateFieldConflictFinder ConflictFinder { set; get; }
 
         public bool IncludeNewContentMarker { set; get; } = false;
 
         public IReadOnlyCollection<IEncapsulateFieldCandidate> EncapsulationCandidates
-            => _convertedFields.Cast<IEncapsulateFieldCandidate>().ToList();
+            => _encapsulateAsUDTMemberCandidates.Cast<IEncapsulateFieldCandidate>().ToList();
 
         public IEnumerable<IEncapsulateFieldCandidate> SelectedFieldCandidates
-            => EncapsulationCandidates.Where(v => v.EncapsulateFlag);
+            => EncapsulationCandidates.Where(v => v.EncapsulateFlag && v.Declaration != ObjectStateUDTField?.Declaration);
 
         public void AddContentBlock(NewContentType contentType, string block)
             => NewContent[contentType].Add(block);
@@ -85,29 +55,29 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
 
         public QualifiedModuleName QualifiedModuleName { get; }
 
-        public IEnumerable<IObjectStateUDT> ObjectStateUDTCandidates => _objStateCandidates;
-
+        private IObjectStateUDT _objectStateUDT;
         public IObjectStateUDT ObjectStateUDTField
         {
-            get => _objStateCandidates.SingleOrDefault(os => os.IsSelected)
-                ?? _defaultObjectStateUDT;
-
             set
             {
-                if (value is null)
+                if (_objectStateUDT == value)
                 {
-                    _objStateCandidates.ForEach(osc => osc.IsSelected = (osc == _defaultObjectStateUDT));
                     return;
                 }
 
-                var matchingCandidate = _objStateCandidates
-                    .SingleOrDefault(os => os.FieldIdentifier.Equals(value.FieldIdentifier))
-                    ?? _defaultObjectStateUDT;
+                if (_objectStateUDT != null)
+                {
+                    _objectStateUDT.IsSelected = false;
+                }
 
-                _objStateCandidates.ForEach(osc => osc.IsSelected = (osc == matchingCandidate));
-
-                _convertedFields.ForEach(cf => cf.ObjectStateUDT = matchingCandidate);
+                _objectStateUDT = value;
+                if (_objectStateUDT != null)
+                {
+                    _objectStateUDT.IsSelected = true;
+                }
+                _encapsulateAsUDTMemberCandidates.ForEach(cf => cf.ObjectStateUDT = _objectStateUDT);
             }
+            get => _objectStateUDT;
         }
     }
 }

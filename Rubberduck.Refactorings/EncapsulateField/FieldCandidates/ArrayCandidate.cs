@@ -35,7 +35,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public override bool TryValidateEncapsulationAttributes(out string errorMessage)
         {
             errorMessage = string.Empty;
-            if (!EncapsulateFlag) { return true; }
+            if (!EncapsulateFlag)
+            {
+                return true;
+            }
 
             if (HasExternalRedimOperation(out errorMessage))
             {

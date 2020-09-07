@@ -42,9 +42,9 @@ Public mTest As Long
                 var modelfactory = resolver.Resolve<IEncapsulateFieldModelFactory>();
                 var model = modelfactory.Create(target);
 
+                model.EncapsulateFieldStrategy = strategy;
                 var field = model["mTest"];
                 field.PropertyIdentifier = "ATest";
-                model.EncapsulateFieldStrategy = strategy;
 
                 var previewProvider = resolver.Resolve<EncapsulateFieldPreviewProvider>();
 

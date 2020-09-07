@@ -9,13 +9,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private readonly EncapsulateFieldUseBackingFieldRefactoringAction _useBackingField;
         private readonly EncapsulateFieldUseBackingUDTMemberRefactoringAction _useBackingUDTMember;
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public EncapsulateFieldRefactoringAction(IDeclarationFinderProvider declarationFinderProvider,
+        public EncapsulateFieldRefactoringAction(
             EncapsulateFieldUseBackingFieldRefactoringAction encapsulateFieldUseBackingField,
             EncapsulateFieldUseBackingUDTMemberRefactoringAction encapsulateFieldUseUDTMember)
         {
-            _declarationFinderProvider = declarationFinderProvider;
             _useBackingField = encapsulateFieldUseBackingField;
             _useBackingUDTMember = encapsulateFieldUseUDTMember;
         }

@@ -7,21 +7,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class EncapsulateFieldPreviewProvider : IRefactoringPreviewProvider<EncapsulateFieldModel>
     {
         private readonly EncapsulateFieldUseBackingFieldPreviewProvider _useBackingFieldPreviewer;
-        private readonly EncapsulateFieldUseBackingUDTMemberPreviewProvider _useUDTMembmerPreviewer;
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        public EncapsulateFieldPreviewProvider(IDeclarationFinderProvider declarationFinderProvider,
+        private readonly EncapsulateFieldUseBackingUDTMemberPreviewProvider _useBackingUDTMemberPreviewer;
+        public EncapsulateFieldPreviewProvider(
             EncapsulateFieldUseBackingFieldPreviewProvider useBackingFieldPreviewProvider,
-            EncapsulateFieldUseBackingUDTMemberPreviewProvider useUDTMemberPreviewProvide)
+            EncapsulateFieldUseBackingUDTMemberPreviewProvider useBackingUDTMemberPreviewProvide)
         {
-            _declarationFinderProvider = declarationFinderProvider;
             _useBackingFieldPreviewer = useBackingFieldPreviewProvider;
-            _useUDTMembmerPreviewer = useUDTMemberPreviewProvide;
+            _useBackingUDTMemberPreviewer = useBackingUDTMemberPreviewProvide;
         }
 
         public string Preview(EncapsulateFieldModel model)
         {
             var preview = model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
-                ? _useUDTMembmerPreviewer.Preview(model.EncapsulateFieldUseBackingUDTMemberModel)
+                ? _useBackingUDTMemberPreviewer.Preview(model.EncapsulateFieldUseBackingUDTMemberModel)
                 : _useBackingFieldPreviewer.Preview(model.EncapsulateFieldUseBackingFieldModel);
 
             return preview;

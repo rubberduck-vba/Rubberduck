@@ -21,8 +21,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class EncapsulateFieldRefactoringActionsProvider : IEncapsulateFieldRefactoringActionsProvider
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly IRewritingManager _rewritingManager;
         private readonly ReplaceReferencesRefactoringAction _replaceReferences;
         private readonly ReplaceDeclarationIdentifierRefactoringAction _replaceDeclarationIdentifiers;
         private readonly CodeBlockInsertRefactoringAction _codeBlockInsertRefactoringAction;
@@ -30,8 +28,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly DeclareFieldsAsUDTMembersRefactoringAction _declareFieldsAsUDTMembersRefactoringAction;
         private readonly EncapsulateFieldInsertNewCodeRefactoringAction _encapsulateFieldInsertNewCodeRefactoringAction;
 
-        public EncapsulateFieldRefactoringActionsProvider(IDeclarationFinderProvider declarationFinderProvider, 
-            IRewritingManager rewritingManager,
+        public EncapsulateFieldRefactoringActionsProvider(
             ReplaceReferencesRefactoringAction replaceReferencesRefactoringAction,
             ReplacePrivateUDTMemberReferencesRefactoringAction replaceUDTMemberReferencesRefactoringAction,
             ReplaceDeclarationIdentifierRefactoringAction replaceDeclarationIdentifierRefactoringAction,
@@ -39,8 +36,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             EncapsulateFieldInsertNewCodeRefactoringAction encapsulateFieldInsertNewCodeRefactoringAction,
             CodeBlockInsertRefactoringAction codeBlockInsertRefactoringAction)
         {
-            _declarationFinderProvider = declarationFinderProvider;
-            _rewritingManager = rewritingManager;
             _replaceReferences = replaceReferencesRefactoringAction;
             _replaceUDTMemberReferencesRefactoringAction = replaceUDTMemberReferencesRefactoringAction;
             _replaceDeclarationIdentifiers = replaceDeclarationIdentifierRefactoringAction;

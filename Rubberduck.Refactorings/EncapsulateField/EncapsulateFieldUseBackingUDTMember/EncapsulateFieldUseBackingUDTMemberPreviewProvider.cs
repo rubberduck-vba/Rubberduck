@@ -18,6 +18,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             model.IncludeNewContentMarker = true;
             try
             {
+                model.ResetNewContent();
                 preview = base.Preview(model);
             }
             catch (Exception e) { }
