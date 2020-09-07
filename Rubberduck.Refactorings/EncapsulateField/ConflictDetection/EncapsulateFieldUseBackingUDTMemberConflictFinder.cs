@@ -6,12 +6,12 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IConvertFieldsToUDTMembersStrategyConflictFinder : IEncapsulateFieldConflictFinder
+    public interface IEncapsulateFieldUseBackingUDTMemberConflictFinder : IEncapsulateFieldConflictFinder
     {
         IObjectStateUDT AssignNoConflictIdentifiers(IObjectStateUDT stateUDT, IDeclarationFinderProvider declarationFinderProvider);
     }
 
-    public class ConvertFieldsToUDTMembersStrategyConflictFinder : EncapsulateFieldConflictFinderBase, IConvertFieldsToUDTMembersStrategyConflictFinder
+    public class EncapsulateFieldUseBackingUDTMemberConflictFinder : EncapsulateFieldConflictFinderBase, IEncapsulateFieldUseBackingUDTMemberConflictFinder
     {
         private static DeclarationType[] _udtTypeIdentifierNonConflictTypes = new DeclarationType[]
         {
@@ -27,17 +27,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
             DeclarationType.Parameter
         };
 
-        private IEnumerable<IObjectStateUDT> _objectStateUDTs;
-        public ConvertFieldsToUDTMembersStrategyConflictFinder(IDeclarationFinderProvider declarationFinderProvider, IEnumerable<IEncapsulateFieldCandidate> candidates, IEnumerable<IUserDefinedTypeMemberCandidate> udtCandidates, IEnumerable<IObjectStateUDT> objectStateUDTs)
-            : base(declarationFinderProvider, candidates, udtCandidates)
+        private List<IObjectStateUDT> _objectStateUDTs;
+        public EncapsulateFieldUseBackingUDTMemberConflictFinder(IDeclarationFinderProvider declarationFinderProvider, IEnumerable<IEncapsulateFieldCandidate> candidates, IEnumerable<IObjectStateUDT> objectStateUDTs)
+            : base(declarationFinderProvider, candidates)
         {
-            _objectStateUDTs = objectStateUDTs;
+            _objectStateUDTs = objectStateUDTs.ToList();
         }
 
         public override bool TryValidateEncapsulationAttributes(IEncapsulateFieldCandidate field, out string errorMessage)
         {
             errorMessage = string.Empty;
-            if (!field.EncapsulateFlag) { return true; }
+            if (!field.EncapsulateFlag)
+            {
+                return true;
+            }
 
             if (!base.TryValidateEncapsulationAttributes(field, out errorMessage))
             {
@@ -97,7 +100,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private bool ConflictsWithExistingUDTMembers(IObjectStateUDT objectStateUDT, string identifier)
         {
-            if (objectStateUDT is null) { return false; }
+            if (objectStateUDT is null)
+            {
+                return false;
+            }
 
             return objectStateUDT.ExistingMembers.Any(nm => nm.IdentifierName.IsEquivalentVBAIdentifierTo(identifier));
         }

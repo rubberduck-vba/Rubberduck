@@ -2,7 +2,6 @@
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Refactorings
@@ -11,6 +10,7 @@ namespace Rubberduck.Refactorings
     {
         IEncapsulateFieldCandidate Create(Declaration target);
     }
+
     public class EncapsulateFieldCandidateFactory : IEncapsulateFieldCandidateFactory
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
@@ -28,7 +28,9 @@ namespace Rubberduck.Refactorings
             {
                 var udtField = new UserDefinedTypeCandidate(target, _codeBuilder.BuildPropertyRhsParameterName) as IUserDefinedTypeCandidate;
 
-                (Declaration udtDeclaration, IEnumerable<Declaration> udtMembers) = GetUDTAndMembersForField(udtField);
+                var udtMembers = _declarationFinderProvider.DeclarationFinder
+                    .UserDeclarations(DeclarationType.UserDefinedTypeMember)
+                    .Where(utm => udtField.Declaration.AsTypeDeclaration == utm.ParentDeclaration);
 
                 foreach (var udtMemberDeclaration in udtMembers)
                 {
@@ -38,9 +40,9 @@ namespace Rubberduck.Refactorings
                 }
 
                 var udtVariablesOfSameType = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                    .Where(v => v.AsTypeDeclaration == udtDeclaration);
+                    .Where(v => v.AsTypeDeclaration == udtField.Declaration.AsTypeDeclaration);
 
-                udtField.CanBeObjectStateUDT = udtField.TypeDeclarationIsPrivate
+                udtField.IsObjectStateUDTCandidate = udtField.TypeDeclarationIsPrivate
                     && udtField.Declaration.HasPrivateAccessibility()
                     && udtVariablesOfSameType.Count() == 1;
 
@@ -52,19 +54,7 @@ namespace Rubberduck.Refactorings
                 return arrayCandidate;
             }
 
-            var candidate = new EncapsulateFieldCandidate(target, _codeBuilder.BuildPropertyRhsParameterName);
-            return candidate;
-        }
-
-        private (Declaration TypeDeclaration, IEnumerable<Declaration> Members) GetUDTAndMembersForField(IUserDefinedTypeCandidate udtField)
-        {
-            var userDefinedTypeDeclaration = udtField.Declaration.AsTypeDeclaration;
-
-            var udtMembers = _declarationFinderProvider.DeclarationFinder
-               .UserDeclarations(DeclarationType.UserDefinedTypeMember)
-               .Where(utm => userDefinedTypeDeclaration == utm.ParentDeclaration);
-
-            return (userDefinedTypeDeclaration, udtMembers);
+            return new EncapsulateFieldCandidate(target, _codeBuilder.BuildPropertyRhsParameterName);
         }
     }
 }

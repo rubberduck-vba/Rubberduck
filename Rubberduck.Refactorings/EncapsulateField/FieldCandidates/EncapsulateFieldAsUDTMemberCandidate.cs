@@ -7,19 +7,18 @@ using Rubberduck.VBEditor;
 namespace Rubberduck.Refactorings.EncapsulateField
 {
 
-    public interface IConvertToUDTMember : IEncapsulateFieldCandidate
+    public interface IEncapsulateFieldAsUDTMemberCandidate : IEncapsulateFieldCandidate
     {
         string UDTMemberDeclaration { get; }
-        IEncapsulateFieldCandidate WrappedCandidate { get; }
         IObjectStateUDT ObjectStateUDT { set; get; }
     }
 
-    public class ConvertToUDTMember : IConvertToUDTMember
+    public class EncapsulateFieldAsUDTMemberCandidate : IEncapsulateFieldAsUDTMemberCandidate
     {
         private int _hashCode;
         private readonly string _uniqueID;
-        private readonly IEncapsulateFieldCandidate _wrapped;
-        public ConvertToUDTMember(IEncapsulateFieldCandidate candidate, IObjectStateUDT objStateUDT)
+        private IEncapsulateFieldCandidate _wrapped;
+        public EncapsulateFieldAsUDTMemberCandidate(IEncapsulateFieldCandidate candidate, IObjectStateUDT objStateUDT)
         {
             _wrapped = candidate;
             PropertyIdentifier = _wrapped.PropertyIdentifier;
@@ -39,8 +38,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 return $"{BackingIdentifier} As {_wrapped.AsTypeName}";
             }
         }
-
-        public IEncapsulateFieldCandidate WrappedCandidate => _wrapped;
 
         public IObjectStateUDT ObjectStateUDT { set; get; }
 
@@ -123,7 +120,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool TryValidateEncapsulationAttributes(out string errorMessage)
         {
             errorMessage = string.Empty;
-            if (!_wrapped.EncapsulateFlag) { return true; }
+            if (!_wrapped.EncapsulateFlag)
+            {
+                return true;
+            }
 
             if (_wrapped is IArrayCandidate ac)
             {
@@ -159,7 +159,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public override bool Equals(object obj)
         {
             return obj != null
-                && obj is ConvertToUDTMember convertWrapper
+                && obj is EncapsulateFieldAsUDTMemberCandidate convertWrapper
                 && BuildUniqueID(convertWrapper, convertWrapper.ObjectStateUDT) == _uniqueID;
         }
 

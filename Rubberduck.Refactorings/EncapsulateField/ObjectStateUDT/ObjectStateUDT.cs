@@ -11,13 +11,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public interface IObjectStateUDT : IEncapsulateFieldRefactoringElement
     {
+        Declaration Declaration { get; }
         string TypeIdentifier { set; get; }
         string FieldDeclarationBlock { get; }
         string FieldIdentifier { set; get; }
         bool IsExistingDeclaration { get; }
         Declaration AsTypeDeclaration { get; }
         bool IsSelected { set; get; }
-        IEnumerable<IUserDefinedTypeMemberCandidate> ExistingMembers { get; }
+        IReadOnlyCollection<IUserDefinedTypeMemberCandidate> ExistingMembers { get; }
     }
 
     /// <summary>
@@ -31,46 +32,43 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class ObjectStateUDT : IObjectStateUDT
     {
         private static string _defaultNewFieldName = RubberduckUI.EncapsulateField_DefaultObjectStateUDTFieldName;
-        private List<IConvertToUDTMember> _convertedMembers;
+        private readonly IUserDefinedTypeCandidate _wrappedUDTField;
+        private readonly int _hashCode;
 
-        private readonly IUserDefinedTypeCandidate _wrappedUDT;
-        private readonly ICodeBuilder _codeBuilder;
-        private int _hashCode;
-
-        public ObjectStateUDT(IUserDefinedTypeCandidate udt)
-            : this(udt.Declaration.AsTypeName)
+        public ObjectStateUDT(IUserDefinedTypeCandidate udtField)
+            : this(udtField.Declaration.AsTypeName)
         {
-            if (!udt.TypeDeclarationIsPrivate)
+            if (!udtField.TypeDeclarationIsPrivate)
             {
                 throw new ArgumentException();
             }
 
-            FieldIdentifier = udt.IdentifierName;
-            _wrappedUDT = udt;
-            _hashCode = ($"{_qmn.Name}.{_wrappedUDT.IdentifierName}").GetHashCode();
+            QualifiedModuleName = udtField.QualifiedModuleName;
+            FieldIdentifier = udtField.IdentifierName;
+            _wrappedUDTField = udtField;
+            _hashCode = ($"{QualifiedModuleName.Name}.{_wrappedUDTField.IdentifierName}").GetHashCode();
         }
 
-        public ObjectStateUDT(QualifiedModuleName qmn)
-            :this($"T{qmn.ComponentName.CapitalizeFirstLetter()}")
+        public ObjectStateUDT(QualifiedModuleName qualifiedModuleName)
+            :this($"T{qualifiedModuleName.ComponentName.CapitalizeFirstLetter()}")
         {
-            QualifiedModuleName = qmn;
+            QualifiedModuleName = qualifiedModuleName;
         }
 
         private ObjectStateUDT(string typeIdentifier)
         {
             FieldIdentifier = _defaultNewFieldName;
             TypeIdentifier = typeIdentifier;
-            _convertedMembers = new List<IConvertToUDTMember>();
-            _codeBuilder = new CodeBuilder();
-            _convertedMembers = new List<IConvertToUDTMember>();
         }
 
         public string FieldDeclarationBlock
             => $"{Accessibility.Private} {IdentifierName} {Tokens.As} {AsTypeName}";
 
-        public string IdentifierName => _wrappedUDT?.IdentifierName ?? FieldIdentifier;
+        public string IdentifierName => _wrappedUDTField?.IdentifierName ?? FieldIdentifier;
 
-        public string AsTypeName => _wrappedUDT?.AsTypeName ?? TypeIdentifier;
+        public Declaration Declaration => _wrappedUDTField?.Declaration;
+
+        public string AsTypeName => _wrappedUDTField?.AsTypeName ?? TypeIdentifier;
 
         private bool _isSelected;
         public bool IsSelected
@@ -78,35 +76,28 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set
             {
                 _isSelected = value;
-                if (_wrappedUDT != null)
+                if (_wrappedUDTField != null)
                 {
-                    _wrappedUDT.IsSelectedObjectStateUDT = value;
+                    _wrappedUDTField.IsSelectedObjectStateUDT = value;
                     if (_isSelected && IsExistingDeclaration)
                     {
-                        _wrappedUDT.EncapsulateFlag = false;
+                        _wrappedUDTField.EncapsulateFlag = false;
                     }
                 }
             }
             get => _isSelected;
         }
 
-        public IEnumerable<IUserDefinedTypeMemberCandidate> ExistingMembers 
-            => IsExistingDeclaration
-                ? _wrappedUDT.Members
-                : Enumerable.Empty<IUserDefinedTypeMemberCandidate>();
+        public IReadOnlyCollection<IUserDefinedTypeMemberCandidate> ExistingMembers 
+            => _wrappedUDTField?.Members.ToList() ?? new List<IUserDefinedTypeMemberCandidate>();
 
-        private QualifiedModuleName _qmn;
-        public QualifiedModuleName QualifiedModuleName
-        {
-            set => _qmn = value;
-            get => _wrappedUDT?.QualifiedModuleName ?? _qmn;
-        }
+        public QualifiedModuleName QualifiedModuleName { get; }
 
         public string TypeIdentifier { set; get; }
 
-        public bool IsExistingDeclaration => _wrappedUDT != null;
+        public bool IsExistingDeclaration => _wrappedUDTField != null;
 
-        public Declaration AsTypeDeclaration => _wrappedUDT?.Declaration.AsTypeDeclaration;
+        public Declaration AsTypeDeclaration => _wrappedUDTField?.Declaration.AsTypeDeclaration;
 
         public string FieldIdentifier { set; get; }
 
@@ -116,13 +107,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 return true;
             }
+
             if (obj is IEncapsulateFieldRefactoringElement fd && fd.IdentifierName == IdentifierName)
             {
                 return true;
             }
+
             return false;
         }
 
-       public override int GetHashCode() => _hashCode;
+        public override int GetHashCode() => _hashCode;
     }
 }
