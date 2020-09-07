@@ -1,74 +1,71 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
-using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Refactorings
 {
-    public interface IEncapsulateFieldUseBackingFieldModelFactory : IEncapsulateFieldModelsFactory<EncapsulateFieldUseBackingFieldModel>
-    { }
+    public interface IEncapsulateFieldUseBackingFieldModelFactory
+    {
+        /// <summary>
+        /// Creates an <c>EncapsulateFieldUseBackingFieldModel</c> used by the <c>EncapsulateFieldUseBackingFieldRefactoringAction</c>.
+        /// </summary>
+        /// <param name="clientTarget">Optional: <c>UserDefinedType</c> Field to include the Encapsulated Field(s)</param>
+        EncapsulateFieldUseBackingFieldModel Create(IEnumerable<EncapsulateFieldRequest> requests);
+
+        /// <summary>
+        /// Creates an <c>EncapsulateFieldUseBackingFieldModel</c> based upon collection of
+        /// <c>IEncapsulateFieldCandidate</c> instances created by <c>EncapsulateFieldCandidateCollectionFactory</c>.  
+        /// This function is intended for exclusive use by <c>EncapsulateFieldModelFactory</c>
+        /// </summary>
+        EncapsulateFieldUseBackingFieldModel Create(IReadOnlyCollection<IEncapsulateFieldCandidate> candidates, IEnumerable<EncapsulateFieldRequest> requests);
+    }
 
     public class EncapsulateFieldUseBackingFieldModelFactory : IEncapsulateFieldUseBackingFieldModelFactory
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly IEncapsulateFieldCandidateFactory _fieldCandidateFactory;
+        private readonly IEncapsulateFieldCandidateCollectionFactory _fieldCandidateCollectionFactory;
+        private readonly IEncapsulateFieldConflictFinderFactory _conflictFinderFactory;
 
         public EncapsulateFieldUseBackingFieldModelFactory(IDeclarationFinderProvider declarationFinderProvider, 
-            IEncapsulateFieldCandidateFactory fieldCandidateFactory)
+            IEncapsulateFieldCandidateCollectionFactory encapsulateFieldCandidateCollectionFactory,
+            IEncapsulateFieldConflictFinderFactory encapsulateFieldConflictFinderFactory)
         {
             _declarationFinderProvider = declarationFinderProvider;
-            _fieldCandidateFactory = fieldCandidateFactory;
+            _fieldCandidateCollectionFactory = encapsulateFieldCandidateCollectionFactory;
+            _conflictFinderFactory = encapsulateFieldConflictFinderFactory;
         }
 
-        public EncapsulateFieldUseBackingFieldModel Create(QualifiedModuleName qmn)
+        public EncapsulateFieldUseBackingFieldModel Create(IEnumerable<EncapsulateFieldRequest> requests)
         {
-            var fields = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(v => v.ParentDeclaration is ModuleDeclaration
-                    && !v.IsWithEvents);
+            if (!requests.Any())
+            {
+                return new EncapsulateFieldUseBackingFieldModel(Enumerable.Empty<IEncapsulateFieldCandidate>(), _declarationFinderProvider);
+            }
 
-            var candidates = fields.Select(f => _fieldCandidateFactory.Create(f));
-
-            var objectStateUDTCandidates = candidates.Where(c => c is IUserDefinedTypeCandidate udt && udt.CanBeObjectStateUDT)
-                .Select(udtc => new ObjectStateUDT(udtc as IUserDefinedTypeCandidate));
-
-            return Create(candidates, objectStateUDTCandidates);
+            var fieldCandidates = _fieldCandidateCollectionFactory.Create(requests.First().Declaration.QualifiedModuleName);
+            return Create(fieldCandidates, requests);
         }
 
-        public EncapsulateFieldUseBackingFieldModel Create(IEnumerable<IEncapsulateFieldCandidate> candidates, IEnumerable<IObjectStateUDT> objectStateUDTCandidates)
+        public EncapsulateFieldUseBackingFieldModel Create(IReadOnlyCollection<IEncapsulateFieldCandidate> candidates, IEnumerable<EncapsulateFieldRequest> requests)
         {
-            var fieldCandidates = new List<IEncapsulateFieldCandidate>(candidates);
-            var objectStateFieldCandidates = new List<IObjectStateUDT>(objectStateUDTCandidates);
-            var udtMemberCandidates = new List<IUserDefinedTypeMemberCandidate>();
+            var fieldCandidates = candidates.ToList();
 
-            fieldCandidates.ForEach(c => LoadUDTMembers(udtMemberCandidates, c));
+            foreach (var request in requests)
+            {
+                var candidate = fieldCandidates.Single(c => c.Declaration.Equals(request.Declaration));
+                request.ApplyRequest(candidate);
+            }
 
-            var conflictsFinder = new UseBackingFieldsStrategyConflictFinder(_declarationFinderProvider, candidates, udtMemberCandidates);
+            var conflictsFinder = _conflictFinderFactory.CreateEncapsulateFieldUseBackingFieldConflictFinder(fieldCandidates);
             fieldCandidates.ForEach(c => c.ConflictFinder = conflictsFinder);
 
-            return new EncapsulateFieldUseBackingFieldModel(candidates, _declarationFinderProvider)
+            return new EncapsulateFieldUseBackingFieldModel(fieldCandidates, _declarationFinderProvider)
             {
                 ConflictFinder = conflictsFinder
             };
-        }
-
-        private void LoadUDTMembers(List<IUserDefinedTypeMemberCandidate> udtMembers, IEncapsulateFieldCandidate candidate)
-        {
-            if (candidate is IUserDefinedTypeCandidate udtCandidate)
-            {
-                foreach (var member in udtCandidate.Members)
-                {
-                    udtMembers.Add(member);
-                    if (member.WrappedCandidate is IUserDefinedTypeCandidate childUDT
-                        && childUDT.Declaration.AsTypeDeclaration.HasPrivateAccessibility())
-                    {
-                        LoadUDTMembers(udtMembers, childUDT);
-                    }
-                }
-            }
         }
     }
 }

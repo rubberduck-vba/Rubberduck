@@ -1,112 +1,129 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember;
-using Rubberduck.VBEditor;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Refactorings
 {
-    public interface IEncapsulateFieldUseBackingUDTMemberModelFactory : IEncapsulateFieldModelsFactory<EncapsulateFieldUseBackingUDTMemberModel>
-    { }
+    public interface IEncapsulateFieldUseBackingUDTMemberModelFactory
+    {
+        /// <summary>
+        /// Creates an <c>EncapsulateFieldUseBackingUDTMemberModel</c> used by the <c>EncapsulateFieldUseBackingUDTMemberRefactoringAction</c>.
+        /// </summary>
+        /// <param name="clientTarget">Optional: <c>UserDefinedType</c> Field to include the Encapsulated Field(s)</param>
+        EncapsulateFieldUseBackingUDTMemberModel Create(IEnumerable<EncapsulateFieldRequest> requests, Declaration userDefinedTypeTarget = null);
+
+        /// <summary>
+        /// Creates an <c>EncapsulateFieldUseBackingUDTMemberModel</c> based upon collection of
+        /// <c>IEncapsulateFieldCandidate</c> instances created by <c>EncapsulateFieldCandidateCollectionFactory</c>.  
+        /// This function is intended for exclusive use by <c>EncapsulateFieldModelFactory</c>
+        /// </summary>
+        EncapsulateFieldUseBackingUDTMemberModel Create(IReadOnlyCollection<IEncapsulateFieldCandidate> candidates, IEnumerable<EncapsulateFieldRequest> requests, Declaration userDefinedTypeTarget = null);
+    }
 
     public class EncapsulateFieldUseBackingUDTMemberModelFactory : IEncapsulateFieldUseBackingUDTMemberModelFactory
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly IEncapsulateFieldCandidateFactory _fieldCandidateFactory;
+        private readonly IEncapsulateFieldCandidateCollectionFactory _fieldCandidateCollectionFactory;
+        private readonly IObjectStateUserDefinedTypeFactory _objectStateUDTFactory;
+        private readonly IEncapsulateFieldConflictFinderFactory _conflictFinderFactory;
 
-        public EncapsulateFieldUseBackingUDTMemberModelFactory(IDeclarationFinderProvider declarationFinderProvider, IEncapsulateFieldCandidateFactory fieldCandidateFactory)
+        public EncapsulateFieldUseBackingUDTMemberModelFactory(IDeclarationFinderProvider declarationFinderProvider,
+            IEncapsulateFieldCandidateCollectionFactory encapsulateFieldCandidateCollectionFactory,
+            IObjectStateUserDefinedTypeFactory objectStateUserDefinedTypeFactory,
+            IEncapsulateFieldConflictFinderFactory encapsulateFieldConflictFinderFactory)
         {
             _declarationFinderProvider = declarationFinderProvider;
-            _fieldCandidateFactory = fieldCandidateFactory;
+            _fieldCandidateCollectionFactory = encapsulateFieldCandidateCollectionFactory;
+            _objectStateUDTFactory = objectStateUserDefinedTypeFactory;
+            _conflictFinderFactory = encapsulateFieldConflictFinderFactory;
         }
 
-        public EncapsulateFieldUseBackingUDTMemberModel Create(QualifiedModuleName qmn)        {
-            var fields = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(v => v.ParentDeclaration is ModuleDeclaration
-                    && !v.IsWithEvents);
-
-            var candidates = fields.Select(f => _fieldCandidateFactory.Create(f));
-
-            var objectStateUDTCandidates = candidates.Where(c => c is IUserDefinedTypeCandidate udt
-                && udt.CanBeObjectStateUDT)
-                .Select(udtc => new ObjectStateUDT(udtc as IUserDefinedTypeCandidate));
-
-            return Create(candidates, objectStateUDTCandidates);
-        }
-
-        public EncapsulateFieldUseBackingUDTMemberModel Create(IEnumerable<IEncapsulateFieldCandidate> candidates, IEnumerable<IObjectStateUDT> objectStateUDTCandidates)
+        public EncapsulateFieldUseBackingUDTMemberModel Create(IEnumerable<EncapsulateFieldRequest> requests, Declaration clientTarget)
         {
-            var fieldCandidates = new List<IEncapsulateFieldCandidate>(candidates);
-            var objectStateFieldCandidates = new List<IObjectStateUDT>(objectStateUDTCandidates);
-
-            var udtMemberCandidates = new List<IUserDefinedTypeMemberCandidate>();
-            fieldCandidates.ForEach(c => LoadUDTMembers(udtMemberCandidates, c));
-
-            var conflictsFinder = new ConvertFieldsToUDTMembersStrategyConflictFinder(_declarationFinderProvider, candidates, udtMemberCandidates, objectStateUDTCandidates);
-            fieldCandidates.ForEach(c => c.ConflictFinder = conflictsFinder);
-
-            var defaultObjectStateUDT = CreateStateUDTField(candidates.First().QualifiedModuleName);
-            conflictsFinder.AssignNoConflictIdentifiers(defaultObjectStateUDT, _declarationFinderProvider);
-
-            var convertedToUDTMemberCandidates = new List<IConvertToUDTMember>();
-            foreach (var field in candidates)
+            if (!requests.Any())
             {
-                if (field is ConvertToUDTMember cm)
-                {
-                    convertedToUDTMemberCandidates.Add(cm);
-                    continue;
-                }
-                convertedToUDTMemberCandidates.Add(new ConvertToUDTMember(field, defaultObjectStateUDT));
+                throw new ArgumentException();
+            }
+            var fieldCandidates = _fieldCandidateCollectionFactory.Create(requests.First().Declaration.QualifiedModuleName);
+            return Create(fieldCandidates, requests, clientTarget);
+        }
+
+        public EncapsulateFieldUseBackingUDTMemberModel Create(IReadOnlyCollection<IEncapsulateFieldCandidate> candidates, IEnumerable<EncapsulateFieldRequest> requests, Declaration clientTarget = null)
+        {
+            if (clientTarget != null
+                && (clientTarget.Accessibility != Accessibility.Private
+                    || !candidates.Any(c => c.Declaration == clientTarget && c is IUserDefinedTypeCandidate)))
+            {
+                throw new ArgumentException("The object state Field must be a Private UserDefinedType");
             }
 
-            return new EncapsulateFieldUseBackingUDTMemberModel(convertedToUDTMemberCandidates, defaultObjectStateUDT, objectStateUDTCandidates, _declarationFinderProvider)
+            var fieldCandidates = candidates.ToList();
+
+            var objectStateUDTs = fieldCandidates
+                .Where(c => c is IUserDefinedTypeCandidate udt && udt.IsObjectStateUDTCandidate)
+                .Select(udtc => _objectStateUDTFactory.Create(udtc as IUserDefinedTypeCandidate))
+                .ToList();
+
+            var defaultObjectStateUDT = _objectStateUDTFactory.Create(fieldCandidates.First().QualifiedModuleName);
+
+            objectStateUDTs.Add(defaultObjectStateUDT);
+
+            var targetStateUDT = DetermineObjectStateUDTTarget(defaultObjectStateUDT, clientTarget, objectStateUDTs);
+
+            foreach (var request in requests)
+            {
+                var candidate = fieldCandidates.Single(c => c.Declaration.Equals(request.Declaration));
+                request.ApplyRequest(candidate);
+            }
+
+            var conflictsFinder = _conflictFinderFactory.CreateEncapsulateFieldUseBackingUDTMemberConflictFinder(candidates, objectStateUDTs)
+                as IEncapsulateFieldUseBackingUDTMemberConflictFinder;
+
+            fieldCandidates.ForEach(c => c.ConflictFinder = conflictsFinder);
+
+            if (clientTarget == null && !targetStateUDT.IsExistingDeclaration)
+            {
+                conflictsFinder.AssignNoConflictIdentifiers(targetStateUDT, _declarationFinderProvider);
+            }
+
+            var udtMemberCandidates =
+                fieldCandidates.Select(c => new EncapsulateFieldAsUDTMemberCandidate(c, targetStateUDT)).ToList();
+
+            udtMemberCandidates.ForEach(c => conflictsFinder.AssignNoConflictIdentifiers(c));
+
+            return new EncapsulateFieldUseBackingUDTMemberModel(targetStateUDT, udtMemberCandidates, objectStateUDTs)
             {
                 ConflictFinder = conflictsFinder
             };
         }
 
-        private IObjectStateUDT CreateStateUDTField(QualifiedModuleName qualifiedModuleName)
+        IObjectStateUDT DetermineObjectStateUDTTarget(IObjectStateUDT defaultObjectStateUDT, Declaration clientTarget, List<IObjectStateUDT> objectStateUDTs)
         {
-            var stateUDT = new ObjectStateUDT(qualifiedModuleName) as IObjectStateUDT;
-            stateUDT.IsSelected = true;
+            var targetStateUDT = defaultObjectStateUDT;
 
-            return stateUDT;
-        }
-
-        private void ResolveConflict(IEncapsulateFieldConflictFinder conflictFinder, IEncapsulateFieldCandidate candidate)
-        {
-            conflictFinder.AssignNoConflictIdentifiers(candidate);
-            if (candidate is IUserDefinedTypeCandidate udtCandidate)
+            if (clientTarget != null)
             {
-                foreach (var member in udtCandidate.Members)
+                targetStateUDT = objectStateUDTs.Single(osc => clientTarget == osc.Declaration);
+            }
+            else
+            {
+                var preExistingDefaultUDTField = 
+                    objectStateUDTs.Where(osc => osc.TypeIdentifier == defaultObjectStateUDT.TypeIdentifier
+                        && osc.IsExistingDeclaration);
+
+                if (preExistingDefaultUDTField.Any() && preExistingDefaultUDTField.Count() == 1)
                 {
-                    conflictFinder.AssignNoConflictIdentifiers(member);
-                    if (member.WrappedCandidate is IUserDefinedTypeCandidate childUDT
-                        && childUDT.Declaration.AsTypeDeclaration.HasPrivateAccessibility())
-                    {
-                        ResolveConflict(conflictFinder, childUDT);
-                    }
+                    targetStateUDT = preExistingDefaultUDTField.First();
                 }
             }
-        }
 
-        private void LoadUDTMembers(List<IUserDefinedTypeMemberCandidate> udtMembers, IEncapsulateFieldCandidate candidate)
-        {
-            if (candidate is IUserDefinedTypeCandidate udtCandidate)
-            {
-                foreach (var member in udtCandidate.Members)
-                {
-                    udtMembers.Add(member);
-                    if (member.WrappedCandidate is IUserDefinedTypeCandidate childUDT
-                        && childUDT.Declaration.AsTypeDeclaration.HasPrivateAccessibility())
-                    {
-                        LoadUDTMembers(udtMembers, childUDT);
-                    }
-                }
-            }
+            targetStateUDT.IsSelected = true;
+
+            return targetStateUDT;
         }
     }
 }
