@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
@@ -111,6 +112,39 @@ Private bType As B{MockVbeBuilder.TestModuleName}
                 var secondPreview = previewProvider.Preview(model);
                 StringAssert.Contains("Property Get BTest", secondPreview);
                 StringAssert.DoesNotContain("Property Get ATest", secondPreview);
+            }
+        }
+
+        [TestCase(EncapsulateFieldStrategy.UseBackingFields)]
+        [TestCase(EncapsulateFieldStrategy.ConvertFieldsToUDTMembers)]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(EncapsulateFieldPreviewProvider))]
+        public void Preview_IncludeEndOfChangesMarker(EncapsulateFieldStrategy strategy)
+        {
+            string inputCode =
+$@"Option Explicit
+
+Public mTest As Long
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.StandardModule, out _);
+            (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
+            {
+                var target = state.DeclarationFinder.MatchName("mTest").First();
+                var resolver = new EncapsulateFieldTestComponentResolver(state, rewritingManager);
+
+                var modelfactory = resolver.Resolve<IEncapsulateFieldModelFactory>();
+                var previewProvider = resolver.Resolve<EncapsulateFieldPreviewProvider>();
+
+                var model = modelfactory.Create(target);
+
+                model.EncapsulateFieldStrategy = strategy;
+
+                var previewResult = previewProvider.Preview(model);
+
+                StringAssert.Contains(RubberduckUI.EncapsulateField_PreviewMarker, previewResult);
             }
         }
 

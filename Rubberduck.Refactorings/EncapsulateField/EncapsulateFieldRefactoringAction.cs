@@ -1,5 +1,4 @@
-﻿using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
+﻿using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember;
 using System.Linq;
 

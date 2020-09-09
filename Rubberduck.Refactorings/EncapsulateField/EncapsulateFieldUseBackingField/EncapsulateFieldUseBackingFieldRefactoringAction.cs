@@ -3,12 +3,10 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.ReplaceDeclarationIdentifier;
 using Rubberduck.Refactorings.ReplaceReferences;
 using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
-using Rubberduck.Refactorings.CodeBlockInsert;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,26 +17,26 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
 {
     public class EncapsulateFieldUseBackingFieldRefactoringAction : CodeOnlyRefactoringActionBase<EncapsulateFieldUseBackingFieldModel>
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ICodeOnlyRefactoringAction<ReplacePrivateUDTMemberReferencesModel> _replaceUDTMemberReferencesRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<ReplaceReferencesModel> _replaceReferencesRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<ReplaceDeclarationIdentifierModel> _replaceDeclarationIdentifiers;
         private readonly ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> _encapsulateFieldInsertNewCodeRefactoringAction;
         private readonly IReplacePrivateUDTMemberReferencesModelFactory _replaceUDTMemberReferencesModelFactory;
+        private readonly INewContentAggregatorFactory _newContentAggregatorFactory;
 
         public EncapsulateFieldUseBackingFieldRefactoringAction(
             IEncapsulateFieldRefactoringActionsProvider refactoringActionsProvider,
             IReplacePrivateUDTMemberReferencesModelFactory replaceUDTMemberReferencesModelFactory,
-            IDeclarationFinderProvider declarationFinderProvider,
-            IRewritingManager rewritingManager)
+            IRewritingManager rewritingManager,
+            INewContentAggregatorFactory newContentAggregatorFactory)
                 :base(rewritingManager)
         {
-            _declarationFinderProvider = declarationFinderProvider;
             _replaceUDTMemberReferencesRefactoringAction = refactoringActionsProvider.ReplaceUDTMemberReferences;
             _replaceReferencesRefactoringAction = refactoringActionsProvider.ReplaceReferences;
             _replaceDeclarationIdentifiers = refactoringActionsProvider.ReplaceDeclarationIdentifiers;
             _encapsulateFieldInsertNewCodeRefactoringAction = refactoringActionsProvider.EncapsulateFieldInsertNewCode;
             _replaceUDTMemberReferencesModelFactory = replaceUDTMemberReferencesModelFactory;
+            _newContentAggregatorFactory = newContentAggregatorFactory;
         }
 
         public override void Refactor(EncapsulateFieldUseBackingFieldModel model, IRewriteSession rewriteSession)
@@ -46,6 +44,11 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
             if (!model.SelectedFieldCandidates.Any())
             {
                 return;
+            }
+
+            if (model.NewContentAggregator is null)
+            {
+                model.NewContentAggregator = _newContentAggregatorFactory.Create();
             }
 
             ModifyFields(model, rewriteSession);
@@ -73,10 +76,12 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
                     ? $"{Tokens.Private} {targetIdentifier}"
                     : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {field.Declaration.AsTypeName}";
 
-                model.AddContentBlock(NewContentType.DeclarationBlock, newField);
+                model.NewContentAggregator.AddNewContent(NewContentType.DeclarationBlock, newField);
             }
 
-            var retainedFieldDeclarations = model.SelectedFieldCandidates.Except(fieldDeclarationsToDeleteAndReplace).ToList();
+            var retainedFieldDeclarations = model.SelectedFieldCandidates
+                .Except(fieldDeclarationsToDeleteAndReplace)
+                .ToList();
 
             if (retainedFieldDeclarations.Any())
             {
@@ -103,9 +108,9 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
         {
             var encapsulateFieldInsertNewCodeModel = new EncapsulateFieldInsertNewCodeModel(model.SelectedFieldCandidates)
             {
-                NewContent = model.NewContent,
-                IncludeNewContentMarker = model.IncludeNewContentMarker
+                NewContentAggregator = model.NewContentAggregator
             };
+
             _encapsulateFieldInsertNewCodeRefactoringAction.Refactor(encapsulateFieldInsertNewCodeModel, rewriteSession);
         }
 
@@ -154,7 +159,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
             }
         }
 
-        private static void MakeImplicitDeclarationTypeExplicit(IEnumerable<IEncapsulateFieldCandidate> fields, IModuleRewriter rewriter)
+        private static void MakeImplicitDeclarationTypeExplicit(IReadOnlyCollection<IEncapsulateFieldCandidate> fields, IModuleRewriter rewriter)
         {
             var fieldsToChange = fields.Where(f => !f.Declaration.Context.TryGetChildContext<VBAParser.AsTypeClauseContext>(out _))
                 .Select(f => f.Declaration);
@@ -165,7 +170,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
             }
         }
 
-        private static void SetPrivateVariableVisiblity(IEnumerable<IEncapsulateFieldCandidate> fields, IModuleRewriter rewriter)
+        private static void SetPrivateVariableVisiblity(IReadOnlyCollection<IEncapsulateFieldCandidate> fields, IModuleRewriter rewriter)
         {
             var visibility = Accessibility.Private.TokenString();
             foreach (var element in fields.Where(f => !f.Declaration.HasPrivateAccessibility()).Select(f => f.Declaration))
@@ -187,12 +192,13 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
             }
         }
 
-        private void Rename(IEnumerable<IEncapsulateFieldCandidate> fields, IRewriteSession rewriteSession)
+        private void Rename(IReadOnlyCollection<IEncapsulateFieldCandidate> fields, IRewriteSession rewriteSession)
         {
             var fieldToNewNamePairs = fields.Where(f => !f.BackingIdentifier.Equals(f.Declaration.IdentifierName, StringComparison.InvariantCultureIgnoreCase))
                 .Select(f => (f.Declaration, f.BackingIdentifier));
 
-            _replaceDeclarationIdentifiers.Refactor(new ReplaceDeclarationIdentifierModel(fieldToNewNamePairs), rewriteSession);
+            var model = new ReplaceDeclarationIdentifierModel(fieldToNewNamePairs);
+            _replaceDeclarationIdentifiers.Refactor(model, rewriteSession);
         }
     }
 }

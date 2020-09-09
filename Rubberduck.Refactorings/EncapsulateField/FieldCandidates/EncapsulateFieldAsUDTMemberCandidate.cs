@@ -39,7 +39,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        public IObjectStateUDT ObjectStateUDT { set; get; }
+        private IObjectStateUDT _objectStateUDT;
+        public IObjectStateUDT ObjectStateUDT
+        {
+            set
+            {
+                _objectStateUDT = value;
+                if (_objectStateUDT?.Declaration == Declaration)
+                {
+                    EncapsulateFlag = false;
+                }
+            }
+            get => _objectStateUDT;
+        }
 
         public string TargetID => _wrapped.TargetID;
 

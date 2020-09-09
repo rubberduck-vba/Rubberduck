@@ -6,7 +6,6 @@ using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.ReplaceReferences;
 using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
 using Rubberduck.Refactorings.ReplaceDeclarationIdentifier;
-using Rubberduck.Refactorings.CodeBlockInsert;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
 using Rubberduck.Refactorings.EncapsulateFieldInsertNewCode;
@@ -44,17 +43,11 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 case nameof(ReplaceDeclarationIdentifierRefactoringAction):
                     return new ReplaceDeclarationIdentifierRefactoringAction(_rewritingManager) as T;
 
-                case nameof(CodeBlockInsertRefactoringAction):
-                    return new CodeBlockInsertRefactoringAction(_declarationFinderProvider, 
-                        _rewritingManager, 
-                        new CodeBuilder()) as T;
-
                 case nameof(EncapsulateFieldInsertNewCodeRefactoringAction):
                     return new EncapsulateFieldInsertNewCodeRefactoringAction(
-                        ResolveImpl<CodeBlockInsertRefactoringAction>(),
                         _declarationFinderProvider, 
-                        _rewritingManager, 
-                        new CodeBuilder()) as T;
+                        _rewritingManager,
+                        ResolveImpl<IEncapsulateFieldCodeBuilderFactory>()) as T;
 
                 case nameof(ReplacePrivateUDTMemberReferencesRefactoringAction):
                     return new ReplacePrivateUDTMemberReferencesRefactoringAction(_rewritingManager) as T;
@@ -65,23 +58,23 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                         ResolveImpl<ReplacePrivateUDTMemberReferencesRefactoringAction>(),
                         ResolveImpl<ReplaceDeclarationIdentifierRefactoringAction>(),
                         ResolveImpl<DeclareFieldsAsUDTMembersRefactoringAction>(),
-                        ResolveImpl<EncapsulateFieldInsertNewCodeRefactoringAction >(),
-                        ResolveImpl<CodeBlockInsertRefactoringAction>()) as T;
+                        ResolveImpl<EncapsulateFieldInsertNewCodeRefactoringAction >()
+                        ) as T;
 
                 case nameof(EncapsulateFieldUseBackingFieldRefactoringAction):
                     return new EncapsulateFieldUseBackingFieldRefactoringAction(
                         ResolveImpl<IEncapsulateFieldRefactoringActionsProvider>(),
                         ResolveImpl<IReplacePrivateUDTMemberReferencesModelFactory>(),
-                        _declarationFinderProvider, 
-                        _rewritingManager) as T;
+                        _rewritingManager,
+                        ResolveImpl<INewContentAggregatorFactory>()) as T;
 
                 case nameof(EncapsulateFieldUseBackingUDTMemberRefactoringAction):
                     return new EncapsulateFieldUseBackingUDTMemberRefactoringAction(
                         ResolveImpl<IEncapsulateFieldRefactoringActionsProvider>(),
                         ResolveImpl<IReplacePrivateUDTMemberReferencesModelFactory>(),
-                        _declarationFinderProvider, 
                         _rewritingManager,
-                        new CodeBuilder()) as T;
+                        ResolveImpl<INewContentAggregatorFactory>(),
+                        ResolveImpl<IEncapsulateFieldCodeBuilderFactory>()) as T;
 
                 case nameof(IReplacePrivateUDTMemberReferencesModelFactory):
                     return new ReplacePrivateUDTMemberReferencesModelFactory(_declarationFinderProvider) as T;
@@ -100,11 +93,14 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 case nameof(EncapsulateFieldUseBackingFieldPreviewProvider):
                     return new EncapsulateFieldUseBackingFieldPreviewProvider(
                         ResolveImpl<EncapsulateFieldUseBackingFieldRefactoringAction>(),
-                        _rewritingManager) as T;
+                        _rewritingManager,
+                        ResolveImpl<INewContentAggregatorFactory>()) as T;
+
                 case nameof(EncapsulateFieldUseBackingUDTMemberPreviewProvider):
                     return new EncapsulateFieldUseBackingUDTMemberPreviewProvider(
-                        ResolveImpl<EncapsulateFieldUseBackingUDTMemberRefactoringAction>(), 
-                        _rewritingManager) as T;
+                        ResolveImpl<EncapsulateFieldUseBackingUDTMemberRefactoringAction>(),
+                        _rewritingManager,
+                        ResolveImpl<INewContentAggregatorFactory>()) as T;
 
                 case nameof(IEncapsulateFieldModelFactory):
                     return new EncapsulateFieldModelFactory(
@@ -115,13 +111,13 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                         ) as T;
 
                 case nameof(IEncapsulateFieldUseBackingUDTMemberModelFactory):
-                    return new EncapsulateFieldUseBackingUDTMemberModelFactory(_declarationFinderProvider,
+                    return new EncapsulateFieldUseBackingUDTMemberModelFactory(
                         ResolveImpl<IEncapsulateFieldCandidateCollectionFactory>(),
                         ResolveImpl<IObjectStateUserDefinedTypeFactory>(),
                         ResolveImpl< IEncapsulateFieldConflictFinderFactory>()) as T;
 
                 case nameof(IEncapsulateFieldUseBackingFieldModelFactory):
-                    return new EncapsulateFieldUseBackingFieldModelFactory(_declarationFinderProvider,
+                    return new EncapsulateFieldUseBackingFieldModelFactory(
                         ResolveImpl<IEncapsulateFieldCandidateCollectionFactory>(),
                         ResolveImpl< IEncapsulateFieldConflictFinderFactory>()) as T;
 
@@ -136,6 +132,12 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
                 case nameof(IEncapsulateFieldConflictFinderFactory):
                     return new EncapsulateFieldConflictFinderFactory(_declarationFinderProvider) as T;
+
+                case nameof(INewContentAggregatorFactory):
+                    return new NewContentAggregatorFactory() as T;
+
+                case nameof(IEncapsulateFieldCodeBuilderFactory):
+                    return new EncapsulateFieldCodeBuilderFactory(new CodeBuilder()) as T;
 
             }
             throw new ArgumentException($"Unable to resolve {typeof(T).Name}") ;

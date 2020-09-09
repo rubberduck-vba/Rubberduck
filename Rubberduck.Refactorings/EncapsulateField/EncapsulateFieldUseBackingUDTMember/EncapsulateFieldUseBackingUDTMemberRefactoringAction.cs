@@ -1,14 +1,10 @@
 ﻿using Rubberduck.Common;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.DeclareFieldsAsUDTMembers;
 using Rubberduck.Refactorings.ReplaceReferences;
 using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
-using Rubberduck.Refactorings.CodeBlockInsert;
-using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldInsertNewCode;
@@ -17,29 +13,29 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
 {
     public class EncapsulateFieldUseBackingUDTMemberRefactoringAction : CodeOnlyRefactoringActionBase<EncapsulateFieldUseBackingUDTMemberModel>
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ICodeOnlyRefactoringAction<DeclareFieldsAsUDTMembersModel> _declareFieldAsUDTMemberRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<ReplacePrivateUDTMemberReferencesModel> _replaceUDTMemberReferencesRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<ReplaceReferencesModel> _replaceFieldReferencesRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> _encapsulateFieldInsertNewCodeRefactoringAction;
-        private readonly ICodeBuilder _codeBuilder;
+        private readonly IEncapsulateFieldCodeBuilder _encapsulateFieldCodeBuilder;
+        private readonly INewContentAggregatorFactory _newContentAggregatorFactory;
         private readonly IReplacePrivateUDTMemberReferencesModelFactory _replaceUDTMemberReferencesModelFactory;
 
         public EncapsulateFieldUseBackingUDTMemberRefactoringAction(
             IEncapsulateFieldRefactoringActionsProvider refactoringActionsProvider,
             IReplacePrivateUDTMemberReferencesModelFactory replaceUDTMemberReferencesModelFactory,
-            IDeclarationFinderProvider declarationFinderProvider,
             IRewritingManager rewritingManager,
-            ICodeBuilder codeBuilder)
+            INewContentAggregatorFactory newContentAggregatorFactory,
+            IEncapsulateFieldCodeBuilderFactory encapsulateFieldCodeBuilderFactory)
                 : base(rewritingManager)
         {
-            _declarationFinderProvider = declarationFinderProvider;
             _declareFieldAsUDTMemberRefactoringAction = refactoringActionsProvider.DeclareFieldsAsUDTMembers;
             _replaceUDTMemberReferencesRefactoringAction = refactoringActionsProvider.ReplaceUDTMemberReferences;
             _replaceFieldReferencesRefactoringAction = refactoringActionsProvider.ReplaceReferences;
             _encapsulateFieldInsertNewCodeRefactoringAction = refactoringActionsProvider.EncapsulateFieldInsertNewCode;
-            _codeBuilder = codeBuilder;
+            _encapsulateFieldCodeBuilder = encapsulateFieldCodeBuilderFactory.Create();
             _replaceUDTMemberReferencesModelFactory = replaceUDTMemberReferencesModelFactory;
+            _newContentAggregatorFactory = newContentAggregatorFactory;
         }
 
         public override void Refactor(EncapsulateFieldUseBackingUDTMemberModel model, IRewriteSession rewriteSession)
@@ -49,13 +45,10 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
                 return;
             }
 
-            model.NewContent = new Dictionary<NewContentType, List<string>>
+            if (model.NewContentAggregator is null)
             {
-                { NewContentType.PostContentMessage, new List<string>() },
-                { NewContentType.DeclarationBlock, new List<string>() },
-                { NewContentType.CodeSectionBlock, new List<string>() },
-                { NewContentType.TypeDeclarationBlock, new List<string>() }
-            };
+                model.NewContentAggregator = _newContentAggregatorFactory.Create();
+            }
 
             ModifyFields(model, rewriteSession);
 
@@ -83,14 +76,12 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             }
             else
             {
-                var newUDTMembers = encapsulateFieldModel.SelectedFieldCandidates
-                    .Select(m => (m.Declaration as VariableDeclaration, m.BackingIdentifier));
+                var objectStateTypeDeclarationBlock = _encapsulateFieldCodeBuilder.BuildUserDefinedTypeDeclaration(encapsulateFieldModel.ObjectStateUDTField, encapsulateFieldModel.EncapsulationCandidates);
 
-                var typeDeclarationBlock =  _codeBuilder.BuildUserDefinedTypeDeclaration(encapsulateFieldModel.ObjectStateUDTField.AsTypeName, newUDTMembers);
+                encapsulateFieldModel.NewContentAggregator.AddNewContent(NewContentType.UserDefinedTypeDeclaration, objectStateTypeDeclarationBlock);
 
-                encapsulateFieldModel.AddContentBlock(NewContentType.TypeDeclarationBlock, typeDeclarationBlock);
-
-                encapsulateFieldModel.AddContentBlock(NewContentType.DeclarationBlock, $"{Accessibility.Private} {encapsulateFieldModel.ObjectStateUDTField.IdentifierName} {Tokens.As} {encapsulateFieldModel.ObjectStateUDTField.AsTypeName}");
+                var objectStateFieldDeclaration = _encapsulateFieldCodeBuilder.BuildObjectStateFieldDeclaration(encapsulateFieldModel.ObjectStateUDTField);
+                encapsulateFieldModel.NewContentAggregator.AddNewContent(NewContentType.DeclarationBlock, objectStateFieldDeclaration);
             }
         }
 
@@ -146,9 +137,9 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
         {
             var encapsulateFieldInsertNewCodeModel = new EncapsulateFieldInsertNewCodeModel(model.SelectedFieldCandidates)
             {
-                NewContent = model.NewContent,
-                IncludeNewContentMarker = model.IncludeNewContentMarker
+                NewContentAggregator = model.NewContentAggregator,
             };
+
             _encapsulateFieldInsertNewCodeRefactoringAction.Refactor(encapsulateFieldInsertNewCodeModel, rewriteSession);
         }
     }

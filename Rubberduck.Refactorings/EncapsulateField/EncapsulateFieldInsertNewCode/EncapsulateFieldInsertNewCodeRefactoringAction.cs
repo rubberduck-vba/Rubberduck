@@ -1,129 +1,94 @@
-﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
+﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Resources;
-using Rubberduck.Refactorings.CodeBlockInsert;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Refactorings.EncapsulateField;
+using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.EncapsulateFieldInsertNewCode
 {
     public class EncapsulateFieldInsertNewCodeRefactoringAction : CodeOnlyRefactoringActionBase<EncapsulateFieldInsertNewCodeModel>
     {
-        private const string FourSpaces = "    ";
-
+        private readonly static string _doubleSpace = $"{Environment.NewLine}{Environment.NewLine}";
+        private int? _codeSectionStartIndex;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly ICodeBuilder _codeBuilder;
-        private readonly ICodeOnlyRefactoringAction<CodeBlockInsertModel> _codeBlockInsertRefactoringAction;
+        private readonly IEncapsulateFieldCodeBuilderFactory _encapsulateFieldCodeBuilderFactory;
         public EncapsulateFieldInsertNewCodeRefactoringAction(
-            CodeBlockInsertRefactoringAction codeBlockInsertRefactoringAction,
             IDeclarationFinderProvider declarationFinderProvider, 
-            IRewritingManager rewritingManager, 
-            ICodeBuilder codeBuilder)
+            IRewritingManager rewritingManager,
+            IEncapsulateFieldCodeBuilderFactory encapsulateFieldCodeBuilderFactory)
                 : base(rewritingManager)
         {
             _declarationFinderProvider = declarationFinderProvider;
-            _rewritingManager = rewritingManager;
-            _codeBuilder = codeBuilder;
-            _codeBlockInsertRefactoringAction = codeBlockInsertRefactoringAction;
+            _encapsulateFieldCodeBuilderFactory = encapsulateFieldCodeBuilderFactory;
         }
 
         public override void Refactor(EncapsulateFieldInsertNewCodeModel model, IRewriteSession rewriteSession)
         {
-            var codeSectionStartIndex = _declarationFinderProvider.DeclarationFinder
+            _codeSectionStartIndex = _declarationFinderProvider.DeclarationFinder
                 .Members(model.QualifiedModuleName).Where(m => m.IsMember())
                 .OrderBy(c => c.Selection)
                 .FirstOrDefault()?.Context.Start.TokenIndex;
 
-            var codeBlockInsertModel = new CodeBlockInsertModel()
-            {
-                QualifiedModuleName = model.QualifiedModuleName,
-                SelectedFieldCandidates = model.SelectedFieldCandidates,
-                NewContent = model.NewContent,
-                CodeSectionStartIndex = codeSectionStartIndex,
-                IncludeComments = model.IncludeNewContentMarker
-            };
+            LoadNewPropertyBlocks(model, rewriteSession);
 
-            LoadNewPropertyBlocks(codeBlockInsertModel, _codeBuilder, rewriteSession);
+            InsertBlocks(model, rewriteSession);
 
-            _codeBlockInsertRefactoringAction.Refactor(codeBlockInsertModel, rewriteSession);
+            model.NewContentAggregator = null;
         }
 
-        public void LoadNewPropertyBlocks(CodeBlockInsertModel model, ICodeBuilder codeBuilder, IRewriteSession rewriteSession)
+        public void LoadNewPropertyBlocks(EncapsulateFieldInsertNewCodeModel model, IRewriteSession rewriteSession)
         {
-            if (model.IncludeComments)
-            {
-                model.AddContentBlock(NewContentType.PostContentMessage, RubberduckUI.EncapsulateField_PreviewMarker);
-            }
-
+            var builder = _encapsulateFieldCodeBuilderFactory.Create();
             foreach (var propertyAttributes in model.SelectedFieldCandidates.SelectMany(f => f.PropertyAttributeSets))
             {
                 Debug.Assert(propertyAttributes.Declaration.DeclarationType.HasFlag(DeclarationType.Variable) || propertyAttributes.Declaration.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember));
 
-                LoadPropertyGetCodeBlock(model, propertyAttributes, codeBuilder);
+                var (Get, Let, Set) = builder.BuildPropertyBlocks(propertyAttributes);
 
-                if (propertyAttributes.GenerateLetter)
-                {
-                    LoadPropertyLetCodeBlock(model, propertyAttributes, codeBuilder);
-                }
-
-                if (propertyAttributes.GenerateSetter)
-                {
-                    LoadPropertySetCodeBlock(model, propertyAttributes, codeBuilder);
-                }
+                var blocks = new List<string>() { Get, Let, Set };
+                blocks.ForEach(s => model.NewContentAggregator.AddNewContent(NewContentType.CodeSectionBlock, s));
             }
         }
 
-        private static void LoadPropertyLetCodeBlock(CodeBlockInsertModel model, PropertyAttributeSet propertyAttributes, ICodeBuilder codeBuilder)
+        private void InsertBlocks(EncapsulateFieldInsertNewCodeModel model, IRewriteSession rewriteSession)
         {
-            var letterContent = $"{FourSpaces}{propertyAttributes.BackingField} = {propertyAttributes.ParameterName}";
-            if (!codeBuilder.TryBuildPropertyLetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out var propertyLet, content: letterContent))
+            var newDeclarationSectionBlock = model.NewContentAggregator.RetrieveBlock(NewContentType.UserDefinedTypeDeclaration, NewContentType.DeclarationBlock, NewContentType.CodeSectionBlock);
+            if (string.IsNullOrEmpty(newDeclarationSectionBlock))
             {
-                throw new ArgumentException();
+                return;
             }
-            model.AddContentBlock(NewContentType.CodeSectionBlock, propertyLet);
+
+            var allNewContent = string.Join(_doubleSpace, new string[] { newDeclarationSectionBlock });
+
+            var previewMarker = model.NewContentAggregator.RetrieveBlock(RubberduckUI.EncapsulateField_PreviewMarker);
+            if (!string.IsNullOrEmpty(previewMarker))
+            {
+                allNewContent = $"{allNewContent}{Environment.NewLine}{previewMarker}";
+            }
+
+            var rewriter = rewriteSession.CheckOutModuleRewriter(model.QualifiedModuleName);
+
+            InsertBlock(allNewContent, _codeSectionStartIndex, rewriter);
         }
 
-        private static void LoadPropertySetCodeBlock(CodeBlockInsertModel model, PropertyAttributeSet propertyAttributes, ICodeBuilder codeBuilder)
+        private static void InsertBlock(string content, int? insertionIndex, IModuleRewriter rewriter)
         {
-            var setterContent = $"{FourSpaces}{Tokens.Set} {propertyAttributes.BackingField} = {propertyAttributes.ParameterName}";
-            if (!codeBuilder.TryBuildPropertySetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out var propertySet, content: setterContent))
+            if (string.IsNullOrEmpty(content))
             {
-                throw new ArgumentException();
-            }
-            model.AddContentBlock(NewContentType.CodeSectionBlock, propertySet);
-        }
-
-        private static void LoadPropertyGetCodeBlock(CodeBlockInsertModel model, PropertyAttributeSet propertyAttributes, ICodeBuilder codeBuilder)
-        {
-            var getterContent = $"{propertyAttributes.PropertyName} = {propertyAttributes.BackingField}";
-            if (propertyAttributes.UsesSetAssignment)
-            {
-                getterContent = $"{Tokens.Set} {getterContent}";
+                return;
             }
 
-            if (propertyAttributes.AsTypeName.Equals(Tokens.Variant) && !propertyAttributes.Declaration.IsArray)
+            if (insertionIndex.HasValue)
             {
-                getterContent = string.Join(Environment.NewLine,
-                    $"{Tokens.If} IsObject({propertyAttributes.BackingField}) {Tokens.Then}",
-                    $"{FourSpaces}{Tokens.Set} {propertyAttributes.PropertyName} = {propertyAttributes.BackingField}",
-                    Tokens.Else,
-                    $"{FourSpaces}{propertyAttributes.PropertyName} = {propertyAttributes.BackingField}",
-                    $"{Tokens.End} {Tokens.If}",
-                    Environment.NewLine);
+                rewriter.InsertBefore(insertionIndex.Value, $"{content}{_doubleSpace}");
+                return;
             }
-
-            if (!codeBuilder.TryBuildPropertyGetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out var propertyGet, content: $"{FourSpaces}{getterContent}"))
-            {
-                throw new ArgumentException();
-            }
-
-            model.AddContentBlock(NewContentType.CodeSectionBlock, propertyGet);
+            rewriter.InsertBefore(rewriter.TokenStream.Size - 1, $"{_doubleSpace}{content}");
         }
     }
 }

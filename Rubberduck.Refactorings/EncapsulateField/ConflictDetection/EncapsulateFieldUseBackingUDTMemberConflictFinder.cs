@@ -8,7 +8,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public interface IEncapsulateFieldUseBackingUDTMemberConflictFinder : IEncapsulateFieldConflictFinder
     {
-        IObjectStateUDT AssignNoConflictIdentifiers(IObjectStateUDT stateUDT, IDeclarationFinderProvider declarationFinderProvider);
+        IObjectStateUDT AssignNoConflictIdentifiers(IObjectStateUDT stateUDT);
     }
 
     public class EncapsulateFieldUseBackingUDTMemberConflictFinder : EncapsulateFieldConflictFinderBase, IEncapsulateFieldUseBackingUDTMemberConflictFinder
@@ -52,16 +52,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return !ConflictsWithExistingUDTMembers(objectStateUDT, field.BackingIdentifier);
         }
 
-        public IObjectStateUDT AssignNoConflictIdentifiers(IObjectStateUDT stateUDT, IDeclarationFinderProvider declarationFinderProvider)
+        public IObjectStateUDT AssignNoConflictIdentifiers(IObjectStateUDT stateUDT)
         {
-            var members = declarationFinderProvider.DeclarationFinder.Members(stateUDT.QualifiedModuleName);
+            var members = _declarationFinderProvider.DeclarationFinder.Members(stateUDT.QualifiedModuleName);
             var guard = 0;
             while (guard++ < 10 && members.Any(m => m.IdentifierName.IsEquivalentVBAIdentifierTo(stateUDT.FieldIdentifier)))
             {
                 stateUDT.FieldIdentifier = stateUDT.FieldIdentifier.IncrementEncapsulationIdentifier();
             }
 
-            members = declarationFinderProvider.DeclarationFinder.Members(stateUDT.QualifiedModuleName)
+            members = _declarationFinderProvider.DeclarationFinder.Members(stateUDT.QualifiedModuleName)
                 .Where(m => !_udtTypeIdentifierNonConflictTypes.Any(nct => m.DeclarationType.HasFlag(nct)));
 
             guard = 0;

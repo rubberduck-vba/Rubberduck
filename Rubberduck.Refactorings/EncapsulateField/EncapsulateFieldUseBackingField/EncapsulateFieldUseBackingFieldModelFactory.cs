@@ -1,6 +1,4 @@
-﻿using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.EncapsulateField;
+﻿using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,15 +23,13 @@ namespace Rubberduck.Refactorings
 
     public class EncapsulateFieldUseBackingFieldModelFactory : IEncapsulateFieldUseBackingFieldModelFactory
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IEncapsulateFieldCandidateCollectionFactory _fieldCandidateCollectionFactory;
         private readonly IEncapsulateFieldConflictFinderFactory _conflictFinderFactory;
 
-        public EncapsulateFieldUseBackingFieldModelFactory(IDeclarationFinderProvider declarationFinderProvider, 
+        public EncapsulateFieldUseBackingFieldModelFactory(
             IEncapsulateFieldCandidateCollectionFactory encapsulateFieldCandidateCollectionFactory,
             IEncapsulateFieldConflictFinderFactory encapsulateFieldConflictFinderFactory)
         {
-            _declarationFinderProvider = declarationFinderProvider;
             _fieldCandidateCollectionFactory = encapsulateFieldCandidateCollectionFactory;
             _conflictFinderFactory = encapsulateFieldConflictFinderFactory;
         }
@@ -42,7 +38,7 @@ namespace Rubberduck.Refactorings
         {
             if (!requests.Any())
             {
-                return new EncapsulateFieldUseBackingFieldModel(Enumerable.Empty<IEncapsulateFieldCandidate>(), _declarationFinderProvider);
+                return new EncapsulateFieldUseBackingFieldModel(Enumerable.Empty<IEncapsulateFieldCandidate>());
             }
 
             var fieldCandidates = _fieldCandidateCollectionFactory.Create(requests.First().Declaration.QualifiedModuleName);
@@ -62,7 +58,7 @@ namespace Rubberduck.Refactorings
             var conflictsFinder = _conflictFinderFactory.CreateEncapsulateFieldUseBackingFieldConflictFinder(fieldCandidates);
             fieldCandidates.ForEach(c => c.ConflictFinder = conflictsFinder);
 
-            return new EncapsulateFieldUseBackingFieldModel(fieldCandidates, _declarationFinderProvider)
+            return new EncapsulateFieldUseBackingFieldModel(fieldCandidates)
             {
                 ConflictFinder = conflictsFinder
             };

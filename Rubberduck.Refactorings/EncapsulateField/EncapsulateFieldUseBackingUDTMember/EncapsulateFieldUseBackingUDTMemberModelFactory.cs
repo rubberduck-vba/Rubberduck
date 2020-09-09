@@ -1,5 +1,4 @@
 ﻿using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember;
 using System;
@@ -26,17 +25,15 @@ namespace Rubberduck.Refactorings
 
     public class EncapsulateFieldUseBackingUDTMemberModelFactory : IEncapsulateFieldUseBackingUDTMemberModelFactory
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IEncapsulateFieldCandidateCollectionFactory _fieldCandidateCollectionFactory;
         private readonly IObjectStateUserDefinedTypeFactory _objectStateUDTFactory;
         private readonly IEncapsulateFieldConflictFinderFactory _conflictFinderFactory;
 
-        public EncapsulateFieldUseBackingUDTMemberModelFactory(IDeclarationFinderProvider declarationFinderProvider,
+        public EncapsulateFieldUseBackingUDTMemberModelFactory(
             IEncapsulateFieldCandidateCollectionFactory encapsulateFieldCandidateCollectionFactory,
             IObjectStateUserDefinedTypeFactory objectStateUserDefinedTypeFactory,
             IEncapsulateFieldConflictFinderFactory encapsulateFieldConflictFinderFactory)
         {
-            _declarationFinderProvider = declarationFinderProvider;
             _fieldCandidateCollectionFactory = encapsulateFieldCandidateCollectionFactory;
             _objectStateUDTFactory = objectStateUserDefinedTypeFactory;
             _conflictFinderFactory = encapsulateFieldConflictFinderFactory;
@@ -87,7 +84,7 @@ namespace Rubberduck.Refactorings
 
             if (clientTarget == null && !targetStateUDT.IsExistingDeclaration)
             {
-                conflictsFinder.AssignNoConflictIdentifiers(targetStateUDT, _declarationFinderProvider);
+                conflictsFinder.AssignNoConflictIdentifiers(targetStateUDT);
             }
 
             var udtMemberCandidates =

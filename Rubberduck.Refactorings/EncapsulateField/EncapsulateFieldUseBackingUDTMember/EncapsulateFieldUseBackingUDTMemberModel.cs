@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.VBEditor;
-using Rubberduck.Refactorings.CodeBlockInsert;
 using Rubberduck.Refactorings.EncapsulateField;
 
 namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
@@ -14,70 +13,48 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             IEnumerable<IEncapsulateFieldAsUDTMemberCandidate> encapsulateAsUDTMemberCandidates,
             IEnumerable<IObjectStateUDT> objectStateUserDefinedTypeCandidates)
         {
-            _encapsulateAsUDTMemberCandidates = new List<IEncapsulateFieldAsUDTMemberCandidate>(encapsulateAsUDTMemberCandidates);
+            _encapsulateAsUDTMemberCandidates = encapsulateAsUDTMemberCandidates.ToList();
+            EncapsulationCandidates = _encapsulateAsUDTMemberCandidates.Cast<IEncapsulateFieldCandidate>().ToList();
 
             ObjectStateUDTField = targetObjectStateUserDefinedTypeField;
 
             ObjectStateUDTCandidates = objectStateUserDefinedTypeCandidates.ToList();
 
             QualifiedModuleName = encapsulateAsUDTMemberCandidates.First().QualifiedModuleName;
-
-            ResetNewContent();
         }
 
-        public void ResetNewContent()
-        {
-            NewContent = new Dictionary<NewContentType, List<string>>
-            {
-                { NewContentType.PostContentMessage, new List<string>() },
-                { NewContentType.DeclarationBlock, new List<string>() },
-                { NewContentType.CodeSectionBlock, new List<string>() },
-                { NewContentType.TypeDeclarationBlock, new List<string>() }
-            };
-        }
+        public INewContentAggregator NewContentAggregator { set; get; }
 
         public IReadOnlyCollection<IObjectStateUDT> ObjectStateUDTCandidates { get; }
 
         public IEncapsulateFieldConflictFinder ConflictFinder { set; get; }
 
-        public bool IncludeNewContentMarker { set; get; } = false;
+        public IReadOnlyCollection<IEncapsulateFieldCandidate> EncapsulationCandidates { get; }
 
-        public IReadOnlyCollection<IEncapsulateFieldCandidate> EncapsulationCandidates
-            => _encapsulateAsUDTMemberCandidates.Cast<IEncapsulateFieldCandidate>().ToList();
-
-        public IEnumerable<IEncapsulateFieldCandidate> SelectedFieldCandidates
-            => EncapsulationCandidates.Where(v => v.EncapsulateFlag && v.Declaration != ObjectStateUDTField?.Declaration);
-
-        public void AddContentBlock(NewContentType contentType, string block)
-            => NewContent[contentType].Add(block);
-
-        public Dictionary<NewContentType, List<string>> NewContent { set; get; }
+        public IReadOnlyCollection<IEncapsulateFieldCandidate> SelectedFieldCandidates
+            => EncapsulationCandidates
+                .Where(v => v.EncapsulateFlag)
+                .ToList();
 
         public QualifiedModuleName QualifiedModuleName { get; }
 
-        private IObjectStateUDT _objectStateUDT;
         public IObjectStateUDT ObjectStateUDTField
         {
             set
             {
-                if (_objectStateUDT == value)
+                if (ObjectStateUDTField != null)
                 {
-                    return;
+                    ObjectStateUDTField.IsSelected = false;
                 }
 
-                if (_objectStateUDT != null)
+                if (value != null)
                 {
-                    _objectStateUDT.IsSelected = false;
+                    value.IsSelected = true;
                 }
 
-                _objectStateUDT = value;
-                if (_objectStateUDT != null)
-                {
-                    _objectStateUDT.IsSelected = true;
-                }
-                _encapsulateAsUDTMemberCandidates.ForEach(cf => cf.ObjectStateUDT = _objectStateUDT);
+                _encapsulateAsUDTMemberCandidates.ForEach(cf => cf.ObjectStateUDT = value);
             }
-            get => _objectStateUDT;
+            get => _encapsulateAsUDTMemberCandidates.FirstOrDefault()?.ObjectStateUDT;
         }
     }
 }
