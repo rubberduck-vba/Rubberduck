@@ -65,12 +65,10 @@ Public {var3} As Integer";
 
             foreach (var variable in encapsulated)
             {
-                var rhsParameterName = Support.RhsParameterNameBuilder($"{variable}Prop");
-
                 StringAssert.Contains($"Private {variable} As", actualCode);
                 StringAssert.Contains($"{variable}Prop = {variable}", actualCode);
-                StringAssert.Contains($"{variable} = {rhsParameterName}", actualCode);
-                StringAssert.Contains($"Let {variable}Prop(ByVal {rhsParameterName} As", actualCode);
+                StringAssert.Contains($"{variable} = {Support.RHSIdentifier}", actualCode);
+                StringAssert.Contains($"Let {variable}Prop(ByVal {Support.RHSIdentifier} As", actualCode);
                 StringAssert.Contains($"Property Get {variable}Prop()", actualCode);
             }
         }
@@ -130,12 +128,10 @@ $@"Public {var1} As Integer, {var2} As Integer, {var3} As Integer, {var4} As Int
             {
                 if (flags[key])
                 {
-                    var rhsParameterName = Support.RhsParameterNameBuilder($"{key}Prop");
-
                     StringAssert.Contains($"Private {key} As", actualCode);
                     StringAssert.Contains($"{key}Prop = {key}", actualCode);
-                    StringAssert.Contains($"{key} = {rhsParameterName}", actualCode);
-                    StringAssert.Contains($"Let {key}Prop(ByVal {rhsParameterName} As", actualCode);
+                    StringAssert.Contains($"{key} = {Support.RHSIdentifier}", actualCode);
+                    StringAssert.Contains($"Let {key}Prop(ByVal {Support.RHSIdentifier} As", actualCode);
                     StringAssert.Contains($"Property Get {key}Prop()", actualCode);
                 }
             }
@@ -230,11 +226,10 @@ Property Set Foo(ByVal vall As Variant)
 End Property";
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
-            var rhsParameterName = Support.RhsParameterNameBuilder("Name");
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            Assert.Greater(actualCode.IndexOf($"fizz = {rhsParameterName}"), actualCode.IndexOf("fizz As Integer"));
-            Assert.Less(actualCode.IndexOf($"fizz = {rhsParameterName}"), actualCode.IndexOf("Get Foo"));
+            Assert.Greater(actualCode.IndexOf($"fizz = {Support.RHSIdentifier}"), actualCode.IndexOf("fizz As Integer"));
+            Assert.Less(actualCode.IndexOf($"fizz = {Support.RHSIdentifier}"), actualCode.IndexOf("Get Foo"));
         }
 
         [TestCase("|Public fizz As Integer\r\nPublic buzz As Boolean", "Private fizz As Integer\r\nPublic buzz As Boolean")]
@@ -252,8 +247,8 @@ Public Property Get Name() As Integer
     Name = fizz
 End Property
 
-Public Property Let Name(ByVal nameValue As Integer)
-    fizz = nameValue
+Public Property Let Name(ByVal {Support.RHSIdentifier} As Integer)
+    fizz = {Support.RHSIdentifier}
 End Property
 ";
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
@@ -293,14 +288,13 @@ bazz As Date";
                 @"|Private fizz As Integer";
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
-            var rhsParameterName = Support.RhsParameterNameBuilder("Name");
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Public Property Get Name() As Integer", actualCode);
             StringAssert.Contains("Public Property Let Name(", actualCode);
-            StringAssert.Contains($"(ByVal {rhsParameterName} As Integer)", actualCode);
+            StringAssert.Contains($"(ByVal {Support.RHSIdentifier} As Integer)", actualCode);
             StringAssert.Contains("Name = fizz", actualCode);
-            StringAssert.Contains($"fizz = {rhsParameterName}", actualCode);
+            StringAssert.Contains($"fizz = {Support.RHSIdentifier}", actualCode);
             StringAssert.Contains("End Property", actualCode);
         }
 
@@ -367,15 +361,14 @@ Private numberT|ype As NumberTypes{declarationList ?? string.Empty}
                 @"Private fi|zz As Integer, fuzz As Integer, fazz As Integer";
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz");
-            var rhsParameterName = Support.RhsParameterNameBuilder("Fizz");
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Private fizz_1 As Integer, fuzz As Integer,", actualCode);
             StringAssert.Contains("Public Property Get Fizz() As Integer", actualCode);
             StringAssert.Contains("Public Property Let Fizz(", actualCode);
-            StringAssert.Contains($"(ByVal {rhsParameterName} As Integer)", actualCode);
+            StringAssert.Contains($"(ByVal {Support.RHSIdentifier} As Integer)", actualCode);
             StringAssert.Contains("Fizz = fizz_1", actualCode);
-            StringAssert.Contains($"fizz_1 = {rhsParameterName}", actualCode);
+            StringAssert.Contains($"fizz_1 = {Support.RHSIdentifier}", actualCode);
             StringAssert.Contains("End Property", actualCode);
         }
 
@@ -388,14 +381,13 @@ Private numberT|ype As NumberTypes{declarationList ?? string.Empty}
                 @"|Private fizz As Integer";
 
             var presenterAction = Support.UserAcceptsDefaults();
-            var rhsParameterName = Support.RhsParameterNameBuilder("Fizz");
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Public Property Get Fizz() As Integer", actualCode);
             StringAssert.Contains("Public Property Let Fizz(", actualCode);
-            StringAssert.Contains($"(ByVal {rhsParameterName} As Integer)", actualCode);
+            StringAssert.Contains($"(ByVal {Support.RHSIdentifier} As Integer)", actualCode);
             StringAssert.Contains("Fizz = fizz_1", actualCode);
-            StringAssert.Contains($"fizz_1 = {rhsParameterName}", actualCode);
+            StringAssert.Contains($"fizz_1 = {Support.RHSIdentifier}", actualCode);
             StringAssert.Contains("End Property", actualCode);
         }
 
@@ -408,12 +400,11 @@ Private numberT|ype As NumberTypes{declarationList ?? string.Empty}
                 @"|Private fizz As Integer";
 
             var presenterAction = Support.UserAcceptsDefaults(convertFieldToUDTMember: true);
-            var rhsParameterName = Support.RhsParameterNameBuilder("Fizz");
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Fizz As Integer", actualCode);
-            StringAssert.Contains($"this As {Support.StateUDTDefaultTypeName}", actualCode);
-            StringAssert.Contains($"this.Fizz = {rhsParameterName}", actualCode);
+            StringAssert.Contains($"this As {Support.StateUDTDefaultType}", actualCode);
+            StringAssert.Contains($"this.Fizz = {Support.RHSIdentifier}", actualCode);
         }
 
         [Test]
@@ -434,8 +425,8 @@ End Sub";
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
 
-            var enapsulationIdentifiers = new EncapsulationIdentifiers("fizz") { Property = "Name" };
-            var rhsParameterName = Support.RhsParameterNameBuilder("Name");
+            var validator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
+            var enapsulationIdentifiers = new EncapsulationIdentifiers("fizz", validator) { Property = "Name" };
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.AreEqualIgnoringCase(enapsulationIdentifiers.TargetFieldName, "fizz");
@@ -443,7 +434,7 @@ End Sub";
             StringAssert.Contains("Property Get Name", actualCode);
             StringAssert.Contains("Property Let Name", actualCode);
             StringAssert.Contains($"Name = {enapsulationIdentifiers.TargetFieldName}", actualCode);
-            StringAssert.Contains($"{enapsulationIdentifiers.TargetFieldName} = {rhsParameterName}", actualCode);
+            StringAssert.Contains($"{enapsulationIdentifiers.TargetFieldName} = {Support.RHSIdentifier}", actualCode);
         }
 
         [Test]

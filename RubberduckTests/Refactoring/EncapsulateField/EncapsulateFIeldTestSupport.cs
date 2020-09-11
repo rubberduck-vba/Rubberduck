@@ -1,4 +1,3 @@
-﻿using Rubberduck.Common;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -16,7 +15,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 {
     public class EncapsulateFieldTestSupport : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
-        public string RhsParameterNameBuilder(string property) => $"{property.ToLowerCaseFirstLetter()}Value";
+        public string RHSIdentifier => Rubberduck.Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
 
         public string StateUDTDefaultTypeName => $"T{MockVbeBuilder.TestModuleName}";
 

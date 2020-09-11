@@ -2,7 +2,6 @@
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources;
-using System;
 using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField

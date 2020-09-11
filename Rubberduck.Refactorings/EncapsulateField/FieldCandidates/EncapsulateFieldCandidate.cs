@@ -57,12 +57,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected int _hashCode;
         private string _identifierName;
         protected EncapsulationIdentifiers _fieldAndProperty;
-        private Func<string, string> _parameterNameBuilder;
+        private string _rhsParameterIdentifierName;
 
+//<<<<<<< HEAD
         public EncapsulateFieldCandidate(Declaration declaration, Func<string, string> parameterNameBuilder)
+        //{
+            //_target = declaration;
+            //_parameterNameBuilder = parameterNameBuilder;
+//=======
+        //public EncapsulateFieldCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator)
         {
             _target = declaration;
-            _parameterNameBuilder = parameterNameBuilder;
+            //NameValidator = identifierValidator;
+            _rhsParameterIdentifierName = Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
+//>>>>>>> rubberduck-vba/next
 
             _fieldAndProperty = new EncapsulationIdentifiers(declaration.IdentifierName);
             IdentifierName = declaration.IdentifierName;
@@ -217,7 +225,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public virtual string ReferenceQualifier { set; get; }
 
-        public string ParameterName => _parameterNameBuilder(PropertyIdentifier);
+        public string ParameterName => _rhsParameterIdentifierName;
 
         private bool _implLet;
         public bool ImplementLet { get => !IsReadOnly && _implLet; set => _implLet = value; }

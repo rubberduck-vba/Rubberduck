@@ -211,7 +211,7 @@
     <value>Proceduru je možno napsat jako funkci.</value>
   </data>
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
-    <value>Reference k objektu proměnné je automaticky instancovaná</value>
+    <value>Reference k objektu proměnné je automaticky instancovaná.</value>
   </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>Funkce, která nic nevrací, nebo property getter</value>
@@ -331,10 +331,10 @@
     <value>výraz On Local Error</value>
   </data>
   <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
-    <value>Nevhodné použití funkce 'IsMissing'</value>
+    <value>Nevhodné použití funkce 'IsMissing' - Parametr není 'Variant'</value>
   </data>
   <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
-    <value>Nevhodné použití funkce 'IsMissing'</value>
+    <value>Nevhodné použití funkce 'IsMissing' - Parametr je lokální proměnná</value>
   </data>
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>Přiřazení není použito</value>
@@ -416,5 +416,26 @@
   </data>
   <data name="NegativeLineNumberInspection" xml:space="preserve">
     <value>Záporné číslo řádku</value>
+  </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>Přebytečné argumenty anotace</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Pokračování řádku mezi klíčovými slovy</value>
+  </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Klíčové slovo použito jako jméno členu</value>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Implicitně typovaná konstanta</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>Identifikátor obsahující pevnou mezeru</value>
+  </data>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>Návratová hodnota funkce je vždy zahozena.</value>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>Návratová hodnota funkce je zahozena.</value>
   </data>
 </root>

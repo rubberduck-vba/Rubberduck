@@ -201,4 +201,10 @@
   <data name="CodeInspection_SeverityFilter" xml:space="preserve">
     <value>Závažnost</value>
   </data>
+  <data name="QuickFix_Instance" xml:space="preserve">
+    <value>Vybraný výskyt</value>
+  </data>
+  <data name="QuickFix_Selection" xml:space="preserve">
+    <value>Vybrané výskyty</value>
+  </data>
 </root>

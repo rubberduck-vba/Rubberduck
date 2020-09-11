@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Refactorings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Refactorings {
@@ -61,11 +61,11 @@ namespace Rubberduck.Resources.Refactorings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}Value.
+        ///   Looks up a localized string similar to RHS.
         /// </summary>
-        public static string CodeBuilder_DefaultPropertyRHSParamFormat {
+        public static string CodeBuilder_DefaultPropertyRHSParam {
             get {
-                return ResourceManager.GetString("CodeBuilder_DefaultPropertyRHSParamFormat", resourceCulture);
+                return ResourceManager.GetString("CodeBuilder_DefaultPropertyRHSParam", resourceCulture);
             }
         }
         

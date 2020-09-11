@@ -297,4 +297,7 @@
   <data name="ExpandDefaultMemberQuickFix" xml:space="preserve">
     <value>Nastavit explicitního přístupu člena</value>
   </data>
+  <data name="IgnoreInModuleQuickFix" xml:space="preserve">
+    <value>Ignorovat v modulu</value>
+  </data>
 </root>

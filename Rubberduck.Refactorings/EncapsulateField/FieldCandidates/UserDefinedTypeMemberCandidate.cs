@@ -20,11 +20,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private int _hashCode;
         private readonly string _uniqueID;
-        private Func<string, string> _parameterNameBuilder;
-        public UserDefinedTypeMemberCandidate(IEncapsulateFieldCandidate candidate, IUserDefinedTypeCandidate udtField, Func<string,string> parameterNameBuilder)
+        private string _rhsParameterIdentifierName;
+        public UserDefinedTypeMemberCandidate(IEncapsulateFieldCandidate candidate, IUserDefinedTypeCandidate udtField)
         {
             _wrappedCandidate = candidate;
-            _parameterNameBuilder = parameterNameBuilder;
+            _rhsParameterIdentifierName = Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
             UDTField = udtField;
             PropertyIdentifier = IdentifierName;
             BackingIdentifier = IdentifierName;
@@ -196,7 +196,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string PropertyAsTypeName => _wrappedCandidate.PropertyAsTypeName;
 
-        public string ParameterName => _parameterNameBuilder(PropertyIdentifier);
+        public string ParameterName => _rhsParameterIdentifierName;
 
         public bool ImplementLet => _wrappedCandidate.ImplementLet;
 
