@@ -6,9 +6,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public enum NewContentType
     {
-        ImplementsDeclaration,
-        WithEventsDeclaration,
-        EnumerationTypeDeclaration,
         UserDefinedTypeDeclaration,
         DeclarationBlock,
         CodeSectionBlock,

@@ -15,11 +15,12 @@ namespace RubberduckTests.ReplacePrivateUDTMemberReferences
     [TestFixture]
     public class ReplacePrivateUDTMemberReferencesRefactoringActionTests : RefactoringActionTestBase<ReplacePrivateUDTMemberReferencesModel>
     {
-        [Test]
+        [TestCase("TheFirst", "TheSecond")]
+        [TestCase("afirst", "asecond")] //respects casing
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(ReplacePrivateUDTMemberReferencesRefactoringAction))]
-        public void RenameFieldReferences()
+        public void RenameFieldReferences(string firstValueRefReplacement, string secondValueRefReplacement)
         {
             string inputCode =
 $@"
@@ -43,16 +44,16 @@ End Sub
 
             var testParam1 = new PrivateUDTExpressions("myBazz", "FirstValue")
             {
-                InternalName = "TheFirst",
+                InternalName = firstValueRefReplacement,
             };
             var testParam2 = new PrivateUDTExpressions("myBazz", "SecondValue")
             {
-                InternalName = "TheSecond",
+                InternalName = secondValueRefReplacement,
             };
 
             var results = RefactoredCode(vbe.Object, state => TestModel(state, false, testParam1, testParam2));
-            StringAssert.Contains("  TheFirst = newValue", results[MockVbeBuilder.TestModuleName]);
-            StringAssert.Contains("  TheSecond = newValue", results[MockVbeBuilder.TestModuleName]);
+            StringAssert.Contains($"  {firstValueRefReplacement} = newValue", results[MockVbeBuilder.TestModuleName]);
+            StringAssert.Contains($"  {secondValueRefReplacement} = newValue", results[MockVbeBuilder.TestModuleName]);
         }
 
         [Test]

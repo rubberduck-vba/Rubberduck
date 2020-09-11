@@ -1,7 +1,6 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
-using System;
 using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -17,8 +16,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class UserDefinedTypeCandidate : EncapsulateFieldCandidate, IUserDefinedTypeCandidate
     {
-        public UserDefinedTypeCandidate(Declaration declaration, Func<string,string> parameterNameBuilder)
-            : base(declaration, parameterNameBuilder)
+        public UserDefinedTypeCandidate(Declaration declaration)
+            : base(declaration)
         {
             TypeDeclarationIsPrivate = declaration.HasPrivateAccessibility();
         }

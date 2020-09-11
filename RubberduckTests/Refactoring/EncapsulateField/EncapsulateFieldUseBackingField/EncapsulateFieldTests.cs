@@ -403,7 +403,7 @@ Private numberT|ype As NumberTypes{declarationList ?? string.Empty}
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Fizz As Integer", actualCode);
-            StringAssert.Contains($"this As {Support.StateUDTDefaultType}", actualCode);
+            StringAssert.Contains($"this As {Support.StateUDTDefaultTypeName}", actualCode);
             StringAssert.Contains($"this.Fizz = {Support.RHSIdentifier}", actualCode);
         }
 
@@ -425,8 +425,7 @@ End Sub";
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
 
-            var validator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
-            var enapsulationIdentifiers = new EncapsulationIdentifiers("fizz", validator) { Property = "Name" };
+            var enapsulationIdentifiers = new EncapsulationIdentifiers("fizz") { Property = "Name" };
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.AreEqualIgnoringCase(enapsulationIdentifiers.TargetFieldName, "fizz");

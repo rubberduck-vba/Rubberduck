@@ -4,7 +4,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.VBEditor;
-using System;
 using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -59,18 +58,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected EncapsulationIdentifiers _fieldAndProperty;
         private string _rhsParameterIdentifierName;
 
-//<<<<<<< HEAD
-        public EncapsulateFieldCandidate(Declaration declaration, Func<string, string> parameterNameBuilder)
-        //{
-            //_target = declaration;
-            //_parameterNameBuilder = parameterNameBuilder;
-//=======
-        //public EncapsulateFieldCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator)
+        public EncapsulateFieldCandidate(Declaration declaration)
         {
             _target = declaration;
-            //NameValidator = identifierValidator;
             _rhsParameterIdentifierName = Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
-//>>>>>>> rubberduck-vba/next
 
             _fieldAndProperty = new EncapsulationIdentifiers(declaration.IdentifierName);
             IdentifierName = declaration.IdentifierName;
@@ -86,8 +77,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             ImplementSet = false;
             if (_target.IsEnumField() && _target.AsTypeDeclaration.HasPrivateAccessibility())
             {
-                //5.3.1 The declared type of a function declaration 
-                //may not be a private enum name.
+                //5.3.1 The declared type of a function declaration may not be a private enum.
                 PropertyAsTypeName = Tokens.Long;
             }
             else if (_target.AsTypeName.Equals(Tokens.Variant)

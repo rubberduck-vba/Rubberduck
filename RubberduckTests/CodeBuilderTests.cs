@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using RubberduckTests.Mocks;
@@ -193,7 +194,7 @@ Private fuzz As ETestType2
                 declarationType,
                 testParams,
                 PropertyLetBlockFromPrototypeTest);
-            StringAssert.Contains($"Property Let {testParams.Identifier}(ByVal {Param(testParams.Identifier)} As {typeName})", result);
+            StringAssert.Contains($"Property Let {testParams.Identifier}(ByVal RHS As {typeName})", result);
         }
 
         [TestCase("fizz", DeclarationType.Variable, "Variant")]

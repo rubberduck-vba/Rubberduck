@@ -71,12 +71,6 @@ namespace Rubberduck.Refactorings
             string parameterIdentifier = null);
 
         /// <summary>
-        /// Generates a default RHS property parameter IdentifierName
-        /// </summary>
-        /// <param name="propertyIdentifier">Let/Set Property IdentifierName</param>
-        string BuildPropertyRhsParameterName(string propertyIdentifier);
-
-        /// <summary>
         /// Generates a UserDefinedType (UDT) declaration using a <c>VariableDeclaration</c> as the prototype for
         /// creating the UserDefinedTypeMember.
         /// </summary>

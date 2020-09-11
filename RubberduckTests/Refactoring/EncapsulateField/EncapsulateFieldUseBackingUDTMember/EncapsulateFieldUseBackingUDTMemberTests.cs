@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember;
 using RubberduckTests.Mocks;
 using System.Collections.Generic;

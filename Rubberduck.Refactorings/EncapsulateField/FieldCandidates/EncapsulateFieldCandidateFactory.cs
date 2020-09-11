@@ -26,7 +26,7 @@ namespace Rubberduck.Refactorings
         {
             if (target.IsUserDefinedType())
             {
-                var udtField = new UserDefinedTypeCandidate(target, _codeBuilder.BuildPropertyRhsParameterName) as IUserDefinedTypeCandidate;
+                var udtField = new UserDefinedTypeCandidate(target) as IUserDefinedTypeCandidate;
 
                 var udtMembers = _declarationFinderProvider.DeclarationFinder
                     .UserDeclarations(DeclarationType.UserDefinedTypeMember)
@@ -34,7 +34,7 @@ namespace Rubberduck.Refactorings
 
                 foreach (var udtMemberDeclaration in udtMembers)
                 {
-                    var candidateUDTMember = new UserDefinedTypeMemberCandidate(Create(udtMemberDeclaration), udtField, _codeBuilder.BuildPropertyRhsParameterName) as IUserDefinedTypeMemberCandidate;
+                    var candidateUDTMember = new UserDefinedTypeMemberCandidate(Create(udtMemberDeclaration), udtField) as IUserDefinedTypeMemberCandidate;
 
                     udtField.AddMember(candidateUDTMember);
                 }
@@ -50,11 +50,11 @@ namespace Rubberduck.Refactorings
             }
             else if (target.IsArray)
             {
-                var arrayCandidate = new ArrayCandidate(target, _codeBuilder.BuildPropertyRhsParameterName);
+                var arrayCandidate = new ArrayCandidate(target);
                 return arrayCandidate;
             }
 
-            return new EncapsulateFieldCandidate(target, _codeBuilder.BuildPropertyRhsParameterName);
+            return new EncapsulateFieldCandidate(target);
         }
     }
 }

@@ -15,8 +15,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class ArrayCandidate : EncapsulateFieldCandidate, IArrayCandidate
     {
         private string _subscripts;
-        public ArrayCandidate(Declaration declaration, Func<string,string> parameterNameBuilder)
-            :base(declaration, parameterNameBuilder)
+        public ArrayCandidate(Declaration declaration)
+            :base(declaration)
         {
             ImplementLet = false;
             ImplementSet = false;

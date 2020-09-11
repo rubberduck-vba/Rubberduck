@@ -31,7 +31,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
     /// </remarks>
     public class ObjectStateUDT : IObjectStateUDT
     {
-        private static string _defaultNewFieldName = RubberduckUI.EncapsulateField_DefaultObjectStateUDTFieldName;
+        private static string _defaultNewFieldName = "this";
         private readonly IUserDefinedTypeCandidate _wrappedUDTField;
         private readonly int _hashCode;
 
