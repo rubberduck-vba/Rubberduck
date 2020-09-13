@@ -1,26 +1,11 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.VBEditor;
-using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public struct PropertyAttributeSet
-    {
-        public string PropertyName { get; set; }
-        public string BackingField { get; set; }
-        public string AsTypeName { get; set; }
-        public string ParameterName { get; set; }
-        public bool GenerateLetter { get; set; }
-        public bool GenerateSetter { get; set; }
-        public bool UsesSetAssignment { get; set; }
-        public bool IsUDTProperty { get; set; }
-        public Declaration Declaration { get; set; }
-    }
-
     public interface IEncapsulateFieldRefactoringElement
     {
         string IdentifierName { get; }
@@ -41,11 +26,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool ImplementLet { get; }
         bool ImplementSet { get; }
         bool IsReadOnly { set; get; }
-        string ParameterName { get; }
         IEncapsulateFieldConflictFinder ConflictFinder { set; get; }
         bool TryValidateEncapsulationAttributes(out string errorMessage);
-        string IdentifierForReference(IdentifierReference idRef);
-        IEnumerable<PropertyAttributeSet> PropertyAttributeSets { get; }
     }
 
     public class EncapsulateFieldCandidate : IEncapsulateFieldCandidate
@@ -91,8 +73,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 ImplementSet = true;
             }
         }
-
-        protected Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
 
         public Declaration Declaration => _target;
 
@@ -140,34 +120,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
         public virtual bool IsReadOnly { set; get; }
+
         public bool CanBeReadWrite { set; get; }
-
-        public override bool Equals(object obj)
-        {
-            return obj != null
-                && obj is IEncapsulateFieldCandidate efc
-                && $"{efc.QualifiedModuleName.Name}.{efc.IdentifierName}" == _uniqueID;
-        }
-
-        public override int GetHashCode() => _hashCode;
-
-        public override string ToString()
-            =>$"({TargetID}){Declaration.ToString()}";
-
-        protected string IdentifierInNewProperties
-            => BackingIdentifier;
-
-        public string IdentifierForReference(IdentifierReference idRef)
-        {
-            if (idRef.QualifiedModuleName != QualifiedModuleName)
-            {
-                return PropertyIdentifier;
-            }
-            return IdentifierForLocalReferences(idRef);
-        }
-
-        protected virtual string IdentifierForLocalReferences(IdentifierReference idRef)
-            => PropertyIdentifier;
 
         public string PropertyIdentifier
         {
@@ -213,38 +167,30 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _identifierName = value;
         }
 
-        public virtual string ReferenceQualifier { set; get; }
-
-        public string ParameterName => _rhsParameterIdentifierName;
-
         private bool _implLet;
-        public bool ImplementLet { get => !IsReadOnly && _implLet; set => _implLet = value; }
+        public bool ImplementLet
+        {
+            get => !IsReadOnly && _implLet;
+            set => _implLet = value;
+        }
 
         private bool _implSet;
-        public bool ImplementSet { get => !IsReadOnly && _implSet; set => _implSet = value; }
-
-        public EncapsulateFieldStrategy EncapsulateFieldStrategy { set; get; } = EncapsulateFieldStrategy.UseBackingFields;
-
-        public virtual IEnumerable<PropertyAttributeSet> PropertyAttributeSets
-            => new List<PropertyAttributeSet>() { AsPropertyAttributeSet };
-
-        protected virtual PropertyAttributeSet AsPropertyAttributeSet
+        public bool ImplementSet
         {
-            get
-            {
-                return new PropertyAttributeSet()
-                {
-                    PropertyName = PropertyIdentifier,
-                    BackingField = IdentifierInNewProperties,
-                    AsTypeName = PropertyAsTypeName,
-                    ParameterName = ParameterName,
-                    GenerateLetter = ImplementLet,
-                    GenerateSetter = ImplementSet,
-                    UsesSetAssignment = Declaration.IsObject,
-                    IsUDTProperty = false,
-                    Declaration = Declaration
-                };
-            }
+            get => !IsReadOnly && _implSet;
+            set => _implSet = value;
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj != null
+                && obj is IEncapsulateFieldCandidate efc
+                && $"{efc.QualifiedModuleName.Name}.{efc.IdentifierName}" == _uniqueID;
+        }
+
+        public override int GetHashCode() => _hashCode;
+
+        public override string ToString()
+            => $"({TargetID}){Declaration.ToString()}";
     }
 }

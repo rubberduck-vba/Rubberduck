@@ -1,16 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Common;
-using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-
     public interface IEncapsulateFieldAsUDTMemberCandidate : IEncapsulateFieldCandidate
     {
-        string UDTMemberDeclaration { get; }
         IObjectStateUDT ObjectStateUDT { set; get; }
+        IEncapsulateFieldCandidate WrappedCandidate { get; }
     }
 
     public class EncapsulateFieldAsUDTMemberCandidate : IEncapsulateFieldAsUDTMemberCandidate
@@ -27,17 +23,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _hashCode = _uniqueID.GetHashCode();
         }
 
-        public virtual string UDTMemberDeclaration
-        {
-            get
-            {
-                if (_wrapped is IArrayCandidate array)
-                {
-                   return array.UDTMemberDeclaration;
-                }
-                return $"{BackingIdentifier} As {_wrapped.AsTypeName}";
-            }
-        }
+        public IEncapsulateFieldCandidate WrappedCandidate => _wrapped;
 
         private IObjectStateUDT _objectStateUDT;
         public IObjectStateUDT ObjectStateUDT
@@ -94,33 +80,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _wrapped.IsReadOnly;
         }
 
-        public string ParameterName => _wrapped.ParameterName;
-
         public IEncapsulateFieldConflictFinder ConflictFinder
         {
             set => _wrapped.ConflictFinder = value;
             get => _wrapped.ConflictFinder;
-        }
-
-        private string AccessorInProperty
-        {
-            get
-            {
-                if (_wrapped is IUserDefinedTypeMemberCandidate udtm)
-                {
-                    return $"{ObjectStateUDT.FieldIdentifier}.{udtm.UDTField.PropertyIdentifier}.{BackingIdentifier}";
-                }
-                return $"{ObjectStateUDT.FieldIdentifier}.{BackingIdentifier}";
-            }
-        }
-
-        public string IdentifierForReference(IdentifierReference idRef)
-        {
-            if (idRef.QualifiedModuleName != QualifiedModuleName)
-            {
-                return PropertyIdentifier;
-            }
-            return  BackingIdentifier;
         }
 
         public string IdentifierName => _wrapped.IdentifierName;
@@ -147,27 +110,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
         }
 
-        public IEnumerable<PropertyAttributeSet> PropertyAttributeSets
-        {
-            get
-            {
-                var modifiedSets = new List<PropertyAttributeSet>();
-                var sets = _wrapped.PropertyAttributeSets;
-                for (var idx = 0; idx < sets.Count(); idx++)
-                {
-                    var attributeSet = sets.ElementAt(idx);
-                    var fields = attributeSet.BackingField.Split(new char[] { '.' });
-
-                    attributeSet.BackingField = fields.Count() > 1
-                        ? $"{ObjectStateUDT.FieldIdentifier}.{attributeSet.BackingField.CapitalizeFirstLetter()}"
-                        : $"{ObjectStateUDT.FieldIdentifier}.{attributeSet.PropertyName.CapitalizeFirstLetter()}";
-
-                    modifiedSets.Add(attributeSet);
-                }
-                return modifiedSets;
-            }
-        }
-
         public override bool Equals(object obj)
         {
             return obj != null
@@ -179,23 +121,5 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private static string BuildUniqueID(IEncapsulateFieldCandidate candidate, IObjectStateUDT field) 
             => $"{candidate.QualifiedModuleName.Name}.{field.IdentifierName}.{candidate.IdentifierName}";
-
-        private PropertyAttributeSet AsPropertyAttributeSet
-        {
-            get
-            {
-                return new PropertyAttributeSet()
-                {
-                    PropertyName = PropertyIdentifier,
-                    BackingField = AccessorInProperty,
-                    AsTypeName = PropertyAsTypeName,
-                    ParameterName = ParameterName,
-                    GenerateLetter = ImplementLet,
-                    GenerateSetter = ImplementSet,
-                    UsesSetAssignment = Declaration.IsObject,
-                    IsUDTProperty = true
-                };
-            }
-        }
     }
 }

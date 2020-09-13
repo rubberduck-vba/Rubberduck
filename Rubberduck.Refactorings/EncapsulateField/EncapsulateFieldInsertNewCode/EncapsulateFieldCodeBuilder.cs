@@ -30,18 +30,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
             string propertyLet = null;
             string propertySet = null;
 
-            if (propertyAttributes.GenerateLetter)
+            if (propertyAttributes.GeneratePropertyLet)
             {
-                var letterContent = $"{FourSpaces}{propertyAttributes.BackingField} = {propertyAttributes.ParameterName}";
+                var letterContent = $"{FourSpaces}{propertyAttributes.BackingField} = {propertyAttributes.RHSParameterIdentifier}";
                 if (!_codeBuilder.TryBuildPropertyLetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out propertyLet, content: letterContent))
                 {
                     throw new ArgumentException();
                 }
             }
 
-            if (propertyAttributes.GenerateSetter)
+            if (propertyAttributes.GeneratePropertySet)
             {
-                var setterContent = $"{FourSpaces}{Tokens.Set} {propertyAttributes.BackingField} = {propertyAttributes.ParameterName}";
+                var setterContent = $"{FourSpaces}{Tokens.Set} {propertyAttributes.BackingField} = {propertyAttributes.RHSParameterIdentifier}";
                 if (!_codeBuilder.TryBuildPropertySetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out propertySet, content: setterContent))
                 {
                     throw new ArgumentException();

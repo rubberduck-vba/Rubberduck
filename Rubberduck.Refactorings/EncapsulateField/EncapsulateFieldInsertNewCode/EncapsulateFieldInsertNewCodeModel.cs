@@ -20,6 +20,10 @@ namespace Rubberduck.Refactorings.EncapsulateFieldInsertNewCode
 
         public QualifiedModuleName QualifiedModuleName { get; } = new QualifiedModuleName();
 
+        public bool CreateNewObjectStateUDT => !ObjectStateUDTField?.IsExistingDeclaration ?? false;
+
+        public IObjectStateUDT ObjectStateUDTField { set; get; }
+
         public IReadOnlyCollection<IEncapsulateFieldCandidate> SelectedFieldCandidates { get; }
     }
 }

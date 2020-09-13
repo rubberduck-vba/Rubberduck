@@ -49,9 +49,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string UDTMemberDeclaration
             => $"{PropertyIdentifier}({_subscripts}) {Tokens.As} {Declaration.AsTypeName}";
 
-        protected override string IdentifierForLocalReferences(IdentifierReference idRef)
-            => BackingIdentifier;
-
         public bool HasExternalRedimOperation(out string errorMessage)
         {
             errorMessage = string.Empty;
