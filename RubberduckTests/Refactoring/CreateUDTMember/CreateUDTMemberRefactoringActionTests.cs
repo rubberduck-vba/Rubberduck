@@ -3,20 +3,20 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
-using Rubberduck.Refactorings.DeclareFieldsAsUDTMembers;
+using Rubberduck.Refactorings.CreateUDTMember;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RubberduckTests.Refactoring.MoveFieldsToUDT
+namespace RubberduckTests.Refactoring.CreateUDTMember
 {
     [TestFixture]
-    public class DeclareFieldsAsUDTMembersRefactoringActionTests : RefactoringActionTestBase<DeclareFieldsAsUDTMembersModel>
+    public class CreateUDTMemberRefactoringActionTests : RefactoringActionTestBase<CreateUDTMemberModel>
     {
         [TestCase(4)]
         [TestCase(2)]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        [Category(nameof(DeclareFieldsAsUDTMembersRefactoringAction))]
+        [Category(nameof(CreateUDTMemberRefactoringAction))]
         public void FormatSingleExistingMember(int indentionLevel)
         {
             var indention = string.Concat(Enumerable.Repeat(" ", indentionLevel));
@@ -47,7 +47,7 @@ End Type
         [TestCase(2)]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        [Category(nameof(DeclareFieldsAsUDTMembersRefactoringAction))]
+        [Category(nameof(CreateUDTMemberRefactoringAction))]
         public void FormatMatchesLastMemberIndent(int indentionLevel)
         {
             var indention = string.Concat(Enumerable.Repeat(" ", indentionLevel));
@@ -80,7 +80,7 @@ End Type
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        [Category(nameof(DeclareFieldsAsUDTMembersRefactoringAction))]
+        [Category(nameof(CreateUDTMemberRefactoringAction))]
         public void FormatPreservesComments()
         {
             var indention = string.Concat(Enumerable.Repeat(" ", 2));
@@ -112,11 +112,9 @@ End Type
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        [Category(nameof(DeclareFieldsAsUDTMembersRefactoringAction))]
+        [Category(nameof(CreateUDTMemberRefactoringAction))]
         public void FormatMultipleInsertions()
         {
-            var indention = string.Concat(Enumerable.Repeat(" ", 2));
-
             string inputCode =
 $@"
 Option Explicit
@@ -150,21 +148,19 @@ End Type
             return RefactoredCode(inputCode, state => TestModel(state, udtIdentifier, fieldConversions));
         }
 
-        private DeclareFieldsAsUDTMembersModel TestModel(RubberduckParserState state, string udtIdentifier, params (string fieldID, string udtMemberID)[] fieldConversions)
+        private CreateUDTMemberModel TestModel(RubberduckParserState state, string udtIdentifier, params (string fieldID, string udtMemberID)[] fieldConversions)
         {
             var udtDeclaration = GetUniquelyNamedDeclaration(state, DeclarationType.UserDefinedType, udtIdentifier);
-            var conversions = new List<(VariableDeclaration field, string udtMemberID)>();
+
+            var conversionPairs = new List<(VariableDeclaration, string)>();
             foreach (var (fieldID, udtMemberID) in fieldConversions)
             {
                 var fieldDeclaration = GetUniquelyNamedDeclaration(state, DeclarationType.Variable, fieldID) as VariableDeclaration;
-                conversions.Add((fieldDeclaration, udtMemberID));
+                conversionPairs.Add((fieldDeclaration, udtMemberID));
             }
 
-            var model = new DeclareFieldsAsUDTMembersModel();
-            foreach ((VariableDeclaration field, string udtMemberID) in conversions)
-            {
-                model.AssignFieldToUserDefinedType(udtDeclaration, field, udtMemberID);
-            }
+            var model = new CreateUDTMemberModel(udtDeclaration, conversionPairs.ToArray());
+
             return model;
         }
 
@@ -173,9 +169,9 @@ End Type
             return declarationFinderProvider.DeclarationFinder.UserDeclarations(declarationType).Single(d => d.IdentifierName.Equals(identifier));
         }
 
-        protected override IRefactoringAction<DeclareFieldsAsUDTMembersModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
+        protected override IRefactoringAction<CreateUDTMemberModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            return new DeclareFieldsAsUDTMembersRefactoringAction(state, rewritingManager, new CodeBuilder());
+            return new CreateUDTMemberRefactoringAction(state, rewritingManager, new CodeBuilder());
         }
     }
 }

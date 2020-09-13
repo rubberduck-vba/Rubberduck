@@ -2,7 +2,7 @@
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
-using Rubberduck.Refactorings.DeclareFieldsAsUDTMembers;
+using Rubberduck.Refactorings.CreateUDTMember;
 using Rubberduck.Refactorings.ReplaceReferences;
 using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
 using System.Linq;
@@ -11,9 +11,10 @@ using Rubberduck.Refactorings.EncapsulateFieldInsertNewCode;
 
 namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
 {
+
     public class EncapsulateFieldUseBackingUDTMemberRefactoringAction : CodeOnlyRefactoringActionBase<EncapsulateFieldUseBackingUDTMemberModel>
     {
-        private readonly ICodeOnlyRefactoringAction<DeclareFieldsAsUDTMembersModel> _declareFieldAsUDTMemberRefactoringAction;
+        private readonly ICodeOnlyRefactoringAction<CreateUDTMemberModel> _createUDTMemberRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<ReplacePrivateUDTMemberReferencesModel> _replaceUDTMemberReferencesRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<ReplaceReferencesModel> _replaceFieldReferencesRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> _encapsulateFieldInsertNewCodeRefactoringAction;
@@ -29,7 +30,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             IEncapsulateFieldCodeBuilderFactory encapsulateFieldCodeBuilderFactory)
                 : base(rewritingManager)
         {
-            _declareFieldAsUDTMemberRefactoringAction = refactoringActionsProvider.DeclareFieldsAsUDTMembers;
+            _createUDTMemberRefactoringAction = refactoringActionsProvider.CreateUDTMember;
             _replaceUDTMemberReferencesRefactoringAction = refactoringActionsProvider.ReplaceUDTMemberReferences;
             _replaceFieldReferencesRefactoringAction = refactoringActionsProvider.ReplaceReferences;
             _encapsulateFieldInsertNewCodeRefactoringAction = refactoringActionsProvider.EncapsulateFieldInsertNewCode;
@@ -61,28 +62,17 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
         {
             var rewriter = rewriteSession.CheckOutModuleRewriter(encapsulateFieldModel.QualifiedModuleName);
 
-            rewriter.RemoveVariables(encapsulateFieldModel.SelectedFieldCandidates.Select(f => f.Declaration)
-                .Cast<VariableDeclaration>());
-
             if (encapsulateFieldModel.ObjectStateUDTField.IsExistingDeclaration)
             {
-                var model = new DeclareFieldsAsUDTMembersModel();
+                var conversionPairs = encapsulateFieldModel.SelectedFieldCandidates
+                    .Select(c => (c.Declaration as VariableDeclaration, c.BackingIdentifier));
 
-                foreach (var field in encapsulateFieldModel.SelectedFieldCandidates)
-                {
-                    model.AssignFieldToUserDefinedType(encapsulateFieldModel.ObjectStateUDTField.AsTypeDeclaration, field.Declaration as VariableDeclaration, field.PropertyIdentifier);
-                }
-                _declareFieldAsUDTMemberRefactoringAction.Refactor(model, rewriteSession);
+                var model = new CreateUDTMemberModel(encapsulateFieldModel.ObjectStateUDTField.AsTypeDeclaration, conversionPairs);
+                _createUDTMemberRefactoringAction.Refactor(model, rewriteSession);
             }
-            else
-            {
-                var objectStateTypeDeclarationBlock = _encapsulateFieldCodeBuilder.BuildUserDefinedTypeDeclaration(encapsulateFieldModel.ObjectStateUDTField, encapsulateFieldModel.EncapsulationCandidates);
 
-                encapsulateFieldModel.NewContentAggregator.AddNewContent(NewContentType.UserDefinedTypeDeclaration, objectStateTypeDeclarationBlock);
-
-                var objectStateFieldDeclaration = _encapsulateFieldCodeBuilder.BuildObjectStateFieldDeclaration(encapsulateFieldModel.ObjectStateUDTField);
-                encapsulateFieldModel.NewContentAggregator.AddNewContent(NewContentType.DeclarationBlock, objectStateFieldDeclaration);
-            }
+            rewriter.RemoveVariables(encapsulateFieldModel.SelectedFieldCandidates.Select(f => f.Declaration)
+                .Cast<VariableDeclaration>());
         }
 
         private void ModifyReferences(EncapsulateFieldUseBackingUDTMemberModel model, IRewriteSession rewriteSession)
@@ -126,7 +116,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
                     var replacementExpression = idRef.QualifiedModuleName == field.QualifiedModuleName
                         ? field.Declaration.IsArray ? $"{model.ObjectStateUDTField.FieldIdentifier}.{field.BackingIdentifier}" : field.PropertyIdentifier
                         : field.PropertyIdentifier;
-                     modelReplaceField.AssignFieldReferenceReplacementExpression(idRef, replacementExpression);
+                    modelReplaceField.AssignReferenceReplacementExpression(idRef, replacementExpression);
                 }
 
             }
@@ -138,6 +128,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             var encapsulateFieldInsertNewCodeModel = new EncapsulateFieldInsertNewCodeModel(model.SelectedFieldCandidates)
             {
                 NewContentAggregator = model.NewContentAggregator,
+                ObjectStateUDTField = model.ObjectStateUDTField
             };
 
             _encapsulateFieldInsertNewCodeRefactoringAction.Refactor(encapsulateFieldInsertNewCodeModel, rewriteSession);

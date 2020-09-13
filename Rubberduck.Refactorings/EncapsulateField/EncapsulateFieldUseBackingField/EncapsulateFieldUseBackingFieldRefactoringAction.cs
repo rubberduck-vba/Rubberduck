@@ -128,7 +128,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
                         ? field.Declaration.IsArray ? field.BackingIdentifier : field.PropertyIdentifier
                         : field.PropertyIdentifier;
 
-                    model.AssignFieldReferenceReplacementExpression(idRef, replacementExpression);
+                    model.AssignReferenceReplacementExpression(idRef, replacementExpression);
                 }
             }
 

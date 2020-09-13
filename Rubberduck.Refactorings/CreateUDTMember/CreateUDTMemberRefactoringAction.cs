@@ -6,21 +6,21 @@ using Rubberduck.Parsing.VBA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-namespace Rubberduck.Refactorings.DeclareFieldsAsUDTMembers
+namespace Rubberduck.Refactorings.CreateUDTMember
 {
-    public class DeclareFieldsAsUDTMembersRefactoringAction : CodeOnlyRefactoringActionBase<DeclareFieldsAsUDTMembersModel>
+    public class CreateUDTMemberRefactoringAction : CodeOnlyRefactoringActionBase<CreateUDTMemberModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ICodeBuilder _codeBuilder;
 
-        public DeclareFieldsAsUDTMembersRefactoringAction(IDeclarationFinderProvider declarationFinderProvider,IRewritingManager rewritingManager, ICodeBuilder codeBuilder)
+        public CreateUDTMemberRefactoringAction(IDeclarationFinderProvider declarationFinderProvider,IRewritingManager rewritingManager, ICodeBuilder codeBuilder)
             : base(rewritingManager)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _codeBuilder = codeBuilder;
         }
 
-        public override void Refactor(DeclareFieldsAsUDTMembersModel model, IRewriteSession rewriteSession)
+        public override void Refactor(CreateUDTMemberModel model, IRewriteSession rewriteSession)
         {
             if (model.UserDefinedTypeTargets.Any( udt => !(udt.Context is VBAParser.UdtDeclarationContext)))
             {

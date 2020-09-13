@@ -13,14 +13,14 @@ namespace Rubberduck.Refactorings
         /// Creates an <c>EncapsulateFieldUseBackingUDTMemberModel</c> used by the <c>EncapsulateFieldUseBackingUDTMemberRefactoringAction</c>.
         /// </summary>
         /// <param name="clientTarget">Optional: <c>UserDefinedType</c> Field to include the Encapsulated Field(s)</param>
-        EncapsulateFieldUseBackingUDTMemberModel Create(IEnumerable<EncapsulateFieldRequest> requests, Declaration userDefinedTypeTarget = null);
+        EncapsulateFieldUseBackingUDTMemberModel Create(IEnumerable<FieldEncapsulationModel> requests, Declaration userDefinedTypeTarget = null);
 
         /// <summary>
         /// Creates an <c>EncapsulateFieldUseBackingUDTMemberModel</c> based upon collection of
         /// <c>IEncapsulateFieldCandidate</c> instances created by <c>EncapsulateFieldCandidateCollectionFactory</c>.  
         /// This function is intended for exclusive use by <c>EncapsulateFieldModelFactory</c>
         /// </summary>
-        EncapsulateFieldUseBackingUDTMemberModel Create(IReadOnlyCollection<IEncapsulateFieldCandidate> candidates, IEnumerable<EncapsulateFieldRequest> requests, Declaration userDefinedTypeTarget = null);
+        EncapsulateFieldUseBackingUDTMemberModel Create(IReadOnlyCollection<IEncapsulateFieldCandidate> candidates, IEnumerable<FieldEncapsulationModel> requests, Declaration userDefinedTypeTarget = null);
     }
 
     public class EncapsulateFieldUseBackingUDTMemberModelFactory : IEncapsulateFieldUseBackingUDTMemberModelFactory
@@ -39,7 +39,7 @@ namespace Rubberduck.Refactorings
             _conflictFinderFactory = encapsulateFieldConflictFinderFactory;
         }
 
-        public EncapsulateFieldUseBackingUDTMemberModel Create(IEnumerable<EncapsulateFieldRequest> requests, Declaration clientTarget)
+        public EncapsulateFieldUseBackingUDTMemberModel Create(IEnumerable<FieldEncapsulationModel> requests, Declaration clientTarget)
         {
             if (!requests.Any())
             {
@@ -49,7 +49,7 @@ namespace Rubberduck.Refactorings
             return Create(fieldCandidates, requests, clientTarget);
         }
 
-        public EncapsulateFieldUseBackingUDTMemberModel Create(IReadOnlyCollection<IEncapsulateFieldCandidate> candidates, IEnumerable<EncapsulateFieldRequest> requests, Declaration clientTarget = null)
+        public EncapsulateFieldUseBackingUDTMemberModel Create(IReadOnlyCollection<IEncapsulateFieldCandidate> candidates, IEnumerable<FieldEncapsulationModel> requests, Declaration clientTarget = null)
         {
             if (clientTarget != null
                 && (clientTarget.Accessibility != Accessibility.Private
@@ -74,7 +74,12 @@ namespace Rubberduck.Refactorings
             foreach (var request in requests)
             {
                 var candidate = fieldCandidates.Single(c => c.Declaration.Equals(request.Declaration));
-                request.ApplyRequest(candidate);
+                candidate.EncapsulateFlag = true;
+                candidate.IsReadOnly = request.IsReadOnly;
+                if (request.PropertyIdentifier != null)
+                {
+                    candidate.PropertyIdentifier = request.PropertyIdentifier;
+                }
             }
 
             var conflictsFinder = _conflictFinderFactory.CreateEncapsulateFieldUseBackingUDTMemberConflictFinder(candidates, objectStateUDTs)

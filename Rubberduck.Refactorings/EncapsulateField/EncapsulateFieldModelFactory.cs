@@ -19,18 +19,15 @@ namespace Rubberduck.Refactorings
         private readonly IEncapsulateFieldUseBackingUDTMemberModelFactory _useBackingUDTMemberModelFactory;
         private readonly IEncapsulateFieldUseBackingFieldModelFactory _useBackingFieldModelFactory;
         private readonly IEncapsulateFieldCandidateCollectionFactory _fieldCandidateCollectionFactory;
-        private readonly IEncapsulateFieldRequestFactory _requestFactory;
 
         public EncapsulateFieldModelFactory(
             IEncapsulateFieldUseBackingUDTMemberModelFactory encapsulateFieldUseBackingUDTMemberModelFactory,
             IEncapsulateFieldUseBackingFieldModelFactory encapsulateFieldUseBackingFieldModelFactory,
-            IEncapsulateFieldCandidateCollectionFactory encapsulateFieldCandidateCollectionFactory,
-            IEncapsulateFieldRequestFactory encapsulateFieldRequestFactory)
+            IEncapsulateFieldCandidateCollectionFactory encapsulateFieldCandidateCollectionFactory)
         {
             _useBackingUDTMemberModelFactory = encapsulateFieldUseBackingUDTMemberModelFactory as IEncapsulateFieldUseBackingUDTMemberModelFactory;
             _useBackingFieldModelFactory = encapsulateFieldUseBackingFieldModelFactory;
             _fieldCandidateCollectionFactory = encapsulateFieldCandidateCollectionFactory;
-            _requestFactory = encapsulateFieldRequestFactory;
         }
 
         public EncapsulateFieldModel Create(Declaration target)
@@ -42,12 +39,11 @@ namespace Rubberduck.Refactorings
           
             var fieldCandidates = _fieldCandidateCollectionFactory.Create(targetField.QualifiedModuleName);
 
-            var encapsulationRequest = _requestFactory.Create(targetField);
-            var requests = new List<EncapsulateFieldRequest>() { encapsulationRequest };
+            var fieldEncapsulationModels = new List<FieldEncapsulationModel>() { new FieldEncapsulationModel(targetField) };
 
-            var useBackingFieldModel = _useBackingFieldModelFactory.Create(fieldCandidates, requests);
+            var useBackingFieldModel = _useBackingFieldModelFactory.Create(fieldCandidates, fieldEncapsulationModels);
 
-            var useBackingUDTMemberModel = _useBackingUDTMemberModelFactory.Create(fieldCandidates, requests);
+            var useBackingUDTMemberModel = _useBackingUDTMemberModelFactory.Create(fieldCandidates, fieldEncapsulationModels);
 
             var initialStrategy = useBackingUDTMemberModel.ObjectStateUDTField.IsExistingDeclaration
                 ? EncapsulateFieldStrategy.ConvertFieldsToUDTMembers

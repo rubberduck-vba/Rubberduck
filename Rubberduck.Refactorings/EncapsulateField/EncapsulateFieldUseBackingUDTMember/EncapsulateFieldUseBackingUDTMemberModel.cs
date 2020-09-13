@@ -32,7 +32,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
         public IReadOnlyCollection<IEncapsulateFieldCandidate> EncapsulationCandidates { get; }
 
         public IReadOnlyCollection<IEncapsulateFieldCandidate> SelectedFieldCandidates
-            => EncapsulationCandidates
+            => _encapsulateAsUDTMemberCandidates
                 .Where(v => v.EncapsulateFlag)
                 .ToList();
 

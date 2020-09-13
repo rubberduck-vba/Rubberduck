@@ -467,9 +467,6 @@ End Sub
                 ModuleQualifyExternalReferences = true,
             };
 
-            var fields = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Select(v => v as VariableDeclaration);
-
             foreach (var (fieldID, internalName, externalName) in fieldConversions)
             {
                 var fieldDeclaration = GetUniquelyNamedDeclaration(state, DeclarationType.Variable, fieldID);
@@ -479,7 +476,7 @@ End Sub
                         ? externalName
                         : internalName;
 
-                    model.AssignFieldReferenceReplacementExpression(reference, replacementExpression);
+                    model.AssignReferenceReplacementExpression(reference, replacementExpression);
                 }
             }
             return model;

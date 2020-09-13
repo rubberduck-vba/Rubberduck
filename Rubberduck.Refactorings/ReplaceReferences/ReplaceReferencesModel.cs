@@ -6,11 +6,13 @@ namespace Rubberduck.Refactorings.ReplaceReferences
 {
     public class ReplaceReferencesModel :IRefactoringModel
     {
+        public ReplaceReferencesModel()
+        {}
         private Dictionary<IdentifierReference, string> _fieldTargets = new Dictionary<IdentifierReference, string>();
 
         public bool ModuleQualifyExternalReferences { set; get; } = false;
 
-        public void AssignFieldReferenceReplacementExpression(IdentifierReference fieldReference, string replacementIdentifier)
+        public void AssignReferenceReplacementExpression(IdentifierReference fieldReference, string replacementIdentifier)
         {
             if (_fieldTargets.ContainsKey(fieldReference))
             {
@@ -19,7 +21,7 @@ namespace Rubberduck.Refactorings.ReplaceReferences
             }
             _fieldTargets.Add(fieldReference, replacementIdentifier);
         }
-        public IReadOnlyList<(IdentifierReference IdentifierReference, string NewName)> FieldReferenceReplacementPairs
+        public IReadOnlyCollection<(IdentifierReference IdentifierReference, string NewName)> ReferenceReplacementPairs
             => _fieldTargets.Select(t => (t.Key, t.Value)).ToList();
     }
 }

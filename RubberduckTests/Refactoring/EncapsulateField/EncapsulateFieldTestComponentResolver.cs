@@ -1,7 +1,7 @@
 ﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
-using Rubberduck.Refactorings.DeclareFieldsAsUDTMembers;
+using Rubberduck.Refactorings.CreateUDTMember;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.ReplaceReferences;
 using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
@@ -35,7 +35,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 case nameof(EncapsulateFieldRefactoringAction):
                     return new EncapsulateFieldRefactoringAction(
                         ResolveImpl<EncapsulateFieldUseBackingFieldRefactoringAction>(), 
-                        ResolveImpl<EncapsulateFieldUseBackingUDTMemberRefactoringAction>()) as T;
+                        ResolveImpl<EncapsulateFieldUseBackingUDTMemberRefactoringAction>(),
+                        ResolveImpl<INewContentAggregatorFactory>()) as T;
 
                 case nameof(ReplaceReferencesRefactoringAction):
                     return new ReplaceReferencesRefactoringAction(_rewritingManager) as T;
@@ -47,6 +48,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                     return new EncapsulateFieldInsertNewCodeRefactoringAction(
                         _declarationFinderProvider, 
                         _rewritingManager,
+                        new PropertyAttributeSetsGenerator(),
                         ResolveImpl<IEncapsulateFieldCodeBuilderFactory>()) as T;
 
                 case nameof(ReplacePrivateUDTMemberReferencesRefactoringAction):
@@ -57,7 +59,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                         ResolveImpl<ReplaceReferencesRefactoringAction>(),
                         ResolveImpl<ReplacePrivateUDTMemberReferencesRefactoringAction>(),
                         ResolveImpl<ReplaceDeclarationIdentifierRefactoringAction>(),
-                        ResolveImpl<DeclareFieldsAsUDTMembersRefactoringAction>(),
+                        ResolveImpl<CreateUDTMemberRefactoringAction>(),
                         ResolveImpl<EncapsulateFieldInsertNewCodeRefactoringAction >()
                         ) as T;
 
@@ -79,8 +81,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 case nameof(IReplacePrivateUDTMemberReferencesModelFactory):
                     return new ReplacePrivateUDTMemberReferencesModelFactory(_declarationFinderProvider) as T;
 
-                case nameof(DeclareFieldsAsUDTMembersRefactoringAction):
-                    return new DeclareFieldsAsUDTMembersRefactoringAction(
+                case nameof(CreateUDTMemberRefactoringAction):
+                    return new CreateUDTMemberRefactoringAction(
                         _declarationFinderProvider, 
                         _rewritingManager, 
                         new CodeBuilder()) as T;
@@ -106,8 +108,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                     return new EncapsulateFieldModelFactory(
                         ResolveImpl<IEncapsulateFieldUseBackingUDTMemberModelFactory>(),
                         ResolveImpl<IEncapsulateFieldUseBackingFieldModelFactory>(),
-                        ResolveImpl<IEncapsulateFieldCandidateCollectionFactory>(),
-                        new EncapsulateFieldRequestFactory() as IEncapsulateFieldRequestFactory
+                        ResolveImpl<IEncapsulateFieldCandidateCollectionFactory>()
                         ) as T;
 
                 case nameof(IEncapsulateFieldUseBackingUDTMemberModelFactory):
@@ -138,7 +139,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
                 case nameof(IEncapsulateFieldCodeBuilderFactory):
                     return new EncapsulateFieldCodeBuilderFactory(new CodeBuilder()) as T;
-
             }
             throw new ArgumentException($"Unable to resolve {typeof(T).Name}") ;
         }

@@ -18,7 +18,7 @@ namespace Rubberduck.Refactorings.ReplaceReferences
 
         public override void Refactor(ReplaceReferencesModel model, IRewriteSession rewriteSession)
         {
-            var replacementPairByQualifiedModuleName = model.FieldReferenceReplacementPairs
+            var replacementPairByQualifiedModuleName = model.ReferenceReplacementPairs
                 .Where(pr =>
                     pr.IdentifierReference.Context.GetText() != Tokens.Me
                     && !pr.IdentifierReference.IsArrayAccess

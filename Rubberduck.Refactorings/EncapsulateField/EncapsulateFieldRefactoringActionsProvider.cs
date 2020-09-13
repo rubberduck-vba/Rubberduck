@@ -1,4 +1,4 @@
-﻿using Rubberduck.Refactorings.DeclareFieldsAsUDTMembers;
+﻿using Rubberduck.Refactorings.CreateUDTMember;
 using Rubberduck.Refactorings.ReplaceDeclarationIdentifier;
 using Rubberduck.Refactorings.ReplaceReferences;
 using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
@@ -11,7 +11,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         ICodeOnlyRefactoringAction<ReplaceReferencesModel> ReplaceReferences { get; }
         ICodeOnlyRefactoringAction<ReplacePrivateUDTMemberReferencesModel> ReplaceUDTMemberReferences { get; }
         ICodeOnlyRefactoringAction<ReplaceDeclarationIdentifierModel> ReplaceDeclarationIdentifiers { get; }
-        ICodeOnlyRefactoringAction<DeclareFieldsAsUDTMembersModel> DeclareFieldsAsUDTMembers { get; }
+        ICodeOnlyRefactoringAction<CreateUDTMemberModel> CreateUDTMember { get; }
         ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> EncapsulateFieldInsertNewCode { get; }
     }
 
@@ -20,20 +20,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly ReplaceReferencesRefactoringAction _replaceReferences;
         private readonly ReplaceDeclarationIdentifierRefactoringAction _replaceDeclarationIdentifiers;
         private readonly ReplacePrivateUDTMemberReferencesRefactoringAction _replaceUDTMemberReferencesRefactoringAction;
-        private readonly DeclareFieldsAsUDTMembersRefactoringAction _declareFieldsAsUDTMembersRefactoringAction;
+        private readonly CreateUDTMemberRefactoringAction _createUDTMemberRefactoringAction;
         private readonly EncapsulateFieldInsertNewCodeRefactoringAction _encapsulateFieldInsertNewCodeRefactoringAction;
 
         public EncapsulateFieldRefactoringActionsProvider(
             ReplaceReferencesRefactoringAction replaceReferencesRefactoringAction,
             ReplacePrivateUDTMemberReferencesRefactoringAction replaceUDTMemberReferencesRefactoringAction,
             ReplaceDeclarationIdentifierRefactoringAction replaceDeclarationIdentifierRefactoringAction,
-            DeclareFieldsAsUDTMembersRefactoringAction declareFieldsAsUDTMembersRefactoringAction,
+            CreateUDTMemberRefactoringAction createUDTMemberRefactoringActionRefactoringAction,
             EncapsulateFieldInsertNewCodeRefactoringAction encapsulateFieldInsertNewCodeRefactoringAction)
         {
             _replaceReferences = replaceReferencesRefactoringAction;
             _replaceUDTMemberReferencesRefactoringAction = replaceUDTMemberReferencesRefactoringAction;
             _replaceDeclarationIdentifiers = replaceDeclarationIdentifierRefactoringAction;
-            _declareFieldsAsUDTMembersRefactoringAction = declareFieldsAsUDTMembersRefactoringAction;
+            _createUDTMemberRefactoringAction = createUDTMemberRefactoringActionRefactoringAction;
             _encapsulateFieldInsertNewCodeRefactoringAction = encapsulateFieldInsertNewCodeRefactoringAction;
         }
 
@@ -46,8 +46,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public ICodeOnlyRefactoringAction<ReplacePrivateUDTMemberReferencesModel> ReplaceUDTMemberReferences
             => _replaceUDTMemberReferencesRefactoringAction;
 
-        public ICodeOnlyRefactoringAction<DeclareFieldsAsUDTMembersModel> DeclareFieldsAsUDTMembers
-            => _declareFieldsAsUDTMembersRefactoringAction;
+        public ICodeOnlyRefactoringAction<CreateUDTMemberModel> CreateUDTMember
+            => _createUDTMemberRefactoringAction;
 
         public ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> EncapsulateFieldInsertNewCode
             => _encapsulateFieldInsertNewCodeRefactoringAction;
