@@ -11,6 +11,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         (string Get, string Let, string Set) BuildPropertyBlocks(PropertyAttributeSet propertyAttributeSet);
         string BuildUserDefinedTypeDeclaration(IObjectStateUDT objectStateUDT, IEnumerable<IEncapsulateFieldCandidate> candidates);
         string BuildObjectStateFieldDeclaration(IObjectStateUDT objectStateUDT);
+        string BuildFieldDeclaration(Declaration target, string identifier);
     }
 
     public class EncapsulateFieldCodeBuilder : IEncapsulateFieldCodeBuilder
@@ -88,6 +89,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string BuildObjectStateFieldDeclaration(IObjectStateUDT objectStateUDT)
         {
             return $"{Accessibility.Private} {objectStateUDT.IdentifierName} {Tokens.As} {objectStateUDT.AsTypeName}";
+        }
+
+        public string BuildFieldDeclaration(Declaration target, string identifier)
+        {
+            var identifierExpressionSansVisibility = target.Context.GetText().Replace(target.IdentifierName, identifier);
+            return target.IsTypeSpecified
+                ? $"{Tokens.Private} {identifierExpressionSansVisibility}"
+                : $"{Tokens.Private} {identifierExpressionSansVisibility} {Tokens.As} {target.AsTypeName}";
         }
     }
 }

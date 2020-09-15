@@ -1,5 +1,4 @@
-﻿using Rubberduck.Common;
-using Rubberduck.Parsing.Rewriter;
+﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.CreateUDTMember;
@@ -8,15 +7,15 @@ using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
 using System.Linq;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldInsertNewCode;
+using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
 {
-
     public class EncapsulateFieldUseBackingUDTMemberRefactoringAction : CodeOnlyRefactoringActionBase<EncapsulateFieldUseBackingUDTMemberModel>
     {
         private readonly ICodeOnlyRefactoringAction<CreateUDTMemberModel> _createUDTMemberRefactoringAction;
-        private readonly ICodeOnlyRefactoringAction<ReplacePrivateUDTMemberReferencesModel> _replaceUDTMemberReferencesRefactoringAction;
-        private readonly ICodeOnlyRefactoringAction<ReplaceReferencesModel> _replaceFieldReferencesRefactoringAction;
+        private readonly ICodeOnlyRefactoringAction<ReplacePrivateUDTMemberReferencesModel> _replacePrivateUDTMemberReferencesRefactoringAction;
+        private readonly ICodeOnlyRefactoringAction<ReplaceReferencesModel> _replaceReferencesRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> _encapsulateFieldInsertNewCodeRefactoringAction;
         private readonly IEncapsulateFieldCodeBuilder _encapsulateFieldCodeBuilder;
         private readonly INewContentAggregatorFactory _newContentAggregatorFactory;
@@ -31,8 +30,8 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
                 : base(rewritingManager)
         {
             _createUDTMemberRefactoringAction = refactoringActionsProvider.CreateUDTMember;
-            _replaceUDTMemberReferencesRefactoringAction = refactoringActionsProvider.ReplaceUDTMemberReferences;
-            _replaceFieldReferencesRefactoringAction = refactoringActionsProvider.ReplaceReferences;
+            _replacePrivateUDTMemberReferencesRefactoringAction = refactoringActionsProvider.ReplaceUDTMemberReferences;
+            _replaceReferencesRefactoringAction = refactoringActionsProvider.ReplaceReferences;
             _encapsulateFieldInsertNewCodeRefactoringAction = refactoringActionsProvider.EncapsulateFieldInsertNewCode;
             _encapsulateFieldCodeBuilder = encapsulateFieldCodeBuilderFactory.Create();
             _replaceUDTMemberReferencesModelFactory = replaceUDTMemberReferencesModelFactory;
@@ -44,11 +43,6 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             if (!model.SelectedFieldCandidates.Any())
             {
                 return;
-            }
-
-            if (model.NewContentAggregator is null)
-            {
-                model.NewContentAggregator = _newContentAggregatorFactory.Create();
             }
 
             ModifyFields(model, rewriteSession);
@@ -77,57 +71,89 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
 
         private void ModifyReferences(EncapsulateFieldUseBackingUDTMemberModel model, IRewriteSession rewriteSession)
         {
-            var udtFields = model.SelectedFieldCandidates
+            var privateUDTFields = model.SelectedFieldCandidates
                 .Where(f => (f.Declaration.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
                     && f.Declaration.AsTypeDeclaration.Accessibility == Accessibility.Private);
 
-            if (udtFields.Any())
+            ReplaceUDTMemberReferencesOfPrivateUDTFields(privateUDTFields, rewriteSession);
+
+            ReplaceEncapsulatedFieldReferences(model.SelectedFieldCandidates.Except(privateUDTFields), model.ObjectStateUDTField, rewriteSession);
+        }
+
+        private void ReplaceUDTMemberReferencesOfPrivateUDTFields(IEnumerable<IEncapsulateFieldCandidate> udtFields, IRewriteSession rewriteSession)
+        {
+            if (!udtFields.Any())
             {
-                var replaceUDTMemberReferencesModel = _replaceUDTMemberReferencesModelFactory.Create(udtFields.Select(f => f.Declaration).Cast<VariableDeclaration>());
-
-                foreach (var udtfield in udtFields)
-                {
-                    foreach (var udtMember in replaceUDTMemberReferencesModel.UDTMembers)
-                    {
-                        var localReplacement = udtfield.Declaration.IsArray 
-                            ? $"{udtfield.IdentifierName}.{udtMember.IdentifierName.CapitalizeFirstLetter()}" 
-                            : udtMember.IdentifierName.CapitalizeFirstLetter();
-
-                        var udtExpressions = new PrivateUDTMemberReferenceReplacementExpressions($"{udtfield.IdentifierName}.{udtMember.IdentifierName}")
-                        {
-                            LocalReferenceExpression = udtMember.IdentifierName.CapitalizeFirstLetter(),
-                        };
-
-                        replaceUDTMemberReferencesModel.AssignUDTMemberReferenceExpressions(udtfield.Declaration as VariableDeclaration, udtMember, udtExpressions);
-                    }
-                    _replaceUDTMemberReferencesRefactoringAction.Refactor(replaceUDTMemberReferencesModel, rewriteSession);
-                }
+                return;
             }
 
-            var modelReplaceField = new ReplaceReferencesModel()
+            var replacePrivateUDTMemberReferencesModel 
+                = _replaceUDTMemberReferencesModelFactory.Create(udtFields.Select(f => f.Declaration).Cast<VariableDeclaration>());
+
+            foreach (var udtfield in udtFields)
+            {
+                InitializeModel(replacePrivateUDTMemberReferencesModel, udtfield);
+            }
+
+            _replacePrivateUDTMemberReferencesRefactoringAction.Refactor(replacePrivateUDTMemberReferencesModel, rewriteSession);
+        }
+
+        private void ReplaceEncapsulatedFieldReferences(IEnumerable<IEncapsulateFieldCandidate> nonPrivateUDTFields, IObjectStateUDT objectStateUDTField, IRewriteSession rewriteSession)
+        {
+            if (!nonPrivateUDTFields.Any())
+            {
+                return;
+            }
+
+            var replaceReferencesModel = new ReplaceReferencesModel()
             {
                 ModuleQualifyExternalReferences = true,
             };
 
-            foreach (var field in model.SelectedFieldCandidates.Except(udtFields))
+            foreach (var field in nonPrivateUDTFields)
             {
-                foreach (var idRef in field.Declaration.References)
+                InitializeModel(replaceReferencesModel, field, objectStateUDTField);
+            }
+
+            _replaceReferencesRefactoringAction.Refactor(replaceReferencesModel, rewriteSession);
+        }
+
+        private void InitializeModel(ReplacePrivateUDTMemberReferencesModel model, IEncapsulateFieldCandidate udtfield)
+        {
+            foreach (var udtMember in model.UDTMembers)
+            {
+                var udtExpressions = new PrivateUDTMemberReferenceReplacementExpressions($"{udtfield.IdentifierName}.{udtMember.IdentifierName}")
                 {
-                    var replacementExpression = idRef.QualifiedModuleName == field.QualifiedModuleName
-                        ? field.Declaration.IsArray ? $"{model.ObjectStateUDTField.FieldIdentifier}.{field.BackingIdentifier}" : field.PropertyIdentifier
-                        : field.PropertyIdentifier;
-                    modelReplaceField.AssignReferenceReplacementExpression(idRef, replacementExpression);
+                    LocalReferenceExpression = udtMember.IdentifierName,
+                };
+
+                model.AssignUDTMemberReferenceExpressions(udtfield.Declaration as VariableDeclaration, udtMember, udtExpressions);
+            }
+        }
+
+        private void InitializeModel(ReplaceReferencesModel model, IEncapsulateFieldCandidate field, IObjectStateUDT objectStateUDTField)
+        {
+            foreach (var idRef in field.Declaration.References)
+            {
+                var replacementExpression = field.PropertyIdentifier;
+
+                if (idRef.QualifiedModuleName == field.QualifiedModuleName && field.Declaration.IsArray)
+                {
+                    replacementExpression = $"{objectStateUDTField.FieldIdentifier}.{field.BackingIdentifier}";
                 }
 
+                model.AssignReferenceReplacementExpression(idRef, replacementExpression);
             }
-            _replaceFieldReferencesRefactoringAction.Refactor(modelReplaceField, rewriteSession);
         }
 
         private void InsertNewContent(EncapsulateFieldUseBackingUDTMemberModel model, IRewriteSession rewriteSession)
         {
+            var aggregator = model.NewContentAggregator ?? _newContentAggregatorFactory.Create();
+            model.NewContentAggregator = null;
+
             var encapsulateFieldInsertNewCodeModel = new EncapsulateFieldInsertNewCodeModel(model.SelectedFieldCandidates)
             {
-                NewContentAggregator = model.NewContentAggregator,
+                NewContentAggregator = aggregator,
                 ObjectStateUDTField = model.ObjectStateUDTField
             };
 

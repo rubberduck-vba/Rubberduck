@@ -33,21 +33,35 @@ namespace Rubberduck.Refactorings.EncapsulateFieldInsertNewCode
         {
             if (model.CreateNewObjectStateUDT)
             {
-                var objectStateFieldDeclaration = _encapsulateFieldCodeBuilder.BuildObjectStateFieldDeclaration(model.ObjectStateUDTField);
-                model.NewContentAggregator.AddNewContent(NewContentType.DeclarationBlock, objectStateFieldDeclaration);
-
-                var objectStateTypeDeclarationBlock = _encapsulateFieldCodeBuilder.BuildUserDefinedTypeDeclaration(model.ObjectStateUDTField, model.SelectedFieldCandidates);
-                model.NewContentAggregator.AddNewContent(NewContentType.UserDefinedTypeDeclaration, objectStateTypeDeclarationBlock);
+                CreateObjectStateUDTElements(model, rewriteSession);
             }
 
-            LoadNewPropertyBlocks(model, rewriteSession);
+            CreateBackingFields(model, rewriteSession);
+
+            CreatePropertyBlocks(model, rewriteSession);
 
             InsertBlocks(model, rewriteSession);
-
-            model.NewContentAggregator = null;
         }
 
-        private void LoadNewPropertyBlocks(EncapsulateFieldInsertNewCodeModel model, IRewriteSession rewriteSession)
+        private void CreateObjectStateUDTElements(EncapsulateFieldInsertNewCodeModel model, IRewriteSession rewriteSession)
+        {
+            var objectStateFieldDeclaration = _encapsulateFieldCodeBuilder.BuildObjectStateFieldDeclaration(model.ObjectStateUDTField);
+            model.NewContentAggregator.AddNewContent(NewContentType.DeclarationBlock, objectStateFieldDeclaration);
+
+            var objectStateTypeDeclarationBlock = _encapsulateFieldCodeBuilder.BuildUserDefinedTypeDeclaration(model.ObjectStateUDTField, model.SelectedFieldCandidates);
+            model.NewContentAggregator.AddNewContent(NewContentType.UserDefinedTypeDeclaration, objectStateTypeDeclarationBlock);
+        }
+
+        private void CreateBackingFields(EncapsulateFieldInsertNewCodeModel model, IRewriteSession rewriteSession)
+        {
+            foreach (var field in model.CandidatesRequiringNewBackingFields)
+            {
+                var newFieldDeclaration = _encapsulateFieldCodeBuilder.BuildFieldDeclaration(field.Declaration, field.BackingIdentifier);
+                model.NewContentAggregator.AddNewContent(NewContentType.DeclarationBlock, newFieldDeclaration);
+            }
+        }
+
+        private void CreatePropertyBlocks(EncapsulateFieldInsertNewCodeModel model, IRewriteSession rewriteSession)
         {
             var propAttributeSets = model.SelectedFieldCandidates
                 .SelectMany(f => _propertyAttributeSetsGenerator.GeneratePropertyAttributeSets(f)).ToList();

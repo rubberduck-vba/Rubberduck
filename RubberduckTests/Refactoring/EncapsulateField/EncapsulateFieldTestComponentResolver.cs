@@ -35,8 +35,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 case nameof(EncapsulateFieldRefactoringAction):
                     return new EncapsulateFieldRefactoringAction(
                         ResolveImpl<EncapsulateFieldUseBackingFieldRefactoringAction>(), 
-                        ResolveImpl<EncapsulateFieldUseBackingUDTMemberRefactoringAction>(),
-                        ResolveImpl<INewContentAggregatorFactory>()) as T;
+                        ResolveImpl<EncapsulateFieldUseBackingUDTMemberRefactoringAction>()) as T;
 
                 case nameof(ReplaceReferencesRefactoringAction):
                     return new ReplaceReferencesRefactoringAction(_rewritingManager) as T;

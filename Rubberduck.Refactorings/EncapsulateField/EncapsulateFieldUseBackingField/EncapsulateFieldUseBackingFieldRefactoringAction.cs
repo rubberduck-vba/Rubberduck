@@ -1,5 +1,4 @@
-﻿using Rubberduck.Common;
-using Rubberduck.Parsing;
+﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -46,41 +45,27 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
                 return;
             }
 
-            if (model.NewContentAggregator is null)
-            {
-                model.NewContentAggregator = _newContentAggregatorFactory.Create();
-            }
+            var publicFieldsDeclaredInListsToReDeclareAsPrivateBackingFields 
+                = model.SelectedFieldCandidates
+                    .Where(f => f.Declaration.IsDeclaredInList()
+                        && !f.Declaration.HasPrivateAccessibility())
+                    .ToList();
 
-            ModifyFields(model, rewriteSession);
+            ModifyFields(model, publicFieldsDeclaredInListsToReDeclareAsPrivateBackingFields, rewriteSession);
 
             ModifyReferences(model, rewriteSession);
 
-            InsertNewContent(model, rewriteSession);
+            InsertNewContent(model, publicFieldsDeclaredInListsToReDeclareAsPrivateBackingFields, rewriteSession);
         }
 
-        private void ModifyFields(EncapsulateFieldUseBackingFieldModel model, IRewriteSession rewriteSession)
+        private void ModifyFields(EncapsulateFieldUseBackingFieldModel model, List<IEncapsulateFieldCandidate> publicFieldsToRemove, IRewriteSession rewriteSession)
         {
-            var fieldDeclarationsToDeleteAndReplace = model.SelectedFieldCandidates
-                .Where(f => f.Declaration.IsDeclaredInList() 
-                    && !f.Declaration.HasPrivateAccessibility())
-                .ToList();
-
             var rewriter = rewriteSession.CheckOutModuleRewriter(model.QualifiedModuleName);
-            rewriter.RemoveVariables(fieldDeclarationsToDeleteAndReplace.Select(f => f.Declaration)
+            rewriter.RemoveVariables(publicFieldsToRemove.Select(f => f.Declaration)
                 .Cast<VariableDeclaration>());
 
-            foreach (var field in fieldDeclarationsToDeleteAndReplace)
-            {
-                var targetIdentifier = field.Declaration.Context.GetText().Replace(field.IdentifierName, field.BackingIdentifier);
-                var newField = field.Declaration.IsTypeSpecified
-                    ? $"{Tokens.Private} {targetIdentifier}"
-                    : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {field.Declaration.AsTypeName}";
-
-                model.NewContentAggregator.AddNewContent(NewContentType.DeclarationBlock, newField);
-            }
-
             var retainedFieldDeclarations = model.SelectedFieldCandidates
-                .Except(fieldDeclarationsToDeleteAndReplace)
+                .Except(publicFieldsToRemove)
                 .ToList();
 
             if (retainedFieldDeclarations.Any())
@@ -99,16 +84,20 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
                 .Where(f => (f.Declaration.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
                     && f.Declaration.AsTypeDeclaration.Accessibility == Accessibility.Private);
 
-            ReplaceEncapsulatedPrivateUserDefinedTypeMemberReferences(privateUdtInstances, rewriteSession);
+            ReplaceUDTMemberReferencesOfPrivateUDTFields(privateUdtInstances, rewriteSession);
 
             ReplaceEncapsulatedFieldReferences(model.SelectedFieldCandidates.Except(privateUdtInstances), rewriteSession);
         }
 
-        private void InsertNewContent(EncapsulateFieldUseBackingFieldModel model, IRewriteSession rewriteSession)
+        private void InsertNewContent(EncapsulateFieldUseBackingFieldModel model, List<IEncapsulateFieldCandidate> candidatesRequiringNewBackingFields, IRewriteSession rewriteSession)
         {
+            var aggregator = model.NewContentAggregator ?? _newContentAggregatorFactory.Create();
+            model.NewContentAggregator = null;
+
             var encapsulateFieldInsertNewCodeModel = new EncapsulateFieldInsertNewCodeModel(model.SelectedFieldCandidates)
             {
-                NewContentAggregator = model.NewContentAggregator
+                CandidatesRequiringNewBackingFields = candidatesRequiringNewBackingFields,
+                NewContentAggregator = aggregator
             };
 
             _encapsulateFieldInsertNewCodeRefactoringAction.Refactor(encapsulateFieldInsertNewCodeModel, rewriteSession);
@@ -120,42 +109,57 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
             {
                 ModuleQualifyExternalReferences = true
             };
+
             foreach (var field in fieldCandidates)
             {
-                foreach (var idRef in field.Declaration.References)
-                {
-                    var replacementExpression = idRef.QualifiedModuleName == field.QualifiedModuleName
-                        ? field.Declaration.IsArray ? field.BackingIdentifier : field.PropertyIdentifier
-                        : field.PropertyIdentifier;
-
-                    model.AssignReferenceReplacementExpression(idRef, replacementExpression);
-                }
+                InitializeModel(model, field);
             }
 
             _replaceReferencesRefactoringAction.Refactor(model, rewriteSession);
         }
 
-        private void ReplaceEncapsulatedPrivateUserDefinedTypeMemberReferences(IEnumerable<IEncapsulateFieldCandidate> udtFieldCandidates, IRewriteSession rewriteSession)
+        private void ReplaceUDTMemberReferencesOfPrivateUDTFields(IEnumerable<IEncapsulateFieldCandidate> udtFieldCandidates, IRewriteSession rewriteSession)
         {
             if (!udtFieldCandidates.Any())
             {
                 return;
             }
 
-            var replacePrivateUDTMemberReferencesModel = _replaceUDTMemberReferencesModelFactory.Create(udtFieldCandidates.Select(f => f.Declaration).Cast<VariableDeclaration>());
+            var replacePrivateUDTMemberReferencesModel 
+                = _replaceUDTMemberReferencesModelFactory.Create(udtFieldCandidates.Select(f => f.Declaration).Cast<VariableDeclaration>());
 
             foreach (var udtfield in udtFieldCandidates)
             {
-                foreach (var udtMember in replacePrivateUDTMemberReferencesModel.UDTMembers)
-                {
-                    var udtExpressions = new PrivateUDTMemberReferenceReplacementExpressions($"{udtfield.IdentifierName}.{udtMember.IdentifierName}")
-                    {
-                        LocalReferenceExpression = udtMember.IdentifierName.CapitalizeFirstLetter(),
-                    };
+                InitializeModel(replacePrivateUDTMemberReferencesModel, udtfield);
+            }
+            _replaceUDTMemberReferencesRefactoringAction.Refactor(replacePrivateUDTMemberReferencesModel, rewriteSession);
+        }
 
-                    replacePrivateUDTMemberReferencesModel.AssignUDTMemberReferenceExpressions(udtfield.Declaration as VariableDeclaration, udtMember, udtExpressions);
+        private void InitializeModel(ReplaceReferencesModel model, IEncapsulateFieldCandidate field)
+        {
+            foreach (var idRef in field.Declaration.References)
+            {
+                var replacementExpression = field.PropertyIdentifier;
+
+                if (idRef.QualifiedModuleName == field.QualifiedModuleName && field.Declaration.IsArray)
+                {
+                    replacementExpression = field.BackingIdentifier;
                 }
-                _replaceUDTMemberReferencesRefactoringAction.Refactor(replacePrivateUDTMemberReferencesModel, rewriteSession);
+
+                model.AssignReferenceReplacementExpression(idRef, replacementExpression);
+            }
+        }
+
+        private void InitializeModel(ReplacePrivateUDTMemberReferencesModel model, IEncapsulateFieldCandidate udtfield)
+        {
+            foreach (var udtMember in model.UDTMembers)
+            {
+                var udtExpressions = new PrivateUDTMemberReferenceReplacementExpressions($"{udtfield.IdentifierName}.{udtMember.IdentifierName}")
+                {
+                    LocalReferenceExpression = udtMember.IdentifierName,
+                };
+
+                model.AssignUDTMemberReferenceExpressions(udtfield.Declaration as VariableDeclaration, udtMember, udtExpressions);
             }
         }
 

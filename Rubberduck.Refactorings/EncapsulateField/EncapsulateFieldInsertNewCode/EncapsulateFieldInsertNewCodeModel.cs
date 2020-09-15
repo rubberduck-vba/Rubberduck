@@ -25,5 +25,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldInsertNewCode
         public IObjectStateUDT ObjectStateUDTField { set; get; }
 
         public IReadOnlyCollection<IEncapsulateFieldCandidate> SelectedFieldCandidates { get; }
+
+        public IEnumerable<IEncapsulateFieldCandidate> CandidatesRequiringNewBackingFields { set;  get; } = Enumerable.Empty<IEncapsulateFieldCandidate>();
     }
 }
