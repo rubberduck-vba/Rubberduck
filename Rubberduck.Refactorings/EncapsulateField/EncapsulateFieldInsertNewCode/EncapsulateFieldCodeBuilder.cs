@@ -78,9 +78,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var selected = candidates.Where(c => c.EncapsulateFlag);
 
             var newUDTMembers = selected
-                .Select(m => (m.Declaration as VariableDeclaration, m.BackingIdentifier));
+                .Select(m => (m.Declaration, m.BackingIdentifier));
 
-            return _codeBuilder.BuildUserDefinedTypeDeclaration(objectStateUDT.AsTypeName, newUDTMembers);
+            _codeBuilder.TryBuildUserDefinedTypeDeclaration(objectStateUDT.AsTypeName, newUDTMembers, out var declaration);
+
+            return declaration ?? string.Empty;
         }
 
         public string BuildObjectStateFieldDeclaration(IObjectStateUDT objectStateUDT)

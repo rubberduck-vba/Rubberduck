@@ -27,19 +27,24 @@ namespace Rubberduck.Refactorings.CreateUDTMember
                 throw new ArgumentException();
             }
 
+            var rewriter = rewriteSession.CheckOutModuleRewriter(model.UserDefinedTypeTargets.First().QualifiedModuleName);
+
             foreach (var udt in model.UserDefinedTypeTargets)
             {
-                InsertNewMembersBlock(BuildNewMembersBlock(udt, model[udt]),
-                    GetInsertionIndex(udt.Context as VBAParser.UdtDeclarationContext),
-                    rewriteSession.CheckOutModuleRewriter(udt.QualifiedModuleName));
+                var newMembersBlock = BuildNewMembersBlock(udt, model);
+
+                var insertionIndex = (udt.Context as VBAParser.UdtDeclarationContext)
+                    .END_TYPE().Symbol.TokenIndex - 1;
+
+                rewriter.InsertBefore(insertionIndex, $"{newMembersBlock}");
             }
         }
 
-        private string BuildNewMembersBlock(Declaration udt, IEnumerable<(VariableDeclaration Field, string UDTMemberIdentifier)> newMemberPairs)
+        private string BuildNewMembersBlock(Declaration udt, CreateUDTMemberModel model)
         {
             var indentation = DetermineIndentationFromLastMember(udt);
 
-            var newMemberStatements = GenerateUserDefinedMemberDeclarations(newMemberPairs, indentation);
+            var newMemberStatements = GenerateUserDefinedMemberDeclarations(model[udt], indentation);
 
             return string.Concat(newMemberStatements);
         }
@@ -55,13 +60,17 @@ namespace Rubberduck.Refactorings.CreateUDTMember
             return endOfStatementContextPrototype.GetText();
         }
 
-        private IEnumerable<string> GenerateUserDefinedMemberDeclarations(IEnumerable<(VariableDeclaration Field, string UDTMemberIdentifier)> newMemberPairs, string indentation)
-            => newMemberPairs.Select(pr => _codeBuilder.UDTMemberDeclaration(pr.UDTMemberIdentifier, pr.Field.AsTypeName, indentation));
-
-        private static void InsertNewMembersBlock(string newMembersBlock, int insertionIndex, IModuleRewriter rewriter) 
-            => rewriter.InsertBefore(insertionIndex, $"{newMembersBlock}");
-
-        private int GetInsertionIndex(VBAParser.UdtDeclarationContext udtContext) 
-            => udtContext.END_TYPE().Symbol.TokenIndex - 1;
+        private IEnumerable<string> GenerateUserDefinedMemberDeclarations(IEnumerable<(Declaration Prototype, string UDTMemberIdentifier)> newMemberPairs, string indentation)
+        {
+            var declarations = new List<string>();
+            foreach (var (Prototype, UDTMemberIdentifier) in newMemberPairs)
+            {
+                if (_codeBuilder.TryBuildUDTMemberDeclaration(UDTMemberIdentifier, Prototype, out var declaration, indentation))
+                {
+                    declarations.Add(declaration);
+                }
+            }
+            return declarations;
+        }
     }
 }

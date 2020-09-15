@@ -1,5 +1,4 @@
-﻿using Rubberduck.Common;
-using Rubberduck.Parsing;
+﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
@@ -35,7 +34,7 @@ namespace Rubberduck.Refactorings
         /// <summary>
         /// Generates a Property Get codeblock based on the prototype declaration 
         /// </summary>
-        /// <param name="prototype">VariableDeclaration or UserDefinedTypeMember</param>
+        /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
         /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
         /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
         bool TryBuildPropertyGetCodeBlock(Declaration prototype,
@@ -47,7 +46,7 @@ namespace Rubberduck.Refactorings
         /// <summary>
         /// Generates a Property Let codeblock based on the prototype declaration 
         /// </summary>
-        /// <param name="prototype">VariableDeclaration or UserDefinedTypeMember</param>
+        /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
         /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
         /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
         bool TryBuildPropertyLetCodeBlock(Declaration prototype,
@@ -60,7 +59,7 @@ namespace Rubberduck.Refactorings
         /// <summary>
         /// Generates a Property Set codeblock based on the prototype declaration 
         /// </summary>
-        /// <param name="prototype">VariableDeclaration or UserDefinedTypeMember</param>
+        /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
         /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
         /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
         bool TryBuildPropertySetCodeBlock(Declaration prototype,
@@ -71,16 +70,20 @@ namespace Rubberduck.Refactorings
             string parameterIdentifier = null);
 
         /// <summary>
-        /// Generates a UserDefinedType (UDT) declaration using a <c>VariableDeclaration</c> as the prototype for
-        /// creating the UserDefinedTypeMember.
+        /// Generates a UserDefinedType (UDT) declaration using the prototype declarations for
+        /// creating the UserDefinedTypeMember declarations.
         /// </summary>
-        /// <remarks>  At least one <c>VariableDeclaration</c> must be provided and 
-        /// all <c>UDTMemberIdentifiers</c> must be unique
+        /// <remarks>No validation or conflict analysis is applied to the identifiers.
         /// </remarks>
-        /// <param name="memberPrototypes">Collection of prototypes and their required identifier.  Must have 1 or more elements</param>
-        string BuildUserDefinedTypeDeclaration(string udtIdentifier, IEnumerable<(VariableDeclaration Field, string UDTMemberIdentifier)> memberPrototypes, Accessibility accessibility = Accessibility.Private);
+        /// <param name="memberPrototypes">DeclarationTypes with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
+        bool TryBuildUserDefinedTypeDeclaration(string udtIdentifier, IEnumerable<(Declaration Prototype, string UDTMemberIdentifier)> memberPrototypes, out string declaration, Accessibility accessibility = Accessibility.Private);
 
-        string UDTMemberDeclaration(string identifier, string typeName, string indention = null);
+        /// <summary>
+        /// Generates a <c>UserDefinedTypeMember</c> declaration expression based on the prototype declaration
+        /// </summary>
+        /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
+        /// <param name="indentation">Defaults is 4 spaces</param>
+        bool TryBuildUDTMemberDeclaration(string identifier, Declaration prototype, out string declaration, string indentation = null);
     }
 
     public class CodeBuilder : ICodeBuilder
@@ -119,7 +122,7 @@ namespace Rubberduck.Refactorings
                 throw new ArgumentException();
             }
 
-            if (!(prototype is VariableDeclaration || prototype.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember)))
+            if (!IsValidPrototypeDeclarationType(prototype.DeclarationType))
             {
                 return false;
             }
@@ -243,47 +246,64 @@ namespace Rubberduck.Refactorings
         private static string TypeToken(DeclarationType declarationType)
             => _declarationTypeTokens[declarationType].TypeToken;
 
-        public string BuildUserDefinedTypeDeclaration(string udtIdentifier, IEnumerable<(VariableDeclaration Field, string UDTMemberIdentifier)> memberPrototypes, Accessibility accessibility = Accessibility.Private)
+        public bool TryBuildUserDefinedTypeDeclaration(string udtIdentifier, IEnumerable<(Declaration Prototype, string UDTMemberIdentifier)> memberPrototypes, out string declaration, Accessibility accessibility = Accessibility.Private)
         {
-            if (!memberPrototypes.Any())
+            if (udtIdentifier is null
+                ||!memberPrototypes.Any()
+                || memberPrototypes.Any(p => p.Prototype is null || p.UDTMemberIdentifier is null)
+                || memberPrototypes.Any(mp => !IsValidPrototypeDeclarationType(mp.Prototype.DeclarationType)))
             {
-                throw new ArgumentOutOfRangeException();
+                declaration = string.Empty;
+                return false;
             }
 
-            var hasDuplicateMemberNames = memberPrototypes.Select(pr => pr.UDTMemberIdentifier.ToUpperInvariant())
-                .GroupBy(uc => uc).Any(g => g.Count() > 1);
-            if (hasDuplicateMemberNames)
-            {
-                throw new ArgumentException();
-            }
+            var blockLines = memberPrototypes
+                .Select(m => BuildUDTMemberDeclaration(m.UDTMemberIdentifier, m.Prototype))
+                .ToList();
 
-            var newMemberTokenPairs = memberPrototypes.Select(m => (GetDeclarationIdentifier(m.Field, m.UDTMemberIdentifier), m.Field.AsTypeName))
-                .Cast<(string Identifier, string AsTypeName)>();
-
-            var blockLines = new List<string>();
-
-            blockLines.Add($"{accessibility.TokenString()} {Tokens.Type} {udtIdentifier}");
-
-            blockLines.AddRange(newMemberTokenPairs.Select(m => UDTMemberDeclaration(m.Identifier, m.AsTypeName)));
+            blockLines.Insert(0, $"{accessibility.TokenString()} {Tokens.Type} {udtIdentifier}");
 
             blockLines.Add($"{Tokens.End} {Tokens.Type}");
 
-            return string.Join(Environment.NewLine, blockLines);
+            declaration = string.Join(Environment.NewLine, blockLines);
+            return true;
         }
 
-        private static string GetDeclarationIdentifier(Declaration field, string udtMemberIdentifier)
+        public bool TryBuildUDTMemberDeclaration(string udtMemberIdentifier, Declaration prototype, out string declaration, string indentation = null)
         {
-            if (field.IsArray)
+            declaration = string.Empty;
+
+            if (udtMemberIdentifier is null
+                || prototype is null
+                || !IsValidPrototypeDeclarationType(prototype.DeclarationType))
             {
-                return field.Context.TryGetChildContext<VBAParser.SubscriptsContext>(out var ctxt)
+                return false;
+            }
+
+            declaration = BuildUDTMemberDeclaration(udtMemberIdentifier, prototype, indentation);
+            return true;
+        }
+
+        private static string BuildUDTMemberDeclaration(string udtMemberIdentifier, Declaration prototype, string indentation = null)
+        {
+            var identifierExpression = udtMemberIdentifier;
+            if (prototype.IsArray)
+            {
+                identifierExpression = prototype.Context.TryGetChildContext<VBAParser.SubscriptsContext>(out var ctxt)
                     ? $"{udtMemberIdentifier}({ctxt.GetText()})"
                     : $"{udtMemberIdentifier}()";
             }
-            return udtMemberIdentifier;
+
+            return $"{indentation ?? "    "}{identifierExpression} {Tokens.As} {prototype.AsTypeName}";
         }
 
-        public string UDTMemberDeclaration(string identifier, string typeName, string indention = null)
-            => $"{indention ?? "    "}{identifier} {Tokens.As} {typeName}";
+        private static bool IsValidPrototypeDeclarationType(DeclarationType declarationType)
+        {
+            return declarationType.HasFlag(DeclarationType.Variable)
+                || declarationType.HasFlag(DeclarationType.UserDefinedTypeMember)
+                || declarationType.HasFlag(DeclarationType.Constant)
+                || declarationType.HasFlag(DeclarationType.Function);
+        }
 
         private static bool IsEnumField(VariableDeclaration declaration)
             => IsMemberVariable(declaration)

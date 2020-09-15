@@ -65,7 +65,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             if (encapsulateFieldModel.ObjectStateUDTField.IsExistingDeclaration)
             {
                 var conversionPairs = encapsulateFieldModel.SelectedFieldCandidates
-                    .Select(c => (c.Declaration as VariableDeclaration, c.BackingIdentifier));
+                    .Select(c => (c.Declaration, c.BackingIdentifier));
 
                 var model = new CreateUDTMemberModel(encapsulateFieldModel.ObjectStateUDTField.AsTypeDeclaration, conversionPairs);
                 _createUDTMemberRefactoringAction.Refactor(model, rewriteSession);

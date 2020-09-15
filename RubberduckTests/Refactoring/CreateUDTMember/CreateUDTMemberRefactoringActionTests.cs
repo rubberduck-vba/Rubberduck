@@ -152,7 +152,7 @@ End Type
         {
             var udtDeclaration = GetUniquelyNamedDeclaration(state, DeclarationType.UserDefinedType, udtIdentifier);
 
-            var conversionPairs = new List<(VariableDeclaration, string)>();
+            var conversionPairs = new List<(Declaration, string)>();
             foreach (var (fieldID, udtMemberID) in fieldConversions)
             {
                 var fieldDeclaration = GetUniquelyNamedDeclaration(state, DeclarationType.Variable, fieldID) as VariableDeclaration;

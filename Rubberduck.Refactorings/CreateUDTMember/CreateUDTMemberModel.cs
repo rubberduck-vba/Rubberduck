@@ -7,14 +7,19 @@ namespace Rubberduck.Refactorings.CreateUDTMember
 {
     public class CreateUDTMemberModel : IRefactoringModel
     {
-        private Dictionary<Declaration, List<(VariableDeclaration prototype, string UDTMemberIdentifier)>> _targets { get; } = new Dictionary<Declaration, List<(VariableDeclaration, string)>>();
+        private Dictionary<Declaration, List<(Declaration prototype, string UDTMemberIdentifier)>> _targets { get; } = new Dictionary<Declaration, List<(Declaration, string)>>();
 
         public CreateUDTMemberModel()
         { }
 
-        public CreateUDTMemberModel(Declaration userDefinedType, IEnumerable<(VariableDeclaration prototype, string UserDefinedTypeMemberIdentifier)> conversionModels)
+        public CreateUDTMemberModel(Declaration userDefinedType, IEnumerable<(Declaration prototype, string UserDefinedTypeMemberIdentifier)> conversionModels)
         {
-            foreach ((VariableDeclaration prototype, string UDTMemberIdentifier) in conversionModels)
+            if (conversionModels.Any(cm => !IsValidPrototypeDeclarationType(cm.prototype.DeclarationType)))
+            {
+                throw new ArgumentException();
+            }
+
+            foreach ((Declaration prototype, string UDTMemberIdentifier) in conversionModels)
             {
                 AssignPrototypeToUserDefinedType(userDefinedType, prototype, UDTMemberIdentifier);
             }
@@ -22,10 +27,10 @@ namespace Rubberduck.Refactorings.CreateUDTMember
 
         public IReadOnlyCollection<Declaration> UserDefinedTypeTargets => _targets.Keys;
 
-        public IEnumerable<(VariableDeclaration prototype, string userDefinedTypeMemberIdentifier)> this[Declaration udt] 
+        public IEnumerable<(Declaration prototype, string userDefinedTypeMemberIdentifier)> this[Declaration udt] 
             => _targets[udt].Select(pr => (pr.prototype, pr.UDTMemberIdentifier));
 
-        private void AssignPrototypeToUserDefinedType(Declaration udt, VariableDeclaration prototype, string udtMemberIdentifierName = null)
+        private void AssignPrototypeToUserDefinedType(Declaration udt, Declaration prototype, string udtMemberIdentifierName = null)
         {
             if (!udt.DeclarationType.HasFlag(DeclarationType.UserDefinedType))
             {
@@ -34,7 +39,7 @@ namespace Rubberduck.Refactorings.CreateUDTMember
 
             if (!(_targets.TryGetValue(udt, out var memberPrototypes)))
             {
-                _targets.Add(udt, new List<(VariableDeclaration, string)>());
+                _targets.Add(udt, new List<(Declaration, string)>());
             }
             else
             {
@@ -49,6 +54,14 @@ namespace Rubberduck.Refactorings.CreateUDTMember
             }
 
             _targets[udt].Add((prototype, udtMemberIdentifierName ?? prototype.IdentifierName));
+        }
+
+        private static bool IsValidPrototypeDeclarationType(DeclarationType declarationType)
+        {
+            return declarationType.HasFlag(DeclarationType.Variable)
+                || declarationType.HasFlag(DeclarationType.UserDefinedTypeMember)
+                || declarationType.HasFlag(DeclarationType.Constant)
+                || declarationType.HasFlag(DeclarationType.Function);
         }
     }
 }
