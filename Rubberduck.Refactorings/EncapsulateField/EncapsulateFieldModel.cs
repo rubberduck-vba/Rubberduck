@@ -1,6 +1,6 @@
-﻿using Rubberduck.Refactorings.Common;
-using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
+﻿using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,16 +8,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldModel : IRefactoringModel
     {
-        private readonly IObjectStateUDT _defaultObjectStateUDT;
-
         public EncapsulateFieldModel(EncapsulateFieldUseBackingFieldModel backingFieldModel,
-            EncapsulateFieldUseBackingUDTMemberModel udtModel) 
+            EncapsulateFieldUseBackingUDTMemberModel udtModel,
+            IEncapsulateFieldConflictFinder conflictFinder) 
         {
             EncapsulateFieldUseBackingFieldModel = backingFieldModel;
             EncapsulateFieldUseBackingUDTMemberModel = udtModel;
-            ResetConflictDetection(EncapsulateFieldStrategy.UseBackingFields);
             ObjectStateUDTCandidates = udtModel.ObjectStateUDTCandidates;
-            _defaultObjectStateUDT = ObjectStateUDTCandidates.SingleOrDefault(os => !os.IsExistingDeclaration);
+            ConflictFinder = conflictFinder;
+            EncapsulateFieldUseBackingFieldModel.ConflictFinder = conflictFinder;
+            EncapsulateFieldUseBackingUDTMemberModel.ConflictFinder = conflictFinder;
         }
 
         public EncapsulateFieldUseBackingUDTMemberModel EncapsulateFieldUseBackingUDTMemberModel { get; }
@@ -26,16 +26,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IRefactoringPreviewProvider<EncapsulateFieldModel> PreviewProvider { set; get; }
 
+        public Action<EncapsulateFieldModel> StrategyChangedAction { set; get; } = (m) => { };
+
+        public Action<EncapsulateFieldModel> ObjectStateUDTChangedAction { set; get; } = (m) => { };
+
         public IReadOnlyCollection<IObjectStateUDT> ObjectStateUDTCandidates { private set; get; }
+
+        public IEncapsulateFieldConflictFinder ConflictFinder { set; get; }
 
         public IObjectStateUDT ObjectStateUDTField
         {
             set
             {
-                EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTField = value;
-                foreach (var candidate in EncapsulateFieldUseBackingUDTMemberModel.SelectedFieldCandidates)
+                if (EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTField != value)
                 {
-                    EncapsulateFieldUseBackingUDTMemberModel.ConflictFinder.AssignNoConflictIdentifiers(candidate);
+                    EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTField = value;
+                    ObjectStateUDTChangedAction(this);
                 }
             }
             get => EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
@@ -48,47 +54,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             set
             {
-                if (_strategy == value)
+                if (_strategy != value)
                 {
-                    return;
+                    _strategy = value;
+                    StrategyChangedAction(this);
                 }
-                _strategy = value;
-                ResetConflictDetection(_strategy);
             }
             get => _strategy;
-        }
-
-        private void ResetConflictDetection(EncapsulateFieldStrategy strategy)
-        {
-            var conflictFinder =
-                strategy == EncapsulateFieldStrategy.UseBackingFields
-                    ? EncapsulateFieldUseBackingFieldModel.ConflictFinder
-                    : EncapsulateFieldUseBackingUDTMemberModel.ConflictFinder;
-
-            foreach (var candidate in EncapsulateFieldUseBackingFieldModel.EncapsulationCandidates)
-            {
-                candidate.ConflictFinder = conflictFinder;
-                ResolveConflict(conflictFinder, candidate);
-            }
-
-            return;
-        }
-
-        private void ResolveConflict(IEncapsulateFieldConflictFinder conflictFinder, IEncapsulateFieldCandidate candidate)
-        {
-            conflictFinder.AssignNoConflictIdentifiers(candidate);
-            if (candidate is IUserDefinedTypeCandidate udtCandidate)
-            {
-                foreach (var member in udtCandidate.Members)
-                {
-                    conflictFinder.AssignNoConflictIdentifiers(member);
-                    if (member.WrappedCandidate is IUserDefinedTypeCandidate childUDT
-                        && childUDT.Declaration.AsTypeDeclaration.HasPrivateAccessibility())
-                    {
-                        ResolveConflict(conflictFinder, childUDT);
-                    }
-                }
-            }
         }
 
         public IReadOnlyCollection<IEncapsulateFieldCandidate> EncapsulationCandidates => EncapsulateFieldStrategy == EncapsulateFieldStrategy.UseBackingFields

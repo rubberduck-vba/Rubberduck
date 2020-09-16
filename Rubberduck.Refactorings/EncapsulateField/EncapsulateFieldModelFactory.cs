@@ -1,5 +1,4 @@
 ﻿using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using System;
 using System.Collections.Generic;
@@ -18,16 +17,19 @@ namespace Rubberduck.Refactorings
     {
         private readonly IEncapsulateFieldUseBackingUDTMemberModelFactory _useBackingUDTMemberModelFactory;
         private readonly IEncapsulateFieldUseBackingFieldModelFactory _useBackingFieldModelFactory;
-        private readonly IEncapsulateFieldCandidateCollectionFactory _fieldCandidateCollectionFactory;
+        private readonly IEncapsulateFieldCollectionsProviderFactory _encapsulateFieldCollectionsProviderFactory;
+        private readonly IEncapsulateFieldConflictFinderFactory _encapsulateFieldConflictFinderFactory;
 
         public EncapsulateFieldModelFactory(
             IEncapsulateFieldUseBackingUDTMemberModelFactory encapsulateFieldUseBackingUDTMemberModelFactory,
             IEncapsulateFieldUseBackingFieldModelFactory encapsulateFieldUseBackingFieldModelFactory,
-            IEncapsulateFieldCandidateCollectionFactory encapsulateFieldCandidateCollectionFactory)
+            IEncapsulateFieldCollectionsProviderFactory encapsulateFieldCollectionsProviderFactory,
+            IEncapsulateFieldConflictFinderFactory encapsulateFieldConflictFinderFactory)
         {
             _useBackingUDTMemberModelFactory = encapsulateFieldUseBackingUDTMemberModelFactory as IEncapsulateFieldUseBackingUDTMemberModelFactory;
             _useBackingFieldModelFactory = encapsulateFieldUseBackingFieldModelFactory;
-            _fieldCandidateCollectionFactory = encapsulateFieldCandidateCollectionFactory;
+            _encapsulateFieldCollectionsProviderFactory = encapsulateFieldCollectionsProviderFactory;
+            _encapsulateFieldConflictFinderFactory = encapsulateFieldConflictFinderFactory;
         }
 
         public EncapsulateFieldModel Create(Declaration target)
@@ -36,23 +38,29 @@ namespace Rubberduck.Refactorings
             {
                 throw new ArgumentException();
             }
-          
-            var fieldCandidates = _fieldCandidateCollectionFactory.Create(targetField.QualifiedModuleName);
 
-            var fieldEncapsulationModels = new List<FieldEncapsulationModel>() { new FieldEncapsulationModel(targetField) };
+            var fieldEncapsulationModels = new List<FieldEncapsulationModel>()
+            {
+                new FieldEncapsulationModel(targetField)
+            };
 
-            var useBackingFieldModel = _useBackingFieldModelFactory.Create(fieldCandidates, fieldEncapsulationModels);
+            var collectionsProvider = _encapsulateFieldCollectionsProviderFactory.Create(targetField.QualifiedModuleName);
 
-            var useBackingUDTMemberModel = _useBackingUDTMemberModelFactory.Create(fieldCandidates, fieldEncapsulationModels);
+            var useBackingFieldModel = _useBackingFieldModelFactory.Create(collectionsProvider, fieldEncapsulationModels);
+
+            var useBackingUDTMemberModel = _useBackingUDTMemberModelFactory.Create(collectionsProvider, fieldEncapsulationModels);
 
             var initialStrategy = useBackingUDTMemberModel.ObjectStateUDTField.IsExistingDeclaration
                 ? EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
                 : EncapsulateFieldStrategy.UseBackingFields;
 
-            return new EncapsulateFieldModel(useBackingFieldModel, useBackingUDTMemberModel)
+            var conflictFinder = _encapsulateFieldConflictFinderFactory.Create(collectionsProvider);
+            var model = new EncapsulateFieldModel(useBackingFieldModel, useBackingUDTMemberModel, conflictFinder)
             {
                 EncapsulateFieldStrategy = initialStrategy,
             };
+
+            return model;
         }
     }
 }

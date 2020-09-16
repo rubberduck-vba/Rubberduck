@@ -95,19 +95,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool TryValidateEncapsulationAttributes(out string errorMessage)
         {
             errorMessage = string.Empty;
-            if (!_wrapped.EncapsulateFlag)
+            if (!_wrapped.EncapsulateFlag || ConflictFinder is null)
             {
                 return true;
             }
 
-            if (_wrapped is IArrayCandidate ac)
+            if (_wrapped is IArrayCandidate ac
+                && ac.HasExternalRedimOperation(out errorMessage))
             {
-                if (ac.HasExternalRedimOperation(out errorMessage))
-                {
-                    return false;
-                }
+                return false;
             }
-            return ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
+
+            (bool IsValid, string ErrorMsg) = ConflictFinder.ValidateEncapsulationAttributes(this);
+            errorMessage = ErrorMsg;
+            return IsValid;
         }
 
         public override bool Equals(object obj)

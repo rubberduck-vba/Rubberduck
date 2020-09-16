@@ -90,8 +90,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public virtual bool TryValidateEncapsulationAttributes(out string errorMessage)
         {
-            errorMessage = string.Empty;
-            return ConflictFinder?.TryValidateEncapsulationAttributes(this, out errorMessage) ?? true;
+            (bool IsValid, string ErrorMsg) = ConflictFinder?.ValidateEncapsulationAttributes(this) ?? (true, string.Empty);
+
+            errorMessage = ErrorMsg;
+            return IsValid;
         }
 
         public virtual string TargetID => _target?.IdentifierName ?? IdentifierName;
@@ -110,11 +112,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 if (!_encapsulateFlag)
                 {
                     PropertyIdentifier = _fieldAndProperty.DefaultPropertyName;
+                    return;
                 }
-                else if (ConflictFinder != null)
-                {
-                    ConflictFinder.AssignNoConflictIdentifiers(this);
-                }
+
+                ConflictFinder?.AssignNoConflictIdentifiers(this);
             }
             get => _encapsulateFlag;
         }
@@ -137,7 +138,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private void TryRestoreNewFieldNameAsOriginalFieldIdentifierName()
         {
             var canNowUseOriginalFieldName = !_fieldAndProperty.TargetFieldName.IsEquivalentVBAIdentifierTo(_fieldAndProperty.Property)
-                && !(ConflictFinder?.IsConflictingProposedIdentifier(_fieldAndProperty.TargetFieldName, this, DeclarationType.Variable) ?? false);
+                && !(ConflictFinder?.IsConflictingIdentifier(this, _fieldAndProperty.TargetFieldName, out _) ?? false);
 
             if (canNowUseOriginalFieldName)
             {
@@ -148,12 +149,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             if (_fieldAndProperty.Field.IsEquivalentVBAIdentifierTo(_fieldAndProperty.TargetFieldName))
             {
                 _fieldAndProperty.Field = _fieldAndProperty.DefaultNewFieldName;
-                var isConflictingFieldIdentifier = ConflictFinder?.HasConflictingIdentifier(this, DeclarationType.Variable, out _) ?? false;
-                for (var count = 1; count < 10 && isConflictingFieldIdentifier; count++)
-                {
-                    BackingIdentifier = BackingIdentifier.IncrementEncapsulationIdentifier();
-                    isConflictingFieldIdentifier = ConflictFinder?.HasConflictingIdentifier(this, DeclarationType.Variable, out _) ?? false;
-                }
+                ConflictFinder?.AssignNoConflictIdentifiers(this);
             }
         }
 

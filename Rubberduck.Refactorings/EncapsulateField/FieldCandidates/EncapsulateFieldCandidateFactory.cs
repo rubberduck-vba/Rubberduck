@@ -14,12 +14,10 @@ namespace Rubberduck.Refactorings
     public class EncapsulateFieldCandidateFactory : IEncapsulateFieldCandidateFactory
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly ICodeBuilder _codeBuilder;
 
-        public EncapsulateFieldCandidateFactory(IDeclarationFinderProvider declarationFinderProvider, ICodeBuilder codeBuilder)
+        public EncapsulateFieldCandidateFactory(IDeclarationFinderProvider declarationFinderProvider)
         {
             _declarationFinderProvider = declarationFinderProvider;
-            _codeBuilder = codeBuilder;
         }
 
         public IEncapsulateFieldCandidate Create(Declaration target)

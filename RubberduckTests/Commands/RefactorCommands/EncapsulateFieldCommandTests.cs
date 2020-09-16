@@ -74,7 +74,6 @@ End Sub";
                 resolver.Resolve<EncapsulateFieldPreviewProvider>(),
                 resolver.Resolve<IEncapsulateFieldModelFactory>(),
                 userInteraction, 
-                rewritingManager, 
                 selectionService, 
                 selectedDeclarationProvider);
             var notifier = new EncapsulateFieldFailedNotifier(msgBox);

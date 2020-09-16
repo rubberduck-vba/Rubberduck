@@ -7,6 +7,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers;
+using System.Linq;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -94,7 +95,7 @@ Private Function First() As String
 End Function";
 
             var candidate = Support.RetrieveEncapsulateFieldCandidate(inputCode, "myBar", DeclarationType.Variable);
-            var result = candidate.ConflictFinder.IsConflictingProposedIdentifier("First", candidate, DeclarationType.Property);
+            var result = candidate.ConflictFinder.IsConflictingIdentifier(candidate, "First", out _);
             Assert.AreEqual(true, result);
         }
 
@@ -596,6 +597,102 @@ Private myType As MyType
 
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, fieldUT, DeclarationType.Variable, presenterAction);
             Assert.AreEqual(false, model[fieldUT].TryValidateEncapsulationAttributes(out var errorMessage), errorMessage);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void AddedFieldConflictsWithExistingUDTMemberName()
+        {
+            var fieldUT = "mFirstValue";
+            string inputCode =
+                $@"
+
+Private Type MyType
+    FirstValue As Integer
+    SecondValue As Integer
+End Type
+
+Private {fieldUT} As Double
+
+Private myType As MyType
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            var state = MockParser.CreateAndParse(vbe);
+            using (state)
+            {
+                var mTypeTarget = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
+                    .First(d => d.IdentifierName == "myType");
+
+                var mFirstTarget = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
+                    .First(d => d.IdentifierName == fieldUT);
+
+                var resolver = new EncapsulateFieldTestComponentResolver(state, null);
+
+                var collectionsProviderFactory = resolver.Resolve<IEncapsulateFieldCollectionsProviderFactory>();
+                var collectionsProvider = collectionsProviderFactory.Create(mTypeTarget.QualifiedModuleName);
+
+                var encapsulateFieldCandidates = collectionsProvider.EncapsulateFieldCandidates;
+
+                var finderFactory = resolver.Resolve<IEncapsulateFieldConflictFinderFactory>();
+                var conflictFinder = finderFactory.Create(collectionsProvider);
+
+                foreach (var candidate in encapsulateFieldCandidates)
+                {
+                    candidate.ConflictFinder = conflictFinder;
+                }
+
+                var mTypeCandidate = encapsulateFieldCandidates.Single(c => c.Declaration == mTypeTarget);
+                mTypeCandidate.EncapsulateFlag = true;
+
+                var mFirstCandidate = encapsulateFieldCandidates.Single(c => c.Declaration == mFirstTarget);
+
+                foreach (var candidate in encapsulateFieldCandidates)
+                {
+                    candidate.EncapsulateFlag = true;
+                }
+
+                var result = mFirstCandidate.TryValidateEncapsulationAttributes(out var errorMessage);
+                Assert.IsTrue(result, errorMessage);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void ObjectStateUDTFieldConflictsWithAssignedProperty()
+        {
+            var fieldUT = "mFirstValue";
+            string inputCode =
+                $@"
+
+Private {fieldUT} As Double
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            var state = MockParser.CreateAndParse(vbe);
+            using (state)
+            {
+                var mFirstTarget = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
+                    .First(d => d.IdentifierName == fieldUT) as VariableDeclaration;
+
+                var resolver = new EncapsulateFieldTestComponentResolver(state, null);
+
+                var modelFactory = resolver.Resolve<IEncapsulateFieldModelFactory>();
+                var model = modelFactory.Create(mFirstTarget);
+                var mFirstCandidate = model[mFirstTarget.IdentifierName];
+
+                mFirstCandidate.EncapsulateFlag = true;
+                mFirstCandidate.PropertyIdentifier = "This";
+
+                model.EncapsulateFieldStrategy = EncapsulateFieldStrategy.ConvertFieldsToUDTMembers;
+                var objectStateUDT = model.ObjectStateUDTField;
+
+                model.ConflictFinder.AssignNoConflictIdentifiers(objectStateUDT);
+
+                StringAssert.AreEqualIgnoringCase("this_1", objectStateUDT.IdentifierName);
+            }
         }
 
         protected override IRefactoring TestRefactoring(

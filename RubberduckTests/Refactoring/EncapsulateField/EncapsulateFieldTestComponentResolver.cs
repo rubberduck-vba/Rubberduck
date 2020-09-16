@@ -107,28 +107,30 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                     return new EncapsulateFieldModelFactory(
                         ResolveImpl<IEncapsulateFieldUseBackingUDTMemberModelFactory>(),
                         ResolveImpl<IEncapsulateFieldUseBackingFieldModelFactory>(),
-                        ResolveImpl<IEncapsulateFieldCandidateCollectionFactory>()
+                        ResolveImpl<IEncapsulateFieldCollectionsProviderFactory>(),
+                        ResolveImpl < IEncapsulateFieldConflictFinderFactory>()
                         ) as T;
 
                 case nameof(IEncapsulateFieldUseBackingUDTMemberModelFactory):
                     return new EncapsulateFieldUseBackingUDTMemberModelFactory(
-                        ResolveImpl<IEncapsulateFieldCandidateCollectionFactory>(),
-                        ResolveImpl<IObjectStateUserDefinedTypeFactory>(),
+                        ResolveImpl<IEncapsulateFieldCollectionsProviderFactory>(),
                         ResolveImpl< IEncapsulateFieldConflictFinderFactory>()) as T;
 
                 case nameof(IEncapsulateFieldUseBackingFieldModelFactory):
                     return new EncapsulateFieldUseBackingFieldModelFactory(
-                        ResolveImpl<IEncapsulateFieldCandidateCollectionFactory>(),
+                        ResolveImpl<IEncapsulateFieldCollectionsProviderFactory>(),
                         ResolveImpl< IEncapsulateFieldConflictFinderFactory>()) as T;
 
+                case nameof(IEncapsulateFieldCollectionsProviderFactory):
+                    return new EncapsulateFieldCollectionsProviderFactory(_declarationFinderProvider,
+                        ResolveImpl<IEncapsulateFieldCandidateFactory>(),
+                        ResolveImpl<IObjectStateUserDefinedTypeFactory>()) as T;
+
                 case nameof(IEncapsulateFieldCandidateFactory):
-                    return new EncapsulateFieldCandidateFactory(_declarationFinderProvider, new CodeBuilder()) as T;
+                    return new EncapsulateFieldCandidateFactory(_declarationFinderProvider) as T;
 
                 case nameof(IObjectStateUserDefinedTypeFactory):
                     return new ObjectStateUserDefinedTypeFactory() as T;
-
-                case nameof(IEncapsulateFieldCandidateCollectionFactory):
-                    return new EncapsulateFieldCandidateCollectionFactory(_declarationFinderProvider, ResolveImpl<IEncapsulateFieldCandidateFactory>()) as T;
 
                 case nameof(IEncapsulateFieldConflictFinderFactory):
                     return new EncapsulateFieldConflictFinderFactory(_declarationFinderProvider) as T;

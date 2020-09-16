@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
@@ -17,7 +16,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class EncapsulateFieldRefactoring : InteractiveRefactoringBase<EncapsulateFieldModel>
     {
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
-        private readonly IRewritingManager _rewritingManager;
         private readonly EncapsulateFieldRefactoringAction _refactoringAction;
         private readonly EncapsulateFieldPreviewProvider _previewProvider;
         private readonly IEncapsulateFieldModelFactory _modelFactory;
@@ -27,7 +25,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             EncapsulateFieldPreviewProvider previewProvider,
             IEncapsulateFieldModelFactory encapsulateFieldModelFactory,
             RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
-            IRewritingManager rewritingManager,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider)
                 :base(selectionProvider, userInteraction)
@@ -35,21 +32,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _refactoringAction = refactoringAction;
             _previewProvider = previewProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
-            _rewritingManager = rewritingManager;
             _modelFactory = encapsulateFieldModelFactory;
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
             var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
-            if (selectedDeclaration == null
-                || selectedDeclaration.DeclarationType != DeclarationType.Variable
-                || selectedDeclaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
-            {
-                return null;
-            }
 
-            return selectedDeclaration;
+            var isInvalidSelection = selectedDeclaration == null
+                || selectedDeclaration.DeclarationType != DeclarationType.Variable
+                || selectedDeclaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
+
+            return isInvalidSelection ? null : selectedDeclaration;
         }
 
         protected override EncapsulateFieldModel InitializeModel(Declaration target)
@@ -68,6 +62,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             model.PreviewProvider = _previewProvider;
 
+            model.StrategyChangedAction = OnStrategyChanged;
+
+            model.ObjectStateUDTChangedAction = OnObjectStateUDTChanged;
+
+            model.ConflictFinder.AssignNoConflictIdentifiers(model.EncapsulationCandidates);
+
             return model;
         }
 
@@ -79,6 +79,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
 
             _refactoringAction.Refactor(model);
+        }
+
+        private void OnStrategyChanged(EncapsulateFieldModel model)
+        {
+            var candidates = model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.UseBackingFields
+                ? model.EncapsulateFieldUseBackingFieldModel.EncapsulationCandidates
+                : model.EncapsulateFieldUseBackingUDTMemberModel.EncapsulationCandidates;
+
+            model.ConflictFinder.AssignNoConflictIdentifiers(candidates);
+        }
+
+        private void OnObjectStateUDTChanged(EncapsulateFieldModel model)
+        {
+            model.ConflictFinder.AssignNoConflictIdentifiers(model.EncapsulateFieldUseBackingUDTMemberModel.EncapsulationCandidates);
         }
     }
 }

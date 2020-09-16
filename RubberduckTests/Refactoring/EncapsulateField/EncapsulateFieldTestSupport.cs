@@ -111,19 +111,18 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             => RefactoredCode(codeString.Code, codeString.CaretPosition.ToOneBased(), presenterAdjustment, expectedException, executeViaActiveSelection);
 
         public IRefactoring SupportTestRefactoring(
-            IRewritingManager rewritingManager, 
+            IRewritingManager rewritingManager,
             RubberduckParserState state,
-            RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction, 
+            RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
             ISelectionService selectionService)
         {
             var resolver = new EncapsulateFieldTestComponentResolver(state, rewritingManager);
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            return new EncapsulateFieldRefactoring(resolver.Resolve<EncapsulateFieldRefactoringAction>(), 
-                resolver.Resolve<EncapsulateFieldPreviewProvider>(), 
+            return new EncapsulateFieldRefactoring(resolver.Resolve<EncapsulateFieldRefactoringAction>(),
+                resolver.Resolve<EncapsulateFieldPreviewProvider>(),
                 resolver.Resolve<IEncapsulateFieldModelFactory>(),
-                userInteraction, 
-                rewritingManager, 
-                selectionService, 
+                userInteraction,
+                selectionService,
                 selectedDeclarationProvider);
         }
 
@@ -149,6 +148,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 var resolver = new EncapsulateFieldTestComponentResolver(state, null);
 
                 var model = resolver.Resolve<IEncapsulateFieldModelFactory>().Create(match);
+
+                model.ConflictFinder.AssignNoConflictIdentifiers(model[match.IdentifierName]);
 
                 return model[match.IdentifierName];
             }
@@ -239,7 +240,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         public string StateUDT_FieldName { set; get; }
 
-        public TestEncapsulationAttributes this[string fieldName] 
+        public TestEncapsulationAttributes this[string fieldName]
             => EncapsulateFieldAttributes.Where(efa => efa.TargetFieldName == fieldName).Single();
 
         public IEnumerable<TestEncapsulationAttributes> EncapsulateFieldAttributes => _userInput;

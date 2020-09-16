@@ -1,4 +1,5 @@
-﻿using Rubberduck.Refactorings.EncapsulateField;
+﻿using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,20 +19,20 @@ namespace Rubberduck.Refactorings
         /// <c>IEncapsulateFieldCandidate</c> instances created by <c>EncapsulateFieldCandidateCollectionFactory</c>.  
         /// This function is intended for exclusive use by <c>EncapsulateFieldModelFactory</c>
         /// </summary>
-        EncapsulateFieldUseBackingFieldModel Create(IReadOnlyCollection<IEncapsulateFieldCandidate> candidates, IEnumerable<FieldEncapsulationModel> requests);
+        EncapsulateFieldUseBackingFieldModel Create(IEncapsulateFieldCollectionsProvider collectionsProvider, IEnumerable<FieldEncapsulationModel> requests);
     }
 
     public class EncapsulateFieldUseBackingFieldModelFactory : IEncapsulateFieldUseBackingFieldModelFactory
     {
-        private readonly IEncapsulateFieldCandidateCollectionFactory _fieldCandidateCollectionFactory;
+        private readonly IEncapsulateFieldCollectionsProviderFactory _collectionProviderFactory;
         private readonly IEncapsulateFieldConflictFinderFactory _conflictFinderFactory;
 
         public EncapsulateFieldUseBackingFieldModelFactory(
-            IEncapsulateFieldCandidateCollectionFactory encapsulateFieldCandidateCollectionFactory,
+            IEncapsulateFieldCollectionsProviderFactory encapsulateFieldCollectionsProviderFactory,
             IEncapsulateFieldConflictFinderFactory encapsulateFieldConflictFinderFactory)
         {
-            _fieldCandidateCollectionFactory = encapsulateFieldCandidateCollectionFactory;
             _conflictFinderFactory = encapsulateFieldConflictFinderFactory;
+            _collectionProviderFactory = encapsulateFieldCollectionsProviderFactory;
         }
 
         public EncapsulateFieldUseBackingFieldModel Create(IEnumerable<FieldEncapsulationModel> requests)
@@ -41,13 +42,13 @@ namespace Rubberduck.Refactorings
                 return new EncapsulateFieldUseBackingFieldModel(Enumerable.Empty<IEncapsulateFieldCandidate>());
             }
 
-            var fieldCandidates = _fieldCandidateCollectionFactory.Create(requests.First().Declaration.QualifiedModuleName);
-            return Create(fieldCandidates, requests);
+            var collectionsProvider = _collectionProviderFactory.Create(requests.First().Declaration.QualifiedModuleName);
+            return Create(collectionsProvider, requests);
         }
 
-        public EncapsulateFieldUseBackingFieldModel Create(IReadOnlyCollection<IEncapsulateFieldCandidate> candidates, IEnumerable<FieldEncapsulationModel> requests)
+        public EncapsulateFieldUseBackingFieldModel Create(IEncapsulateFieldCollectionsProvider collectionsProvider, IEnumerable<FieldEncapsulationModel> requests)
         {
-            var fieldCandidates = candidates.ToList();
+            var fieldCandidates = collectionsProvider.EncapsulateFieldCandidates.ToList();
 
             foreach (var request in requests)
             {
@@ -60,7 +61,8 @@ namespace Rubberduck.Refactorings
                 }
             }
 
-            var conflictsFinder = _conflictFinderFactory.CreateEncapsulateFieldUseBackingFieldConflictFinder(fieldCandidates);
+            var conflictsFinder = _conflictFinderFactory.Create(collectionsProvider);
+
             fieldCandidates.ForEach(c => c.ConflictFinder = conflictsFinder);
 
             return new EncapsulateFieldUseBackingFieldModel(fieldCandidates)

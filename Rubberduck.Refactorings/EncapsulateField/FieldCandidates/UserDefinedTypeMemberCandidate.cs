@@ -74,6 +74,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     }
                     return;
                 }
+
                 var valueChanged = _encapsulateFlag != value;
                 _encapsulateFlag = value;
 

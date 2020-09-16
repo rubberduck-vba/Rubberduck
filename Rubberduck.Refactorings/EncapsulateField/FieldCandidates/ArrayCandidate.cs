@@ -43,7 +43,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 return false;
             }
-            return ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
+
+            (bool IsValid, string ErrorMsg) =  ConflictFinder?.ValidateEncapsulationAttributes(this) ?? (true, string.Empty);
+            errorMessage = ErrorMsg;
+            return IsValid;
         }
 
         public string UDTMemberDeclaration
