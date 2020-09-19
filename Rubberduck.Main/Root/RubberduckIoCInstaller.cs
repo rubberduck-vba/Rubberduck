@@ -411,8 +411,8 @@ namespace Rubberduck.Root
             container.Register(Component.For<IEncapsulateFieldModelFactory>()
                 .ImplementedBy<EncapsulateFieldModelFactory>()
                 .LifestyleSingleton());
-            container.Register(Component.For<IEncapsulateFieldCandidateCollectionFactory>()
-                .ImplementedBy<EncapsulateFieldCandidateCollectionFactory>()
+            container.Register(Component.For<IEncapsulateFieldCollectionsProviderFactory>()
+                .ImplementedBy<EncapsulateFieldCollectionsProviderFactory>()
                 .LifestyleSingleton());
             container.Register(Component.For<IObjectStateUserDefinedTypeFactory>()
                 .ImplementedBy<ObjectStateUserDefinedTypeFactory>()
