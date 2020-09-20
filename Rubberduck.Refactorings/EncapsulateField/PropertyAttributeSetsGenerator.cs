@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -132,8 +133,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 BackingField = candidate.BackingIdentifier,
                 AsTypeName = candidate.PropertyAsTypeName,
                 RHSParameterIdentifier = Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam,
-                GeneratePropertyLet = candidate.ImplementLet,
-                GeneratePropertySet = candidate.ImplementSet,
+                GeneratePropertyLet = !candidate.IsReadOnly && !candidate.Declaration.IsObject && !candidate.Declaration.IsArray,
+                GeneratePropertySet = !candidate.IsReadOnly && !candidate.Declaration.IsArray && (candidate.Declaration.IsObject || candidate.Declaration.AsTypeName == Tokens.Variant),
                 UsesSetAssignment = candidate.Declaration.IsObject,
                 Declaration = candidate.Declaration
             };

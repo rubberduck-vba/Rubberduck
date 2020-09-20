@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using System;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -7,20 +8,23 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         IObjectStateUDT ObjectStateUDT { set; get; }
         IEncapsulateFieldCandidate WrappedCandidate { get; }
+        string UserDefinedTypeMemberIdentifier { set; get; }
     }
 
+    /// <summary>
+    /// EncapsulateFieldAsUDTMemberCandidate wraps an IEncapusulateFieldCandidate instance
+    /// for the purposes of declaring its backing field as a UserDefinedTypeMember
+    /// within an existing or new UserDefinedType
+    /// </summary>
     public class EncapsulateFieldAsUDTMemberCandidate : IEncapsulateFieldAsUDTMemberCandidate
     {
-        private int _hashCode;
-        private readonly string _uniqueID;
+        private readonly int _hashCode;
         private IEncapsulateFieldCandidate _wrapped;
         public EncapsulateFieldAsUDTMemberCandidate(IEncapsulateFieldCandidate candidate, IObjectStateUDT objStateUDT)
         {
             _wrapped = candidate;
-            PropertyIdentifier = _wrapped.PropertyIdentifier;
             ObjectStateUDT = objStateUDT;
-            _uniqueID = BuildUniqueID(candidate, objStateUDT);
-            _hashCode = _uniqueID.GetHashCode();
+            _hashCode = $"{candidate.QualifiedModuleName.Name}.{candidate.IdentifierName}".GetHashCode();
         }
 
         public IEncapsulateFieldCandidate WrappedCandidate => _wrapped;
@@ -31,9 +35,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set
             {
                 _objectStateUDT = value;
-                if (_objectStateUDT?.Declaration == Declaration)
+                if (_objectStateUDT?.Declaration == _wrapped.Declaration)
                 {
-                    EncapsulateFlag = false;
+                    //Cannot wrap itself if it is used as the ObjectStateUDT 
+                    _wrapped.EncapsulateFlag = false;
                 }
             }
             get => _objectStateUDT;
@@ -49,30 +54,25 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _wrapped.EncapsulateFlag;
         }
 
+        public string UserDefinedTypeMemberIdentifier
+        {
+            set => PropertyIdentifier = value;
+            get => PropertyIdentifier;
+        }
+
         public string PropertyIdentifier
         {
             set => _wrapped.PropertyIdentifier = value;
             get => _wrapped.PropertyIdentifier;
         }
 
+        public virtual Action<string> BackingIdentifierMutator { get; } = null;
+
+        public string BackingIdentifier => PropertyIdentifier;
+
         public string PropertyAsTypeName => _wrapped.PropertyAsTypeName;
 
-        public string BackingIdentifier
-        {
-            set { }
-            get => PropertyIdentifier;
-        }
-        public string BackingAsTypeName => Declaration.AsTypeName;
-
-        public bool CanBeReadWrite
-        {
-            set => _wrapped.CanBeReadWrite = value;
-            get => _wrapped.CanBeReadWrite;
-        }
-
-        public bool ImplementLet => _wrapped.ImplementLet;
-
-        public bool ImplementSet => _wrapped.ImplementSet;
+        public bool CanBeReadWrite => !_wrapped.Declaration.IsArray;
 
         public bool IsReadOnly
         {
@@ -94,19 +94,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool TryValidateEncapsulationAttributes(out string errorMessage)
         {
-            errorMessage = string.Empty;
-            if (!_wrapped.EncapsulateFlag || ConflictFinder is null)
-            {
-                return true;
-            }
-
-            if (_wrapped is IArrayCandidate ac
-                && ac.HasExternalRedimOperation(out errorMessage))
-            {
-                return false;
-            }
-
-            (bool IsValid, string ErrorMsg) = ConflictFinder.ValidateEncapsulationAttributes(this);
+            (bool IsValid, string ErrorMsg) = ConflictFinder?.ValidateEncapsulationAttributes(this) ?? (true, string.Empty);
             errorMessage = ErrorMsg;
             return IsValid;
         }
@@ -115,12 +103,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             return obj != null
                 && obj is EncapsulateFieldAsUDTMemberCandidate convertWrapper
-                && BuildUniqueID(convertWrapper, convertWrapper.ObjectStateUDT) == _uniqueID;
+                && convertWrapper.QualifiedModuleName == QualifiedModuleName
+                && convertWrapper.IdentifierName == IdentifierName;
         }
 
         public override int GetHashCode() => _hashCode;
-
-        private static string BuildUniqueID(IEncapsulateFieldCandidate candidate, IObjectStateUDT field) 
-            => $"{candidate.QualifiedModuleName.Name}.{field.IdentifierName}.{candidate.IdentifierName}";
     }
 }

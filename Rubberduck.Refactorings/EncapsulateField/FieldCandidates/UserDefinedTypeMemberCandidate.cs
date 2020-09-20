@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using System;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -26,10 +27,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string AsTypeName => WrappedCandidate.AsTypeName;
 
-        public string BackingIdentifier { set; get; }
-
-        public string BackingAsTypeName => Declaration.AsTypeName;
-
         public IUserDefinedTypeCandidate UDTField { private set; get; }
 
         public IEncapsulateFieldConflictFinder ConflictFinder
@@ -44,6 +41,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
             => PropertyIdentifier;
 
         public string PropertyIdentifier { set; get; }
+
+        public string BackingIdentifier { get; }
+
+        public Action<string> BackingIdentifierMutator { get; } = null;
 
         public Declaration Declaration => WrappedCandidate.Declaration;
 
@@ -79,6 +80,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 _encapsulateFlag = value;
 
                 PropertyIdentifier = WrappedCandidate.PropertyIdentifier;
+
                 if (_encapsulateFlag && valueChanged && ConflictFinder != null)
                 {
                     ConflictFinder.AssignNoConflictIdentifiers(this);
@@ -93,21 +95,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _encapsulateFlag;
         }
 
-        public bool CanBeReadWrite
-        {
-            set => WrappedCandidate.CanBeReadWrite = value;
-            get => WrappedCandidate.CanBeReadWrite;
-        }
+        public bool CanBeReadWrite => !Declaration.IsArray;
+
         public bool HasValidEncapsulationAttributes => true;
 
         public QualifiedModuleName QualifiedModuleName
             => WrappedCandidate.QualifiedModuleName;
 
         public string PropertyAsTypeName => WrappedCandidate.PropertyAsTypeName;
-
-        public bool ImplementLet => WrappedCandidate.ImplementLet;
-
-        public bool ImplementSet => WrappedCandidate.ImplementSet;
 
         public override bool Equals(object obj)
         {

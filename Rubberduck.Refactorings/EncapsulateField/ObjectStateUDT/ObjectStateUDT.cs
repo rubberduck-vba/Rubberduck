@@ -13,7 +13,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         Declaration Declaration { get; }
         string TypeIdentifier { set; get; }
-        string FieldDeclarationBlock { get; }
         string FieldIdentifier { set; get; }
         bool IsExistingDeclaration { get; }
         Declaration AsTypeDeclaration { get; }
@@ -33,10 +32,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private static string _defaultNewFieldName = "this";
         private readonly IUserDefinedTypeCandidate _wrappedUDTField;
-        private readonly int _hashCode;
 
         public ObjectStateUDT(IUserDefinedTypeCandidate udtField)
-            : this(udtField.Declaration.AsTypeName)
+            : this(udtField.IdentifierName, udtField.Declaration.AsTypeName)
         {
             if (!udtField.TypeDeclarationIsPrivate)
             {
@@ -44,25 +42,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
 
             QualifiedModuleName = udtField.QualifiedModuleName;
-            FieldIdentifier = udtField.IdentifierName;
             _wrappedUDTField = udtField;
-            _hashCode = ($"{QualifiedModuleName.Name}.{_wrappedUDTField.IdentifierName}").GetHashCode();
         }
 
         public ObjectStateUDT(QualifiedModuleName qualifiedModuleName)
-            :this($"T{qualifiedModuleName.ComponentName.CapitalizeFirstLetter()}")
+            :this(_defaultNewFieldName, $"T{qualifiedModuleName.ComponentName.CapitalizeFirstLetter()}")
         {
             QualifiedModuleName = qualifiedModuleName;
         }
 
-        private ObjectStateUDT(string typeIdentifier)
+        private ObjectStateUDT(string fieldIdentifier, string typeIdentifier)
         {
-            FieldIdentifier = _defaultNewFieldName;
+            FieldIdentifier = fieldIdentifier;
             TypeIdentifier = typeIdentifier;
         }
-
-        public string FieldDeclarationBlock
-            => $"{Accessibility.Private} {IdentifierName} {Tokens.As} {AsTypeName}";
 
         public string IdentifierName => _wrappedUDTField?.IdentifierName ?? FieldIdentifier;
 
@@ -76,13 +69,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set
             {
                 _isSelected = value;
-                if (_wrappedUDTField != null)
+                if (_isSelected && IsExistingDeclaration)
                 {
-                    _wrappedUDTField.IsSelectedObjectStateUDT = value;
-                    if (_isSelected && IsExistingDeclaration)
-                    {
-                        _wrappedUDTField.EncapsulateFlag = false;
-                    }
+                    _wrappedUDTField.EncapsulateFlag = false;
                 }
             }
             get => _isSelected;
@@ -103,19 +92,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public override bool Equals(object obj)
         {
-            if (obj is IObjectStateUDT stateUDT && stateUDT.FieldIdentifier == FieldIdentifier)
-            {
-                return true;
-            }
-
-            if (obj is IEncapsulateFieldRefactoringElement fd && fd.IdentifierName == IdentifierName)
-            {
-                return true;
-            }
-
-            return false;
+            return (obj is IObjectStateUDT stateUDT && stateUDT.FieldIdentifier == FieldIdentifier)
+                || (obj is IEncapsulateFieldRefactoringElement fd && fd.IdentifierName == IdentifierName);
         }
 
-        public override int GetHashCode() => _hashCode;
+        public override int GetHashCode() => $"{QualifiedModuleName.Name}.{FieldIdentifier}".GetHashCode();
     }
 }

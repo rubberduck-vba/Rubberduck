@@ -1,4 +1,6 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
@@ -16,6 +18,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         void AssignNoConflictIdentifiers(IEncapsulateFieldCandidate candidate);
         void AssignNoConflictIdentifiers(IObjectStateUDT stateUDT);
         void AssignNoConflictIdentifiers(IEnumerable<IEncapsulateFieldCandidate> candidates);
+        void AssignNoConflictBackingFieldIdentifier(IEncapsulateFieldCandidate candidate);
     }
 
     public class EncapsulateFieldConflictFinder : IEncapsulateFieldConflictFinder
@@ -47,7 +50,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _fieldCandidates = candidates.ToList();
 
             _udtMemberCandidates = new List<IUserDefinedTypeMemberCandidate>();
-            _fieldCandidates.ForEach(c => LoadUDTMembers(c));
+
+            _fieldCandidates.ForEach(c => LoadUDTMemberCandidates(c, _udtMemberCandidates));
 
             _allCandidates = _fieldCandidates.Concat(_udtMemberCandidates).ToList();
 
@@ -75,13 +79,23 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             var errorMessage = string.Empty;
 
-            var hasInvalidIdentifierOrHasConflicts = 
-                VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(field.PropertyIdentifier, declarationType, out errorMessage, field.Declaration.IsArray)
-                || IsConflictingIdentifier(field, field.PropertyIdentifier, out errorMessage)
-                || IsConflictingIdentifier(field, field.BackingIdentifier, out errorMessage)
-                || field is IEncapsulateFieldAsUDTMemberCandidate && ConflictsWithExistingUDTMembers(SelectedObjectStateUDT(), field.BackingIdentifier, out errorMessage);
+            if (field.Declaration.IsArray)
+            {
+                if (field.Declaration.References.Any(rf => rf.QualifiedModuleName != field.QualifiedModuleName
+                    && rf.Context.TryGetAncestor<VBAParser.RedimVariableDeclarationContext>(out _)))
+                {
+                    errorMessage = string.Format(RubberduckUI.EncapsulateField_ArrayHasExternalRedimFormat, field.IdentifierName);
+                }
+                return (!string.IsNullOrEmpty(errorMessage), errorMessage);
+            }
 
-            return (string.IsNullOrEmpty(errorMessage), errorMessage);
+            var hasConflictFreeValidIdentifiers = 
+                !VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(field.PropertyIdentifier, declarationType, out errorMessage, field.Declaration.IsArray)
+                && !IsConflictingIdentifier(field, field.PropertyIdentifier, out errorMessage)
+                && !IsConflictingIdentifier(field, field.BackingIdentifier, out errorMessage)
+                && !(field is IEncapsulateFieldAsUDTMemberCandidate && ConflictsWithExistingUDTMembers(SelectedObjectStateUDT(), field.BackingIdentifier, out errorMessage));
+
+            return (hasConflictFreeValidIdentifiers, errorMessage);
         }
 
         public bool IsConflictingIdentifier(IEncapsulateFieldCandidate field, string identifierToCompare, out string errorMessage)
@@ -98,20 +112,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             foreach (var candidate in candidates.Where(c => c.EncapsulateFlag))
             {
-                ResolveFieldConflicts(candidate);
+                ResolveIdentifierConflicts(candidate);
             }
         }
 
-        private void ResolveFieldConflicts(IEncapsulateFieldCandidate candidate)
+        private void ResolveIdentifierConflicts(IEncapsulateFieldCandidate candidate)
         {
             AssignNoConflictIdentifiers(candidate);
             if (candidate is IUserDefinedTypeCandidate udtCandidate)
             {
-                ResolveUDTMemberConflicts(udtCandidate.Members);
+                ResolveUDTMemberIdentifierConflicts(udtCandidate.Members);
             }
         }
 
-        private void ResolveUDTMemberConflicts(IEnumerable<IUserDefinedTypeMemberCandidate> members)
+        private void ResolveUDTMemberIdentifierConflicts(IEnumerable<IUserDefinedTypeMemberCandidate> members)
         {
             foreach (var member in members)
             {
@@ -119,18 +133,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 if (member.WrappedCandidate is IUserDefinedTypeCandidate childUDT
                     && childUDT.Declaration.AsTypeDeclaration.HasPrivateAccessibility())
                 {
-                    ResolveFieldConflicts(childUDT);
+                    ResolveIdentifierConflicts(childUDT);
                 }
             }
         }
 
         public void AssignNoConflictIdentifiers(IEncapsulateFieldCandidate candidate)
         {
-            if (candidate is IEncapsulateFieldAsUDTMemberCandidate)
+            if (candidate is IEncapsulateFieldAsUDTMemberCandidate udtMember)
             {
                 AssignIdentifier(
-                    () => ConflictsWithExistingUDTMembers(SelectedObjectStateUDT(), candidate.PropertyIdentifier, out _),
-                    () => IncrementPropertyIdentifier(candidate));
+                    () => ConflictsWithExistingUDTMembers(SelectedObjectStateUDT(), udtMember.UserDefinedTypeMemberIdentifier, out _),
+                    () => udtMember.UserDefinedTypeMemberIdentifier = udtMember.UserDefinedTypeMemberIdentifier.IncrementEncapsulationIdentifier());
                 return;
             }
 
@@ -141,15 +155,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public void AssignNoConflictIdentifiers(IObjectStateUDT stateUDT)
         {
             AssignIdentifier(
-                () => HasConflictingFieldIdentifier(stateUDT, stateUDT.FieldIdentifier),
-                () => stateUDT.FieldIdentifier = stateUDT.FieldIdentifier.IncrementEncapsulationIdentifier());
+                () => _existingUserUDTsAndEnums.Any(m => m.IdentifierName.IsEquivalentVBAIdentifierTo(stateUDT.TypeIdentifier)),
+                () => stateUDT.TypeIdentifier = stateUDT.TypeIdentifier.IncrementEncapsulationIdentifier());
 
             AssignIdentifier(
-                () => _existingUserUDTsAndEnums.Any(m => m.IdentifierName.IsEquivalentVBAIdentifierTo(stateUDT.TypeIdentifier)), 
-                () => stateUDT.TypeIdentifier = stateUDT.TypeIdentifier.IncrementEncapsulationIdentifier());
+                () => HasConflictingFieldIdentifier(stateUDT, stateUDT.FieldIdentifier),
+                () => stateUDT.FieldIdentifier = stateUDT.FieldIdentifier.IncrementEncapsulationIdentifier());
         }
 
-        private IObjectStateUDT SelectedObjectStateUDT() => _objectStateUDTs.SingleOrDefault(os => os.IsSelected);
+        private IObjectStateUDT SelectedObjectStateUDT() 
+            => _objectStateUDTs.SingleOrDefault(os => os.IsSelected);
 
         private static bool ConflictsWithExistingUDTMembers(IObjectStateUDT objectStateUDT, string identifier, out string errorMessage)
         {
@@ -161,26 +176,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return !string.IsNullOrEmpty(errorMessage);
         }
 
-        private void IncrementPropertyIdentifier(IEncapsulateFieldCandidate candidate)
-            => candidate.PropertyIdentifier = candidate.PropertyIdentifier.IncrementEncapsulationIdentifier();
-
         private void AssignNoConflictPropertyIdentifier(IEncapsulateFieldCandidate candidate)
         {
             AssignIdentifier(
                 () => IsConflictingIdentifier(candidate, candidate.PropertyIdentifier, out _),
-                () => IncrementPropertyIdentifier(candidate));
+                () => candidate.PropertyIdentifier = candidate.PropertyIdentifier.IncrementEncapsulationIdentifier());
         }
 
-        private void AssignNoConflictBackingFieldIdentifier(IEncapsulateFieldCandidate candidate)
+        public void AssignNoConflictBackingFieldIdentifier(IEncapsulateFieldCandidate candidate)
         {
-            //Private UserDefinedTypes are never used directly as a backing field - so never change their identifier.
-            //The backing fields for an encapsulated Private UDT are its members.
-            if (!(candidate is UserDefinedTypeMemberCandidate
-                || candidate is IUserDefinedTypeCandidate udtCandidate && udtCandidate.TypeDeclarationIsPrivate))
+            if (candidate.BackingIdentifierMutator != null)
             {
                 AssignIdentifier(
                     () => IsConflictingIdentifier(candidate, candidate.BackingIdentifier, out _),
-                    () => candidate.BackingIdentifier = candidate.BackingIdentifier.IncrementEncapsulationIdentifier());
+                    () => candidate.BackingIdentifierMutator(candidate.BackingIdentifier.IncrementEncapsulationIdentifier()));
             }
         }
 
@@ -200,13 +209,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private bool HasConflictIdentifiers(IEncapsulateFieldCandidate candidate, string identifierToCompare)
         {
-            if (_allCandidates.Where(c => c.TargetID != candidate.TargetID
-                && c.EncapsulateFlag
-                && c.PropertyIdentifier.IsEquivalentVBAIdentifierTo(identifierToCompare)).Any())
-            {
-                return true;
-            }
+            return HasInternalPropertyAndBackingFieldConflict(candidate)
+                || HasConflictsWithOtherEncapsulationPropertyIdentifiers(candidate, identifierToCompare)
+                || HasConflictsWithUnmodifiedPropertyAndFieldIdentifiers(candidate, identifierToCompare)
+                || HasConflictWithLocalDeclarationIdentifiers(candidate, identifierToCompare);
+        }
 
+        private bool HasInternalPropertyAndBackingFieldConflict(IEncapsulateFieldCandidate candidate) 
+            => candidate.BackingIdentifierMutator != null 
+                && candidate.EncapsulateFlag
+                && candidate.PropertyIdentifier.IsEquivalentVBAIdentifierTo(candidate.BackingIdentifier);
+
+        private bool HasConflictsWithOtherEncapsulationPropertyIdentifiers(IEncapsulateFieldCandidate candidate, string identifierToCompare) 
+            => _allCandidates.Where(c => c.TargetID != candidate.TargetID
+                && c.EncapsulateFlag
+                && c.PropertyIdentifier.IsEquivalentVBAIdentifierTo(identifierToCompare)).Any();
+
+        private bool HasConflictsWithUnmodifiedPropertyAndFieldIdentifiers(IEncapsulateFieldCandidate candidate, string identifierToCompare)
+        {
             var membersToEvaluate = _members.Where(d => d != candidate.Declaration);
 
             if (candidate is IEncapsulateFieldAsUDTMemberCandidate)
@@ -219,13 +239,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var nameConflictCandidates = membersToEvaluate.Where(member => !(member.IsLocalVariable() || member.IsLocalConstant()
                 || _declarationTypesThatNeverConflictWithFieldAndPropertyIdentifiers.Contains(member.DeclarationType)));
 
-            if (nameConflictCandidates.Any(m => m.IdentifierName.IsEquivalentVBAIdentifierTo(identifierToCompare)))
+            return nameConflictCandidates.Any(m => m.IdentifierName.IsEquivalentVBAIdentifierTo(identifierToCompare));
+        }
+
+        private bool HasConflictWithLocalDeclarationIdentifiers(IEncapsulateFieldCandidate candidate, string identifierToCompare)
+        {
+            var membersToEvaluate = _members.Where(d => d != candidate.Declaration);
+
+            if (candidate is IEncapsulateFieldAsUDTMemberCandidate)
             {
-                return true;
+                membersToEvaluate = membersToEvaluate.Except(
+                    _fieldCandidates.Where(fc => fc.EncapsulateFlag && fc.Declaration.DeclarationType.HasFlag(DeclarationType.Variable))
+                        .Select(f => f.Declaration));
             }
 
-            //Only check IdentifierReferences in the declaring module because IdentifierReferences in 
-            //other modules will be module-qualified.
+            //Only check IdentifierReferences in the declaring module because encapsulated field 
+            //references in other modules will be module-qualified.
             var candidateLocalReferences = candidate.Declaration.References.Where(rf => rf.QualifiedModuleName == candidate.QualifiedModuleName);
 
             var localDeclarationConflictCandidates = membersToEvaluate.Where(localDec => candidateLocalReferences
@@ -251,7 +280,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 .Where(fc => fc.EncapsulateFlag && fc.Declaration.DeclarationType.HasFlag(DeclarationType.Variable))
                 .Select(fc => fc.Declaration);
 
-            var nameConflictCandidates = 
+            var nameConflictCandidates =
                 _members.Except(fieldsToRemoveFromConflictCandidates)
                     .Where(member => !(member.IsLocalVariable() || member.IsLocalConstant()
                         || _declarationTypesThatNeverConflictWithFieldAndPropertyIdentifiers.Contains(member.DeclarationType)));
@@ -259,7 +288,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return nameConflictCandidates.Any(m => m.IdentifierName.IsEquivalentVBAIdentifierTo(identifierToCompare));
         }
 
-        private void LoadUDTMembers(IEncapsulateFieldCandidate candidate)
+        private void LoadUDTMemberCandidates(IEncapsulateFieldCandidate candidate, List<IUserDefinedTypeMemberCandidate> udtMemberCandidates)
         {
             if (!(candidate is IUserDefinedTypeCandidate udtCandidate))
             {
@@ -268,13 +297,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             foreach (var member in udtCandidate.Members)
             {
-                _udtMemberCandidates.Add(member);
+                udtMemberCandidates.Add(member);
 
                 if (member.WrappedCandidate is IUserDefinedTypeCandidate childUDT
                     && childUDT.Declaration.AsTypeDeclaration.HasPrivateAccessibility())
                 {
                     //recursive till a non-UserDefinedType member is found
-                    LoadUDTMembers(childUDT);
+                    LoadUDTMemberCandidates(childUDT, udtMemberCandidates);
                 }
             }
         }

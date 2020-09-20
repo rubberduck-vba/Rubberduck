@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
+using System;
 using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -9,15 +10,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
         IEnumerable<IUserDefinedTypeMemberCandidate> Members { get; }
         void AddMember(IUserDefinedTypeMemberCandidate member);
         bool TypeDeclarationIsPrivate { get; }
-        bool IsObjectStateUDTCandidate { set; get; }
-        bool IsSelectedObjectStateUDT { set; get; }
     }
 
     public class UserDefinedTypeCandidate : EncapsulateFieldCandidate, IUserDefinedTypeCandidate
     {
         public UserDefinedTypeCandidate(Declaration declaration)
             : base(declaration)
-        {}
+        {
+            BackingIdentifierMutator = Declaration.AsTypeDeclaration.HasPrivateAccessibility()
+                ? null
+                : base.BackingIdentifierMutator;
+        }
 
         public void AddMember(IUserDefinedTypeMemberCandidate member)
         {
@@ -30,15 +33,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool TypeDeclarationIsPrivate
             => Declaration.AsTypeDeclaration?.HasPrivateAccessibility() ?? false;
 
-        public bool IsSelectedObjectStateUDT { set; get; }
+        public override string BackingIdentifier =>
+            BackingIdentifierMutator is null
+                ? _fieldAndProperty.TargetFieldName
+                : _fieldAndProperty.Field;
 
-        public bool IsObjectStateUDTCandidate { set; get; }
-
-        public override string BackingIdentifier
-        {
-            get => TypeDeclarationIsPrivate ? _fieldAndProperty.TargetFieldName : _fieldAndProperty.Field;
-            set => _fieldAndProperty.Field = value;
-        }
+        public override Action<string> BackingIdentifierMutator { get; } 
 
         private IEncapsulateFieldConflictFinder _conflictsFinder;
         public override IEncapsulateFieldConflictFinder ConflictFinder
@@ -85,17 +85,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
         public override bool Equals(object obj)
-        {
-            if (obj is IUserDefinedTypeCandidate udt)
-            {
-                return udt.TargetID.Equals(TargetID);
-            }
-            return false;
-        }
+            => (obj is IUserDefinedTypeCandidate udt && udt.TargetID.Equals(TargetID));
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() => base.GetHashCode();
     }
 }

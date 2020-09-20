@@ -33,23 +33,14 @@ namespace Rubberduck.Refactorings
                 foreach (var udtMemberDeclaration in udtMembers)
                 {
                     var candidateUDTMember = new UserDefinedTypeMemberCandidate(Create(udtMemberDeclaration), udtField) as IUserDefinedTypeMemberCandidate;
-
                     udtField.AddMember(candidateUDTMember);
                 }
-
-                var udtVariablesOfSameType = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                    .Where(v => v.AsTypeDeclaration == udtField.Declaration.AsTypeDeclaration);
-
-                udtField.IsObjectStateUDTCandidate = udtField.TypeDeclarationIsPrivate
-                    && udtField.Declaration.HasPrivateAccessibility()
-                    && udtVariablesOfSameType.Count() == 1;
 
                 return udtField;
             }
             else if (target.IsArray)
             {
-                var arrayCandidate = new ArrayCandidate(target);
-                return arrayCandidate;
+                return new ArrayCandidate(target);
             }
 
             return new EncapsulateFieldCandidate(target);
