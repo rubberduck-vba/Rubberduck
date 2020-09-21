@@ -198,7 +198,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         private bool _selectionHasValidEncapsulationAttributes;
         public bool SelectionHasValidEncapsulationAttributes => _selectionHasValidEncapsulationAttributes;
 
-        public string PropertiesPreview => Model.PreviewProvider?.Preview(Model) ?? string.Empty;
+        public string PropertiesPreview => Model.PreviewRefactoring();
 
         public CommandBase SelectAllCommand { get; }
 

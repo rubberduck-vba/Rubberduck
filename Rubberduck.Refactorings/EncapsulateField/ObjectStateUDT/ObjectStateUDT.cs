@@ -4,6 +4,7 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -12,6 +13,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         Declaration Declaration { get; }
         string TypeIdentifier { set; get; }
         string FieldIdentifier { set; get; }
+        string FieldDeclarationBlock { get; }
         bool IsExistingDeclaration { get; }
         Declaration AsTypeDeclaration { get; }
         bool IsSelected { set; get; }
@@ -60,6 +62,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public Declaration Declaration => _wrappedUDTField?.Declaration;
 
         public string AsTypeName => _wrappedUDTField?.AsTypeName ?? TypeIdentifier;
+
+        public string FieldDeclarationBlock
+            => $"{Accessibility.Private} {IdentifierName} {Tokens.As} {AsTypeName}";
 
         private bool _isSelected;
         public bool IsSelected

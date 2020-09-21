@@ -29,6 +29,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public EncapsulateFieldUseBackingFieldModel EncapsulateFieldUseBackingFieldModel { get; }
 
+        public string PreviewRefactoring() => PreviewProvider?.Preview(this) ?? string.Empty;
+
         public IRefactoringPreviewProvider<EncapsulateFieldModel> PreviewProvider { set; get; }
 
         public Action<EncapsulateFieldModel> StrategyChangedAction { set; get; } = (m) => { };
