@@ -1,11 +1,6 @@
 ﻿using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings
 {
@@ -39,5 +34,4 @@ namespace Rubberduck.Refactorings
                 qualifiedModuleName);
         }
     }
-
 }

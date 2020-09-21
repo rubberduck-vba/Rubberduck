@@ -15,6 +15,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> EncapsulateFieldInsertNewCode { get; }
     }
 
+    /// <summary>
+    /// EncapsulateFieldRefactoringActionsProvider reduces the number of EncapsulateField refactoring action 
+    /// constructor parameters providing refactoring actions common to the aggregated EncapsulateFieldRefactoringActions
+    /// </summary>
     public class EncapsulateFieldRefactoringActionsProvider : IEncapsulateFieldRefactoringActionsProvider
     {
         private readonly ReplaceReferencesRefactoringAction _replaceReferences;

@@ -13,13 +13,35 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public interface INewContentAggregator
     {
+        /// <summary>
+        /// Allows gouping content blocks by <c>NewContentType</c>.
+        /// </summary>
         void AddNewContent(NewContentType contentType, string block);
+        /// <summary>
+        /// Allows gouping content blocks by an adhoc identifier.
+        /// </summary>
         void AddNewContent(string contentIdentifier, string block);
+        /// <summary>
+        /// Retrieves a block of content aggregated by <c>NewContentType</c>.
+        /// </summary>
+        /// <param name="newContentTypes"><c>NewContentType</c> blocks to aggregate</param>
         string RetrieveBlock(params NewContentType[] newContentTypes);
+        /// <summary>
+        /// Retrieves a block of content aggregated by a user-determined identifier.
+        /// </summary>
+        /// <param name="contentIdentifiers"><c>NewContentType</c> blocks to aggregate</param>
         string RetrieveBlock(params string[] contentIdentifiers);
+        /// <summary>
+        /// Sets default number of NewLines between blocks of code after
+        /// all retrieving block(s) of code.  The default value is 2.
+        /// </summary>
         int NewLineLimit { set; get; }
     }
 
+    /// <summary>
+    /// NewContentAggregator provides a repository for caching generated code blocks
+    /// and retrieving them as an aggregated single block of code organized by <c>NewContentType</c>.
+    /// </summary>
     public class NewContentAggregator : INewContentAggregator
     {
         private readonly static string _doubleSpace = $"{Environment.NewLine}{Environment.NewLine}";

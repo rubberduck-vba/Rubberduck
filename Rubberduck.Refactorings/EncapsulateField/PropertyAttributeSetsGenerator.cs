@@ -24,6 +24,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
         IReadOnlyCollection<PropertyAttributeSet> GeneratePropertyAttributeSets(IEncapsulateFieldCandidate candidate);
     }
 
+    /// <summary>
+    /// PropertyAttributeSetsGenerator operates on an <c>IEncapsulateFieldCandidate</c> instance to
+    /// generate a collection of <c>PropertyAttributeSet</c>s used by the EncapsulateField refactoring
+    /// actions to generate Property Let/Set/Get code blocks.
+    /// </summary>
+    /// <remarks>
+    /// Typically there is only a single <c>PropertyAttributeSet</c> in the collection.
+    /// In the case of a Private UserDefinedType, there will be a <c>PropertyAttributeSet</c>
+    /// for each UserDefinedTypeMember.
+    /// </remarks>
     public class PropertyAttributeSetsGenerator : IPropertyAttributeSetsGenerator
     {
         private Func<IEncapsulateFieldCandidate, string, string> _backingFieldQualifierFunc;

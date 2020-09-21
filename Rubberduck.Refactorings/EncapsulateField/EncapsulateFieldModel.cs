@@ -6,6 +6,11 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
+    /// <summary>
+    /// The EncapsulateFieldModel provides a facade to the EncapsulateFieldRefactoring
+    /// by aggregating and simplifying access to the EncapsulateFieldUseBackingFieldModel 
+    /// and the EncapsulateFieldUseBackingUDTMemberModel.
+    /// </summary>
     public class EncapsulateFieldModel : IRefactoringModel
     {
         public EncapsulateFieldModel(EncapsulateFieldUseBackingFieldModel backingFieldModel,

@@ -1,5 +1,4 @@
-﻿using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactorings.EncapsulateField;
+﻿using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +10,12 @@ namespace Rubberduck.Refactorings
         /// <summary>
         /// Creates an <c>EncapsulateFieldUseBackingFieldModel</c> used by the <c>EncapsulateFieldUseBackingFieldRefactoringAction</c>.
         /// </summary>
-        /// <param name="clientTarget">Optional: <c>UserDefinedType</c> Field to include the Encapsulated Field(s)</param>
         EncapsulateFieldUseBackingFieldModel Create(IEnumerable<FieldEncapsulationModel> requests);
 
         /// <summary>
         /// Creates an <c>EncapsulateFieldUseBackingFieldModel</c> based upon collection of
         /// <c>IEncapsulateFieldCandidate</c> instances created by <c>EncapsulateFieldCandidateCollectionFactory</c>.  
-        /// This function is intended for exclusive use by <c>EncapsulateFieldModelFactory</c>
+        /// This function is intended for exclusive use by the <c>EncapsulateFieldModelFactory</c>
         /// </summary>
         EncapsulateFieldUseBackingFieldModel Create(IEncapsulateFieldCollectionsProvider collectionsProvider, IEnumerable<FieldEncapsulationModel> requests);
     }

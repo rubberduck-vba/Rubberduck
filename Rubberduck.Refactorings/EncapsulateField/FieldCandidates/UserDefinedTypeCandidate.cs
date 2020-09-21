@@ -72,6 +72,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             set
             {
+                base.EncapsulateFlag = value;
                 if (TypeDeclarationIsPrivate)
                 {
                     foreach (var member in Members)
@@ -79,7 +80,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         member.EncapsulateFlag = value;
                     }
                 }
-                base.EncapsulateFlag = value;
             }
             get => base.EncapsulateFlag;
         }

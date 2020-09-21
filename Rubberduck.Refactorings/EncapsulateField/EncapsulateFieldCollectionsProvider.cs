@@ -14,15 +14,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
     }
 
     /// <summary>
-    /// EncapsulateFieldCollectionsProvider generates collections IEncapsulateFieldCandidate
+    /// EncapsulateFieldCollectionsProvider generates collections of IEncapsulateFieldCandidate
     /// instances, IEncapsulateFieldAsUDTMemberCandidate instances, and IObjectStateUDT instances.
-    /// It provides these collections to the various objects of the EncapsulateFieldRefactoring 
-    /// so that they all operate in the same object sets.
+    /// It provides these collection instances to the various objects of the EncapsulateFieldRefactoring.
     /// </summary>
-    /// <remarks>
-    /// The EncapsulateFieldCollectionsProvider is the source of these collections for the various objects of 
-    /// the EncapsulateFieldRefactoring so that they all operate in the same set of object instances.
-    /// </remarks>
     public class EncapsulateFieldCollectionsProvider : IEncapsulateFieldCollectionsProvider
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;

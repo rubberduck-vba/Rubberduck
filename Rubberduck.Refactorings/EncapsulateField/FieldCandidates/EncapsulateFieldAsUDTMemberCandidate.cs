@@ -13,7 +13,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     /// <summary>
     /// EncapsulateFieldAsUDTMemberCandidate wraps an IEncapusulateFieldCandidate instance
-    /// for the purposes of declaring its backing field as a UserDefinedTypeMember
+    /// for the purposes of declaring it as a new UserDefinedTypeMember
     /// within an existing or new UserDefinedType
     /// </summary>
     public class EncapsulateFieldAsUDTMemberCandidate : IEncapsulateFieldAsUDTMemberCandidate

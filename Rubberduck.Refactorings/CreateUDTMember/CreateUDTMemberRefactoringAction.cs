@@ -8,6 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Rubberduck.Refactorings.CreateUDTMember
 {
+    /// <summary>
+    /// CreateUDTMemberRefactoringAction adds a UserDefinedTypeMember declaration (based on a
+    /// prototype declaation) to a UserDefinedType declaration.  The indentation of the first 
+    /// existing member is used by the inserted members.  The caller is responsible for identifier validation and name collision anaysis.
+    /// </summary>
     public class CreateUDTMemberRefactoringAction : CodeOnlyRefactoringActionBase<CreateUDTMemberModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;

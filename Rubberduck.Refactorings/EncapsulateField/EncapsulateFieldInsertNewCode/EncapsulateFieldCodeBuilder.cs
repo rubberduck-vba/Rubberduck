@@ -14,6 +14,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string BuildFieldDeclaration(Declaration target, string identifier);
     }
 
+    /// <summary>
+    /// EncapsulateFieldCodeBuilder wraps an ICodeBuilder instance to extend it for the 
+    /// specific needs of an EncapsulateField refactoring action.
+    /// </summary>
     public class EncapsulateFieldCodeBuilder : IEncapsulateFieldCodeBuilder
     {
         private const string FourSpaces = "    ";

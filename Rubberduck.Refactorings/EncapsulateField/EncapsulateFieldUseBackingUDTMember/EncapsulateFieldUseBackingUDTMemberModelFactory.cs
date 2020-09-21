@@ -12,13 +12,13 @@ namespace Rubberduck.Refactorings
         /// <summary>
         /// Creates an <c>EncapsulateFieldUseBackingUDTMemberModel</c> used by the <c>EncapsulateFieldUseBackingUDTMemberRefactoringAction</c>.
         /// </summary>
-        /// <param name="clientTarget">Optional: <c>UserDefinedType</c> Field to include the Encapsulated Field(s)</param>
+        /// <param name="userDefinedTypeTarget">Optional: <c>UserDefinedType</c> Field to host the Encapsulated Field(s)</param>
         EncapsulateFieldUseBackingUDTMemberModel Create(IEnumerable<FieldEncapsulationModel> requests, Declaration userDefinedTypeTarget = null);
 
         /// <summary>
         /// Creates an <c>EncapsulateFieldUseBackingUDTMemberModel</c> based upon collection of
         /// <c>IEncapsulateFieldCandidate</c> instances created by <c>EncapsulateFieldCandidateCollectionFactory</c>.  
-        /// This function is intended for exclusive use by <c>EncapsulateFieldModelFactory</c>
+        /// This function is intended for exclusive use by the <c>EncapsulateFieldModelFactory</c>
         /// </summary>
         EncapsulateFieldUseBackingUDTMemberModel Create(IEncapsulateFieldCollectionsProvider collectionsProvider, IEnumerable<FieldEncapsulationModel> requests, Declaration userDefinedTypeTarget = null);
     }
