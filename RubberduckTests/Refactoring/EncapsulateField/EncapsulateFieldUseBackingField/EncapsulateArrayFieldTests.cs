@@ -203,11 +203,12 @@ End Sub
 
             var field = model[fieldUT];
 
-            field.TryValidateEncapsulationAttributes(out var errorMessage);
+            var result = field.TryValidateEncapsulationAttributes(out var errorMessage);
 
             var expectedError = string.Format(RubberduckUI.EncapsulateField_ArrayHasExternalRedimFormat, field.IdentifierName);
 
             StringAssert.AreEqualIgnoringCase(expectedError, errorMessage);
+            Assert.IsFalse(result);
         }
 
         protected override IRefactoring TestRefactoring(

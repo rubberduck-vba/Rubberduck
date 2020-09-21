@@ -85,8 +85,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     && rf.Context.TryGetAncestor<VBAParser.RedimVariableDeclarationContext>(out _)))
                 {
                     errorMessage = string.Format(RubberduckUI.EncapsulateField_ArrayHasExternalRedimFormat, field.IdentifierName);
+                    return (false, errorMessage);
                 }
-                return (!string.IsNullOrEmpty(errorMessage), errorMessage);
+
+                if (field is IEncapsulateFieldAsUDTMemberCandidate udtMember
+                    && VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(udtMember.UserDefinedTypeMemberIdentifier, declarationType, out errorMessage, true))
+                {
+                    return (false, errorMessage);
+                }
             }
 
             var hasConflictFreeValidIdentifiers = 
