@@ -6,6 +6,7 @@ using System.Threading;
 using Antlr4.Runtime.Tree;
 using NLog;
 using Rubberduck.Parsing.Common;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Extensions;
@@ -29,12 +30,14 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         protected readonly IParserStateManager _parserStateManager;
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
         private readonly IReferenceRemover _referenceRemover;
+        private readonly IUserComProjectProvider _userComProjectProvider;
 
         public ReferenceResolveRunnerBase(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
-            IModuleToModuleReferenceManager moduletToModuleReferenceManager,
-            IReferenceRemover referenceRemover)
+            IModuleToModuleReferenceManager moduleToModuleReferenceManager,
+            IReferenceRemover referenceRemover, 
+            IUserComProjectProvider userComProjectProvider)
         {
             if (state == null)
             {
@@ -44,19 +47,24 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             {
                 throw new ArgumentNullException(nameof(parserStateManager));
             }
-            if (moduletToModuleReferenceManager == null)
+            if (moduleToModuleReferenceManager == null)
             {
-                throw new ArgumentNullException(nameof(moduletToModuleReferenceManager));
+                throw new ArgumentNullException(nameof(moduleToModuleReferenceManager));
             }
             if (referenceRemover == null)
             {
                 throw new ArgumentNullException(nameof(referenceRemover));
             }
+            if (userComProjectProvider == null)
+            {
+                throw new ArgumentNullException(nameof(userComProjectProvider));
+            }
 
             _state = state;
             _parserStateManager = parserStateManager;
-            _moduleToModuleReferenceManager = moduletToModuleReferenceManager;
+            _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
             _referenceRemover = referenceRemover;
+            _userComProjectProvider = userComProjectProvider;
         }
 
 
@@ -81,18 +89,18 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
             var parsingStageTimer = ParsingStageTimer.StartNew();
 
+            AddSuperTypeNamesForDocumentModules(_toResolve.AsReadOnly(), _state, _userComProjectProvider);
+            token.ThrowIfCancellationRequested();
+
+            parsingStageTimer.Stop();
+            parsingStageTimer.Log("Added supertypes for document modules in {0}ms.");
+
             ExecuteCompilationPasses(_toResolve.AsReadOnly(), token);
             token.ThrowIfCancellationRequested();
 
             parsingStageTimer.Stop();
             parsingStageTimer.Log("Executed compilation passes in {0}ms.");
             parsingStageTimer.Restart();
-
-            AddSupertypesForDocumentModules(_toResolve.AsReadOnly(), _state);
-            token.ThrowIfCancellationRequested();
-
-            parsingStageTimer.Stop();
-            parsingStageTimer.Log("Added supertypes for document modules in {0}ms.");
 
             var parseTreesToResolve = _state.ParseTrees.Where(kvp => _toResolve.Contains(kvp.Key)).ToList();
             token.ThrowIfCancellationRequested();
@@ -151,90 +159,46 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             }
         }
 
-        private void AddSupertypesForDocumentModules(IReadOnlyCollection<QualifiedModuleName> modules, RubberduckParserState state)
+        // skip IDispatch.. just about everything implements it and RD doesn't need to care about it; don't care about IUnknown either
+        private static readonly HashSet<string> IgnoredComInterfaces = new HashSet<string>(new[] { "IDispatch", "IUnknown" });
+
+        private void AddSuperTypeNamesForDocumentModules(IReadOnlyCollection<QualifiedModuleName> modules, RubberduckParserState state, IUserComProjectProvider userComProjectProvider)
         {
-            var documentModuleDeclarations = state.DeclarationFinder.UserDeclarations(DeclarationType.Document)
+            //todo: Figure out how to unit test this.
+
+            var documentModuleDeclarationsByProject = state.DeclarationFinder.UserDeclarations(DeclarationType.Document)
                 .OfType<DocumentModuleDeclaration>()
-                .Where(declaration => modules.Contains(declaration.QualifiedName.QualifiedModuleName));
+                .Where(declaration => modules.Contains(declaration.QualifiedName.QualifiedModuleName))
+                .GroupBy(declaration => declaration.ProjectId);
 
-            foreach (var documentDeclaration in documentModuleDeclarations)
+            foreach (var projectGroup in documentModuleDeclarationsByProject)
             {
-                var documentSupertype = SupertypeForDocument(documentDeclaration.QualifiedName.QualifiedModuleName, state);
-                if (documentSupertype != null)
+                var userComProject = userComProjectProvider.UserProject(projectGroup.Key);
+                var documents = projectGroup.ToDictionary(module => module.IdentifierName);
+                foreach (var comModule in userComProject.Members)
                 {
-                    documentDeclaration.AddSupertype(documentSupertype);
-                }
-            }
-        }
-
-        private Declaration SupertypeForDocument(QualifiedModuleName module, RubberduckParserState state)
-        {
-            if(module.ComponentType != ComponentType.Document)
-            {
-                return null;
-            }
-
-            var component = _state.ProjectsProvider.Component(module);
-            if (component == null || component.IsWrappingNullReference)
-            {
-                return null;
-            }
-
-            Declaration superType = null;
-            // TODO: Replace with TypeLibAPI call, require a solution regarding thread synchronization or caching
-            /*
-            using (var properties = component.Properties)
-            {
-                int documentPropertyCount = 0;
-                try
-                {
-                    if (properties == null || properties.IsWrappingNullReference)
+                    if (!(documents.TryGetValue(comModule.Name, out var document)))
                     {
-                        return null;
+                        continue;
                     }
-                    documentPropertyCount = properties.Count;
-                }
-                catch(COMException)
-                {
-                    return null;
-                }
-                
-                foreach (var coclass in state.CoClasses)
-                {
-                    try
-                    {
-                        if (coclass.Key.Count != documentPropertyCount)
-                        {
-                            continue;
-                        }
 
-                        var allNamesMatch = true;
-                        for (var i = 0; i < coclass.Key.Count; i++)
-                        {
-                            using (var property = properties[i+1])
-                            {
-                                if (coclass.Key[i] != property?.Name)
-                                {
-                                    allNamesMatch = false;
-                                    break;
-                                }
-                            }
-                        }
+                    var inheritedInterfaces = comModule is ComCoClass documentCoClass
+                        ? documentCoClass.ImplementedInterfaces
+                        : (comModule as ComInterface)?.InheritedInterfaces;
 
-                        if (allNamesMatch)
-                        {
-                            superType = coclass.Value;
-                            break;
-                        }
-                    }
-                    catch (COMException)
+                    //todo: Find a way to deal with the VBE's document type assignment behaviour not relying on an assumption about an interface naming convention. 
+                    var superTypeNames = inheritedInterfaces?
+                                             .Where(i => !i.IsRestricted && !IgnoredComInterfaces.Contains(i.Name))
+                                             .Select(i => i.Name)
+                                             .Select(name => name.StartsWith("_") ? name.Substring(1) : name) //This emulates the VBE's behaviour to allow assignment to the coclass type instead on the interface. 
+                                         ?? Enumerable.Empty<string>();
+
+                    foreach (var superTypeName in superTypeNames)
                     {
+                        document.AddSupertypeName(superTypeName);
                     }
                 }
             }
-            */
-
-            return superType;
         }
 
         protected void ResolveReferences(DeclarationFinder finder, QualifiedModuleName module, IParseTree tree, CancellationToken token)
