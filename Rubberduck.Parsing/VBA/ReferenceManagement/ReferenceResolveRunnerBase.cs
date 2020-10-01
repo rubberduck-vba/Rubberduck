@@ -182,16 +182,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                         continue;
                     }
 
-                    var inheritedInterfaces = comModule is ComCoClass documentCoClass
-                        ? documentCoClass.ImplementedInterfaces
-                        : (comModule as ComInterface)?.InheritedInterfaces;
-
-                    //todo: Find a way to deal with the VBE's document type assignment behaviour not relying on an assumption about an interface naming convention. 
-                    var superTypeNames = inheritedInterfaces?
-                                             .Where(i => !i.IsRestricted && !IgnoredComInterfaces.Contains(i.Name))
-                                             .Select(i => i.Name)
-                                             .Select(name => name.StartsWith("_") ? name.Substring(1) : name) //This emulates the VBE's behaviour to allow assignment to the coclass type instead on the interface. 
-                                         ?? Enumerable.Empty<string>();
+                    var superTypeNames = SuperTypeNamesForDocumentFromComType(comModule);
 
                     foreach (var superTypeName in superTypeNames)
                     {
@@ -199,6 +190,29 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     }
                 }
             }
+        }
+
+        private static IEnumerable<string> SuperTypeNamesForDocumentFromComType(IComType comModule)
+        {
+            var inheritedInterfaces = comModule is ComCoClass documentCoClass
+                ? documentCoClass.ImplementedInterfaces
+                : (comModule as ComInterface)?.InheritedInterfaces;
+
+            //todo: Find a way to deal with the VBE's document type assignment behaviour not relying on an assumption about an interface naming convention. 
+            var superTypeNames = (inheritedInterfaces?
+                                      .Where(i => !i.IsRestricted && !IgnoredComInterfaces.Contains(i.Name))
+                                      .Select(i => i.Name)
+                                  ?? Enumerable.Empty<string>())
+                .ToList();
+
+            //This emulates the VBE's behaviour to allow assignment to the coclass type instead on the interface.
+            var additionalSuperTypes = superTypeNames
+                .Where(name => name.StartsWith("_"))
+                .Select(name => name.Substring(1))
+                .ToList();
+
+            superTypeNames.AddRange(additionalSuperTypes);
+            return superTypeNames;
         }
 
         protected void ResolveReferences(DeclarationFinder finder, QualifiedModuleName module, IParseTree tree, CancellationToken token)
