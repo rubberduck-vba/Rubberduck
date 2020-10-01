@@ -14,7 +14,6 @@ using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.VBA.ReferenceManagement
 {
@@ -174,6 +173,12 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             foreach (var projectGroup in documentModuleDeclarationsByProject)
             {
                 var userComProject = userComProjectProvider.UserProject(projectGroup.Key);
+
+                if (userComProject == null)
+                {
+                    continue;
+                }
+
                 var documents = projectGroup.ToDictionary(module => module.IdentifierName);
                 foreach (var comModule in userComProject.Members)
                 {
