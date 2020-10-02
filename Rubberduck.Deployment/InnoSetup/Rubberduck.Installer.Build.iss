@@ -252,7 +252,7 @@ function ShellExecute(hwnd: HWND; lpOperation: string; lpFile: string;
 ///</remarks>
 function IsElevated: Boolean;
 begin
-  Result := IsAdminLoggedOn;
+  Result := IsAdmin;
 end;
 
 ///<remarks>
@@ -673,8 +673,13 @@ begin
   sUnInstPath := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\' + sAppId + '_is1';
   Log('Looking in registry: ' + sUnInstPath);
   sUnInstallString := '';
-  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
-    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  if RegValueExists(HKLM, sUnInstPath, 'UninstallString') then
+    RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString)
+  else if RegValueExists(HKCU, sUnInstPath, 'UninstallString') then
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString)
+  else
+    sUnInstallString := '';
+
   Log('Result of registry query: ' + sUnInstallString);
   Result := sUnInstallString;
 end;
@@ -742,10 +747,15 @@ begin
   sUnInstallString := GetUninstallString(AppId);
   if sUnInstallString <> '' then begin
     sUnInstallString := RemoveQuotes(sUnInstallString);
-    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
-      Result := 3
+    if FileExists(sUnInstallString) then
+    begin
+      if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+        Result := 3
+      else
+        Result := 2;
+    end
     else
-      Result := 2;
+      Result := 1;
   end else
     Result := 1;
 end;
