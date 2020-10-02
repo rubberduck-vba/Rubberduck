@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Inspections {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InspectionInfo {
@@ -354,6 +354,24 @@ namespace Rubberduck.Resources.Inspections {
         public static string ImplicitByRefModifierInspection {
             get {
                 return ResourceManager.GetString("ImplicitByRefModifierInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit references to workbook members inside a workbook document module can be mistakes for implicit references to the active workbook, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved..
+        /// </summary>
+        public static string ImplicitContainingWorkbookReferenceInspection {
+            get {
+                return ResourceManager.GetString("ImplicitContainingWorkbookReferenceInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit references to worksheet members inside a worksheet document module can be mistakes for implicit references to the active worksheet, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved..
+        /// </summary>
+        public static string ImplicitContainingWorksheetReferenceInspection {
+            get {
+                return ResourceManager.GetString("ImplicitContainingWorksheetReferenceInspection", resourceCulture);
             }
         }
         

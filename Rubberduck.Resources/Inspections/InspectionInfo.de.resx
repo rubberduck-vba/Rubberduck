@@ -442,4 +442,10 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
     <value>Eine Annotation hat mehr Argumente als erlaubt. Die überzähligen Argumente werden ignoriert.</value>
   </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>Implizite Referenzen zu Elementen eines Workbooks in einem Workbook-Modul können mit Referenzen zum aktiven Workbook verwechselt werden, da dies das Verhalten für solche Referenzen ist überall außerhalb von Workbook-Modulen. Die Uneindeutigkeit kann aufgelöst werden, indem die Referenzen mit 'Me' qualifiziert werden.</value>
+  </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>Implizite Referenzen zu Elementen eines Worksheets in einem Worksheet-Modul können mit Referenzen zum aktiven Worksheet verwechselt werden, da dies das Verhalten für solche Referenzen ist überall außerhalb von Worksheet-Modulen. Die Uneindeutigkeit kann aufgelöst werden, indem die Referenzen mit 'Me' qualifiziert werden.</value>
+  </data>
 </root>

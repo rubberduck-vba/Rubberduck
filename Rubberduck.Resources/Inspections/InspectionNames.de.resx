@@ -438,4 +438,10 @@
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
     <value>Name, der ein geschütztes Leerzeichen enthält</value>
   </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>Implizite Referenz zum umgebenden Worksheet-Modul</value>
+  </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>Implizite Referenz zum umgebenden Workbook-Modul</value>
+  </data>
 </root>

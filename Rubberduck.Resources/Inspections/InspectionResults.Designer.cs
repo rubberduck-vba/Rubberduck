@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Inspections {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InspectionResults {
@@ -363,6 +363,24 @@ namespace Rubberduck.Resources.Inspections {
         public static string ImplicitByRefModifierInspection {
             get {
                 return ResourceManager.GetString("ImplicitByRefModifierInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; implicitly references the containing workbook document module..
+        /// </summary>
+        public static string ImplicitContainingWorkbookReferenceInspection {
+            get {
+                return ResourceManager.GetString("ImplicitContainingWorkbookReferenceInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; implicitly references the containing worksheet document module..
+        /// </summary>
+        public static string ImplicitContainingWorksheetReferenceInspection {
+            get {
+                return ResourceManager.GetString("ImplicitContainingWorksheetReferenceInspection", resourceCulture);
             }
         }
         
