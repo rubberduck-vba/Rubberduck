@@ -200,23 +200,40 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         private static IEnumerable<string> SuperTypeNamesForDocumentFromComType(IComType comModule)
         {
             var inheritedInterfaces = comModule is ComCoClass documentCoClass
-                ? documentCoClass.ImplementedInterfaces
-                : (comModule as ComInterface)?.InheritedInterfaces;
+                ? documentCoClass.ImplementedInterfaces.ToList()
+                : (comModule as ComInterface)?.InheritedInterfaces.ToList();
 
-            //todo: Find a way to deal with the VBE's document type assignment behaviour not relying on an assumption about an interface naming convention. 
-            var superTypeNames = (inheritedInterfaces?
-                                      .Where(i => !i.IsRestricted && !IgnoredComInterfaces.Contains(i.Name))
-                                      .Select(i => i.Name)
-                                  ?? Enumerable.Empty<string>())
+            if (inheritedInterfaces == null)
+            {
+                return Enumerable.Empty<string>();
+            }
+
+            var relevantInterfaces = inheritedInterfaces
+                .Where(i => !i.IsRestricted && !IgnoredComInterfaces.Contains(i.Name))
+                .ToList();
+
+            //todo: Find a way to deal with the VBE's document type assignment and interface behaviour not relying on an assumption about an interface naming conventions. 
+
+            //Some hosts like Access chose to have a separate hidden interface for each document module and only let that inherit the built-in base interface.
+            //Since we do not have a declaration for the hidden interface, we have to go one more step up the hierarchy.
+            var additionalInterfaces = relevantInterfaces
+                .Where(i => i.Name.Equals("_" + comModule.Name))
+                .SelectMany(i => i.InheritedInterfaces);
+
+            relevantInterfaces.AddRange(additionalInterfaces);
+
+            var superTypeNames = relevantInterfaces
+                .Select(i => i.Name)
                 .ToList();
 
             //This emulates the VBE's behaviour to allow assignment to the coclass type instead on the interface.
-            var additionalSuperTypes = superTypeNames
+            var additionalSuperTypeNames = superTypeNames
                 .Where(name => name.StartsWith("_"))
                 .Select(name => name.Substring(1))
+                .Where(name => !name.Equals(comModule.Name))
                 .ToList();
 
-            superTypeNames.AddRange(additionalSuperTypes);
+            superTypeNames.AddRange(additionalSuperTypeNames);
             return superTypeNames;
         }
 
@@ -240,7 +257,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     Logger.Debug("Binding resolution done for component '{0}' in {1}ms (thread {2})", module.Name,
                         watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
 
-                    //Evaluation of the overall status has to be defered to allow processing of undeclared variables before setting the ready state.
+                    //Evaluation of the overall status has to be deferred to allow processing of undeclared variables before setting the ready state.
                     _parserStateManager.SetModuleState(module, ParserState.Ready, token, false);
                 }
                 catch (OperationCanceledException)
