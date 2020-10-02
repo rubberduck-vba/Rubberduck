@@ -58,7 +58,7 @@ environment:
 
 before_build:
   - development/java/Rubberduck.Parsing/Grammar/gradlew.bat -p development/java/Rubberduck.Parsing/Grammar clean build
-  - cinst innosetup
+  - cinst innosetup -version 5.6.1
   - cinst codecov
   - cinst opencover.portable
   - nuget restore RubberduckMeta.sln
