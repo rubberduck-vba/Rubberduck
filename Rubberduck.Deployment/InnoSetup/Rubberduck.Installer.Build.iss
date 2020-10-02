@@ -252,7 +252,7 @@ function ShellExecute(hwnd: HWND; lpOperation: string; lpFile: string;
 ///</remarks>
 function IsElevated: Boolean;
 begin
-  Result := IsAdmin;
+  Result := IsAdminLoggedOn;
 end;
 
 ///<remarks>
