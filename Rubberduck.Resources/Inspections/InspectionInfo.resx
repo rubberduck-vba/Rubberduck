@@ -442,4 +442,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
     <value>An annotation has more arguments than allowed; superfluous arguments are ignored.</value>
   </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>The last parameter (the 'Value' parameter) of property mutators are always passed by value.  This is true regardless of the presence or absence of a ByVal modifier.  Exception: UserDefinedType parameters must always be passed by reference in all cases.</value>
+  </data>
 </root>
