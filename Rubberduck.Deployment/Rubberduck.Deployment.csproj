@@ -36,7 +36,6 @@
     <PackageReference Include="EasyHook" Version="2.7.6684">
       <CopyToOutputDirectory>content/net40/*</CopyToOutputDirectory>
     </PackageReference>
-    <PackageReference Include="Tools.InnoSetup" Version="6.0.5" />
   </ItemGroup>
   
   <UsingTask TaskName="RubberduckPreBuildTask" AssemblyFile="..\Rubberduck.Deployment.Build\bin\Rubberduck.Deployment.Build.dll" />
