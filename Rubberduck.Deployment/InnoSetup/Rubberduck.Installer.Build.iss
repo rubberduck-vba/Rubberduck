@@ -78,7 +78,7 @@ CreateUninstallRegKey=ShouldCreateUninstaller()
 WizardSmallImageFile={#WizardSmallImageFilesDir}Rubberduck.Duck.Small.*.bmp
 
 ; should be at least a 164 x 314 bitmap
-WizardImageFile={#WizardImageFilesDir}Rubberduck.Duck.*.bmp
+; WizardImageFile={#WizardImageFilesDir}Rubberduck.Duck.*.bmp
 
 [Languages]
 Name: "English"; MessagesFile: "compiler:Default.isl"
