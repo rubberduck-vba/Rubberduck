@@ -10,17 +10,17 @@ ccBlock :
     (ccConst | ccIfBlock | physicalLine)*?
 ;
 
-ccConst : WS* hashConst WS+ ccVarLhs WS* EQ WS* ccExpression ccEol;
+ccConst : whiteSpace* hashConst whiteSpace+ ccVarLhs whiteSpace* EQ whiteSpace* ccExpression ccEol;
 ccVarLhs : name;
 
 ccIfBlock : ccIf ccBlock ccElseIfBlock* ccElseBlock? ccEndIf;
-ccIf : WS* hashIf WS+ ccExpression WS+ THEN ccEol;
+ccIf : whiteSpace* hashIf whiteSpace+ ccExpression whiteSpace+ THEN ccEol;
 ccElseIfBlock : ccElseIf ccBlock;
-ccElseIf : WS* hashElseIf WS+ ccExpression WS+ THEN ccEol;
+ccElseIf : whiteSpace* hashElseIf whiteSpace+ ccExpression whiteSpace+ THEN ccEol;
 ccElseBlock : ccElse ccBlock;
-ccElse : WS* hashElse ccEol;
-ccEndIf : WS* hashEndIf ccEol;
-ccEol : WS* comment? (NEWLINE | EOF);
+ccElse : whiteSpace* hashElse ccEol;
+ccEndIf : whiteSpace* hashEndIf ccEol;
+ccEol : whiteSpace* comment? (NEWLINE | EOF);
 // We use parser rules instead of tokens (such as HASHCONST) because
 // marked file numbers have a similar format and cause conflicts.
 hashConst : HASH CONST;
@@ -32,26 +32,26 @@ hashEndIf : HASH END_IF;
 physicalLine : ~(NEWLINE | EOF)* (NEWLINE | EOF);
 
 ccExpression :
-    LPAREN WS* ccExpression WS* RPAREN
-    | ccExpression WS* POW WS* ccExpression
-    | MINUS WS* ccExpression
-    | ccExpression WS* (MULT | DIV) WS* ccExpression
-    | ccExpression WS* INTDIV WS* ccExpression
-    | ccExpression WS* MOD WS* ccExpression
-    | ccExpression WS* (PLUS | MINUS) WS* ccExpression
-    | ccExpression WS* AMPERSAND WS* ccExpression
-    | ccExpression WS* (EQ | NEQ | LT | GT | LEQ | GEQ | LIKE | IS) WS* ccExpression
-    | NOT WS* ccExpression
-    | ccExpression WS* AND WS* ccExpression
-    | ccExpression WS* OR WS* ccExpression
-    | ccExpression WS* XOR WS* ccExpression
-    | ccExpression WS* EQV WS* ccExpression
-    | ccExpression WS* IMP WS* ccExpression
+    LPAREN whiteSpace* ccExpression whiteSpace* RPAREN
+    | ccExpression whiteSpace* POW whiteSpace* ccExpression
+    | MINUS whiteSpace* ccExpression
+    | ccExpression whiteSpace* (MULT | DIV) whiteSpace* ccExpression
+    | ccExpression whiteSpace* INTDIV whiteSpace* ccExpression
+    | ccExpression whiteSpace* MOD whiteSpace* ccExpression
+    | ccExpression whiteSpace* (PLUS | MINUS) whiteSpace* ccExpression
+    | ccExpression whiteSpace* AMPERSAND whiteSpace* ccExpression
+    | ccExpression whiteSpace* (EQ | NEQ | LT | GT | LEQ | GEQ | LIKE | IS) whiteSpace* ccExpression
+    | NOT whiteSpace* ccExpression
+    | ccExpression whiteSpace* AND whiteSpace* ccExpression
+    | ccExpression whiteSpace* OR whiteSpace* ccExpression
+    | ccExpression whiteSpace* XOR whiteSpace* ccExpression
+    | ccExpression whiteSpace* EQV whiteSpace* ccExpression
+    | ccExpression whiteSpace* IMP whiteSpace* ccExpression
     | intrinsicFunction
     | literal
     | name;
 
-intrinsicFunction : intrinsicFunctionName LPAREN WS* ccExpression WS* RPAREN;
+intrinsicFunction : intrinsicFunctionName LPAREN whiteSpace* ccExpression whiteSpace* RPAREN;
 
 intrinsicFunctionName :
     INT
@@ -271,3 +271,5 @@ statementKeyword :
     | WHILE
     | WITH
 ;
+
+whiteSpace : (WS | LINE_CONTINUATION)+;
