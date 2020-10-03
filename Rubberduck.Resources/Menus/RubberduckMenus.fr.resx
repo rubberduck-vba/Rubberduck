@@ -235,12 +235,33 @@
     <value>Explorateur de &amp;tests</value>
   </data>
   <data name="AddRemoveReferences" xml:space="preserve">
-    <value>Ajouter/Supprimer Référence</value>
+    <value>Ajouter/Supprimer Références...</value>
   </data>
   <data name="ContextMenu_RunSelectedTest" xml:space="preserve">
     <value>Exécuter la sélection</value>
   </data>
   <data name="ContextMenu_RunSelectedTestModule" xml:space="preserve">
     <value>Exécuter le module</value>
+  </data>
+  <data name="AnnotateMenu" xml:space="preserve">
+    <value>Annoter</value>
+  </data>
+  <data name="AnnotateMenu_SelectedDeclaration" xml:space="preserve">
+    <value>Déclaration sélectionnée</value>
+  </data>
+  <data name="AnnotateMenu_SelectedMember" xml:space="preserve">
+    <value>Membre sélectionné</value>
+  </data>
+  <data name="AnnotateMenu_SelectedModule" xml:space="preserve">
+    <value>Module sélectionné</value>
+  </data>
+  <data name="RefactorMenu_MoveContainingFolder" xml:space="preserve">
+    <value>Déplacer le dossier parent</value>
+  </data>
+  <data name="RefactorMenu_MoveToFolder" xml:space="preserve">
+    <value>Déplacer vers un dossier</value>
+  </data>
+  <data name="RubberduckMenu_CodePaneRefactor" xml:space="preserve">
+    <value>&amp;Refactorer</value>
   </data>
 </root>

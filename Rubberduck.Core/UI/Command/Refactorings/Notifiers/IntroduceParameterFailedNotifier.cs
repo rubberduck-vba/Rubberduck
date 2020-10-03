@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.IntroduceParameter;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
@@ -25,8 +26,8 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
                     Logger.Warn(invalidDeclarationType);
                     return string.Format(Resources.RubberduckUI.RefactoringFailure_InvalidDeclarationType,
                         invalidDeclarationType.TargetDeclaration.QualifiedModuleName,
-                        invalidDeclarationType.TargetDeclaration.DeclarationType,
-                        DeclarationType.Variable);
+                        invalidDeclarationType.TargetDeclaration.DeclarationType.ToLocalizedString(),
+                        DeclarationType.Variable.ToLocalizedString());
                 default:
                     return base.Message(exception);
             }

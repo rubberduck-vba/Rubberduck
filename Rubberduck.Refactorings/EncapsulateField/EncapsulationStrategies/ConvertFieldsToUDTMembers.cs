@@ -1,19 +1,10 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
+﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
-using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -21,20 +12,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private IObjectStateUDT _stateUDTField;
 
-        public ConvertFieldsToUDTMembers(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
-            : base(declarationFinderProvider, model, indenter)
+        public ConvertFieldsToUDTMembers(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter, ICodeBuilder codeBuilder)
+            : base(declarationFinderProvider, model, indenter, codeBuilder)
         {
             _stateUDTField = model.ObjectStateUDTField;
         }
 
-        protected override void ModifyFields(IEncapsulateFieldRewriteSession refactorRewriteSession)
+        protected override void ModifyFields(IRewriteSession refactorRewriteSession)
         {
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
-            foreach (var field in SelectedFields)
-            {
-                refactorRewriteSession.Remove(field.Declaration, rewriter);
-            }
+            rewriter.RemoveVariables(SelectedFields.Select(f => f.Declaration)
+                .Cast<VariableDeclaration>());
 
             if (_stateUDTField.IsExistingDeclaration)
             {
@@ -44,7 +33,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        protected override void ModifyReferences(IEncapsulateFieldRewriteSession refactorRewriteSession)
+        protected override void ModifyReferences(IRewriteSession refactorRewriteSession)
         {
             foreach (var field in SelectedFields)
             {
@@ -64,40 +53,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             AddContentBlock(NewContentTypes.DeclarationBlock, _stateUDTField.FieldDeclarationBlock);
             return;
-        }
-
-        protected override void LoadNewPropertyBlocks()
-        {
-            var propertyGenerationSpecs = SelectedFields.SelectMany(f => f.PropertyAttributeSets);
-
-            foreach (var selectedField in SelectedFields)
-            {
-                var converted = selectedField as IConvertToUDTMember;
-                foreach (var set in selectedField.PropertyAttributeSets)
-                {
-                    if (converted.Declaration is VariableDeclaration variableDeclaration)
-                    {
-                        var getContent = $"{set.PropertyName} = {set.BackingField}";
-                        if (set.UsesSetAssignment)
-                        {
-                            getContent = $"{Tokens.Set} {getContent}";
-                        }
-                        AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertyGet, set.PropertyName, content: $"{_defaultIndent}{getContent}"));
-                        if (converted.IsReadOnly)
-                        {
-                            continue;
-                        }
-                        if (set.GenerateLetter)
-                        {
-                            AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertyLet, set.PropertyName, content: $"{_defaultIndent}{set.BackingField} = {set.ParameterName}"));
-                        }
-                        if (set.GenerateSetter)
-                        {
-                            AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertySet, set.PropertyName, content: $"{_defaultIndent}{Tokens.Set} {set.BackingField} = {set.ParameterName}"));
-                        }
-                    }
-                }
-            }
         }
 
         protected override void LoadFieldReferenceContextReplacements(IEncapsulateFieldCandidate field)

@@ -186,7 +186,9 @@ CodeGraphData/
 
 # Generated Artifacts
 Rubberduck.CodeAnalysis.xml
+Rubberduck.Parsing.xml
 
 #Gradle 
 /.gradle/
 /Rubberduck.CodeAnalysis/Rubberduck.CodeAnalysis.xml
+/Rubberduck.Parsing/Rubberduck.Parsing.xml

@@ -422,7 +422,7 @@ namespace RubberduckTests.Mocks
             codePane.SetupReferenceEqualityIncludingHashCode();
             codePane.Setup(p => p.GetQualifiedSelection()).Returns(() => {
                 if (selection.IsEmpty()) { return null; }
-                return new QualifiedSelection(new QualifiedModuleName(component.Object), selection);
+                return new QualifiedSelection(new QualifiedModuleName(component.Object), codePane.Object.Selection);
             });
             codePane.SetupProperty(p => p.Selection, selection);
             codePane.Setup(p => p.Show());

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -15,6 +14,8 @@ namespace RubberduckTests.Refactoring
     public class ImplementInterfaceRefactoringActionTests : RefactoringActionTestBase<ImplementInterfaceModel>
     {
         private string _todoImplementMessage = "Err.Raise 5 'TODO implement interface member";
+
+        private static string _rhsIdentifier = Rubberduck.Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
 
         [Test]
         [Category("Refactorings")]
@@ -493,7 +494,7 @@ Private Property Get Interface1_Foo() As Long
     {_todoImplementMessage}
 End Property
 
-Private Property Let Interface1_Foo(ByVal value As Long)
+Private Property Let Interface1_Foo(ByVal {_rhsIdentifier} As Long)
     {_todoImplementMessage}
 End Property
 ";
@@ -518,7 +519,7 @@ Private Property Get Interface1_Foo() As Object
     {_todoImplementMessage}
 End Property
 
-Private Property Set Interface1_Foo(ByVal value As Object)
+Private Property Set Interface1_Foo(ByVal {_rhsIdentifier} As Object)
     {_todoImplementMessage}
 End Property
 ";
@@ -545,11 +546,11 @@ Private Property Get Interface1_Foo() As Variant
     {_todoImplementMessage}
 End Property
 
-Private Property Let Interface1_Foo(ByVal value As Variant)
+Private Property Let Interface1_Foo(ByVal {_rhsIdentifier} As Variant)
     {_todoImplementMessage}
 End Property
 
-Private Property Set Interface1_Foo(ByVal value As Variant)
+Private Property Set Interface1_Foo(ByVal {_rhsIdentifier} As Variant)
     {_todoImplementMessage}
 End Property
 ";
@@ -772,7 +773,7 @@ End Sub
 
         protected override IRefactoringAction<ImplementInterfaceModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            var addInterfaceImplementationsAction = new AddInterfaceImplementationsRefactoringAction(rewritingManager);
+            var addInterfaceImplementationsAction = new AddInterfaceImplementationsRefactoringAction(rewritingManager, new CodeBuilder());
             return new ImplementInterfaceRefactoringAction(addInterfaceImplementationsAction, rewritingManager);
         }
     }

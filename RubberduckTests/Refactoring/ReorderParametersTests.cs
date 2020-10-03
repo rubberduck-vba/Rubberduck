@@ -13,7 +13,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
-using Rubberduck.Refactorings.Exceptions.ReorderParameters;
 using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor.Utility;
 
@@ -1340,16 +1339,12 @@ End Sub";
         protected override IRefactoring TestRefactoring(
             IRewritingManager rewritingManager, 
             RubberduckParserState state,
-            IRefactoringPresenterFactory factory, 
+            RefactoringUserInteraction<IReorderParametersPresenter, ReorderParametersModel> userInteraction, 
             ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var uiDispatcherMock = new Mock<IUiDispatcher>();
-            uiDispatcherMock
-                .Setup(m => m.Invoke(It.IsAny<Action>()))
-                .Callback((Action action) => action.Invoke());
             var baseRefactoring = new ReorderParameterRefactoringAction(state, rewritingManager);
-            return new ReorderParametersRefactoring(baseRefactoring, state, factory, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
+            return new ReorderParametersRefactoring(baseRefactoring, state, userInteraction, selectionService, selectedDeclarationProvider);
         }
 
         private static Func<ReorderParametersModel, ReorderParametersModel> ReverseParameters()

@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <RubberduckVersion>2.5.0</RubberduckVersion>
+    <RubberduckVersion>2.5.1</RubberduckVersion>
   </PropertyGroup>
   <PropertyGroup>
     <OutputType>Library</OutputType>

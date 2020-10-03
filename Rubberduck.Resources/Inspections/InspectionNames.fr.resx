@@ -133,7 +133,7 @@
     <value>Un champ public rompt l'encapsulation</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspection" xml:space="preserve">
-    <value>Référence implicite à la feuille active.</value>
+    <value>Référence implicite à la feuille active</value>
   </data>
   <data name="ImplicitActiveWorkbookReferenceInspection" xml:space="preserve">
     <value>Référence implicite au classeur actif</value>
@@ -145,10 +145,10 @@
     <value>Le membre renvoie implicitement une valeur 'Variant'</value>
   </data>
   <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
-    <value>La portée de la variable est plus grande que nécessaire</value>
+    <value>La portée de la variable est plus grande que nécessaire.</value>
   </data>
   <data name="MultilineParameterInspection" xml:space="preserve">
-    <value>Le paramètre est déclaré sur plus d'une ligne</value>
+    <value>Le paramètre est déclaré sur plus d'une ligne.</value>
   </data>
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>L'instruction comporte plus d'une déclaration</value>
@@ -172,22 +172,22 @@
     <value>Utilisation d'un indicateur de type</value>
   </data>
   <data name="OptionBaseInspection" xml:space="preserve">
-    <value>'Option Base 1' est spécifié</value>
+    <value>'Option Base 1' est spécifié.</value>
   </data>
   <data name="OptionExplicitInspection" xml:space="preserve">
     <value>'Option Explicit' n'est pas spécifiée.</value>
   </data>
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
-    <value>Le paramètre peut être passé par valeur</value>
+    <value>Le paramètre peut être passé par valeur.</value>
   </data>
   <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Le paramètre n'est pas utilisé</value>
+    <value>Le paramètre n'est pas utilisé.</value>
   </data>
   <data name="ProcedureNotUsedInspection" xml:space="preserve">
-    <value>La procédure n'est pas appelée</value>
+    <value>La procédure n'est pas appelée.</value>
   </data>
   <data name="UnassignedVariableUsageInspection" xml:space="preserve">
-    <value>La variable est utilisée, mais non assignée</value>
+    <value>La variable est utilisée, mais non assignée.</value>
   </data>
   <data name="UntypedFunctionUsageInspection" xml:space="preserve">
     <value>Utilisation d'une fonction retournant une 'String' dans une variable 'Variant'</value>
@@ -196,10 +196,10 @@
     <value>Utilisez un nom significatif</value>
   </data>
   <data name="VariableNotAssignedInspection" xml:space="preserve">
-    <value>Une variable est déclarée, mais pas assignée</value>
+    <value>Une variable est déclarée, mais pas assignée.</value>
   </data>
   <data name="VariableNotUsedInspection" xml:space="preserve">
-    <value>La variable n'est pas utilisée</value>
+    <value>La variable n'est pas utilisée.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>Variable implicitement de type 'Variant'</value>
@@ -208,13 +208,13 @@
     <value>Propriété en écriture seule</value>
   </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
-    <value>La procédure pourrait être une fonction</value>
+    <value>La procédure pourrait être une fonction.</value>
   </data>
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
-    <value>La variable objet est assignée lors de sa déclaration</value>
+    <value>La variable objet est assignée lors de sa déclaration.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
-    <value>L'assignation d'une référence d'objet requiert le mot-clé 'Set'</value>
+    <value>L'assignation d'une référence d'objet requiert le mot-clé 'Set'.</value>
   </data>
   <data name="ModuleScopeDimKeywordInspection" xml:space="preserve">
     <value>Utilisation du mot-clé 'Dim' au niveau module</value>
@@ -229,7 +229,7 @@
     <value>Appel de fonction WorksheetFunction à liaison tardive.</value>
   </data>
   <data name="HostSpecificExpressionInspection" xml:space="preserve">
-    <value>Les expressions spécifiques à l'application hôte, encadrées de crochets, sont seulement évaluées lors de l'exécution.</value>
+    <value>Les expressions spécifiques à l'application hôte, encadrées de crochets, sont seulement évaluées lors de l'exécution</value>
   </data>
   <data name="HungarianNotationInspection" xml:space="preserve">
     <value>L'identifiant utilise la notation hongroise.</value>
@@ -289,7 +289,7 @@
     <value>Mot-clé 'Stop'</value>
   </data>
   <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
-    <value>Assignation d'une valeur Booléenne littérale dans une structure conditionnelle.</value>
+    <value>Assignation d'une valeur Booléenne littérale dans une structure conditionnelle</value>
   </data>
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Module vide</value>
@@ -298,7 +298,7 @@
     <value>Utilisation de l'instruction obsolète 'Error'</value>
   </data>
   <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Bloc 'Case' inatteignable</value>
+    <value>Bloc 'Case' inatteignable.</value>
   </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Suppression d'erreurs</value>
@@ -349,7 +349,7 @@
     <value>Caractère de soulignement dans le nom d'un membre d'un module de classe</value>
   </data>
   <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
-    <value>La valeur de l'attribut diffère de celle suggérée par l'annotation.</value>
+    <value>La valeur de l'attribut diffère de celle suggérée par l'annotation</value>
   </data>
   <data name="MissingMemberAnnotationInspection" xml:space="preserve">
     <value>Annotation manquante</value>
@@ -413,5 +413,29 @@
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Assignation 'Let' suspecte</value>
+  </data>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>La valeur renvoyée par la fonction est systématiquement ignorée.</value>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>La valeur renvoyée par la fonction est ignorée.</value>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Constante implicitement typée</value>
+  </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Mot-clé utilisé comme nom de membre</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Marqueur de continuation entre les mots-clés</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Numéro de ligne négatif</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>Identifiant contenant un espace insécable (&amp;nbsp;)</value>
+  </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>Arguments d'annotation superflus</value>
   </data>
 </root>

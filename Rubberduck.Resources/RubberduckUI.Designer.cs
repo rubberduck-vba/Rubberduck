@@ -19,7 +19,7 @@ namespace Rubberduck.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class RubberduckUI {
@@ -154,6 +154,231 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_AddArgumentButtonLabel {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_AddArgumentButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add/Adjust attribute.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_AdjustAttributeLabel {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_AdjustAttributeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation to Add:.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_AnnotationLabel {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_AnnotationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation Arguments:.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_ArgumentsLabel {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_ArgumentsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_ArgumentTypeHeader {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_ArgumentTypeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_ArgumentValueHeader {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_ArgumentValueHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Annotate Declaration.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_Caption {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Declaration to Annotate:.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_DeclarationLabel {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_DeclarationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select an annotation (and values) to add to the declaration..
+        /// </summary>
+        public static string AnnotateDeclarationDialog_Instructions {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_Instructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_RemoveArgumentButtonLabel {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_RemoveArgumentButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotate Declaration.
+        /// </summary>
+        public static string AnnotateDeclarationDialog_TitleText {
+            get {
+                return ResourceManager.GetString("AnnotateDeclarationDialog_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments of type &apos;Attribute Name&apos; have to start with &apos;VB_&apos;..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_AttributeNameStart {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_AttributeNameStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments cannot be empty..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_EmptyArgument {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_EmptyArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments of type &apos;Inspection Name&apos; have to be the name of an existing inspection..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_InspectionName {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_InspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments can only contain a single line..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_Newline {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_Newline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments of type &apos;Boolean&apos; have to either be &apos;True&apos; or &apos;False&apos;..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_NotABoolean {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_NotABoolean", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments of type &apos;Number&apos; have to be a valid number in integer of floating point format..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_NotANumber {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_NotANumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments must not contain control characters..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_SpecialCharacters {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_SpecialCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments cannot be longer than {0} characters..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_TooLong {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_TooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation arguments of type &apos;Attribute Name&apos; cannot contain whitespace..
+        /// </summary>
+        public static string AnnotationArgument_ValidationError_WhitespaceInAttribute {
+            get {
+                return ResourceManager.GetString("AnnotationArgument_ValidationError_WhitespaceInAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attribute.
+        /// </summary>
+        public static string AnnotationArgumentType_Attribute {
+            get {
+                return ResourceManager.GetString("AnnotationArgumentType_Attribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Boolean.
+        /// </summary>
+        public static string AnnotationArgumentType_Boolean {
+            get {
+                return ResourceManager.GetString("AnnotationArgumentType_Boolean", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inspection Name.
+        /// </summary>
+        public static string AnnotationArgumentType_Inspection {
+            get {
+                return ResourceManager.GetString("AnnotationArgumentType_Inspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number.
+        /// </summary>
+        public static string AnnotationArgumentType_Number {
+            get {
+                return ResourceManager.GetString("AnnotationArgumentType_Number", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text.
+        /// </summary>
+        public static string AnnotationArgumentType_Text {
+            get {
+                return ResourceManager.GetString("AnnotationArgumentType_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apply.
         /// </summary>
         public static string ApplyButtonText {
@@ -240,7 +465,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please specify a name to use for the local copy of ByVal {0} &apos;{1}&apos;.
+        ///   Looks up a localized string similar to Please specify a name to use for the local copy of ByVal {0} &apos;{1}&apos;..
         /// </summary>
         public static string AssignedByValParamQFixDialog_InstructionsLabelText {
             get {
@@ -534,7 +759,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to These identifiers will be ignored by the &apos;Use meaningful names&apos; inspection.
+        ///   Looks up a localized string similar to These identifiers will be ignored by the &apos;Use meaningful names&apos; inspection..
         /// </summary>
         public static string CodeInspectionSettings_WhitelistedIdentifiersDescription {
             get {
@@ -543,7 +768,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Whitelisted Identifiers.
+        ///   Looks up a localized string similar to Allowed Identifiers.
         /// </summary>
         public static string CodeInspectionSettings_WhitelistedIdentifiersLabel {
             get {
@@ -597,7 +822,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to compile for parsing.
+        ///   Looks up a localized string similar to Unable to compile for parsing..
         /// </summary>
         public static string Command_Reparse_CannotCompile_Caption {
             get {
@@ -1212,7 +1437,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to encapsulate {0}. Redim({0}) statement(s) exist in other modules.
+        ///   Looks up a localized string similar to Unable to encapsulate &apos;{0}&apos;. ReDim({0}) statement(s) exist in other modules..
         /// </summary>
         public static string EncapsulateField_ArrayHasExternalRedimFormat {
             get {
@@ -1230,25 +1455,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to this.
-        /// </summary>
-        public static string EncapsulateField_DefaultObjectStateUDTFieldName {
-            get {
-                return ResourceManager.GetString("EncapsulateField_DefaultObjectStateUDTFieldName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to value.
-        /// </summary>
-        public static string EncapsulateField_DefaultPropertyParameter {
-            get {
-                return ResourceManager.GetString("EncapsulateField_DefaultPropertyParameter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select one or more fields to encapsulate.  Accept the default values or edit property names.
+        ///   Looks up a localized string similar to Select one or more fields to encapsulate.  Accept the default values or edit property names..
         /// </summary>
         public static string EncapsulateField_InstructionText {
             get {
@@ -1421,6 +1628,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Instancing.
+        /// </summary>
+        public static string ExtractInterface_InstancingGroupBox {
+            get {
+                return ResourceManager.GetString("ExtractInterface_InstancingGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please specify interface name and members..
         /// </summary>
         public static string ExtractInterface_InstructionLabel {
@@ -1435,6 +1651,35 @@ namespace Rubberduck.Resources {
         public static string ExtractInterface_MembersGroupBox {
             get {
                 return ResourceManager.GetString("ExtractInterface_MembersGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private.
+        /// </summary>
+        public static string ExtractInterface_Private {
+            get {
+                return ResourceManager.GetString("ExtractInterface_Private", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Public.
+        /// </summary>
+        public static string ExtractInterface_Public {
+            get {
+                return ResourceManager.GetString("ExtractInterface_Public", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The implementing class is &apos;Public&apos; mandating the interface be public as well.
+        ///If you require a &apos;Private&apos; interface, change the classes instancing to private as well.
+        ///A private class can still implement a public interface..
+        /// </summary>
+        public static string ExtractInterface_PublicInstancingMandatedByPublicClass {
+            get {
+                return ResourceManager.GetString("ExtractInterface_PublicInstancingMandatedByPublicClass", resourceCulture);
             }
         }
         
@@ -1565,7 +1810,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check if a newer version is available at startup.
+        ///   Looks up a localized string similar to Check if a newer version is available at startup..
         /// </summary>
         public static string GeneralSettings_CheckVersion {
             get {
@@ -1608,6 +1853,15 @@ namespace Rubberduck.Resources {
         public static string GeneralSettings_DebugLogLevel {
             get {
                 return ResourceManager.GetString("GeneralSettings_DebugLogLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable drag and drop in Code Explorer.
+        /// </summary>
+        public static string GeneralSettings_EnableDragAndDrop {
+            get {
+                return ResourceManager.GetString("GeneralSettings_EnableDragAndDrop", resourceCulture);
             }
         }
         
@@ -1747,7 +2001,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tell me if a newer pre-release build is available.
+        ///   Looks up a localized string similar to Tell me if a newer pre-release build is available..
         /// </summary>
         public static string GeneralSettings_IncludePreRelease {
             get {
@@ -1996,15 +2250,6 @@ namespace Rubberduck.Resources {
         public static string ImplementInterface_InvalidSelectionMessage {
             get {
                 return ResourceManager.GetString("ImplementInterface_InvalidSelectionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;TODO implement interface member.
-        /// </summary>
-        public static string ImplementInterface_TODO {
-            get {
-                return ResourceManager.GetString("ImplementInterface_TODO", resourceCulture);
             }
         }
         
@@ -2482,7 +2727,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; does not begin with a letter.
+        ///   Looks up a localized string similar to &apos;{0}&apos; does not start with a letter..
         /// </summary>
         public static string InvalidNameCriteria_DoesNotStartWithLetterFormat {
             get {
@@ -2491,7 +2736,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; exceeds the maximum allowed string length.
+        ///   Looks up a localized string similar to &apos;{0}&apos; exceeds the maximum allowed string length..
         /// </summary>
         public static string InvalidNameCriteria_ExceedsMaximumLengthFormat {
             get {
@@ -2509,7 +2754,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to VBA Identifiers cannot be null or zero-length.
+        ///   Looks up a localized string similar to VBA Identifiers cannot be null or zero-length..
         /// </summary>
         public static string InvalidNameCriteria_IsNullOrEmpty {
             get {
@@ -2666,7 +2911,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Member Attribute Recovery Failure .
+        ///   Looks up a localized string similar to Member Attribute Recovery Failure.
         /// </summary>
         public static string MemberAttributeRecoveryFailureCaption {
             get {
@@ -2766,7 +3011,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is defined neither in the component component it is used nor in a standard module. .
+        ///   Looks up a localized string similar to &apos;{0}&apos; is defined neither in the component component it is used nor in a standard module..
         /// </summary>
         public static string MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule {
             get {
@@ -2798,6 +3043,153 @@ namespace Rubberduck.Resources {
         public static string MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods {
             get {
                 return ResourceManager.GetString("MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify a new parent folder for the subfolder &apos;{0}&apos; of &apos;{1}&apos;..
+        /// </summary>
+        public static string MoveFolderDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("MoveFolderDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folder names cannot contain control characters like e.g. new lines..
+        /// </summary>
+        public static string MoveFolders_ControlCharacter {
+            get {
+                return ResourceManager.GetString("MoveFolders_ControlCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A folder name cannot be empty..
+        /// </summary>
+        public static string MoveFolders_EmptyFolderName {
+            get {
+                return ResourceManager.GetString("MoveFolders_EmptyFolderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The names of individual subfolders cannot be empty..
+        /// </summary>
+        public static string MoveFolders_EmptySubfolderName {
+            get {
+                return ResourceManager.GetString("MoveFolders_EmptySubfolderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Several folders with the same name are being moved. This will merge them.
+        ///Do you want to proceed?.
+        /// </summary>
+        public static string MoveFolders_SameNameSourceFolders {
+            get {
+                return ResourceManager.GetString("MoveFolders_SameNameSourceFolders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target folder &apos;{0}&apos; already contains a subfolder &apos;{1}&apos;. Moving the folder will merge it with the existing folder.
+        ///Do you want to proceed?.
+        /// </summary>
+        public static string MoveFolders_SameNameSubfolder {
+            get {
+                return ResourceManager.GetString("MoveFolders_SameNameSubfolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target folder &apos;{0}&apos; already contains subfolders {1}. Moving the folders will merge them with the existing folders with corresponding names.
+        ///Do you want to proceed?.
+        /// </summary>
+        public static string MoveFolders_SameNameSubfolders {
+            get {
+                return ResourceManager.GetString("MoveFolders_SameNameSubfolders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Move Folders.
+        /// </summary>
+        public static string MoveFoldersDialog_Caption {
+            get {
+                return ResourceManager.GetString("MoveFoldersDialog_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify a new parent folder for the folders..
+        /// </summary>
+        public static string MoveFoldersDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("MoveFoldersDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move Folders.
+        /// </summary>
+        public static string MoveFoldersDialog_TitleText {
+            get {
+                return ResourceManager.GetString("MoveFoldersDialog_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify new folder for the components..
+        /// </summary>
+        public static string MoveMultipleToFolderDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("MoveMultipleToFolderDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify a new parent folder for the folder &apos;{0}&apos;..
+        /// </summary>
+        public static string MoveRootFolderDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("MoveRootFolderDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Move to Folder.
+        /// </summary>
+        public static string MoveToFolderDialog_Caption {
+            get {
+                return ResourceManager.GetString("MoveToFolderDialog_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folder:.
+        /// </summary>
+        public static string MoveToFolderDialog_FolderLabelText {
+            get {
+                return ResourceManager.GetString("MoveToFolderDialog_FolderLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify a new folder for {0} &apos;{1}&apos; in folder &apos;{2}&apos;..
+        /// </summary>
+        public static string MoveToFolderDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("MoveToFolderDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move to Folder.
+        /// </summary>
+        public static string MoveToFolderDialog_TitleText {
+            get {
+                return ResourceManager.GetString("MoveToFolderDialog_TitleText", resourceCulture);
             }
         }
         
@@ -2992,7 +3384,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parsing....
+        ///   Looks up a localized string similar to Parsing….
         /// </summary>
         public static string ParserState_Parsing {
             get {
@@ -3219,6 +3611,24 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The component &apos;{0}&apos; would have been affected by the refactoring, but its state in Rubberduck&apos;s memory is stale. Please refresh Rubberduck and try again..
+        /// </summary>
+        public static string RefactoringFailure_AffectedModuleIsStale {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_AffectedModuleIsStale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The refactoring can only annotate components, members and variables, but the target had type &apos;{0}&apos;..
+        /// </summary>
+        public static string RefactoringFailure_AnnotateDeclaration_InvalidType {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_AnnotateDeclaration_InvalidType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refactoring failed..
         /// </summary>
         public static string RefactoringFailure_BaseMessage {
@@ -3264,7 +3674,16 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to suspend the Parser to perform the refactoring operation.
+        ///   Looks up a localized string similar to No target has been specified..
+        /// </summary>
+        public static string RefactoringFailure_NoTargetFolder {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_NoTargetFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to suspend the Parser to perform the refactoring operation..
         /// </summary>
         public static string RefactoringFailure_SuspendParserFailure {
             get {
@@ -3975,7 +4394,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; conflicts with an existing name. Renaming &apos;{1}&apos; to &apos;{0}&apos; may result in uncompilable code or a change in logic.
+        ///   Looks up a localized string similar to &apos;{0}&apos; conflicts with the name of the existing declaration &apos;{1}&apos;. Renaming &apos;{2}&apos; to &apos;{0}&apos; may result in uncompilable  code or a change in logic.
         ///Do you want to proceed with this rename?.
         /// </summary>
         public static string RenameDialog_ConflictingNames {
@@ -3990,6 +4409,43 @@ namespace Rubberduck.Resources {
         public static string RenameDialog_DefaultRenameError {
             get {
                 return ResourceManager.GetString("RenameDialog_DefaultRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to folder.
+        /// </summary>
+        public static string RenameDialog_Folder {
+            get {
+                return ResourceManager.GetString("RenameDialog_Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The folder &apos;{0}&apos; already exists. Renaming &apos;{1}&apos; to &apos;{2}&apos; will lead to a merge with the existing folder.
+        ///Do you want to proceed?.
+        /// </summary>
+        public static string RenameDialog_FolderAlreadyExists {
+            get {
+                return ResourceManager.GetString("RenameDialog_FolderAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folder:.
+        /// </summary>
+        public static string RenameDialog_FolderLabel {
+            get {
+                return ResourceManager.GetString("RenameDialog_FolderLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full new folder:.
+        /// </summary>
+        public static string RenameDialog_FullNewFolderLabel {
+            get {
+                return ResourceManager.GetString("RenameDialog_FullNewFolderLabel", resourceCulture);
             }
         }
         
@@ -4012,11 +4468,29 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to It is not possible to change only the case of an identifier in VBA (language is case-insensitive)..
+        /// </summary>
+        public static string RenameDialog_OnlyCasingDifferent {
+            get {
+                return ResourceManager.GetString("RenameDialog_OnlyCasingDifferent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rename identifier.
         /// </summary>
         public static string RenameDialog_TitleText {
             get {
                 return ResourceManager.GetString("RenameDialog_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename folder.
+        /// </summary>
+        public static string RenameDialog_TitleText_Folder {
+            get {
+                return ResourceManager.GetString("RenameDialog_TitleText_Folder", resourceCulture);
             }
         }
         

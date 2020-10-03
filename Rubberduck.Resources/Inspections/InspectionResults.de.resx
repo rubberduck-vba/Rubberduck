@@ -183,7 +183,7 @@
     <value>Der Variable '{0}' wird kein Wert zugewiesen.</value>
   </data>
   <data name="EmptyStringLiteralInspection" xml:space="preserve">
-    <value>vbNullString' sollte statt einem leeren String-Literal verwendet werden.</value>
+    <value>'vbNullString' sollte statt einem leeren String-Literal verwendet werden.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
     <value>Objektvariable '{0}' wird ohne das 'Set'-Schlüsselwort zugewiesen.</value>
@@ -231,7 +231,7 @@
     <value>Die Modulvariable '{0}' ist mit dem 'Dim'-Schlüsselwort deklariert.</value>
   </data>
   <data name="AggregateInspection" xml:space="preserve">
-    <value>{0} ({1} Ergebnisse).</value>
+    <value>{0} ({1} Ergebnisse)</value>
   </data>
   <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
     <value>Laufzeitgebundene Nutzung des Application.{0} Members.</value>
@@ -297,7 +297,7 @@
     <value>'Do…While'-Schleife enthält keine ausführbaren Anweisungen.</value>
   </data>
   <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
-    <value>Boolean Ausdruck '{0}' wurde in einer trivialen If/Else-Verzweigung zugewiesen.</value>
+    <value>Boolean Ausdruck '{0}' wurde in einer trivialen If/Else-Verzweigung zugewiesen</value>
   </data>
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Modul/Klasse {0} ist leer.</value>

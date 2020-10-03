@@ -340,9 +340,6 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
         }
 
-        //TODO: Remove the conditional compilation after loading from typelibs actually works.
-        //TODO: Improve the handling to avoid host crashing. See https://github.com/rubberduck-vba/Rubberduck/issues/5217
-        [Conditional("LOAD_USER_COM_PROJECTS")]
         private void ProcessUserComProjects(ref CancellationToken token, ref IReadOnlyCollection<QualifiedModuleName> toParse, ref HashSet<QualifiedModuleName> toReresolveReferences, ref IReadOnlyCollection<string> newProjectIds)
         {
             RefreshUserComProjects(toParse, newProjectIds);

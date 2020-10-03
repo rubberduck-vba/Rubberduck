@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Inspections {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InspectionInfo {
@@ -286,7 +286,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The return value of a function gets discarded, i.e. the function is used like a procedure. This is either an oversight or the function is used for its side-effects, whose existence would also be a code smell..
+        ///   Looks up a localized string similar to The return value of a function gets discarded, i.e. the function is used like a &apos;Sub&apos; procedure. This is either an oversight or the function is used for its side-effects, whose existence would also be a code smell..
         /// </summary>
         public static string FunctionReturnValueDiscardedInspection {
             get {
@@ -367,7 +367,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If the as type clause for a Const isn&apos;t included it is implicitly typed. Include an explicit &apos; As &lt;Type&gt;&apos; replacing &apos;&lt;Type&gt;&apos; with the correct data type to explicitly type your const value..
+        ///   Looks up a localized string similar to If the &apos;As&apos; type clause for a &apos;Const&apos; declaration isn&apos;t included it is implicitly typed. Include an explicit &apos; As &lt;Type&gt;&apos; replacing &apos;&lt;Type&gt;&apos; with the correct data type to explicitly type your constant value..
         /// </summary>
         public static string ImplicitlyTypedConstInspection {
             get {

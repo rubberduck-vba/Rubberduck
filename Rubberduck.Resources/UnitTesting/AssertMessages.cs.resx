@@ -196,7 +196,7 @@
     <value>[očekáváno] je typu hodnota a [aktuální] je typu reference.</value>
   </data>
   <data name="Assert_MismatchedTypes" xml:space="preserve">
-    <value>[očekáváno] a [aktuální] hodnoty nejsou stejného typu</value>
+    <value>[očekáváno] a [aktuální] hodnoty nejsou stejného typu.</value>
   </data>
   <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
     <value>Ani [očekáváno] nebo [aktuální] nejsou typu pole.</value>

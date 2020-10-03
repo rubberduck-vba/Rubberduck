@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Resources.CodeExplorer;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -49,10 +49,11 @@ namespace Rubberduck.Navigation.CodeExplorer
                                      Declaration.IsUserDefined &&
                                      Declaration.DeclarationType == DeclarationType.ClassModule &&
                                      Declaration.QualifiedName.QualifiedModuleName.ComponentType != ComponentType.Document &&
+                                     Declaration.QualifiedName.QualifiedModuleName.ComponentType != ComponentType.UserForm &&
                                      Declaration.Attributes.HasPredeclaredIdAttribute(out _);
 
         public bool IsTestModule => Declaration.DeclarationType == DeclarationType.ProceduralModule
-                                    && Declaration.Annotations.Any(annotation => annotation is TestModuleAnnotation);
+                                    && Declaration.Annotations.Any(annotation => annotation.Annotation is TestModuleAnnotation);
 
         public override void Synchronize(ref List<Declaration> updated)
         {

@@ -220,7 +220,7 @@
     <value>tato metoda běží na konci každého testu v modulu</value>
   </data>
   <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
-    <value>tato metoda běží před začátkem každého testu v modulu</value>
+    <value>tato metoda běží před začátkem každého testu v modulu.</value>
   </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>tato metoda běží jedenkrát v modulu</value>
@@ -335,5 +335,17 @@
   </data>
   <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
     <value>Odignorovat test</value>
+  </data>
+  <data name="TestExplorer_ContextMenuIgnoreGroup" xml:space="preserve">
+    <value>Ignorovat všechny testy ve skupině</value>
+  </data>
+  <data name="TestExplorer_ContextMenuIgnoreSelectedTests" xml:space="preserve">
+    <value>Ignorovat označené testy</value>
+  </data>
+  <data name="TestExplorer_ContextMenuUnignoreGroup" xml:space="preserve">
+    <value>Zrušit ignorování všech testů ve skupině</value>
+  </data>
+  <data name="TestExplorer_ContextMenuUnignoreSelectedTests" xml:space="preserve">
+    <value>Zrušit ignorování označených testů</value>
   </data>
 </root>

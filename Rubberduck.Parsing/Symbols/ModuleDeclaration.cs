@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
@@ -55,20 +57,17 @@ namespace Rubberduck.Parsing.Symbols
 
         private string FolderFromAnnotations()
         {
-            var @namespace = Annotations.Where(a => a.Annotation is FolderAnnotation).FirstOrDefault();
+            var folderAnnotation = Annotations.FirstOrDefault(pta => pta.Annotation is FolderAnnotation);
             string result;
-            if (@namespace == null)
+            if (folderAnnotation == null)
             {
-                result = string.IsNullOrEmpty(QualifiedName.QualifiedModuleName.ProjectName)
+                return string.IsNullOrEmpty(QualifiedName.QualifiedModuleName.ProjectName)
                     ? ProjectId
                     : QualifiedName.QualifiedModuleName.ProjectName;
             }
-            else
-            {
-                var value = @namespace.AnnotationArguments.FirstOrDefault();
-                result = value ?? "";
-            }
-            return result;
+
+            var folderValue = folderAnnotation.AnnotationArguments.FirstOrDefault();
+            return folderValue?.FromVbaStringLiteral() ?? "";
         }
     }
 }

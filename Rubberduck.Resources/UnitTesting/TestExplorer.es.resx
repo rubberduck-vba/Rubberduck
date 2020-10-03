@@ -121,19 +121,19 @@
     <value>{0} Falló</value>
   </data>
   <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
-    <value>{0} Inconcluyente</value>
+    <value>{0} Indefinido</value>
   </data>
   <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
     <value>{0} Aprobado</value>
   </data>
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
-    <value>Dos o más proyectos que contienen métodos de prueba tienen el mismo nombre y pruebas con el mismo nombre. Por favor cambia el nombre de uno para continuar.</value>
+    <value>Dos o más proyectos que contienen métodos de prueba tienen el mismo nombre y pruebas con el mismo nombre. Por favor renombre uno para continuar.</value>
   </data>
   <data name="TestExplorerWindow_Caption" xml:space="preserve">
     <value>Explorador de pruebas</value>
   </data>
   <data name="TestExplorer_Outcome" xml:space="preserve">
-    <value>Salir</value>
+    <value>Salida</value>
   </data>
   <data name="TestExplorer_AddButtonText" xml:space="preserve">
     <value>Añadir</value>
@@ -142,7 +142,7 @@
     <value>Método de prueba (error esperado)</value>
   </data>
   <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>Procedimiento de prueba</value>
+    <value>Método de prueba</value>
   </data>
   <data name="TestExplorer_AddTestModule" xml:space="preserve">
     <value>Módulo de prueba</value>
@@ -151,13 +151,13 @@
     <value>Duración</value>
   </data>
   <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
-    <value>Navegar por selección</value>
+    <value>Navegar a la selección</value>
   </data>
   <data name="TestExplorer_Message" xml:space="preserve">
     <value>Mensaje</value>
   </data>
   <data name="TestExplorer_MethodName" xml:space="preserve">
-    <value>Nombre del procedimiento</value>
+    <value>Nombre del método</value>
   </data>
   <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
     <value>Módulo</value>
@@ -187,25 +187,25 @@
     <value>Ha fallado</value>
   </data>
   <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Sin resultado</value>
+    <value>Indefinido</value>
   </data>
   <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Terminado</value>
+    <value>Exitoso</value>
   </data>
   <data name="TestOutcome_Unknown" xml:space="preserve">
     <value>Desconocido</value>
   </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
-    <value>Este método se ejecuta una vez por módulo.</value>
+    <value>Este método se ejecuta una vez por módulo</value>
   </data>
   <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
     <value>Este método se ejecuta antes de cada prueba en el módulo.</value>
   </data>
   <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
-    <value>Este método se ejecuta después de cada prueba en el módulo.</value>
+    <value>Este método se ejecuta después de cada prueba en el módulo</value>
   </data>
   <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
-    <value>Prueba de cambio de nombre</value>
+    <value>Renombrar prueba</value>
   </data>
   <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
     <value>Prueba provocó un error</value>
@@ -223,13 +223,13 @@
     <value>Duración total</value>
   </data>
   <data name="TestExplorer_RunMenuInconclusiveTests" xml:space="preserve">
-    <value>Pruebas no concluyentes</value>
+    <value>Pruebas indefinidas</value>
   </data>
   <data name="Command_AddTestModule_Error" xml:space="preserve">
     <value>No se puede crear el módulo de prueba. Es posible que la aplicación host no permita la creación de nuevos módulos o que el proyecto esté bloqueado. Para más detalles, consulte el registro.</value>
   </data>
   <data name="TestExplorer_ContextMenuRunGroup" xml:space="preserve">
-    <value>Ejecutar todas las pruebas en grupo.</value>
+    <value>Ejecutar todas las pruebas en grupo</value>
   </data>
   <data name="TestExplorer_CategoryName" xml:space="preserve">
     <value>Categoría</value>
@@ -247,7 +247,7 @@
     <value>Ejecutar prueba única</value>
   </data>
   <data name="TestExplorer_ResetButtonTooltip" xml:space="preserve">
-    <value>Restablecer todos los resultados de la prueba</value>
+    <value>Restablecer todos los resultados de pruebas</value>
   </data>
   <data name="UnitTest_NewMethod_Act" xml:space="preserve">
     <value>Actuar</value>
@@ -259,31 +259,31 @@
     <value>Afirmar</value>
   </data>
   <data name="UnitTest_NewMethod_BaseName" xml:space="preserve">
-    <value>Método de prueba</value>
+    <value>TestMethod</value>
   </data>
   <data name="UnitTest_NewMethod_ExpectedError" xml:space="preserve">
     <value>Error esperado</value>
   </data>
   <data name="UnitTest_NewMethod_ModuleCleanupMethod" xml:space="preserve">
-    <value>Módulo de limpieza</value>
+    <value>ModuleCleanup</value>
   </data>
   <data name="UnitTest_NewMethod_ModuleInitializeMethod" xml:space="preserve">
-    <value>Módulo Inicializar</value>
+    <value>ModuleInitialize</value>
   </data>
   <data name="UnitTest_NewMethod_TestCleanupMethod" xml:space="preserve">
-    <value>Prueba de limpieza</value>
+    <value>TestCleanup</value>
   </data>
   <data name="UnitTest_NewMethod_TestExitLabel" xml:space="preserve">
-    <value>Salida de prueba</value>
+    <value>TestExit</value>
   </data>
   <data name="UnitTest_NewMethod_TestFailLabel" xml:space="preserve">
-    <value>Prueba fallida</value>
+    <value>TestFail</value>
   </data>
   <data name="UnitTest_NewMethod_TestInitializeMethod" xml:space="preserve">
-    <value>Prueba de inicialización</value>
+    <value>TestInitialize</value>
   </data>
   <data name="UnitTest_NewModule_BaseName" xml:space="preserve">
-    <value>Módulo de prueba</value>
+    <value>TestModule</value>
   </data>
   <data name="UnitTest_NewModule_DefaultFolder" xml:space="preserve">
     <value>Pruebas</value>
@@ -311,5 +311,29 @@
   </data>
   <data name="TestOutcome_SummaryCaption" xml:space="preserve">
     <value>Resumen:</value>
+  </data>
+  <data name="TestExplorer_AllResults" xml:space="preserve">
+    <value>Todos</value>
+  </data>
+  <data name="TestExplorer_ContextMenuIgnoreGroup" xml:space="preserve">
+    <value>Ignorar todas las pruebas del grupo</value>
+  </data>
+  <data name="TestExplorer_ContextMenuIgnoreSelectedTests" xml:space="preserve">
+    <value>Ignorar las pruebas seleccionadas</value>
+  </data>
+  <data name="TestExplorer_TestToggle_Ignore" xml:space="preserve">
+    <value>Ignorar prueba</value>
+  </data>
+  <data name="TestExplorer_Filter" xml:space="preserve">
+    <value>Nombre de Prueba</value>
+  </data>
+  <data name="TestExplorer_ContextMenuUnignoreGroup" xml:space="preserve">
+    <value>Incluir todas las pruebas del grupo</value>
+  </data>
+  <data name="TestExplorer_ContextMenuUnignoreSelectedTests" xml:space="preserve">
+    <value>Incluir las pruebas seleccionadas</value>
+  </data>
+  <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
+    <value>Incluir la prueba</value>
   </data>
 </root>

@@ -2,7 +2,6 @@
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor;
@@ -10,21 +9,23 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
-    public class ExtractInterfaceRefactoring : InteractiveRefactoringBase<IExtractInterfacePresenter, ExtractInterfaceModel>
+    public class ExtractInterfaceRefactoring : InteractiveRefactoringBase<ExtractInterfaceModel>
     {
         private readonly IRefactoringAction<ExtractInterfaceModel> _refactoringAction;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ICodeBuilder _codeBuilder;
 
         public ExtractInterfaceRefactoring(
             ExtractInterfaceRefactoringAction refactoringAction,
-            IDeclarationFinderProvider declarationFinderProvider, 
-            IRefactoringPresenterFactory factory, 
+            IDeclarationFinderProvider declarationFinderProvider,
+            RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel> userInteraction,
             ISelectionProvider selectionProvider,
-            IUiDispatcher uiDispatcher)
-        :base(selectionProvider, factory, uiDispatcher)
+            ICodeBuilder codeBuilder)
+        :base(selectionProvider, userInteraction)
         {
             _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;
+            _codeBuilder = codeBuilder;
         }
 
         private static readonly DeclarationType[] ModuleTypes =
@@ -57,7 +58,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 throw new InvalidDeclarationTypeException(target);
             }
 
-            return new ExtractInterfaceModel(_declarationFinderProvider, targetClass);
+            return new ExtractInterfaceModel(_declarationFinderProvider, targetClass, _codeBuilder);
         }
 
         protected override void RefactorImpl(ExtractInterfaceModel model)

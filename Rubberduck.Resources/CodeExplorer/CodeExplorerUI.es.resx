@@ -157,13 +157,13 @@
     <value>Mostrar completo y firmas</value>
   </data>
   <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
-    <value>Expandir nodo y todos los nodos hijos</value>
+    <value>Expandir todo</value>
   </data>
   <data name="CodeExplorer_Export" xml:space="preserve">
-    <value>Exportar ...</value>
+    <value>Exportar...</value>
   </data>
   <data name="CodeExplorer_ExportAll" xml:space="preserve">
-    <value>Proyecto de exportación ...</value>
+    <value>Exportar Proyecto...</value>
   </data>
   <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
     <value>Buscar todas las implementaciones ...</value>
@@ -190,19 +190,19 @@
     <value>Abrir</value>
   </data>
   <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
-    <value>Abrir diseño</value>
+    <value>Abrir diseñador</value>
   </data>
   <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
     <value>Propiedades del proyecto</value>
   </data>
   <data name="CodeExplorer_Print" xml:space="preserve">
-    <value>Impresión...</value>
+    <value>Imprimir...</value>
   </data>
   <data name="CodeExplorer_Refresh" xml:space="preserve">
     <value>R&amp;efrescar</value>
   </data>
   <data name="CodeExplorer_Remove" xml:space="preserve">
-    <value>Retirar...</value>
+    <value>Eliminar...</value>
   </data>
   <data name="CodeExplorer_ResourceFileText" xml:space="preserve">
     <value>Recursos</value>
@@ -211,19 +211,19 @@
     <value>Ejecutar todas las pruebas</value>
   </data>
   <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
-    <value>Abrir diseño</value>
+    <value>Abrir diseñador</value>
   </data>
   <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
-    <value>Alternar carpetas</value>
+    <value>Mostrar/Ocultar carpetas</value>
   </data>
   <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
-    <value>Alternar firmas</value>
+    <value>Mostrar/Ocultar firmas</value>
   </data>
   <data name="CodeExplorer_Sort" xml:space="preserve">
     <value>Ordenar</value>
   </data>
   <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
-    <value>Según lo declarado en el módulo.</value>
+    <value>Según lo declarado en el módulo</value>
   </data>
   <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
     <value>Por nombre</value>
@@ -232,7 +232,7 @@
     <value>Agrupar por tipo</value>
   </data>
   <data name="CodeExplorer_Add" xml:space="preserve">
-    <value>Añadir</value>
+    <value>Añadir...</value>
   </data>
   <data name="ExportBeforeRemove_Caption" xml:space="preserve">
     <value>Confirmar exportación</value>
@@ -256,7 +256,7 @@
     <value>Form (.frm)</value>
   </data>
   <data name="CodeExplorer_Rename" xml:space="preserve">
-    <value>Rebautizar</value>
+    <value>Renombrar...</value>
   </data>
   <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
     <value>Establecer como inicio</value>
@@ -284,5 +284,51 @@
   </data>
   <data name="CodeExplorer_LibraryReferences" xml:space="preserve">
     <value>Biblioteca de referencias</value>
+  </data>
+  <data name="CodeExplorer_AddExistingFileText" xml:space="preserve">
+    <value>Archivos existentes...</value>
+  </data>
+  <data name="CodeExplorer_Delete" xml:space="preserve">
+    <value>Borrar</value>
+  </data>
+  <data name="CodeExplorer_Exclude" xml:space="preserve">
+    <value>Quitar del proyecto</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Caption" xml:space="preserve">
+    <value>Confirmar Borrado</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Prompt" xml:space="preserve">
+    <value>{0} se borrará permanentemente.
+    
+¿Desea continuar?</value>
+  </data>
+  <data name="DeleteFailed_Caption" xml:space="preserve">
+    <value>Borrado falló</value>
+  </data>
+  <data name="DeleteFailed_Message" xml:space="preserve">
+    <value>Los siguientes archivos no se pudieron borrar:
+    
+{0}</value>
+  </data>
+  <data name="CodeExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck - Declaraciones de Usuario - {0}</value>
+  </data>
+  <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
+    <value>Extraer Interfaz...</value>
+  </data>
+  <data name="SyncProject" xml:space="preserve">
+    <value>Sincronizar proyecto</value>
+  </data>
+  <data name="UpdateFromFiles" xml:space="preserve">
+    <value>Actualizar Componentes desde Archivos...</value>
+  </data>
+  <data name="ReplaceFromFiles" xml:space="preserve">
+    <value>Reemplazar Contenidos desde Archivos...</value>
+  </data>
+  <data name="CodeExplorer_MoveToFolder" xml:space="preserve">
+    <value>Mover a Carpeta...</value>
+  </data>
+  <data name="CodeExplorer_Annotate" xml:space="preserve">
+    <value>Anotar</value>
   </data>
 </root>

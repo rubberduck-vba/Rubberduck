@@ -190,7 +190,7 @@
     <value>Zde se jedná nejspíše o bug. Proměnná je referována, avšak nikdy jí není nic přiděleno.</value>
   </data>
   <data name="MultilineParameterInspection" xml:space="preserve">
-    <value>Rozdělení deklarace parametru na více řádků velmi zraňuje čitelnost. I když je parametr dlouhý, zvažte jeho deklaraci na jeden řádek. </value>
+    <value>Rozdělení deklarace parametru na více řádků velmi zraňuje čitelnost. I když je parametr dlouhý, zvažte jeho deklaraci na jeden řádek.</value>
   </data>
   <data name="ObsoleteTypeHintInspection" xml:space="preserve">
     <value>Type nápovědní písmena v jazyku existují jen pro podporu zastaralého kódu, který je vyžaduje; můžou být bez obav nahrazeny deklaracemi jako "As", které specifikují typ explicitně a mohou být vynechány v jiných referencích identifikátoru.</value>
@@ -323,7 +323,7 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
     <value>Anotace je specifikována vícenásobně, avšak měla by být zadána pouze jednou.</value>
   </data>
   <data name="ModuleWithoutFolderInspection" xml:space="preserve">
-    <value>Moduly bez '@Folder' anotace nelze v Code Exploreru uživatelsky seskupovat do skupin</value>
+    <value>Moduly bez '@Folder' anotace nelze v Code Exploreru uživatelsky seskupovat do skupin.</value>
   </data>
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>Přiřazení je okamžitě přepsáno jiným přiřazením nebo na něj není nikdy odkazováno.</value>
@@ -428,6 +428,19 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
     <value>Výchozí přístupy členů skryjí skutečně volaného člena. To je obzvláště zavádějící, pokud ve výrazu neexistuje žádný náznak, že je takové volání uskutečněno a pokud výchozí člen nemůže být určen z deklarovaného typu objektu. V důsledku toho mohou vzniknout chyby, při kterých přejde bez povšimnutí, že bylo zapomenuto zavolat člena a pokud se v průběhu run-time nevyskytne vhodný výchozí člen, objeví se chyba 438 'Object doesn't suport this property or method'.</value>
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
-    <value>Kdykoli jsou obě strany přiřazení bez 'Set' typu Objekt, existuje přiřazení od výchozího člena RHS k druhému - LHS. I když by toto mohlo být úmyslné, v mnoha situacích to jen maskuje chybně zapomenuté klíčové slovo 'Set'. </value>
+    <value>Kdykoli jsou obě strany přiřazení bez 'Set' typu Objekt, existuje přiřazení od výchozího člena RHS k druhému - LHS. I
+když by toto mohlo být úmyslné, v mnoha situacích to jen maskuje chybně zapomenuté klíčové slovo 'Set'.</value>
+  </data>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>Člen je definován jako funkce, ale ve všech případech je použit jako procedura. Zamyslete se nad zkonvertováním 'Function' na 'Sub'.</value>
+  </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>Anotace má více argumentů, než je povoleno; nadbytečné argumenty jsou ignorovány.</value>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>Vrácená hodnota z funkce je zahozena, tzn. funkce je použita jako 'Sub' procedura. Toto je buď nepozornost, nebo je funkce použita pro její vedlejší účinek, což zavání špatným kódem.</value>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Pokud není definována klausule typu 'As' pro deklaraci 'Const', použije se implicitní typ. Explicitně definujte ' As &lt;Type&gt;', kde '&lt;Type&gt;' je korektní data typ hodnoty konstanty.</value>
   </data>
 </root>

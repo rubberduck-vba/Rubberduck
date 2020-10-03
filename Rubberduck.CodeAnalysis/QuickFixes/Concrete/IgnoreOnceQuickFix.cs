@@ -4,7 +4,7 @@ using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -14,7 +14,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// <summary>
     /// Adds an '@Ignore annotation to ignore a specific inspection result. Applicable to all inspections whose results can be annotated in a module.
     /// </summary>
-    /// <canfix procedure="false" module="false" project="false" />
+    /// <canfix multiple="true" procedure="true" module="true" project="true" all="true" />
     /// <example>
     /// <before>
     /// <![CDATA[
@@ -48,9 +48,11 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             _annotationUpdater = annotationUpdater;
         }
 
-        public override bool CanFixInProcedure => false;
-        public override bool CanFixInModule => false;
-        public override bool CanFixInProject => false;
+        public override bool CanFixMultiple => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
+        public override bool CanFixAll => true;
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
@@ -90,8 +92,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
         {
             var moduleDeclaration = result.Target;
             var existingIgnoreModuleAnnotation = moduleDeclaration.Annotations
-                .Where(pta => pta.Annotation is IgnoreModuleAnnotation)
-                .FirstOrDefault();
+                .FirstOrDefault(pta => pta.Annotation is IgnoreModuleAnnotation);
 
             var annotationType = new IgnoreModuleAnnotation();
             if (existingIgnoreModuleAnnotation != null)

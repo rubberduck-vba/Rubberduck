@@ -39,8 +39,10 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Abstract
 
         protected abstract void Refactor(IInspectionResult result);
 
+        public override bool CanFixMultiple => false;
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => false;
         public override bool CanFixInProject => false;
+        public override bool CanFixAll => false;
     }
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -193,7 +193,7 @@
     <value>Erkennt die exakte Sequenz</value>
   </data>
   <data name="ExpressionDescription_ErrorExpression" xml:space="preserve">
-    <value>Konnte '{0}' nicht als Literal erkennen. Bitte überprüfen Sie die Eingabe</value>
+    <value>'{0}' konnte nicht als Literal erkennen werden. Bitte überprüfen Sie die Eingabe.</value>
   </data>
   <data name="PatternDescription_AnchorEnd" xml:space="preserve">
     <value>$ stellt sicher, dass alle Zeichen im String verwendet wurden</value>

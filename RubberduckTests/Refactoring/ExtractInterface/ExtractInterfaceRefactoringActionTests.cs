@@ -755,13 +755,13 @@ End Sub
             var targetClass = finder.UserDeclarations(DeclarationType.ClassModule)
                 .OfType<ClassModuleDeclaration>()
                 .Single(module => module.IdentifierName == "Class");
-            var model = new ExtractInterfaceModel(state, targetClass);
+            var model = new ExtractInterfaceModel(state, targetClass, new CodeBuilder());
             return modelAdjustment(model);
         }
 
         protected override IRefactoringAction<ExtractInterfaceModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            var addInterfaceImplementationsAction = new AddInterfaceImplementationsRefactoringAction(rewritingManager);
+            var addInterfaceImplementationsAction = new AddInterfaceImplementationsRefactoringAction(rewritingManager, new CodeBuilder());
             var addComponentService = TestAddComponentService(state?.ProjectsProvider);
             return new ExtractInterfaceRefactoringAction(addInterfaceImplementationsAction, state, state, rewritingManager, state?.ProjectsProvider, addComponentService);
         }

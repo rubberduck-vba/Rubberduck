@@ -2,6 +2,7 @@
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 
@@ -22,13 +23,13 @@ namespace Rubberduck.Refactorings.MoveToFolder
         public override void Refactor(MoveToFolderModel model, IRewriteSession rewriteSession)
         {
             var oldFolderAnnotation = model.Target.Annotations.FirstOrDefault(pta => pta.Annotation is FolderAnnotation);
-            if (oldFolderAnnotation != null)
-            {
-                UpdateFolderAnnotation(model, oldFolderAnnotation, rewriteSession);
-            }
-            else
+            if (oldFolderAnnotation == null)
             {
                 AddFolderAnnotation(model, rewriteSession);
+            }
+            else if(!model.TargetFolder.Equals(model.Target.CustomFolder))
+            {
+                UpdateFolderAnnotation(model, oldFolderAnnotation, rewriteSession);
             }
         }
 
@@ -47,9 +48,7 @@ namespace Rubberduck.Refactorings.MoveToFolder
 
         private static (IAnnotation annotation, IReadOnlyList<string> annotationArguments) NewAnnotation(string targetFolder)
         {
-            var targetFolderLiteral = targetFolder
-                .Replace("\"", "\"\"")
-                .EnQuote();
+            var targetFolderLiteral = targetFolder.ToVbaStringLiteral();
 
             var annotation = new FolderAnnotation();
             var annotationValues = new List<string> { targetFolderLiteral };

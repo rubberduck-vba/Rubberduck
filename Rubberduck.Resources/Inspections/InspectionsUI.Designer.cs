@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Inspections {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InspectionsUI {
@@ -347,7 +347,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fix all detected occurrences.
+        ///   Looks up a localized string similar to All occurrences.
         /// </summary>
         public static string QuickFix_All {
             get {
@@ -356,7 +356,25 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fix all occurrences in module.
+        ///   Looks up a localized string similar to Selected occurrence.
+        /// </summary>
+        public static string QuickFix_Instance {
+            get {
+                return ResourceManager.GetString("QuickFix_Instance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected occurrences.
+        /// </summary>
+        public static string QuickFix_Selection {
+            get {
+                return ResourceManager.GetString("QuickFix_Selection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Occurrences in module.
         /// </summary>
         public static string QuickFix_ThisModule {
             get {
@@ -365,7 +383,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fix all occurrences in procedure.
+        ///   Looks up a localized string similar to Occurrences in procedure.
         /// </summary>
         public static string QuickFix_ThisProcedure {
             get {
@@ -374,7 +392,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fix all occurrences in project.
+        ///   Looks up a localized string similar to Occurrences in project.
         /// </summary>
         public static string QuickFix_ThisProject {
             get {

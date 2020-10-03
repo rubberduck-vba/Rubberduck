@@ -18,6 +18,8 @@ using RubberduckTests.Mocks;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Annotations;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.AddInterfaceImplementations;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command.ComCommands;
@@ -32,6 +34,7 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Settings;
+using Rubberduck.Refactorings;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -185,7 +188,8 @@ namespace RubberduckTests.CodeExplorer
                 _windowSettingsProvider.Object,
                 _uiDispatcher.Object, Vbe.Object,
                 null,
-                new CodeExplorerSyncProvider(Vbe.Object, State, VbeEvents.Object));
+                new CodeExplorerSyncProvider(Vbe.Object, State, VbeEvents.Object), 
+                new List<IAnnotation>());
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error)
@@ -503,11 +507,12 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementExtractInterfaceCommand()
         {
-            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(null);
+            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(null, new CodeBuilder());
             var addComponentService = TestAddComponentService(State.ProjectsProvider);
             var extractInterfaceBaseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, State, State, null, State.ProjectsProvider, addComponentService);
+            var userInteraction = new RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel>(null, _uiDispatcher.Object);
             ViewModel.CodeExplorerExtractInterfaceCommand = new CodeExplorerExtractInterfaceCommand(
-                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, null, null, _uiDispatcher.Object),
+                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, userInteraction, null, new CodeBuilder()),
                 State, null, VbeEvents.Object);
             return this;
         }

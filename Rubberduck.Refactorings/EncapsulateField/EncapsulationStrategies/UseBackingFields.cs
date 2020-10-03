@@ -1,39 +1,37 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class UseBackingFields : EncapsulateFieldStrategyBase
     {
-        public UseBackingFields(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
-            : base(declarationFinderProvider, model, indenter){ }
+        private IEnumerable<IEncapsulateFieldCandidate> _fieldsToDeleteAndReplace;
 
-        protected override void ModifyFields(IEncapsulateFieldRewriteSession refactorRewriteSession)
+        public UseBackingFields(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter, ICodeBuilder codeBuilder)
+            : base(declarationFinderProvider, model, indenter, codeBuilder)
+        {
+            _fieldsToDeleteAndReplace = SelectedFields.Where(f => f.Declaration.IsDeclaredInList() && !f.Declaration.HasPrivateAccessibility()).ToList();
+        }
+
+
+        protected override void ModifyFields(IRewriteSession refactorRewriteSession)
         {
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
-            foreach (var field in SelectedFields)
+            rewriter.RemoveVariables(_fieldsToDeleteAndReplace.Select(f => f.Declaration).Cast<VariableDeclaration>());
+
+            foreach (var field in SelectedFields.Except(_fieldsToDeleteAndReplace))
             {
                 if (field.Declaration.HasPrivateAccessibility() && field.BackingIdentifier.Equals(field.Declaration.IdentifierName))
                 {
                     rewriter.MakeImplicitDeclarationTypeExplicit(field.Declaration);
-                    continue;
-                }
-
-                if (field.Declaration.IsDeclaredInList() && !field.Declaration.HasPrivateAccessibility())
-                {
-                    refactorRewriteSession.Remove(field.Declaration, rewriter);
                     continue;
                 }
 
@@ -43,7 +41,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        protected override void ModifyReferences(IEncapsulateFieldRewriteSession refactorRewriteSession)
+        protected override void ModifyReferences(IRewriteSession refactorRewriteSession)
         {
             foreach (var field in SelectedFields)
             {
@@ -55,12 +53,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override void LoadNewDeclarationBlocks()
         {
-            //New field declarations created here were removed from their list within ModifyFields(...)
-            var fieldsRequiringNewDeclaration = SelectedFields
-                .Where(field => field.Declaration.IsDeclaredInList()
-                                    && field.Declaration.Accessibility != Accessibility.Private);
-
-            foreach (var field in fieldsRequiringNewDeclaration)
+            //New field declarations created here were removed from their 
+            //variable list statement within ModifyFields(...)
+            foreach (var field in _fieldsToDeleteAndReplace)
             {
                 var targetIdentifier = field.Declaration.Context.GetText().Replace(field.IdentifierName, field.BackingIdentifier);
                 var newField = field.Declaration.IsTypeSpecified
