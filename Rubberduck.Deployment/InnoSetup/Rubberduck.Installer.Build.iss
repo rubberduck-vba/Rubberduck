@@ -252,7 +252,7 @@ function ShellExecute(hwnd: HWND; lpOperation: string; lpFile: string;
 ///</remarks>
 function IsElevated: Boolean;
 begin
-  Result := IsAdminLoggedOn;
+  Result := IsAdmin;
 end;
 
 ///<remarks>
@@ -786,9 +786,17 @@ begin
     ErrorCode := UnInstallOldVersion(GetAppId(AppMode));
     Log(Format('The result of UninstallOldVersion for %s was %d.', [AppMode, ErrorCode]));
 
-    if ErrorCode <> 3 then
-      MsgBox(ExpandConstant('{cm:UninstallOldVersionFail}'), mbError, MB_OK);
-    result := (ErrorCode = 3);
+    case (ErrorCode) of
+      1, 3:
+        result := true;
+      else
+      begin
+        if(IDNO = MsgBox(ExpandConstant('{cm:UninstallOldVersionFail}'), mbError, MB_YESNO)) then
+          result := false
+        else
+          result := true;
+      end
+    end;
   end
     else
   begin
