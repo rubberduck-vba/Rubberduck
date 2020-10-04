@@ -780,7 +780,12 @@ begin
     Log(Format('The result of UninstallOldVersion for %s was %d.', [AppMode, ErrorCode]));
 
     case (ErrorCode) of
-      1, 3:
+      1:
+        if(IDNO = MsgBox(ExpandConstant('{cm:UninstallOldVersionNotFound}'), mbError, MB_YESNO)) then
+          result := false
+        else
+          result := true;
+      3:
         result := true;
       else
       begin
