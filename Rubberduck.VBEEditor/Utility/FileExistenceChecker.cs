@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Rubberduck.InternalApi.Common;
+using System.IO.Abstractions;
 
 namespace Rubberduck.VBEditor.Utility
 {
@@ -9,9 +10,16 @@ namespace Rubberduck.VBEditor.Utility
 
     public class FileExistenceChecker : IFileExistenceChecker
     {
+        private readonly IFileSystem _fileSystem;
+
+        public FileExistenceChecker(IFileSystem fileSystem)
+        {
+            _fileSystem = fileSystem;
+        }
+
         public bool FileExists(string filename)
         {
-            return File.Exists(filename);
+            return _fileSystem.File.Exists(filename);
         }
     }
 }
