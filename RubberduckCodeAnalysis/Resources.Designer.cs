@@ -124,6 +124,42 @@ namespace RubberduckCodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filesystem API Management.
+        /// </summary>
+        public static string FileSystemUsageCategory {
+            get {
+                return ResourceManager.GetString("FileSystemUsageCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To avoid issues with testability and controlling the behaviors, all production code should use abstractions (e.g. System.IO.Abstractions) instead of System.IO. For non-filesystem uses such as stream use using statement with the classes (e.g. &quot;using Path = System.IO.Path;&quot;)..
+        /// </summary>
+        public static string FileSystemUsageDescription {
+            get {
+                return ResourceManager.GetString("FileSystemUsageDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File &apos;{0}&apos; contains an unqualified using statement for System.IO. Abstractions should be used instead..
+        /// </summary>
+        public static string FileSystemUsageMessageFormat {
+            get {
+                return ResourceManager.GetString("FileSystemUsageMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid use of filesystem API.
+        /// </summary>
+        public static string FileSystemUsageTile {
+            get {
+                return ResourceManager.GetString("FileSystemUsageTile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid value for &apos;type&apos; attribute..
         /// </summary>
         public static string InvalidTypeAttribute {
