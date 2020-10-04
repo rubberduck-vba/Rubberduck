@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Path = System.IO.Path;
 using System.Windows.Input;
 using System.ComponentModel;
-using System.IO;
 using System.Windows.Data;
 using System.Windows.Forms;
 using NLog;

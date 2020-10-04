@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
+using Rubberduck.InternalApi.Common;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -15,6 +16,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public sealed class VBComponents : SafeEventedComWrapper<VB.VBComponents, VB._dispVBComponentsEvents>, IVBComponents, VB._dispVBComponentsEvents
     {
+        private readonly IFileSystem _fileSystem = FileSystemProvider.FileSystem;
         private readonly IModuleNameFromFileExtractor _moduleNameFromFileExtractor = new ModuleNameFromFileExtractor();
 
         public VBComponents(VB.VBComponents target, bool rewrapping = false) 
@@ -84,8 +86,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 return null;
             }
 
-            var ext = Path.GetExtension(path);
-            if (!File.Exists(path))
+            var ext = _fileSystem.Path.GetExtension(path);
+            if (!_fileSystem.File.Exists(path))
             {
                 return null;
             }
@@ -107,7 +109,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                         throw new IndexOutOfRangeException($"Could not find document component named '{name}'.  Try adding a document component with the same name and try again.");
                     }
 
-                    var codeString = File.ReadAllText(path, Encoding.UTF8);
+                    var codeString = _fileSystem.File.ReadAllText(path, Encoding.UTF8);
                     using (var codeModule = component.CodeModule)
                     {
                         codeModule.Clear();
@@ -131,7 +133,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     }
 
                     var codeString =
-                        File.ReadAllText(path,
+                        _fileSystem.File.ReadAllText(path,
                             Encoding
                                 .Default); //The VBE uses the current ANSI codepage from the windows settings to export and import.
                     var codeLines = codeString.Split(new[] {Environment.NewLine}, StringSplitOptions.None);

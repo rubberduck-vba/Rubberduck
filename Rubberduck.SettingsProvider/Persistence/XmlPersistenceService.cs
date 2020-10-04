@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
+using MemoryStream = System.IO.MemoryStream;
+using Path = System.IO.Path;
+using StreamWriter = System.IO.StreamWriter;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using System.IO.Abstractions;
 
 namespace Rubberduck.SettingsProvider
 {
@@ -12,7 +15,10 @@ namespace Rubberduck.SettingsProvider
     {
         private const string DefaultConfigFile = "rubberduck.config";
 
-        public XmlPersistenceService(IPersistencePathProvider pathProvider) : base(pathProvider) { }
+        public XmlPersistenceService(
+            IPersistencePathProvider pathProvider,
+            IFileSystem fileSystem) 
+            : base(pathProvider, fileSystem) { }
 
         protected override string FilePath => Path.Combine(RootPath, DefaultConfigFile);
 

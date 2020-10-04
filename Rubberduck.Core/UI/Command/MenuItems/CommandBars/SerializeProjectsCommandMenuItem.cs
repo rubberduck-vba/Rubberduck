@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.VBA;
@@ -24,12 +24,18 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         private readonly RubberduckParserState _state;
         private readonly IComProjectSerializationProvider _serializationProvider;
         private readonly IComLibraryProvider _comLibraryProvider;
+        private readonly IFileSystem _fileSystem;
 
-        public SerializeProjectsCommand(RubberduckParserState state, IComProjectSerializationProvider serializationProvider, IComLibraryProvider comLibraryProvider) 
+        public SerializeProjectsCommand(
+            RubberduckParserState state, 
+            IComProjectSerializationProvider serializationProvider, 
+            IComLibraryProvider comLibraryProvider,
+            IFileSystem fileSystem) 
         {
             _state = state;
             _serializationProvider = serializationProvider;
             _comLibraryProvider = comLibraryProvider;
+            _fileSystem = fileSystem;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
@@ -41,9 +47,9 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         protected override void OnExecute(object parameter)
         {
-            if (!Directory.Exists(_serializationProvider.Target))
+            if (!_fileSystem.Directory.Exists(_serializationProvider.Target))
             {
-                Directory.CreateDirectory(_serializationProvider.Target);
+                _fileSystem.Directory.CreateDirectory(_serializationProvider.Target);
             }
 
             var toSerialize = new Dictionary<Guid, ComProject>();
@@ -87,12 +93,12 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             //This block must be inside a conditional compilation block because the Serialize method 
             //called is conditionally compiled and available only if the compilation constant TRACE_COM_SAFE is set.
             var path = !string.IsNullOrWhiteSpace(_serializationProvider.Target)
-                ? Path.GetDirectoryName(_serializationProvider.Target)
-                : Path.GetTempPath();
-            var traceDirectory = Path.Combine(path, "COM Trace");
-            if (!Directory.Exists(traceDirectory))
+                ? _fileSystem.Path.GetDirectoryName(_serializationProvider.Target)
+                : _fileSystem.Path.GetTempPath();
+            var traceDirectory = _fileSystem.Path.Combine(path, "COM Trace");
+            if (!_fileSystem.Directory.Exists(traceDirectory))
             {
-                Directory.CreateDirectory(traceDirectory);
+                _fileSystem.Directory.CreateDirectory(traceDirectory);
             }
 
             Rubberduck.VBEditor.ComManagement.ComSafeManager.GetCurrentComSafe().Serialize(traceDirectory);

@@ -1,20 +1,22 @@
 ﻿using System.Collections.Generic;
-using System.IO;
+using System.IO.Abstractions;
 using System.Text;
 using System.Text.RegularExpressions;
+using Rubberduck.InternalApi.Common;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Path = System.IO.Path;
 
 namespace Rubberduck.VBEditor.Utility
 {
     public class UserFormRequiredBinaryFileNameExtractor : IRequiredBinaryFilesFromFileNameExtractor
     {
+        private readonly IFileSystem _fileSystem = FileSystemProvider.FileSystem;
+
         public ICollection<ComponentType> SupportedComponentTypes => new List<ComponentType>{ComponentType.UserForm};
 
         public ICollection<string> RequiredBinaryFiles(string fileName, ComponentType componentType)
         {
-            if (!File.Exists(fileName))
+            if (!_fileSystem.File.Exists(fileName))
             {
                 return null;
             }
@@ -24,14 +26,14 @@ namespace Rubberduck.VBEditor.Utility
                 return null;
             }
 
-            if (componentType.FileExtension() != Path.GetExtension(fileName))
+            if (componentType.FileExtension() != _fileSystem.Path.GetExtension(fileName))
             {
                 return null;
             }
 
             var regExPattern = "OleObjectBlob\\s+=\\s+\"([^\"]+)\":";
             var regEx = new Regex(regExPattern);
-            var contents = File.ReadLines(fileName, Encoding.Default);
+            var contents = _fileSystem.File.ReadLines(fileName, Encoding.Default);
             
             foreach(var codeLine in contents)
             {
@@ -42,7 +44,7 @@ namespace Rubberduck.VBEditor.Utility
                 }
             }
 
-            var fallbackBinaryName = Path.GetFileNameWithoutExtension(fileName) + componentType.BinaryFileExtension();
+            var fallbackBinaryName = _fileSystem.Path.GetFileNameWithoutExtension(fileName) + componentType.BinaryFileExtension();
             return new List<string>{fallbackBinaryName};
         }
     }

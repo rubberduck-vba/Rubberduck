@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using IOException = System.IO.IOException;
 using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

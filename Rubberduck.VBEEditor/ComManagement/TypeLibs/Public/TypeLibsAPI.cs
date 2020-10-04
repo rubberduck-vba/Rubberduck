@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Rubberduck.InternalApi.Common;
 using Rubberduck.Resources.Registration;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
@@ -1098,7 +1099,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <param name="filePath">string representing a full path and filename where output will be written to</param>
         public void DocumentAllSaveAs(IVBE ide, string filePath)
-            => System.IO.File.WriteAllText(filePath, DocumentAll(ide));
+            => FileSystemProvider.FileSystem.File.WriteAllText(filePath, DocumentAll(ide));
 
         /// <summary>
         /// Tests converting an ITypeInfo representing a VBA project component to System.Type using Marshal.GetTypeForITypeInfo

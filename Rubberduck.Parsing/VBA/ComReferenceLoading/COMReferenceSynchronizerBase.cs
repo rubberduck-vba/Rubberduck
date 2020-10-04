@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
+using IOException = System.IO.IOException;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;

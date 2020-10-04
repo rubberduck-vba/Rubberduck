@@ -1,5 +1,6 @@
-﻿using System.IO;
+﻿using System.IO.Abstractions;
 using System.Text;
+using Rubberduck.InternalApi.Common;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
@@ -7,6 +8,8 @@ namespace Rubberduck.VBEditor.VB6
 {
     public class ExternalFileTempSourceFileHandlerEmulator : ITempSourceFileHandler
     {
+        private IFileSystem _fileSystem => FileSystemProvider.FileSystem;
+
         public string Export(IVBComponent component)
         {
             // VB6 source code is already external, and should be in the first associated file.
@@ -22,12 +25,12 @@ namespace Rubberduck.VBEditor.VB6
         public string Read(IVBComponent component)
         {
             var fileName = Export(component);
-            if (fileName == null || !File.Exists(fileName))
+            if (fileName == null || !_fileSystem.File.Exists(fileName))
             {
                 return null;
             }
 
-            return File.ReadAllText(fileName, Encoding.Default);
+            return _fileSystem.File.ReadAllText(fileName, Encoding.Default);
         }        
     }
 }

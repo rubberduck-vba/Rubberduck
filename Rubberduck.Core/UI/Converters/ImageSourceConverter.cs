@@ -1,7 +1,8 @@
 using System;
 using System.Drawing;
 using System.Globalization;
-using System.IO;
+using MemoryStream = System.IO.MemoryStream;
+using SeekOrigin = System.IO.SeekOrigin;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;

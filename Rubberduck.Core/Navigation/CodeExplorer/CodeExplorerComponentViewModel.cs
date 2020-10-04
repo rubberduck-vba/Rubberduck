@@ -1,12 +1,12 @@
+using System;
 using System.Collections.Generic;
-using System.IO;
+using Path = System.IO.Path;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Resources.CodeExplorer;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using System;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {

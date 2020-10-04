@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using Path = System.IO.Path;
 using System.Windows.Forms;
 using Rubberduck.AddRemoveReferences;
 using Rubberduck.Parsing.Symbols;

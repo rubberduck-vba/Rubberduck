@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System.IO.Abstractions;
 using System.Text;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -8,10 +8,14 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
     public class SourceFileHandlerComponentSourceCodeHandlerAdapter : IComponentSourceCodeHandler
     {
         private readonly ITempSourceFileHandler _tempSourceFileHandler;
+        private readonly IFileSystem _fileSystem;
 
-        public SourceFileHandlerComponentSourceCodeHandlerAdapter(ITempSourceFileHandler tempSourceFileHandler)
+        public SourceFileHandlerComponentSourceCodeHandlerAdapter(
+            ITempSourceFileHandler tempSourceFileHandler,
+            IFileSystem fileSystem)
         {
             _tempSourceFileHandler = tempSourceFileHandler;
+            _fileSystem = fileSystem;
         }
 
         public string SourceCode(IVBComponent module)
@@ -28,11 +32,11 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
 
             var fileName = _tempSourceFileHandler.Export(module);
-            if (fileName == null || !File.Exists(fileName))
+            if (fileName == null || !_fileSystem.File.Exists(fileName))
             {
                 return module;
             }
-            File.WriteAllText(fileName, newCode, Encoding.Default);
+            _fileSystem.File.WriteAllText(fileName, newCode, Encoding.Default);
             return _tempSourceFileHandler.ImportAndCleanUp(module, fileName);
         }
     }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using Path = System.IO.Path;
 using System.Runtime.ExceptionServices;
 using System.Windows.Forms;
 using Rubberduck.Interaction;

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
+using StreamWriter = System.IO.StreamWriter;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.InternalApi.Common;
+using System.IO.Abstractions;
 
 namespace Rubberduck.VBEditor.ComManagement
 {
@@ -19,6 +21,7 @@ namespace Rubberduck.VBEditor.ComManagement
         private string _traceFilePath;
         private string _directory;
         private readonly object _streamLock = new object();
+        private readonly IFileSystem _fileSystem = FileSystemProvider.FileSystem;
 
         /// <summary>
         /// The first few stack frames come from the ComSafe and thus are not
@@ -42,7 +45,7 @@ namespace Rubberduck.VBEditor.ComManagement
             {
                 _directory = targetDirectory;
                 var serializeTime = DateTime.UtcNow;
-                using (var stream = File.AppendText(Path.Combine(_directory,
+                using (var stream = _fileSystem.File.AppendText(_fileSystem.Path.Combine(_directory,
                     $"COM Safe Content Snapshot {serializeTime:yyyyMMddhhmmss}.csv")))
                 {
                     stream.WriteLine(
@@ -63,7 +66,7 @@ namespace Rubberduck.VBEditor.ComManagement
                 }
 
                 _traceStream.Flush();
-                File.Copy(_traceFilePath, Path.Combine(_directory, $"COM Safe Stack Trace {serializeTime:yyyyMMddhhmmss}.csv"));
+                _fileSystem.File.Copy(_traceFilePath, _fileSystem.Path.Combine(_directory, $"COM Safe Stack Trace {serializeTime:yyyyMMddhhmmss}.csv"));
             }
         }
 
@@ -82,13 +85,13 @@ namespace Rubberduck.VBEditor.ComManagement
                     _traceStream.Close();
                     if (string.IsNullOrWhiteSpace(_directory))
                     {
-                        File.Delete(_traceFilePath);
+                        _fileSystem.File.Delete(_traceFilePath);
                     }
                     else
                     {
-                        File.Move(_traceFilePath,
-                            Path.Combine(_directory,
-                                Path.GetFileNameWithoutExtension(_traceFilePath) + " final.csv"));
+                        _fileSystem.File.Move(_traceFilePath,
+                            _fileSystem.Path.Combine(_directory,
+                                _fileSystem.Path.GetFileNameWithoutExtension(_traceFilePath) + " final.csv"));
                     }
                 }
                 finally
@@ -133,10 +136,10 @@ namespace Rubberduck.VBEditor.ComManagement
 
                 if (_traceStream == null)
                 {
-                    var directory = Path.GetTempPath();
-                    _traceFilePath = Path.Combine(directory,
+                    var directory = _fileSystem.Path.GetTempPath();
+                    _traceFilePath = _fileSystem.Path.Combine(directory,
                         $"COM Safe Stack Trace {DateTime.UtcNow:yyyyMMddhhmmss}.{GetHashCode()}.csv");
-                    _traceStream = File.AppendText(_traceFilePath);
+                    _traceStream = _fileSystem.File.AppendText(_traceFilePath);
                     _traceStream.WriteLine(
                         $"Ordinal\tTimestamp\tActivity\tKey\tIUnknown Pointer Address\t{FrameHeaders()}");
                 }

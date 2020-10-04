@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
+using Path = System.IO.Path;
 using System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.AddRemoveReferences

@@ -10,6 +10,7 @@ using Rubberduck.VBEditor.VbeRuntime.Settings;
 using System;
 using Rubberduck.Interaction;
 using Rubberduck.SettingsProvider;
+using System.IO.Abstractions;
 
 namespace RubberduckTests.Settings
 {
@@ -172,7 +173,7 @@ namespace RubberduckTests.Settings
             // For this test, we need to use the actual object. Fortunately, the path is virtual, so we
             // can override that property and force it to use an non-existent path to prove that settings
             // will be still created using defaults without the file present. 
-            var persisterMock = new Mock<XmlPersistenceService<GeneralSettings>>(pathProviderMock.Object);
+            var persisterMock = new Mock<XmlPersistenceService<GeneralSettings>>(pathProviderMock.Object, new FileSystem());
             persisterMock.CallBase = true;
             var configProvider = new GeneralConfigProvider(persisterMock.Object);
 

@@ -96,7 +96,7 @@ namespace Rubberduck.Root
             ActivateAutoMagicFactories(container);
             OverridePropertyInjection(container);
 
-            RegisterFilesystem(container);
+            RegisterFileSystem(container);
             RegisterInstances(container);
             RegisterAppWithSpecialDependencies(container);
             RegisterUnitTestingComSide(container);
