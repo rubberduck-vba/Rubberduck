@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Windows.Forms;
 using Rubberduck.Interaction;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;

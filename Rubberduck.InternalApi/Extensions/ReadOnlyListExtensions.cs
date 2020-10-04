@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rubberduck.JunkDrawer.Extensions
+namespace Rubberduck.InternalApi.Extensions
 {
     public static class ReadOnlyListExtensions
     {

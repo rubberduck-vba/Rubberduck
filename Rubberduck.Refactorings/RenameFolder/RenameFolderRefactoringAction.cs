@@ -1,4 +1,4 @@
-﻿using Rubberduck.JunkDrawer.Extensions;
+﻿using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Refactorings.ChangeFolder;
 

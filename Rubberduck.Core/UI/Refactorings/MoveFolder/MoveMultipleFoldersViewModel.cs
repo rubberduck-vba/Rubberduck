@@ -4,7 +4,7 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.MoveFolder;
 using Rubberduck.Resources;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.UI.Refactorings.MoveFolder

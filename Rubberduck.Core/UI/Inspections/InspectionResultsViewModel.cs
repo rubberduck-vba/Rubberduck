@@ -18,7 +18,7 @@ using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.Common;
 using Rubberduck.Formatters;
 using Rubberduck.Interaction.Navigation;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;

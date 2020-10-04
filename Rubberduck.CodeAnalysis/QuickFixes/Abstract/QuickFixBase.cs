@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using NLog;
 using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.Parsing;
 
