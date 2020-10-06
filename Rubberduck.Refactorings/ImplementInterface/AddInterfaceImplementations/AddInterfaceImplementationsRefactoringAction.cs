@@ -38,12 +38,12 @@ namespace Rubberduck.Refactorings.AddInterfaceImplementations
         {
             if (member is ModuleBodyElementDeclaration mbed)
             {
-                return _codeBuilder.BuildMemberBlockFromPrototype(mbed, accessibility: Tokens.Private, newIdentifier: $"{interfaceName}_{member.IdentifierName}", content: _memberBody);
+                return _codeBuilder.BuildMemberBlockFromPrototype(mbed, accessibility: Accessibility.Private, newIdentifier: $"{interfaceName}_{member.IdentifierName}", content: _memberBody);
             }
 
             if (member is VariableDeclaration variable)
             {
-                if (!_codeBuilder.TryBuildPropertyGetCodeBlock(variable, $"{interfaceName}_{variable.IdentifierName}", out var propertyGet, Tokens.Private, _memberBody))
+                if (!_codeBuilder.TryBuildPropertyGetCodeBlock(variable, $"{interfaceName}_{variable.IdentifierName}", out var propertyGet, Accessibility.Private, _memberBody))
                 {
                     throw new InvalidOperationException();
                 }
@@ -52,7 +52,7 @@ namespace Rubberduck.Refactorings.AddInterfaceImplementations
 
                 if (variable.AsTypeName.Equals(Tokens.Variant) || !variable.IsObject)
                 {
-                    if (!_codeBuilder.TryBuildPropertyLetCodeBlock(variable, $"{interfaceName}_{variable.IdentifierName}", out var propertyLet, Tokens.Private, _memberBody))
+                    if (!_codeBuilder.TryBuildPropertyLetCodeBlock(variable, $"{interfaceName}_{variable.IdentifierName}", out var propertyLet, Accessibility.Private, _memberBody))
                     {
                         throw new InvalidOperationException();
                     }
@@ -61,7 +61,7 @@ namespace Rubberduck.Refactorings.AddInterfaceImplementations
 
                 if (variable.AsTypeName.Equals(Tokens.Variant) || variable.IsObject)
                 {
-                    if (!_codeBuilder.TryBuildPropertySetCodeBlock(variable, $"{interfaceName}_{variable.IdentifierName}", out var propertySet, Tokens.Private, _memberBody))
+                    if (!_codeBuilder.TryBuildPropertySetCodeBlock(variable, $"{interfaceName}_{variable.IdentifierName}", out var propertySet, Accessibility.Private, _memberBody))
                     {
                         throw new InvalidOperationException();
                     }

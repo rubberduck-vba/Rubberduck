@@ -56,12 +56,12 @@ Private fuzz As ETestType2
             StringAssert.Contains($"Property Get {testParams.Identifier}() As {typeName}", result);
         }
 
-        [TestCase("fizz", DeclarationType.Variable, "Integer", "Public")]
-        [TestCase("FirstValue", DeclarationType.UserDefinedTypeMember, "Long", "Public")]
-        [TestCase("fazz", DeclarationType.Variable, "Long", "Public")]
-        [TestCase("fuzz", DeclarationType.Variable, "ETestType2", "Private")]
+        [TestCase("fizz", DeclarationType.Variable, "Integer", Accessibility.Public)]
+        [TestCase("FirstValue", DeclarationType.UserDefinedTypeMember, "Long", Accessibility.Public)]
+        [TestCase("fazz", DeclarationType.Variable, "Long", Accessibility.Public)]
+        [TestCase("fuzz", DeclarationType.Variable, "ETestType2", Accessibility.Private)]
         [Category(nameof(CodeBuilder))]
-        public void PropertyBlockFromPrototype_PropertyGetAccessibility(string targetIdentifier, DeclarationType declarationType, string typeName, string accessibility)
+        public void PropertyBlockFromPrototype_PropertyGetAccessibility(string targetIdentifier, DeclarationType declarationType, string typeName, Accessibility accessibility)
         {
             var testParams = new PropertyBlockFromPrototypeParams("Bazz", DeclarationType.PropertyGet, accessibility);
             string inputCode =
@@ -643,7 +643,7 @@ End {memberEndStatement}
             => new CodeBuilder().ImprovedArgumentList(mbed);
 
         private static string MemberBlockFromPrototypeTest(ModuleBodyElementDeclaration mbed, MemberBlockFromPrototypeTestParams testParams)
-            => new CodeBuilder().BuildMemberBlockFromPrototype(mbed, testParams.Accessibility, testParams.Content, testParams.NewIdentifier);
+            => new CodeBuilder().BuildMemberBlockFromPrototype(mbed, testParams.Content, testParams.Accessibility, testParams.NewIdentifier);
 
         private (string procType, string endStmt) ProcedureTypeIdentifier(DeclarationType declarationType)
         {
@@ -666,7 +666,7 @@ End {memberEndStatement}
 
         private struct PropertyBlockFromPrototypeParams
         {
-            public PropertyBlockFromPrototypeParams(string identifier, DeclarationType propertyType, string accessibility = null, string content = null, string paramIdentifier = null)
+            public PropertyBlockFromPrototypeParams(string identifier, DeclarationType propertyType, Accessibility accessibility = Accessibility.Public, string content = null, string paramIdentifier = null)
             {
                 Identifier = identifier;
                 DeclarationType = propertyType;
@@ -676,21 +676,21 @@ End {memberEndStatement}
             }
             public DeclarationType DeclarationType { get; }
             public string Identifier { get; }
-            public string Accessibility {get; }
+            public Accessibility Accessibility {get; }
             public string Content { get; }
             public string WriteParam { get; }
         }
 
         private struct MemberBlockFromPrototypeTestParams
         {
-            public MemberBlockFromPrototypeTestParams(ModuleBodyElementDeclaration mbed, string accessibility = null, string content = null, string newIdentifier = null)
+            public MemberBlockFromPrototypeTestParams(ModuleBodyElementDeclaration mbed, Accessibility accessibility = Accessibility.Public, string content = null, string newIdentifier = null)
             {
                 Accessibility = accessibility;
                 Content = content;
                 NewIdentifier = newIdentifier;
             }
 
-            public string Accessibility { get; }
+            public Accessibility Accessibility { get; }
             public string Content { get; }
             public string NewIdentifier { get; }
         }
