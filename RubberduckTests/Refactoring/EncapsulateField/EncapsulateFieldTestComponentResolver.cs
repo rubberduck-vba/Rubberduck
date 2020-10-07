@@ -1,7 +1,6 @@
 ﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
-using Rubberduck.Refactorings.CreateUDTMember;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.ReplaceReferences;
 using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
@@ -11,8 +10,8 @@ using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
 using Rubberduck.Refactorings.EncapsulateFieldInsertNewCode;
 using System;
 using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Settings;
+using Rubberduck.Refactorings.ModifyUserDefinedType;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -61,7 +60,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                         ResolveImpl<ReplaceReferencesRefactoringAction>(),
                         ResolveImpl<ReplacePrivateUDTMemberReferencesRefactoringAction>(),
                         ResolveImpl<ReplaceDeclarationIdentifierRefactoringAction>(),
-                        ResolveImpl<CreateUDTMemberRefactoringAction>(),
+                        ResolveImpl<ModifyUserDefinedTypeRefactoringAction>(),
                         ResolveImpl<EncapsulateFieldInsertNewCodeRefactoringAction >()
                         ) as T;
 
@@ -83,9 +82,9 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 case nameof(IReplacePrivateUDTMemberReferencesModelFactory):
                     return new ReplacePrivateUDTMemberReferencesModelFactory(_declarationFinderProvider) as T;
 
-                case nameof(CreateUDTMemberRefactoringAction):
-                    return new CreateUDTMemberRefactoringAction(
-                        _declarationFinderProvider, 
+                case nameof(ModifyUserDefinedTypeRefactoringAction):
+                    return new ModifyUserDefinedTypeRefactoringAction(
+                        _declarationFinderProvider,
                         _rewritingManager,
                         ResolveImpl<ICodeBuilder>()) as T;
 
