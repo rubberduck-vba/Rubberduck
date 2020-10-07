@@ -21,7 +21,7 @@ namespace Rubberduck.Refactorings
         /// <param name="content">Main body content/logic of the member</param>
         string BuildMemberBlockFromPrototype(ModuleBodyElementDeclaration declaration,
             string content = null,
-            string accessibility = null,
+            Accessibility accessibility = Accessibility.Public,
             string newIdentifier = null);
 
         /// <summary>
@@ -35,24 +35,23 @@ namespace Rubberduck.Refactorings
         /// Generates a Property Get codeblock based on the prototype declaration 
         /// </summary>
         /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
-        /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
-        /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
+        /// <param name="content">Member body content.  Null results in an empty body.  Formatting is the responsibility of the caller</param>
         bool TryBuildPropertyGetCodeBlock(Declaration prototype,
             string propertyIdentifier,
             out string codeBlock,
-            string accessibility = null,
+            Accessibility accessibility = Accessibility.Public,
             string content = null);
 
         /// <summary>
         /// Generates a Property Let codeblock based on the prototype declaration 
         /// </summary>
         /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
-        /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
-        /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
+        /// <param name="content">Member body content.  Null results in an empty body.  Formatting is the responsibility of the caller</param>
+        /// <param name="parameterIdentifier">Defaults to 'RHS' unless otherwise specified</param>
         bool TryBuildPropertyLetCodeBlock(Declaration prototype,
             string propertyIdentifier,
             out string codeBlock,
-            string accessibility = null,
+            Accessibility accessibility = Accessibility.Public,
             string content = null,
             string parameterIdentifier = null);
 
@@ -60,12 +59,12 @@ namespace Rubberduck.Refactorings
         /// Generates a Property Set codeblock based on the prototype declaration 
         /// </summary>
         /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
-        /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
-        /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
+        /// <param name="content">Member body content.  Null results in an empty body.  Formatting is the responsibility of the caller</param>
+        /// <param name="parameterIdentifier">Defaults to 'RHS' unless otherwise specified</param>
         bool TryBuildPropertySetCodeBlock(Declaration prototype,
             string propertyIdentifier,
             out string codeBlock,
-            string accessibility = null,
+            Accessibility accessibility = Accessibility.Public,
             string content = null,
             string parameterIdentifier = null);
 
@@ -82,7 +81,7 @@ namespace Rubberduck.Refactorings
         /// Generates a <c>UserDefinedTypeMember</c> declaration expression based on the prototype declaration
         /// </summary>
         /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
-        /// <param name="indentation">Defaults is 4 spaces</param>
+        /// <param name="indentation">If left null, 4 spaces of indentation are applied</param>
         bool TryBuildUDTMemberDeclaration(string identifier, Declaration prototype, out string declaration, string indentation = null);
     }
 
@@ -90,7 +89,7 @@ namespace Rubberduck.Refactorings
     {
         public string BuildMemberBlockFromPrototype(ModuleBodyElementDeclaration declaration, 
             string content = null, 
-            string accessibility = null, 
+            Accessibility accessibility = Accessibility.Public, 
             string newIdentifier = null)
         {
 
@@ -105,16 +104,16 @@ namespace Rubberduck.Refactorings
             return string.Concat(elements);
         }
 
-        public bool TryBuildPropertyGetCodeBlock(Declaration prototype, string propertyIdentifier, out string codeBlock, string accessibility = null, string content = null)
+        public bool TryBuildPropertyGetCodeBlock(Declaration prototype, string propertyIdentifier, out string codeBlock, Accessibility accessibility = Accessibility.Public, string content = null)
             => TryBuildPropertyBlockFromTarget(prototype, DeclarationType.PropertyGet, propertyIdentifier, out codeBlock, accessibility, content);
 
-        public bool TryBuildPropertyLetCodeBlock(Declaration prototype, string propertyIdentifier, out string codeBlock, string accessibility = null, string content = null, string parameterIdentifier = null)
+        public bool TryBuildPropertyLetCodeBlock(Declaration prototype, string propertyIdentifier, out string codeBlock, Accessibility accessibility = Accessibility.Public, string content = null, string parameterIdentifier = null)
             => TryBuildPropertyBlockFromTarget(prototype, DeclarationType.PropertyLet, propertyIdentifier, out codeBlock, accessibility, content, parameterIdentifier);
 
-        public bool TryBuildPropertySetCodeBlock(Declaration prototype, string propertyIdentifier, out string codeBlock, string accessibility = null, string content = null, string parameterIdentifier = null)
+        public bool TryBuildPropertySetCodeBlock(Declaration prototype, string propertyIdentifier, out string codeBlock, Accessibility accessibility = Accessibility.Public, string content = null, string parameterIdentifier = null)
             => TryBuildPropertyBlockFromTarget(prototype, DeclarationType.PropertySet, propertyIdentifier, out codeBlock, accessibility, content, parameterIdentifier);
 
-        private bool TryBuildPropertyBlockFromTarget<T>(T prototype, DeclarationType letSetGetType, string propertyIdentifier, out string codeBlock, string accessibility = null, string content = null, string parameterIdentifier = null) where T : Declaration
+        private bool TryBuildPropertyBlockFromTarget<T>(T prototype, DeclarationType letSetGetType, string propertyIdentifier, out string codeBlock, Accessibility accessibility, string content = null, string parameterIdentifier = null) where T : Declaration
         {
             codeBlock = string.Empty;
             if (!letSetGetType.HasFlag(DeclarationType.Property))
@@ -142,27 +141,23 @@ namespace Rubberduck.Refactorings
             var letSetParamExpression = $"{paramMechanism} {propertyValueParam} {asTypeClause}";
 
             codeBlock = letSetGetType.HasFlag(DeclarationType.PropertyGet)
-                ? string.Join(Environment.NewLine, $"{accessibility ?? Tokens.Public} {TypeToken(letSetGetType)} {propertyIdentifier}() {asTypeClause}", content, EndStatement(letSetGetType))
-                : string.Join(Environment.NewLine, $"{accessibility ?? Tokens.Public} {TypeToken(letSetGetType)} {propertyIdentifier}({letSetParamExpression})", content, EndStatement(letSetGetType));
+                ? string.Join(Environment.NewLine, $"{AccessibilityToken(accessibility)} {TypeToken(letSetGetType)} {propertyIdentifier}() {asTypeClause}", content, EndStatement(letSetGetType))
+                : string.Join(Environment.NewLine, $"{AccessibilityToken(accessibility)} {TypeToken(letSetGetType)} {propertyIdentifier}({letSetParamExpression})", content, EndStatement(letSetGetType));
             return true;
         }
 
         public string ImprovedFullMemberSignature(ModuleBodyElementDeclaration declaration)
-            => ImprovedFullMemberSignatureInternal(declaration);
+            => ImprovedFullMemberSignatureInternal(declaration, declaration.Accessibility);
 
-        private string ImprovedFullMemberSignatureInternal(ModuleBodyElementDeclaration declaration, string accessibility = null, string newIdentifier = null)
+        private string ImprovedFullMemberSignatureInternal(ModuleBodyElementDeclaration declaration, Accessibility accessibility, string newIdentifier = null)
         {
-            var accessibilityToken = declaration.Accessibility.Equals(Accessibility.Implicit)
-                ? Tokens.Public
-                : $"{declaration.Accessibility.ToString()}";
-
             var asTypeName = string.IsNullOrEmpty(declaration.AsTypeName)
                 ? string.Empty
                 : $" {Tokens.As} {declaration.AsTypeName}";
             
             var elements = new List<string>()
             {
-                accessibility ?? accessibilityToken,
+                AccessibilityToken(accessibility),
                 $" {TypeToken(declaration.DeclarationType)} ",
                 newIdentifier ?? declaration.IdentifierName,
                 $"({ImprovedArgumentList(declaration)})",
@@ -296,6 +291,11 @@ namespace Rubberduck.Refactorings
 
             return $"{indentation ?? "    "}{identifierExpression} {Tokens.As} {prototype.AsTypeName}";
         }
+
+        private static string AccessibilityToken(Accessibility accessibility)
+            => accessibility.Equals(Accessibility.Implicit)
+                ? Tokens.Public
+                : $"{accessibility.ToString()}";
 
         private static bool IsValidPrototypeDeclarationType(DeclarationType declarationType)
         {
