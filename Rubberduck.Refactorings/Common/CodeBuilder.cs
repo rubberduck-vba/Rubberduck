@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.SmartIndenter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace Rubberduck.Refactorings
         /// Generates a Property Get codeblock based on the prototype declaration 
         /// </summary>
         /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
-        /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
+        /// <param name="content">Member body content.</param>
         /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
         bool TryBuildPropertyGetCodeBlock(Declaration prototype,
             string propertyIdentifier,
@@ -47,7 +48,7 @@ namespace Rubberduck.Refactorings
         /// Generates a Property Let codeblock based on the prototype declaration 
         /// </summary>
         /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
-        /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
+        /// <param name="content">Member body content.</param>
         /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
         bool TryBuildPropertyLetCodeBlock(Declaration prototype,
             string propertyIdentifier,
@@ -60,7 +61,7 @@ namespace Rubberduck.Refactorings
         /// Generates a Property Set codeblock based on the prototype declaration 
         /// </summary>
         /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
-        /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
+        /// <param name="content">Member body content.</param>
         /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
         bool TryBuildPropertySetCodeBlock(Declaration prototype,
             string propertyIdentifier,
@@ -73,7 +74,8 @@ namespace Rubberduck.Refactorings
         /// Generates a UserDefinedType (UDT) declaration using the prototype declarations for
         /// creating the UserDefinedTypeMember declarations.
         /// </summary>
-        /// <remarks>No validation or conflict analysis is applied to the identifiers.
+        /// <remarks>
+        /// No validation or conflict analysis is applied to the identifiers.
         /// </remarks>
         /// <param name="memberPrototypes">DeclarationTypes with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
         bool TryBuildUserDefinedTypeDeclaration(string udtIdentifier, IEnumerable<(Declaration Prototype, string UDTMemberIdentifier)> memberPrototypes, out string declaration, Accessibility accessibility = Accessibility.Private);
@@ -81,19 +83,27 @@ namespace Rubberduck.Refactorings
         /// <summary>
         /// Generates a <c>UserDefinedTypeMember</c> declaration expression based on the prototype declaration
         /// </summary>
+        /// <remarks>
+        /// No validation or conflict analysis is applied to the identifiers.
+        /// </remarks>
         /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
-        /// <param name="indentation">Defaults is 4 spaces</param>
-        bool TryBuildUDTMemberDeclaration(string identifier, Declaration prototype, out string declaration, string indentation = null);
+        bool TryBuildUDTMemberDeclaration(string identifier, Declaration prototype, out string declaration);
     }
 
     public class CodeBuilder : ICodeBuilder
     {
+        private readonly IIndenter _indenter;
+
+        public CodeBuilder(IIndenter indenter)
+        {
+            _indenter = indenter;
+        }
+
         public string BuildMemberBlockFromPrototype(ModuleBodyElementDeclaration declaration, 
             string content = null, 
             string accessibility = null, 
             string newIdentifier = null)
         {
-
             var elements = new List<string>()
             {
                 ImprovedFullMemberSignatureInternal(declaration, accessibility, newIdentifier),
@@ -117,12 +127,8 @@ namespace Rubberduck.Refactorings
         private bool TryBuildPropertyBlockFromTarget<T>(T prototype, DeclarationType letSetGetType, string propertyIdentifier, out string codeBlock, string accessibility = null, string content = null, string parameterIdentifier = null) where T : Declaration
         {
             codeBlock = string.Empty;
-            if (!letSetGetType.HasFlag(DeclarationType.Property))
-            {
-                throw new ArgumentException();
-            }
-
-            if (!IsValidPrototypeDeclarationType(prototype.DeclarationType))
+            if (!letSetGetType.HasFlag(DeclarationType.Property)
+                || !IsValidPrototypeDeclarationType(prototype.DeclarationType))
             {
                 return false;
             }
@@ -144,6 +150,9 @@ namespace Rubberduck.Refactorings
             codeBlock = letSetGetType.HasFlag(DeclarationType.PropertyGet)
                 ? string.Join(Environment.NewLine, $"{accessibility ?? Tokens.Public} {TypeToken(letSetGetType)} {propertyIdentifier}() {asTypeClause}", content, EndStatement(letSetGetType))
                 : string.Join(Environment.NewLine, $"{accessibility ?? Tokens.Public} {TypeToken(letSetGetType)} {propertyIdentifier}({letSetParamExpression})", content, EndStatement(letSetGetType));
+
+            codeBlock = string.Join(Environment.NewLine, _indenter.Indent(codeBlock));
+
             return true;
         }
 
@@ -168,8 +177,8 @@ namespace Rubberduck.Refactorings
                 $"({ImprovedArgumentList(declaration)})",
                 asTypeName
             };
-            return string.Concat(elements).Trim();
 
+            return string.Concat(elements).Trim();
         }
 
         public string ImprovedArgumentList(ModuleBodyElementDeclaration declaration)
@@ -185,6 +194,7 @@ namespace Rubberduck.Refactorings
                             && declaration.DeclarationType.HasFlag(DeclarationType.Property)
                             && !declaration.DeclarationType.Equals(DeclarationType.PropertyGet)));
             }
+
             return $"{string.Join(", ", arguments)}";
         }
 
@@ -265,11 +275,12 @@ namespace Rubberduck.Refactorings
 
             blockLines.Add($"{Tokens.End} {Tokens.Type}");
 
-            declaration = string.Join(Environment.NewLine, blockLines);
+            declaration = string.Join(Environment.NewLine, _indenter.Indent(blockLines));
+
             return true;
         }
 
-        public bool TryBuildUDTMemberDeclaration(string udtMemberIdentifier, Declaration prototype, out string declaration, string indentation = null)
+        public bool TryBuildUDTMemberDeclaration(string udtMemberIdentifier, Declaration prototype, out string declaration)
         {
             declaration = string.Empty;
 
@@ -280,11 +291,11 @@ namespace Rubberduck.Refactorings
                 return false;
             }
 
-            declaration = BuildUDTMemberDeclaration(udtMemberIdentifier, prototype, indentation);
+            declaration = BuildUDTMemberDeclaration(udtMemberIdentifier, prototype);
             return true;
         }
 
-        private static string BuildUDTMemberDeclaration(string udtMemberIdentifier, Declaration prototype, string indentation = null)
+        private static string BuildUDTMemberDeclaration(string udtMemberIdentifier, Declaration prototype)
         {
             var identifierExpression = udtMemberIdentifier;
             if (prototype.IsArray)
@@ -294,7 +305,7 @@ namespace Rubberduck.Refactorings
                     : $"{udtMemberIdentifier}()";
             }
 
-            return $"{indentation ?? "    "}{identifierExpression} {Tokens.As} {prototype.AsTypeName}";
+            return $"{identifierExpression} {Tokens.As} {prototype.AsTypeName}";
         }
 
         private static bool IsValidPrototypeDeclarationType(DeclarationType declarationType)

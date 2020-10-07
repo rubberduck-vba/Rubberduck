@@ -4,6 +4,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.CreateUDTMember;
+using Rubberduck.SmartIndenter;
+using RubberduckTests.Settings;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -171,7 +173,18 @@ End Type
 
         protected override IRefactoringAction<CreateUDTMemberModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            return new CreateUDTMemberRefactoringAction(state, rewritingManager, new CodeBuilder());
+            return new CreateUDTMemberRefactoringAction(state, rewritingManager, CreateCodeBuilder());
+        }
+
+        private static ICodeBuilder CreateCodeBuilder()
+            => new CodeBuilder(new Indenter(null, CreateIndenterSettings));
+
+        private static IndenterSettings CreateIndenterSettings()
+        {
+            var s = IndenterSettingsTests.GetMockIndenterSettings();
+            s.VerticallySpaceProcedures = true;
+            s.LinesBetweenProcedures = 1;
+            return s;
         }
     }
 }
