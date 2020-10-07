@@ -545,7 +545,7 @@ End {memberEndStatement}
         [Category(nameof(CodeBuilder))]
         public void UDT_NullPrototype_NoResult()
         {
-            var result = CreateCodeBuilder().TryBuildUDTMemberDeclaration(_defaultUDTIdentifier, null, out var declaration);
+            var result = CreateCodeBuilder().TryBuildUDTMemberDeclaration(null, _defaultUDTIdentifier, out var declaration);
             Assert.IsFalse(result);
             Assert.IsTrue(string.IsNullOrEmpty(declaration));
         }
@@ -561,7 +561,7 @@ End {memberEndStatement}
                 var target = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
                     .Single(d => d.IdentifierName == "test");
 
-                var result = CreateCodeBuilder().TryBuildUDTMemberDeclaration(null, target, out var declaration);
+                var result = CreateCodeBuilder().TryBuildUDTMemberDeclaration(target, null, out var declaration);
 
                 Assert.IsFalse(result);
                 Assert.IsTrue(string.IsNullOrEmpty(declaration));
@@ -645,7 +645,7 @@ End {memberEndStatement}
             => CreateCodeBuilder().ImprovedArgumentList(mbed);
 
         private static string MemberBlockFromPrototypeTest(ModuleBodyElementDeclaration mbed, MemberBlockFromPrototypeTestParams testParams)
-            => CreateCodeBuilder().BuildMemberBlockFromPrototype(mbed, testParams.Accessibility, testParams.Content, testParams.NewIdentifier);
+            => CreateCodeBuilder().BuildMemberBlockFromPrototype(mbed, testParams.Content, testParams.Accessibility, testParams.NewIdentifier);
 
         private static ICodeBuilder CreateCodeBuilder()
             => new CodeBuilder(new Indenter(null, CreateIndenterSettings));

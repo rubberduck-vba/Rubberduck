@@ -87,17 +87,19 @@ namespace Rubberduck.Refactorings
         /// No validation or conflict analysis is applied to the identifiers.
         /// </remarks>
         /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
-        bool TryBuildUDTMemberDeclaration(string identifier, Declaration prototype, out string declaration);
+        bool TryBuildUDTMemberDeclaration(Declaration prototype, string identifier, out string declaration);
+
+        IIndenter Indenter { get; }
     }
 
     public class CodeBuilder : ICodeBuilder
     {
-        private readonly IIndenter _indenter;
-
         public CodeBuilder(IIndenter indenter)
         {
-            _indenter = indenter;
+            Indenter = indenter;
         }
+
+        public IIndenter Indenter { get; }
 
         public string BuildMemberBlockFromPrototype(ModuleBodyElementDeclaration declaration, 
             string content = null, 
@@ -135,6 +137,9 @@ namespace Rubberduck.Refactorings
 
             var propertyValueParam = parameterIdentifier ?? Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
 
+            //TODO: Improve generated Array properties
+            //Add logic to conditionally return Arrays or Variant depending on Office version.
+            //Ability to return an Array from a Function or Property was added in Office 2000 http://www.cpearson.com/excel/passingandreturningarrays.htm
             var asType = prototype.IsArray
                 ? $"{Tokens.Variant}"
                 : IsEnumField(prototype) && prototype.AsTypeDeclaration.Accessibility.Equals(Accessibility.Private)
@@ -151,7 +156,7 @@ namespace Rubberduck.Refactorings
                 ? string.Join(Environment.NewLine, $"{AccessibilityToken(accessibility)} {TypeToken(letSetGetType)} {propertyIdentifier}() {asTypeClause}", content, EndStatement(letSetGetType))
                 : string.Join(Environment.NewLine, $"{AccessibilityToken(accessibility)} {TypeToken(letSetGetType)} {propertyIdentifier}({letSetParamExpression})", content, EndStatement(letSetGetType));
 
-            codeBlock = string.Join(Environment.NewLine, _indenter.Indent(codeBlock));
+            codeBlock = string.Join(Environment.NewLine, Indenter.Indent(codeBlock));
             return true;
         }
 
@@ -270,12 +275,12 @@ namespace Rubberduck.Refactorings
 
             blockLines.Add($"{Tokens.End} {Tokens.Type}");
 
-            declaration = string.Join(Environment.NewLine, _indenter.Indent(blockLines));
+            declaration = string.Join(Environment.NewLine, Indenter.Indent(blockLines));
 
             return true;
         }
 
-        public bool TryBuildUDTMemberDeclaration(string udtMemberIdentifier, Declaration prototype, out string declaration)
+        public bool TryBuildUDTMemberDeclaration(Declaration prototype, string udtMemberIdentifier, out string declaration)
         {
             declaration = string.Empty;
 
