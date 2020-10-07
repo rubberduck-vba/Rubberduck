@@ -10,6 +10,9 @@ using Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
 using Rubberduck.Refactorings.EncapsulateFieldInsertNewCode;
 using System;
+using Rubberduck.SmartIndenter;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using RubberduckTests.Settings;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -83,8 +86,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 case nameof(CreateUDTMemberRefactoringAction):
                     return new CreateUDTMemberRefactoringAction(
                         _declarationFinderProvider, 
-                        _rewritingManager, 
-                        new CodeBuilder()) as T;
+                        _rewritingManager,
+                        ResolveImpl<ICodeBuilder>()) as T;
 
                 case nameof(EncapsulateFieldPreviewProvider):
                     return new EncapsulateFieldPreviewProvider(
@@ -139,9 +142,21 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                     return new NewContentAggregatorFactory() as T;
 
                 case nameof(IEncapsulateFieldCodeBuilderFactory):
-                    return new EncapsulateFieldCodeBuilderFactory(new CodeBuilder()) as T;
+                    return new EncapsulateFieldCodeBuilderFactory(ResolveImpl<ICodeBuilder>()) as T;
+                case nameof(ICodeBuilder):
+                    return new CodeBuilder(ResolveImpl<IIndenter>()) as T;
+                case nameof(IIndenter):
+                    return new Indenter(null, CreateIndenterSettings) as T;
             }
             throw new ArgumentException($"Unable to resolve {typeof(T).Name}") ;
+        }
+
+        private static IndenterSettings CreateIndenterSettings()
+        {
+            var s = IndenterSettingsTests.GetMockIndenterSettings();
+            s.VerticallySpaceProcedures = true;
+            s.LinesBetweenProcedures = 1;
+            return s;
         }
     }
 }

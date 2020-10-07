@@ -70,9 +70,9 @@ namespace Rubberduck.Refactorings.CreateUDTMember
             var declarations = new List<string>();
             foreach (var (Prototype, UDTMemberIdentifier) in newMemberPairs)
             {
-                if (_codeBuilder.TryBuildUDTMemberDeclaration(UDTMemberIdentifier, Prototype, out var declaration, indentation))
+                if (_codeBuilder.TryBuildUDTMemberDeclaration(UDTMemberIdentifier, Prototype, out var declaration))
                 {
-                    declarations.Add(declaration);
+                    declarations.Add($"{indentation}{declaration}");
                 }
             }
             return declarations;

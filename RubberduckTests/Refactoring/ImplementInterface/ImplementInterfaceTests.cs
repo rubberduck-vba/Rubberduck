@@ -8,10 +8,12 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.AddInterfaceImplementations;
 using Rubberduck.Refactorings.Exceptions.ImplementInterface;
 using Rubberduck.Refactorings.ImplementInterface;
+using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
+using RubberduckTests.Settings;
 
 namespace RubberduckTests.Refactoring
 {
@@ -217,9 +219,20 @@ End Sub
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state,
             ISelectionService selectionService)
         {
-            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager, new CodeBuilder());
+            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager, CreateCodeBuilder());
             var baseRefactoring = new ImplementInterfaceRefactoringAction(addImplementationsBaseRefactoring, rewritingManager);
             return new ImplementInterfaceRefactoring(baseRefactoring, state, selectionService);
+        }
+
+        private static ICodeBuilder CreateCodeBuilder()
+            => new CodeBuilder(new Indenter(null, CreateIndenterSettings));
+
+        private static IndenterSettings CreateIndenterSettings()
+        {
+            var s = IndenterSettingsTests.GetMockIndenterSettings();
+            s.VerticallySpaceProcedures = true;
+            s.LinesBetweenProcedures = 1;
+            return s;
         }
     }
 }

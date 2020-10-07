@@ -20,9 +20,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
     /// </summary>
     public class EncapsulateFieldCodeBuilder : IEncapsulateFieldCodeBuilder
     {
-        private const string FourSpaces = "    ";
-        private static string _doubleSpace = $"{Environment.NewLine}{Environment.NewLine}";
-
         private readonly ICodeBuilder _codeBuilder;
 
         public EncapsulateFieldCodeBuilder(ICodeBuilder codeBuilder)
@@ -32,68 +29,60 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public (string Get, string Let, string Set) BuildPropertyBlocks(PropertyAttributeSet propertyAttributes)
         {
-            string propertyLet = null;
-            string propertySet = null;
+            if (!(propertyAttributes.Declaration.DeclarationType.HasFlag(DeclarationType.Variable)
+                || propertyAttributes.Declaration.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember)))
+            {
+                throw new ArgumentException("Invalid prototype DeclarationType", nameof(propertyAttributes));
+            }
+
+            (string Get, string Let, string Set) blocks = (string.Empty, string.Empty, string.Empty);
+
+            var mutatorBody = $"{propertyAttributes.BackingField} = {propertyAttributes.RHSParameterIdentifier}";
 
             if (propertyAttributes.GeneratePropertyLet)
             {
-                var letterContent = $"{FourSpaces}{propertyAttributes.BackingField} = {propertyAttributes.RHSParameterIdentifier}";
-                if (!_codeBuilder.TryBuildPropertyLetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out propertyLet, content: letterContent))
-                {
-                    throw new ArgumentException();
-                }
+                _codeBuilder.TryBuildPropertyLetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out blocks.Let, content: mutatorBody);
             }
 
             if (propertyAttributes.GeneratePropertySet)
             {
-                var setterContent = $"{FourSpaces}{Tokens.Set} {propertyAttributes.BackingField} = {propertyAttributes.RHSParameterIdentifier}";
-                if (!_codeBuilder.TryBuildPropertySetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out propertySet, content: setterContent))
-                {
-                    throw new ArgumentException();
-                }
+                _codeBuilder.TryBuildPropertySetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out blocks.Set, content: $"{Tokens.Set} {mutatorBody}");
             }
 
-            var getterContent = $"{propertyAttributes.PropertyName} = {propertyAttributes.BackingField}";
-            if (propertyAttributes.UsesSetAssignment)
-            {
-                getterContent = $"{Tokens.Set} {getterContent}";
-            }
+            var propertyGetBody = propertyAttributes.UsesSetAssignment
+                ? $"{Tokens.Set} {propertyAttributes.PropertyName} = {propertyAttributes.BackingField}"
+                : $"{propertyAttributes.PropertyName} = {propertyAttributes.BackingField}";
 
             if (propertyAttributes.AsTypeName.Equals(Tokens.Variant) && !propertyAttributes.Declaration.IsArray)
             {
-                getterContent = string.Join(Environment.NewLine,
+                propertyGetBody = string.Join(
                     $"{Tokens.If} IsObject({propertyAttributes.BackingField}) {Tokens.Then}",
-                    $"{FourSpaces}{Tokens.Set} {propertyAttributes.PropertyName} = {propertyAttributes.BackingField}",
+                    $"{Tokens.Set} {propertyAttributes.PropertyName} = {propertyAttributes.BackingField}",
                     Tokens.Else,
-                    $"{FourSpaces}{propertyAttributes.PropertyName} = {propertyAttributes.BackingField}",
-                    $"{Tokens.End} {Tokens.If}",
-                    Environment.NewLine);
+                    $"{propertyAttributes.PropertyName} = {propertyAttributes.BackingField}",
+                    $"{Tokens.End} {Tokens.If}");
             }
 
-            if (!_codeBuilder.TryBuildPropertyGetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out var propertyGet, content: $"{FourSpaces}{getterContent}"))
-            {
-                throw new ArgumentException();
-            }
+            _codeBuilder.TryBuildPropertyGetCodeBlock(propertyAttributes.Declaration, propertyAttributes.PropertyName, out blocks.Get, content: propertyGetBody);
 
-            return (propertyGet, propertyLet, propertySet);
+            return (blocks.Get, blocks.Let, blocks.Set);
         }
 
         public string BuildUserDefinedTypeDeclaration(IObjectStateUDT objectStateUDT, IEnumerable<IEncapsulateFieldCandidate> candidates)
         {
-            var selected = candidates.Where(c => c.EncapsulateFlag);
-
-            var newUDTMembers = selected
+            var newUDTMembers = candidates.Where(c => c.EncapsulateFlag)
                 .Select(m => (m.Declaration, m.BackingIdentifier));
 
-            _codeBuilder.TryBuildUserDefinedTypeDeclaration(objectStateUDT.AsTypeName, newUDTMembers, out var declaration);
+            if (_codeBuilder.TryBuildUserDefinedTypeDeclaration(objectStateUDT.AsTypeName, newUDTMembers, out var declaration))
+            {
+                return declaration;
+            }
 
-            return declaration ?? string.Empty;
+            return string.Empty;
         }
 
-        public string BuildObjectStateFieldDeclaration(IObjectStateUDT objectStateUDT)
-        {
-            return $"{Accessibility.Private} {objectStateUDT.IdentifierName} {Tokens.As} {objectStateUDT.AsTypeName}";
-        }
+        public string BuildObjectStateFieldDeclaration(IObjectStateUDT objectStateUDT) 
+            => $"{Accessibility.Private} {objectStateUDT.IdentifierName} {Tokens.As} {objectStateUDT.AsTypeName}";
 
         public string BuildFieldDeclaration(Declaration target, string identifier)
         {

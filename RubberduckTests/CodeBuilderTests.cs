@@ -2,7 +2,9 @@
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
+using Rubberduck.SmartIndenter;
 using RubberduckTests.Mocks;
+using RubberduckTests.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -493,7 +495,7 @@ End {memberEndStatement}
                     .Where(d => d.IdentifierName == "test")
                     .Select(d => (d, d.IdentifierName));
 
-                var result = new CodeBuilder().TryBuildUserDefinedTypeDeclaration(null, targets, out var declaration);
+                var result = CreateCodeBuilder().TryBuildUserDefinedTypeDeclaration(null, targets, out var declaration);
 
                 Assert.IsFalse(result);
                 Assert.IsTrue(string.IsNullOrEmpty(declaration));
@@ -504,7 +506,7 @@ End {memberEndStatement}
         [Category(nameof(CodeBuilder))]
         public void UDT_EmptyPrototypeList_NoResult()
         {
-            var result = new CodeBuilder().TryBuildUserDefinedTypeDeclaration(_defaultUDTIdentifier, Enumerable.Empty<(Declaration, string)>(), out var declaration);
+            var result = CreateCodeBuilder().TryBuildUserDefinedTypeDeclaration(_defaultUDTIdentifier, Enumerable.Empty<(Declaration, string)>(), out var declaration);
             Assert.IsFalse(result);
             Assert.IsTrue(string.IsNullOrEmpty(declaration));
         }
@@ -514,7 +516,7 @@ End {memberEndStatement}
         public void UDT_NullDeclarationInPrototypeList_NoResult()
         {
             var nullInList = new List<(Declaration, string)>() { (null, "Fizz") };
-            var result = new CodeBuilder().TryBuildUserDefinedTypeDeclaration(_defaultUDTIdentifier, nullInList, out var declaration);
+            var result = CreateCodeBuilder().TryBuildUserDefinedTypeDeclaration(_defaultUDTIdentifier, nullInList, out var declaration);
             Assert.IsFalse(result);
             Assert.IsTrue(string.IsNullOrEmpty(declaration));
         }
@@ -532,7 +534,7 @@ End {memberEndStatement}
                     .Where(d => d.IdentifierName == "test")
                     .Select(d => (d, nullIdentifier));
 
-                var result = new CodeBuilder().TryBuildUserDefinedTypeDeclaration("TestType", targets, out var declaration);
+                var result = CreateCodeBuilder().TryBuildUserDefinedTypeDeclaration("TestType", targets, out var declaration);
 
                 Assert.IsFalse(result);
                 Assert.IsTrue(string.IsNullOrEmpty(declaration));
@@ -543,7 +545,7 @@ End {memberEndStatement}
         [Category(nameof(CodeBuilder))]
         public void UDT_NullPrototype_NoResult()
         {
-            var result = new CodeBuilder().TryBuildUDTMemberDeclaration(_defaultUDTIdentifier, null, out var declaration);
+            var result = CreateCodeBuilder().TryBuildUDTMemberDeclaration(_defaultUDTIdentifier, null, out var declaration);
             Assert.IsFalse(result);
             Assert.IsTrue(string.IsNullOrEmpty(declaration));
         }
@@ -559,7 +561,7 @@ End {memberEndStatement}
                 var target = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
                     .Single(d => d.IdentifierName == "test");
 
-                var result = new CodeBuilder().TryBuildUDTMemberDeclaration(null, target, out var declaration);
+                var result = CreateCodeBuilder().TryBuildUDTMemberDeclaration(null, target, out var declaration);
 
                 Assert.IsFalse(result);
                 Assert.IsTrue(string.IsNullOrEmpty(declaration));
@@ -576,7 +578,7 @@ End {memberEndStatement}
                     .Where(d => prototypes.Contains(d.IdentifierName))
                     .Select(prototype => (prototype, prototype.IdentifierName.CapitalizeFirstLetter()));
 
-                return new CodeBuilder().TryBuildUserDefinedTypeDeclaration(_defaultUDTIdentifier, targets, out string declaration)
+                return CreateCodeBuilder().TryBuildUserDefinedTypeDeclaration(_defaultUDTIdentifier, targets, out string declaration)
                     ? declaration
                     : string.Empty;
             }
@@ -623,27 +625,38 @@ End {memberEndStatement}
 
         private static string PropertyGetBlockFromPrototypeTest<T>(T target, PropertyBlockFromPrototypeParams testParams) where T : Declaration
         {
-            new CodeBuilder().TryBuildPropertyGetCodeBlock(target, testParams.Identifier, out string result, testParams.Accessibility, testParams.Content);
+            CreateCodeBuilder().TryBuildPropertyGetCodeBlock(target, testParams.Identifier, out string result, testParams.Accessibility, testParams.Content);
             return result;
         }
 
         private static string PropertyLetBlockFromPrototypeTest<T>(T target, PropertyBlockFromPrototypeParams testParams) where T : Declaration
         {
-            new CodeBuilder().TryBuildPropertyLetCodeBlock(target, testParams.Identifier, out string result, testParams.Accessibility, testParams.Content, testParams.WriteParam);
+            CreateCodeBuilder().TryBuildPropertyLetCodeBlock(target, testParams.Identifier, out string result, testParams.Accessibility, testParams.Content, testParams.WriteParam);
             return result;
         }
 
         private static string PropertySetBlockFromPrototypeTest<T>(T target, PropertyBlockFromPrototypeParams testParams) where T : Declaration
         {
-            new CodeBuilder().TryBuildPropertySetCodeBlock(target, testParams.Identifier, out string result, testParams.Accessibility, testParams.Content, testParams.WriteParam);
+            CreateCodeBuilder().TryBuildPropertySetCodeBlock(target, testParams.Identifier, out string result, testParams.Accessibility, testParams.Content, testParams.WriteParam);
             return result;
         }
 
         private static string ImprovedArgumentListTest(ModuleBodyElementDeclaration mbed)
-            => new CodeBuilder().ImprovedArgumentList(mbed);
+            => CreateCodeBuilder().ImprovedArgumentList(mbed);
 
         private static string MemberBlockFromPrototypeTest(ModuleBodyElementDeclaration mbed, MemberBlockFromPrototypeTestParams testParams)
-            => new CodeBuilder().BuildMemberBlockFromPrototype(mbed, testParams.Content, testParams.Accessibility, testParams.NewIdentifier);
+            => CreateCodeBuilder().BuildMemberBlockFromPrototype(mbed, testParams.Accessibility, testParams.Content, testParams.NewIdentifier);
+
+        private static ICodeBuilder CreateCodeBuilder()
+            => new CodeBuilder(new Indenter(null, CreateIndenterSettings));
+
+        private static IndenterSettings CreateIndenterSettings()
+        {
+            var s = IndenterSettingsTests.GetMockIndenterSettings();
+            s.VerticallySpaceProcedures = true;
+            s.LinesBetweenProcedures = 1;
+            return s;
+        }
 
         private (string procType, string endStmt) ProcedureTypeIdentifier(DeclarationType declarationType)
         {
