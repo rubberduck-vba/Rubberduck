@@ -25,12 +25,12 @@ namespace Rubberduck.Refactorings.EncapsulateFieldInsertNewCode
             IDeclarationFinderProvider declarationFinderProvider, 
             IRewritingManager rewritingManager,
             IPropertyAttributeSetsGenerator propertyAttributeSetsGenerator,
-            IEncapsulateFieldCodeBuilderFactory encapsulateFieldCodeBuilderFactory)
+            IEncapsulateFieldCodeBuilder encapsulateFieldCodeBuilder)
                 : base(rewritingManager)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _propertyAttributeSetsGenerator = propertyAttributeSetsGenerator;
-            _encapsulateFieldCodeBuilder = encapsulateFieldCodeBuilderFactory.Create();
+            _encapsulateFieldCodeBuilder = encapsulateFieldCodeBuilder;
         }
 
         public override void Refactor(EncapsulateFieldInsertNewCodeModel model, IRewriteSession rewriteSession)

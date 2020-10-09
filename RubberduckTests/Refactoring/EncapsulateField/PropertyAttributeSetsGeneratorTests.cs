@@ -47,12 +47,11 @@ Private mVehicle As TVehicle
                 var resolver = new EncapsulateFieldTestComponentResolver(state, null);
 
                 var encapsulateFieldCandidateFactory = resolver.Resolve<IEncapsulateFieldCandidateFactory>();
-                var objStateFactory = resolver.Resolve<IObjectStateUserDefinedTypeFactory>();
 
-                var objStateCandidate = encapsulateFieldCandidateFactory.Create(objectStateUDTTarget);
-                var objStateUDT = objStateFactory.Create(objStateCandidate as IUserDefinedTypeCandidate);
+                var objStateCandidate = encapsulateFieldCandidateFactory.CreateFieldCandidate(objectStateUDTTarget);
+                var objStateUDT = encapsulateFieldCandidateFactory.CreateObjectStateField(objStateCandidate as IUserDefinedTypeCandidate);
 
-                var candidate = new EncapsulateFieldAsUDTMemberCandidate(encapsulateFieldCandidateFactory.Create(encapsulateTarget), objStateUDT)
+                var candidate = new EncapsulateFieldAsUDTMemberCandidate(encapsulateFieldCandidateFactory.CreateFieldCandidate(encapsulateTarget), objStateUDT)
                 {
                     PropertyIdentifier = "MyType"
                 };
@@ -113,12 +112,11 @@ Private this As ExistingType
                 var resolver = new EncapsulateFieldTestComponentResolver(state, null);
 
                 var encapsulateFieldCandidateFactory = resolver.Resolve<IEncapsulateFieldCandidateFactory>();
-                var objStateFactory = resolver.Resolve<IObjectStateUserDefinedTypeFactory>();
 
-                var objStateCandidate = encapsulateFieldCandidateFactory.Create(objectStateUDTTarget);
-                var objStateUDT = objStateFactory.Create(objStateCandidate as IUserDefinedTypeCandidate);
+                var objStateCandidate = encapsulateFieldCandidateFactory.CreateFieldCandidate(objectStateUDTTarget);
+                var objStateUDT = encapsulateFieldCandidateFactory.CreateObjectStateField(objStateCandidate as IUserDefinedTypeCandidate);
 
-                var candidate = new EncapsulateFieldAsUDTMemberCandidate(encapsulateFieldCandidateFactory.Create(encapsulateTarget), objStateUDT);
+                var candidate = new EncapsulateFieldAsUDTMemberCandidate(encapsulateFieldCandidateFactory.CreateFieldCandidate(encapsulateTarget), objStateUDT);
 
                 var generator = new PropertyAttributeSetsGenerator();
                 var propAttributeSets = generator.GeneratePropertyAttributeSets(candidate);

@@ -1,4 +1,5 @@
-﻿using Rubberduck.Refactorings.EncapsulateField;
+﻿using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,56 +11,64 @@ namespace Rubberduck.Refactorings
         /// <summary>
         /// Creates an <c>EncapsulateFieldUseBackingFieldModel</c> used by the <c>EncapsulateFieldUseBackingFieldRefactoringAction</c>.
         /// </summary>
-        EncapsulateFieldUseBackingFieldModel Create(IEnumerable<FieldEncapsulationModel> requests);
+        EncapsulateFieldUseBackingFieldModel Create(IEnumerable<FieldEncapsulationModel> fieldModels);
 
         /// <summary>
         /// Creates an <c>EncapsulateFieldUseBackingFieldModel</c> based upon collection of
-        /// <c>IEncapsulateFieldCandidate</c> instances created by <c>EncapsulateFieldCandidateCollectionFactory</c>.  
+        /// <c>IEncapsulateFieldCandidate</c> instances</c>.  
         /// This function is intended for exclusive use by the <c>EncapsulateFieldModelFactory</c>
         /// </summary>
-        EncapsulateFieldUseBackingFieldModel Create(IEncapsulateFieldCollectionsProvider collectionsProvider, IEnumerable<FieldEncapsulationModel> requests);
+        EncapsulateFieldUseBackingFieldModel Create(IEncapsulateFieldCandidateSetsProvider contextCollections, IEnumerable<FieldEncapsulationModel> fieldModels);
     }
 
     public class EncapsulateFieldUseBackingFieldModelFactory : IEncapsulateFieldUseBackingFieldModelFactory
     {
-        private readonly IEncapsulateFieldCollectionsProviderFactory _collectionProviderFactory;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly IEncapsulateFieldCandidateFactory _candidatesFactory;
+        private readonly IEncapsulateFieldCandidateSetsProviderFactory _candidateSetsFactory;
         private readonly IEncapsulateFieldConflictFinderFactory _conflictFinderFactory;
 
-        public EncapsulateFieldUseBackingFieldModelFactory(
-            IEncapsulateFieldCollectionsProviderFactory encapsulateFieldCollectionsProviderFactory,
+        public EncapsulateFieldUseBackingFieldModelFactory(IDeclarationFinderProvider declarationFinderProvider,
+            IEncapsulateFieldCandidateFactory candidatesFactory,
+            IEncapsulateFieldCandidateSetsProviderFactory candidateSetsFactory,
             IEncapsulateFieldConflictFinderFactory encapsulateFieldConflictFinderFactory)
         {
+            _declarationFinderProvider = declarationFinderProvider;
+            _candidatesFactory = candidatesFactory;
+            _candidateSetsFactory = candidateSetsFactory;
             _conflictFinderFactory = encapsulateFieldConflictFinderFactory;
-            _collectionProviderFactory = encapsulateFieldCollectionsProviderFactory;
         }
 
-        public EncapsulateFieldUseBackingFieldModel Create(IEnumerable<FieldEncapsulationModel> requests)
+        public EncapsulateFieldUseBackingFieldModel Create(IEnumerable<FieldEncapsulationModel> fieldModels)
         {
-            if (!requests.Any())
+            if (!fieldModels.Any())
             {
                 return new EncapsulateFieldUseBackingFieldModel(Enumerable.Empty<IEncapsulateFieldCandidate>());
             }
 
-            var collectionsProvider = _collectionProviderFactory.Create(requests.First().Declaration.QualifiedModuleName);
-            return Create(collectionsProvider, requests);
+            var contextCollections = _candidateSetsFactory.Create(_declarationFinderProvider, _candidatesFactory, fieldModels.First().Declaration.QualifiedModuleName);
+
+            return Create(contextCollections, fieldModels);
         }
 
-        public EncapsulateFieldUseBackingFieldModel Create(IEncapsulateFieldCollectionsProvider collectionsProvider, IEnumerable<FieldEncapsulationModel> requests)
+        public EncapsulateFieldUseBackingFieldModel Create(IEncapsulateFieldCandidateSetsProvider contextCollections, IEnumerable<FieldEncapsulationModel> fieldModels)
         {
-            var fieldCandidates = collectionsProvider.EncapsulateFieldCandidates.ToList();
+            var fieldCandidates = contextCollections.EncapsulateFieldUseBackingFieldCandidates.ToList();
 
-            foreach (var request in requests)
+            foreach (var fieldModel in fieldModels)
             {
-                var candidate = fieldCandidates.Single(c => c.Declaration.Equals(request.Declaration));
+                var candidate = fieldCandidates.Single(c => c.Declaration.Equals(fieldModel.Declaration));
                 candidate.EncapsulateFlag = true;
-                candidate.IsReadOnly = request.IsReadOnly;
-                if (request.PropertyIdentifier != null)
+                candidate.IsReadOnly = fieldModel.IsReadOnly;
+                if (fieldModel.PropertyIdentifier != null)
                 {
-                    candidate.PropertyIdentifier = request.PropertyIdentifier;
+                    candidate.PropertyIdentifier = fieldModel.PropertyIdentifier;
                 }
             }
 
-            var conflictsFinder = _conflictFinderFactory.Create(collectionsProvider);
+            var conflictsFinder = _conflictFinderFactory.Create(_declarationFinderProvider,
+                contextCollections.EncapsulateFieldUseBackingFieldCandidates,
+                contextCollections.ObjectStateFieldCandidates);
 
             fieldCandidates.ForEach(c => c.ConflictFinder = conflictsFinder);
 

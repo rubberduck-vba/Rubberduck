@@ -11,6 +11,13 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
+    public interface IEncapsulateFieldConflictFinderFactory
+    {
+        IEncapsulateFieldConflictFinder Create(IDeclarationFinderProvider declarationFinderProvider,
+            IEnumerable<IEncapsulateFieldCandidate> candidates,
+            IEnumerable<IObjectStateUDT> objectStateUDTs);
+    }
+
     public interface IEncapsulateFieldConflictFinder 
     {
         bool IsConflictingIdentifier(IEncapsulateFieldCandidate field, string identifierToCompare, out string errorMessage);

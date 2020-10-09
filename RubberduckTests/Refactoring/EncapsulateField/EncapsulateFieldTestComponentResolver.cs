@@ -12,6 +12,8 @@ using System;
 using Rubberduck.SmartIndenter;
 using RubberduckTests.Settings;
 using Rubberduck.Refactorings.ModifyUserDefinedType;
+using System.Collections.Generic;
+using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -19,10 +21,12 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         private static IDeclarationFinderProvider _declarationFinderProvider;
         private static IRewritingManager _rewritingManager;
-        public EncapsulateFieldTestComponentResolver(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager)
+        private static QualifiedModuleName? _qmn;
+        public EncapsulateFieldTestComponentResolver(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager, QualifiedModuleName? qmn = null)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _rewritingManager = rewritingManager;
+            _qmn = qmn;
         }
 
         public T Resolve<T>() where T : class
@@ -47,10 +51,10 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
                 case nameof(EncapsulateFieldInsertNewCodeRefactoringAction):
                     return new EncapsulateFieldInsertNewCodeRefactoringAction(
-                        _declarationFinderProvider, 
+                        _declarationFinderProvider,
                         _rewritingManager,
                         new PropertyAttributeSetsGenerator(),
-                        ResolveImpl<IEncapsulateFieldCodeBuilderFactory>()) as T;
+                        ResolveImpl<IEncapsulateFieldCodeBuilder>()) as T;
 
                 case nameof(ReplacePrivateUDTMemberReferencesRefactoringAction):
                     return new ReplacePrivateUDTMemberReferencesRefactoringAction(_rewritingManager) as T;
@@ -61,7 +65,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                         ResolveImpl<ReplacePrivateUDTMemberReferencesRefactoringAction>(),
                         ResolveImpl<ReplaceDeclarationIdentifierRefactoringAction>(),
                         ResolveImpl<ModifyUserDefinedTypeRefactoringAction>(),
-                        ResolveImpl<EncapsulateFieldInsertNewCodeRefactoringAction >()
+                        ResolveImpl<EncapsulateFieldInsertNewCodeRefactoringAction>()
                         ) as T;
 
                 case nameof(EncapsulateFieldUseBackingFieldRefactoringAction):
@@ -76,8 +80,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                         ResolveImpl<IEncapsulateFieldRefactoringActionsProvider>(),
                         ResolveImpl<IReplacePrivateUDTMemberReferencesModelFactory>(),
                         _rewritingManager,
-                        ResolveImpl<INewContentAggregatorFactory>(),
-                        ResolveImpl<IEncapsulateFieldCodeBuilderFactory>()) as T;
+                        ResolveImpl<INewContentAggregatorFactory>()) as T;
 
                 case nameof(IReplacePrivateUDTMemberReferencesModelFactory):
                     return new ReplacePrivateUDTMemberReferencesModelFactory(_declarationFinderProvider) as T;
@@ -106,44 +109,54 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                         ResolveImpl<INewContentAggregatorFactory>()) as T;
 
                 case nameof(IEncapsulateFieldModelFactory):
-                    return new EncapsulateFieldModelFactory(
+                    return new EncapsulateFieldModelFactory(_declarationFinderProvider,
+                        ResolveImpl<IEncapsulateFieldCandidateFactory>(),
                         ResolveImpl<IEncapsulateFieldUseBackingUDTMemberModelFactory>(),
                         ResolveImpl<IEncapsulateFieldUseBackingFieldModelFactory>(),
-                        ResolveImpl<IEncapsulateFieldCollectionsProviderFactory>(),
-                        ResolveImpl < IEncapsulateFieldConflictFinderFactory>()
+                        ResolveImpl<IEncapsulateFieldCandidateSetsProviderFactory>(),
+                        ResolveImpl< IEncapsulateFieldConflictFinderFactory>()
                         ) as T;
 
                 case nameof(IEncapsulateFieldUseBackingUDTMemberModelFactory):
-                    return new EncapsulateFieldUseBackingUDTMemberModelFactory(
-                        ResolveImpl<IEncapsulateFieldCollectionsProviderFactory>(),
+                    return new EncapsulateFieldUseBackingUDTMemberModelFactory(_declarationFinderProvider,
+                        ResolveImpl<IEncapsulateFieldCandidateFactory>(),
+                        ResolveImpl<IEncapsulateFieldCandidateSetsProviderFactory>(),
                         ResolveImpl< IEncapsulateFieldConflictFinderFactory>()) as T;
 
                 case nameof(IEncapsulateFieldUseBackingFieldModelFactory):
-                    return new EncapsulateFieldUseBackingFieldModelFactory(
-                        ResolveImpl<IEncapsulateFieldCollectionsProviderFactory>(),
+                    return new EncapsulateFieldUseBackingFieldModelFactory(_declarationFinderProvider,
+                        ResolveImpl<IEncapsulateFieldCandidateFactory>(),
+                        ResolveImpl<IEncapsulateFieldCandidateSetsProviderFactory>(),
                         ResolveImpl< IEncapsulateFieldConflictFinderFactory>()) as T;
 
-                case nameof(IEncapsulateFieldCollectionsProviderFactory):
-                    return new EncapsulateFieldCollectionsProviderFactory(_declarationFinderProvider,
+                case nameof(IEncapsulateFieldCandidateSetsProvider):
+                    if (!_qmn.HasValue)
+                    {
+                        throw new ArgumentException($"QualifiedModuleName is not set");
+                    }
+                    return new EncapsulateFieldCandidateSetsProvider(
+                        _declarationFinderProvider,
                         ResolveImpl<IEncapsulateFieldCandidateFactory>(),
-                        ResolveImpl<IObjectStateUserDefinedTypeFactory>()) as T;
+                        _qmn.Value) as T;
 
                 case nameof(IEncapsulateFieldCandidateFactory):
                     return new EncapsulateFieldCandidateFactory(_declarationFinderProvider) as T;
 
-                case nameof(IObjectStateUserDefinedTypeFactory):
-                    return new ObjectStateUserDefinedTypeFactory() as T;
+                case nameof(IEncapsulateFieldCandidateSetsProviderFactory):
+                    return new TestEFCandidateSetsProviderFactory() as T;
 
                 case nameof(IEncapsulateFieldConflictFinderFactory):
-                    return new EncapsulateFieldConflictFinderFactory(_declarationFinderProvider) as T;
+                    return new TestEFConflictFinderFactory() as T;
 
                 case nameof(INewContentAggregatorFactory):
-                    return new NewContentAggregatorFactory() as T;
+                    return new TestNewContentAggregatorFactory() as T;
 
-                case nameof(IEncapsulateFieldCodeBuilderFactory):
-                    return new EncapsulateFieldCodeBuilderFactory(ResolveImpl<ICodeBuilder>()) as T;
+                case nameof(IEncapsulateFieldCodeBuilder):
+                    return new EncapsulateFieldCodeBuilder(ResolveImpl<ICodeBuilder>()) as T;
+
                 case nameof(ICodeBuilder):
                     return new CodeBuilder(ResolveImpl<IIndenter>()) as T;
+
                 case nameof(IIndenter):
                     return new Indenter(null, CreateIndenterSettings) as T;
             }
@@ -156,6 +169,30 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             s.VerticallySpaceProcedures = true;
             s.LinesBetweenProcedures = 1;
             return s;
+        }
+    }
+
+    internal class TestEFCandidateSetsProviderFactory : IEncapsulateFieldCandidateSetsProviderFactory
+    {
+        public IEncapsulateFieldCandidateSetsProvider Create(IDeclarationFinderProvider declarationFinderProvider, IEncapsulateFieldCandidateFactory factory, QualifiedModuleName qmn)
+        {
+            return new EncapsulateFieldCandidateSetsProvider(declarationFinderProvider, factory, qmn);
+        }
+    }
+
+    internal class TestEFConflictFinderFactory : IEncapsulateFieldConflictFinderFactory
+    {
+        public IEncapsulateFieldConflictFinder Create(IDeclarationFinderProvider declarationFinderProvider, IEnumerable<IEncapsulateFieldCandidate> candidates, IEnumerable<IObjectStateUDT> objectStateUDTs)
+        {
+            return new EncapsulateFieldConflictFinder(declarationFinderProvider, candidates, objectStateUDTs);
+        }
+    }
+
+    internal class TestNewContentAggregatorFactory : INewContentAggregatorFactory
+    {
+        public INewContentAggregator Create()
+        {
+            return new NewContentAggregator();
         }
     }
 }

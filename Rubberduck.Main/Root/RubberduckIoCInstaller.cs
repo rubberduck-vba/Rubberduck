@@ -411,17 +411,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<IEncapsulateFieldModelFactory>()
                 .ImplementedBy<EncapsulateFieldModelFactory>()
                 .LifestyleSingleton());
-            container.Register(Component.For<IEncapsulateFieldCollectionsProviderFactory>()
-                .ImplementedBy<EncapsulateFieldCollectionsProviderFactory>()
-                .LifestyleSingleton());
-            container.Register(Component.For<IObjectStateUserDefinedTypeFactory>()
-                .ImplementedBy<ObjectStateUserDefinedTypeFactory>()
-                .LifestyleSingleton());
-            container.Register(Component.For<IEncapsulateFieldConflictFinderFactory>()
-                .ImplementedBy<EncapsulateFieldConflictFinderFactory>()
-                .LifestyleSingleton());
         }
-
 
         private void RegisterQuickFixes(IWindsorContainer container, Assembly[] assembliesToRegister)
         {

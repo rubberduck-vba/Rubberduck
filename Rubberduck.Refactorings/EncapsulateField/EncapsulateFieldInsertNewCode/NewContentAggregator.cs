@@ -11,6 +11,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
         CodeSectionBlock,
     }
 
+    public interface INewContentAggregatorFactory
+    {
+        INewContentAggregator Create();
+    }
+
     public interface INewContentAggregator
     {
         /// <summary>

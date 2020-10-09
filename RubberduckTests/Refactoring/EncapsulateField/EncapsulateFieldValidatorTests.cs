@@ -632,15 +632,16 @@ Private myType As MyType
                 var mFirstTarget = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
                     .First(d => d.IdentifierName == fieldUT);
 
-                var resolver = new EncapsulateFieldTestComponentResolver(state, null);
+                var resolver = new EncapsulateFieldTestComponentResolver(state, null, mFirstTarget.QualifiedModuleName);
 
-                var collectionsProviderFactory = resolver.Resolve<IEncapsulateFieldCollectionsProviderFactory>();
-                var collectionsProvider = collectionsProviderFactory.Create(mTypeTarget.QualifiedModuleName);
+                var contextCollections = resolver.Resolve<IEncapsulateFieldCandidateSetsProvider>();
+                    //.RetrieveCandidateSets(mTypeTarget.QualifiedModuleName);
 
-                var encapsulateFieldCandidates = collectionsProvider.EncapsulateFieldCandidates;
+                var encapsulateFieldCandidates = contextCollections.EncapsulateFieldUseBackingFieldCandidates;
 
                 var finderFactory = resolver.Resolve<IEncapsulateFieldConflictFinderFactory>();
-                var conflictFinder = finderFactory.Create(collectionsProvider);
+
+                var conflictFinder = finderFactory.Create(state, contextCollections.EncapsulateFieldUseBackingFieldCandidates, contextCollections.ObjectStateFieldCandidates);
 
                 foreach (var candidate in encapsulateFieldCandidates)
                 {

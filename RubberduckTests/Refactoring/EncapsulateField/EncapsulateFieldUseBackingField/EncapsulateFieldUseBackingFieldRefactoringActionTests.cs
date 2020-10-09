@@ -34,8 +34,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
                 var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>();
 
                 var field = state.DeclarationFinder.MatchName(target).Single();
-                var encapsulateFieldRequest = new FieldEncapsulationModel(field as VariableDeclaration, isReadOnly, propertyIdentifier);
-                return modelFactory.Create( new List<FieldEncapsulationModel>() { encapsulateFieldRequest });
+                var fieldModel = new FieldEncapsulationModel(field as VariableDeclaration, isReadOnly, propertyIdentifier);
+                return modelFactory.Create( new List<FieldEncapsulationModel>() { fieldModel });
             }
 
             var refactoredCode = RefactoredCode(inputCode, modelBuilder);

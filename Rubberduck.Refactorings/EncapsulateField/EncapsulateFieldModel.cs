@@ -35,7 +35,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public Action<EncapsulateFieldModel> StrategyChangedAction { set; get; } = (m) => { };
 
-        public Action<EncapsulateFieldModel> ObjectStateUDTChangedAction { set; get; } = (m) => { };
+        public Action<EncapsulateFieldModel> ObjectStateFieldChangedAction { set; get; } = (m) => { };
 
         public IReadOnlyCollection<IObjectStateUDT> ObjectStateUDTCandidates { private set; get; }
 
@@ -48,7 +48,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 if (EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTField != value)
                 {
                     EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTField = value;
-                    ObjectStateUDTChangedAction(this);
+                    ObjectStateFieldChangedAction(this);
                 }
             }
             get => EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers

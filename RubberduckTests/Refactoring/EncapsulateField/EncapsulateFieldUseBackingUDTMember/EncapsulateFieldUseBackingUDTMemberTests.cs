@@ -35,8 +35,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
                 var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>();
 
                 var field = state.DeclarationFinder.MatchName(target).Single();
-                var encapsulateFieldRequest = new FieldEncapsulationModel(field as VariableDeclaration, isReadOnly);
-                return modelFactory.Create(new List<FieldEncapsulationModel>() { encapsulateFieldRequest });
+                var fieldModel = new FieldEncapsulationModel(field as VariableDeclaration, isReadOnly);
+                return modelFactory.Create(new List<FieldEncapsulationModel>() { fieldModel });
             }
 
             var refactoredCode = RefactoredCode(inputCode, modelBuilder);
@@ -91,9 +91,9 @@ Public bazz As String";
 
                 var firstValueField = state.DeclarationFinder.MatchName("thirdValue").Single(d => d.DeclarationType.HasFlag(DeclarationType.Variable));
                 var bazzField = state.DeclarationFinder.MatchName("bazz").Single();
-                var encapsulateFieldRequestfirstValueField = new FieldEncapsulationModel(firstValueField as VariableDeclaration);
-                var encapsulateFieldRequestfirstbazzField = new FieldEncapsulationModel(bazzField as VariableDeclaration);
-                var inputList = new List<FieldEncapsulationModel>() { encapsulateFieldRequestfirstValueField, encapsulateFieldRequestfirstbazzField };
+                var fieldModelfirstValueField = new FieldEncapsulationModel(firstValueField as VariableDeclaration);
+                var fieldModelfirstbazzField = new FieldEncapsulationModel(bazzField as VariableDeclaration);
+                var inputList = new List<FieldEncapsulationModel>() { fieldModelfirstValueField, fieldModelfirstbazzField };
                 return modelFactory.Create(inputList);
             }
 
@@ -142,10 +142,10 @@ Public bazz As String";
 
                 var thirdValueField = state.DeclarationFinder.MatchName("thirdValue").Single(d => d.DeclarationType.HasFlag(DeclarationType.Variable));
                 var bazzField = state.DeclarationFinder.MatchName("bazz").Single();
-                var encapsulateFieldRequestThirdValueField = new FieldEncapsulationModel(thirdValueField as VariableDeclaration);
-                var encapsulateFieldRequestBazzField = new FieldEncapsulationModel(bazzField as VariableDeclaration);
+                var fieldModelThirdValueField = new FieldEncapsulationModel(thirdValueField as VariableDeclaration);
+                var fieldModelBazzField = new FieldEncapsulationModel(bazzField as VariableDeclaration);
 
-                var inputList = new List<FieldEncapsulationModel>() { encapsulateFieldRequestThirdValueField, encapsulateFieldRequestBazzField };
+                var inputList = new List<FieldEncapsulationModel>() { fieldModelThirdValueField, fieldModelBazzField };
 
                 var targetUDT = state.DeclarationFinder.MatchName("this").Single(d => d.DeclarationType.HasFlag(DeclarationType.Variable));
 
@@ -194,9 +194,9 @@ Private mVehicle As TVehicle
                 var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>();
 
                 var mVehicleField = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(d => d.IdentifierName.Equals("mVehicle"));
-                var encapsulateFieldRequestMVehicleField = new FieldEncapsulationModel(mVehicleField as VariableDeclaration, false, "Vehicle");
+                var fieldModelMVehicleField = new FieldEncapsulationModel(mVehicleField as VariableDeclaration, false, "Vehicle");
 
-                var inputList = new List<FieldEncapsulationModel>() { encapsulateFieldRequestMVehicleField };
+                var inputList = new List<FieldEncapsulationModel>() { fieldModelMVehicleField };
 
                 return modelFactory.Create(inputList);
             }
@@ -212,7 +212,6 @@ Private mVehicle As TVehicle
             StringAssert.Contains($"Property Let Wheels", refactoredCode);
             StringAssert.Contains($" this.Vehicle.Wheels =", refactoredCode);
         }
-
 
         [Test]
         [Category("Refactorings")]
@@ -246,9 +245,9 @@ Private mTest As ThirdType
                 var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>();
 
                 var mTestField = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(d => d.IdentifierName.Equals("mTest"));
-                var fieldEncapsulationModelMTest = new FieldEncapsulationModel(mTestField as VariableDeclaration, false);
+                var fieldModelMTest = new FieldEncapsulationModel(mTestField as VariableDeclaration, false);
 
-                var inputList = new List<FieldEncapsulationModel>() { fieldEncapsulationModelMTest };
+                var inputList = new List<FieldEncapsulationModel>() { fieldModelMTest };
 
                 return modelFactory.Create(inputList);
             }
@@ -315,9 +314,9 @@ Public notAUserDefinedTypeField As String";
                 var invalidTarget = state.DeclarationFinder.MatchName(objectStateTargetIdentifier).Single(d => d.DeclarationType.HasFlag(DeclarationType.Variable));
                 var resolver = new EncapsulateFieldTestComponentResolver(state, null);
                 var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>();
-                var request = new FieldEncapsulationModel(invalidTarget as VariableDeclaration);
+                var fieldModel = new FieldEncapsulationModel(invalidTarget as VariableDeclaration);
 
-                return modelFactory.Create(new List<FieldEncapsulationModel>() { request }, invalidTarget);
+                return modelFactory.Create(new List<FieldEncapsulationModel>() { fieldModel }, invalidTarget);
             }
 
             Assert.Throws<System.ArgumentException>(() => RefactoredCode(inputCode, modelBuilder));

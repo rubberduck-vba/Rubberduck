@@ -17,7 +17,6 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
         private readonly ICodeOnlyRefactoringAction<ReplacePrivateUDTMemberReferencesModel> _replacePrivateUDTMemberReferencesRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<ReplaceReferencesModel> _replaceReferencesRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> _encapsulateFieldInsertNewCodeRefactoringAction;
-        private readonly IEncapsulateFieldCodeBuilder _encapsulateFieldCodeBuilder;
         private readonly INewContentAggregatorFactory _newContentAggregatorFactory;
         private readonly IReplacePrivateUDTMemberReferencesModelFactory _replaceUDTMemberReferencesModelFactory;
 
@@ -25,15 +24,13 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             IEncapsulateFieldRefactoringActionsProvider refactoringActionsProvider,
             IReplacePrivateUDTMemberReferencesModelFactory replaceUDTMemberReferencesModelFactory,
             IRewritingManager rewritingManager,
-            INewContentAggregatorFactory newContentAggregatorFactory,
-            IEncapsulateFieldCodeBuilderFactory encapsulateFieldCodeBuilderFactory)
+            INewContentAggregatorFactory newContentAggregatorFactory)
                 : base(rewritingManager)
         {
             _modifyUDTRefactoringAction = refactoringActionsProvider.ModifyUserDefinedType;
             _replacePrivateUDTMemberReferencesRefactoringAction = refactoringActionsProvider.ReplaceUDTMemberReferences;
             _replaceReferencesRefactoringAction = refactoringActionsProvider.ReplaceReferences;
             _encapsulateFieldInsertNewCodeRefactoringAction = refactoringActionsProvider.EncapsulateFieldInsertNewCode;
-            _encapsulateFieldCodeBuilder = encapsulateFieldCodeBuilderFactory.Create();
             _replaceUDTMemberReferencesModelFactory = replaceUDTMemberReferencesModelFactory;
             _newContentAggregatorFactory = newContentAggregatorFactory;
         }

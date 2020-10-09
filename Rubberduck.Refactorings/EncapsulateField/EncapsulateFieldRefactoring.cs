@@ -64,7 +64,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             model.StrategyChangedAction = OnStrategyChanged;
 
-            model.ObjectStateUDTChangedAction = OnObjectStateUDTChanged;
+            model.ObjectStateFieldChangedAction = OnObjectStateUDTChanged;
 
             model.ConflictFinder.AssignNoConflictIdentifiers(model.EncapsulationCandidates);
 
@@ -83,6 +83,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private void OnStrategyChanged(EncapsulateFieldModel model)
         {
+            if (model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.UseBackingFields)
+            {
+                foreach (var objectStateCandidate in model.EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTCandidates)
+                {
+                    objectStateCandidate.IsSelected = !objectStateCandidate.IsExistingDeclaration;
+                }
+            }
+
             var candidates = model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.UseBackingFields
                 ? model.EncapsulateFieldUseBackingFieldModel.EncapsulationCandidates
                 : model.EncapsulateFieldUseBackingUDTMemberModel.EncapsulationCandidates;
