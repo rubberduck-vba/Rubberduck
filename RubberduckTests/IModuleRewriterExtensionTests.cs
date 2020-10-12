@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RubberduckTests.Refactoring.EncapsulateField
+namespace RubberduckTests
 {
     [TestFixture]
     public class IModuleRewriterExtensionTests
