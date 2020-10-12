@@ -13,9 +13,15 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
     [TestFixture]
-    public class EncapsulateArrayFieldTests : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
+    public class EncapsulateArrayFieldTests : EncapsulateFieldInteractiveRefactoringTest
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
+
+        [SetUp]
+        public void ExecutesBeforeAllTests()
+        {
+            Support.ResetResolver();
+        }
 
         [TestCase("Private", "mArray(5) As String", "mArray(5) As String")]
         [TestCase("Public", "mArray(5) As String", "mArray(5) As String")]
@@ -31,7 +37,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         [Category("Encapsulate Field")]
         public void EncapsulateArray(string visibility, string arrayDeclaration, string expectedArrayDeclaration)
         {
-            string inputCode =
+            var inputCode =
                 $@"Option Explicit
 
 {visibility} {arrayDeclaration}";
@@ -63,7 +69,7 @@ End Property
         [Category("Encapsulate Field")]
         public void EncapsulateArray_DeclaredInList(string dimensions)
         {
-            string inputCode =
+            var inputCode =
                 $@"Option Explicit
 
 Public mArray({dimensions}) As String, anotherVar As Long, andOneMore As Variant";
@@ -98,7 +104,7 @@ End Property
         [Category("Encapsulate Field")]
         public void EncapsulateArray_newFieldNameForFieldInList(string declarationList, string expectedDeclaration)
         {
-            string inputCode =
+            var inputCode =
                 $@"Option Explicit
 
 Public {declarationList}";
@@ -124,7 +130,7 @@ End Property
         [Category("Encapsulate Field")]
         public void RedimsBackingVariable()
         {
-            string inputCode =
+            var inputCode =
                 $@"Option Explicit
 
 Public myA|rray() As Integer
@@ -151,7 +157,7 @@ End Sub
         [Category("Encapsulate Field")]
         public void RedimsBackingVariableAsUDT()
         {
-            string inputCode =
+            var inputCode =
                 $@"Option Explicit
 
 Public myA|rray() As Integer
@@ -180,7 +186,7 @@ End Sub
         public void RedimsBackingVariableExternally(bool convertField)
         {
             var fieldUT = "myArray";
-            string inputCode =
+            var inputCode =
                 $@"Option Explicit
 
 Public myArray() As Long

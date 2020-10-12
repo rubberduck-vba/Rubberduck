@@ -17,9 +17,15 @@ using System.Linq;
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
     [TestFixture]
-    public class EncapsulateFieldTests : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
+    public class EncapsulateFieldTests : EncapsulateFieldInteractiveRefactoringTest
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
+
+        [SetUp]
+        public void ExecutesBeforeAllTests()
+        {
+            Support.ResetResolver();
+        }
 
         [TestCase("fizz", true, "baz", true, "buzz", true)]
         [TestCase("fizz", false, "baz", true, "buzz", true)]
@@ -31,7 +37,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             string var2, bool var2Flag,
             string var3, bool var3Flag)
         {
-            string inputCode =
+            var inputCode =
 $@"Public {var1} As Integer
 Public {var2} As Integer
 Public {var3} As Integer";
@@ -89,7 +95,7 @@ Public {var3} As Integer";
             string var3, bool var3Flag,
             string var4, bool var4Flag)
         {
-            string inputCode =
+            var inputCode =
 $@"Public {var1} As Integer, {var2} As Integer, {var3} As Integer, {var4} As Integer";
 
             var selection = new Selection(1, 9);
@@ -142,7 +148,7 @@ $@"Public {var1} As Integer, {var2} As Integer, {var3} As Integer, {var4} As Int
         [Category("Encapsulate Field")]
         public void EncapsulatePublicField_InvalidDeclarationType_Throws()
         {
-            const string inputCode =
+            var inputCode =
                 @"Public fizz As Integer";
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
@@ -155,14 +161,18 @@ $@"Public {var1} As Integer, {var2} As Integer, {var3} As Integer, {var4} As Int
         [Category("Encapsulate Field")]
         public void EncapsulatePublicField_InvalidIdentifierSelected_Throws()
         {
-            const string inputCode =
+            var inputCode =
                 @"Public Function fiz|z() As Integer
 End Function";
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
 
             var codeString = inputCode.ToCodeString();
-            var actualCode = RefactoredCode(codeString.Code, codeString.CaretPosition.ToOneBased(), presenterAction, typeof(NoDeclarationForSelectionException));
+            var actualCode = RefactoredCode(codeString.Code, 
+                codeString.CaretPosition.ToOneBased(), 
+                presenterAction, 
+                typeof(NoDeclarationForSelectionException));
+
             Assert.AreEqual(codeString.Code, actualCode);
         }
 
@@ -171,10 +181,10 @@ End Function";
         [Category("Encapsulate Field")]
         public void EncapsulatePublicField_ReadOnly()
         {
-            const string inputCode =
+            var inputCode =
                 @"|Public fizz As Integer";
 
-            const string expectedCode =
+            var expectedCode =
                 @"Private fizz As Integer
 
 Public Property Get Name() As Integer
@@ -191,7 +201,7 @@ End Property
         [Category("Encapsulate Field")]
         public void EncapsulatePublicField_NewPropertiesInsertedAboveExistingCode()
         {
-            const string inputCode =
+            var inputCode =
                 @"|Public fizz As Integer
 
 Sub Foo()
@@ -212,7 +222,7 @@ End Function";
         [Category("Encapsulate Field")]
         public void EncapsulatePublicField_OtherPropertiesInClass()
         {
-            const string inputCode =
+            var inputCode =
                 @"|Public fizz As Integer
 
 Property Get Foo() As Variant
@@ -238,9 +248,9 @@ End Property";
         [Category("Encapsulate Field")]
         public void EncapsulatePublicField_OtherNonSelectedFieldsInClass(string inputFields, string expectedFields)
         {
-            string inputCode = inputFields;
+            var inputCode = inputFields;
 
-            string expectedCode =
+            var expectedCode =
 $@"{expectedFields}
 
 Public Property Get Name() As Integer
@@ -263,7 +273,7 @@ End Property
         [Category("Encapsulate Field")]
         public void EncapsulatePublicField_SelectedWithinDeclarationList(int rowSelection, int columnSelection, string fieldName, string contains1, string contains2, string doesNotContain)
         {
-            string inputCode =
+            var inputCode =
 $@"Public fizz, _
 buzz As Boolean, _
 bazz As Date";
@@ -284,7 +294,7 @@ bazz As Date";
         [Category("Encapsulate Field")]
         public void EncapsulatePrivateField()
         {
-            const string inputCode =
+            var inputCode =
                 @"|Private fizz As Integer";
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
@@ -304,7 +314,7 @@ bazz As Date";
         [Category("Encapsulate Field")]
         public void EncapsulateEnumField_PublicEnum(string fieldAccessibility)
         {
-            string inputCode =
+            var inputCode =
                 $@"
 
 Public Enum NumberTypes 
@@ -332,7 +342,7 @@ End Enum
         [Category("Encapsulate Field")]
         public void EncapsulateEnumField(string enumTypeAccessibility, string declarationList)
         {
-            string inputCode =
+            var inputCode =
                 $@"
 
 {enumTypeAccessibility} Enum NumberTypes 
@@ -357,7 +367,7 @@ Private numberT|ype As NumberTypes{declarationList ?? string.Empty}
         [Category("Encapsulate Field")]
         public void EncapsulatePrivateFieldInList()
         {
-            const string inputCode =
+            var inputCode =
                 @"Private fi|zz As Integer, fuzz As Integer, fazz As Integer";
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz");
@@ -377,7 +387,7 @@ Private numberT|ype As NumberTypes{declarationList ?? string.Empty}
         [Category("Encapsulate Field")]
         public void EncapsulatePrivateField_Defaults()
         {
-            const string inputCode =
+            var inputCode =
                 @"|Private fizz As Integer";
 
             var presenterAction = Support.UserAcceptsDefaults();
@@ -396,7 +406,7 @@ Private numberT|ype As NumberTypes{declarationList ?? string.Empty}
         [Category("Encapsulate Field")]
         public void EncapsulatePrivateField_DefaultsAsUDT()
         {
-            const string inputCode =
+            var inputCode =
                 @"|Private fizz As Integer";
 
             var presenterAction = Support.UserAcceptsDefaults(convertFieldToUDTMember: true);
@@ -412,7 +422,7 @@ Private numberT|ype As NumberTypes{declarationList ?? string.Empty}
         [Category("Encapsulate Field")]
         public void EncapsulatePublicField_FieldHasReferences()
         {
-            const string inputCode =
+            var inputCode =
                 @"|Public fizz As Integer
 
 Sub Foo()
@@ -441,13 +451,13 @@ End Sub";
         [Category("Encapsulate Field")]
         public void GivenReferencedPublicField_UpdatesReferenceToNewProperty()
         {
-            const string codeClass1 =
+            var codeClass1 =
                 @"|Public fizz As Integer
 
 Sub Foo()
     fizz = 1
 End Sub";
-            const string codeClass2 =
+            var codeClass2 =
 @"Sub Foo()
     Dim theClass As Class1
     theClass.fizz = 0
@@ -459,20 +469,14 @@ End Sub";
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", true);
 
-            var class1CodeString = codeClass1.ToCodeString();
-            var actualCode = RefactoredCode(
-                "Class1",
-                class1CodeString.CaretPosition.ToOneBased(), 
-                presenterAction, 
-                null, 
-                false, 
-                ("Class1", class1CodeString.Code, ComponentType.ClassModule),
+            var refactoredCode = Support.RefactoredCode(presenterAction,
+                ("Class1", codeClass1.ToCodeString(), ComponentType.ClassModule),
                 ("Class2", codeClass2, ComponentType.ClassModule));
 
-            StringAssert.Contains("Name = 1", actualCode["Class1"]);
-            StringAssert.Contains("theClass.Name = 0", actualCode["Class2"]);
-            StringAssert.Contains("Bar theClass.Name", actualCode["Class2"]);
-            StringAssert.DoesNotContain("fizz", actualCode["Class2"]);
+            StringAssert.Contains("Name = 1", refactoredCode["Class1"]);
+            StringAssert.Contains("theClass.Name = 0", refactoredCode["Class2"]);
+            StringAssert.Contains("Bar theClass.Name", refactoredCode["Class2"]);
+            StringAssert.DoesNotContain("fizz", refactoredCode["Class2"]);
         }
 
         [Test]
@@ -480,7 +484,7 @@ End Sub";
         [Category("Encapsulate Field")]
         public void EncapsulateField_PresenterIsNull()
         {
-            const string inputCode =
+            var inputCode =
                 @"Private fizz As Variant";
             
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
@@ -507,7 +511,7 @@ End Sub";
         [Category("Encapsulate Field")]
         public void EncapsulateField_ModelIsNull()
         {
-            const string inputCode =
+            var inputCode =
                 @"|Private fizz As Variant";
 
             Func<EncapsulateFieldModel, EncapsulateFieldModel> presenterAction = model => null;
@@ -523,9 +527,9 @@ End Sub";
         [Category("Encapsulate Field")]
         public void StandardModuleSource_ExternalReferences(bool moduleResolve)
         {
-            var sourceModuleName = "SourceModule";
-            var referenceExpression = moduleResolve ? $"{sourceModuleName}." : string.Empty;
-            var sourceModuleCode =
+            var testModuleName = MockVbeBuilder.TestModuleName;
+            var referenceExpression = moduleResolve ? $"{testModuleName}." : string.Empty;
+            var testModuleCode =
 $@"
 
 Public th|is As Long";
@@ -540,13 +544,13 @@ Public Sub Bar()
 End Sub
 
 Public Sub Foo()
-    With {sourceModuleName}
+    With {testModuleName}
         .this = bar
     End With
 End Sub
 ";
 
-            string classModuleReferencingCode =
+            var classModuleReferencingCode =
 $@"Option Explicit
 
 Private Const bar As Long = 7
@@ -556,7 +560,7 @@ Public Sub Bar()
 End Sub
 
 Public Sub Foo()
-    With {sourceModuleName}
+    With {testModuleName}
         .this = bar
     End With
 End Sub
@@ -567,25 +571,18 @@ End Sub
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var sourceCodeString = sourceModuleCode.ToCodeString();
-            var actualModuleCode = RefactoredCode(
-                sourceModuleName,
-                sourceCodeString.CaretPosition.ToOneBased(),
-                presenterAction,
-                null,
-                false,
+            var actualModuleCode = Support.RefactoredCode(presenterAction, testModuleCode.ToCodeString(),
                 ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule),
-                ("ClassModule", classModuleReferencingCode, ComponentType.ClassModule),
-                (sourceModuleName, sourceCodeString.Code, ComponentType.StandardModule));
+                ("ClassModule", classModuleReferencingCode, ComponentType.ClassModule));
 
             var referencingModuleCode = actualModuleCode["StdModule"];
-            StringAssert.Contains($"{sourceModuleName}.MyProperty = ", referencingModuleCode);
-            StringAssert.DoesNotContain($"{sourceModuleName}.{sourceModuleName}.MyProperty = ", referencingModuleCode);
+            StringAssert.Contains($"{testModuleName}.MyProperty = ", referencingModuleCode);
+            StringAssert.DoesNotContain($"{testModuleName}.{testModuleName}.MyProperty = ", referencingModuleCode);
             StringAssert.Contains($"  .MyProperty = bar", referencingModuleCode);
 
             var referencingClassCode = actualModuleCode["ClassModule"];
-            StringAssert.Contains($"{sourceModuleName}.MyProperty = ", referencingClassCode);
-            StringAssert.DoesNotContain($"{sourceModuleName}.{sourceModuleName}.MyProperty = ", referencingClassCode);
+            StringAssert.Contains($"{testModuleName}.MyProperty = ", referencingClassCode);
+            StringAssert.DoesNotContain($"{testModuleName}.{testModuleName}.MyProperty = ", referencingClassCode);
             StringAssert.Contains($"  .MyProperty = bar", referencingClassCode);
         }
 

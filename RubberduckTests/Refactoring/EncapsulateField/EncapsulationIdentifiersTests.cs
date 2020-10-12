@@ -8,12 +8,18 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 
+        [SetUp]
+        public void ExecutesBeforeAllTests()
+        {
+            Support.ResetResolver();
+        }
+
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         public void FieldNameAttributeValidation_DefaultsToAvailableFieldName()
         {
-            string inputCode =
+            var inputCode =
 $@"Public fizz As String
 
             'fizz1 is the intial default name for encapsulating 'fizz'            
@@ -36,7 +42,7 @@ $@"Public fizz As String
         [Category("Encapsulate Field")]
         public void FieldNameValuesPerSequenceOfPropertyNameChanges()
         {
-            string inputCode = "Public fizz As String";
+            var inputCode = "Public fizz As String";
 
             var encapsulatedField = Support.RetrieveEncapsulateFieldCandidate(inputCode, "fizz");
             StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.BackingIdentifier);

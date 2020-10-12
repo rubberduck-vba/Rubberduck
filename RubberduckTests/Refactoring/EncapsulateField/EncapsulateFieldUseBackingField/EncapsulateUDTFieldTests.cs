@@ -5,14 +5,20 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
-using System.Collections.Generic;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
     [TestFixture]
-    public class EncapsulateUDTFieldTests : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
+    public class EncapsulateUDTFieldTests : EncapsulateFieldInteractiveRefactoringTest
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
+
+        [SetUp]
+        public void ExecutesBeforeAllTests()
+        {
+            Support.ResetResolver();
+        }
 
         [TestCase("Public")]
         [TestCase("Private")]
@@ -20,7 +26,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         [Category("Encapsulate Field")]
         public void UserDefinedType_UserAcceptsDefaults(string accessibility)
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As String
@@ -51,7 +57,7 @@ End Type
         [Category("Encapsulate Field")]
         public void UserDefinedType_TwoFields(bool encapsulateThis, bool encapsulateThat)
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As String
@@ -128,7 +134,7 @@ Public that As TBar";
         [Category("Encapsulate Field")]
         public void ModifiesCorrectUDTMemberReference_MemberAccess()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As String
@@ -165,7 +171,7 @@ End Sub
         [Category("Encapsulate Field")]
         public void ModifiesCorrectUDTMemberReference_WithMemberAccess()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As String
@@ -217,8 +223,7 @@ End Sub
         [Category("Encapsulate Field")]
         public void ModifiesCorrectUDTMemberReference_WithMemberAccessExternal()
         {
-            string sourceModuleName = "SourceModule";
-            string inputCode =
+            var inputCode =
 $@"
 Public Type TBar
     First As String
@@ -229,10 +234,10 @@ Public th|is As TBar
 
 Private that As TBar
 ";
-            string module2 =
+            var module2 =
 $@"
 Public Sub Foo(arg1 As String, arg2 As Long)
-    With {sourceModuleName}.this
+    With {MockVbeBuilder.TestModuleName}.this
         .First = arg1
         .Second = arg2
     End With
@@ -246,25 +251,18 @@ End Sub
 
             var presenterAction = Support.UserAcceptsDefaults();
 
-            var codeString = inputCode.ToCodeString();
-
-            var actualModuleCode = RefactoredCode(
-                sourceModuleName,
-                codeString.CaretPosition.ToOneBased(),
-                presenterAction,
-                null,
-                false,
-                ("Module2", module2, ComponentType.StandardModule),
-                (sourceModuleName, codeString.Code, ComponentType.StandardModule));
+            var actualModuleCode = Support.RefactoredCode(presenterAction,
+                (MockVbeBuilder.TestModuleName, inputCode.ToCodeString(), ComponentType.StandardModule),
+                ("Module2", module2, ComponentType.StandardModule));
 
             var actualCode = actualModuleCode["Module2"];
-            var sourceCode = actualModuleCode[sourceModuleName];
+            var sourceCode = actualModuleCode[MockVbeBuilder.TestModuleName];
 
             StringAssert.DoesNotContain($" First = arg1", actualCode);
             StringAssert.DoesNotContain($" Second = arg2", actualCode);
             StringAssert.Contains($" .First = arg1", actualCode);
             StringAssert.Contains($" .Second = arg2", actualCode);
-            StringAssert.Contains($"With {sourceModuleName}.This", actualCode);
+            StringAssert.Contains($"With {MockVbeBuilder.TestModuleName}.This", actualCode);
         }
 
         [TestCase("Public")]
@@ -273,7 +271,7 @@ End Sub
         [Category("Encapsulate Field")]
         public void UserDefinedTypeMembersAndFields(string accessibility)
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As String
@@ -321,7 +319,7 @@ Private mFizz
         [Category("Encapsulate Field")]
         public void UserDefinedTypeMember_ContainsObjects(string accessibility)
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As Class1
@@ -330,7 +328,7 @@ End Type
 
 {accessibility} th|is As TBar";
 
-            string class1Code =
+            var class1Code =
 @"Option Explicit
 
 Public Sub Foo()
@@ -342,17 +340,10 @@ End Sub
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var codeString = inputCode.ToCodeString();
-            var actualModuleCode = RefactoredCode(
-                "Module1",
-                codeString.CaretPosition.ToOneBased(),
-                presenterAction,
-                null,
-                false,
-                ("Class1", class1Code, ComponentType.ClassModule),
-                ("Module1", codeString.Code, ComponentType.StandardModule));
+            var actualModuleCode = Support.RefactoredCode(presenterAction, inputCode.ToCodeString(),
+                ("Class1", class1Code, ComponentType.ClassModule));
 
-            var actualCode = actualModuleCode["Module1"];
+            var actualCode = actualModuleCode[MockVbeBuilder.TestModuleName];
 
             StringAssert.Contains("Private this As TBar", actualCode);
             StringAssert.DoesNotContain($"this = {Support.RHSIdentifier}", actualCode);
@@ -373,7 +364,7 @@ End Sub
         [Category("Encapsulate Field")]
         public void UserDefinedTypeMember_ContainsVariant(string accessibility)
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As String
@@ -405,7 +396,7 @@ End Type
         [Category("Encapsulate Field")]
         public void UserDefinedTypeMember_ContainsArrays(string accessibility)
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First(5) As String
@@ -439,13 +430,13 @@ End Type
         [Category("Encapsulate Field")]
         public void UserDefinedTypeMembers_ExternallyDefinedType(string accessibility)
         {
-            string inputCode =
+            var inputCode =
 $@"
 Option Explicit
 
 {accessibility} th|is As TBar";
 
-            string typeDefinition =
+            var typeDefinition =
 $@"
 Public Type TBar
     First As String
@@ -458,14 +449,8 @@ End Type
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var codeString = inputCode.ToCodeString();
-            var actualModuleCode = RefactoredCode(
-                "Class1",
-                codeString.CaretPosition.ToOneBased(),
-                presenterAction,
-                null,
-                false,
-                ("Class1", codeString.Code, ComponentType.ClassModule),
+            var actualModuleCode = Support.RefactoredCode(presenterAction,
+                ("Class1", inputCode.ToCodeString(), ComponentType.ClassModule),
                 ("Module1", typeDefinition, ComponentType.StandardModule));
 
             Assert.AreEqual(typeDefinition, actualModuleCode["Module1"]);
@@ -492,13 +477,13 @@ End Type
         [Category("Encapsulate Field")]
         public void UserDefinedTypeMembers_ObjectField(string accessibility)
         {
-            string inputCode =
+            var inputCode =
 $@"
 Option Explicit
 
 {accessibility} mThe|Class As Class1";
 
-            string classContent =
+            var classContent =
 $@"
 Option Explicit
 
@@ -508,17 +493,10 @@ End Sub
 
             var presenterAction = Support.UserAcceptsDefaults();
 
-            var codeString = inputCode.ToCodeString();
-            var actualModuleCode = RefactoredCode(
-                "Module1",
-                codeString.CaretPosition.ToOneBased(),
-                presenterAction,
-                null,
-                false,
-                ("Class1", classContent, ComponentType.ClassModule),
-                ("Module1", codeString.Code, ComponentType.StandardModule));
+            var actualModuleCode = Support.RefactoredCode(presenterAction, inputCode.ToCodeString(),
+                ("Class1", classContent, ComponentType.ClassModule));
 
-            var actualCode = actualModuleCode["Module1"];
+            var actualCode = actualModuleCode[MockVbeBuilder.TestModuleName];
 
             StringAssert.Contains($"Private mTheClass As Class1", actualCode);
             StringAssert.Contains($"Set mTheClass = {Support.RHSIdentifier}", actualCode);
@@ -569,111 +547,14 @@ End Sub
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var sourceCodeString = sourceModuleCode.ToCodeString();
-
-            var actualModuleCode = RefactoredCode(
-                sourceModuleName,
-                sourceCodeString.CaretPosition.ToOneBased(),
-                presenterAction,
-                null,
-                false,
-                ("StdModule", moduleReferencingCode, ComponentType.StandardModule),
-                (sourceModuleName, sourceCodeString.Code, ComponentType.StandardModule));
+            var actualModuleCode = Support.RefactoredCode(presenterAction,
+                (sourceModuleName, sourceModuleCode.ToCodeString(), ComponentType.StandardModule),
+                ("StdModule", moduleReferencingCode, ComponentType.StandardModule));
 
             var referencingModuleCode = actualModuleCode["StdModule"];
             StringAssert.Contains($"{sourceModuleName}.MyType.First = ", referencingModuleCode);
             StringAssert.Contains($"{sourceModuleName}.MyType.Second = ", referencingModuleCode);
             StringAssert.Contains($"  .MyType.Second = ", referencingModuleCode);
-        }
-
-        private IDictionary<string,string> Scenario_StdModuleSource_StandardAndClassReferencingModules(string referenceQualifier, string typeDeclarationAccessibility, string sourceModuleName, UserInputDataObject userInput)
-        {
-            var sourceModuleCode =
-$@"
-{typeDeclarationAccessibility} Type TBar
-    First As String
-    Second As Long
-End Type
-
-Public th|is As TBar";
-
-            var procedureModuleReferencingCode =
-$@"Option Explicit
-
-'StdModule referencing the UDT
-
-Private Const foo As String = ""Foo""
-
-Private Const bar As Long = 7
-
-Public Sub Foo()
-    {referenceQualifier}.First = foo
-End Sub
-
-Public Sub Bar()
-    {referenceQualifier}.Second = bar
-End Sub
-
-Public Sub FooBar()
-    With {sourceModuleName}
-        .this.First = foo
-        .this.Second = bar
-    End With
-End Sub
-";
-
-            string classModuleReferencingCode =
-$@"Option Explicit
-
-'ClassModule referencing the UDT
-
-Private Const foo As String = ""Foo""
-
-Private Const bar As Long = 7
-
-Public Sub Foo()
-    {referenceQualifier}.First = foo
-End Sub
-
-Public Sub Bar()
-    {referenceQualifier}.Second = bar
-End Sub
-
-Public Sub FooBar()
-    With {sourceModuleName}
-        .this.First = foo
-        .this.Second = bar
-    End With
-End Sub
-";
-
-            var presenterAction = Support.SetParameters(userInput);
-
-            var sourceCodeString = sourceModuleCode.ToCodeString();
-
-            //Only Public Types are accessible to ClassModules
-            if (typeDeclarationAccessibility.Equals("Public"))
-            {
-                return RefactoredCode(
-                    sourceModuleName,
-                    sourceCodeString.CaretPosition.ToOneBased(),
-                    presenterAction,
-                    null,
-                    false,
-                    ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule),
-                    ("ClassModule", classModuleReferencingCode, ComponentType.ClassModule),
-                    (sourceModuleName, sourceCodeString.Code, ComponentType.StandardModule));
-            }
-            var actualModuleCode =  RefactoredCode(
-                sourceModuleName,
-                sourceCodeString.CaretPosition.ToOneBased(),
-                presenterAction,
-                null,
-                false,
-                ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule),
-                (sourceModuleName, sourceCodeString.Code, ComponentType.StandardModule));
-
-            return actualModuleCode;
         }
 
         [Test]
@@ -688,7 +569,7 @@ $@"
 
 Public th|is As TBar";
 
-            string classModuleReferencingCode =
+            var classModuleReferencingCode =
 $@"Option Explicit
 
 Private {sourceClassName} As {sourceModuleName}
@@ -720,16 +601,9 @@ End Sub
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var sourceCodeString = sourceModuleCode.ToCodeString();
-
-            var actualModuleCode = RefactoredCode(
-                sourceModuleName,
-                sourceCodeString.CaretPosition.ToOneBased(),
-                presenterAction,
-                null,
-                false,
-                ("ClassModule", classModuleReferencingCode, ComponentType.ClassModule),
-                (sourceModuleName, sourceCodeString.Code, ComponentType.ClassModule));
+            var actualModuleCode = Support.RefactoredCode(presenterAction,
+                (sourceModuleName, sourceModuleCode.ToCodeString(), ComponentType.ClassModule),
+                ("ClassModule", classModuleReferencingCode, ComponentType.ClassModule));
 
             var referencingClassCode = actualModuleCode["ClassModule"];
             StringAssert.Contains($"{sourceClassName}.MyType.First = ", referencingClassCode);
@@ -786,16 +660,9 @@ End Sub
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var sourceCodeString = sourceModuleCode.ToCodeString();
-
-            var actualModuleCode = RefactoredCode(
-                classModuleName,
-                sourceCodeString.CaretPosition.ToOneBased(),
-                presenterAction,
-                null,
-                false,
-                ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule),
-                (classModuleName, sourceCodeString.Code, ComponentType.ClassModule));
+            var actualModuleCode = Support.RefactoredCode(presenterAction,
+                (classModuleName, sourceModuleCode.ToCodeString(), ComponentType.ClassModule),
+                ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule));
 
             var referencingModuleCode = actualModuleCode["StdModule"];
             StringAssert.Contains($"{classInstanceName}.MyType.First = ", referencingModuleCode);
@@ -808,7 +675,7 @@ End Sub
         [Category("Encapsulate Field")]
         public void UserDefinedTypeUserUpdatesToBeReadOnly()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As String
@@ -833,7 +700,7 @@ Private t|his As TBar";
         [Category("Encapsulate Field")]
         public void MultipleUserDefinedTypesOfSameName()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Option Explicit
 
@@ -845,7 +712,7 @@ End Type
 Public mF|oo As TBar
 ";
 
-            string module2Content =
+            var module2Content =
 $@"
 Public Type TBar
     FirstVal As Long
@@ -855,19 +722,9 @@ End Type
 
             var presenterAction = Support.UserAcceptsDefaults();
 
-            var codeString = inputCode.ToCodeString();
-            var actualModuleCode = RefactoredCode(
-                "Module1",
-                codeString.CaretPosition.ToOneBased(),
-                presenterAction,
-                null,
-                false,
-                ("Module2", module2Content, ComponentType.StandardModule),
-                ("Module1", codeString.Code, ComponentType.StandardModule));
-
-            var actualCode = actualModuleCode["Module1"];
-
-            StringAssert.Contains($"Public Property Let FirstValue(", actualCode);
+            var actualModuleCode = Support.RefactoredCode(presenterAction, inputCode.ToCodeString(),
+                ("Module2", module2Content, ComponentType.StandardModule));
+            StringAssert.Contains($"Public Property Let FirstValue(", actualModuleCode[MockVbeBuilder.TestModuleName]);
         }
 
         [Test]
@@ -875,7 +732,7 @@ End Type
         [Category("Encapsulate Field")]
         public void UDTMemberPropertyConflictsWithExistingFunction()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As String
@@ -901,7 +758,7 @@ End Function";
         [Category("Encapsulate Field")]
         public void UDTMemberIsPrivateUDT()
         {
-            string inputCode =
+            var inputCode =
 $@"
 
 Private Type TFoo
@@ -930,7 +787,7 @@ Private my|Bar As TBar
         [Category("Encapsulate Field")]
         public void UDTMemberIsPrivateUDT_RepeatedType()
         {
-            string inputCode =
+            var inputCode =
 $@"
 
 Private Type TFoo
@@ -963,7 +820,7 @@ Private my|Bar As TBar
         [Category("Encapsulate Field")]
         public void UDTMemberIsPublicUDT()
         {
-            string inputCode =
+            var inputCode =
 $@"
 
 Public Type TFoo

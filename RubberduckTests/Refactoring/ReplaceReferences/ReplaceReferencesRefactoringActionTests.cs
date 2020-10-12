@@ -20,7 +20,7 @@ namespace RubberduckTests.Refactoring.RenameReferences
         [Category(nameof(ReplaceReferencesRefactoringAction))]
         public void ValueField()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Option Explicit
 
@@ -102,7 +102,7 @@ End Sub
         public void ArrayReferences2()
         {
             var sourceModuleName = "SourceModule";
-            string inputCode =
+            var inputCode =
     @"Private Sub Foo()
     ReDim arr(0 To 1)
     arr(1) = arr(0)
@@ -127,7 +127,7 @@ End Sub";
         public void ArrayReferences()
         {
             var sourceModuleName = "SourceModule";
-            string inputCode =
+            var inputCode =
 $@"
 Option Explicit
 
@@ -207,7 +207,7 @@ End Sub
         [Category(nameof(ReplaceReferencesRefactoringAction))]
         public void UDTField_MemberAccess()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     FirstVal As String
@@ -256,7 +256,7 @@ End Function
         [Category(nameof(ReplaceReferencesRefactoringAction))]
         public void UDTField_MemberAccessMultipleInstances()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     FirstVal As String
@@ -314,7 +314,7 @@ End Function
         [Category(nameof(ReplaceReferencesRefactoringAction))]
         public void UDTField_WithMemberAccess()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     FirstVal As String

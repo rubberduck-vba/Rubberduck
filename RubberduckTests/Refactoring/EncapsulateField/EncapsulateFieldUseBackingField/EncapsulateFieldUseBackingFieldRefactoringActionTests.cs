@@ -16,6 +16,12 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 
+        [SetUp]
+        public void ExecutesBeforeAllTests()
+        {
+            Support.ResetResolver();
+        }
+
         [TestCase(false, "Name")]
         [TestCase(true, "Name")]
         [TestCase(false, null)]
@@ -30,8 +36,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
 
             EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state)
             {
-                var resolver = new EncapsulateFieldTestComponentResolver(state, null);
-                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>();
+                var modelFactory = Support.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>(state);
 
                 var field = state.DeclarationFinder.MatchName(target).Single();
                 var fieldModel = new FieldEncapsulationModel(field as VariableDeclaration, isReadOnly, propertyIdentifier);
@@ -72,8 +77,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
 
             EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state)
             {
-                var resolver = new EncapsulateFieldTestComponentResolver(state, null);
-                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>();
+                var modelFactory = Support.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>(state);
                 return modelFactory.Create(Enumerable.Empty<FieldEncapsulationModel>());
             }
 
@@ -83,8 +87,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
 
         protected override IRefactoringAction<EncapsulateFieldUseBackingFieldModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            var resolver = new EncapsulateFieldTestComponentResolver(state, rewritingManager);
-            return resolver.Resolve<EncapsulateFieldUseBackingFieldRefactoringAction>();
+            return Support.Resolve<EncapsulateFieldUseBackingFieldRefactoringAction>(state, rewritingManager);
         }
     }
 }

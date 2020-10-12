@@ -25,7 +25,7 @@ namespace RubberduckTests.Refactoring.ModifyUserDefinedType
         [Category(nameof(ModifyUserDefinedTypeRefactoringAction))]
         public void AddSingleMember(string prototypeDeclaration, DeclarationType declarationType)
         {
-            string inputCode =
+            var inputCode =
 $@"
 Option Explicit
 
@@ -52,7 +52,7 @@ End Type
         [Category(nameof(ModifyUserDefinedTypeRefactoringAction))]
         public void MultipleNewMembers()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Option Explicit
 
@@ -85,7 +85,7 @@ End Type
         [Category(nameof(ModifyUserDefinedTypeRefactoringAction))]
         public void MultipleNewMembersRemoveMultiple()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Option Explicit
 
@@ -130,7 +130,7 @@ End Type
         [Category(nameof(ModifyUserDefinedTypeRefactoringAction))]
         public void RemoveOnlyMultiple()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Option Explicit
 

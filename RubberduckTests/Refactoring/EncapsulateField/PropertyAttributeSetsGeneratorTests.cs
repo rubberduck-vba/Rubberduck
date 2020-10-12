@@ -1,10 +1,6 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Refactorings.EncapsulateField;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RubberduckTests.Mocks;
 using Rubberduck.Refactorings;
 
@@ -13,6 +9,14 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     [TestFixture]
     public class PropertyAttributeSetsGeneratorTests
     {
+        private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
+
+        [SetUp]
+        public void ExecutesBeforeAllTests()
+        {
+            Support.ResetResolver();
+        }
+
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
@@ -38,15 +42,12 @@ Private mVehicle As TVehicle
 
             
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
                 var encapsulateTarget = state.AllUserDeclarations.Single(d => d.IdentifierName.Equals("mVehicle"));
                 var objectStateUDTTarget = state.AllUserDeclarations.Single(d => d.IdentifierName.Equals("this"));
 
-                var resolver = new EncapsulateFieldTestComponentResolver(state, null);
-
-                var encapsulateFieldCandidateFactory = resolver.Resolve<IEncapsulateFieldCandidateFactory>();
+                var encapsulateFieldCandidateFactory = Support.Resolve<IEncapsulateFieldCandidateFactory>(state);
 
                 var objStateCandidate = encapsulateFieldCandidateFactory.CreateFieldCandidate(objectStateUDTTarget);
                 var objStateUDT = encapsulateFieldCandidateFactory.CreateObjectStateField(objStateCandidate as IUserDefinedTypeCandidate);
@@ -103,15 +104,12 @@ Private this As ExistingType
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
                 var encapsulateTarget = state.AllUserDeclarations.Single(d => d.IdentifierName.Equals("mTest"));
                 var objectStateUDTTarget = state.AllUserDeclarations.Single(d => d.IdentifierName.Equals("this"));
 
-                var resolver = new EncapsulateFieldTestComponentResolver(state, null);
-
-                var encapsulateFieldCandidateFactory = resolver.Resolve<IEncapsulateFieldCandidateFactory>();
+                var encapsulateFieldCandidateFactory = Support.Resolve<IEncapsulateFieldCandidateFactory>(state);
 
                 var objStateCandidate = encapsulateFieldCandidateFactory.CreateFieldCandidate(objectStateUDTTarget);
                 var objStateUDT = encapsulateFieldCandidateFactory.CreateObjectStateField(objStateCandidate as IUserDefinedTypeCandidate);

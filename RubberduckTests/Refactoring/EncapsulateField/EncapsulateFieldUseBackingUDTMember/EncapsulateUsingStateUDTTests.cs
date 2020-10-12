@@ -13,16 +13,22 @@ using System.Linq;
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
     [TestFixture]
-    public class EncapsulateUsingStateUDTTests : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
+    public class EncapsulateUsingStateUDTTests : EncapsulateFieldInteractiveRefactoringTest
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
+
+        [SetUp]
+        public void ExecutesBeforeAllTests()
+        {
+            Support.ResetResolver();
+        }
 
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         public void EncapsulatePrivateFieldAsUDT()
         {
-            const string inputCode =
+            var inputCode =
                 @"|Private fizz As Integer";
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", asUDT: true);
@@ -38,7 +44,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         [Category("Encapsulate Field")]
         public void UserDefinedType_UserAcceptsDefaults_ConflictWithStateUDT(string accessibility)
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As String
@@ -60,7 +66,7 @@ Private this As Long";
         [Category("Encapsulate Field")]
         public void UserDefinedTypeMembers_OnlyEncapsulateUDTMembers()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As String
@@ -90,7 +96,7 @@ Private my|Bar As TBar";
         [Category("Encapsulate Field")]
         public void UserDefinedTypeMembers_UDTFieldReferences()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As String
@@ -119,7 +125,7 @@ End Sub";
         [Category("Encapsulate Field")]
         public void LoadsExistingUDT()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As String
@@ -160,7 +166,7 @@ Public foobar As Byte
         [Category("Encapsulate Field")]
         public void DoesNotChangeExistingUDTMembers()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type T{MockVbeBuilder.TestModuleName}
     Name As String
@@ -197,7 +203,7 @@ End Property
         [Category("Encapsulate Field")]
         public void MultipleFields()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Public fo|o As Long
 Public bar As String
@@ -225,7 +231,7 @@ Public foobar As Byte
         [Category("Encapsulate Field")]
         public void UserDefinedType_MultipleFieldsWithUDT()
         {
-            string inputCode =
+            var inputCode =
 $@"
 
 Private Type TBar
@@ -259,7 +265,7 @@ Public myBar As TBar
         [Category("Encapsulate Field")]
         public void UserDefinedType_MultipleFieldsOfSameUDT()
         {
-            string inputCode =
+            var inputCode =
 $@"
 
 Private Type TBar
@@ -287,7 +293,7 @@ Public myBar As TBar
         [Category("Encapsulate Field")]
         public void UserDefinedType_PrivateEnumField()
         {
-            const string inputCode =
+            var inputCode =
 @"
 Private Enum NumberTypes 
     Whole = -1 
@@ -318,7 +324,7 @@ Public numberT|ype As NumberTypes
         public void UserDefinedType_BoundedArrayField(string arrayIdentifier, string dimensions)
         {
             var selectedInput = arrayIdentifier.Replace("n", "n|");
-            string inputCode =
+            var inputCode =
 $@"
 Public {selectedInput}({dimensions}) As String
 ";
@@ -343,7 +349,7 @@ Public {selectedInput}({dimensions}) As String
         public void UserDefinedType_LocallyReferencedArray(string arrayIdentifier, string dimensions)
         {
             var selectedInput = arrayIdentifier.Replace("n", "n|");
-            string inputCode =
+            var inputCode =
 $@"
 Public {selectedInput}({dimensions}) As String
 
@@ -372,7 +378,7 @@ End Property
         public void UserDefinedTypeDefaultNameHasConflict()
         {
             var expectedIdentifier = "TTestModule1_1";
-            string inputCode =
+            var inputCode =
 $@"
 
 Private Type TBar
@@ -405,7 +411,7 @@ Public myBar As TBar
         [Category("Encapsulate Field")]
         public void ObjectStateUDTs(string udtFieldAccessibility, int expectedCount)
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As String
@@ -436,7 +442,7 @@ Private mFizz
         [Category("Encapsulate Field")]
         public void UDTMemberIsPrivateUDT()
         {
-            string inputCode =
+            var inputCode =
 $@"
 
 Private Type TFoo
@@ -469,7 +475,7 @@ Private my|Bar As TBar
         [Category("Encapsulate Field")]
         public void UDTMemberIsPublicUDT()
         {
-            string inputCode =
+            var inputCode =
 $@"
 
 Public Type TFoo
@@ -500,13 +506,13 @@ Private my|Bar As TBar
         [Category("Encapsulate Field")]
         public void GivenReferencedPublicField_UpdatesReferenceToNewProperty()
         {
-            const string codeClass1 =
+            var codeClass1 =
                 @"|Public fizz As Integer
 
 Sub Foo()
     fizz = 1
 End Sub";
-            const string codeClass2 =
+            var codeClass2 =
 @"Sub Foo()
     Dim theClass As Class1
     theClass.fizz = 0
@@ -523,20 +529,14 @@ End Sub";
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var class1CodeString = codeClass1.ToCodeString();
-            var actualCode = RefactoredCode(
-                "Class1",
-                class1CodeString.CaretPosition.ToOneBased(),
-                presenterAction,
-                null,
-                false,
-                ("Class1", class1CodeString.Code, ComponentType.ClassModule),
+            var refactoredCode = Support.RefactoredCode(presenterAction,
+                ("Class1", codeClass1.ToCodeString(), ComponentType.ClassModule),
                 ("Class2", codeClass2, ComponentType.ClassModule));
 
-            StringAssert.Contains("Name = 1", actualCode["Class1"]);
-            StringAssert.Contains("theClass.Name = 0", actualCode["Class2"]);
-            StringAssert.Contains("Bar theClass.Name", actualCode["Class2"]);
-            StringAssert.DoesNotContain("fizz", actualCode["Class2"]);
+            StringAssert.Contains("Name = 1", refactoredCode["Class1"]);
+            StringAssert.Contains("theClass.Name = 0", refactoredCode["Class2"]);
+            StringAssert.Contains("Bar theClass.Name", refactoredCode["Class2"]);
+            StringAssert.DoesNotContain("fizz", refactoredCode["Class2"]);
         }
 
         [TestCase(false)]
@@ -568,7 +568,7 @@ Public Sub Foo()
 End Sub
 ";
 
-            string classModuleReferencingCode =
+            var classModuleReferencingCode =
 $@"Option Explicit
 
 Private Const bar As Long = 7
@@ -591,23 +591,17 @@ End Sub
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var sourceCodeString = sourceModuleCode.ToCodeString();
-            var actualModuleCode = RefactoredCode(
-                sourceModuleName,
-                sourceCodeString.CaretPosition.ToOneBased(),
-                presenterAction,
-                null,
-                false,
+            var refactoredCode = Support.RefactoredCode(presenterAction,
+                (sourceModuleName, sourceModuleCode.ToCodeString(), ComponentType.StandardModule),
                 ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule),
-                ("ClassModule", classModuleReferencingCode, ComponentType.ClassModule),
-                (sourceModuleName, sourceCodeString.Code, ComponentType.StandardModule));
+                ("ClassModule", classModuleReferencingCode, ComponentType.ClassModule));
 
-            var referencingModuleCode = actualModuleCode["StdModule"];
+            var referencingModuleCode = refactoredCode["StdModule"];
             StringAssert.Contains($"{sourceModuleName}.MyProperty = ", referencingModuleCode);
             StringAssert.DoesNotContain($"{sourceModuleName}.{sourceModuleName}.MyProperty = ", referencingModuleCode);
             StringAssert.Contains($"  .MyProperty = bar", referencingModuleCode);
 
-            var referencingClassCode = actualModuleCode["ClassModule"];
+            var referencingClassCode = refactoredCode["ClassModule"];
             StringAssert.Contains($"{sourceModuleName}.MyProperty = ", referencingClassCode);
             StringAssert.DoesNotContain($"{sourceModuleName}.{sourceModuleName}.MyProperty = ", referencingClassCode);
             StringAssert.Contains($"  .MyProperty = bar", referencingClassCode);
@@ -618,7 +612,7 @@ End Sub
         [Category("Encapsulate Field")]
         public void PrivateUDT_SelectedOtherThanObjectStateUDT()
         {
-            string inputCode =
+            var inputCode =
 $@"
 
 Private Type TTest

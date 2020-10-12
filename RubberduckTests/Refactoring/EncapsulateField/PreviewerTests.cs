@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
@@ -13,9 +12,15 @@ using System.Linq;
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
     [TestFixture]
-    public class EncapsulateFieldPreviewerTests : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
+    public class EncapsulateFieldPreviewerTests : EncapsulateFieldInteractiveRefactoringTest
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
+
+        [SetUp]
+        public void ExecutesBeforeAllTests()
+        {
+            Support.ResetResolver();
+        }
 
         [TestCase(EncapsulateFieldStrategy.UseBackingFields)]
         [TestCase(EncapsulateFieldStrategy.ConvertFieldsToUDTMembers)]
@@ -24,30 +29,27 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         [Category(nameof(EncapsulateFieldPreviewProvider))]
         public void Preview_EditPropertyIdentifier(EncapsulateFieldStrategy strategy)
         {
-            string inputCode =
+            var inputCode =
 $@"Option Explicit
 
 Public mTest As Long
 ";
 
-            var presenterAction = Support.SetParametersForSingleTarget("mTest", "ATest");
-            var actualCode = RefactoredCode("mTest", DeclarationType.Variable, null, (MockVbeBuilder.TestModuleName, inputCode, ComponentType.StandardModule));
-
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.StandardModule, out _);
             (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var target = state.DeclarationFinder.MatchName("mTest").First();
-                var resolver = new EncapsulateFieldTestComponentResolver(state, rewritingManager);
+                Support.SetupResolver(state, rewritingManager, null);
 
-                var modelfactory = resolver.Resolve<IEncapsulateFieldModelFactory>();
+                var target = state.DeclarationFinder.MatchName("mTest").First();
+                var modelfactory = Support.Resolve<IEncapsulateFieldModelFactory>();
                 var model = modelfactory.Create(target);
 
                 model.EncapsulateFieldStrategy = strategy;
                 var field = model["mTest"];
                 field.PropertyIdentifier = "ATest";
 
-                var previewProvider = resolver.Resolve<EncapsulateFieldPreviewProvider>();
+                var previewProvider = Support.Resolve<EncapsulateFieldPreviewProvider>();
 
                 var firstPreview = previewProvider.Preview(model);
                 StringAssert.Contains("Property Get ATest", firstPreview);
@@ -65,7 +67,7 @@ Public mTest As Long
         [Category(nameof(EncapsulateFieldPreviewProvider))]
         public void PreviewWrapMember_EditPropertyIdentifier()
         {
-            string inputCode =
+            var inputCode =
 $@"Option Explicit
 
 Private Type T{MockVbeBuilder.TestModuleName}
@@ -83,17 +85,15 @@ Private tType As T{MockVbeBuilder.TestModuleName}
 Private bType As B{MockVbeBuilder.TestModuleName}
 ";
 
-            var presenterAction = Support.SetParametersForSingleTarget("mTest", "ATest");
-            var actualCode = RefactoredCode("mTest", DeclarationType.Variable, null, (MockVbeBuilder.TestModuleName, inputCode, ComponentType.StandardModule));
-
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.StandardModule, out _);
             (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var target = state.DeclarationFinder.MatchName("mTest").First();
-                var resolver = new EncapsulateFieldTestComponentResolver(state, rewritingManager);
+                Support.SetupResolver(state, rewritingManager, null);
 
-                var modelfactory = resolver.Resolve<IEncapsulateFieldModelFactory>();
+                var target = state.DeclarationFinder.MatchName("mTest").First();
+
+                var modelfactory = Support.Resolve<IEncapsulateFieldModelFactory>();
                 var model = modelfactory.Create(target);
 
                 var field = model["mTest"];
@@ -103,7 +103,7 @@ Private bType As B{MockVbeBuilder.TestModuleName}
                 var test = model.ObjectStateUDTCandidates;
                 Assert.AreEqual(3, test.Count());
 
-                var previewProvider = resolver.Resolve<EncapsulateFieldPreviewProvider>();
+                var previewProvider = Support.Resolve<EncapsulateFieldPreviewProvider>();
 
                 var firstPreview = previewProvider.Preview(model);
                 StringAssert.Contains("Property Get ATest", firstPreview);
@@ -122,7 +122,7 @@ Private bType As B{MockVbeBuilder.TestModuleName}
         [Category(nameof(EncapsulateFieldPreviewProvider))]
         public void Preview_IncludeEndOfChangesMarker(EncapsulateFieldStrategy strategy)
         {
-            string inputCode =
+            var inputCode =
 $@"Option Explicit
 
 Public mTest As Long
@@ -132,11 +132,12 @@ Public mTest As Long
             (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var target = state.DeclarationFinder.MatchName("mTest").First();
-                var resolver = new EncapsulateFieldTestComponentResolver(state, rewritingManager);
+                Support.SetupResolver(state, rewritingManager, null);
 
-                var modelfactory = resolver.Resolve<IEncapsulateFieldModelFactory>();
-                var previewProvider = resolver.Resolve<EncapsulateFieldPreviewProvider>();
+                var target = state.DeclarationFinder.MatchName("mTest").First();
+
+                var modelfactory = Support.Resolve<IEncapsulateFieldModelFactory>();
+                var previewProvider = Support.Resolve<EncapsulateFieldPreviewProvider>();
 
                 var model = modelfactory.Create(target);
 
