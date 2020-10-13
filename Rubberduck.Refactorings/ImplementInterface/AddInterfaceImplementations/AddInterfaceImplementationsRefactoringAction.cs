@@ -4,7 +4,7 @@ using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-
+using Rubberduck.Resources;
 
 namespace Rubberduck.Refactorings.AddInterfaceImplementations
 {
@@ -68,7 +68,7 @@ namespace Rubberduck.Refactorings.AddInterfaceImplementations
                     members.Add(propertySet);
                 }
 
-                return string.Join($"{Environment.NewLine}{Environment.NewLine}", members);
+                return string.Join($"{NewLines.DOUBLE_SPACE}", members);
             }
 
             return string.Empty;

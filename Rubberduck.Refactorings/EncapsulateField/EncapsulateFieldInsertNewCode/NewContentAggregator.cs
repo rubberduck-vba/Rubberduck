@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Resources;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -49,7 +50,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
     /// </summary>
     public class NewContentAggregator : INewContentAggregator
     {
-        private readonly static string _doubleSpace = $"{Environment.NewLine}{Environment.NewLine}";
         private readonly Dictionary<NewContentType, List<string>> _newContent;
         private Dictionary<string, List<string>> _unStructuredContent;
 
@@ -90,12 +90,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var block = string.Empty;
             foreach (var newContentType in newContentTypes)
             {
-                var newContent = string.Join(_doubleSpace, _newContent[newContentType]);
+                var newContent = string.Join(NewLines.DOUBLE_SPACE, _newContent[newContentType]);
                 if (!string.IsNullOrEmpty(newContent))
                 {
                     block = string.IsNullOrEmpty(block)
                         ? newContent
-                        : $"{block}{_doubleSpace}{newContent}";
+                        : $"{block}{NewLines.DOUBLE_SPACE}{newContent}";
                 }
             }
             return LimitNewLines(block.Trim(), NewLineLimit);
@@ -108,12 +108,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 if (_unStructuredContent.TryGetValue(identifier, out var adHocContent))
                 {
-                    var newContent = string.Join(_doubleSpace, adHocContent);
+                    var newContent = string.Join(NewLines.DOUBLE_SPACE, adHocContent);
                     if (!string.IsNullOrEmpty(newContent))
                     {
                         block = string.IsNullOrEmpty(block)
                             ? newContent
-                            : $"{block}{_doubleSpace}{newContent}";
+                            : $"{block}{NewLines.DOUBLE_SPACE}{newContent}";
                     }
                 }
             }

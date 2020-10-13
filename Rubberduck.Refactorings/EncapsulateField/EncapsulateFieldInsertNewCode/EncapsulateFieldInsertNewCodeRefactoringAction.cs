@@ -90,9 +90,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldInsertNewCode
                 return;
             }
 
-            var doubleSpace = $"{Environment.NewLine}{Environment.NewLine}";
-
-            var allNewContent = string.Join(doubleSpace, new string[] { newDeclarationSectionBlock });
+            var allNewContent = string.Join(NewLines.DOUBLE_SPACE, new string[] { newDeclarationSectionBlock });
 
             var previewMarker = model.NewContentAggregator.RetrieveBlock(RubberduckUI.EncapsulateField_PreviewMarker);
             if (!string.IsNullOrEmpty(previewMarker))
@@ -109,10 +107,10 @@ namespace Rubberduck.Refactorings.EncapsulateFieldInsertNewCode
 
             if (codeSectionStartIndex.HasValue)
             {
-                rewriter.InsertBefore(codeSectionStartIndex.Value, $"{allNewContent}{doubleSpace}");
+                rewriter.InsertBefore(codeSectionStartIndex.Value, $"{allNewContent}{NewLines.DOUBLE_SPACE}");
                 return;
             }
-            rewriter.InsertBefore(rewriter.TokenStream.Size - 1, $"{doubleSpace}{allNewContent}");
+            rewriter.InsertBefore(rewriter.TokenStream.Size - 1, $"{NewLines.DOUBLE_SPACE}{allNewContent}");
         }
     }
 }
