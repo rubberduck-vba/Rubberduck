@@ -141,7 +141,7 @@
     <value>Der Rückgabewert der Funktion '{0}' wird immer verworfen.</value>
   </data>
   <data name="AssignedByValParameterInspection" xml:space="preserve">
-    <value>Der Parameter '{0}' wird als byVal übergeben und bekommt ienen Wert zugesiesen.</value>
+    <value>Der Parameter '{0}' wird als byVal übergeben und bekommt einen Wert zugesiesen.</value>
   </data>
   <data name="IdentifierNotUsedInspection" xml:space="preserve">
     <value>{0} '{1}' wird nicht genutzt.</value>
