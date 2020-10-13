@@ -356,8 +356,11 @@ namespace Rubberduck.Parsing.Binding
         private static bool ArgumentListIsCompatible(ICollection<ParameterDeclaration> parameters, ArgumentList argumentList)
         {
             return (parameters.Count >= (argumentList?.Arguments.Count ?? 0) 
-                        || parameters.Any(parameter => parameter.IsParamArray))
-                    && parameters.Count(parameter => !parameter.IsOptional && !parameter.IsParamArray) <= (argumentList?.Arguments.Count ?? 0);
+                            || parameters.Any(parameter => parameter.IsParamArray))
+                        && parameters.Count(parameter => !parameter.IsOptional && !parameter.IsParamArray) <= (argumentList?.Arguments.Count ?? 0)
+                   || parameters.Count == 0 
+                        && argumentList?.Arguments.Count == 1
+                        && argumentList.Arguments.Single().ArgumentType == ArgumentListArgumentType.Missing;
         }
 
         private IBoundExpression ResolveRecursiveDefaultMember(Declaration defaultMember, ExpressionClassification defaultMemberClassification, ArgumentList argumentList, ParserRuleContext expression, Declaration parent, int defaultMemberResolutionRecursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)
