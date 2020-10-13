@@ -49,9 +49,10 @@ namespace Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences
             Debug.Assert(goalContext != null);
             Debug.Assert(goalContext is VBAParser.MemberAccessExprContext || goalContext is VBAParser.WithStmtContext);
 
+            const int maxGetAncestorAttempts = 100;
             var guard = 0;
             var accessExprContext = idRef.Context.GetAncestor<T>();
-            while (accessExprContext != null && ++guard < 100)
+            while (accessExprContext != null && ++guard < maxGetAncestorAttempts)
             {
                 var prCtxt = accessExprContext as ParserRuleContext;
                 if (prCtxt == goalContext)
@@ -61,7 +62,7 @@ namespace Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences
                 accessExprContext = accessExprContext.GetAncestor<T>();
             }
 
-            Debug.Assert(guard < 100);
+            Debug.Assert(guard < maxGetAncestorAttempts);
             return false;
         }
     }
