@@ -3,9 +3,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
-using Rubberduck.Resources;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
 using System;
 using System.Collections.Generic;
 
@@ -31,7 +29,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool ImplementLet { get; }
         bool ImplementSet { get; }
         bool IsReadOnly { set; get; }
-        string ParameterName { set; get; }
+        string ParameterName { get; }
         IValidateVBAIdentifiers NameValidator { set; get; }
         IEncapsulateFieldConflictFinder ConflictFinder { set; get; }
         bool TryValidateEncapsulationAttributes(out string errorMessage);
@@ -47,11 +45,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected int _hashCode;
         private string _identifierName;
         protected EncapsulationIdentifiers _fieldAndProperty;
+        private string _rhsParameterIdentifierName;
 
         public EncapsulateFieldCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator)
         {
             _target = declaration;
             NameValidator = identifierValidator;
+            _rhsParameterIdentifierName = Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
 
             _fieldAndProperty = new EncapsulationIdentifiers(declaration.IdentifierName, identifierValidator);
             IdentifierName = declaration.IdentifierName;
@@ -164,8 +164,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 _fieldAndProperty.Property = value;
 
                 TryRestoreNewFieldNameAsOriginalFieldIdentifierName();
-
-                EncapsulateFieldValidationsProvider.AssignNoConflictParameter(this);
             }
         }
 
@@ -204,7 +202,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public virtual string ReferenceQualifier { set; get; }
 
-        public string ParameterName { set; get; } = RubberduckUI.EncapsulateField_DefaultPropertyParameter;
+        public string ParameterName => _rhsParameterIdentifierName;
 
         private bool _implLet;
         public bool ImplementLet { get => !IsReadOnly && _implLet; set => _implLet = value; }

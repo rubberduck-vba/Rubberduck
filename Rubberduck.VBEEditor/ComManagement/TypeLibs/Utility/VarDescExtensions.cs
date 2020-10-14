@@ -32,7 +32,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Utility
 
             return (varDesc.memid & _ourConstantsDispatchMemberIDRangeBitmaskCheck) >= _ourConstantsDispatchMemberIDRangeStart
                 && varDesc.varkind == VARKIND.VAR_STATIC 
-                && varDesc.desc.lpvarValue != IntPtr.Zero;
+                && varDesc.desc.oInst != 0;
         }
     }
 }

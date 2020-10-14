@@ -243,6 +243,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             return UserDeclarations(DeclarationType.ClassModule)
                 .Concat(UserDeclarations(DeclarationType.Document))
+                .Concat(UserDeclarations(DeclarationType.UserForm))
                 .Cast<ClassModuleDeclaration>()
                 .Where(module => module.IsInterface)
                 .ToDictionary(

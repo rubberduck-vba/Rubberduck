@@ -14,19 +14,7 @@ namespace Rubberduck.UnitTesting.ComClientHelpers
         /// <returns>VBA equity</returns>
         public new bool Equals(object x, object y)
         {
-            if (x == null)
-            {
-                return y == null;
-            }
-
-            if (y == null)
-            {
-                return false;
-            }
-            
-            var converted = VariantConverter.ChangeType(y, x.GetType());
-
-            return x.Equals(converted);
+            return VariantComparer.Compare(x, y) == VariantComparisonResults.VARCMP_EQ;
         }
 
         /// <summary>

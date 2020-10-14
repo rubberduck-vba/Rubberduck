@@ -27,8 +27,9 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", asUDT: true);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+
             StringAssert.Contains("Name As Integer", actualCode);
-            StringAssert.Contains("this.Name = value", actualCode);
+            StringAssert.Contains($"this.Name = {Support.RHSIdentifier}", actualCode);
         }
 
         [TestCase("Public")]
@@ -78,9 +79,9 @@ Private my|Bar As TBar";
             var presenterAction = Support.SetParameters(userInput);
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("this.MyBar.First = value", actualCode);
+            StringAssert.Contains($"this.MyBar.First = {Support.RHSIdentifier}", actualCode);
             StringAssert.Contains($"First = this.MyBar.First", actualCode);
-            StringAssert.Contains("this.MyBar.Second = value", actualCode);
+            StringAssert.Contains($"this.MyBar.Second = {Support.RHSIdentifier}", actualCode);
             StringAssert.Contains($"Second = this.MyBar.Second", actualCode);
             StringAssert.Contains($"MyBar As TBar", actualCode);
             StringAssert.Contains($"MyBar As TBar", actualCode);
@@ -245,10 +246,11 @@ Public myBar As TBar
             userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
+
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("this.MyBar.First = value", actualCode);
+            StringAssert.Contains($"this.MyBar.First = {Support.RHSIdentifier}", actualCode);
             StringAssert.Contains("First = this.MyBar.First", actualCode);
-            StringAssert.Contains("this.MyBar.Second = value", actualCode);
+            StringAssert.Contains($"this.MyBar.Second = {Support.RHSIdentifier}", actualCode);
             StringAssert.Contains("Second = this.MyBar.Second", actualCode);
             var index = actualCode.IndexOf("Get Second", StringComparison.InvariantCultureIgnoreCase);
             var indexLast = actualCode.LastIndexOf("Get Second", StringComparison.InvariantCultureIgnoreCase);
@@ -464,7 +466,7 @@ Private my|Bar As TBar
 
             StringAssert.Contains("Public Property Let Foo(", actualCode);
             StringAssert.Contains("Public Property Let Bar(", actualCode);
-            StringAssert.Contains("this.MyBar.FooBar.Foo = value", actualCode);
+            StringAssert.Contains($"this.MyBar.FooBar.Foo = {Support.RHSIdentifier}", actualCode);
         }
 
         [Test]
@@ -494,9 +496,8 @@ Private my|Bar As TBar
             var presenterAction = Support.SetParameters(userInput);
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-
             StringAssert.Contains("Public Property Let FooBar(", actualCode);
-            StringAssert.Contains("this.MyBar.FooBar = value", actualCode);
+            StringAssert.Contains($"this.MyBar.FooBar = {Support.RHSIdentifier}", actualCode);
         }
 
         [Test]
@@ -532,8 +533,8 @@ Private my|Bar As TBar
             StringAssert.Contains("Public Property Let Bar(", actualCode);
             StringAssert.Contains("Public Property Let Foo_1(", actualCode);
             StringAssert.Contains("Public Property Let Bar_1(", actualCode);
-            StringAssert.Contains("this.MyBar.FooBar.Foo = value", actualCode);
-            StringAssert.Contains("this.MyBar.ReBar.Foo = value", actualCode);
+            StringAssert.Contains($"this.MyBar.FooBar.Foo = {Support.RHSIdentifier}", actualCode);
+            StringAssert.Contains($"this.MyBar.ReBar.Foo = {Support.RHSIdentifier}", actualCode);
         }
 
         [Test]

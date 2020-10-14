@@ -27,6 +27,66 @@ namespace RubberduckTests.PreProcessing
             }
         }
 
+        [Test]
+        [Category("Preprocessor")]
+        //See issue #5294 at https://github.com/rubberduck-vba/Rubberduck/issues/5294
+        public void CanDealWithLineContinuationsInPrecompilerDirectives()
+        {
+            const string code = @"
+Private Sub Main()
+    Dim a as Long: a= 10
+    Dim b as Long: b=5
+    Dim c as Long : c=a+b
+
+#Const CCG_VERSION1  _ 
+ = _
+True
+
+#Const CCG_VERSION2 = _
+False
+
+#If CCG_VERSION1 Or _
+     CCG_VERSION2 Then
+
+    c=c+c
+#else
+    c=c*c
+#end if 
+
+Print c
+
+End Sub
+";
+            const string expectedProcessed = @"
+Private Sub Main()
+    Dim a as Long: a= 10
+    Dim b as Long: b=5
+    Dim c as Long : c=a+b
+
+  _ 
+  _
+
+
+ _
+
+
+ _
+     
+
+    c=c+c
+
+
+
+
+Print c
+
+End Sub
+";
+
+            var actualProcessed = Parse(code);
+            Assert.AreEqual(expectedProcessed, actualProcessed);
+        }
+
         private void AssertParseResult(string filename, string originalCode, string materializedParseTree)
         {
             Assert.AreEqual(originalCode, materializedParseTree, $"{filename} mismatch detected.");

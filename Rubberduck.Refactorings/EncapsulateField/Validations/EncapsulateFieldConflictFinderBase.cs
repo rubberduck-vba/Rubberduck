@@ -87,7 +87,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 isConflictingIdentifier = HasConflictingIdentifierIgnoreEncapsulationFlag(candidate, declarationType, out _);
             }
 
-            return EncapsulateFieldValidationsProvider.AssignNoConflictParameter(candidate);
+            return candidate;
         }
 
         public bool IsConflictingProposedIdentifier(string fieldName, IEncapsulateFieldCandidate candidate, DeclarationType declarationType) 

@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.Common;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
@@ -11,19 +12,13 @@ namespace Rubberduck.Refactorings
         /// <summary>
         /// Returns ModuleBodyElementDeclaration signature with an ImprovedArgument list
         /// </summary>
-        /// <param name="declaration"></param>
-        /// <returns></returns>
         string ImprovedFullMemberSignature(ModuleBodyElementDeclaration declaration);
 
         /// <summary>
         /// Returns a ModuleBodyElementDeclaration block
         /// with an ImprovedArgument List
         /// </summary>
-        /// <param name="declaration"></param>
         /// <param name="content">Main body content/logic of the member</param>
-        /// <param name="accessibility"></param>
-        /// <param name="newIdentifier"></param>
-        /// <returns></returns>
         string BuildMemberBlockFromPrototype(ModuleBodyElementDeclaration declaration,
                                             string content = null,
                                             string accessibility = null,
@@ -34,19 +29,14 @@ namespace Rubberduck.Refactorings
         /// 1. Explicitly declares Property Let\Set value parameter as ByVal
         /// 2. Ensures UserDefined Type parameters are declared either explicitly or implicitly as ByRef
         /// </summary>
-        /// <param name="declaration"></param>
-        /// <returns></returns>
         string ImprovedArgumentList(ModuleBodyElementDeclaration declaration);
 
         /// <summary>
         /// Generates a Property Get codeblock based on the prototype declaration 
         /// </summary>
         /// <param name="prototype">VariableDeclaration or UserDefinedTypeMember</param>
-        /// <param name="propertyIdentifier"></param>
-        /// <param name="accessibility"></param>
         /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
-        /// <param name="parameterIdentifier">Defaults to 'value' unless otherwise specified</param>
-        /// <returns></returns>
+        /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
         bool TryBuildPropertyGetCodeBlock(Declaration prototype,
                                             string propertyIdentifier,
                                             out string codeBlock,
@@ -57,11 +47,8 @@ namespace Rubberduck.Refactorings
         /// Generates a Property Let codeblock based on the prototype declaration 
         /// </summary>
         /// <param name="prototype">VariableDeclaration or UserDefinedTypeMember</param>
-        /// <param name="propertyIdentifier"></param>
-        /// <param name="accessibility"></param>
-        /// <param name="content">Membmer body content.  Formatting is the responsibility of the caller</param>
-        /// <param name="parameterIdentifier">Defaults to 'value' unless otherwise specified</param>
-        /// <returns></returns>
+        /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
+        /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
         bool TryBuildPropertyLetCodeBlock(Declaration prototype,
                                             string propertyIdentifier,
                                             out string codeBlock,
@@ -73,11 +60,8 @@ namespace Rubberduck.Refactorings
         /// Generates a Property Set codeblock based on the prototype declaration 
         /// </summary>
         /// <param name="prototype">VariableDeclaration or UserDefinedTypeMember</param>
-        /// <param name="propertyIdentifier"></param>
-        /// <param name="accessibility"></param>
-        /// <param name="content">Membmer body content.  Formatting is the responsibility of the caller</param>
-        /// <param name="parameterIdentifier">Defaults to 'value' unless otherwise specified</param>
-        /// <returns></returns>
+        /// <param name="content">Member body content.  Formatting is the responsibility of the caller</param>
+        /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
         bool TryBuildPropertySetCodeBlock(Declaration prototype,
                                             string propertyIdentifier,
                                             out string codeBlock,
@@ -127,7 +111,7 @@ namespace Rubberduck.Refactorings
                 return false;
             }
 
-            var propertyValueParam = parameterIdentifier ?? Resources.RubberduckUI.EncapsulateField_DefaultPropertyParameter;
+            var propertyValueParam = parameterIdentifier ?? Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
 
             var asType = prototype.IsArray
                 ? $"{Tokens.Variant}"

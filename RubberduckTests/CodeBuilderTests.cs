@@ -10,6 +10,7 @@ namespace RubberduckTests
     [TestFixture]
     public class CodeBuilderTests
     {
+        private static string _rhsIdentifier = Rubberduck.Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
 
         [TestCase("fizz", DeclarationType.Variable, "Integer")]
         [TestCase("FirstValue", DeclarationType.UserDefinedTypeMember, "Long")]
@@ -192,8 +193,7 @@ Private fuzz As ETestType2
                                                         declarationType,
                                                         testParams,
                                                         PropertyLetBlockFromPrototypeTest);
-
-            StringAssert.Contains($"Property Let {testParams.Identifier}(ByVal value As {typeName})", result);
+            StringAssert.Contains($"Property Let {testParams.Identifier}(ByVal {_rhsIdentifier} As {typeName})", result);
         }
 
         [TestCase("fizz", DeclarationType.Variable, "Variant")]
@@ -219,7 +219,7 @@ Private fizz As Variant
                                                         testParams,
                                                         PropertySetBlockFromPrototypeTest);
 
-            StringAssert.Contains($"Property Set {testParams.Identifier}(ByVal value As {typeName})", result);
+            StringAssert.Contains($"Property Set {testParams.Identifier}(ByVal {_rhsIdentifier} As {typeName})", result);
         }
 
         [TestCase(DeclarationType.PropertyLet)]
@@ -338,7 +338,7 @@ End {procType.endStmt}
 
         private static string PropertyGetBlockFromPrototypeTest<T>(T target, PropertyBlockFromPrototypeParams testParams) where T : Declaration
         {
-            new CodeBuilder().TryBuildPropertyGetCodeBlock(target, testParams.Identifier, out string result, testParams.Accessibility, testParams.Content); //, testParams.WriteParam);
+            new CodeBuilder().TryBuildPropertyGetCodeBlock(target, testParams.Identifier, out string result, testParams.Accessibility, testParams.Content);
             return result;
         }
 

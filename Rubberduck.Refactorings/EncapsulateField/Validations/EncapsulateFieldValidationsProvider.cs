@@ -82,19 +82,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public static IValidateVBAIdentifiers NameOnlyValidator(NameValidators validatorType)
             => _nameOnlyValidators[validatorType];
 
-        public static IEncapsulateFieldCandidate AssignNoConflictParameter(IEncapsulateFieldCandidate candidate)
-        {
-            candidate.ParameterName = RubberduckUI.EncapsulateField_DefaultPropertyParameter;
-
-            var guard = 0;
-            while (guard++ < 10 && (candidate.BackingIdentifier.IsEquivalentVBAIdentifierTo(candidate.ParameterName)
-                    || candidate.PropertyIdentifier.IsEquivalentVBAIdentifierTo(candidate.ParameterName)))
-            {
-                candidate.ParameterName = candidate.ParameterName.IncrementEncapsulationIdentifier();
-            }
-            return candidate;
-        }
-
         public static IObjectStateUDT AssignNoConflictIdentifiers(IObjectStateUDT stateUDT, IDeclarationFinderProvider declarationFinderProvider)
         {
             var members = declarationFinderProvider.DeclarationFinder.Members(stateUDT.QualifiedModuleName);

@@ -1759,14 +1759,6 @@ Import aborted.</value>
     <value>Unable to encapsulate '{0}'. ReDim({0}) statement(s) exist in other modules.</value>
     <comment>{0} = selected field IdentifierName</comment>
   </data>
-  <data name="EncapsulateField_DefaultObjectStateUDTFieldName" xml:space="preserve">
-    <value>this</value>
-    <comment>VBA identifier; should not be translated</comment>
-  </data>
-  <data name="EncapsulateField_DefaultPropertyParameter" xml:space="preserve">
-    <value>value</value>
-    <comment>VBA identifier; should not be translated</comment>
-  </data>
   <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
     <value>Name conflict</value>
   </data>
@@ -1872,7 +1864,7 @@ A private class can still implement a public interface.</value>
     <value>Annotation arguments must not contain control characters.</value>
   </data>
   <data name="AnnotationArgument_ValidationError_InspectionName" xml:space="preserve">
-    <value>Annotation arguments of type 'Inspection Name' have to the name of an existing inspection.</value>
+    <value>Annotation arguments of type 'Inspection Name' have to be the name of an existing inspection.</value>
   </data>
   <data name="AnnotationArgument_ValidationError_AttributeNameStart" xml:space="preserve">
     <value>Annotation arguments of type 'Attribute Name' have to start with 'VB_'.</value>
