@@ -56,12 +56,14 @@
                        Visibility="{Binding IsValidInterfaceName, Converter={StaticResource BoolToHiddenVisibility}}" />
             </StackPanel>
 
-            <GroupBox Header="Implementation Options:"
+            <GroupBox Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_ImplementationOptionsGroupBox}"
                       Grid.Row="1"
                       Margin="5"
                       Padding="5">
                 <Grid>
                     <ComboBox ItemsSource="{Binding ImplementationOptions}"
+                              DisplayMemberPath="Value"
+                              SelectedValuePath="Key"
                               SelectedValue="{Binding ImplementationOption, Mode=TwoWay}"
                               Visibility="Visible">
                     </ComboBox>

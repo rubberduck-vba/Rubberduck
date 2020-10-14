@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using NLog;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
 
@@ -13,10 +13,31 @@ namespace Rubberduck.UI.Refactorings
 {
     public class ExtractInterfaceViewModel : RefactoringViewModelBase<ExtractInterfaceModel>
     {
-        private Dictionary<ExtractInterfaceImplementationOption, string> _implementationOptions;
+        private static List<DeclarationType> _interfaceIdentifierConstrainingTypes = new List<DeclarationType>()
+        {
+            DeclarationType.Module,
+            DeclarationType.UserDefinedType,
+            DeclarationType.Enumeration
+        };
+
+        private static ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>> _implementationOptionsExceptReplace;
+
+        private static ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>> _implementationOptionsAll;
 
         public ExtractInterfaceViewModel(ExtractInterfaceModel model) : base(model)
         {
+            _implementationOptionsExceptReplace  = new ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>>()
+            {
+                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface, Resources.RubberduckUI.ExtractInterface_OptionForwardToInterfaceMembers),
+                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers, Resources.RubberduckUI.ExtractInterface_OptionForwardToObjectMembers),
+                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.NoInterfaceImplementation, Resources.RubberduckUI.ExtractInterface_OptionAddEmptyImplementation),
+            };
+
+            _implementationOptionsAll = new ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>>(_implementationOptionsExceptReplace)
+            {
+                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface, Resources.RubberduckUI.ExtractInterface_OptionReplaceMembersWithInterfaceMembers),
+            };
+
             ResetImplementationOptions();
 
             SelectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(true));
@@ -44,7 +65,6 @@ namespace Rubberduck.UI.Refactorings
                 ResetImplementationOptions();
 
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(ImplementationOption));
             }
         }
 
@@ -65,13 +85,35 @@ namespace Rubberduck.UI.Refactorings
         {
             get
             {
-                var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
+                if (!VBAIdentifierValidator.IsValidIdentifier(InterfaceName, DeclarationType.ClassModule))
+                {
+                    return false;
+                }
 
-                return !ComponentNames.Contains(InterfaceName)
-                       && InterfaceName.Length > 1
-                       && char.IsLetter(InterfaceName.FirstOrDefault())
-                       && !tokenValues.Contains(InterfaceName, StringComparer.InvariantCultureIgnoreCase)
-                       && !InterfaceName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+
+                bool IdentifierCheckIsRelevant(Declaration declaration)
+                {
+                    return declaration.DeclarationType.HasFlag(DeclarationType.UserDefinedType) 
+                        || declaration.DeclarationType.HasFlag(DeclarationType.Enumeration)
+                            ? declaration.Accessibility == Accessibility.Public
+                            : true;
+                }
+
+                var thisProjectID = Model.TargetDeclaration.ProjectId;
+                foreach (var declarationType in _interfaceIdentifierConstrainingTypes)
+                {
+                    var conflictingDeclarations = Model.DeclarationFinderProvider.DeclarationFinder.UserDeclarations(declarationType)
+                        .Where(d => d.ProjectId == thisProjectID
+                            && IdentifierCheckIsRelevant(d)
+                            && d.IdentifierName.Equals(InterfaceName, StringComparison.InvariantCultureIgnoreCase));
+
+                    if (conflictingDeclarations.Any())
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
             }
         }
 
@@ -95,21 +137,20 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public IEnumerable<string> ImplementationOptions => _implementationOptions.Values;
+        public ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>> ImplementationOptions { set; get; }
 
-        public string ImplementationOption
+        public ExtractInterfaceImplementationOption ImplementationOption
         {
-            get => _implementationOptions[Model.ImplementationOption];
+            get => Model.ImplementationOption;
 
             set
             {
-                if (_implementationOptions.TryGetValue(Model.ImplementationOption, out var currentValue)
-                    && value == currentValue)
+                if (Model.ImplementationOption == value)
                 {
                     return;
                 }
 
-                Model.ImplementationOption = _implementationOptions.Single(op => op.Value == value).Key;
+                Model.ImplementationOption = value;
                 OnPropertyChanged();
             }
         }
@@ -134,29 +175,22 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        //TODO: Load Option descriptors from UI Resources
-        //TODO: (In XAML) Set Implementation Options Group Box label from UI Resources
         private void ResetImplementationOptions()
         {
-            _implementationOptions = new Dictionary<ExtractInterfaceImplementationOption, string>()
-            {
-                [ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers] = "Forward Interface Member Calls to Object Members",
-                [ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface] = "Forward Object Member Calls to Interface Members",
-                [ExtractInterfaceImplementationOption.NoInterfaceImplementation] = "Add Implementation TODO comments",
-            };
+            var selectedMemberHasExtReference = Model.SelectedMembers.SelectMany(m => m.Member.References)
+                .Any(rf => rf.QualifiedModuleName != rf.Declaration.QualifiedModuleName);
 
-            if (!Model.SelectedMembers.SelectMany(m => m.Member.References).Any(rf => rf.QualifiedModuleName != rf.Declaration.QualifiedModuleName))
+            ImplementationOptions = selectedMemberHasExtReference
+                ? _implementationOptionsExceptReplace
+                : _implementationOptionsAll;
+
+            if (selectedMemberHasExtReference
+                && Model.ImplementationOption == ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface)
             {
-                _implementationOptions.Add(ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface, "Replace Members with Interface Members");
+                ImplementationOption = ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface;
             }
 
             OnPropertyChanged(nameof(ImplementationOptions));
-
-            if (!_implementationOptions.ContainsKey(ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface)
-                && Model.ImplementationOption == ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface)
-            {
-                ImplementationOption = _implementationOptions[ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface];
-            }
         }
     }
 }

@@ -5,12 +5,12 @@ using Moq;
 using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.AddInterfaceImplementations;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ExtractInterface;
+using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -1078,7 +1078,7 @@ End Function
         [TestCase("Label:\nConst Bar = 42\nDim baz As Long")]
         public void ExtractInterfaceRefactoring_VariousNonExecutableContent(string statement)
         {
-            string inputCode =
+            var inputCode =
 $@"Sub Foo()
     {statement}
 End Sub";
@@ -1097,16 +1097,17 @@ End Sub";
             StringAssert.Contains($"IClass_Foo(){Environment.NewLine}    {statement}", sourceModuleCode);
         }
 
-        [TestCase("    ")]
-        [TestCase("")]
+        [TestCase(4)]
+        [TestCase(0)]
         [Category("Refactorings")]
         [Category("Extract Interface")]
-        public void ExtractInterfaceRefactoring_InitialLineIndentRetained(string indention)
+        public void ExtractInterfaceRefactoring_InitialLineIndentRetained(int indention)
         {
-            string inputCode =
+            var indentation = string.Concat(Enumerable.Repeat(" ", indention));
+            var inputCode =
 $@"
 Public Function DivideBy(ByVal arg1 As Long, ByVal arg2 As Long) As Single
-{indention}On Error Goto ErrorExit:
+{indentation}On Error Goto ErrorExit:
     Dim result As Single
     result = arg1 / arg2
     DivideBy = result
@@ -1115,9 +1116,9 @@ ErrorExit:
     DivideBy = 0
 End Function";
 
-            string expectedCode =
+            var expectedCode =
 $@"Private Function IClass_DivideBy(ByVal arg1 As Long, ByVal arg2 As Long) As Single
-{indention}On Error Goto ErrorExit:
+{indentation}On Error Goto ErrorExit:
     Dim result As Single
     result = arg1 / arg2
     IClass_DivideBy = result
@@ -1140,6 +1141,62 @@ End Function";
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"].Substring(actualCode["Class"].IndexOf("\r\n")).Trim();
             Assert.AreEqual(expectedCode, sourceModuleCode);
+        }
+
+        [TestCase("ITestModule1", true)] //default interfaceName
+        [TestCase("TestType", false)] //Public UDT - conflicts
+        [TestCase("TestEnum", false)] //Public Enum - conflicts
+        [TestCase("TestType2", true)] //Private UDT - OK
+        [TestCase("TestEnum2", true)] //Private Enum - OK
+        [TestCase("AnotherModule", false)] //Module Identifier - conflicts
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
+        public void ExtractInterfaceViewModel_IsValidInterfaceName(string interfaceName, bool expectedResult)
+        {
+            var testModuleCode = 
+@"Option Explicit
+
+Public Sub MySub()
+End Sub";
+
+            var otherModuleName = "AnotherModule";
+            var otherModuleCode =
+@"Option Explicit
+
+Public Type TestType
+    FirstMember As Long
+End Type
+
+Public Enum TestEnum
+    FirstEnum
+End Enum
+
+Private Type TestType2
+    FirstMember As Long
+End Type
+
+Private Enum TestEnum2
+    FirstEnum
+End Enum
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, testModuleCode, ComponentType.ClassModule),
+                (otherModuleName, otherModuleCode, ComponentType.StandardModule));
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var module = state.DeclarationFinder.MatchName(MockVbeBuilder.TestModuleName).OfType<ClassModuleDeclaration>().Single();
+                var model = new ExtractInterfaceModel(state, module, new CodeBuilder())
+                {
+                    InterfaceName = interfaceName,
+                };
+                
+                
+
+                var viewModel = new ExtractInterfaceViewModel(model);
+
+                Assert.AreEqual(expectedResult, viewModel.IsValidInterfaceName);
+            }
         }
 
         protected override IRefactoring TestRefactoring(

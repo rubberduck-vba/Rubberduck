@@ -1930,7 +1930,7 @@ Do you want to proceed?</value>
   </data>
   <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
     <value>Several folders with the same name are being moved. This will merge them.
-Do you want to proceed?</value>    
+Do you want to proceed?</value>
   </data>
   <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
     <value>A folder name cannot be empty.</value>
@@ -1963,5 +1963,20 @@ Do you want to proceed?</value>
   </data>
   <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
     <value>Add/Adjust attribute</value>
+  </data>
+  <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
+    <value>Implementation Options:</value>
+  </data>
+  <data name="ExtractInterface_OptionAddEmptyImplementation" xml:space="preserve">
+    <value>Add Empty Implementation</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToInterfaceMembers" xml:space="preserve">
+    <value>Forward Object Member Calls to Interface Members</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
+    <value>Forward Interface Member Calls to Object Members</value>
+  </data>
+  <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
+    <value>Replace Members with Interface Members</value>
   </data>
 </root>
