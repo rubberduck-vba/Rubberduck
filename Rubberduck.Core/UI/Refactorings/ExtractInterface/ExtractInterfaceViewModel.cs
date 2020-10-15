@@ -13,13 +13,6 @@ namespace Rubberduck.UI.Refactorings
 {
     public class ExtractInterfaceViewModel : RefactoringViewModelBase<ExtractInterfaceModel>
     {
-        private static List<DeclarationType> _interfaceIdentifierConstrainingTypes = new List<DeclarationType>()
-        {
-            DeclarationType.Module,
-            DeclarationType.UserDefinedType,
-            DeclarationType.Enumeration
-        };
-
         private static ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>> _implementationOptionsExceptReplace;
 
         private static ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>> _implementationOptionsAll;
@@ -90,30 +83,7 @@ namespace Rubberduck.UI.Refactorings
                     return false;
                 }
 
-
-                bool IdentifierCheckIsRelevant(Declaration declaration)
-                {
-                    return declaration.DeclarationType.HasFlag(DeclarationType.UserDefinedType) 
-                        || declaration.DeclarationType.HasFlag(DeclarationType.Enumeration)
-                            ? declaration.Accessibility == Accessibility.Public
-                            : true;
-                }
-
-                var thisProjectID = Model.TargetDeclaration.ProjectId;
-                foreach (var declarationType in _interfaceIdentifierConstrainingTypes)
-                {
-                    var conflictingDeclarations = Model.DeclarationFinderProvider.DeclarationFinder.UserDeclarations(declarationType)
-                        .Where(d => d.ProjectId == thisProjectID
-                            && IdentifierCheckIsRelevant(d)
-                            && d.IdentifierName.Equals(InterfaceName, StringComparison.InvariantCultureIgnoreCase));
-
-                    if (conflictingDeclarations.Any())
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
+                return !Model.ConflictFinder.IsConflictingModuleName(InterfaceName);
             }
         }
 
@@ -177,15 +147,15 @@ namespace Rubberduck.UI.Refactorings
 
         private void ResetImplementationOptions()
         {
-            var selectedMemberHasExtReference = Model.SelectedMembers.SelectMany(m => m.Member.References)
+            var selectedMemberHasExtReferences = Model.SelectedMembers.SelectMany(m => m.Member.References)
                 .Any(rf => rf.QualifiedModuleName != rf.Declaration.QualifiedModuleName);
 
-            ImplementationOptions = selectedMemberHasExtReference
+            ImplementationOptions = selectedMemberHasExtReferences
                 ? _implementationOptionsExceptReplace
                 : _implementationOptionsAll;
 
-            if (selectedMemberHasExtReference
-                && Model.ImplementationOption == ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface)
+            if (selectedMemberHasExtReferences
+                && ImplementationOption == ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface)
             {
                 ImplementationOption = ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface;
             }

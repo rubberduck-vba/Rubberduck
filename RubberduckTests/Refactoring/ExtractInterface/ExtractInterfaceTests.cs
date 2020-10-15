@@ -1,5 +1,4 @@
 using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
@@ -10,7 +9,6 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.AddInterfaceImplementations;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ExtractInterface;
-using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -54,15 +52,8 @@ End Sub
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 ";
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                foreach (var interfaceMember in model.Members)
-                {
-                    interfaceMember.IsSelected = true;
-                }
-                model.ImplementationOption = ExtractInterfaceImplementationOption.NoInterfaceImplementation;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model)
+                => UserSelectsAllMembers(model);
 
             var actualCode = RefactoredCode("Class", selection, presenterAction, null, false, ("Class", inputCode, ComponentType.ClassModule));
             Assert.AreEqual(expectedCode, actualCode["Class"]);
@@ -80,15 +71,8 @@ End Sub
                 @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                foreach (var interfaceMember in model.Members)
-                {
-                    interfaceMember.IsSelected = true;
-                }
-
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model)
+                => UserSelectsAllMembers(model);
 
             var actualCode = RefactoredCode(
                 "Module",
@@ -110,15 +94,8 @@ End Sub";
 End Sub";
             var selection = new Selection(1, 23, 1, 27);
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                foreach (var interfaceMember in model.Members)
-                {
-                    interfaceMember.IsSelected = true;
-                }
-
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model)
+                => UserSelectsAllMembers(model);
 
             var actualCode = RefactoredCode(
                 "Module",
@@ -150,7 +127,7 @@ End Sub";
                     .First();
 
                 //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, target, new CodeBuilder());
+                var model = new ExtractInterfaceModel(state, target, CreateCodeBuilder());
                 Assert.AreEqual(0, model.Members.Count);
             }
         }
@@ -178,7 +155,7 @@ End Sub";
                     .First();
 
                 //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, target, new CodeBuilder());
+                var model = new ExtractInterfaceModel(state, target, CreateCodeBuilder());
                 Assert.AreEqual(ClassInstancing.Public, model.InterfaceInstancing);
             }
         }
@@ -204,7 +181,7 @@ End Sub";
                     .First();
 
                 //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, target, new CodeBuilder());
+                var model = new ExtractInterfaceModel(state, target, CreateCodeBuilder());
                 Assert.AreEqual(ClassInstancing.Private, model.InterfaceInstancing);
             }
         }
@@ -289,13 +266,8 @@ End Sub
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 ";
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                model.Members.ElementAt(0).IsSelected = true;
-                model.Members = new ObservableCollection<InterfaceMember>(new[] { model.Members.ElementAt(0) }.ToList());
-                model.ImplementationOption = ExtractInterfaceImplementationOption.NoInterfaceImplementation;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model)
+                => UserSelectsFirstMember(model);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             Assert.AreEqual(expectedCode, actualCode["Class"]);
@@ -320,13 +292,8 @@ Public Sub Fizz(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 ";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                model.Members.ElementAt(0).IsSelected = true;
-                model.Members = new ObservableCollection<InterfaceMember>(new[] { model.Members.ElementAt(0) }.ToList());
-                model.ImplementationOption = extractOption;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model)
+                => UserSelectsFirstMember(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -371,14 +338,8 @@ Public Property Let Fizz(value As Long)
     mFizz = value
 End Property
 ";
-
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                model.Members.ElementAt(0).IsSelected = true;
-                model.Members = new ObservableCollection<InterfaceMember>(new[] { model.Members.ElementAt(0) }.ToList());
-                model.ImplementationOption = extractOption;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model) 
+                => UserSelectsFirstMember(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -421,13 +382,8 @@ Public Property Let Fizz(arg1 As Integer, arg2 As Integer, value As Long)
 End Property
 ";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                model.Members.ElementAt(0).IsSelected = true;
-                model.Members = new ObservableCollection<InterfaceMember>(new[] { model.Members.ElementAt(0) }.ToList());
-                model.ImplementationOption = extractOption;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model) 
+                => UserSelectsFirstMember(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -471,13 +427,8 @@ Public Function Fizz(ByVal arg1 As Integer, ByVal arg2 As String) As Long
 End Function
 ";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                model.Members.ElementAt(0).IsSelected = true;
-                model.Members = new ObservableCollection<InterfaceMember>(new[] { model.Members.ElementAt(0) }.ToList());
-                model.ImplementationOption = extractOption;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model) 
+                => UserSelectsFirstMember(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -521,13 +472,8 @@ Public Property Set Fizz(value As Variant)
 End Property
 ";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                model.Members.ElementAt(0).IsSelected = true;
-                model.Members = new ObservableCollection<InterfaceMember>(new[] { model.Members.ElementAt(0) }.ToList());
-                model.ImplementationOption = extractOption;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model) 
+                => UserSelectsFirstMember(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -570,13 +516,8 @@ Public Property Get Fizz() As Long
 End Property
 ";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                model.Members.ElementAt(0).IsSelected = true;
-                model.Members = new ObservableCollection<InterfaceMember>(new[] { model.Members.ElementAt(0) }.ToList());
-                model.ImplementationOption = extractOption;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model) 
+                => UserSelectsFirstMember(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -628,13 +569,8 @@ Public Sub Fizz()
 End Sub
 ";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                model.Members.ElementAt(0).IsSelected = true;
-                model.Members = new ObservableCollection<InterfaceMember>(new[] { model.Members.ElementAt(0) }.ToList());
-                model.ImplementationOption = extractOption;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model) 
+                => UserSelectsFirstMember(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule), ("TestClass", cTestCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -680,13 +616,8 @@ Public Sub Fizz()
 End Sub
 ";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                model.Members.ElementAt(0).IsSelected = true;
-                model.Members = new ObservableCollection<InterfaceMember>(new[] { model.Members.ElementAt(0) }.ToList());
-                model.ImplementationOption = extractOption;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model) 
+                => UserSelectsFirstMember(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule), ("TestClass", cTestCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -723,13 +654,8 @@ Public Property Get Fizz() As Variant
 End Property
 ";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                model.Members.ElementAt(0).IsSelected = true;
-                model.Members = new ObservableCollection<InterfaceMember>(new[] { model.Members.ElementAt(0) }.ToList());
-                model.ImplementationOption = extractOption;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model) 
+                => UserSelectsFirstMember(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -766,13 +692,8 @@ Public Property Get Fizz(arg1 As Long, arg2 As Long) As Long
 End Property
 ";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                model.Members.ElementAt(0).IsSelected = true;
-                model.Members = new ObservableCollection<InterfaceMember>(new[] { model.Members.ElementAt(0) }.ToList());
-                model.ImplementationOption = extractOption;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model) 
+                => UserSelectsFirstMember(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -822,16 +743,8 @@ Public Function AddThree(ByVal arg1 As Long) As Long
 End Function
 ";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                foreach (var member in model.Members)
-                {
-                    member.IsSelected = true;
-                }
-                model.Members = new ObservableCollection<InterfaceMember>(model.Members.ToList());
-                model.ImplementationOption = extractOption;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model)
+                => UserSelectsAllMembers(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -873,7 +786,6 @@ End Function
                 {
                     member.IsSelected = !(member.Member.IdentifierName.EndsWith("One") || member.Member.IdentifierName.EndsWith("Five"));
                 }
-                model.Members = new ObservableCollection<InterfaceMember>(model.Members.ToList());
                 model.ImplementationOption = ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface;
                 return model;
             };
@@ -953,16 +865,10 @@ End Sub
 
 Private Property Get IClass_Name()";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                foreach (var member in model.Members)
-                {
-                    member.IsSelected = true;
-                }
-                model.Members = new ObservableCollection<InterfaceMember>(model.Members.ToList());
-                model.ImplementationOption = ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface;
-                return model;
-            };
+            var extractOption = ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface;
+
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model) 
+                => UserSelectsAllMembers(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -993,16 +899,8 @@ Public Function AddThree(ByVal arg1 As Long) As Long
 End Function
 ";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                foreach (var member in model.Members)
-                {
-                    member.IsSelected = true;
-                }
-                model.Members = new ObservableCollection<InterfaceMember>(model.Members.ToList());
-                model.ImplementationOption = extractOption;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model)
+                => UserSelectsAllMembers(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -1049,16 +947,8 @@ Public Function SomeOtherFunction(ByVal arg1 As Long) As Long
 End Function
 ";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                foreach (var member in model.Members.TakeWhile(m => m != model.Members.Last()))
-                {
-                    member.IsSelected = true;
-                }
-                model.Members = new ObservableCollection<InterfaceMember>(model.Members.ToList());
-                model.ImplementationOption = extractOption;
-                return model;
-            };
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model)
+                => UserSelectsAllMembers(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -1082,13 +972,10 @@ End Function
 $@"Sub Foo()
     {statement}
 End Sub";
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                model.Members.ElementAt(0).IsSelected = true;
-                model.Members = new ObservableCollection<InterfaceMember>(new[] { model.Members.ElementAt(0) }.ToList());
-                model.ImplementationOption = ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface;
-                return model;
-            };
+            var extractOption = ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface;
+
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model) 
+                => UserSelectsFirstMember(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
@@ -1127,94 +1014,61 @@ ErrorExit:
     IClass_DivideBy = 0
 End Function";
 
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                foreach (var member in model.Members)
-                {
-                    member.IsSelected = true;
-                }
-                model.Members = new ObservableCollection<InterfaceMember>(model.Members.ToList());
-                model.ImplementationOption = ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface;
-                return model;
-            };
+            var extractOption = ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface;
+
+            ExtractInterfaceModel presenterAction(ExtractInterfaceModel model) 
+                => UserSelectsAllMembers(model, extractOption);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"].Substring(actualCode["Class"].IndexOf("\r\n")).Trim();
             Assert.AreEqual(expectedCode, sourceModuleCode);
         }
 
-        [TestCase("ITestModule1", true)] //default interfaceName
-        [TestCase("TestType", false)] //Public UDT - conflicts
-        [TestCase("TestEnum", false)] //Public Enum - conflicts
-        [TestCase("TestType2", true)] //Private UDT - OK
-        [TestCase("TestEnum2", true)] //Private Enum - OK
-        [TestCase("AnotherModule", false)] //Module Identifier - conflicts
-        [Category("Refactorings")]
-        [Category("Extract Interface")]
-        public void ExtractInterfaceViewModel_IsValidInterfaceName(string interfaceName, bool expectedResult)
+        private static ExtractInterfaceModel UserSelectsFirstMember(ExtractInterfaceModel model, ExtractInterfaceImplementationOption implementationOption = ExtractInterfaceImplementationOption.NoInterfaceImplementation)
         {
-            var testModuleCode = 
-@"Option Explicit
-
-Public Sub MySub()
-End Sub";
-
-            var otherModuleName = "AnotherModule";
-            var otherModuleCode =
-@"Option Explicit
-
-Public Type TestType
-    FirstMember As Long
-End Type
-
-Public Enum TestEnum
-    FirstEnum
-End Enum
-
-Private Type TestType2
-    FirstMember As Long
-End Type
-
-Private Enum TestEnum2
-    FirstEnum
-End Enum
-";
-
-            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, testModuleCode, ComponentType.ClassModule),
-                (otherModuleName, otherModuleCode, ComponentType.StandardModule));
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var module = state.DeclarationFinder.MatchName(MockVbeBuilder.TestModuleName).OfType<ClassModuleDeclaration>().Single();
-                var model = new ExtractInterfaceModel(state, module, new CodeBuilder())
-                {
-                    InterfaceName = interfaceName,
-                };
-                
-                
-
-                var viewModel = new ExtractInterfaceViewModel(model);
-
-                Assert.AreEqual(expectedResult, viewModel.IsValidInterfaceName);
-            }
+            model.Members.ElementAt(0).IsSelected = true;
+            model.ImplementationOption = implementationOption;
+            return model;
         }
 
+        private static ExtractInterfaceModel UserSelectsAllMembers(ExtractInterfaceModel model, ExtractInterfaceImplementationOption implementationOption = ExtractInterfaceImplementationOption.NoInterfaceImplementation)
+        {
+            foreach (var member in model.Members)
+            {
+                member.IsSelected = true;
+            }
+            model.ImplementationOption = implementationOption;
+            return model;
+        }
+
+        private static ICodeBuilder CreateCodeBuilder()
+            => new CodeBuilder();
+
         protected override IRefactoring TestRefactoring(
-            IRewritingManager rewritingManager, 
+            IRewritingManager rewritingManager,
             RubberduckParserState state,
-            RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel> userInteraction, 
+            RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel> userInteraction,
             ISelectionService selectionService)
         {
-            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager, new CodeBuilder());
+            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager, CreateCodeBuilder());
             var addComponentService = TestAddComponentService(state?.ProjectsProvider);
             var baseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, state, state, rewritingManager, state?.ProjectsProvider, addComponentService);
-            return new ExtractInterfaceRefactoring(baseRefactoring, state, userInteraction, selectionService, new CodeBuilder());
+            var conflictFinderFactory = new TestConflictFinderFactory() as IExtractInterfaceConflictFinderFactory;
+            return new ExtractInterfaceRefactoring(baseRefactoring, state, userInteraction, selectionService, conflictFinderFactory, CreateCodeBuilder());
         }
 
         private static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)
         {
             var sourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
             return new AddComponentService(projectsProvider, sourceCodeHandler, sourceCodeHandler);
+        }
+
+        private class TestConflictFinderFactory : IExtractInterfaceConflictFinderFactory
+        {
+            public IExtractInterfaceConflictFinder Create(IDeclarationFinderProvider declarationFinderProvider, string projectId)
+            {
+                return new ExtractInterfaceConflictFinder(declarationFinderProvider, projectId);
+            }
         }
     }
 }

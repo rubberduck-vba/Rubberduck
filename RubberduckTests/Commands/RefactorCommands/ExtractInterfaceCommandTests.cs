@@ -24,8 +24,9 @@ namespace RubberduckTests.Commands.RefactorCommands
     [TestFixture]
     public class ExtractInterfaceCommandTests : RefactorCodePaneCommandTestBase
     {
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Extract Interface")]
         public void ExtractInterface_CanExecute_NoMembers()
         {
             const string input = @"Option Explicit";
@@ -33,8 +34,9 @@ namespace RubberduckTests.Commands.RefactorCommands
             Assert.IsFalse(CanExecute(input));
         }
 
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Extract Interface")]
         public void ExtractInterface_CanExecute_Proc_StdModule()
         {
             const string input =
@@ -44,8 +46,9 @@ End Sub";
             Assert.IsFalse(CanExecute(input, ComponentType.StandardModule));
         }
 
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Extract Interface")]
         public void ExtractInterface_CanExecute_Field()
         {
             const string input = "Dim d As Boolean";
@@ -53,8 +56,9 @@ End Sub";
             Assert.IsFalse(CanExecute(input));
         }
 
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Extract Interface")]
         public void CanExecuteNameCollision_ActiveCodePane_EmptyClass()
         {
             const string input = @"
@@ -83,8 +87,9 @@ End Sub
             Assert.IsTrue(CanExecute(vbe.Object));
         }
 
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Extract Interface")]
         public void ExtractInterface_CanExecute_ClassWithMembers_SameNameAsClassWithMembers()
         {
             const string input =
@@ -105,8 +110,9 @@ End Sub";
             Assert.IsTrue(CanExecute(vbe.Object));
         }
 
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Extract Interface")]
         public void ExtractInterface_CanExecute_Proc()
         {
             const string input =
@@ -116,8 +122,9 @@ End Sub";
             Assert.IsTrue(CanExecute(input));
         }
 
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Extract Interface")]
         public void ExtractInterface_CanExecute_Function()
         {
             const string input =
@@ -127,8 +134,9 @@ End Function";
             Assert.IsTrue(CanExecute(input));
         }
 
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Extract Interface")]
         public void ExtractInterface_CanExecute_PropertyGet()
         {
             const string input =
@@ -138,8 +146,9 @@ End Property";
             Assert.IsTrue(CanExecute(input));
         }
 
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Extract Interface")]
         public void ExtractInterface_CanExecute_PropertyLet()
         {
             const string input =
@@ -149,8 +158,9 @@ End Property";
             Assert.IsTrue(CanExecute(input));
         }
 
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Extract Interface")]
         public void ExtractInterface_CanExecute_PropertySet()
         {
             const string input =
@@ -177,7 +187,7 @@ End Property";
             var addComponentService = TestAddComponentService(state.ProjectsProvider);
             var baseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, state, state, rewritingManager, state.ProjectsProvider, addComponentService);
             var userInteraction = new RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel>(factory, uiDispatcherMock.Object);
-            var refactoring = new ExtractInterfaceRefactoring(baseRefactoring, state, userInteraction, selectionService, new CodeBuilder());
+            var refactoring = new ExtractInterfaceRefactoring(baseRefactoring, state, userInteraction, selectionService, new Mock<IExtractInterfaceConflictFinderFactory>().Object, new CodeBuilder());
             var notifier = new ExtractInterfaceFailedNotifier(msgBox);
             return new RefactorExtractInterfaceCommand(refactoring, notifier, state, selectionService);
         }

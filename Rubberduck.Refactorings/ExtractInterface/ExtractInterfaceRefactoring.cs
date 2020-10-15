@@ -14,18 +14,21 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private readonly IRefactoringAction<ExtractInterfaceModel> _refactoringAction;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ICodeBuilder _codeBuilder;
+        private readonly IExtractInterfaceConflictFinderFactory _conflictFinderFactory;
 
         public ExtractInterfaceRefactoring(
             ExtractInterfaceRefactoringAction refactoringAction,
             IDeclarationFinderProvider declarationFinderProvider,
             RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel> userInteraction,
             ISelectionProvider selectionProvider,
+            IExtractInterfaceConflictFinderFactory conflictFinderFactory,
             ICodeBuilder codeBuilder)
         :base(selectionProvider, userInteraction)
         {
             _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;
             _codeBuilder = codeBuilder;
+            _conflictFinderFactory = conflictFinderFactory;
         }
 
         private static readonly DeclarationType[] ModuleTypes =
@@ -58,7 +61,21 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 throw new InvalidDeclarationTypeException(target);
             }
 
-            return new ExtractInterfaceModel(_declarationFinderProvider, targetClass, _codeBuilder);
+            var conflictFinder = _conflictFinderFactory.Create(_declarationFinderProvider, targetClass.ProjectId);
+            var interfaceModuleName = $"I{target.IdentifierName}";
+
+            if (conflictFinder.IsConflictingModuleName(interfaceModuleName))
+            {
+                interfaceModuleName = conflictFinder.GenerateNoConflictModuleName(interfaceModuleName);
+            }
+
+            var model = new ExtractInterfaceModel(_declarationFinderProvider, targetClass, _codeBuilder)
+            {
+                ConflictFinder = conflictFinder,
+                InterfaceName = interfaceModuleName
+            };
+
+            return model;
         }
 
         protected override void RefactorImpl(ExtractInterfaceModel model)

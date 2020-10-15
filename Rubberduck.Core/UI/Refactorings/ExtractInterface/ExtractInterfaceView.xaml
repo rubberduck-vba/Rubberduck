@@ -64,8 +64,7 @@
                     <ComboBox ItemsSource="{Binding ImplementationOptions}"
                               DisplayMemberPath="Value"
                               SelectedValuePath="Key"
-                              SelectedValue="{Binding ImplementationOption, Mode=TwoWay}"
-                              Visibility="Visible">
+                              SelectedValue="{Binding ImplementationOption, Mode=TwoWay}">
                     </ComboBox>
                 </Grid>
             </GroupBox>

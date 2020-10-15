@@ -32,6 +32,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
         public ClassInstancing ImplementingClassInstancing => TargetDeclaration.IsExposed 
             ? ClassInstancing.Public 
             : ClassInstancing.Private;
+        public IExtractInterfaceConflictFinder ConflictFinder { set; get; }
 
         public ExtractInterfaceImplementationOption ImplementationOption { set; get; } = ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers;
 

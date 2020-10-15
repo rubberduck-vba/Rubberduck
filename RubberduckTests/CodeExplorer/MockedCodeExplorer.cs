@@ -34,7 +34,6 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Settings;
-using Rubberduck.Refactorings;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -512,7 +511,7 @@ namespace RubberduckTests.CodeExplorer
             var extractInterfaceBaseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, State, State, null, State.ProjectsProvider, addComponentService);
             var userInteraction = new RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel>(null, _uiDispatcher.Object);
             ViewModel.CodeExplorerExtractInterfaceCommand = new CodeExplorerExtractInterfaceCommand(
-                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, userInteraction, null, new CodeBuilder()),
+                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, userInteraction, null, new Mock<IExtractInterfaceConflictFinderFactory>().Object, new CodeBuilder()),
                 State, null, VbeEvents.Object);
             return this;
         }
