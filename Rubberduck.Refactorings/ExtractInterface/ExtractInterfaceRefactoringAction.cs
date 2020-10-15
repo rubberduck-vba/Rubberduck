@@ -51,6 +51,20 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         protected override void Refactor(ExtractInterfaceModel model, IRewriteSession rewriteSession)
         {
+            if (model.ImplementationOption == ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface
+                && model.SelectedMembers.SelectMany(m => m.Member.References)
+                    .Any(rf => rf.QualifiedModuleName != rf.Declaration.QualifiedModuleName))
+            {
+                //The refactoring does not modify external references to selected Object members. 
+                //Consequently, Object members with external references cannot be deleted without creating uncompilable code.  
+                //Rather than failing the refactoring, it modifies the ImplementationOption to place the existing implementations
+                //within the interface members.  This sets the user up to
+                //to manually redirect external Object members references to the associated interface member 
+                //and manually delete Object members when that is completed.  
+                //Refactoring in this way is consistent with the caller's intent of selecting the ReplaceObjectMembersWithInterface option initially.
+                model.ImplementationOption = ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface;
+            }
+
             _selectedDeclarations = model.SelectedMembers.Select(m => m.Member).ToList();
             AddInterface(model, rewriteSession, _rewritingManager.CheckOutCodePaneSession());
         }
@@ -284,7 +298,7 @@ Attribute VB_Exposed = True";
 
         private static string ForwardFunction(string targetMemberIdentifier, string forwardingMemberIdentifier, ModuleBodyElementDeclaration member)
         {
-            var forwardStatementLHS = !member.IsObject
+                var forwardStatementLHS = !member.IsObject
                 ? forwardingMemberIdentifier
                 : $"{Tokens.Set} {forwardingMemberIdentifier}";
 
@@ -292,7 +306,7 @@ Attribute VB_Exposed = True";
                 ? targetMemberIdentifier
                 : $"{targetMemberIdentifier}({string.Join(", ", member.Parameters.Select(p => p.IdentifierName))})";
 
-            return $"{forwardStatementLHS} = {forwardStatementRHS}";
+            return $"{Spaces(member.Block.Start.Column)}{forwardStatementLHS} = {forwardStatementRHS}";
         }
 
         private static string ForwardProcedure(string targetMemberIdentifier, ModuleBodyElementDeclaration member)
@@ -309,8 +323,8 @@ Attribute VB_Exposed = True";
             var forwardStatementRHS = $"{member.Parameters.Last().IdentifierName}";
 
             return member.DeclarationType.Equals(DeclarationType.PropertySet)
-                ? $"{Tokens.Set} {forwardStatementLHS} = {forwardStatementRHS}"
-                : $"{forwardStatementLHS} = {forwardStatementRHS}";
+                ? $"{Spaces(member.Block.Start.Column)}{Tokens.Set} {forwardStatementLHS} = {forwardStatementRHS}"
+                : $"{Spaces(member.Block.Start.Column)}{forwardStatementLHS} = {forwardStatementRHS}";
         }
 
         private static void DeleteMembers(ExtractInterfaceModel model, IRewriteSession rewriteSession)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -11,6 +12,7 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
@@ -417,6 +419,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Implement Interface")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_ImplicitByRefParameter()
         {
             //Input
@@ -448,6 +451,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Implement Interface")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_ExplicitByRefParameter()
         {
             //Input
@@ -479,6 +483,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Implement Interface")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_ByValParameter()
         {
             //Input
@@ -510,6 +515,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Implement Interface")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_OptionalParameter_WoDefault()
         {
             //Input
@@ -541,6 +547,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Implement Interface")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_OptionalParameter_WithDefault()
         {
             //Input
@@ -572,6 +579,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Implement Interface")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_ParamArray()
         {
             //Input
@@ -603,6 +611,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Implement Interface")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_MakesMissingAsTypesExplicit()
         {
             //Input
@@ -634,6 +643,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Implement Interface")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_Array()
         {
             //Input
@@ -665,6 +675,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Implement Interface")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_PublicInterfaceInstancingCreatesExposedInterface()
         {
 
@@ -715,6 +726,51 @@ End Sub
             ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, modelAdjustment);
         }
 
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
+        public void ExtractInterfaceRefactoring_ModifiesUnsupportableImplementationOption()
+        {
+            var testModuleCode =
+@"Option Explicit
+    
+Public Sub TestSub()
+End Sub
+";
+            var otherModuleName = "OtherModule";
+            var otherModuleCode =
+$@"Option Explicit
+
+Public Sub ReferencingSub()
+    Dim testClass As {MockVbeBuilder.TestModuleName}
+    Set testClass = {Tokens.New} {MockVbeBuilder.TestModuleName}
+    testClass.TestSub
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, testModuleCode, ComponentType.ClassModule),
+                (otherModuleName, otherModuleCode, ComponentType.StandardModule));
+
+            (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+
+            using (state)
+            {
+                var module = state.DeclarationFinder.MatchName(MockVbeBuilder.TestModuleName).OfType<ClassModuleDeclaration>().Single();
+
+                var model = new ExtractInterfaceModel(state, module, new CodeBuilder())
+                {
+                    ImplementationOption = ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface
+                };
+
+                model.Members.First().IsSelected = true;
+
+                var refactoringAction = CreateRefactoringAction(state, rewritingManager);
+
+                refactoringAction.Refactor(model);
+
+                Assert.AreEqual(ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface, model.ImplementationOption);
+            }
+        }
+
         private void ExecuteTest(string inputCode, string expectedClassCode, string expectedInterfaceCode, Func<ExtractInterfaceModel, ExtractInterfaceModel> modelAdjustment)
         {
             var refactoredCode = RefactoredCode(
@@ -762,6 +818,11 @@ End Sub
         }
 
         protected override IRefactoringAction<ExtractInterfaceModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            return CreateRefactoringAction(state, rewritingManager);
+        }
+
+        private static IRefactoringAction<ExtractInterfaceModel> CreateRefactoringAction(RubberduckParserState state, IRewritingManager rewritingManager)
         {
             var addInterfaceImplementationsAction = new AddInterfaceImplementationsRefactoringAction(rewritingManager, new CodeBuilder());
             var addComponentService = TestAddComponentService(state?.ProjectsProvider);
