@@ -502,7 +502,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ByRef is a misleading modifier because the parameter will be passed ByVal..
+        ///   Looks up a localized string similar to Misleading ByRef parameter modifier.
         /// </summary>
         public static string MisleadingByRefParameterInspection {
             get {

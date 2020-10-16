@@ -520,7 +520,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Misleading ByRef modifier used for Parameter &apos;{0}&apos;..
+        ///   Looks up a localized string similar to Misleading ByRef modifier used for parameter &apos;{0}&apos; ({1})..
         /// </summary>
         public static string MisleadingByRefParameterInspection {
             get {

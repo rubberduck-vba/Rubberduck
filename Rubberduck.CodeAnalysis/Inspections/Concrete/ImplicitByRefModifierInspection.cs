@@ -67,7 +67,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                     && !finder.FindEventHandlers().Contains(enclosingMethod);
         }
 
-        private bool IsPropertyMutatorRHSParameter(ModuleBodyElementDeclaration enclosingMethod, ParameterDeclaration implicitByRefParameter)
+        private static bool IsPropertyMutatorRHSParameter(ModuleBodyElementDeclaration enclosingMethod, ParameterDeclaration implicitByRefParameter)
         {
             return (enclosingMethod.DeclarationType.HasFlag(DeclarationType.PropertyLet)
                     || enclosingMethod.DeclarationType.HasFlag(DeclarationType.PropertySet)) 

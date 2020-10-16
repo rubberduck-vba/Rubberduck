@@ -514,7 +514,7 @@ In memoriam, 1972-2018</value>
     <comment>{0} annotation name</comment>
   </data>
   <data name="MisleadingByRefParameterInspection" xml:space="preserve">
-    <value>Misleading ByRef modifier used for Parameter '{0}'.</value>
-    <comment>{0} Parameter name</comment>
+    <value>Misleading ByRef modifier used for parameter '{0}' ({1}).</value>
+    <comment>{0} Parameter, {1} Member</comment>
   </data>
 </root>

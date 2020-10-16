@@ -502,7 +502,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The last parameter (the &apos;Value&apos; parameter) of property mutators are always passed by value.  This is true regardless of the presence or absence of a ByVal modifier.  Exception: UserDefinedType parameters must always be passed by reference in all cases..
+        ///   Looks up a localized string similar to The last parameter (the &apos;Value&apos; parameter) of property mutators are always passed ByVal. This is true regardless of the presence or absence of a ByRef or ByVal modifier. Exception: A UserDefinedType must always be passed ByRef even when it is the last parameter of a property mutator..
         /// </summary>
         public static string MisleadingByRefParameterInspection {
             get {

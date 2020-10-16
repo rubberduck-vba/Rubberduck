@@ -49,24 +49,20 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            if ((declaration is ParameterDeclaration parameter)  
+            return declaration is ParameterDeclaration parameter
+                && !(parameter.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
                 && parameter.ParentDeclaration is ModuleBodyElementDeclaration enclosingMethod
                 && (enclosingMethod.DeclarationType.HasFlag(DeclarationType.PropertyLet)
                     || enclosingMethod.DeclarationType.HasFlag(DeclarationType.PropertySet))
                 && enclosingMethod.Parameters.Last() == parameter
-                && !(parameter.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false))
-            {
-                return parameter.IsByRef && !parameter.IsImplicitByRef;
-            }
-
-            return false;
+                && parameter.IsByRef && !parameter.IsImplicitByRef;
         }
 
         protected override string ResultDescription(Declaration declaration)
         {
             return string.Format(
                 InspectionResults.MisleadingByRefParameterInspection,
-                declaration.IdentifierName);
+                declaration.IdentifierName, declaration.ParentDeclaration.QualifiedName.MemberName);
         }
     }
 }

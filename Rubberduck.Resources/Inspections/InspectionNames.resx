@@ -443,6 +443,6 @@
     <value>Superfluous annotation arguments</value>
   </data>
   <data name="MisleadingByRefParameterInspection" xml:space="preserve">
-    <value>ByRef is a misleading modifier because the parameter will be passed ByVal.</value>
+    <value>Misleading ByRef parameter modifier</value>
   </data>
 </root>
