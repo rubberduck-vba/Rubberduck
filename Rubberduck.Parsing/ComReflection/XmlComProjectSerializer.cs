@@ -25,10 +25,10 @@ namespace Rubberduck.Parsing.ComReflection
             _fileSystem = fileSystem;
         }
 
-        public XmlComProjectSerializer(string path = null)
+        public XmlComProjectSerializer(IFileSystem filesystem, string path = null)
         {
             Target = path ?? DefaultSerializationPath;
-            _fileSystem = new FileSystem();
+            _fileSystem = filesystem;
         }
 
         private static readonly XmlReaderSettings ReaderSettings = new XmlReaderSettings
