@@ -61,15 +61,6 @@ namespace RubberduckTests.Settings
             return new Configuration(userSettings);
         }
 
-        // TODO: Remove this once this feature is stable and it can default to enabled.
-        [Category("Settings")]
-        [Test]
-        public void AutoCompleteDisabledByDefault()
-        {
-            var defaultSettings = new DefaultSettings<AutoCompleteSettings, Rubberduck.Properties.Settings>().Default;
-            Assert.IsFalse(defaultSettings.IsEnabled);
-        }
-
         [Category("Settings")]
         [Test]
         public void SaveConfigWorks()
