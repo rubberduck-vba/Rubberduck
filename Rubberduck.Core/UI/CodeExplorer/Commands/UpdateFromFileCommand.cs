@@ -9,6 +9,7 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
+using System.IO.Abstractions;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -23,9 +24,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             IProjectsProvider projectsProvider,
             IModuleNameFromFileExtractor moduleNameFromFileExtractor,
             IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileExtractors,
-            IFileExistenceChecker fileExistenceChecker,
+            IFileSystem fileSystem,
             IMessageBox messageBox)
-            : base(vbe, dialogFactory, vbeEvents, parseManager, declarationFinderProvider, projectsProvider, moduleNameFromFileExtractor, binaryFileExtractors, fileExistenceChecker, messageBox)
+            : base(vbe, dialogFactory, vbeEvents, parseManager, declarationFinderProvider, projectsProvider, moduleNameFromFileExtractor, binaryFileExtractors, fileSystem, messageBox)
         {}
 
         protected override string DialogsTitle => RubberduckUI.UpdateFromFilesCommand_DialogCaption;

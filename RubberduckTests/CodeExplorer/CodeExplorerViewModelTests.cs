@@ -19,6 +19,7 @@ using Rubberduck.UI.Command.ComCommands;
 using RubberduckTests.Mocks;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
+using System.IO.Abstractions;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -385,14 +386,14 @@ namespace RubberduckTests.CodeExplorer
                     .Setup(m => m.RequiredBinaryFiles(path, ComponentType.UserForm))
                     .Returns(new List<string> { binaryName });
 
-                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
-                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(false);
+                var mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(binaryPath)).Returns(false);
 
                 explorer.ExecuteImportCommand(
                     filename => filename == path ? "TestModule" : "YetAnotherModule",
                     null,
                     new List<IRequiredBinaryFilesFromFileNameExtractor> { mockExtractor.Object },
-                    mockFileExistenceChecker);
+                    mockFileSystem);
                 explorer.VbComponents.Verify(c => c.Remove(It.IsAny<IVBComponent>()), Times.Never);
                 explorer.VbComponents.Verify(m => m.ImportSourceFile(path), Times.Once);
             }
@@ -421,14 +422,14 @@ namespace RubberduckTests.CodeExplorer
                     .Setup(m => m.RequiredBinaryFiles(path, ComponentType.UserForm))
                     .Returns(new List<string> { binaryName });
 
-                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
-                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(true);
+                var mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(binaryPath)).Returns(true);
 
                 explorer.ExecuteImportCommand(
                     filename => filename == path ? "TestModule" : "YetAnotherModule",
                     null,
                     new List<IRequiredBinaryFilesFromFileNameExtractor> { mockExtractor.Object },
-                    mockFileExistenceChecker);
+                    mockFileSystem);
 
                 var modulesNames = explorer
                     .VbComponents
@@ -519,8 +520,8 @@ namespace RubberduckTests.CodeExplorer
                     .Setup(m => m.RequiredBinaryFiles(path2, ComponentType.UserForm))
                     .Returns(new List<string> { binaryName });
 
-                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
-                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(false);
+                var mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(binaryPath)).Returns(false);
 
                 explorer.ExecuteImportCommand(filename =>
                     {
@@ -540,7 +541,7 @@ namespace RubberduckTests.CodeExplorer
                     },
                     null,
                     new List<IRequiredBinaryFilesFromFileNameExtractor> { mockExtractor.Object },
-                    mockFileExistenceChecker);
+                    mockFileSystem);
 
                 var modulesNames = explorer
                     .VbComponents
@@ -635,8 +636,8 @@ namespace RubberduckTests.CodeExplorer
                     .Setup(m => m.RequiredBinaryFiles(path4, ComponentType.UserForm))
                     .Returns(new List<string> { binaryName });
 
-                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
-                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(false);
+                var mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(binaryPath)).Returns(false);
 
                 explorer.ExecuteImportCommand(filename =>
                     {
@@ -656,7 +657,7 @@ namespace RubberduckTests.CodeExplorer
                     },
                     null,
                     new List<IRequiredBinaryFilesFromFileNameExtractor> { mockExtractor.Object },
-                    mockFileExistenceChecker);
+                    mockFileSystem);
 
                 var modulesNames = explorer
                     .VbComponents
@@ -861,14 +862,14 @@ namespace RubberduckTests.CodeExplorer
                     .Setup(m => m.RequiredBinaryFiles(path, ComponentType.UserForm))
                     .Returns(new List<string>{ binaryName });
 
-                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
-                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(false);
+                var mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(binaryPath)).Returns(false);
 
                 explorer.ExecuteUpdateFromFileCommand(
                     filename => filename == path ? "TestModule" : "YetAnotherModule",
                     null,
                     new List<IRequiredBinaryFilesFromFileNameExtractor>{mockExtractor.Object},
-                    mockFileExistenceChecker);
+                    mockFileSystem);
                 explorer.VbComponents.Verify(c => c.Remove(It.IsAny<IVBComponent>()), Times.Never);
                 explorer.VbComponents.Verify(m => m.ImportSourceFile(path), Times.Once);
             }
@@ -897,14 +898,14 @@ namespace RubberduckTests.CodeExplorer
                     .Setup(m => m.RequiredBinaryFiles(path, ComponentType.UserForm))
                     .Returns(new List<string> { binaryName });
 
-                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
-                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(true);
+                var mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(binaryPath)).Returns(true);
 
                 explorer.ExecuteUpdateFromFileCommand(
                     filename => filename == path ? "TestModule" : "YetAnotherModule",
                     null,
                     new List<IRequiredBinaryFilesFromFileNameExtractor> { mockExtractor.Object },
-                    mockFileExistenceChecker);
+                    mockFileSystem);
 
                 var modulesNames = explorer
                     .VbComponents
@@ -1102,8 +1103,8 @@ namespace RubberduckTests.CodeExplorer
                     .Setup(m => m.RequiredBinaryFiles(path4, ComponentType.UserForm))
                     .Returns(new List<string> { binaryName });
 
-                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
-                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(false);
+                var mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(binaryPath)).Returns(false);
 
                 explorer.ExecuteUpdateFromFileCommand(filename =>
                     {
@@ -1123,7 +1124,7 @@ namespace RubberduckTests.CodeExplorer
                     },
                     null,
                     new List<IRequiredBinaryFilesFromFileNameExtractor> { mockExtractor.Object },
-                    mockFileExistenceChecker);
+                    mockFileSystem);
 
                 var modulesNames = explorer
                     .VbComponents
@@ -1164,14 +1165,14 @@ namespace RubberduckTests.CodeExplorer
                     .Setup(m => m.RequiredBinaryFiles(path, ComponentType.UserForm))
                     .Returns(new List<string> { binaryName });
 
-                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
-                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(true);
+                var mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(binaryPath)).Returns(true);
 
                 explorer.ExecuteUpdateFromFileCommand(
                     filename => filename == path ? "NewTestForm" : "YetAnotherModule",
                     null,
                     new List<IRequiredBinaryFilesFromFileNameExtractor> { mockExtractor.Object },
-                    mockFileExistenceChecker);
+                    mockFileSystem);
 
                 var modulesNames = explorer
                     .VbComponents
@@ -1442,14 +1443,14 @@ namespace RubberduckTests.CodeExplorer
                     .Setup(m => m.RequiredBinaryFiles(path, ComponentType.UserForm))
                     .Returns(new List<string> { binaryName });
 
-                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
-                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(true);
+                var mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(binaryPath)).Returns(true);
 
                 explorer.ExecuteReplaceProjectContentsFromFilesCommand(
                     null,
                     null,
                     new List<IRequiredBinaryFilesFromFileNameExtractor> { mockExtractor.Object },
-                    mockFileExistenceChecker);
+                    mockFileSystem);
 
                 var modulesNames = explorer
                     .VbComponents
@@ -1486,14 +1487,14 @@ namespace RubberduckTests.CodeExplorer
                     .Setup(m => m.RequiredBinaryFiles(path, ComponentType.UserForm))
                     .Returns(new List<string> { binaryName });
 
-                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
-                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(false);
+                var mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(binaryPath)).Returns(false);
 
                 explorer.ExecuteReplaceProjectContentsFromFilesCommand(
                     filename => filename == path ? "TestModule" : "YetAnotherModule",
                     null,
                     new List<IRequiredBinaryFilesFromFileNameExtractor> { mockExtractor.Object },
-                    mockFileExistenceChecker);
+                    mockFileSystem);
                 explorer.VbComponents.Verify(c => c.Remove(It.IsAny<IVBComponent>()), Times.Once);
                 explorer.VbComponents.Verify(m => m.ImportSourceFile(path), Times.Once);
             }
@@ -1522,14 +1523,14 @@ namespace RubberduckTests.CodeExplorer
                     .Setup(m => m.RequiredBinaryFiles(path, ComponentType.UserForm))
                     .Returns(new List<string> { binaryName });
 
-                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
-                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(true);
+                var mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(binaryPath)).Returns(true);
 
                 explorer.ExecuteReplaceProjectContentsFromFilesCommand(
                     filename => filename == path ? "TestModule" : "YetAnotherModule",
                     null,
                     new List<IRequiredBinaryFilesFromFileNameExtractor> { mockExtractor.Object },
-                    mockFileExistenceChecker);
+                    mockFileSystem);
 
                 var modulesNames = explorer
                     .VbComponents
@@ -1620,8 +1621,8 @@ namespace RubberduckTests.CodeExplorer
                     .Setup(m => m.RequiredBinaryFiles(path2, ComponentType.UserForm))
                     .Returns(new List<string> { binaryName });
 
-                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
-                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(false);
+                var mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(binaryPath)).Returns(false);
 
                 explorer.ExecuteReplaceProjectContentsFromFilesCommand(filename =>
                 {
@@ -1641,7 +1642,7 @@ namespace RubberduckTests.CodeExplorer
                 },
                     null,
                     new List<IRequiredBinaryFilesFromFileNameExtractor> { mockExtractor.Object },
-                    mockFileExistenceChecker);
+                    mockFileSystem);
 
                 var modulesNames = explorer
                     .VbComponents
@@ -1736,8 +1737,8 @@ namespace RubberduckTests.CodeExplorer
                     .Setup(m => m.RequiredBinaryFiles(path4, ComponentType.UserForm))
                     .Returns(new List<string> { binaryName });
 
-                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
-                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(false);
+                var mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(binaryPath)).Returns(false);
 
                 explorer.ExecuteReplaceProjectContentsFromFilesCommand(filename =>
                 {
@@ -1757,7 +1758,7 @@ namespace RubberduckTests.CodeExplorer
                 },
                     null,
                     new List<IRequiredBinaryFilesFromFileNameExtractor> { mockExtractor.Object },
-                    mockFileExistenceChecker);
+                    mockFileSystem);
 
                 var modulesNames = explorer
                     .VbComponents
