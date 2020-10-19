@@ -5,9 +5,9 @@ using System.Globalization;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.PreProcessing;
 
-namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
+namespace Rubberduck.Refactoring.ParseTreeValue
 {
-    internal class ComparableDateValue : IValue, IComparable<ComparableDateValue>
+    public class ComparableDateValue : IValue, IComparable<ComparableDateValue>
     {
         private readonly DateValue _dateValue;
         private readonly int _hashCode;

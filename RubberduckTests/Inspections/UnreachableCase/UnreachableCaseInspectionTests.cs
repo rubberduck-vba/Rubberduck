@@ -17,6 +17,7 @@ using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.Refactoring.ParseTreeValue;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {

@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Refactoring.ParseTreeValue;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
 { 

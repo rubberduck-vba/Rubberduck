@@ -2,28 +2,11 @@
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Refactorings;
 
-namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
+namespace Rubberduck.Refactoring.ParseTreeValue
 {
-    internal interface IParseTreeValueFactory
-    {
-        IParseTreeValue CreateMismatchExpression(string expression, string typeName);
-        IParseTreeValue CreateExpression(string expression, string typeName);
-        IParseTreeValue CreateDeclaredType(string expression, string typeName);
-        IParseTreeValue CreateValueType(string expression, string typeName);
-        IParseTreeValue Create(string valueToken);
-        IParseTreeValue Create(byte value);
-        IParseTreeValue Create(int value);
-        IParseTreeValue Create(long value);
-        IParseTreeValue Create(float value);
-        IParseTreeValue Create(double value);
-        IParseTreeValue Create(decimal value);
-        IParseTreeValue Create(bool value);
-        IParseTreeValue CreateDate(string value);
-        IParseTreeValue CreateDate(double value);
-    }
-
-    internal class ParseTreeValueFactory : IParseTreeValueFactory
+    public class ParseTreeValueFactory : IParseTreeValueFactory
     {
         public IParseTreeValue CreateValueType(string expression, string declaredTypeName)
         {

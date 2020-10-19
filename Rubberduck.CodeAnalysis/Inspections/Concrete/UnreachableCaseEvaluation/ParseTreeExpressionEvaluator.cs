@@ -5,6 +5,8 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.PreProcessing;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactoring.ParseTreeValue;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
 {

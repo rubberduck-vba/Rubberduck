@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Refactoring.ParseTreeValue;
+using Rubberduck.Refactorings;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
 {

@@ -3,19 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.PreProcessing;
+using Rubberduck.Refactorings;
 
-namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
+namespace Rubberduck.Refactoring.ParseTreeValue
 {
-    internal interface IParseTreeValue
-    {
-        string Token { get; }
-        string ValueType { get; }
-        bool ParsesToConstantValue { get; }
-        bool IsOverflowExpression { get; }
-        bool IsMismatchExpression { get; }
-    }
-
-    internal struct ParseTreeValue : IParseTreeValue
+    public struct ParseTreeValue : IParseTreeValue
     {
         private readonly int _hashCode;
         private TypeTokenPair _typeTokenPair;
@@ -180,7 +172,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
         private static bool IsStringConstant(string candidate) => candidate.StartsWith("\"") && candidate.EndsWith("\"");
     }
 
-    internal static class ParseTreeValueExtensions
+    public static class ParseTreeValueExtensions
     {
         public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, string destinationType, out IParseTreeValue newValue)
         {

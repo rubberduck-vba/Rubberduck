@@ -61,6 +61,8 @@ using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.VbeRuntime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.UI.Refactorings.AnnotateDeclaration;
+using Rubberduck.Refactoring.ParseTreeValue;
+using Rubberduck.Refactorings.ImplicitTypeToExplicit;
 
 namespace Rubberduck.Root
 {
@@ -380,7 +382,10 @@ namespace Rubberduck.Root
             container.Register(Component.For<IAnnotationArgumentViewModelFactory>()
                 .ImplementedBy<AnnotationArgumentViewModelFactory>()
                 .LifestyleSingleton());
+
             RegisterUnreachableCaseFactories(container);
+
+            RegisterImplicitTypeToExplicitRefactoringAction(container);
         }
 
         private void RegisterUnreachableCaseFactories(IWindsorContainer container)
@@ -390,6 +395,14 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
         }
 
+        //FIXME: Do not think this explicit registration should be necessary.
+        //CW could not resolve ICodeOnlyRefactoringAction<ImplicitTypeToExplicitModel> without this
+        private void RegisterImplicitTypeToExplicitRefactoringAction(IWindsorContainer container)
+        {
+            container.Register(Component.For<ICodeOnlyRefactoringAction<ImplicitTypeToExplicitModel>>()
+                .ImplementedBy<ImplicitTypeToExplicitRefactoringAction>()
+                .LifestyleSingleton());
+        }
 
         private void RegisterQuickFixes(IWindsorContainer container, Assembly[] assembliesToRegister)
         {
