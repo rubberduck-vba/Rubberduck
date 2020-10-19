@@ -300,4 +300,7 @@
   <data name="IgnoreInModuleQuickFix" xml:space="preserve">
     <value>Ignore in module</value>
   </data>
+  <data name="DeclareAsExplicitTypeQuickFix" xml:space="preserve">
+    <value>Declare as Explicit Type</value>
+  </data>
 </root>
