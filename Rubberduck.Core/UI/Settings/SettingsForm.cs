@@ -35,7 +35,9 @@ namespace Rubberduck.UI.Settings
         {
             var config = configService.Read();
 
-            ViewModel = new SettingsControlViewModel(messageBox, configService,
+            ViewModel = new SettingsControlViewModel(
+                messageBox, 
+                configService,
                 config,
                 new GeneralSettingsView
                 {
@@ -76,6 +78,11 @@ namespace Rubberduck.UI.Settings
                 {
                     Control = new AddRemoveReferencesUserSettings(viewModelFactory.Create<ReferenceSettings>()),
                     View = SettingsViews.ReferenceSettings
+                },
+                new SettingsView
+                {
+                    Control = new IgnoredProjectsSettingsView(viewModelFactory.Create<Rubberduck.Settings.IgnoredProjectsSettings>()),
+                    View = SettingsViews.IgnoredProjectsSettings
                 },
                 activeView);
 

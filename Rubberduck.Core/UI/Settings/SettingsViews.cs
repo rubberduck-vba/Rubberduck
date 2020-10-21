@@ -9,6 +9,7 @@
         IndenterSettings,
         AutoCompleteSettings,
         WindowSettings,
-        ReferenceSettings
+        ReferenceSettings,
+        IgnoredProjectsSettings
     }
 }
