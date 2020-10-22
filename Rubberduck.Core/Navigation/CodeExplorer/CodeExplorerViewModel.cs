@@ -92,12 +92,14 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public ObservableCollection<ICodeExplorerNode> Projects { get; } = new ObservableCollection<ICodeExplorerNode>();
 
+        private ObservableCollection<Template> templates => _templateProvider.GetTemplates();
+
         public ObservableCollection<Template> BuiltInTemplates =>
-            new ObservableCollection<Template>(_templateProvider.GetTemplates().Where(t => !t.IsUserDefined)
+            new ObservableCollection<Template>(templates.Where(t => !t.IsUserDefined)
                 .OrderBy(t => t.Name));
 
         public ObservableCollection<Template> UserDefinedTemplates =>
-            new ObservableCollection<Template>(_templateProvider.GetTemplates().Where(t => t.IsUserDefined)
+            new ObservableCollection<Template>(templates.Where(t => t.IsUserDefined)
                 .OrderBy(t => t.Name));
 
         public IEnumerable<IAnnotation> Annotations { get; }
