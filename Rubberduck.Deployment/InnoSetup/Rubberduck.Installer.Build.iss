@@ -18,7 +18,7 @@
 #define AppVersion GetFileVersion(BuildDir + "Rubberduck.dll")
 #define AppPublisher "Rubberduck"
 #define AppURL "http://rubberduckvba.com"
-#define License IncludesDir + "License.rtf"
+#define License IncludesDir + "eula.rtf"
 #define OutputDirectory SourcePath + "Installers\"
 #define AddinProgId "Rubberduck.Extension"
 #define AddinCLSID "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66"
