@@ -3,6 +3,7 @@ using Rubberduck.Settings;
 using Rubberduck.Interaction;
 using Rubberduck.SettingsProvider;
 using Rubberduck.CodeAnalysis.Settings;
+using Rubberduck.Parsing.Settings;
 
 namespace Rubberduck.UI.Settings
 {
@@ -81,7 +82,7 @@ namespace Rubberduck.UI.Settings
                 },
                 new SettingsView
                 {
-                    Control = new IgnoredProjectsSettingsView(viewModelFactory.Create<Rubberduck.Settings.IgnoredProjectsSettings>()),
+                    Control = new IgnoredProjectsSettingsView(viewModelFactory.Create<IgnoredProjectsSettings>()),
                     View = SettingsViews.IgnoredProjectsSettings
                 },
                 activeView);

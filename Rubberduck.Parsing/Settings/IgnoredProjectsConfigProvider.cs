@@ -1,11 +1,12 @@
-﻿using Rubberduck.SettingsProvider;
+﻿using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 
-namespace Rubberduck.Settings
+namespace Rubberduck.Parsing.Settings
 {
     public class IgnoredProjectsConfigProvider : ConfigurationServiceBase<IgnoredProjectsSettings>
     {
         public IgnoredProjectsConfigProvider(IPersistenceService<IgnoredProjectsSettings> persister)
-            : base(persister, new DefaultSettings<IgnoredProjectsSettings, Properties.Settings>())
+            : base(persister, new DefaultSettings<IgnoredProjectsSettings, Properties.ParsingSettings>())
         { }
 
         public override IgnoredProjectsSettings ReadDefaults()

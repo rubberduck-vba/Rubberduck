@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Moq;
 using NUnit.Framework;
+using Rubberduck.Parsing.Settings;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI;
