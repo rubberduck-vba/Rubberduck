@@ -130,9 +130,8 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Attribute VB_Ext_KEY = "Rubberduck", "Predeclared Class Module"
-
-Option Explicit
-'@PredeclaredId</value>
+'@PredeclaredId
+Option Explicit</value>
     <comment>do not translate</comment>
   </data>
   <data name="PredeclaredClassModule_Description" xml:space="preserve">
