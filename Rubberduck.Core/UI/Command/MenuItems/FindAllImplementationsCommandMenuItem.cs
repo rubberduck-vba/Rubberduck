@@ -4,11 +4,11 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-    public class FindAllImplementationsCommandMenuItem : CommandMenuItemBase
+    public abstract class FindAllImplementationsCommandMenuItemBase : CommandMenuItemBase
     {
-        public FindAllImplementationsCommandMenuItem(FindAllImplementationsCommand command) : base(command)
-        {
-        }
+        protected FindAllImplementationsCommandMenuItemBase(FindAllImplementationsCommand command) 
+            : base(command)
+        {}
 
         public override string Key => "ContextMenu_GoToImplementation";
         public override int DisplayOrder => (int)CodePaneContextMenuItemDisplayOrder.FindAllImplementations;
@@ -17,5 +17,23 @@ namespace Rubberduck.UI.Command.MenuItems
         {
             return state != null && Command.CanExecute(null);
         }
+    }
+
+    public class FindAllImplementationsCommandMenuItem : FindAllImplementationsCommandMenuItemBase
+    {
+        public FindAllImplementationsCommandMenuItem(FindAllImplementationsCommand command) 
+            : base(command)
+        {}
+
+        public override int DisplayOrder => (int)CodePaneContextMenuItemDisplayOrder.FindAllImplementations;
+    }
+
+    public class ProjectExplorerFindAllImplementationsCommandMenuItem : FindAllImplementationsCommandMenuItemBase
+    {
+        public ProjectExplorerFindAllImplementationsCommandMenuItem(FindAllImplementationsCommand command)
+            : base(command)
+        {}
+
+        public override int DisplayOrder => (int)ProjectExplorerContextMenuItemDisplayOrder.FindAllImplementations;
     }
 }

@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Menus {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class RubberduckMenus {
@@ -192,6 +192,24 @@ namespace Rubberduck.Resources.Menus {
         public static string NoIndentAnnotation {
             get {
                 return ResourceManager.GetString("NoIndentAnnotation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore Project.
+        /// </summary>
+        public static string ProjectExplorer_IgnoreProject {
+            get {
+                return ResourceManager.GetString("ProjectExplorer_IgnoreProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unignore Project.
+        /// </summary>
+        public static string ProjectExplorer_UnignoreProject {
+            get {
+                return ResourceManager.GetString("ProjectExplorer_UnignoreProject", resourceCulture);
             }
         }
         

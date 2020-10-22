@@ -5,15 +5,13 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-    public class FindSymbolCommandMenuItem : CommandMenuItemBase
+    public abstract class FindSymbolCommandMenuItemBase : CommandMenuItemBase
     {
-        public FindSymbolCommandMenuItem(FindSymbolCommand command) 
+        protected FindSymbolCommandMenuItemBase(FindSymbolCommand command)
             : base(command)
-        {
-        }
+        {}
 
         public override string Key => "ContextMenu_FindSymbol";
-        public override int DisplayOrder => (int)CodePaneContextMenuItemDisplayOrder.FindSymbol;
         public override bool BeginGroup => true;
 
         public override Image Image => Resources.CommandBarIcons.FindSymbol;
@@ -23,5 +21,23 @@ namespace Rubberduck.UI.Command.MenuItems
         {
             return state != null && state.Status >= ParserState.ResolvedDeclarations && state.Status < ParserState.Error;
         }
+    }
+
+    public class FindSymbolCommandMenuItem : FindSymbolCommandMenuItemBase
+    {
+        public FindSymbolCommandMenuItem(FindSymbolCommand command) 
+            : base(command)
+        {}
+
+        public override int DisplayOrder => (int)CodePaneContextMenuItemDisplayOrder.FindSymbol;
+    }
+
+    public class ProjectExplorerFindSymbolCommandMenuItem : FindSymbolCommandMenuItemBase
+    {
+        public ProjectExplorerFindSymbolCommandMenuItem(FindSymbolCommand command)
+            : base(command)
+        {}
+
+        public override int DisplayOrder => (int)ProjectExplorerContextMenuItemDisplayOrder.FindSymbol;
     }
 }
