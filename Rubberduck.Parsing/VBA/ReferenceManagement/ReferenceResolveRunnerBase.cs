@@ -191,6 +191,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
                     foreach (var superTypeName in superTypeNames)
                     {
+                        if (document.SupertypeNames.Contains(superTypeName))
+                        {
+                            continue;
+                        }
+
                         document.AddSupertypeName(superTypeName);
                     }
                 }
