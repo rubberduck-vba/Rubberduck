@@ -122,6 +122,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ToDoExplorerUI.resx</DependentUpon>
     </Compile>
+    <Compile Update="TodoSettings\TodoSettingsUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="UnitTesting\AssertMessages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -209,6 +212,9 @@
     <EmbeddedResource Update="ToDoExplorer\ToDoExplorerUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ToDoExplorerUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="TodoSettings\TodoSettingsUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="UnitTesting\AssertMessages.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

@@ -426,12 +426,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
     <value>Run code inspections</value>
   </data>
-  <data name="TodoExplorer_Description" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="TodoExplorer_LineNumber" xml:space="preserve">
-    <value>Line Number</value>
-  </data>
   <data name="ProjectName" xml:space="preserve">
     <value>Project Name</value>
   </data>
@@ -455,12 +449,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Remove</value>
-  </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Token Text:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Token List:</value>
   </data>
   <data name="Navigation" xml:space="preserve">
     <value>Navigation</value>
@@ -1114,22 +1102,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck doesn't see anything yet.</value>
   </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck TODO Items - {0}
-{1} items found.</value>
-    <comment>{0}=timestamp; {1}=number</comment>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck TODO Items - {0}
-{1} items found.</value>
-    <comment>{0}=timestamp; {1}=number</comment>
-  </data>
-  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
-    <value>{0}: {1} - {2}.{3} line {4}.</value>
-  </data>
-  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
-    <value>Copy to clipboard</value>
-  </data>
   <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
     <value>Code Metrics</value>
   </data>
@@ -1355,24 +1327,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="References_Version" xml:space="preserve">
     <value>Version:</value>
-  </data>
-  <data name="TodoMarkerBug" xml:space="preserve">
-    <value>BUG</value>
-  </data>
-  <data name="TodoMarkerNote" xml:space="preserve">
-    <value>NOTE</value>
-  </data>
-  <data name="TodoMarkerTodo" xml:space="preserve">
-    <value>TODO</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Text:</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Text</value>
-  </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>TODO Explorer</value>
   </data>
   <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
     <value>Correction for high-resolution display scalings</value>
