@@ -11,7 +11,6 @@ namespace Rubberduck.UI.Command.MenuItems
         {}
 
         public override string Key => "ContextMenu_GoToImplementation";
-        public override int DisplayOrder => (int)CodePaneContextMenuItemDisplayOrder.FindAllImplementations;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {
