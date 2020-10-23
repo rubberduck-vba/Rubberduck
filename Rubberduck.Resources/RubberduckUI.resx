@@ -357,9 +357,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Type" xml:space="preserve">
     <value>Type</value>
   </data>
-  <data name="TodoExplorer_Caption" xml:space="preserve">
-    <value>Todo Explorer</value>
-  </data>
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
   </data>

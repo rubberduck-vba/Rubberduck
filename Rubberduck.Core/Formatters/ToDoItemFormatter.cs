@@ -1,6 +1,6 @@
 ﻿using Rubberduck.ToDoItems;
 using Rubberduck.Common;
-using Rubberduck.Resources;
+using Rubberduck.Resources.ToDoExplorer;
 
 namespace Rubberduck.Formatters
 {
@@ -22,7 +22,7 @@ namespace Rubberduck.Formatters
         public string ToClipboardString()
         {
             var module = _toDoItem.Selection.QualifiedName;
-            return string.Format(RubberduckUI.ToDoExplorerToDoItemFormat,
+            return string.Format(ToDoExplorerUI.ToDoExplorerToDoItemFormat,
                 _toDoItem.Type,
                 _toDoItem.Description,
                 module.ProjectName,
