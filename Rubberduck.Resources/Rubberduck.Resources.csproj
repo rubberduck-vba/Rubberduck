@@ -151,6 +151,9 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CodeExplorerUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="CodeInspections\CodeInspectionsUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="CommandBarIcons.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CommandBarIcons.Designer.cs</LastGenOutput>
@@ -198,6 +201,9 @@
     <EmbeddedResource Update="Settings\AutoCompletesPage.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AutoCompletesPage.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Settings\CodeInspectionPage.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Settings\SettingsUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
