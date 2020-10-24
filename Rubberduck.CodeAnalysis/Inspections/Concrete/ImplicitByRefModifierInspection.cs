@@ -3,6 +3,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
+using System.Linq;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
@@ -10,8 +11,11 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Highlights implicit ByRef modifiers in user code.
     /// </summary>
     /// <why>
-    /// In modern VB (VB.NET), the implicit modifier is ByVal, as it is in most other programming languages.
-    /// Making the ByRef modifiers explicit can help surface potentially unexpected language defaults.
+    /// VBA parameters are implicitly ByRef, which differs from modern VB (VB.NET) and most other programming languages which are implicitly ByVal.
+    /// So, explicitly identifing VBA parameter mechanisms (the ByRef and ByVal modifiers) can help surface potentially unexpected language results.
+    /// The inspection does not flag an implicit parameter mechanism for the last parameter of Property mutators (Let or Set).
+    /// VBA applies a ByVal parameter mechanism to the last parameter in the absence (or presence!) of a modifier. 
+    /// Exception: UserDefinedType parameters must always be passed as ByRef.
     /// </why>
     /// <example hasResult="true">
     /// <module name="MyModule" type="Standard Module">
@@ -31,6 +35,16 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// ]]>
     /// </module>
     /// </example>
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
+    /// <![CDATA[
+    /// Private theLength As Long
+    /// Public Property Let Length(newLength As Long)
+    ///     theLength = newLength
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
     internal sealed class ImplicitByRefModifierInspection : DeclarationInspectionBase
     {
         public ImplicitByRefModifierInspection(IDeclarationFinderProvider declarationFinderProvider)
@@ -41,21 +55,23 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         {
             if (!(declaration is ParameterDeclaration parameter)
                 || !parameter.IsImplicitByRef
-                || parameter.IsParamArray)
+                || parameter.IsParamArray
+                //Exclude parameters of Declare statements
+                || !(parameter.ParentDeclaration is ModuleBodyElementDeclaration enclosingMethod))
             {
                 return false;
             }
 
-            var parentDeclaration = parameter.ParentDeclaration;
+            return !IsPropertyMutatorRHSParameter(enclosingMethod, parameter)
+                    && !enclosingMethod.IsInterfaceImplementation
+                    && !finder.FindEventHandlers().Contains(enclosingMethod);
+        }
 
-            if (parentDeclaration is ModuleBodyElementDeclaration enclosingMethod)
-            {
-                return !enclosingMethod.IsInterfaceImplementation
-                       && !finder.FindEventHandlers().Contains(enclosingMethod);
-            }
-
-            return parentDeclaration.DeclarationType != DeclarationType.LibraryFunction
-                   && parentDeclaration.DeclarationType != DeclarationType.LibraryProcedure;
+        private static bool IsPropertyMutatorRHSParameter(ModuleBodyElementDeclaration enclosingMethod, ParameterDeclaration implicitByRefParameter)
+        {
+            return (enclosingMethod.DeclarationType.HasFlag(DeclarationType.PropertyLet)
+                    || enclosingMethod.DeclarationType.HasFlag(DeclarationType.PropertySet)) 
+                && enclosingMethod.Parameters.Last().Equals(implicitByRefParameter);
         }
 
         protected override string ResultDescription(Declaration declaration)

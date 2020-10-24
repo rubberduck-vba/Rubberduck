@@ -332,6 +332,31 @@ End Function
 
         [Category("Inspections")]
         [Test]
+        public void OptionalParenthesesAfterVariantReturningProperty_NoResult()
+        {
+            var classCode = @"
+Public Property Get Foo() As Variant
+End Property
+";
+
+            var moduleCode = @"
+Private Function Bar() As String 
+    Dim cls As new Class1
+    Bar = cls.Foo()
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var inspectionResults = InspectionResults(vbe.Object);
+            
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [Category("Inspections")]
+        [Test]
         public void FailedIndexExpressionOnFunctionWithParameters_NoResult()
         {
             var classCode = @"
