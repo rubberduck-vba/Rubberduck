@@ -520,6 +520,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The last parameter (the &apos;Value&apos; parameter) of property mutators are always passed ByVal. This is true regardless of the presence or absence of a ByRef or ByVal modifier. Exception: A UserDefinedType must always be passed ByRef even when it is the last parameter of a property mutator..
+        /// </summary>
+        public static string MisleadingByRefParameterInspection {
+            get {
+                return ResourceManager.GetString("MisleadingByRefParameterInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An annotation parameter is missing or incorrectly specified. The correct syntax is : &apos;@Annotation([parameter])\nExample: &apos;@Folder(&quot;Parent.Child&quot;).
         /// </summary>
         public static string MissingAnnotationArgumentInspection {

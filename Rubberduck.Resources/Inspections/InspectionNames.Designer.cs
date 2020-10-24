@@ -520,6 +520,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Misleading ByRef parameter modifier.
+        /// </summary>
+        public static string MisleadingByRefParameterInspection {
+            get {
+                return ResourceManager.GetString("MisleadingByRefParameterInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing annotation parameter.
         /// </summary>
         public static string MissingAnnotationArgumentInspection {
