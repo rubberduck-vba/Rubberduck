@@ -20,7 +20,7 @@ namespace Rubberduck.Refactorings
 
         protected abstract QualifiedModuleName ComponentToShow(TModel model);
 
-        public string Preview(TModel model)
+        public virtual string Preview(TModel model)
         {
             var rewriteSession = RewriteSession(RewriteSessionCodeKind);
             _refactoringAction.Refactor(model, rewriteSession);
