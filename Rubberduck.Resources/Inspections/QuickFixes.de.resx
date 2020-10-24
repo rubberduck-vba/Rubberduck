@@ -300,4 +300,7 @@
   <data name="IgnoreInModuleQuickFix" xml:space="preserve">
     <value>In Modul ignorieren</value>
   </data>
+  <data name="QualifyWithMeQuickFix" xml:space="preserve">
+    <value>Qualifiziere die Referenz mit 'Me'.</value>
+  </data>
 </root>
