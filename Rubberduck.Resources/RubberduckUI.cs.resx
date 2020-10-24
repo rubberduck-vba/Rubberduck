@@ -168,9 +168,6 @@
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Přejmenovat identifikátor</value>
   </data>
-  <data name="CodeInspections_Inspecting" xml:space="preserve">
-    <value>Kontroluji...</value>
-  </data>
   <data name="ExtractMethod_OutputNone" xml:space="preserve">
     <value>(žádné)</value>
   </data>
@@ -351,9 +348,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="RubberduckLoadFailure" xml:space="preserve">
     <value>Nebylo možno načíst Rubberduck Add-In</value>
   </data>
-  <data name="CodeInspections" xml:space="preserve">
-    <value>Inspekce kódu</value>
-  </data>
   <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
     <value>{0} ({1} problém}</value>
   </data>
@@ -501,9 +495,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="IndenterSettings_IndentOptionsLabel" xml:space="preserve">
     <value>Nastavení odsazení</value>
   </data>
-  <data name="CodeInspectionResults_Type" xml:space="preserve">
-    <value>Typ</value>
-  </data>
   <data name="Settings" xml:space="preserve">
     <value>Nastavení</value>
   </data>
@@ -533,10 +524,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
     <value>Vyberte parametr a dvojím poklepáním na něj, nebo použitím tlačítek, ho odstraňte nebo obnovte.</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck Inspekce Kódu - {0}
-Nalezeno {1} problémů.</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
     <value>Přejmenování na '{0}' je ve střetu s existující deklarací '{1}. Přejmenování '{2}' na '{0}' může vyústit v nekompatibilní kód nebo změnu v jeho logice.
@@ -706,12 +693,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   </data>
   <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
     <value>Dle typu inspekce</value>
-  </data>
-  <data name="CodeInspectionResults_Issue" xml:space="preserve">
-    <value>Problém</value>
-  </data>
-  <data name="CodeInspectionResults_Location" xml:space="preserve">
-    <value>Lokace</value>
   </data>
   <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
     <value>Seskupení</value>
@@ -884,20 +865,8 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Analyzátor Regulárních Výrazů</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Dovolené Identifikátory</value>
-  </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>Tyto identifikátory budou ignorovány inspekcí 'Použij smysluplné názvy'.</value>
-  </data>
   <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refaktorovat / Zapouzdřit Pole</value>
-  </data>
-  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
-    <value>Různé</value>
-  </data>
-  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
-    <value>Spustit automaticky inspekce po úspěšném parsování</value>
   </data>
   <data name="GeneralSettings_ShowSplash" xml:space="preserve">
     <value>Zobrazit úvodní obrazovku po spuštění</value>
@@ -963,9 +932,6 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
   </data>
   <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
     <value>{0} {1} není možno změnit.</value>
-  </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Závažnosti Inspekce</value>
   </data>
   <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
     <value>Metoda '{0}' je EventHandler pro ovládací prvek '{1}'. Přejmenovat lze pouze ovládací prvek. Místo toho přejmenovat '{1}'?</value>
@@ -1096,10 +1062,6 @@ End Enum</value>
   <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
     <value>Zvol parametr a za použití táhnutí myši nebo pomocí tlačítek ho přesuň výše nebo níže.</value>
   </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck Inspekce Kódu - {0}
-{1} problém nalezen.</value>
-  </data>
   <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
     <value>Vynutit pokyny kompilátoru do sloupce 1</value>
   </data>
@@ -1129,9 +1091,6 @@ End Enum</value>
   </data>
   <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
     <value>Ignoruj prázdné řádky při vyhledávání prvních poznámek a deklaračních bloků</value>
-  </data>
-  <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
-    <value>Popis:</value>
   </data>
   <data name="InspectionResults_FilterByError" xml:space="preserve">
     <value>Chyba</value>

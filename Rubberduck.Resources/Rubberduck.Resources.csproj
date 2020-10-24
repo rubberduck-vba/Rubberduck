@@ -37,6 +37,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>CodeExplorerUI.resx</DependentUpon>
     </Compile>
+    <Compile Update="CodeInspections\CodeInspectionsUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="CommandBarIcons.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -96,6 +99,9 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>AutoCompletesPage.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Settings\CodeInspectionPage.Designer.cs">
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Update="Settings\SettingsUI.Designer.cs">
       <DesignTime>True</DesignTime>
