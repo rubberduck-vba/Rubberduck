@@ -296,6 +296,28 @@ End Sub";
             Assert.AreEqual(expectedCode, actualCode);
         }
 
+        [Test]
+        [Category("QuickFixes")]
+        [Category(nameof(MisleadingByRefParameterInspection))]
+        public void CorrectsMisleadingByRefPropertyMutatorParameter()
+        {
+            const string inputCode =
+@"
+Option Explicit
+
+Private fizzField As Long
+
+Public Property Get Fizz() As Long
+    Fizz = fizzField
+End Property
+
+Public Property Let Fizz(ByRef arg As Long)
+    fizzField = arg
+End Property
+";
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new MisleadingByRefParameterInspection(state));
+            StringAssert.Contains("Public Property Let Fizz(ByVal arg As Long)", actualCode);
+        }
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {

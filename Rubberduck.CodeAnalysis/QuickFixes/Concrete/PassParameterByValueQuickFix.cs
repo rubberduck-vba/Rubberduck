@@ -38,7 +38,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
         public PassParameterByValueQuickFix(IDeclarationFinderProvider declarationFinderProvider)
-            : base(typeof(ParameterCanBeByValInspection))
+            : base(typeof(ParameterCanBeByValInspection), typeof(MisleadingByRefParameterInspection))
         {
             _declarationFinderProvider = declarationFinderProvider;
         }

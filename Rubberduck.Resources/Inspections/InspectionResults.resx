@@ -513,4 +513,8 @@ In memoriam, 1972-2018</value>
     <value>The annotation '{0}' was expected to have less arguments.</value>
     <comment>{0} annotation name</comment>
   </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>Misleading ByRef modifier used for parameter '{0}' ({1}).</value>
+    <comment>{0} Parameter, {1} Member</comment>
+  </data>
 </root>
