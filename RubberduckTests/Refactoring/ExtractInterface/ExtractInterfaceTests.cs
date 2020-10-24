@@ -9,12 +9,14 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.AddInterfaceImplementations;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ExtractInterface;
+using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
+using RubberduckTests.Settings;
 
 namespace RubberduckTests.Refactoring
 {
@@ -1040,10 +1042,6 @@ End Function";
             model.ImplementationOption = implementationOption;
             return model;
         }
-
-        private static ICodeBuilder CreateCodeBuilder()
-            => new CodeBuilder();
-
         protected override IRefactoring TestRefactoring(
             IRewritingManager rewritingManager,
             RubberduckParserState state,
@@ -1069,6 +1067,17 @@ End Function";
             {
                 return new ExtractInterfaceConflictFinder(declarationFinderProvider, projectId);
             }
+        }
+
+        private static ICodeBuilder CreateCodeBuilder()
+            => new CodeBuilder(new Indenter(null, CreateIndenterSettings));
+
+        private static IndenterSettings CreateIndenterSettings()
+        {
+            var s = IndenterSettingsTests.GetMockIndenterSettings();
+            s.VerticallySpaceProcedures = true;
+            s.LinesBetweenProcedures = 1;
+            return s;
         }
     }
 }
