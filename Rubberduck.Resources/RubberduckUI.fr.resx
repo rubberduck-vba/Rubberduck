@@ -190,9 +190,6 @@
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>l'étiquette de ligne</value>
   </data>
-  <data name="CodeInspections_Inspecting" xml:space="preserve">
-    <value>Inspection...</value>
-  </data>
   <data name="ExtractMethod_OutputNone" xml:space="preserve">
     <value>(aucun)</value>
   </data>
@@ -272,10 +269,6 @@
   </data>
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Aucune implémentation trouvée pour '{0}'.</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Inspections Rubberduck - {0}
-{1} problèmes trouvés.</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Accueil</value>
@@ -378,9 +371,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="Change" xml:space="preserve">
     <value>Modifier</value>
-  </data>
-  <data name="CodeInspections" xml:space="preserve">
-    <value>Inspections</value>
   </data>
   <data name="CodeInspections_CopyToolTip" xml:space="preserve">
     <value>Copier les résultats au presse-papier</value>
@@ -494,11 +484,6 @@ Continuer?</value>
   <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
     <value>{0} ({1} problèmes)</value>
     <comment>{0}=status; {1}=number</comment>
-  </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Inspections Rubberduck - {0}
-{1} problème trouvé.</value>
-    <comment>{0}=timestamp; {1}=number</comment>
   </data>
   <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
     <value>{0} problèmes</value>
@@ -750,9 +735,6 @@ Continuer?</value>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Sévérité:</value>
   </data>
-  <data name="CodeInspectionResults_Issue" xml:space="preserve">
-    <value>Problème</value>
-  </data>
   <data name="IndenterSettings_IndentFirstDeclarationBlock" xml:space="preserve">
     <value>Indenter le premier bloc de déclarations</value>
   </data>
@@ -777,9 +759,6 @@ Continuer?</value>
   <data name="SearchResults_AllImplementationsTabFormat" xml:space="preserve">
     <value>Implémentations: '{0}'</value>
   </data>
-  <data name="CodeInspectionResults_Type" xml:space="preserve">
-    <value>Type</value>
-  </data>
   <data name="IndenterSettings_AlignContinuations" xml:space="preserve">
     <value>Aligner les continuations</value>
   </data>
@@ -800,9 +779,6 @@ Continuer?</value>
   </data>
   <data name="ParserState_Parsing" xml:space="preserve">
     <value>Analyse…</value>
-  </data>
-  <data name="CodeInspectionResults_Location" xml:space="preserve">
-    <value>Emplacement</value>
   </data>
   <data name="SearchResults_Location" xml:space="preserve">
     <value>Emplacement</value>
@@ -854,12 +830,6 @@ Continuer?</value>
   </data>
   <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
     <value>Info</value>
-  </data>
-  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
-    <value>Autres options</value>
-  </data>
-  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
-    <value>Exécuter les inspections automatiquement</value>
   </data>
   <data name="GeneralSettings_ShowSplash" xml:space="preserve">
     <value>Afficher l'écran d'initialisation</value>
@@ -926,9 +896,6 @@ End Sub</value>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Analyseur d'expressions Regex</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Identifiants permis</value>
-  </data>
   <data name="RegexAssistant_Instructions" xml:space="preserve">
     <value>Entrer une expression Regex à analyser dans l'espace ci-dessous.</value>
   </data>
@@ -938,14 +905,8 @@ End Sub</value>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Les fenêtres ancrables n'ont probablement pas été correctement détruites, et/ou n'ont pas pu être recréées. l'environnement peut ne pas être dans un état stable. Rubberduck démerrera normalement à la prochaine initialisation du VBE.</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>L'inspection des noms ignorera ces identifiants.</value>
-  </data>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Résolution des références...</value>
-  </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Niveau de sévérité</value>
   </data>
   <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
     <value>Description</value>
@@ -1164,9 +1125,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
     <value>Exporter le projet actif</value>
-  </data>
-  <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
-    <value>Description:</value>
   </data>
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Occupé</value>

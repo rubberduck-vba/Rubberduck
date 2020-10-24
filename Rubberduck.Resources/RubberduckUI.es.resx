@@ -187,9 +187,6 @@
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>etiqueta de línea</value>
   </data>
-  <data name="CodeInspections_Inspecting" xml:space="preserve">
-    <value>Inspeccionando...</value>
-  </data>
   <data name="ExtractMethod_OutputNone" xml:space="preserve">
     <value>(ninguno)</value>
   </data>
@@ -307,9 +304,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementaciones de '{0}'</value>
-  </data>
-  <data name="CodeInspections" xml:space="preserve">
-    <value>Inspecciones de código</value>
   </data>
   <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
     <value>{0} ({1} problema)</value>
@@ -465,11 +459,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="Navigation" xml:space="preserve">
     <value>Navegación</value>
   </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Inspecciones del código de Rubberduck - {0}
-{1} problemas encontrados.</value>
-    <comment>{0} = marca de tiempo; {1} = número</comment>
-  </data>
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>El método '{0}' implementa '{1}. {2}'. ¿Renombrar el miembro de la interfaz?</value>
     <comment>0: objetivo seleccionado; 1: nombre de la interfaz; 2: nombre del miembro de la interfaz</comment>
@@ -494,11 +483,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
     <value>{0} ({1} problemas)</value>
     <comment>{0} = estado; {1} = número</comment>
-  </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Inspecciones del código de Rubberduck - {0}
-{1} problema encontrado.</value>
-    <comment>{0} = marca de tiempo; {1} = número</comment>
   </data>
   <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
     <value>{0} problemas</value>
@@ -721,15 +705,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
     <value>Por tipo de inspección</value>
   </data>
-  <data name="CodeInspectionResults_Issue" xml:space="preserve">
-    <value>Problema</value>
-  </data>
-  <data name="CodeInspectionResults_Location" xml:space="preserve">
-    <value>Ubicación</value>
-  </data>
-  <data name="CodeInspectionResults_Type" xml:space="preserve">
-    <value>Tipo</value>
-  </data>
   <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
     <value>Agrupamiento</value>
   </data>
@@ -928,20 +903,8 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Analizador de expresiones regulares</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Identificadores en lista blanca</value>
-  </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>Estos identificadores serán ignorados por la inspección 'Usar nombres significativos'.</value>
-  </data>
   <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refactorizar / Encapsular Campo</value>
-  </data>
-  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
-    <value>Misceláneas</value>
-  </data>
-  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
-    <value>Ejecutar inspecciones automáticamente en el análisis exitoso</value>
   </data>
   <data name="GeneralSettings_ShowSplash" xml:space="preserve">
     <value>Mostrar pantalla de bienvenida al inicio</value>
@@ -1067,9 +1030,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
     <value>{0} {1} no se puede cambiar.</value>
     <comment>0: Tipo de declaración; 1: Nombre del identificador</comment>
   </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Severidad de la inspección</value>
-  </data>
   <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
     <value>El método '{0}' es un EventHandler para el control '{1}'. Solo el control puede ser renombrado. ¿Renombrar '{1}' en su lugar?</value>
     <comment>0: identificador de objetivo seleccionado; 1: Nombre de control</comment>
@@ -1172,9 +1132,6 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   </data>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>"Compilar A Demanda" actualmente habilitado</value>
-  </data>
-  <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
-    <value>Descripción:</value>
   </data>
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Ocupado</value>

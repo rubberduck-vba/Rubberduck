@@ -232,15 +232,15 @@
                             </DataTemplate>
                         </DataGrid.RowDetailsTemplate>
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}">
+                            <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.CodeInspections.CodeInspectionsUI, Key=Results_Type}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate DataType="inspections:IInspectionResult">
                                         <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}, Mode=OneTime}" Width="16" Height="16" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description, Mode=OneTime}" />
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime, Converter={StaticResource GroupingGridLocationConverter}}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.CodeInspections.CodeInspectionsUI, Key=Results_Issue}" Binding="{Binding Description, Mode=OneTime}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.CodeInspections.CodeInspectionsUI, Key=Results_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime, Converter={StaticResource GroupingGridLocationConverter}}" />
                         </DataGrid.Columns>
                         <DataGrid.ContextMenu>
                             <ContextMenu ItemsSource="{Binding PlacementTarget.DataContext.QuickFixes, RelativeSource={RelativeSource Self}}"

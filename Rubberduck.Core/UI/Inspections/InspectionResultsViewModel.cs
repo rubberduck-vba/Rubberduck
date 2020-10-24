@@ -21,6 +21,7 @@ using Rubberduck.Interaction.Navigation;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources.CodeInspections;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
@@ -809,8 +810,8 @@ namespace Rubberduck.UI.Inspections
                 .ToArray();
 
             var resource = resultArray.Length == 1
-                ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
-                : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
+                ? CodeInspectionsUI.NumberOfIssuesFound_Singular
+                : CodeInspectionsUI.NumberOfIssuesFound_Plural;
 
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), resultArray.Count());
 

@@ -37,6 +37,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>CodeExplorerUI.resx</DependentUpon>
     </Compile>
+    <Compile Update="CodeInspections\CodeInspectionsUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="CommandBarIcons.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -97,6 +100,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AutoCompletesPage.resx</DependentUpon>
     </Compile>
+    <Compile Update="Settings\CodeInspectionPage.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="Settings\SettingsUI.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -145,6 +151,9 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CodeExplorerUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="CodeInspections\CodeInspectionsUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="CommandBarIcons.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CommandBarIcons.Designer.cs</LastGenOutput>
@@ -192,6 +201,9 @@
     <EmbeddedResource Update="Settings\AutoCompletesPage.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AutoCompletesPage.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Settings\CodeInspectionPage.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Settings\SettingsUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
