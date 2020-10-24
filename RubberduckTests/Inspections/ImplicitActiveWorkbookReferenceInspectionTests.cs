@@ -1,7 +1,9 @@
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
@@ -158,6 +160,87 @@ End Sub";
             var actual = ArrangeAndGetInspectionCount(inputCode);
 
             Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveWorkbookReference_DoesNotReportUnqualifiedInWorkbookModules()
+        {
+            const string inputCode =
+                @"
+Sub foo()
+    Dim sheet As Worksheet
+    Set sheet = Worksheets(""Sheet1"")
+End Sub";
+            var module = ("SomeWorkbook", inputCode, ComponentType.Document);
+            var vbe = MockVbeBuilder.BuildFromModules(module, ReferenceLibrary.Excel).Object;
+
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var documentModule = state.DeclarationFinder.UserDeclarations(DeclarationType.Document)
+                    .OfType<DocumentModuleDeclaration>()
+                    .Single();
+                documentModule.AddSupertypeName("Workbook");
+
+                var inspection = InspectionUnderTest(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveWorkbookReference_ReportsApplicationQualifiedInWorkbookModules()
+        {
+            const string inputCode =
+                @"
+Sub foo()
+    Dim sheet As Worksheet
+    Set sheet = Application.Worksheets(""Sheet1"")
+End Sub";
+            var module = ("SomeWorkbook", inputCode, ComponentType.Document);
+            var vbe = MockVbeBuilder.BuildFromModules(module, ReferenceLibrary.Excel).Object;
+
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var documentModule = state.DeclarationFinder.UserDeclarations(DeclarationType.Document)
+                    .OfType<DocumentModuleDeclaration>()
+                    .Single();
+                documentModule.AddSupertypeName("Workbook");
+
+                var inspection = InspectionUnderTest(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveWorkbookReference_ReportsInWorksheetModules()
+        {
+            const string inputCode =
+                @"
+Sub foo()
+    Dim sheet As Worksheet
+    Set sheet = Worksheets(""Sheet1"")
+End Sub";
+            var module = ("Sheet1", inputCode, ComponentType.Document);
+            var vbe = MockVbeBuilder.BuildFromModules(module, ReferenceLibrary.Excel).Object;
+
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var documentModule = state.DeclarationFinder.UserDeclarations(DeclarationType.Document)
+                    .OfType<DocumentModuleDeclaration>()
+                    .Single();
+                documentModule.AddSupertypeName("Worksheet");
+
+                var inspection = InspectionUnderTest(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [Test]

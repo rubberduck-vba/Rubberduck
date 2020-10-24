@@ -225,6 +225,39 @@ GoTo -5
 1
 -5:
 End Sub")]
+        [TestCase(1, @"Public Sub Gogo()
+On Error GoTo 1
+1
+-1:
+End Sub")]
+        [TestCase(2, @"Public Sub Gogo()
+On Error GoTo -1
+1
+-1:
+End Sub")]
+        [TestCase(2, @"Public Sub Gogo()
+On Error GoTo -1
+1:
+-1
+End Sub")]
+        [TestCase(0, @"Public Sub Gogo()
+On Error GoTo -1
+1
+End Sub")]
+        [TestCase(1, @"Public Sub Gogo()
+On Error GoTo -2
+1
+End Sub")]
+        [TestCase(2, @"Public Sub Gogo()
+On Error GoTo -5
+1
+-5:
+End Sub")]
+        [TestCase(2, @"Public Sub Gogo()
+On Error GoTo -5
+1:
+-5
+End Sub")]
         public void NegativeLineNumberLabel_ReturnResults(int expectedCount, string inputCode)
         {
             var func = new Func<RubberduckParserState, IInspection>(state =>

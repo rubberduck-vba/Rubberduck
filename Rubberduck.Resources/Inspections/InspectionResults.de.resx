@@ -141,7 +141,7 @@
     <value>Der Rückgabewert der Funktion '{0}' wird immer verworfen.</value>
   </data>
   <data name="AssignedByValParameterInspection" xml:space="preserve">
-    <value>Der Parameter '{0}' wird als byVal übergeben und bekommt einen Wert zugesiesen.</value>
+    <value>Der Parameter '{0}' wird als byVal übergeben und bekommt einen Wert zugewiesen.</value>
   </data>
   <data name="IdentifierNotUsedInspection" xml:space="preserve">
     <value>{0} '{1}' wird nicht genutzt.</value>
@@ -466,5 +466,11 @@ In Memoriam, 1972-2018</value>
   </data>
   <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
     <value>Die Annotation '{0}' erwartet weniger Argumente.</value>
+  </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>Element '{0}' referenziert implizit auf das umgebende Workbook-Modul.</value>
+  </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>Element '{0}' referenziert implizit auf das umgebende Worksheet-Modul.</value>
   </data>
 </root>

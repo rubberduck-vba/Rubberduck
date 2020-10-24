@@ -1,25 +1,21 @@
-﻿using System;
-using Moq;
+﻿using Castle.Windsor;
 using NUnit.Framework;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
-using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
-using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
+using RubberduckTests.Refactoring.EncapsulateField;
 
 namespace RubberduckTests.Commands.RefactorCommands
 {
     public class EncapsulateFieldCommandTests : RefactorCodePaneCommandTestBase
     {
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Encapsulate Field")]
         public void EncapsulateField_CanExecute_LocalVariable()
         {
             const string input =
@@ -30,8 +26,9 @@ End Sub";
             Assert.IsFalse(CanExecute(input, selection));
         }
 
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Encapsulate Field")]
         public void EncapsulateField_CanExecute_Proc()
         {
             const string input =
@@ -42,8 +39,9 @@ End Sub";
             Assert.IsFalse(CanExecute(input, selection));
         }
 
-        [Category("Commands")]
         [Test]
+        [Category("Commands")]
+        [Category("Encapsulate Field")]
         public void EncapsulateField_CanExecute_Field()
         {
             const string input =
@@ -56,18 +54,9 @@ End Sub";
 
         protected override CommandBase TestCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
-            var msgBox = new Mock<IMessageBox>().Object;
-            var factory = new Mock<IRefactoringPresenterFactory>().Object;
-            var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var uiDispatcherMock = new Mock<IUiDispatcher>();
-            uiDispatcherMock
-                .Setup(m => m.Invoke(It.IsAny<Action>()))
-                .Callback((Action action) => action.Invoke());
-            var userInteraction = new RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel>(factory, uiDispatcherMock.Object);
-            var refactoring = new EncapsulateFieldRefactoring(state, null, userInteraction, rewritingManager, selectionService, selectedDeclarationProvider, new CodeBuilder());
-            var notifier = new EncapsulateFieldFailedNotifier(msgBox);
-            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
-            return new RefactorEncapsulateFieldCommand(refactoring, notifier, state, selectionService, selectedDeclarationService);
+            var resolver = new EncapsulateFieldTestsResolver(state, rewritingManager, selectionService);
+            resolver.Install(new WindsorContainer(), null);
+            return resolver.Resolve<RefactorEncapsulateFieldCommand>();
         }
 
         protected override IVBE SetupAllowingExecution()
