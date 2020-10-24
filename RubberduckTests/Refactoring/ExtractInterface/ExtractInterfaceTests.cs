@@ -11,12 +11,14 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.AddInterfaceImplementations;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ExtractInterface;
+using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
+using RubberduckTests.Settings;
 
 namespace RubberduckTests.Refactoring
 {
@@ -150,7 +152,7 @@ End Sub";
                     .First();
 
                 //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, target, new CodeBuilder());
+                var model = new ExtractInterfaceModel(state, target, CreateCodeBuilder());
                 Assert.AreEqual(0, model.Members.Count);
             }
         }
@@ -178,7 +180,7 @@ End Sub";
                     .First();
 
                 //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, target, new CodeBuilder());
+                var model = new ExtractInterfaceModel(state, target, CreateCodeBuilder());
                 Assert.AreEqual(ClassInstancing.Public, model.InterfaceInstancing);
             }
         }
@@ -204,7 +206,7 @@ End Sub";
                     .First();
 
                 //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, target, new CodeBuilder());
+                var model = new ExtractInterfaceModel(state, target, CreateCodeBuilder());
                 Assert.AreEqual(ClassInstancing.Private, model.InterfaceInstancing);
             }
         }
@@ -309,16 +311,27 @@ End Sub
             RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel> userInteraction, 
             ISelectionService selectionService)
         {
-            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager, new CodeBuilder());
+            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager, CreateCodeBuilder());
             var addComponentService = TestAddComponentService(state?.ProjectsProvider);
             var baseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, state, state, rewritingManager, state?.ProjectsProvider, addComponentService);
-            return new ExtractInterfaceRefactoring(baseRefactoring, state, userInteraction, selectionService, new CodeBuilder());
+            return new ExtractInterfaceRefactoring(baseRefactoring, state, userInteraction, selectionService, CreateCodeBuilder());
         }
 
         private static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)
         {
             var sourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
             return new AddComponentService(projectsProvider, sourceCodeHandler, sourceCodeHandler);
+        }
+
+        private static ICodeBuilder CreateCodeBuilder()
+            => new CodeBuilder(new Indenter(null, CreateIndenterSettings));
+
+        private static IndenterSettings CreateIndenterSettings()
+        {
+            var s = IndenterSettingsTests.GetMockIndenterSettings();
+            s.VerticallySpaceProcedures = true;
+            s.LinesBetweenProcedures = 1;
+            return s;
         }
     }
 }

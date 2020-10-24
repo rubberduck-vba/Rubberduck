@@ -1,6 +1,8 @@
 ﻿using Rubberduck.Common;
 using System.Collections.Generic;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
+using Rubberduck.Refactorings.Common;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -9,7 +11,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private KeyValuePair<string, string> _fieldAndProperty;
         private string _targetIdentifier;
 
-        public EncapsulationIdentifiers(string field, IValidateVBAIdentifiers identifierValidator)
+        public EncapsulationIdentifiers(string field)
         {
             _targetIdentifier = field;
 
@@ -18,7 +20,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (field.TryMatchHungarianNotationCriteria(out var nonHungarianName))
             {
-                if (identifierValidator.IsValidVBAIdentifier(nonHungarianName, out _))
+                if (!VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(nonHungarianName, DeclarationType.Variable, out _))
                 {
                     DefaultPropertyName = nonHungarianName;
                     DefaultNewFieldName = field;
@@ -27,7 +29,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             else if (field.StartsWith("m_"))
             {
                 var propertyName = field.Substring(2).CapitalizeFirstLetter();
-                if (identifierValidator.IsValidVBAIdentifier(propertyName, out _))
+                if (!VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(propertyName, DeclarationType.Property, out _))
                 {
                     DefaultPropertyName = propertyName;
                     DefaultNewFieldName = field;
