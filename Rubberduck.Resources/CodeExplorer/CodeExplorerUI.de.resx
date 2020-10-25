@@ -127,7 +127,7 @@
     <value>Testmodul</value>
   </data>
   <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
-    <value>Member&amp;namen anzeigen</value>
+    <value>Element&amp;namen anzeigen</value>
   </data>
   <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
     <value>Volle &amp;Signaturen anzeigen</value>
