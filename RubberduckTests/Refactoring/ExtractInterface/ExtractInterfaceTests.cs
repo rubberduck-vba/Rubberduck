@@ -23,90 +23,106 @@ namespace RubberduckTests.Refactoring
     [TestFixture]
     public class ExtractInterfaceTests : InteractiveRefactoringTestBase<IExtractInterfacePresenter, ExtractInterfaceModel>
     {
+        private static readonly string errRaise = "Err.Raise 5";
+        private static readonly string todoMsg = Rubberduck.Resources.Refactorings.Refactorings.ImplementInterface_TODO;
+
         [Test]
         [Category("Refactorings")]
         [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_ImplementProc()
         {
-            //Input
-            const string inputCode =
-                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+            var inputCode =
+@"Public Sub Foo(ByVal a|rg1 As Integer, ByVal arg2 As String)
 End Sub";
-            var selection = new Selection(1, 23, 1, 27);
+            var code = ToCodeAndSelection(inputCode);
 
-            //Expectation
-            const string expectedCode =
-                @"Implements IClass
-
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub
-
-Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-    Err.Raise 5 'TODO implement interface member
-End Sub
-";
-
-            const string expectedInterfaceCode =
-                @"Option Explicit
-
-'@Interface
-
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub
-";
             ExtractInterfaceModel presenterAction(ExtractInterfaceModel model)
                 => UserSelectsAllMembers(model);
 
-            var actualCode = RefactoredCode("Class", selection, presenterAction, null, false, ("Class", inputCode, ComponentType.ClassModule));
-            Assert.AreEqual(expectedCode, actualCode["Class"]);
+            var actualCode = RefactoredCode("Class", code.Selection, presenterAction, null, false, ("Class", code.Code, ComponentType.ClassModule));
+
+            var classCode = actualCode["Class"];
+            StringAssert.Contains("Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)", classCode);
+            StringAssert.Contains(errRaise, classCode);
+            StringAssert.Contains(todoMsg, classCode);
+
             var actualInterfaceCode = actualCode[actualCode.Keys.Single(componentName => !componentName.Equals("Class"))];
-            Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
+            StringAssert.Contains("Option Explicit", actualInterfaceCode);
+            StringAssert.Contains("'@Interface", actualInterfaceCode);
+            StringAssert.Contains("Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)", actualInterfaceCode);
         }
 
         [Test]
         [Category("Refactorings")]
         [Category("Extract Interface")]
-        public void ExtractInterfaceRefactoring_InvalidTargetType_Throws()
+        public void ExtractInterfaceRefactoring_InvalidDeclarationTypeException_Throws()
         {
-            //Input
             const string inputCode =
-                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+@"Public Sub Foo()
 End Sub";
 
             ExtractInterfaceModel presenterAction(ExtractInterfaceModel model)
                 => UserSelectsAllMembers(model);
 
-            var actualCode = RefactoredCode(
+            var refactoredCode = RefactoredCode(
                 "Module",
-                DeclarationType.ProceduralModule,
+                DeclarationType.Module,
                 presenterAction,
                 typeof(InvalidDeclarationTypeException),
                 ("Module", inputCode, ComponentType.StandardModule));
-            Assert.AreEqual(inputCode, actualCode["Module"]);
+
+            Assert.AreEqual(inputCode, refactoredCode["Module"]);
+            Assert.AreEqual(1, refactoredCode.Count);
         }
 
         [Test]
         [Category("Refactorings")]
         [Category("Extract Interface")]
-        public void ExtractInterfaceRefactoring_NoValidTargetSelected_Throws()
+        public void ExtractInterfaceRefactoring_NoDeclarationForSelectionException()
         {
-            //Input
             const string inputCode =
-                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+@"
+
+|
+Public Sub Foo()
 End Sub";
-            var selection = new Selection(1, 23, 1, 27);
+            var code = ToCodeAndSelection(inputCode);
 
             ExtractInterfaceModel presenterAction(ExtractInterfaceModel model)
                 => UserSelectsAllMembers(model);
 
-            var actualCode = RefactoredCode(
+            var refactoredCode = RefactoredCode(
                 "Module",
-                selection,
+                code.Selection,
                 presenterAction,
                 typeof(NoDeclarationForSelectionException),
                 false,
-                ("Module", inputCode, ComponentType.StandardModule));
-            Assert.AreEqual(inputCode, actualCode["Module"]);
+                ("Module", code.Code, ComponentType.StandardModule));
+
+            Assert.AreEqual(code.Code, refactoredCode["Module"]);
+            Assert.AreEqual(1, refactoredCode.Count);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
+        public void ExtractInterfaceRefactoring_InvalidRefactoringModelException_Throws()
+        {
+            var inputCode =
+@"Private Sub Fo|o()
+End Sub";
+            var code = ToCodeAndSelection(inputCode);
+
+            var refactoredCode = RefactoredCode(
+                "Class",
+                code.Selection,
+                model => null,
+                typeof(InvalidRefactoringModelException),
+                false,
+                ("Class", code.Code, ComponentType.ClassModule));
+
+            Assert.AreEqual(code.Code, refactoredCode["Class"]);
+            Assert.AreEqual(1, refactoredCode.Count);
         }
 
         [Test]
@@ -114,78 +130,24 @@ End Sub";
         [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_IgnoresField()
         {
-            //Input
-            const string inputCode =
-                @"Public Fizz As Boolean";
-
-            var selection = new Selection(1, 23, 1, 27);
-
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var target = state.DeclarationFinder
-                    .UserDeclarations(DeclarationType.ClassModule)
-                    .OfType<ClassModuleDeclaration>()
-                    .First();
-
-                //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, target, CreateCodeBuilder());
-                Assert.AreEqual(0, model.Members.Count);
-            }
+            var model = RetrieveModel("Public Fi|zz As Boolean".ToCodeString());
+            Assert.AreEqual(0, model.Members.Count);
         }
 
-        [Test]
+        [TestCase("Attribute VB_Exposed = True", ClassInstancing.Public)]
+        [TestCase("", ClassInstancing.Private)]
         [Category("Refactorings")]
         [Category("Extract Interface")]
-        public void ExtractInterfaceRefactoring_DefaultsToPublicInterfaceForExposedImplementingClass()
+        public void ExtractInterfaceRefactoring_DefaultsToPublicInterface(string attribute, ClassInstancing expected )
         {
-            //Input
-            const string inputCode =
-                @"Attribute VB_Exposed = True
+            var inputCode =
+$@"{attribute}
 
-Public Sub Foo
+Public Sub F|oo
 End Sub";
 
-            var selection = new Selection(1, 23, 1, 27);
-
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var target = state.DeclarationFinder
-                    .UserDeclarations(DeclarationType.ClassModule)
-                    .OfType<ClassModuleDeclaration>()
-                    .First();
-
-                //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, target, CreateCodeBuilder());
-                Assert.AreEqual(ClassInstancing.Public, model.InterfaceInstancing);
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Extract Interface")]
-        public void ExtractInterfaceRefactoring_DefaultsToPrivateInterfaceForNonExposedImplementingClass()
-        {
-            //Input
-            const string inputCode =
-                @"Public Sub Foo
-End Sub";
-
-            var selection = new Selection(1, 23, 1, 27);
-
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var target = state.DeclarationFinder
-                    .UserDeclarations(DeclarationType.ClassModule)
-                    .OfType<ClassModuleDeclaration>()
-                    .First();
-
-                //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, target, CreateCodeBuilder());
-                Assert.AreEqual(ClassInstancing.Private, model.InterfaceInstancing);
-            }
+            var model = RetrieveModel(inputCode.ToCodeString());
+            Assert.AreEqual(expected, model.InterfaceInstancing);
         }
 
         [Test]
@@ -193,19 +155,17 @@ End Sub";
         [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_NullPresenter_NoChanges()
         {
-            //Input
-            const string inputCode =
-                @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+            var inputCode =
+@"Private Sub Fo|o()
 End Sub";
-            var selection = new Selection(1, 23, 1, 27);
+            var code = ToCodeAndSelection(inputCode);
 
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out var component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(code.Code, ComponentType.ClassModule, out var component, code.Selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), code.Selection);
 
-                //SetupFactory
                 var factory = new Mock<IRefactoringPresenterFactory>();
                 factory.Setup(f => f.Create<IExtractInterfacePresenter, ExtractInterfaceModel>(It.IsAny<ExtractInterfaceModel>())).Returns(value: null);
 
@@ -216,26 +176,8 @@ End Sub";
                 Assert.Throws<InvalidRefactoringPresenterException>(() => refactoring.Refactor(qualifiedSelection));
 
                 Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
-                Assert.AreEqual(inputCode, component.CodeModule.Content());
+                Assert.AreEqual(code.Code, component.CodeModule.Content());
             }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Extract Interface")]
-        public void ExtractInterfaceRefactoring_NullModel_NoChanges()
-        {
-            //Input
-            const string inputCode =
-                @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = new Selection(1, 23, 1, 27);
-
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model => null;
-
-            var actualCode = RefactoredCode("Class", selection, presenterAction, typeof(InvalidRefactoringModelException), false, ("Class", inputCode, ComponentType.ClassModule));
-            Assert.AreEqual(inputCode, actualCode["Class"]);
-            Assert.AreEqual(1, actualCode.Count);
         }
 
         [Test]
@@ -243,38 +185,23 @@ End Sub";
         [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_PassTargetIn()
         {
-            //Input
-            const string inputCode =
-                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+            var inputCode =
+@"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
 
-            //Expectation
-            const string expectedCode =
-                @"Implements IClass
-
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub
-
-Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-    Err.Raise 5 'TODO implement interface member
-End Sub
-";
-
-            const string expectedInterfaceCode =
-                @"Option Explicit
-
-'@Interface
-
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub
-";
             ExtractInterfaceModel presenterAction(ExtractInterfaceModel model)
                 => UserSelectsFirstMember(model);
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
-            Assert.AreEqual(expectedCode, actualCode["Class"]);
+            var classCode = actualCode["Class"];
+            StringAssert.Contains("Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)", classCode);
+            StringAssert.Contains(errRaise, classCode);
+            StringAssert.Contains(todoMsg, classCode);
+
             var actualInterfaceCode = actualCode[actualCode.Keys.Single(componentName => !componentName.Equals("Class"))];
-            Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
+            StringAssert.Contains("Option Explicit", actualInterfaceCode);
+            StringAssert.Contains("'@Interface", actualInterfaceCode);
+            StringAssert.Contains("Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)", actualInterfaceCode);
         }
 
         [TestCase(ExtractInterfaceImplementationOption.NoInterfaceImplementation)]
@@ -307,19 +234,19 @@ End Sub
                 case ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface:
                     StringAssert.Contains($"IClass_Fizz arg1, arg2{Environment.NewLine}", sourceModuleCode);
                     StringAssert.DoesNotContain($"IClass_Fizz arg1, arg2{Environment.NewLine}{Environment.NewLine}", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers:
                     StringAssert.Contains($"Fizz arg1, arg2{Environment.NewLine}", sourceModuleCode);
                     StringAssert.DoesNotContain($"Fizz arg1, arg2{Environment.NewLine}{Environment.NewLine}", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface:
                     StringAssert.DoesNotContain("Public Sub Fizz(ByVal arg1 As Integer, ByVal arg2 As String)", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.NoInterfaceImplementation:
-                    StringAssert.Contains("Err.Raise 5", sourceModuleCode);
+                    StringAssert.Contains(errRaise, sourceModuleCode);
                     break;
             }
         }
@@ -351,18 +278,18 @@ End Property
             {
                 case ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface:
                     StringAssert.Contains($"IClass_Fizz = value{Environment.NewLine}", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers:
                     StringAssert.Contains($"Fizz = value{Environment.NewLine}", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface:
                     StringAssert.DoesNotContain("Public Property Let Fizz(value As Long)", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.NoInterfaceImplementation:
-                    StringAssert.Contains("Err.Raise 5", sourceModuleCode);
+                    StringAssert.Contains(errRaise, sourceModuleCode);
                     break;
             }
         }
@@ -395,18 +322,18 @@ End Property
             {
                 case ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface:
                     StringAssert.Contains($"IClass_Fizz(arg1, arg2) = value{Environment.NewLine}", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers:
                     StringAssert.Contains($"Fizz(arg1, arg2) = value{Environment.NewLine}", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface:
                     StringAssert.DoesNotContain("Public Property Let Fizz(arg1 As Integer, arg2 As Integer, value As Long)", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.NoInterfaceImplementation:
-                    StringAssert.Contains("Err.Raise 5", sourceModuleCode);
+                    StringAssert.Contains(errRaise, sourceModuleCode);
                     break;
             }
         }
@@ -440,19 +367,19 @@ End Function
             {
                 case ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface:
                     StringAssert.Contains("Fizz = IClass_Fizz(arg1, arg2)", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers:
                     StringAssert.Contains("IClass_Fizz = Fizz(arg1, arg2)", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface:
                     StringAssert.DoesNotContain("Public Function Fizz(ByVal arg1 As Integer, ByVal arg2 As String)", sourceModuleCode);
                     StringAssert.Contains("IClass_Fizz = mFizz", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.NoInterfaceImplementation:
-                    StringAssert.Contains("Err.Raise 5", sourceModuleCode);
+                    StringAssert.Contains(errRaise, sourceModuleCode);
                     break;
             }
         }
@@ -485,18 +412,18 @@ End Property
             {
                 case ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface:
                     StringAssert.Contains("Set IClass_Fizz = value", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers:
                     StringAssert.Contains("Set Fizz = value", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface:
                     StringAssert.DoesNotContain("Public Property Set Fizz(value As Variant)", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.NoInterfaceImplementation:
-                    StringAssert.Contains("Err.Raise 5", sourceModuleCode);
+                    StringAssert.Contains(errRaise, sourceModuleCode);
                     break;
             }
         }
@@ -528,18 +455,18 @@ End Property
             {
                 case ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface:
                     StringAssert.Contains("Fizz = IClass_Fizz", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers:
                     StringAssert.Contains("IClass_Fizz = Fizz", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface:
                     StringAssert.DoesNotContain("Public Property Get Fizz() As Long", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.NoInterfaceImplementation:
-                    StringAssert.Contains("Err.Raise 5", sourceModuleCode);
+                    StringAssert.Contains(errRaise, sourceModuleCode);
                     break;
             }
         }
@@ -581,15 +508,14 @@ End Sub
             {
                 case ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface:
                     StringAssert.Contains("Set Fizz = IClass_Fizz", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers:
                     StringAssert.Contains("Set IClass_Fizz = Fizz", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
             }
         }
-
 
         [TestCase(ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers)]
         [TestCase(ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface)]
@@ -628,11 +554,11 @@ End Sub
             {
                 case ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface:
                     StringAssert.Contains("Set Fizz = IClass_Fizz", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers:
                     StringAssert.Contains("Set IClass_Fizz = Fizz", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
             }
         }
@@ -668,11 +594,11 @@ End Property
                     StringAssert.Contains("Fizz = IClass_Fizz", sourceModuleCode);
                     StringAssert.Contains("Set IClass_Fizz = mFizz", sourceModuleCode);
                     StringAssert.Contains("    IClass_Fizz = mFizz", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers:
                     StringAssert.Contains("IClass_Fizz = Fizz", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
             }
         }
@@ -704,18 +630,18 @@ End Property
             {
                 case ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface:
                     StringAssert.Contains("Fizz = IClass_Fizz(arg1, arg2)", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers:
                     StringAssert.Contains("IClass_Fizz = Fizz(arg1, arg2)", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface:
                     StringAssert.DoesNotContain("Public Property Get Fizz(arg1 As Long, arg2 As Long) As Long", sourceModuleCode);
-                    StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+                    StringAssert.DoesNotContain(errRaise, sourceModuleCode);
                     break;
                 case ExtractInterfaceImplementationOption.NoInterfaceImplementation:
-                    StringAssert.Contains("Err.Raise 5", sourceModuleCode);
+                    StringAssert.Contains(errRaise, sourceModuleCode);
                     break;
             }
         }
@@ -750,7 +676,7 @@ End Function
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
-            StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+            StringAssert.DoesNotContain(errRaise, sourceModuleCode);
             StringAssert.Contains("IClass_AddABunch = IClass_AddOne(arg1) + IClass_AddTwo(arg1) + IClass_AddThree(arg1)", sourceModuleCode);
         }
 
@@ -954,7 +880,7 @@ End Function
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
             var sourceModuleCode = actualCode["Class"];
-            StringAssert.DoesNotContain("Err.Raise 5", sourceModuleCode);
+            StringAssert.DoesNotContain(errRaise, sourceModuleCode);
             StringAssert.Contains("IClass_AddABunch = IClass_AddOne(arg1) + IClass_AddTwo(arg1) + IClass_AddThree(arg1)", sourceModuleCode);
             StringAssert.Contains("SomeOtherFunction = IClass_AddOne(arg1) + IClass_AddTwo(arg1) + IClass_AddThree(arg1)", sourceModuleCode);
         }
@@ -983,36 +909,39 @@ End Sub";
             var sourceModuleCode = actualCode["Class"];
 
             StringAssert.Contains("IClass_Foo()", sourceModuleCode);
-            StringAssert.Contains($"IClass_Foo(){Environment.NewLine}    {statement}", sourceModuleCode);
+            StringAssert.Contains($"IClass_Foo(){Environment.NewLine}", sourceModuleCode);
+            var statementParts = statement.Split(new char[] { '\n' });
+            foreach (var part in statementParts)
+            {
+                StringAssert.Contains($"{part}", sourceModuleCode);
+            }
         }
 
-        [TestCase(4)]
-        [TestCase(0)]
+        [Test]
         [Category("Refactorings")]
         [Category("Extract Interface")]
-        public void ExtractInterfaceRefactoring_InitialLineIndentRetained(int indention)
+        public void ExtractInterfaceRefactoring_IndenterApplied()
         {
-            var indentation = string.Concat(Enumerable.Repeat(" ", indention));
             var inputCode =
 $@"
 Public Function DivideBy(ByVal arg1 As Long, ByVal arg2 As Long) As Single
-{indentation}On Error Goto ErrorExit:
-    Dim result As Single
-    result = arg1 / arg2
-    DivideBy = result
-    Exit Function
+On Error Goto ErrorExit:
+Dim result As Single
+result = arg1 / arg2
+DivideBy = result
+Exit Function
 ErrorExit:
-    DivideBy = 0
+DivideBy = 0
 End Function";
 
             var expectedCode =
 $@"Private Function IClass_DivideBy(ByVal arg1 As Long, ByVal arg2 As Long) As Single
-{indentation}On Error Goto ErrorExit:
+    On Error Goto ErrorExit:
     Dim result As Single
     result = arg1 / arg2
     IClass_DivideBy = result
     Exit Function
-ErrorExit:
+    ErrorExit:
     IClass_DivideBy = 0
 End Function";
 
@@ -1042,6 +971,7 @@ End Function";
             model.ImplementationOption = implementationOption;
             return model;
         }
+
         protected override IRefactoring TestRefactoring(
             IRewritingManager rewritingManager,
             RubberduckParserState state,
@@ -1067,6 +997,29 @@ End Function";
             {
                 return new ExtractInterfaceConflictFinder(declarationFinderProvider, projectId);
             }
+        }
+
+        private static ExtractInterfaceModel RetrieveModel(TestCodeString codeString)
+            => RetrieveModel(codeString.Code, codeString.CaretPosition.ToOneBased());
+
+        private static ExtractInterfaceModel RetrieveModel(string code, Selection selection)
+        {
+            var vbe = MockVbeBuilder.BuildFromSingleModule(code, ComponentType.ClassModule, out _, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var target = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.ClassModule)
+                    .OfType<ClassModuleDeclaration>()
+                    .First();
+
+                return new ExtractInterfaceModel(state, target, CreateCodeBuilder());
+            }
+        }
+
+        private static (string Code, Selection Selection) ToCodeAndSelection(string input)
+        {
+            var codeString = input.ToCodeString();
+            return (codeString.Code, codeString.CaretPosition.ToOneBased());
         }
 
         private static ICodeBuilder CreateCodeBuilder()
