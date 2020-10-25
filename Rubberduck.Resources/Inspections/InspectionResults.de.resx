@@ -402,7 +402,7 @@ In Memoriam, 1972-2018</value>
     <value>An einer Stelle, die eine Prozedur erfordert, wird der Ausdruck '{0}' vom Objekttyp '{1}'  verwendet, der keinen passendes Standardelement hat.</value>
   </data>
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
-    <value>Der Ausdruck '{0}' erfordert einen Standardelementzugriff, aber der Typ '{1}' hat keinen passendes Standardelement.</value>
+    <value>Der Ausdruck '{0}' erfordert einen Standardelementzugriff, aber der Typ '{1}' hat kein passendes Standardelement.</value>
   </data>
   <data name="UseOfBangNotationInspection" xml:space="preserve">
     <value>Der Ausdruck '{0}' verwendet Ausrufezeichennotation.</value>
@@ -420,7 +420,7 @@ In Memoriam, 1972-2018</value>
     <value>Der Ausdruck '{0}' wird an einer Stelle verwendet, die nach einer Prozedur verlangt, was zu einem Aufruf eines Standardelements führt, welcher erst zur Laufzeit bestimmt werden kann.</value>
   </data>
   <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Der Ausdruck '{0}' enthält einen parametrisierten Zugriff auf den Standardelement '{1}'.</value>
+    <value>Der Ausdruck '{0}' enthält einen parametrisierten Zugriff auf das Standardelement '{1}'.</value>
   </data>
   <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
     <value>Der Ausdruck '{0}' enthält einen parametrisierten rekursiven Standardelementzugriff auf '{1}'.</value>

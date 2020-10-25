@@ -259,7 +259,7 @@
     <value>Ausgewählte Methode</value>
   </data>
   <data name="AnnotateMenu_SelectedModule" xml:space="preserve">
-    <value>Ausgewählte Modul</value>
+    <value>Ausgewähltes Modul</value>
   </data>
   <data name="RubberduckMenu_CodePaneRefactor" xml:space="preserve">
     <value>Um&amp;gestalten</value>

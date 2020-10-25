@@ -280,7 +280,7 @@
     <value>SpaetesBinden</value>
   </data>
   <data name="UnitTest_NewModule_LateBindDirective" xml:space="preserve">
-    <value>SpaetesBinden Tests</value>
+    <value>BindeTestsSpaet</value>
   </data>
   <data name="TestOutcome_DurationHour" xml:space="preserve">
     <value>std</value>
