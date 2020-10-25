@@ -11,6 +11,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Refactorings.AddInterfaceImplementations;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
@@ -25,18 +26,15 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private readonly IAddComponentService _addComponentService;
         private readonly IRewritingManager _rewritingManager;
 
-        private static List<Declaration> _selectedDeclarations;
-
         public ExtractInterfaceRefactoringAction(
             AddInterfaceImplementationsRefactoringAction addImplementationsRefactoringAction,
             IParseTreeProvider parseTreeProvider,
-            IParseManager parseManager, 
+            IParseManager parseManager,
             IRewritingManager rewritingManager,
             IProjectsProvider projectsProvider,
-            IAddComponentService addComponentService) 
+            IAddComponentService addComponentService)
             : base(parseManager, rewritingManager)
         {
-            _selectedDeclarations = new List<Declaration>();
             _addImplementationsRefactoringAction = addImplementationsRefactoringAction;
             _parseTreeProvider = parseTreeProvider;
             _projectsProvider = projectsProvider;
@@ -51,21 +49,6 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         protected override void Refactor(ExtractInterfaceModel model, IRewriteSession rewriteSession)
         {
-            if (model.ImplementationOption == ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface
-                && model.SelectedMembers.SelectMany(m => m.Member.References)
-                    .Any(rf => rf.QualifiedModuleName != rf.Declaration.QualifiedModuleName))
-            {
-                //The refactoring does not modify external references to selected Object members. 
-                //Consequently, Object members with external references cannot be deleted without creating uncompilable code.  
-                //Rather than failing the refactoring, it modifies the ImplementationOption to place the existing implementations
-                //within the interface members.  This sets the user up to
-                //to manually redirect external Object members references to the associated interface member 
-                //and manually delete Object members when that is completed.  
-                //Refactoring in this way is consistent with the caller's intent of selecting the ReplaceObjectMembersWithInterface option initially.
-                model.ImplementationOption = ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface;
-            }
-
-            _selectedDeclarations = model.SelectedMembers.Select(m => m.Member).ToList();
             AddInterface(model, rewriteSession, _rewritingManager.CheckOutCodePaneSession());
         }
 
@@ -116,7 +99,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         private static string InterfaceModuleBody(ExtractInterfaceModel model)
         {
-            var interfaceMembers = string.Join(Environment.NewLine, model.SelectedMembers.Select(m => m.Body));
+            var interfaceMembers = string.Join(NewLines.DOUBLE_SPACE, model.SelectedMembers.Select(m => m.Body));
             var optionExplicit = $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}";
 
             var targetModule = Declaration.GetModuleParent(model.TargetDeclaration);
@@ -195,7 +178,7 @@ Attribute VB_Exposed = True";
 
         private void AddInterfaceMembersToClass(ExtractInterfaceModel model, IRewriteSession rewriteSession, IEnumerable<(Declaration, string)> interfaceMemberImplementations)
         {
-            var addMembersModel = new AddInterfaceImplementationsModel(model.TargetDeclaration.QualifiedModuleName, model.InterfaceName, _selectedDeclarations);
+            var addMembersModel = new AddInterfaceImplementationsModel(model.TargetDeclaration.QualifiedModuleName, model.InterfaceName, SelectedDeclarations(model));
             foreach ((Declaration member, string implementation) in interfaceMemberImplementations)
             {
                 addMembersModel.SetMemberImplementation(member, implementation);
@@ -209,12 +192,18 @@ Attribute VB_Exposed = True";
             if (model.ImplementationOption == ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface)
             {
                 RedirectMemberReferencesToImplementingMember(model, rewriteSession);
-                ForwardMembers(model, rewriteSession);
+                ForwardMembers(model, rewriteSession, SelectedDeclarations(model));
             }
             else if (model.ImplementationOption == ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface)
             {
                 RedirectMemberReferencesToImplementingMember(model, rewriteSession);
-                DeleteMembers(model, rewriteSession);
+
+                //Only delete members free of external resources - otherwise, this option would generate uncompilable code
+                var membersToRetain = MembersWithExternalReferences(model);
+
+                ForwardMembers(model, rewriteSession, membersToRetain);
+
+                DeleteMembers(model, rewriteSession, SelectedDeclarations(model).Except(membersToRetain));
             }
         }
 
@@ -239,38 +228,55 @@ Attribute VB_Exposed = True";
                     ? ForwardFunction(member.IdentifierName, model.ImplementingMemberName(member.IdentifierName), member)
                     : ForwardProcedure(member.IdentifierName, member);
 
-            return _selectedDeclarations.OfType<ModuleBodyElementDeclaration>()
+            return SelectedDeclarations(model).OfType<ModuleBodyElementDeclaration>()
                 .Select(m => (m as Declaration, ForwardingBlock(m)));
         }
 
         private static IEnumerable<(Declaration, string)> ReplicateBlockToImplementingMember(ExtractInterfaceModel model, IRewriteSession scratchPadRewriteSession)
         {
-            if (!_selectedDeclarations.Any())
+            var selectedDeclarations = SelectedDeclarations(model);
+            if (!selectedDeclarations.Any())
             {
                 return Enumerable.Empty<(Declaration, string)>();
             }
-
-            var scratchPadRewriter = scratchPadRewriteSession.CheckOutModuleRewriter(_selectedDeclarations.First().QualifiedModuleName);
-            foreach (IdentifierReference identifierReference in _selectedDeclarations.SelectMany(m => m.References).Where(rf => rf.QualifiedModuleName == rf.Declaration.QualifiedModuleName))
+            var scratchPadRewriter = scratchPadRewriteSession.CheckOutModuleRewriter(selectedDeclarations.First().QualifiedModuleName);
+            foreach (IdentifierReference identifierReference in selectedDeclarations.SelectMany(m => m.References).Where(rf => rf.QualifiedModuleName == rf.Declaration.QualifiedModuleName))
             {
                 scratchPadRewriter.Replace(identifierReference.Context, model.ImplementingMemberName(identifierReference.IdentifierName));
             }
 
-            return _selectedDeclarations.OfType<ModuleBodyElementDeclaration>()
+            var implementations =  selectedDeclarations.OfType<ModuleBodyElementDeclaration>()
                 .Where(m => m.Block.ContainsExecutableStatements(true))
-                .Select(m => (m as Declaration, $"{Spaces(m.Block.Start.Column)}{scratchPadRewriter.GetText(m.Block.Start.TokenIndex, m.Block.Stop.TokenIndex).Trim()}"));
+                .Select(m => (m as Declaration, $"{scratchPadRewriter.GetText(m.Block.Start.TokenIndex, m.Block.Stop.TokenIndex).Trim()}"))
+                .ToList();
+
+            if (model.ImplementationOption == ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface
+                && selectedDeclarations.OfType<ModuleBodyElementDeclaration>().Count() > implementations.Count())
+            {
+                var membersToRetain = MembersWithExternalReferences(model);
+                foreach (var toRetain in membersToRetain)
+                {
+                    if (!implementations.Select(imp => imp.Item1).Contains(toRetain))
+                    {
+                        implementations.Add((toRetain, Resources.Refactorings.Refactorings.ImplementInterface_TODO));
+                    }
+                }
+            }
+
+            return implementations;
         }
 
         private static void RedirectMemberReferencesToImplementingMember(ExtractInterfaceModel model, IRewriteSession rewriteSession)
         {
+            var selectedDeclarations = SelectedDeclarations(model);
             var nonSelectedMembers = model.DeclarationFinderProvider.DeclarationFinder.Members(model.TargetDeclaration.QualifiedModuleName)
                 .OfType<ModuleBodyElementDeclaration>()
-                .Except(_selectedDeclarations);
+                .Except(selectedDeclarations);
 
             var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetDeclaration.QualifiedModuleName);
             foreach (var member in nonSelectedMembers)
             {
-                var otherInterfaceMemberReferences = _selectedDeclarations.SelectMany(m => m.References).Where(rf => rf.ParentScoping == member);
+                var otherInterfaceMemberReferences = selectedDeclarations.SelectMany(m => m.References).Where(rf => rf.ParentScoping == member);
                 foreach (IdentifierReference identifierReference in otherInterfaceMemberReferences)
                 {
                     rewriter.Replace(identifierReference.Context, model.ImplementingMemberName(identifierReference.IdentifierName));
@@ -278,10 +284,11 @@ Attribute VB_Exposed = True";
             }
         }
 
-        private static void ForwardMembers(ExtractInterfaceModel model, IRewriteSession rewriteSession)
+        private static void ForwardMembers(ExtractInterfaceModel model, IRewriteSession rewriteSession, IEnumerable<Declaration> membersToForward)
         {
             var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetDeclaration.QualifiedModuleName);
-            foreach (var member in _selectedDeclarations.OfType<ModuleBodyElementDeclaration>())
+
+            foreach (var member in membersToForward.OfType<ModuleBodyElementDeclaration>())
             {
                 var forwardingStatement = member.DeclarationType.HasFlag(DeclarationType.Function)
                     ? ForwardFunction(model.ImplementingMemberName(member.IdentifierName), member.IdentifierName, member)
@@ -306,7 +313,7 @@ Attribute VB_Exposed = True";
                 ? targetMemberIdentifier
                 : $"{targetMemberIdentifier}({string.Join(", ", member.Parameters.Select(p => p.IdentifierName))})";
 
-            return $"{Spaces(member.Block.Start.Column)}{forwardStatementLHS} = {forwardStatementRHS}";
+            return $"{forwardStatementLHS} = {forwardStatementRHS}";
         }
 
         private static string ForwardProcedure(string targetMemberIdentifier, ModuleBodyElementDeclaration member)
@@ -323,14 +330,15 @@ Attribute VB_Exposed = True";
             var forwardStatementRHS = $"{member.Parameters.Last().IdentifierName}";
 
             return member.DeclarationType.Equals(DeclarationType.PropertySet)
-                ? $"{Spaces(member.Block.Start.Column)}{Tokens.Set} {forwardStatementLHS} = {forwardStatementRHS}"
-                : $"{Spaces(member.Block.Start.Column)}{forwardStatementLHS} = {forwardStatementRHS}";
+                ? $"{Tokens.Set} {forwardStatementLHS} = {forwardStatementRHS}"
+                : $"{forwardStatementLHS} = {forwardStatementRHS}";
         }
 
-        private static void DeleteMembers(ExtractInterfaceModel model, IRewriteSession rewriteSession)
+        private static void DeleteMembers(ExtractInterfaceModel model, IRewriteSession rewriteSession, IEnumerable<Declaration> membersToDelete)
         {
             var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetDeclaration.QualifiedModuleName);
-            foreach (var member in _selectedDeclarations)
+
+            foreach (var member in membersToDelete)
             {
                 var moduleBodyElementContext = member.Context.GetAncestor<VBAParser.ModuleBodyElementContext>();
                 rewriter.Remove(moduleBodyElementContext);
@@ -349,8 +357,12 @@ Attribute VB_Exposed = True";
         private static bool IsParameterlessPropertyGet(ModuleBodyElementDeclaration member)
             => member.DeclarationType.Equals(DeclarationType.PropertyGet) && member.Parameters.Count == 0;
 
-        private static string Spaces(int count) 
-            => string.Concat(Enumerable.Repeat(" ", count));
+        private static List<Declaration> SelectedDeclarations(ExtractInterfaceModel model) 
+            => model.SelectedMembers.Select(m => m.Member).ToList();
+
+        private static List<Declaration> MembersWithExternalReferences(ExtractInterfaceModel model)
+            => SelectedDeclarations(model).Where(d => d.References.Any(rf => rf.QualifiedModuleName != d.QualifiedModuleName)).ToList();
+
 
         private static string ConstrainNewlineSequences(string content, int maxConsecutiveNewLines)
         {

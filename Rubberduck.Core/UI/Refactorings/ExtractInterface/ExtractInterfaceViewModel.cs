@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using NLog;
 using Rubberduck.Parsing.Symbols;
@@ -13,25 +12,17 @@ namespace Rubberduck.UI.Refactorings
 {
     public class ExtractInterfaceViewModel : RefactoringViewModelBase<ExtractInterfaceModel>
     {
-        private static ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>> _implementationOptionsExceptReplace;
-
-        private static ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>> _implementationOptionsAll;
+        private static ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>> _implementationOptions;
 
         public ExtractInterfaceViewModel(ExtractInterfaceModel model) : base(model)
         {
-            _implementationOptionsExceptReplace  = new ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>>()
+            _implementationOptions  = new ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>>()
             {
                 new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface, Resources.RubberduckUI.ExtractInterface_OptionForwardToInterfaceMembers),
                 new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers, Resources.RubberduckUI.ExtractInterface_OptionForwardToObjectMembers),
                 new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.NoInterfaceImplementation, Resources.RubberduckUI.ExtractInterface_OptionAddEmptyImplementation),
+                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface, Resources.RubberduckUI.ExtractInterface_OptionReplaceMembersWithInterfaceMembers)
             };
-
-            _implementationOptionsAll = new ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>>(_implementationOptionsExceptReplace)
-            {
-                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface, Resources.RubberduckUI.ExtractInterface_OptionReplaceMembersWithInterfaceMembers),
-            };
-
-            ResetImplementationOptions();
 
             SelectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(true));
             DeselectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(false));
@@ -42,10 +33,6 @@ namespace Rubberduck.UI.Refactorings
                 .Select(module => module.ComponentName)
                 .ToList();
 
-            foreach (var member in Model.Members)
-            {
-                member.PropertyChanged += HandleMemberSelectionChanged;
-            }
         }
 
         public ObservableCollection<InterfaceMember> Members
@@ -54,9 +41,6 @@ namespace Rubberduck.UI.Refactorings
             set
             {
                 Model.Members = value;
-
-                ResetImplementationOptions();
-
                 OnPropertyChanged();
             }
         }
@@ -107,7 +91,7 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>> ImplementationOptions { set; get; }
+        public ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>> ImplementationOptions => _implementationOptions;
 
         public ExtractInterfaceImplementationOption ImplementationOption
         {
@@ -136,31 +120,5 @@ namespace Rubberduck.UI.Refactorings
 
         public CommandBase SelectAllCommand { get; }
         public CommandBase DeselectAllCommand { get; }
-
-        private void HandleMemberSelectionChanged(Object sender, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == nameof(InterfaceMember.IsSelected))
-            {
-                ResetImplementationOptions();
-            }
-        }
-
-        private void ResetImplementationOptions()
-        {
-            var selectedMemberHasExtReferences = Model.SelectedMembers.SelectMany(m => m.Member.References)
-                .Any(rf => rf.QualifiedModuleName != rf.Declaration.QualifiedModuleName);
-
-            ImplementationOptions = selectedMemberHasExtReferences
-                ? _implementationOptionsExceptReplace
-                : _implementationOptionsAll;
-
-            if (selectedMemberHasExtReferences
-                && ImplementationOption == ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface)
-            {
-                ImplementationOption = ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface;
-            }
-
-            OnPropertyChanged(nameof(ImplementationOptions));
-        }
     }
 }

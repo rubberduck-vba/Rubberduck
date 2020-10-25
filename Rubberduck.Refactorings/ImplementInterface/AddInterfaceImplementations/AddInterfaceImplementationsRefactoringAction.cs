@@ -23,9 +23,9 @@ namespace Rubberduck.Refactorings.AddInterfaceImplementations
             var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetModule);
 
             var missingMembersText = model.Members
-                .Aggregate(string.Empty, (current, member) => current + Environment.NewLine + GetInterfaceMember(member, model.InterfaceName, $"{model.GetMemberImplementation(member)}"));
+                .Aggregate(string.Empty, (current, member) => current + NewLines.DOUBLE_SPACE + GetInterfaceMember(member, model.InterfaceName, $"{model.GetMemberImplementation(member)}"));
 
-            rewriter.InsertAfter(rewriter.TokenStream.Size, Environment.NewLine + missingMembersText);
+            rewriter.InsertAfter(rewriter.TokenStream.Size, missingMembersText);
         }
 
         private string GetInterfaceMember(Declaration member, string interfaceName, string memberBody)
