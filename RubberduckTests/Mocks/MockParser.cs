@@ -122,7 +122,8 @@ namespace RubberduckTests.Mocks
                 state,
                 parserStateManager,
                 moduleToModuleReferenceManager,
-                referenceRemover);
+                referenceRemover,
+                userComProjectsRepository);
             var parsingStageService = new ParsingStageService(
                 comSynchronizer,
                 builtInDeclarationLoader,

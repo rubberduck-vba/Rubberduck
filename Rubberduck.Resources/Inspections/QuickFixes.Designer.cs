@@ -349,6 +349,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Qualify reference with &apos;Me&apos;..
+        /// </summary>
+        public static string QualifyWithMeQuickFix {
+            get {
+                return ResourceManager.GetString("QualifyWithMeQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove &apos;ByRef&apos; modifier.
         /// </summary>
         public static string RedundantByRefModifierQuickFix {

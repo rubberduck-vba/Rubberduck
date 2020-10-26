@@ -442,6 +442,12 @@
   <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
     <value>Superfluous annotation arguments</value>
   </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>Implicit reference to containing Worksheet module</value>
+  </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>Implicit reference to the containing Workbook module</value>
+  </data>
   <data name="MisleadingByRefParameterInspection" xml:space="preserve">
     <value>Misleading ByRef parameter modifier</value>
   </data>

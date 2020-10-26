@@ -48,7 +48,9 @@
     &lt;CodeInspection Name="HostSpecificExpressionInspection" Severity="Warning" InspectionType="LanguageOpportunities" /&gt;
     &lt;CodeInspection Name="HungarianNotationInspection" Severity="Suggestion" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
     &lt;CodeInspection Name="ImplicitActiveSheetReferenceInspection" Severity="Warning" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="ImplicitContainingSheetReferenceInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
     &lt;CodeInspection Name="ImplicitActiveWorkbookReferenceInspection" Severity="Warning" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="ImplicitContainingWorkbookReferenceInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
     &lt;CodeInspection Name="ImplicitDefaultMemberAssignmentInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
     &lt;CodeInspection Name="ImplicitPublicMemberInspection" Severity="Hint" InspectionType="LanguageOpportunities" /&gt;
     &lt;CodeInspection Name="ImplicitVariantReturnTypeInspection" Severity="Hint" InspectionType="LanguageOpportunities" /&gt;

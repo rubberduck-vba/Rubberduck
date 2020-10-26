@@ -142,7 +142,7 @@
     <value>[Erwartet] und [Tatsächlich] sind Referenztypen. Erwägen Sie eine Benutzung von {0}.</value>
   </data>
   <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
-    <value>I verifizier au.</value>
+    <value>Ich prüfe auch.</value>
   </data>
   <data name="Assert_InvalidFakePassThrough" xml:space="preserve">
     <value>Aufgesetztes IFake-Objekt {0} ist nicht valide. PassThrough muss False sein.</value>
