@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Resources;
+using Rubberduck.Resources.Refactorings;
 
 namespace Rubberduck.UI.Refactorings
 {
@@ -31,16 +32,16 @@ namespace Rubberduck.UI.Refactorings
 
         private void Localize()
         {
-            Text = RubberduckUI.ExtractMethod_Caption;
+            Text = ExtractMethod.Caption;
             OkButton.Text = RubberduckUI.OK;
             CancelDialogButton.Text = RubberduckUI.CancelButtonText;
 
-            TitleLabel.Text = RubberduckUI.ExtractMethod_TitleText;
-            InstructionsLabel.Text = RubberduckUI.ExtractMethod_InstructionsText;
+            TitleLabel.Text = ExtractMethod.TitleText;
+            InstructionsLabel.Text = ExtractMethod.InstructionsText;
             NameLabel.Text = RubberduckUI.NameLabelText;
-            AccessibilityLabel.Text = RubberduckUI.ExtractMethod_AccessibilityLabel;
-            ParametersLabel.Text = RubberduckUI.ExtractMethod_ParametersLabel;
-            PreviewLabel.Text = RubberduckUI.ExtractMethod_PreviewLabel;
+            AccessibilityLabel.Text = ExtractMethod.AccessibilityLabel;
+            ParametersLabel.Text = ExtractMethod.ParametersLabel;
+            PreviewLabel.Text = ExtractMethod.PreviewLabel;
         }
 
         private void InitializeParameterGrid()

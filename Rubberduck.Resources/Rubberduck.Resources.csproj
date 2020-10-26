@@ -86,6 +86,9 @@
     <Compile Update="Refactorings\ExtractInterface.Designer.cs">
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Update="Refactorings\ExtractMethod.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="Refactorings\Refactorings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -193,6 +196,9 @@
       <LastGenOutput>RubberduckMenus.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Refactorings\ExtractInterface.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Refactorings\ExtractMethod.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Refactorings\Refactorings.resx">
