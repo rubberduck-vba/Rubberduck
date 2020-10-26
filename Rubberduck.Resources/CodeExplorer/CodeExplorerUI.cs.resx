@@ -117,122 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
-    <value>Spustit Všechny &amp;Testy</value>
-  </data>
-  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
-    <value>Otevřít Designer</value>
-  </data>
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (parsuji...)</value>
   </data>
-  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
-    <value>Modul třídy (.cls)</value>
-  </data>
-  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>Standardní modul (.bas)</value>
-  </data>
-  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>Testovací modul</value>
-  </data>
-  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
-    <value>Přepnout složky</value>
-  </data>
-  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
-    <value>Zkopírovat do schránky</value>
-  </data>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
-  </data>
-  <data name="CodeExplorer_Indent" xml:space="preserve">
-    <value>Odsazení</value>
-  </data>
-  <data name="CodeExplorer_AddModule" xml:space="preserve">
-    <value>Přidat Modul</value>
-  </data>
-  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
-    <value>Testovací modul s pahýly</value>
-    <comment>TC</comment>
-  </data>
-  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
-    <value>Zhroucení node a jeho následovníků</value>
-  </data>
-  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
-    <value>Ukázat jmé&amp;na členů</value>
-  </data>
-  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
-    <value>Ukázat styl</value>
-  </data>
-  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
-    <value>Ukázat plné &amp;signatury</value>
-  </data>
-  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
-    <value>Rozšířit node a všechny jeho následovníky</value>
-  </data>
-  <data name="CodeExplorer_Export" xml:space="preserve">
-    <value>Exportovat...</value>
-  </data>
-  <data name="CodeExplorer_ExportAll" xml:space="preserve">
-    <value>Exportovat Projekt...</value>
-  </data>
-  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>Najít Všechny Implementace...</value>
-    <comment>TC</comment>
-  </data>
-  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>Najít Všechny Reference...</value>
-    <comment>TC</comment>
-  </data>
-  <data name="CodeExplorer_Import" xml:space="preserve">
-    <value>Importovat...</value>
-  </data>
-  <data name="CodeExplorer_Navigate" xml:space="preserve">
-    <value>Na&amp;vigova</value>
-  </data>
-  <data name="CodeExplorer_New" xml:space="preserve">
-    <value>&amp;Nový</value>
-  </data>
-  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
-    <value>Přidat komponentu do aktivního projektu</value>
-  </data>
-  <data name="CodeExplorer_Open" xml:space="preserve">
-    <value>Otevřít</value>
-  </data>
-  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
-    <value>Otevřít Designer</value>
-  </data>
-  <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
-    <value>Vlastnosti projektu</value>
-  </data>
-  <data name="CodeExplorer_Print" xml:space="preserve">
-    <value>Vytisknout...</value>
-  </data>
-  <data name="CodeExplorer_Refresh" xml:space="preserve">
-    <value>Obnov&amp;ení</value>
-  </data>
-  <data name="CodeExplorer_Remove" xml:space="preserve">
-    <value>Odstranit...</value>
-  </data>
-  <data name="CodeExplorer_ResourceFileText" xml:space="preserve">
-    <value>Zdroje</value>
-  </data>
-  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
-    <value>Přepnout signatury</value>
-  </data>
-  <data name="CodeExplorer_Sort" xml:space="preserve">
-    <value>Seřadit</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
-    <value>Jako v modulu</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
-    <value>podle Jména</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
-    <value>Seskupit podle Typu</value>
-  </data>
-  <data name="CodeExplorer_Add" xml:space="preserve">
-    <value>Přidat...</value>
   </data>
   <data name="ExportBeforeRemove_Caption" xml:space="preserve">
     <value>Potvrdit Export</value>
@@ -240,62 +129,11 @@
   <data name="ExportBeforeRemove_Prompt" xml:space="preserve">
     <value>Chcete exportovat '{0}' před jeho odstraněním?</value>
   </data>
-  <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>UserForm (.frm)</value>
-  </data>
-  <data name="CodeExplorer_AddMDIFormText" xml:space="preserve">
-    <value>MDI form (.frm)</value>
-  </data>
-  <data name="CodeExplorer_AddPropertyPageText" xml:space="preserve">
-    <value>Property stránka (.pag)</value>
-  </data>
-  <data name="CodeExplorer_AddUserControlText" xml:space="preserve">
-    <value>UserControl (.ctl)</value>
-  </data>
-  <data name="CodeExplorer_AddUserDocumentText" xml:space="preserve">
-    <value>Uživatelský dokument (.dob)</value>
-  </data>
-  <data name="CodeExplorer_AddVBFormText" xml:space="preserve">
-    <value>Form (.frm)</value>
-  </data>
-  <data name="CodeExplorer_Rename" xml:space="preserve">
-    <value>Přejmenovat...</value>
-  </data>
-  <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
-    <value>Startovací projekt</value>
-  </data>
-  <data name="CodeExplorer_AddTemplatesSubMenu" xml:space="preserve">
-    <value>Šablony</value>
-  </data>
-  <data name="CodeExplorer_FontSizeToolTip" xml:space="preserve">
-    <value>Velikost Fontu</value>
-  </data>
-  <data name="CodeExplorer_ProjectReferences" xml:space="preserve">
-    <value>Reference Projektu</value>
-  </data>
-  <data name="CodeExplorer_SearchPlaceholder" xml:space="preserve">
-    <value>Vyhledávat...</value>
-  </data>
-  <data name="CodeExplorer_SyncCodePaneToolTip" xml:space="preserve">
-    <value>Synchronizovat s původním panelem</value>
-  </data>
   <data name="ExportError_Caption" xml:space="preserve">
     <value>Chyba při exportování '{0}'</value>
   </data>
   <data name="RemoveError_Caption" xml:space="preserve">
     <value>Chyba při odstraňování '{0}'</value>
-  </data>
-  <data name="CodeExplorer_LibraryReferences" xml:space="preserve">
-    <value>Reference Knihovny</value>
-  </data>
-  <data name="CodeExplorer_AddExistingFileText" xml:space="preserve">
-    <value>Existující soubor...</value>
-  </data>
-  <data name="CodeExplorer_Delete" xml:space="preserve">
-    <value>Odstranit</value>
-  </data>
-  <data name="CodeExplorer_Exclude" xml:space="preserve">
-    <value>Vyloučit z projektu</value>
   </data>
   <data name="ConfirmBeforeDelete_Caption" xml:space="preserve">
     <value>Potvrdit Odstranění</value>
@@ -313,12 +151,6 @@ Pokračovat?</value>
 
 {0}</value>
   </data>
-  <data name="CodeExplorer_AppendHeader" xml:space="preserve">
-    <value>Rubberduck: Uživatelské Deklarace - {0}</value>
-  </data>
-  <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
-    <value>Extrahovat Interface...</value>
-  </data>
   <data name="SyncProject" xml:space="preserve">
     <value>Synchronizovat Projekt</value>
   </data>
@@ -328,10 +160,175 @@ Pokračovat?</value>
   <data name="ReplaceFromFiles" xml:space="preserve">
     <value>Nahradit Obsahy ze Souborů...</value>
   </data>
-  <data name="CodeExplorer_MoveToFolder" xml:space="preserve">
+  <data name="AddPropertyPageText" xml:space="preserve">
+    <value>Property stránka (.pag)</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Přidat...</value>
+  </data>
+  <data name="AddClassModuleText" xml:space="preserve">
+    <value>Modul třídy (.cls)</value>
+  </data>
+  <data name="AddExistingFileText" xml:space="preserve">
+    <value>Existující soubor...</value>
+  </data>
+  <data name="AddFormText" xml:space="preserve">
+    <value>UserForm (.frm)</value>
+  </data>
+  <data name="AddMDIFormText" xml:space="preserve">
+    <value>MDI form (.frm)</value>
+  </data>
+  <data name="AddModule" xml:space="preserve">
+    <value>Přidat Modul</value>
+  </data>
+  <data name="AddStdModuleText" xml:space="preserve">
+    <value>Standardní modul (.bas)</value>
+  </data>
+  <data name="AddTemplatesSubMenu" xml:space="preserve">
+    <value>Šablony</value>
+  </data>
+  <data name="AddTestModuleText" xml:space="preserve">
+    <value>Testovací modul</value>
+  </data>
+  <data name="AddTestModuleWithStubsText" xml:space="preserve">
+    <value>Testovací modul s pahýly</value>
+  </data>
+  <data name="AddUserControlText" xml:space="preserve">
+    <value>UserControl (.ctl)</value>
+  </data>
+  <data name="AddUserDocumentText" xml:space="preserve">
+    <value>Uživatelský dokument (.dob)</value>
+  </data>
+  <data name="AddVBFormText" xml:space="preserve">
+    <value>Form (.frm)</value>
+  </data>
+  <data name="Annotate" xml:space="preserve">
+    <value>Okomentovat</value>
+  </data>
+  <data name="AppendHeader" xml:space="preserve">
+    <value>Rubberduck: Uživatelské Deklarace - {0}</value>
+  </data>
+  <data name="CollapseSubnodesToolTip" xml:space="preserve">
+    <value>Zhroucení node a jeho následovníků</value>
+  </data>
+  <data name="CopyToolTip" xml:space="preserve">
+    <value>Zkopírovat do schránky</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Odstranit</value>
+  </data>
+  <data name="DisplayMemberNamesText" xml:space="preserve">
+    <value>Ukázat jmé&amp;na členů</value>
+  </data>
+  <data name="DisplayModeToolTip" xml:space="preserve">
+    <value>Ukázat styl</value>
+  </data>
+  <data name="DisplaySignaturesText" xml:space="preserve">
+    <value>Ukázat plné &amp;signatury</value>
+  </data>
+  <data name="Exclude" xml:space="preserve">
+    <value>Vyloučit z projektu</value>
+  </data>
+  <data name="ExpandSubnodesToolTip" xml:space="preserve">
+    <value>Rozšířit node a všechny jeho následovníky</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Exportovat...</value>
+  </data>
+  <data name="ExportAll" xml:space="preserve">
+    <value>Exportovat Projekt...</value>
+  </data>
+  <data name="ExtractInterfaceText" xml:space="preserve">
+    <value>Extrahovat Interface...</value>
+  </data>
+  <data name="FindAllImplementationsText" xml:space="preserve">
+    <value>Najít Všechny Implementace...</value>
+  </data>
+  <data name="FindAllReferencesText" xml:space="preserve">
+    <value>Najít Všechny Reference...</value>
+  </data>
+  <data name="FontSizeToolTip" xml:space="preserve">
+    <value>Velikost Fontu</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Importovat...</value>
+  </data>
+  <data name="Indent" xml:space="preserve">
+    <value>Odsazení</value>
+  </data>
+  <data name="LibraryReferences" xml:space="preserve">
+    <value>Reference Knihovny</value>
+  </data>
+  <data name="MoveToFolder" xml:space="preserve">
     <value>Přesunout do složky...</value>
   </data>
-  <data name="CodeExplorer_Annotate" xml:space="preserve">
-    <value>Okomentovat</value>
+  <data name="Navigate" xml:space="preserve">
+    <value>Na&amp;vigova</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>&amp;Nový</value>
+  </data>
+  <data name="NewToolTip" xml:space="preserve">
+    <value>Přidat komponentu do aktivního projektu</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Otevřít</value>
+  </data>
+  <data name="OpenDesigner" xml:space="preserve">
+    <value>Otevřít Designer</value>
+  </data>
+  <data name="OpenProjectProperties" xml:space="preserve">
+    <value>Vlastnosti projektu</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Vytisknout...</value>
+  </data>
+  <data name="ProjectReferences" xml:space="preserve">
+    <value>Reference Projektu</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Obnov&amp;ení</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Odstranit...</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Přejmenovat...</value>
+  </data>
+  <data name="ResourceFileText" xml:space="preserve">
+    <value>Zdroje</value>
+  </data>
+  <data name="RunAllTestsText" xml:space="preserve">
+    <value>Spustit Všechny &amp;Testy</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Vyhledávat...</value>
+  </data>
+  <data name="SetAsStartupProject" xml:space="preserve">
+    <value>Startovací projekt</value>
+  </data>
+  <data name="ShowDesignerToolTip" xml:space="preserve">
+    <value>Otevřít Designer</value>
+  </data>
+  <data name="ShowFoldersToolTip" xml:space="preserve">
+    <value>Přepnout složky</value>
+  </data>
+  <data name="ShowSignaturesToolTip" xml:space="preserve">
+    <value>Přepnout signatury</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Seřadit</value>
+  </data>
+  <data name="SortStyle_ByCodeOrder" xml:space="preserve">
+    <value>Jako v modulu</value>
+  </data>
+  <data name="SortStyle_ByName" xml:space="preserve">
+    <value>podle Jména</value>
+  </data>
+  <data name="SortStyle_ByType" xml:space="preserve">
+    <value>Seskupit podle Typu</value>
+  </data>
+  <data name="SyncCodePaneToolTip" xml:space="preserve">
+    <value>Synchronizovat s původním panelem</value>
   </data>
 </root>

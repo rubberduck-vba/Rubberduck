@@ -202,152 +202,11 @@
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (parsing...)</value>
   </data>
-  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
-    <value>Class module (.cls)</value>
-  </data>
-  <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>UserForm (.frm)</value>
-    <comment>TC</comment>
-  </data>
-  <data name="CodeExplorer_AddModule" xml:space="preserve">
-    <value>Add</value>
-  </data>
-  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>Standard module (.bas)</value>
-    <comment>TC</comment>
-  </data>
-  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>Test module</value>
-    <comment>TC</comment>
-  </data>
-  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
-    <value>Test module with stubs</value>
-    <comment>TC</comment>
-  </data>
-  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
-    <value>Collapse all</value>
-  </data>
-  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
-    <value>Copy to clipboard</value>
-  </data>
-  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
-    <value>Display member &amp;names</value>
-  </data>
-  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
-    <value>Display style</value>
-  </data>
-  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
-    <value>Display full &amp;signatures</value>
-  </data>
-  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
-    <value>Expand all</value>
-  </data>
-  <data name="CodeExplorer_Export" xml:space="preserve">
-    <value>Export...</value>
-  </data>
-  <data name="CodeExplorer_ExportAll" xml:space="preserve">
-    <value>Export Project...</value>
-  </data>
-  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>Find All Implementations...</value>
-    <comment>TC</comment>
-  </data>
-  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>Find All References...</value>
-    <comment>TC</comment>
-  </data>
-  <data name="CodeExplorer_Import" xml:space="preserve">
-    <value>Import...</value>
-  </data>
-  <data name="CodeExplorer_Indent" xml:space="preserve">
-    <value>Indent</value>
-  </data>
-  <data name="CodeExplorer_Navigate" xml:space="preserve">
-    <value>Na&amp;vigate</value>
-  </data>
-  <data name="CodeExplorer_New" xml:space="preserve">
-    <value>&amp;New</value>
-  </data>
-  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
-    <value>Add a component to the active project</value>
-  </data>
-  <data name="CodeExplorer_Open" xml:space="preserve">
-    <value>Open</value>
-  </data>
-  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
-    <value>Open Designer</value>
-  </data>
-  <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
-    <value>Project properties</value>
-  </data>
-  <data name="CodeExplorer_Print" xml:space="preserve">
-    <value>Print...</value>
-  </data>
-  <data name="CodeExplorer_Refresh" xml:space="preserve">
-    <value>R&amp;efresh</value>
-  </data>
-  <data name="CodeExplorer_Remove" xml:space="preserve">
-    <value>Remove...</value>
-  </data>
-  <data name="CodeExplorer_ResourceFileText" xml:space="preserve">
-    <value>Resources</value>
-  </data>
-  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
-    <value>Run All &amp;Tests</value>
-  </data>
-  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
-    <value>Open Designer</value>
-  </data>
-  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
-    <value>Toggle folders</value>
-  </data>
-  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
-    <value>Toggle signatures</value>
-  </data>
-  <data name="CodeExplorer_Sort" xml:space="preserve">
-    <value>Sort</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
-    <value>As in module</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
-    <value>by Name</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
-    <value>Group by Type</value>
-  </data>
-  <data name="CodeExplorer_Add" xml:space="preserve">
-    <value>Add...</value>
-  </data>
   <data name="ExportBeforeRemove_Caption" xml:space="preserve">
     <value>Confirm Export</value>
   </data>
   <data name="ExportBeforeRemove_Prompt" xml:space="preserve">
     <value>Do you want to export '{0}' before removing?</value>
-  </data>
-  <data name="CodeExplorer_AddMDIFormText" xml:space="preserve">
-    <value>MDI form (.frm)</value>
-  </data>
-  <data name="CodeExplorer_AddPropertyPageText" xml:space="preserve">
-    <value>Property page (.pag)</value>
-  </data>
-  <data name="CodeExplorer_AddUserControlText" xml:space="preserve">
-    <value>UserControl (.ctl)</value>
-  </data>
-  <data name="CodeExplorer_AddUserDocumentText" xml:space="preserve">
-    <value>User document (.dob)</value>
-  </data>
-  <data name="CodeExplorer_AddVBFormText" xml:space="preserve">
-    <value>Form (.frm)</value>
-  </data>
-  <data name="CodeExplorer_Rename" xml:space="preserve">
-    <value>Rename...</value>
-  </data>
-  <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
-    <value>Set as start up</value>
-  </data>
-  <data name="CodeExplorer_AddTemplatesSubMenu" xml:space="preserve">
-    <value>Templates</value>
   </data>
   <data name="BrokenReference" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\Custom\PNG\BrokenReference.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -361,26 +220,11 @@
   <data name="Reference" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\Fugue\node-select-all.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="CodeExplorer_ProjectReferences" xml:space="preserve">
-    <value>Project References</value>
-  </data>
-  <data name="CodeExplorer_FontSizeToolTip" xml:space="preserve">
-    <value>Font Size</value>
-  </data>
-  <data name="CodeExplorer_SearchPlaceholder" xml:space="preserve">
-    <value>Search...</value>
-  </data>
-  <data name="CodeExplorer_SyncCodePaneToolTip" xml:space="preserve">
-    <value>Sync with code pane</value>
-  </data>
   <data name="ExportError_Caption" xml:space="preserve">
     <value>Error exporting '{0}'</value>
   </data>
   <data name="RemoveError_Caption" xml:space="preserve">
     <value>Error removing '{0}'</value>
-  </data>
-  <data name="CodeExplorer_LibraryReferences" xml:space="preserve">
-    <value>Library References</value>
   </data>
   <data name="ObjectClassPredeclared" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\Custom\PNG\ObjectClassPredeclared.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -415,15 +259,6 @@
   <data name="ObjectTestMethod" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\Custom\PNG\TestMethod.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="CodeExplorer_AddExistingFileText" xml:space="preserve">
-    <value>Existing files...</value>
-  </data>
-  <data name="CodeExplorer_Delete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="CodeExplorer_Exclude" xml:space="preserve">
-    <value>Exclude from project</value>
-  </data>
   <data name="ConfirmBeforeDelete_Caption" xml:space="preserve">
     <value>Confirm Delete</value>
   </data>
@@ -440,12 +275,6 @@ Continue?</value>
     
 {0}</value>
   </data>
-  <data name="CodeExplorer_AppendHeader" xml:space="preserve">
-    <value>Rubberduck User Declarations - {0}</value>
-  </data>
-  <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
-    <value>Extract Interface...</value>
-  </data>
   <data name="SyncProject" xml:space="preserve">
     <value>Sync Project</value>
   </data>
@@ -455,10 +284,181 @@ Continue?</value>
   <data name="ReplaceFromFiles" xml:space="preserve">
     <value>Replace Contents from Files...</value>
   </data>
-  <data name="CodeExplorer_MoveToFolder" xml:space="preserve">
+  <data name="AddPropertyPageText" xml:space="preserve">
+    <value>Property page (.pag)</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add...</value>
+  </data>
+  <data name="AddClassModuleText" xml:space="preserve">
+    <value>Class module (.cls)</value>
+  </data>
+  <data name="AddExistingFileText" xml:space="preserve">
+    <value>Existing files...</value>
+  </data>
+  <data name="AddFormText" xml:space="preserve">
+    <value>UserForm (.frm)</value>
+    <comment>TC</comment>
+  </data>
+  <data name="AddMDIFormText" xml:space="preserve">
+    <value>MDI form (.frm)</value>
+  </data>
+  <data name="AddModule" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="AddStdModuleText" xml:space="preserve">
+    <value>Standard module (.bas)</value>
+    <comment>TC</comment>
+  </data>
+  <data name="AddTemplatesSubMenu" xml:space="preserve">
+    <value>Templates</value>
+  </data>
+  <data name="AddTestModuleText" xml:space="preserve">
+    <value>Test module</value>
+    <comment>TC</comment>
+  </data>
+  <data name="AddTestModuleWithStubsText" xml:space="preserve">
+    <value>Test module with stubs</value>
+    <comment>TC</comment>
+  </data>
+  <data name="AddUserControlText" xml:space="preserve">
+    <value>UserControl (.ctl)</value>
+  </data>
+  <data name="AddUserDocumentText" xml:space="preserve">
+    <value>User document (.dob)</value>
+  </data>
+  <data name="AddVBFormText" xml:space="preserve">
+    <value>Form (.frm)</value>
+  </data>
+  <data name="Annotate" xml:space="preserve">
+    <value>Annotate</value>
+  </data>
+  <data name="AppendHeader" xml:space="preserve">
+    <value>Rubberduck User Declarations - {0}</value>
+  </data>
+  <data name="CollapseSubnodesToolTip" xml:space="preserve">
+    <value>Collapse all</value>
+  </data>
+  <data name="CopyToolTip" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DisplayMemberNamesText" xml:space="preserve">
+    <value>Display member &amp;names</value>
+  </data>
+  <data name="DisplayModeToolTip" xml:space="preserve">
+    <value>Display style</value>
+  </data>
+  <data name="DisplaySignaturesText" xml:space="preserve">
+    <value>Display full &amp;signatures</value>
+  </data>
+  <data name="Exclude" xml:space="preserve">
+    <value>Exclude from project</value>
+  </data>
+  <data name="ExpandSubnodesToolTip" xml:space="preserve">
+    <value>Expand all</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export...</value>
+  </data>
+  <data name="ExportAll" xml:space="preserve">
+    <value>Export Project...</value>
+  </data>
+  <data name="ExtractInterfaceText" xml:space="preserve">
+    <value>Extract Interface...</value>
+  </data>
+  <data name="FindAllImplementationsText" xml:space="preserve">
+    <value>Find All Implementations...</value>
+    <comment>TC</comment>
+  </data>
+  <data name="FindAllReferencesText" xml:space="preserve">
+    <value>Find All References...</value>
+    <comment>TC</comment>
+  </data>
+  <data name="FontSizeToolTip" xml:space="preserve">
+    <value>Font Size</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Import...</value>
+  </data>
+  <data name="Indent" xml:space="preserve">
+    <value>Indent</value>
+  </data>
+  <data name="LibraryReferences" xml:space="preserve">
+    <value>Library References</value>
+  </data>
+  <data name="MoveToFolder" xml:space="preserve">
     <value>Move to Folder...</value>
   </data>
-  <data name="CodeExplorer_Annotate" xml:space="preserve">
-    <value>Annotate</value>
+  <data name="Navigate" xml:space="preserve">
+    <value>Na&amp;vigate</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>&amp;New</value>
+  </data>
+  <data name="NewToolTip" xml:space="preserve">
+    <value>Add a component to the active project</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="OpenDesigner" xml:space="preserve">
+    <value>Open Designer</value>
+  </data>
+  <data name="OpenProjectProperties" xml:space="preserve">
+    <value>Project properties</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Print...</value>
+  </data>
+  <data name="ProjectReferences" xml:space="preserve">
+    <value>Project References</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>R&amp;efresh</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove...</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Rename...</value>
+  </data>
+  <data name="ResourceFileText" xml:space="preserve">
+    <value>Resources</value>
+  </data>
+  <data name="RunAllTestsText" xml:space="preserve">
+    <value>Run All &amp;Tests</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="SetAsStartupProject" xml:space="preserve">
+    <value>Set as start up</value>
+  </data>
+  <data name="ShowDesignerToolTip" xml:space="preserve">
+    <value>Open Designer</value>
+  </data>
+  <data name="ShowFoldersToolTip" xml:space="preserve">
+    <value>Toggle folders</value>
+  </data>
+  <data name="ShowSignaturesToolTip" xml:space="preserve">
+    <value>Toggle signatures</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Sort</value>
+  </data>
+  <data name="SortStyle_ByCodeOrder" xml:space="preserve">
+    <value>As in module</value>
+  </data>
+  <data name="SortStyle_ByName" xml:space="preserve">
+    <value>by Name</value>
+  </data>
+  <data name="SortStyle_ByType" xml:space="preserve">
+    <value>Group by Type</value>
+  </data>
+  <data name="SyncCodePaneToolTip" xml:space="preserve">
+    <value>Sync with code pane</value>
   </data>
 </root>

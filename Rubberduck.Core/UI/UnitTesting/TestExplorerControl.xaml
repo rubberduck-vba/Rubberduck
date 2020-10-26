@@ -162,7 +162,7 @@
                             <Image Source="{StaticResource AddIcon}" Style="{StaticResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
                         <MenuItem.Header>
-                            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Add}" />
+                            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=Add}" />
                         </MenuItem.Header>
                         <MenuItem Command="{Binding AddTestModuleCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_AddTestModule}">
                         </MenuItem>
@@ -249,7 +249,7 @@
                 <Button Command="{Binding CopyResultsCommand}">
                     <Image Source="{StaticResource CopyResultsImage}" Style="{StaticResource ToolbarImageOpacity}" />
                     <Button.ToolTip>
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_CopyToolTip}" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CopyToolTip}" />
                     </Button.ToolTip>
                 </Button>
 

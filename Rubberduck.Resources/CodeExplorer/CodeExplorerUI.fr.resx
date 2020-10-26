@@ -120,119 +120,8 @@
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (analyse...)</value>
   </data>
-  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>Module &amp;standard (.bas)</value>
-  </data>
-  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>Module de &amp;tests</value>
-  </data>
-  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
-    <value>Afficher les &amp;noms</value>
-  </data>
-  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
-    <value>Afficher les &amp;signatures complètes</value>
-  </data>
-  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>Trouver toutes les implémentations...</value>
-  </data>
-  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>Trouver toutes les références...</value>
-  </data>
-  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
-    <value>Exécuter tous les tests</value>
-  </data>
-  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
-    <value>Ouvrir le mode création</value>
-  </data>
-  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
-    <value>Activer/désactiver les dossiers</value>
-  </data>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Explorateur</value>
-  </data>
-  <data name="CodeExplorer_Navigate" xml:space="preserve">
-    <value>Na&amp;viguer</value>
-  </data>
-  <data name="CodeExplorer_New" xml:space="preserve">
-    <value>&amp;Nouveau</value>
-  </data>
-  <data name="CodeExplorer_Refresh" xml:space="preserve">
-    <value>R&amp;afraîchir</value>
-  </data>
-  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
-    <value>Affichage</value>
-  </data>
-  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
-    <value>Ajouter un module au projet actif</value>
-  </data>
-  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
-    <value>Module de classe (.cls)</value>
-  </data>
-  <data name="CodeExplorer_Import" xml:space="preserve">
-    <value>Importer...</value>
-  </data>
-  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
-    <value>Copier au presse-papier</value>
-  </data>
-  <data name="CodeExplorer_Export" xml:space="preserve">
-    <value>Exporter...</value>
-  </data>
-  <data name="CodeExplorer_Print" xml:space="preserve">
-    <value>Imprimer...</value>
-  </data>
-  <data name="CodeExplorer_Remove" xml:space="preserve">
-    <value>Supprimer...</value>
-  </data>
-  <data name="CodeExplorer_Sort" xml:space="preserve">
-    <value>Trier</value>
-  </data>
-  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
-    <value>Activer/désactiver les signatures</value>
-  </data>
-  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
-    <value>Réduire l'arborescence</value>
-  </data>
-  <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
-    <value>Propriétés du projet</value>
-  </data>
-  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
-    <value>Développer l'arborescence</value>
-  </data>
-  <data name="CodeExplorer_Indent" xml:space="preserve">
-    <value>Indenter</value>
-  </data>
-  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
-    <value>Ouvrir le designer</value>
-  </data>
-  <data name="CodeExplorer_ExportAll" xml:space="preserve">
-    <value>Exporter le projet...</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
-    <value>Regrouper par type</value>
-  </data>
-  <data name="CodeExplorer_AddModule" xml:space="preserve">
-    <value>Ajouter un module</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
-    <value>Par nom</value>
-  </data>
-  <data name="CodeExplorer_Open" xml:space="preserve">
-    <value>Ouvrir</value>
-  </data>
-  <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>Formulaire (.frm)</value>
-  </data>
-  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
-    <value>Module de tests avec modèles</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
-    <value>Tel que dans le module</value>
-  </data>
-  <data name="CodeExplorer_Add" xml:space="preserve">
-    <value>Ajouter...</value>
-  </data>
-  <data name="CodeExplorer_ResourceFileText" xml:space="preserve">
-    <value>Ressources</value>
   </data>
   <data name="ExportBeforeRemove_Caption" xml:space="preserve">
     <value>Exporter?</value>
@@ -240,59 +129,11 @@
   <data name="ExportBeforeRemove_Prompt" xml:space="preserve">
     <value>Voulez-vous exporter le module '{0}' avant de le supprimer?</value>
   </data>
-  <data name="CodeExplorer_AddMDIFormText" xml:space="preserve">
-    <value>Formulaire MDI (.frm)</value>
-  </data>
-  <data name="CodeExplorer_AddPropertyPageText" xml:space="preserve">
-    <value>Page de propriété (.pag)</value>
-  </data>
-  <data name="CodeExplorer_AddUserControlText" xml:space="preserve">
-    <value>Contrôle Utilisateur (.ctl)</value>
-  </data>
-  <data name="CodeExplorer_AddUserDocumentText" xml:space="preserve">
-    <value>Document Utilisateur (.dob)</value>
-  </data>
-  <data name="CodeExplorer_AddVBFormText" xml:space="preserve">
-    <value>Formulaire (.frm)</value>
-  </data>
-  <data name="CodeExplorer_Rename" xml:space="preserve">
-    <value>Renommer...</value>
-  </data>
-  <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
-    <value>Lancer au démarrage</value>
-  </data>
-  <data name="CodeExplorer_AddTemplatesSubMenu" xml:space="preserve">
-    <value>Modèles</value>
-  </data>
-  <data name="CodeExplorer_FontSizeToolTip" xml:space="preserve">
-    <value>Taille du texte</value>
-  </data>
-  <data name="CodeExplorer_LibraryReferences" xml:space="preserve">
-    <value>Bibliothèques</value>
-  </data>
-  <data name="CodeExplorer_ProjectReferences" xml:space="preserve">
-    <value>Projets</value>
-  </data>
-  <data name="CodeExplorer_SearchPlaceholder" xml:space="preserve">
-    <value>Rechercher...</value>
-  </data>
-  <data name="CodeExplorer_SyncCodePaneToolTip" xml:space="preserve">
-    <value>Synchroniser la sélection courante</value>
-  </data>
   <data name="ExportError_Caption" xml:space="preserve">
     <value>Erreur lors de l'exportation de '{0}'</value>
   </data>
   <data name="RemoveError_Caption" xml:space="preserve">
     <value>Erreur lors de la suppression de '{0}'</value>
-  </data>
-  <data name="CodeExplorer_AddExistingFileText" xml:space="preserve">
-    <value>Fichier(s) existant(s)...</value>
-  </data>
-  <data name="CodeExplorer_Delete" xml:space="preserve">
-    <value>Supprimer</value>
-  </data>
-  <data name="CodeExplorer_Exclude" xml:space="preserve">
-    <value>Exclure du projet</value>
   </data>
   <data name="ConfirmBeforeDelete_Caption" xml:space="preserve">
     <value>Confirmer la suppression</value>
@@ -316,16 +157,175 @@ Continuer?</value>
   <data name="ReplaceFromFiles" xml:space="preserve">
     <value>Remplacer le contenu des fichiers...</value>
   </data>
-  <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
-    <value>Extraire une interface...</value>
-  </data>
   <data name="UpdateFromFiles" xml:space="preserve">
     <value>Remplacer le contenu du projet...</value>
   </data>
-  <data name="CodeExplorer_Annotate" xml:space="preserve">
+  <data name="AddPropertyPageText" xml:space="preserve">
+    <value>Page de propriété (.pag)</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Ajouter...</value>
+  </data>
+  <data name="AddClassModuleText" xml:space="preserve">
+    <value>Module de classe (.cls)</value>
+  </data>
+  <data name="AddExistingFileText" xml:space="preserve">
+    <value>Fichier(s) existant(s)...</value>
+  </data>
+  <data name="AddFormText" xml:space="preserve">
+    <value>Formulaire (.frm)</value>
+  </data>
+  <data name="AddMDIFormText" xml:space="preserve">
+    <value>Formulaire MDI (.frm)</value>
+  </data>
+  <data name="AddModule" xml:space="preserve">
+    <value>Ajouter un module</value>
+  </data>
+  <data name="AddStdModuleText" xml:space="preserve">
+    <value>Module &amp;standard (.bas)</value>
+  </data>
+  <data name="AddTemplatesSubMenu" xml:space="preserve">
+    <value>Modèles</value>
+  </data>
+  <data name="AddTestModuleText" xml:space="preserve">
+    <value>Module de &amp;tests</value>
+  </data>
+  <data name="AddTestModuleWithStubsText" xml:space="preserve">
+    <value>Module de tests avec modèles</value>
+  </data>
+  <data name="AddUserControlText" xml:space="preserve">
+    <value>Contrôle Utilisateur (.ctl)</value>
+  </data>
+  <data name="AddUserDocumentText" xml:space="preserve">
+    <value>Document Utilisateur (.dob)</value>
+  </data>
+  <data name="AddVBFormText" xml:space="preserve">
+    <value>Formulaire (.frm)</value>
+  </data>
+  <data name="Annotate" xml:space="preserve">
     <value>Annoter</value>
   </data>
-  <data name="CodeExplorer_MoveToFolder" xml:space="preserve">
+  <data name="CollapseSubnodesToolTip" xml:space="preserve">
+    <value>Réduire l'arborescence</value>
+  </data>
+  <data name="CopyToolTip" xml:space="preserve">
+    <value>Copier au presse-papier</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="DisplayMemberNamesText" xml:space="preserve">
+    <value>Afficher les &amp;noms</value>
+  </data>
+  <data name="DisplayModeToolTip" xml:space="preserve">
+    <value>Affichage</value>
+  </data>
+  <data name="DisplaySignaturesText" xml:space="preserve">
+    <value>Afficher les &amp;signatures complètes</value>
+  </data>
+  <data name="Exclude" xml:space="preserve">
+    <value>Exclure du projet</value>
+  </data>
+  <data name="ExpandSubnodesToolTip" xml:space="preserve">
+    <value>Développer l'arborescence</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Exporter...</value>
+  </data>
+  <data name="ExportAll" xml:space="preserve">
+    <value>Exporter le projet...</value>
+  </data>
+  <data name="ExtractInterfaceText" xml:space="preserve">
+    <value>Extraire une interface...</value>
+  </data>
+  <data name="FindAllImplementationsText" xml:space="preserve">
+    <value>Trouver toutes les implémentations...</value>
+  </data>
+  <data name="FindAllReferencesText" xml:space="preserve">
+    <value>Trouver toutes les références...</value>
+  </data>
+  <data name="FontSizeToolTip" xml:space="preserve">
+    <value>Taille du texte</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Importer...</value>
+  </data>
+  <data name="Indent" xml:space="preserve">
+    <value>Indenter</value>
+  </data>
+  <data name="LibraryReferences" xml:space="preserve">
+    <value>Bibliothèques</value>
+  </data>
+  <data name="MoveToFolder" xml:space="preserve">
     <value>Déplacer vers le dossier...</value>
+  </data>
+  <data name="Navigate" xml:space="preserve">
+    <value>Na&amp;viguer</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>&amp;Nouveau</value>
+  </data>
+  <data name="NewToolTip" xml:space="preserve">
+    <value>Ajouter un module au projet actif</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Ouvrir</value>
+  </data>
+  <data name="OpenDesigner" xml:space="preserve">
+    <value>Ouvrir le designer</value>
+  </data>
+  <data name="OpenProjectProperties" xml:space="preserve">
+    <value>Propriétés du projet</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Imprimer...</value>
+  </data>
+  <data name="ProjectReferences" xml:space="preserve">
+    <value>Projets</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>R&amp;afraîchir</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Supprimer...</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Renommer...</value>
+  </data>
+  <data name="ResourceFileText" xml:space="preserve">
+    <value>Ressources</value>
+  </data>
+  <data name="RunAllTestsText" xml:space="preserve">
+    <value>Exécuter tous les tests</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Rechercher...</value>
+  </data>
+  <data name="SetAsStartupProject" xml:space="preserve">
+    <value>Lancer au démarrage</value>
+  </data>
+  <data name="ShowDesignerToolTip" xml:space="preserve">
+    <value>Ouvrir le mode création</value>
+  </data>
+  <data name="ShowFoldersToolTip" xml:space="preserve">
+    <value>Activer/désactiver les dossiers</value>
+  </data>
+  <data name="ShowSignaturesToolTip" xml:space="preserve">
+    <value>Activer/désactiver les signatures</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Trier</value>
+  </data>
+  <data name="SortStyle_ByCodeOrder" xml:space="preserve">
+    <value>Tel que dans le module</value>
+  </data>
+  <data name="SortStyle_ByName" xml:space="preserve">
+    <value>Par nom</value>
+  </data>
+  <data name="SortStyle_ByType" xml:space="preserve">
+    <value>Regrouper par type</value>
+  </data>
+  <data name="SyncCodePaneToolTip" xml:space="preserve">
+    <value>Synchroniser la sélection courante</value>
   </data>
 </root>

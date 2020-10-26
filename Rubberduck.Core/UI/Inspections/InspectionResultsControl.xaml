@@ -199,7 +199,7 @@
                 <Button Command="{Binding CopyResultsCommand}">
                     <Image Source="{StaticResource CopyResultsImage}" />
                     <Button.ToolTip>
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_CopyToolTip}" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CopyToolTip}" />
                     </Button.ToolTip>
                 </Button>
 
