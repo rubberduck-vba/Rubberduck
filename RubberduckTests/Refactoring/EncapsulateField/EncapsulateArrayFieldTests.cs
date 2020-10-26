@@ -5,7 +5,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.Resources;
+using Refactorings = Rubberduck.Resources.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
@@ -206,7 +206,7 @@ End Sub
 
             field.TryValidateEncapsulationAttributes(out var errorMessage);
 
-            var expectedError = string.Format(RubberduckUI.EncapsulateField_ArrayHasExternalRedimFormat, field.IdentifierName);
+            var expectedError = string.Format(Refactorings.EncapsulateField.ArrayHasExternalRedimFormat, field.IdentifierName);
 
             StringAssert.AreEqualIgnoringCase(expectedError, errorMessage);
         }

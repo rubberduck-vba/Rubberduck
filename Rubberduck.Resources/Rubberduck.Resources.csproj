@@ -80,6 +80,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RubberduckMenus.resx</DependentUpon>
     </Compile>
+    <Compile Update="Refactorings\EncapsulateField.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="Refactorings\Refactorings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

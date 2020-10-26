@@ -142,7 +142,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             => !(_masterDetailManager.DetailField?.IsRequiredToBeReadOnly ?? false);
 
         public string GroupBoxHeaderContent
-            => $"{_masterDetailManager.DetailField?.TargetID ?? string.Empty} {RubberduckUI.EncapsulateField_PropertyName} ";
+            => $"{_masterDetailManager.DetailField?.TargetID ?? string.Empty} {Rubberduck.Resources.Refactorings.EncapsulateField.PropertyName} ";
 
         private string _validationErrorMessage;
         public string ValidationErrorMessage => _validationErrorMessage;

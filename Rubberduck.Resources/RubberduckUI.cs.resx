@@ -598,21 +598,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>Výběr není proměnná.</value>
   </data>
-  <data name="EncapsulateField_Caption" xml:space="preserve">
-    <value>Rubberduck - Zapouzdřit Pole</value>
-  </data>
-  <data name="EncapsulateField_InstructionText" xml:space="preserve">
-    <value>Prosím, specifikujte jméno vlastnosti, přístupnost parametru a typ 'setteru'.</value>
-  </data>
-  <data name="EncapsulateField_Preview" xml:space="preserve">
-    <value>Náhled:</value>
-  </data>
-  <data name="EncapsulateField_PropertyName" xml:space="preserve">
-    <value>Jméno Property:</value>
-  </data>
-  <data name="EncapsulateField_TitleText" xml:space="preserve">
-    <value>Zapouzdřit Pole</value>
-  </data>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Přesuň na Místo Použití</value>
   </data>
@@ -1495,9 +1480,6 @@ Import přerušen.</value>
   <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
     <value>{0} {1} {2} {3} {4} {5}</value>
   </data>
-  <data name="EncapsulateField_PreviewMarker" xml:space="preserve">
-    <value>'&lt;===== Změny v deklaraci a vlastnostech nad tímto řádkem =====&gt;</value>
-  </data>
   <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
     <value>Jméno složky nemůže být prázdné.</value>
   </data>
@@ -1549,9 +1531,6 @@ Import přerušen.</value>
   <data name="AnnotateDeclarationDialog_AnnotationLabel" xml:space="preserve">
     <value>Přidat Anotaci:</value>
   </data>
-  <data name="EncapsulateField_PrivateUDTPropertyText" xml:space="preserve">
-    <value>Vytvoří property pro každý UDT člen</value>
-  </data>
   <data name="AnnotateDeclarationDialog_DeclarationLabel" xml:space="preserve">
     <value>Deklarace k Anotaci:</value>
   </data>
@@ -1588,17 +1567,11 @@ Import přerušen.</value>
   <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
     <value>Přesunout do Složky</value>
   </data>
-  <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
-    <value>Konflikt názvu</value>
-  </data>
   <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
     <value>Cíl nebyl specifikován.</value>
   </data>
   <data name="AnnotationArgumentType_Number" xml:space="preserve">
     <value>Číslo</value>
-  </data>
-  <data name="EncapsulateField_ParameterName" xml:space="preserve">
-    <value>Název Parametru:</value>
   </data>
   <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
     <value>Prosím specifikujte novou složku pro komponenty.</value>
@@ -1614,9 +1587,6 @@ Import přerušen.</value>
   </data>
   <data name="MoveFolderDialog_InstructionsLabelText" xml:space="preserve">
     <value>Prosím specifikujte novou nadřazenou složku '{1}' pro podsložku '{0}'.</value>
-  </data>
-  <data name="EncapsulateField_ReadOnlyCheckBoxContent" xml:space="preserve">
-    <value>Pouze ke čtení</value>
   </data>
   <data name="AnnotateDeclarationDialog_RemoveArgumentButtonLabel" xml:space="preserve">
     <value>Odstranit</value>
@@ -1635,9 +1605,6 @@ Import přerušen.</value>
   </data>
   <data name="AnnotateDeclarationDialog_Instructions" xml:space="preserve">
     <value>Vyberte anotaci (a hodnoty) pro přidání deklaraci.</value>
-  </data>
-  <data name="EncapsulateField_SetterType" xml:space="preserve">
-    <value>Typ Setteru:</value>
   </data>
   <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
     <value>Je přesunováno několik složek se tejným jménem. Toto je spojí.
@@ -1675,13 +1642,7 @@ Chcete pokračovat?</value>
   <data name="AnnotateDeclarationDialog_ArgumentTypeHeader" xml:space="preserve">
     <value>Typ</value>
   </data>
-  <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
-    <value>Nelze zapouzdřit '{0}'. ReDim ({0}) výrok(y) existují v jiných modulech.</value>
-  </data>
   <data name="AnnotateDeclarationDialog_ArgumentValueHeader" xml:space="preserve">
     <value>Hodnota</value>
-  </data>
-  <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
-    <value>Obalit Pole Privátním Typem</value>
   </data>
 </root>

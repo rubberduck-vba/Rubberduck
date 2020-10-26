@@ -37,9 +37,9 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Background="{StaticResource BackgroundLightBrush}">
-            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_TitleText}"
+            <Label Content="{Resx ResxName=Rubberduck.Resources.Refactorings.EncapsulateField, Key=TitleText}"
                    FontWeight="Bold" />
-            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_InstructionText}"
+            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.Refactorings.EncapsulateField, Key=InstructionText}"
                        Margin="5,0" />
         </StackPanel>
         <Grid Grid.Row="1">
@@ -53,7 +53,7 @@
             <StackPanel Grid.Row="0" Margin="5" Orientation="Vertical">
                     <CheckBox Name="WrapAsUDTCheckBox" 
                                 Grid.Row="1"
-                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_WrapFieldsInPrivateType}"
+                                Content="{Resx ResxName=Rubberduck.Resources.Refactorings.EncapsulateField, Key=WrapFieldsInPrivateType}"
                                 IsChecked="{Binding ConvertFieldsToUDTMembers, Mode=TwoWay}"
                                 FontWeight="Bold"
                                 VerticalAlignment="Top"
@@ -138,7 +138,7 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <TextBlock Grid.Row="0" Visibility="{Binding Path=SelectedFieldIsPrivateUDT, Converter={StaticResource BoolToVisibleVisibility}}"
-                                           Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_PrivateUDTPropertyText}"
+                                           Text="{Resx ResxName=Rubberduck.Resources.Refactorings.EncapsulateField, Key=PrivateUDTPropertyText}"
                                            Margin="10,5" />
                                 <TextBox Grid.Row="1" Visibility="{Binding Path=SelectedFieldHasEditablePropertyName, Converter={StaticResource BoolToVisibleVisibility}}"
                                          Text="{Binding Path=PropertyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -151,7 +151,7 @@
                             </Grid>
                             <CheckBox IsChecked="{Binding Path=IsReadOnly, Mode=TwoWay}"
                                 IsEnabled="{Binding Path=EnableReadOnlyOption}"
-                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_ReadOnlyCheckBoxContent}"
+                                Content="{Resx ResxName=Rubberduck.Resources.Refactorings.EncapsulateField, Key=ReadOnlyCheckBoxContent}"
                                 Margin="10,2" FontWeight="Bold"
                                 Command="{Binding Path=ReadOnlyChangeCommand}"
                                 CommandParameter="{Binding ElementName=EncapsulationFields, Path=SelectedField}" />
@@ -166,7 +166,7 @@
                 </Grid>
             </Grid>
             <StackPanel Grid.Row="3" Margin="10,5" Orientation="Horizontal">
-                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_Preview}" 
+                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.Refactorings.EncapsulateField, Key=Preview}" 
                                FontSize="14" FontWeight="Bold" />
                     <Image Style="{StaticResource InvalidNameIconStyle}" Margin="0,-4"
                            Visibility="{Binding Path=HasValidNames, Converter={StaticResource BoolToHiddenVisibility}}" />

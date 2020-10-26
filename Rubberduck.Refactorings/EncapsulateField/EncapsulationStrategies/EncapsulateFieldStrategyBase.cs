@@ -6,7 +6,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
-using Rubberduck.Resources;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System;
@@ -110,7 +109,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (isPreview)
             {
-                AddContentBlock(NewContentTypes.PostContentMessage, RubberduckUI.EncapsulateField_PreviewMarker);
+                AddContentBlock(NewContentTypes.PostContentMessage, Rubberduck.Resources.Refactorings.EncapsulateField.PreviewMarker);
             }
 
             var newContentBlock = string.Join(DoubleSpace,

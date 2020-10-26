@@ -2,7 +2,7 @@
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
-using Rubberduck.Resources;
+using Refactoring = Rubberduck.Resources.Refactorings;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
@@ -118,7 +118,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (potentialDeclarationIdentifierConflicts.Any(m => m.IsEquivalentVBAIdentifierTo(identifierToCompare)))
             {
-                errorMessage = RubberduckUI.EncapsulateField_NameConflictDetected;
+                errorMessage = Refactoring.EncapsulateField.NameConflictDetected;
                 return true;
             }
             return false;

@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             : base(messageBox)
         { }
 
-        protected override string Caption => Resources.RubberduckUI.EncapsulateField_Caption;
+        protected override string Caption => Rubberduck.Resources.Refactorings.EncapsulateField.Caption;
 
         protected override string Message(RefactoringException exception)
         {

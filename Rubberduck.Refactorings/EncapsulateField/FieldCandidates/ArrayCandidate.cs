@@ -1,7 +1,7 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources;
+using Refactoring = Rubberduck.Resources.Refactorings;
 using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -55,7 +55,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             if (Declaration.References.Any(rf => rf.QualifiedModuleName != QualifiedModuleName
                     && rf.Context.TryGetAncestor<VBAParser.RedimVariableDeclarationContext>(out _)))
             {
-                errorMessage = string.Format(RubberduckUI.EncapsulateField_ArrayHasExternalRedimFormat, IdentifierName);
+                errorMessage = string.Format(Refactoring.EncapsulateField.ArrayHasExternalRedimFormat, IdentifierName);
                 return true;
             }
             return false;
