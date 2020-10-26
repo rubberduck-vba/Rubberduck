@@ -32,6 +32,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AboutUI.resx</DependentUpon>
     </Compile>
+    <Compile Update="Annotations\AnnotateDeclarationDialog.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="CodeExplorer\CodeExplorerUI.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -155,6 +158,9 @@
     <EmbeddedResource Update="About\AboutUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AboutUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Annotations\AnnotateDeclarationDialog.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="CodeExplorer\CodeExplorerUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

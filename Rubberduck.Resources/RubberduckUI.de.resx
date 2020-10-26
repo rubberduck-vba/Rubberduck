@@ -1551,36 +1551,6 @@ Import abgebrochen.</value>
   <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
     <value>Die Komponente '{0}' würde durch das Refactoring verändert, aber ihr Inhalt ist in Rubberduck veraltet. Bitte lassen Sie Rubberduck seinen Stand aktualisieren und versuchen Sie es erneut.</value>
   </data>
-  <data name="AnnotateDeclarationDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Annotation hinzufügen</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_TitleText" xml:space="preserve">
-    <value>Annotation hinzufügen</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_ArgumentsLabel" xml:space="preserve">
-    <value>Annotationsarguments:</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_AnnotationLabel" xml:space="preserve">
-    <value>Hinzuzufügende Annotation:</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_DeclarationLabel" xml:space="preserve">
-    <value>Deklaration, zu welcher eine Annotation hinzugefügt werden soll:</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_ArgumentValueHeader" xml:space="preserve">
-    <value>Wert</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_ArgumentTypeHeader" xml:space="preserve">
-    <value>Typ</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_RemoveArgumentButtonLabel" xml:space="preserve">
-    <value>Entfernen</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_AddArgumentButtonLabel" xml:space="preserve">
-    <value>Hinzufügen</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_Instructions" xml:space="preserve">
-    <value>Wählen Sie eine Annotation (und Werte), die zu der Deklaration hinzugefügt werden soll.</value>
-  </data>
   <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
     <value>Annotationsargumente dürfen keine Kontrollzeichen enthalten.</value>
   </data>
@@ -1668,9 +1638,6 @@ Wollen Sie fortfahren?</value>
   </data>
   <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
     <value>Drag and Drop im Code Explorer aktivieren</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
-    <value>Attribut hinzufügen / anpassen</value>
   </data>
   <data name="ExtractInterface_Private" xml:space="preserve">
     <value>Privat</value>
