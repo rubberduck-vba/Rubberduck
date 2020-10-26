@@ -397,6 +397,114 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code Explorer.
+        /// </summary>
+        public static string CommandDescription_CodeExplorerCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_CodeExplorerCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refactor / Rename.
+        /// </summary>
+        public static string CommandDescription_CodePaneRefactorRenameCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_CodePaneRefactorRenameCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Active Project.
+        /// </summary>
+        public static string CommandDescription_ExportAllCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_ExportAllCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find symbol.
+        /// </summary>
+        public static string CommandDescription_FindSymbolCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_FindSymbolCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent Module.
+        /// </summary>
+        public static string CommandDescription_IndentCurrentModuleCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_IndentCurrentModuleCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent Procedure.
+        /// </summary>
+        public static string CommandDescription_IndentCurrentProcedureCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_IndentCurrentProcedureCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code Inspections.
+        /// </summary>
+        public static string CommandDescription_InspectionResultsCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_InspectionResultsCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refactor / Encapsulate Field.
+        /// </summary>
+        public static string CommandDescription_RefactorEncapsulateFieldCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_RefactorEncapsulateFieldCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refactor / Extract Method.
+        /// </summary>
+        public static string CommandDescription_RefactorExtractMethodCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_RefactorExtractMethodCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refactor / Move declaration closer to usage.
+        /// </summary>
+        public static string CommandDescription_RefactorMoveCloserToUsageCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_RefactorMoveCloserToUsageCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh parser state.
+        /// </summary>
+        public static string CommandDescription_ReparseCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_ReparseCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test Explorer.
+        /// </summary>
+        public static string CommandDescription_TestExplorerCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_TestExplorerCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hook is already attached..
         /// </summary>
         public static string CommonHotkey_HookAttached {
