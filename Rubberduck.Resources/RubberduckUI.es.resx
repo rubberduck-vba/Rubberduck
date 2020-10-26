@@ -666,12 +666,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Opciones especiales</value>
   </data>
-  <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
-    <value>Indentar modulo</value>
-  </data>
-  <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
-    <value>Indentar procedimiento</value>
-  </data>
   <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
     <value>Por módulo</value>
   </data>
@@ -750,21 +744,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Analizar todos los proyectos abiertos</value>
   </data>
-  <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
-    <value>Explorador de código</value>
-  </data>
-  <data name="CommandDescription_InspectionResultsCommand" xml:space="preserve">
-    <value>Inspecciones de código</value>
-  </data>
-  <data name="CommandDescription_RefactorExtractMethodCommand" xml:space="preserve">
-    <value>Refactorizar / Extraer método</value>
-  </data>
-  <data name="CommandDescription_CodePaneRefactorRenameCommand" xml:space="preserve">
-    <value>Refactorizar / Renombrar</value>
-  </data>
-  <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
-    <value>Explorador de pruebas</value>
-  </data>
   <data name="CommonHotkey_InvalidKey" xml:space="preserve">
     <value>Clave inválida.</value>
   </data>
@@ -776,15 +755,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   </data>
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>Tecla de acceso rápido ({0}) no registrada.</value>
-  </data>
-  <data name="CommandDescription_FindSymbolCommand" xml:space="preserve">
-    <value>Encontrar simbolo</value>
-  </data>
-  <data name="CommandDescription_RefactorMoveCloserToUsageCommand" xml:space="preserve">
-    <value>Refactorizar / Mover la declaración más cerca de su uso</value>
-  </data>
-  <data name="CommandDescription_ReparseCommand" xml:space="preserve">
-    <value>Actualizar el estado del analizador</value>
   </data>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Por marcador</value>
@@ -824,9 +794,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   </data>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Analizador de expresiones regulares</value>
-  </data>
-  <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
-    <value>Refactorizar / Encapsular Campo</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Las ventanas de herramientas no se destruyeron correctamente y/o no se pudieron recrear; El VBE puede no estar en un estado estable. Rubberduck se cargará normalmente la próxima vez que se inicialice el VBE.</value>
@@ -957,9 +924,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Elija una carpeta para exportar la fuente de {0} a:</value>
     <comment>{0} VBProject.Name</comment>
-  </data>
-  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
-    <value>Exportar proyecto activo</value>
   </data>
   <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
     <value>Todos los archivos</value>

@@ -956,39 +956,6 @@ les projets dans le VBE.</value>
   <data name="CodeMetrics_Lines" xml:space="preserve">
     <value>Lignes</value>
   </data>
-  <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
-    <value>Indenter le module</value>
-  </data>
-  <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
-    <value>Indenter la procédure</value>
-  </data>
-  <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
-    <value>Explorateur de Code</value>
-  </data>
-  <data name="CommandDescription_InspectionResultsCommand" xml:space="preserve">
-    <value>Inspections</value>
-  </data>
-  <data name="CommandDescription_RefactorExtractMethodCommand" xml:space="preserve">
-    <value>Extraire une méthode</value>
-  </data>
-  <data name="CommandDescription_CodePaneRefactorRenameCommand" xml:space="preserve">
-    <value>Renommer</value>
-  </data>
-  <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
-    <value>Explorateur de tests</value>
-  </data>
-  <data name="CommandDescription_FindSymbolCommand" xml:space="preserve">
-    <value>Rechercher un symbole</value>
-  </data>
-  <data name="CommandDescription_RefactorMoveCloserToUsageCommand" xml:space="preserve">
-    <value>Rapprocher la déclaration de son utilisation</value>
-  </data>
-  <data name="CommandDescription_ReparseCommand" xml:space="preserve">
-    <value>Rafraîchir l'arborescence</value>
-  </data>
-  <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
-    <value>Encapsuler le champ</value>
-  </data>
   <data name="Command_Reparse_CannotCompile" xml:space="preserve">
     <value>Les projets suivants ne peuvent être compilés, ce qui causera probablement des erreurs d'analyse. Continuer? {0}</value>
   </data>
@@ -1012,9 +979,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="IndentCurrentProject" xml:space="preserve">
     <value>Indenter le projet entier</value>
-  </data>
-  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
-    <value>Exporter le projet actif</value>
   </data>
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Occupé</value>

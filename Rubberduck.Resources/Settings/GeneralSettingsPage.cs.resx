@@ -221,4 +221,40 @@ POZNÁMKA: Pro aplikování tohoto nastavení je třeba restartovat Excel.</valu
   <data name="WarnLogLevel" xml:space="preserve">
     <value>Varování</value>
   </data>
+  <data name="CommandDescription_ReparseCommand" xml:space="preserve">
+    <value>Obnovit stav parseru</value>
+  </data>
+  <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
+    <value>Code Explorer</value>
+  </data>
+  <data name="CommandDescription_CodePaneRefactorRenameCommand" xml:space="preserve">
+    <value>Refaktorovat / Přejmenovat</value>
+  </data>
+  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
+    <value>Exportovat Aktivní Projekt</value>
+  </data>
+  <data name="CommandDescription_FindSymbolCommand" xml:space="preserve">
+    <value>Najít symbol</value>
+  </data>
+  <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
+    <value>Odsadit Modul</value>
+  </data>
+  <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
+    <value>Odsadit Proceduru</value>
+  </data>
+  <data name="CommandDescription_InspectionResultsCommand" xml:space="preserve">
+    <value>Inspekce Kódu</value>
+  </data>
+  <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
+    <value>Refaktorovat / Zapouzdřit Pole</value>
+  </data>
+  <data name="CommandDescription_RefactorExtractMethodCommand" xml:space="preserve">
+    <value>Refaktorovat / Extrahovat Metodu</value>
+  </data>
+  <data name="CommandDescription_RefactorMoveCloserToUsageCommand" xml:space="preserve">
+    <value>Refaktorovat / Přemístit deklaraci blíže k použití</value>
+  </data>
+  <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
+    <value>Test Explorer</value>
+  </data>
 </root>

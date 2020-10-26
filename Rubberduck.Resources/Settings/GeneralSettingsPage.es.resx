@@ -221,4 +221,40 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   <data name="WarnLogLevel" xml:space="preserve">
     <value>Advertir</value>
   </data>
+  <data name="CommandDescription_ReparseCommand" xml:space="preserve">
+    <value>Actualizar el estado del analizador</value>
+  </data>
+  <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
+    <value>Explorador de código</value>
+  </data>
+  <data name="CommandDescription_CodePaneRefactorRenameCommand" xml:space="preserve">
+    <value>Refactorizar / Renombrar</value>
+  </data>
+  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
+    <value>Exportar proyecto activo</value>
+  </data>
+  <data name="CommandDescription_FindSymbolCommand" xml:space="preserve">
+    <value>Encontrar simbolo</value>
+  </data>
+  <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
+    <value>Indentar modulo</value>
+  </data>
+  <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
+    <value>Indentar procedimiento</value>
+  </data>
+  <data name="CommandDescription_InspectionResultsCommand" xml:space="preserve">
+    <value>Inspecciones de código</value>
+  </data>
+  <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
+    <value>Refactorizar / Encapsular Campo</value>
+  </data>
+  <data name="CommandDescription_RefactorExtractMethodCommand" xml:space="preserve">
+    <value>Refactorizar / Extraer método</value>
+  </data>
+  <data name="CommandDescription_RefactorMoveCloserToUsageCommand" xml:space="preserve">
+    <value>Refactorizar / Mover la declaración más cerca de su uso</value>
+  </data>
+  <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
+    <value>Explorador de pruebas</value>
+  </data>
 </root>

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Xml.Serialization;
-using Rubberduck.Resources;
+using Rubberduck.Resources.Settings;
 using System.Configuration;
 
 namespace Rubberduck.Settings
@@ -27,7 +27,7 @@ namespace Rubberduck.Settings
         public bool IsValid => HasAltModifier || HasCtrlModifier;
 
         [XmlIgnore]
-        public string Prompt => RubberduckUI.ResourceManager.GetString($"CommandDescription_{CommandTypeName}", CultureInfo.CurrentUICulture);
+        public string Prompt => GeneralSettingsPage.ResourceManager.GetString($"CommandDescription_{CommandTypeName}", CultureInfo.CurrentUICulture);
 
         public override string ToString()
         {

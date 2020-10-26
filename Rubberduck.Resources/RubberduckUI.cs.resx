@@ -655,12 +655,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Speciální nastavení</value>
   </data>
-  <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
-    <value>Odsadit Modul</value>
-  </data>
-  <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
-    <value>Odsadit Proceduru</value>
-  </data>
   <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
     <value>Dle modulu</value>
   </data>
@@ -718,21 +712,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Parsuj všechny otevřené projekty</value>
   </data>
-  <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
-    <value>Code Explorer</value>
-  </data>
-  <data name="CommandDescription_InspectionResultsCommand" xml:space="preserve">
-    <value>Inspekce Kódu</value>
-  </data>
-  <data name="CommandDescription_RefactorExtractMethodCommand" xml:space="preserve">
-    <value>Refaktorovat / Extrahovat Metodu</value>
-  </data>
-  <data name="CommandDescription_CodePaneRefactorRenameCommand" xml:space="preserve">
-    <value>Refaktorovat / Přejmenovat</value>
-  </data>
-  <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
-    <value>Test Explorer</value>
-  </data>
   <data name="CommonHotkey_InvalidKey" xml:space="preserve">
     <value>Neplatný klíč.</value>
   </data>
@@ -744,15 +723,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   </data>
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>Klávesová Zkratka ({0}) není registrována.</value>
-  </data>
-  <data name="CommandDescription_FindSymbolCommand" xml:space="preserve">
-    <value>Najít symbol</value>
-  </data>
-  <data name="CommandDescription_RefactorMoveCloserToUsageCommand" xml:space="preserve">
-    <value>Refaktorovat / Přemístit deklaraci blíže k použití</value>
-  </data>
-  <data name="CommandDescription_ReparseCommand" xml:space="preserve">
-    <value>Obnovit stav parseru</value>
   </data>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Dle značky</value>
@@ -786,9 +756,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   </data>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Analyzátor Regulárních Výrazů</value>
-  </data>
-  <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
-    <value>Refaktorovat / Zapouzdřit Pole</value>
   </data>
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck nebude obnoven</value>
@@ -857,9 +824,6 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Vyberte složku pro export zdrojového kódu {0} do:</value>
-  </data>
-  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
-    <value>Exportovat Aktivní Projekt</value>
   </data>
   <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
     <value>Všechny Soubory</value>

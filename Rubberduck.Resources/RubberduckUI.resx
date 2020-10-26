@@ -519,12 +519,6 @@ Do you want to proceed with this rename?</value>
   <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Special Options</value>
   </data>
-  <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
-    <value>Indent Module</value>
-  </data>
-  <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
-    <value>Indent Procedure</value>
-  </data>
   <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
     <value>Grouping</value>
   </data>
@@ -597,21 +591,6 @@ Do you want to proceed with this rename?</value>
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Parse all opened projects</value>
   </data>
-  <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
-    <value>Code Explorer</value>
-  </data>
-  <data name="CommandDescription_InspectionResultsCommand" xml:space="preserve">
-    <value>Code Inspections</value>
-  </data>
-  <data name="CommandDescription_RefactorExtractMethodCommand" xml:space="preserve">
-    <value>Refactor / Extract Method</value>
-  </data>
-  <data name="CommandDescription_CodePaneRefactorRenameCommand" xml:space="preserve">
-    <value>Refactor / Rename</value>
-  </data>
-  <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
-    <value>Test Explorer</value>
-  </data>
   <data name="CommonHotkey_InvalidKey" xml:space="preserve">
     <value>Invalid key.</value>
   </data>
@@ -623,15 +602,6 @@ Do you want to proceed with this rename?</value>
   </data>
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>Hotkey ({0}) not registered.</value>
-  </data>
-  <data name="CommandDescription_FindSymbolCommand" xml:space="preserve">
-    <value>Find symbol</value>
-  </data>
-  <data name="CommandDescription_RefactorMoveCloserToUsageCommand" xml:space="preserve">
-    <value>Refactor / Move declaration closer to usage</value>
-  </data>
-  <data name="CommandDescription_ReparseCommand" xml:space="preserve">
-    <value>Refresh parser state</value>
   </data>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>By marker</value>
@@ -668,9 +638,6 @@ Do you want to proceed with this rename?</value>
   </data>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Regular Expression Analyzer</value>
-  </data>
-  <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
-    <value>Refactor / Encapsulate Field</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Toolwindows were not correctly destroyed and/or could not be recreated; the VBE may not be in a stable state. Rubberduck will load normally next time the VBE is initialized.</value>
@@ -799,9 +766,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Select a folder to export the source of {0} to:</value>
     <comment>{0} VBProject.Name</comment>
-  </data>
-  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
-    <value>Export Active Project</value>
   </data>
   <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
     <value>All Files</value>
