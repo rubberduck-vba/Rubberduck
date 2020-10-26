@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Refactorings.AnnotateDeclaration;
-using Rubberduck.Resources;
+using Rubberduck.Resources.Annotations;
 using Rubberduck.UI.Converters;
 
 namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
@@ -132,19 +132,19 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
 
             if (string.IsNullOrEmpty(ArgumentValue))
             {
-                errors.Add(RubberduckUI.AnnotationArgument_ValidationError_EmptyArgument);
+                errors.Add(AnnotationArgumentValidationError.EmptyArgument);
             }
             if (ArgumentValue.Length > MaxAllowedCharacters)
             {
-                errors.Add(string.Format(RubberduckUI.AnnotationArgument_ValidationError_TooLong, MaxAllowedCharacters));
+                errors.Add(string.Format(AnnotationArgumentValidationError.TooLong, MaxAllowedCharacters));
             }
             if (ContainsNewline(ArgumentValue))
             {
-                errors.Add(RubberduckUI.AnnotationArgument_ValidationError_Newline);
+                errors.Add(AnnotationArgumentValidationError.Newline);
             }
             else if (ContainsControlCharacter(ArgumentValue))
             {
-                errors.Add(RubberduckUI.AnnotationArgument_ValidationError_SpecialCharacters);
+                errors.Add(AnnotationArgumentValidationError.SpecialCharacters);
             }
 
             switch (ArgumentType)
@@ -152,29 +152,29 @@ namespace Rubberduck.UI.Refactorings.AnnotateDeclaration
                 case AnnotationArgumentType.Attribute:
                     if (!ArgumentValue.StartsWith("VB_") || ContainsWhitespace(ArgumentValue))
                     {
-                        errors.Add(RubberduckUI.AnnotationArgument_ValidationError_AttributeNameStart);
+                        errors.Add(AnnotationArgumentValidationError.AttributeNameStart);
                     }
                     if (ContainsWhitespace(ArgumentValue))
                     {
-                        errors.Add(RubberduckUI.AnnotationArgument_ValidationError_WhitespaceInAttribute);
+                        errors.Add(AnnotationArgumentValidationError.WhitespaceInAttribute);
                     }
                     break;
                 case AnnotationArgumentType.Inspection:
                     if (!InspectionNames.Contains(ArgumentValue))
                     {
-                        errors.Add(RubberduckUI.AnnotationArgument_ValidationError_InspectionName);
+                        errors.Add(AnnotationArgumentValidationError.InspectionName);
                     }
                     break;
                 case AnnotationArgumentType.Boolean:
                     if (!bool.TryParse(ArgumentValue, out _))
                     {
-                        errors.Add(RubberduckUI.AnnotationArgument_ValidationError_NotABoolean);
+                        errors.Add(AnnotationArgumentValidationError.NotABoolean);
                     }
                     break;
                 case AnnotationArgumentType.Number:
                     if (!decimal.TryParse(ArgumentValue, out _))
                     {
-                        errors.Add(RubberduckUI.AnnotationArgument_ValidationError_NotANumber);
+                        errors.Add(AnnotationArgumentValidationError.NotANumber);
                     }
                     break;
             }

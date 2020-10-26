@@ -35,6 +35,10 @@
     <Compile Update="Annotations\AnnotateDeclarationDialog.Designer.cs">
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Update="Annotations\AnnotationArgumentValidationError.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AnnotationArgumentValidationError.resx</DependentUpon>
+    </Compile>
     <Compile Update="CodeExplorer\CodeExplorerUI.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -160,6 +164,9 @@
       <LastGenOutput>AboutUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Annotations\AnnotateDeclarationDialog.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Annotations\AnnotationArgumentValidationError.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="CodeExplorer\CodeExplorerUI.resx">
