@@ -27,8 +27,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         public ReferenceKind ReferenceKind { get; }
 
         public override string Name => ReferenceKind == ReferenceKind.TypeLibrary
-            ? Resources.CodeExplorer.CodeExplorerUI.CodeExplorer_LibraryReferences
-            : Resources.CodeExplorer.CodeExplorerUI.CodeExplorer_ProjectReferences;
+            ? Resources.CodeExplorer.CodeExplorerUI.LibraryReferences
+            : Resources.CodeExplorer.CodeExplorerUI.ProjectReferences;
 
         public override string NameWithSignature => Name;
 

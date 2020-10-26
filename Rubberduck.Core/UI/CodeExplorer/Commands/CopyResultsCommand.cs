@@ -33,7 +33,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                                        new ColumnInfo("Name"), new ColumnInfo("Return Type") };
 
             var declarationFormatters = _state.AllUserDeclarations.Select(declaration => new DeclarationFormatter(declaration));
-            var title = string.Format(CodeExplorerUI.CodeExplorer_AppendHeader, DateTime.Now.ToString(CultureInfo.InvariantCulture));
+            var title = string.Format(CodeExplorerUI.AppendHeader, DateTime.Now.ToString(CultureInfo.InvariantCulture));
 
             _clipboard.AppendInfo(ColumnInfos, declarationFormatters, title, ClipboardWriterAppendingInformationFormat.All);
 

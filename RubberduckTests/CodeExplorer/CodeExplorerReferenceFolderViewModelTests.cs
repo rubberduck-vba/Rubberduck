@@ -35,7 +35,7 @@ namespace RubberduckTests.CodeExplorer
             var references = AddRemoveReferencesSetup.DummyReferencesList;
             var folder = new CodeExplorerReferenceFolderViewModel(null, null, references, ReferenceKind.TypeLibrary);
 
-            Assert.AreEqual(CodeExplorerUI.CodeExplorer_LibraryReferences, folder.Name);
+            Assert.AreEqual(CodeExplorerUI.LibraryReferences, folder.Name);
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace RubberduckTests.CodeExplorer
             var references = AddRemoveReferencesSetup.DummyProjectsList;
             var folder = new CodeExplorerReferenceFolderViewModel(null, null, references, ReferenceKind.Project);
 
-            Assert.AreEqual(CodeExplorerUI.CodeExplorer_ProjectReferences, folder.Name);
+            Assert.AreEqual(CodeExplorerUI.ProjectReferences, folder.Name);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace RubberduckTests.CodeExplorer
             var references = AddRemoveReferencesSetup.DummyReferencesList;
             var folder = new CodeExplorerReferenceFolderViewModel(null, null, references, ReferenceKind.TypeLibrary);
 
-            Assert.AreEqual(CodeExplorerUI.CodeExplorer_LibraryReferences, folder.NameWithSignature);
+            Assert.AreEqual(CodeExplorerUI.LibraryReferences, folder.NameWithSignature);
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace RubberduckTests.CodeExplorer
             var references = AddRemoveReferencesSetup.DummyProjectsList;
             var folder = new CodeExplorerReferenceFolderViewModel(null, null, references, ReferenceKind.Project);
 
-            Assert.AreEqual(CodeExplorerUI.CodeExplorer_ProjectReferences, folder.NameWithSignature);
+            Assert.AreEqual(CodeExplorerUI.ProjectReferences, folder.NameWithSignature);
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace RubberduckTests.CodeExplorer
             var references = AddRemoveReferencesSetup.DummyReferencesList;
             var folder = new CodeExplorerReferenceFolderViewModel(null, null, references, ReferenceKind.TypeLibrary);
 
-            Assert.AreEqual(CodeExplorerUI.CodeExplorer_LibraryReferences, folder.PanelTitle);
+            Assert.AreEqual(CodeExplorerUI.LibraryReferences, folder.PanelTitle);
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace RubberduckTests.CodeExplorer
             var references = AddRemoveReferencesSetup.DummyProjectsList;
             var folder = new CodeExplorerReferenceFolderViewModel(null, null, references, ReferenceKind.Project);
 
-            Assert.AreEqual(CodeExplorerUI.CodeExplorer_ProjectReferences, folder.PanelTitle);
+            Assert.AreEqual(CodeExplorerUI.ProjectReferences, folder.PanelTitle);
         }
 
         [Test]

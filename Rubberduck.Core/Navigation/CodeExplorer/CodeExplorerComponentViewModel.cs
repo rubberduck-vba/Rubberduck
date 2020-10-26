@@ -115,8 +115,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                         break;
                     case ComponentType.ResFile:
                         _name = string.IsNullOrEmpty(_name)
-                            ? CodeExplorerUI.CodeExplorer_ResourceFileText
-                            : $"{CodeExplorerUI.CodeExplorer_ResourceFileText} ({Path.GetFileName(_name)})";
+                            ? CodeExplorerUI.ResourceFileText
+                            : $"{CodeExplorerUI.ResourceFileText} ({Path.GetFileName(_name)})";
                         break;
                     case ComponentType.RelatedDocument:
                         _name = string.IsNullOrEmpty(_name) ? string.Empty : Path.GetFileName(_name);
