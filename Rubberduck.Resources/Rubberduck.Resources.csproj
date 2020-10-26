@@ -83,6 +83,9 @@
     <Compile Update="Refactorings\EncapsulateField.Designer.cs">
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Update="Refactorings\ExtractInterface.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="Refactorings\Refactorings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -188,6 +191,9 @@
     <EmbeddedResource Update="Menus\RubberduckMenus.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckMenus.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Refactorings\ExtractInterface.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Refactorings\Refactorings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

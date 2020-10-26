@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             : base(messageBox)
         { }
 
-        protected override string Caption => Resources.RubberduckUI.ExtractInterface_Caption;
+        protected override string Caption => Resources.Refactorings.ExtractInterface.Caption;
 
         protected override string Message(RefactoringException exception)
         {
