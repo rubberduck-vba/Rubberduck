@@ -119,6 +119,9 @@
     <Compile Update="Settings\CodeInspectionPage.Designer.cs">
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Update="Settings\GeneralSettingsPage.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="Settings\SettingsUI.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -232,6 +235,9 @@
     </EmbeddedResource>
     <EmbeddedResource Update="Settings\CodeInspectionPage.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Settings\GeneralSettingsPage.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Settings\SettingsUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

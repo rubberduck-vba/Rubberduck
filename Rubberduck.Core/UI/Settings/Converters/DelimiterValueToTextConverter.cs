@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using Rubberduck.Resources;
+using Rubberduck.Resources.Settings;
 
 namespace Rubberduck.UI.Settings.Converters
 {
@@ -13,9 +13,9 @@ namespace Rubberduck.UI.Settings.Converters
             switch (mode)
             {
                 case DelimiterOptions.Period:
-                    return RubberduckUI.GeneralSettings_PeriodDelimiter;
+                    return GeneralSettingsPage.PeriodDelimiter;
                 case DelimiterOptions.Slash:
-                    return RubberduckUI.GeneralSettings_SlashDelimiter;
+                    return GeneralSettingsPage.SlashDelimiter;
                 default:
                     return value;
             }
@@ -24,7 +24,7 @@ namespace Rubberduck.UI.Settings.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var text = (string)value;
-            return text == RubberduckUI.GeneralSettings_PeriodDelimiter
+            return text == GeneralSettingsPage.PeriodDelimiter
                 ? DelimiterOptions.Period
                 : DelimiterOptions.Slash;
         }

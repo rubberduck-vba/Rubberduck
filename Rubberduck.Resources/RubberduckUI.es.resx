@@ -366,9 +366,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="Result" xml:space="preserve">
     <value>Resultado</value>
   </data>
-  <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
-    <value>Idioma de visualización:</value>
-  </data>
   <data name="Language_EN" xml:space="preserve">
     <value>Inglés</value>
   </data>
@@ -615,15 +612,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
     <value>Gap estándar</value>
   </data>
-  <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
-    <value>Descripción</value>
-  </data>
-  <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
-    <value>Habilitado</value>
-  </data>
-  <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
-    <value>Tecla1</value>
-  </data>
   <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
     <value>Alinear comentarios con código</value>
   </data>
@@ -702,9 +690,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="GroupingStyle_ByOutcome" xml:space="preserve">
     <value>Por resultado</value>
   </data>
-  <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
-    <value>Teclas de acceso rápido:</value>
-  </data>
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Resultados de la búsqueda</value>
   </data>
@@ -765,18 +750,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Analizar todos los proyectos abiertos</value>
   </data>
-  <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
-    <value>Alt</value>
-  </data>
-  <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
-    <value>Ctrl</value>
-  </data>
-  <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
-    <value>Tecla2</value>
-  </data>
-  <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
-    <value>Shift</value>
-  </data>
   <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
     <value>Explorador de código</value>
   </data>
@@ -819,44 +792,8 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>biblioteca de procedimientos</value>
   </data>
-  <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
-    <value>Delimitador de carpeta:</value>
-  </data>
-  <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
-    <value>Punto (.)</value>
-  </data>
-  <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
-    <value>Barra (/)</value>
-  </data>
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Errores del analizador</value>
-  </data>
-  <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
-    <value>Nivel de registro mínimo:</value>
-  </data>
-  <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
-    <value>Depurar</value>
-  </data>
-  <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
-    <value>Fatal</value>
-  </data>
-  <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
-    <value>Información</value>
-  </data>
-  <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
-    <value>Sin registro</value>
-  </data>
-  <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
-    <value>Rastro</value>
-  </data>
-  <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
-    <value>Advertir</value>
-  </data>
-  <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
-    <value>Mostrar carpeta de registro</value>
   </data>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Resolviendo referencias ...</value>
@@ -890,9 +827,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   </data>
   <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refactorizar / Encapsular Campo</value>
-  </data>
-  <data name="GeneralSettings_ShowSplash" xml:space="preserve">
-    <value>Mostrar pantalla de bienvenida al inicio</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Las ventanas de herramientas no se destruyeron correctamente y/o no se pudieron recrear; El VBE puede no estar en un estado estable. Rubberduck se cargará normalmente la próxima vez que se inicialice el VBE.</value>
@@ -992,9 +926,6 @@ Para revisar el log de cambios y actualizar Rubberduck manualmente haga click en
 
 Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desactivar este comportamiento en Rubberduck &gt; Ajustes.</value>
   </data>
-  <data name="GeneralSettings_CheckVersion" xml:space="preserve">
-    <value>Compruebe si hay una versión más nueva disponible en el inicio</value>
-  </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' ya está accesible para este ámbito.</value>
     <comment>{0} = nombre de la variable propuesta.</comment>
@@ -1022,12 +953,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
     <value>El método '{0}' es una implementación del evento '{1}. {2}'. ¿Renombrar el evento '{2}' en su lugar?</value>
     <comment>0: identificador de objetivo seleccionado; 1: Evento Padre; 2: nombre del evento</comment>
-  </data>
-  <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
-    <value>Solo habilítar si sabe lo que está haciendo. La habilitación y/o el uso de las funciones de esta sección pueden hacer que las cosas se rompan de forma inesperada e irrevocable.</value>
-  </data>
-  <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
-    <value>Características experimentales (requiere un reinicio para que tenga efecto):</value>
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Elija una carpeta para exportar la fuente de {0} a:</value>
@@ -1080,23 +1005,11 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   <data name="CodeMetrics_Nesting" xml:space="preserve">
     <value>Anidamiento maximo</value>
   </data>
-  <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
-    <value>Las teclas de acceso rápido deben incluir Alt y / o Ctrl.</value>
-  </data>
-  <data name="GeneralSettings_HotkeyRestrictionToolTip" xml:space="preserve">
-    <value>Esta configuración de teclas de acceso rápido puede causar efectos secundarios no deseados.</value>
-  </data>
-  <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
-    <value>Advertencia para modificador</value>
-  </data>
   <data name="Command_Reparse_CannotCompile" xml:space="preserve">
     <value>Los siguientes proyectos no pueden compilarse, lo que probablemente resultará en errores del analizador. ¿Continua de todas maneras? {0}</value>
   </data>
   <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
     <value>No se puede compilar para analizar.</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
-    <value>Compilar código antes de analizar</value>
   </data>
   <data name="ParserState_Started" xml:space="preserve">
     <value>Empezado</value>
@@ -1109,14 +1022,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   </data>
   <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>Ajuste "Compilar A Demanda"</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
-    <value>La configuración de VBE "Compile On Demand" está actualmente habilitada. Se recomienda encarecidamente que deshabilite la configuración a través del cuadro de diálogo Opciones de VBE en la pestaña General para utilizar la función Compilar antes de analizar. ¿Quieres desactivarlo ahora?
-
-NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
-    <value>"Compilar A Demanda" actualmente habilitado</value>
   </data>
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Ocupado</value>
@@ -1238,9 +1143,6 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   </data>
   <data name="TodoSettings_Caption" xml:space="preserve">
     <value>Explorador TODO</value>
-  </data>
-  <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
-    <value>Corrección para escalas de pantalla de alta resolución</value>
   </data>
   <data name="References_BrowseFilterAccess" xml:space="preserve">
     <value>Bases de datos de Microsoft Access ({0})|{0}</value>
@@ -1485,9 +1387,6 @@ Importación cancelada.</value>
   <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
     <value>No se puede suspender el analizador para ejecutar la operación de refactorización.</value>
   </data>
-  <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
-    <value>Avisarme cuando un pre-release build nuevo esté disponible</value>
-  </data>
   <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
     <value>pre-release</value>
   </data>
@@ -1681,8 +1580,5 @@ Una clase privada puede asimismo implementar una interfaz pública.</value>
   </data>
   <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
     <value>Nueva carpeta completa:</value>
-  </data>
-  <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
-    <value>Habilitar arrastrar y soltar en Explorador de Código</value>
   </data>
 </root>

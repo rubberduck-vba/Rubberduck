@@ -606,23 +606,14 @@ Continuer?</value>
   <data name="SearchResults_MemberType" xml:space="preserve">
     <value>Type</value>
   </data>
-  <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
-    <value>Maj</value>
-  </data>
   <data name="SearchResults_MemberName" xml:space="preserve">
     <value>Membre</value>
-  </data>
-  <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
-    <value>Alt</value>
   </data>
   <data name="EndOfLineCommentStyle_AlignInColumn" xml:space="preserve">
     <value>Aligner dans la colonne</value>
   </data>
   <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
     <value>Par type d'inspection</value>
-  </data>
-  <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
-    <value>Raccourcis:</value>
   </data>
   <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
     <value>Regroupement</value>
@@ -678,9 +669,6 @@ Continuer?</value>
   <data name="ParserState_Pending" xml:space="preserve">
     <value>En attente</value>
   </data>
-  <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
-    <value>Ctrl</value>
-  </data>
   <data name="IndenterSettings_IndentCompilerDirectives" xml:space="preserve">
     <value>Indenter les directives du préprocesseur</value>
   </data>
@@ -692,15 +680,6 @@ Continuer?</value>
   </data>
   <data name="IndenterSettings_AlignDims" xml:space="preserve">
     <value>Aligner les déclarations (Dim)</value>
-  </data>
-  <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
-    <value>Touche1</value>
-  </data>
-  <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
-    <value>Touche2</value>
   </data>
   <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Options spéciales</value>
@@ -753,9 +732,6 @@ Continuer?</value>
   <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
     <value>Espacement standard</value>
   </data>
-  <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
-    <value>Active</value>
-  </data>
   <data name="Rubberduck" xml:space="preserve">
     <value>Rubberduck</value>
   </data>
@@ -771,53 +747,11 @@ Continuer?</value>
   <data name="SearchResults_ModuleName" xml:space="preserve">
     <value>Module</value>
   </data>
-  <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
-    <value>Langue d'affichage:</value>
-  </data>
-  <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
-    <value>Point (.)</value>
-  </data>
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Erreurs d'analyse</value>
   </data>
-  <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
-    <value>Avertissement</value>
-  </data>
-  <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
-    <value>Afficher dans le dossier</value>
-  </data>
-  <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
-    <value>Erreur</value>
-  </data>
   <data name="Find" xml:space="preserve">
     <value>Chercher</value>
-  </data>
-  <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
-    <value>Barre oblique (/)</value>
-  </data>
-  <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
-    <value>Fatal</value>
-  </data>
-  <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
-    <value>Trace</value>
-  </data>
-  <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
-    <value>Debug</value>
-  </data>
-  <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
-    <value>Délimiteur de dossiers:</value>
-  </data>
-  <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
-    <value>Niveau minimum du journal:</value>
-  </data>
-  <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
-    <value>Désactivé</value>
-  </data>
-  <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
-    <value>Info</value>
-  </data>
-  <data name="GeneralSettings_ShowSplash" xml:space="preserve">
-    <value>Afficher l'écran d'initialisation</value>
   </data>
   <data name="ParserErrorToolTipText" xml:space="preserve">
     <value>{0} module(s) n'ont pas pu compléter; cliquez pour plus de détails.</value>
@@ -911,9 +845,6 @@ End Sub</value>
   <data name="ContextReferences" xml:space="preserve">
     <value>références</value>
   </data>
-  <data name="GeneralSettings_CheckVersion" xml:space="preserve">
-    <value>Vérifier si une nouvelle version est diponible au démarrage.</value>
-  </data>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
     <value>Vous utilisez présentement la version {0}.
 Bonne nouvelle, la version {1} ({2}) est maintenant disponible!
@@ -987,17 +918,11 @@ les projets dans le VBE.</value>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck ne voit rien pour l'instant.</value>
   </data>
-  <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
-    <value>Ces fonctionnalités sont présentement en phase de tests et/ou diagnostics. Activer ces fonctionnalités peut produire des erreurs inattendues qui peuvent résulter en pertes de données.</value>
-  </data>
   <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
     <value>La méthode '{0}' répond à l'événement '{1}.{2}'. Renommer l'événement '{2}'?</value>
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Veuillez sélectionner un dossier où exporter les fichier source de {0}:</value>
-  </data>
-  <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
-    <value>Fonctionnalités expérimentales:</value>
   </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>Impossible de renommer {0}.</value>
@@ -1064,23 +989,11 @@ les projets dans le VBE.</value>
   <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Encapsuler le champ</value>
   </data>
-  <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
-    <value>Les raccourcis doivent inclure Alt et/ou Ctrl.</value>
-  </data>
-  <data name="GeneralSettings_HotkeyRestrictionToolTip" xml:space="preserve">
-    <value>Cette configuration peut entraîner des effets indésirables.</value>
-  </data>
-  <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
-    <value>Avertissement</value>
-  </data>
   <data name="Command_Reparse_CannotCompile" xml:space="preserve">
     <value>Les projets suivants ne peuvent être compilés, ce qui causera probablement des erreurs d'analyse. Continuer? {0}</value>
   </data>
   <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
     <value>La compilation a échoué.</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
-    <value>Compiler le code avant d'analyser</value>
   </data>
   <data name="ParserState_Started" xml:space="preserve">
     <value>Initiée</value>
@@ -1093,14 +1006,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>Paramètre "Compile on demand"</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
-    <value>L'option VBE "Compile on demand" est activée. Il est fortement recommandé de désactiver cette option afin d'utiliser l'option "Compiler avant l'analyse". Voulez-vous désactiver "Compile on demand"?
-
-NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configuration prenne effet.</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
-    <value>'Compile on demand' est activé</value>
   </data>
   <data name="Add" xml:space="preserve">
     <value>Ajouter</value>
@@ -1188,9 +1093,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="AllReferences_PerformanceWarning" xml:space="preserve">
     <value>La recherche des utilisations de la référence '{0}' renvoie {1} résultats. Les afficher pourrait dégrader la performance. Continuer?</value>
-  </data>
-  <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
-    <value>Correction pour l'affichage haute définition</value>
   </data>
   <data name="References_Locale" xml:space="preserve">
     <value>Langue:</value>
@@ -1329,9 +1231,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Enregistrer &amp; Fermer</value>
-  </data>
-  <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
-    <value>M'avertir lorsqu'une nouvelle version "pre-release" est disponible.</value>
   </data>
   <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
     <value>pré-diffusion</value>
@@ -1502,9 +1401,6 @@ Mise à jour annulée.</value>
     <value>La classe est publique, l'interface extraite sera donc publique également.
 Si une interface privée est nécessaire, veuillez modifier le mode d'instanciation ("instancing") du module de classe pour 'Private'.
 Une classe privée peut toujours implémenter une interface publique.</value>
-  </data>
-  <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
-    <value>Permettre glisser-déposer dans l'Explorateur de Code</value>
   </data>
   <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
     <value>Le fichier binaire '{1}' associé à '{0}' est manquant, et le module cible '{2}' n'existe pas déjà dans le projet.
