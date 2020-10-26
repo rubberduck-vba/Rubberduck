@@ -117,74 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
-    <value>{0} selhal</value>
-  </data>
-  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
-    <value>{0} neprůkazný</value>
-  </data>
-  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
-    <value>{0} v pořádku</value>
-  </data>
   <data name="TestExplorerWindow_Caption" xml:space="preserve">
     <value>Test Explorer</value>
   </data>
-  <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>Přidat</value>
-  </data>
-  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Testovací metoda (Očekávaný error)</value>
-  </data>
-  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>Testovací metoda</value>
-  </data>
-  <data name="TestExplorer_AddTestModule" xml:space="preserve">
-    <value>Testovací modul</value>
-  </data>
-  <data name="TestExplorer_Duration" xml:space="preserve">
-    <value>Trvání</value>
-  </data>
-  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
-    <value>Navigovat na výběr</value>
-  </data>
-  <data name="TestExplorer_Message" xml:space="preserve">
-    <value>Zpráva</value>
-  </data>
-  <data name="TestExplorer_MethodName" xml:space="preserve">
-    <value>Název metody</value>
-  </data>
-  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
-    <value>Modul</value>
-  </data>
-  <data name="TestExplorer_RunMenuAllTests" xml:space="preserve">
-    <value>Všechny testy</value>
-  </data>
-  <data name="TestExplorer_RunMenuButtonText" xml:space="preserve">
-    <value>Spustit</value>
-  </data>
-  <data name="TestExplorer_RunMenuLastRunTests" xml:space="preserve">
-    <value>Spustit poslední běh</value>
-  </data>
-  <data name="TestExplorer_RunMenuPassedTests" xml:space="preserve">
-    <value>Testy, které prošly</value>
-  </data>
-  <data name="TestExplorer_RunMenuSelectedTests" xml:space="preserve">
-    <value>Vybrané testy</value>
-  </data>
-  <data name="TestExplorer_RunMenuNotRunTests" xml:space="preserve">
-    <value>Testy, které neproběhly</value>
-  </data>
-  <data name="TestExplorer_RunMenuFailedTests" xml:space="preserve">
-    <value>Testy, které neprošly</value>
-  </data>
   <data name="Command_AddTestModule_Error" xml:space="preserve">
     <value>Nebylo možné vytvořit testovací modul. Hostující aplikace možná nemá povoleno vytváření nových modulů, nebo je projekt uzamčen. Pro detaily se koukněte do logu.</value>
-  </data>
-  <data name="TestExplorer_Outcome" xml:space="preserve">
-    <value>Výsledek</value>
-  </data>
-  <data name="TestExplorer_RunMenuInconclusiveTests" xml:space="preserve">
-    <value>Neprůkazné testy</value>
   </data>
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
     <value>Dva nebo více projektů obsahující testovací metody, mají stejné jména nebo stejně pojmenované testy. Pokud chcete pokračovat, jedno z nich prosím přejmenujte.</value>
@@ -224,15 +161,6 @@
   </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>tato metoda běží jedenkrát v modulu</value>
-  </data>
-  <data name="TestExplorer_TotalDuration" xml:space="preserve">
-    <value>Celkové Trvání</value>
-  </data>
-  <data name="TestExplorer_CategoryName" xml:space="preserve">
-    <value>Kategorie</value>
-  </data>
-  <data name="TestExplorer_Uncategorized" xml:space="preserve">
-    <value>Bez kategorie</value>
   </data>
   <data name="UnitTest_NewModule_BaseName" xml:space="preserve">
     <value>TestovaciModul</value>
@@ -285,21 +213,6 @@
   <data name="TestOutcome_RunSummaryFormat" xml:space="preserve">
     <value>{0} z {1} testů (celková doba běhu: {2:g})</value>
   </data>
-  <data name="TestExplorer_ContextMenuRunGroup" xml:space="preserve">
-    <value>Spustit všechny testy ve skupině</value>
-  </data>
-  <data name="TestExplorer_ContextMenuRunAll" xml:space="preserve">
-    <value>Spustit všechny testy</value>
-  </data>
-  <data name="TestExplorer_ContextMenuRunSelected" xml:space="preserve">
-    <value>Spustit označené testy</value>
-  </data>
-  <data name="TestExplorer_ContextMenuRunSingle" xml:space="preserve">
-    <value>Spustit samostatný test</value>
-  </data>
-  <data name="TestExplorer_ResetButtonTooltip" xml:space="preserve">
-    <value>Resetovat výsledky všech testů</value>
-  </data>
   <data name="UnitTest_NewMethod_Act" xml:space="preserve">
     <value>Jednat</value>
   </data>
@@ -324,28 +237,115 @@
   <data name="TestOutcome_SummaryCaption" xml:space="preserve">
     <value>Shrnutí:</value>
   </data>
-  <data name="TestExplorer_Filter" xml:space="preserve">
-    <value>Název Testu</value>
+  <data name="AddButtonText" xml:space="preserve">
+    <value>Přidat</value>
   </data>
-  <data name="TestExplorer_AllResults" xml:space="preserve">
+  <data name="AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>Testovací metoda (Očekávaný error)</value>
+  </data>
+  <data name="AddTestMethod" xml:space="preserve">
+    <value>Testovací metoda</value>
+  </data>
+  <data name="AddTestModule" xml:space="preserve">
+    <value>Testovací modul</value>
+  </data>
+  <data name="AllResults" xml:space="preserve">
     <value>Vše</value>
   </data>
-  <data name="TestExplorer_TestToggle_Ignore" xml:space="preserve">
-    <value>Ignorovat test</value>
+  <data name="CategoryName" xml:space="preserve">
+    <value>Kategorie</value>
   </data>
-  <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
-    <value>Odignorovat test</value>
-  </data>
-  <data name="TestExplorer_ContextMenuIgnoreGroup" xml:space="preserve">
+  <data name="ContextMenuIgnoreGroup" xml:space="preserve">
     <value>Ignorovat všechny testy ve skupině</value>
   </data>
-  <data name="TestExplorer_ContextMenuIgnoreSelectedTests" xml:space="preserve">
+  <data name="ContextMenuIgnoreSelectedTests" xml:space="preserve">
     <value>Ignorovat označené testy</value>
   </data>
-  <data name="TestExplorer_ContextMenuUnignoreGroup" xml:space="preserve">
+  <data name="ContextMenuRunAll" xml:space="preserve">
+    <value>Spustit všechny testy</value>
+  </data>
+  <data name="ContextMenuRunGroup" xml:space="preserve">
+    <value>Spustit všechny testy ve skupině</value>
+  </data>
+  <data name="ContextMenuRunSelected" xml:space="preserve">
+    <value>Spustit označené testy</value>
+  </data>
+  <data name="ContextMenuRunSingle" xml:space="preserve">
+    <value>Spustit samostatný test</value>
+  </data>
+  <data name="ContextMenuUnignoreGroup" xml:space="preserve">
     <value>Zrušit ignorování všech testů ve skupině</value>
   </data>
-  <data name="TestExplorer_ContextMenuUnignoreSelectedTests" xml:space="preserve">
+  <data name="ContextMenuUnignoreSelectedTests" xml:space="preserve">
     <value>Zrušit ignorování označených testů</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Trvání</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Název Testu</value>
+  </data>
+  <data name="GotoSelectionToolTip" xml:space="preserve">
+    <value>Navigovat na výběr</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Zpráva</value>
+  </data>
+  <data name="MethodName" xml:space="preserve">
+    <value>Název metody</value>
+  </data>
+  <data name="Outcome" xml:space="preserve">
+    <value>Výsledek</value>
+  </data>
+  <data name="QualifiedModuleName" xml:space="preserve">
+    <value>Modul</value>
+  </data>
+  <data name="ResetButtonTooltip" xml:space="preserve">
+    <value>Resetovat výsledky všech testů</value>
+  </data>
+  <data name="RunMenuAllTests" xml:space="preserve">
+    <value>Všechny testy</value>
+  </data>
+  <data name="RunMenuButtonText" xml:space="preserve">
+    <value>Spustit</value>
+  </data>
+  <data name="RunMenuFailedTests" xml:space="preserve">
+    <value>Testy, které neprošly</value>
+  </data>
+  <data name="RunMenuInconclusiveTests" xml:space="preserve">
+    <value>Neprůkazné testy</value>
+  </data>
+  <data name="RunMenuLastRunTests" xml:space="preserve">
+    <value>Spustit poslední běh</value>
+  </data>
+  <data name="RunMenuNotRunTests" xml:space="preserve">
+    <value>Testy, které neproběhly</value>
+  </data>
+  <data name="RunMenuPassedTests" xml:space="preserve">
+    <value>Testy, které prošly</value>
+  </data>
+  <data name="RunMenuSelectedTests" xml:space="preserve">
+    <value>Vybrané testy</value>
+  </data>
+  <data name="TestNumberFailed" xml:space="preserve">
+    <value>{0} selhal</value>
+  </data>
+  <data name="TestNumberInconclusive" xml:space="preserve">
+    <value>{0} neprůkazný</value>
+  </data>
+  <data name="TestNumberPassed" xml:space="preserve">
+    <value>{0} v pořádku</value>
+  </data>
+  <data name="TestToggle_Ignore" xml:space="preserve">
+    <value>Ignorovat test</value>
+  </data>
+  <data name="TestToggle_Unignore" xml:space="preserve">
+    <value>Odignorovat test</value>
+  </data>
+  <data name="TotalDuration" xml:space="preserve">
+    <value>Celkové Trvání</value>
+  </data>
+  <data name="Uncategorized" xml:space="preserve">
+    <value>Bez kategorie</value>
   </data>
 </root>

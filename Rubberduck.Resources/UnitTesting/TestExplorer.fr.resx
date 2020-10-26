@@ -117,74 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
-    <value>{0} Échoués</value>
-  </data>
-  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
-    <value>{0} Inconclusifs</value>
-  </data>
-  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
-    <value>{0} Succès</value>
-  </data>
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
     <value>Deux ou plusieurs projets ont le même nom et contiennent une ou plusieurs méthodes de test ayant le même nom. Veuillez en renommer un avant de continuer.</value>
   </data>
   <data name="TestExplorerWindow_Caption" xml:space="preserve">
     <value>Explorateur de tests</value>
   </data>
-  <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>Ajouter</value>
-  </data>
-  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Test (erreur attendue)</value>
-  </data>
-  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>Test</value>
-  </data>
-  <data name="TestExplorer_AddTestModule" xml:space="preserve">
-    <value>Module de tests</value>
-  </data>
-  <data name="TestExplorer_Duration" xml:space="preserve">
-    <value>Durée</value>
-  </data>
-  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
-    <value>Naviguer au test sélectionné</value>
-  </data>
-  <data name="TestExplorer_Message" xml:space="preserve">
-    <value>Message</value>
-  </data>
-  <data name="TestExplorer_MethodName" xml:space="preserve">
-    <value>Nom</value>
-  </data>
-  <data name="TestExplorer_RunMenuAllTests" xml:space="preserve">
-    <value>Tous les tests</value>
-  </data>
-  <data name="TestExplorer_RunMenuButtonText" xml:space="preserve">
-    <value>Exécuter</value>
-  </data>
-  <data name="TestExplorer_RunMenuFailedTests" xml:space="preserve">
-    <value>Tests échoués</value>
-  </data>
-  <data name="TestExplorer_RunMenuLastRunTests" xml:space="preserve">
-    <value>Répéter</value>
-  </data>
-  <data name="TestExplorer_RunMenuNotRunTests" xml:space="preserve">
-    <value>Tests non exécutés</value>
-  </data>
-  <data name="TestExplorer_RunMenuPassedTests" xml:space="preserve">
-    <value>Tests passés</value>
-  </data>
-  <data name="TestExplorer_RunMenuSelectedTests" xml:space="preserve">
-    <value>Tests sélectionnés</value>
-  </data>
   <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
     <value>cette procédure s'exécute après chaque test dans le module</value>
   </data>
   <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
     <value>L'erreur attendue ne s'est pas produite</value>
-  </data>
-  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
-    <value>Module</value>
   </data>
   <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
     <value>Renommer le test</value>
@@ -216,38 +159,8 @@
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ignoré</value>
   </data>
-  <data name="TestExplorer_RunMenuInconclusiveTests" xml:space="preserve">
-    <value>Tests inconclusifs</value>
-  </data>
-  <data name="TestExplorer_Outcome" xml:space="preserve">
-    <value>Résultat</value>
-  </data>
   <data name="Command_AddTestModule_Error" xml:space="preserve">
     <value>Impossible de créer le module de test. L'application hôte peut ne pas permettre la création de nouveaux modules, ou le projet peut être verrouillé. Vérifiez les journaux pour les détails.</value>
-  </data>
-  <data name="TestExplorer_TotalDuration" xml:space="preserve">
-    <value>Durée totale</value>
-  </data>
-  <data name="TestExplorer_CategoryName" xml:space="preserve">
-    <value>Catégorie</value>
-  </data>
-  <data name="TestExplorer_Uncategorized" xml:space="preserve">
-    <value>Non-catégorisés</value>
-  </data>
-  <data name="TestExplorer_ContextMenuRunGroup" xml:space="preserve">
-    <value>Exécuter le groupe</value>
-  </data>
-  <data name="TestExplorer_ContextMenuRunAll" xml:space="preserve">
-    <value>Exécuter tous les tests</value>
-  </data>
-  <data name="TestExplorer_ContextMenuRunSelected" xml:space="preserve">
-    <value>Exécuter les tests sélectionnés</value>
-  </data>
-  <data name="TestExplorer_ContextMenuRunSingle" xml:space="preserve">
-    <value>Exécuter le test</value>
-  </data>
-  <data name="TestExplorer_ResetButtonTooltip" xml:space="preserve">
-    <value>Réinitialiser tous les résultats</value>
   </data>
   <data name="TestOutcome_RunSummaryFormat" xml:space="preserve">
     <value>{0} de {1} test(s) exécuté(s) (temps d'exécution: {2:g})</value>
@@ -258,30 +171,6 @@
   <data name="TestOutcome_DurationSecond" xml:space="preserve">
     <value>s</value>
   </data>
-  <data name="TestExplorer_Filter" xml:space="preserve">
-    <value>Nom du test</value>
-  </data>
-  <data name="TestExplorer_AllResults" xml:space="preserve">
-    <value>Tous</value>
-  </data>
-  <data name="TestExplorer_TestToggle_Ignore" xml:space="preserve">
-    <value>Ignorer le test</value>
-  </data>
-  <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
-    <value>Réactiver le test</value>
-  </data>
-  <data name="TestExplorer_ContextMenuIgnoreGroup" xml:space="preserve">
-    <value>Ignorer tous les tests du groupe</value>
-  </data>
-  <data name="TestExplorer_ContextMenuIgnoreSelectedTests" xml:space="preserve">
-    <value>Ignorer les tests sélectionnés</value>
-  </data>
-  <data name="TestExplorer_ContextMenuUnignoreGroup" xml:space="preserve">
-    <value>Désignorer tous les tests du groupe</value>
-  </data>
-  <data name="TestExplorer_ContextMenuUnignoreSelectedTests" xml:space="preserve">
-    <value>Désignorer les tests sélectionnés</value>
-  </data>
   <data name="TestOutcome_DurationHour" xml:space="preserve">
     <value>hr</value>
   </data>
@@ -290,5 +179,116 @@
   </data>
   <data name="TestOutcome_DurationMinute" xml:space="preserve">
     <value>min</value>
+  </data>
+  <data name="AddButtonText" xml:space="preserve">
+    <value>Ajouter</value>
+  </data>
+  <data name="AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>Test (erreur attendue)</value>
+  </data>
+  <data name="AddTestMethod" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="AddTestModule" xml:space="preserve">
+    <value>Module de tests</value>
+  </data>
+  <data name="AllResults" xml:space="preserve">
+    <value>Tous</value>
+  </data>
+  <data name="CategoryName" xml:space="preserve">
+    <value>Catégorie</value>
+  </data>
+  <data name="ContextMenuIgnoreGroup" xml:space="preserve">
+    <value>Ignorer tous les tests du groupe</value>
+  </data>
+  <data name="ContextMenuIgnoreSelectedTests" xml:space="preserve">
+    <value>Ignorer les tests sélectionnés</value>
+  </data>
+  <data name="ContextMenuRunAll" xml:space="preserve">
+    <value>Exécuter tous les tests</value>
+  </data>
+  <data name="ContextMenuRunGroup" xml:space="preserve">
+    <value>Exécuter le groupe</value>
+  </data>
+  <data name="ContextMenuRunSelected" xml:space="preserve">
+    <value>Exécuter les tests sélectionnés</value>
+  </data>
+  <data name="ContextMenuRunSingle" xml:space="preserve">
+    <value>Exécuter le test</value>
+  </data>
+  <data name="ContextMenuUnignoreGroup" xml:space="preserve">
+    <value>Désignorer tous les tests du groupe</value>
+  </data>
+  <data name="ContextMenuUnignoreSelectedTests" xml:space="preserve">
+    <value>Désignorer les tests sélectionnés</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Durée</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Nom du test</value>
+  </data>
+  <data name="GotoSelectionToolTip" xml:space="preserve">
+    <value>Naviguer au test sélectionné</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="MethodName" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="Outcome" xml:space="preserve">
+    <value>Résultat</value>
+  </data>
+  <data name="QualifiedModuleName" xml:space="preserve">
+    <value>Module</value>
+  </data>
+  <data name="ResetButtonTooltip" xml:space="preserve">
+    <value>Réinitialiser tous les résultats</value>
+  </data>
+  <data name="RunMenuAllTests" xml:space="preserve">
+    <value>Tous les tests</value>
+  </data>
+  <data name="RunMenuButtonText" xml:space="preserve">
+    <value>Exécuter</value>
+  </data>
+  <data name="RunMenuFailedTests" xml:space="preserve">
+    <value>Tests échoués</value>
+  </data>
+  <data name="RunMenuInconclusiveTests" xml:space="preserve">
+    <value>Tests inconclusifs</value>
+  </data>
+  <data name="RunMenuLastRunTests" xml:space="preserve">
+    <value>Répéter</value>
+  </data>
+  <data name="RunMenuNotRunTests" xml:space="preserve">
+    <value>Tests non exécutés</value>
+  </data>
+  <data name="RunMenuPassedTests" xml:space="preserve">
+    <value>Tests passés</value>
+  </data>
+  <data name="RunMenuSelectedTests" xml:space="preserve">
+    <value>Tests sélectionnés</value>
+  </data>
+  <data name="TestNumberFailed" xml:space="preserve">
+    <value>{0} Échoués</value>
+  </data>
+  <data name="TestNumberInconclusive" xml:space="preserve">
+    <value>{0} Inconclusifs</value>
+  </data>
+  <data name="TestNumberPassed" xml:space="preserve">
+    <value>{0} Succès</value>
+  </data>
+  <data name="TestToggle_Ignore" xml:space="preserve">
+    <value>Ignorer le test</value>
+  </data>
+  <data name="TestToggle_Unignore" xml:space="preserve">
+    <value>Réactiver le test</value>
+  </data>
+  <data name="TotalDuration" xml:space="preserve">
+    <value>Durée totale</value>
+  </data>
+  <data name="Uncategorized" xml:space="preserve">
+    <value>Non-catégorisés</value>
   </data>
 </root>
