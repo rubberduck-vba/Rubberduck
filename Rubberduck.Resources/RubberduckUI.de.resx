@@ -591,60 +591,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
     <value>Standardabstand</value>
   </data>
-  <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
-    <value>Richte Kommentare am Code aus</value>
-  </data>
-  <data name="IndenterSettings_AlignContinuations" xml:space="preserve">
-    <value>Richte Fortsetzung aus</value>
-  </data>
-  <data name="IndenterSettings_AlignDims" xml:space="preserve">
-    <value>Ausrichtung der Deklarationen</value>
-  </data>
-  <data name="IndenterSettings_AlignmentOptionsLabel" xml:space="preserve">
-    <value>Ausrichtungsoptionen</value>
-  </data>
-  <data name="IndenterSettings_EnableOptionsLabel" xml:space="preserve">
-    <value>Optionen freigeben</value>
-  </data>
-  <data name="IndenterSettings_EnableUndo" xml:space="preserve">
-    <value>Rückgängig freigeben</value>
-  </data>
-  <data name="IndenterSettings_EndOfLineCommentStyle" xml:space="preserve">
-    <value>Zeilenende Kommentarstil:</value>
-  </data>
-  <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
-    <value>Nutze Kompilerdirektiven in Spalte 1</value>
-  </data>
-  <data name="IndenterSettings_ForceDebugDirectivesToColumn1" xml:space="preserve">
-    <value>Nutze Debugdirektiven in Spalte 1</value>
-  </data>
-  <data name="IndenterSettings_IgnoreOperators" xml:space="preserve">
-    <value>Ignoriere Operatoren</value>
-  </data>
-  <data name="IndenterSettings_IndentCase" xml:space="preserve">
-    <value>Rücke 'Case' ein</value>
-  </data>
-  <data name="IndenterSettings_IndentCompilerDirectives" xml:space="preserve">
-    <value>Rücke Kompilerdirektiven ein</value>
-  </data>
-  <data name="IndenterSettings_IndentEntireProcedureBody" xml:space="preserve">
-    <value>Rücke gesamten Prozedurblock ein</value>
-  </data>
-  <data name="IndenterSettings_IndentFirstCommentBlock" xml:space="preserve">
-    <value>Rücke ersten Kommentarblock ein</value>
-  </data>
-  <data name="IndenterSettings_IndentFirstDeclarationBlock" xml:space="preserve">
-    <value>Rücke ersten Deklarationsblock ein</value>
-  </data>
-  <data name="IndenterSettings_IndentOptionsLabel" xml:space="preserve">
-    <value>Rücke Optionen ein</value>
-  </data>
-  <data name="IndenterSettings_IndentSpaces" xml:space="preserve">
-    <value>Einrückungsleerzeichen:</value>
-  </data>
-  <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
-    <value>Spezielle Optionen</value>
-  </data>
   <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
     <value>Nach Modulen</value>
   </data>
@@ -774,55 +720,11 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
     <value>Ausdruck</value>
   </data>
-  <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
-    <value>Kommentare in Enums und Typen wie in Prozeduren einrücken</value>
-  </data>
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck wird nicht neu geladen</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Werkzeugfenster wurden nicht korrekt entfernt und/oder konnten nicht wieder hergestellt werden; Die VBE könnte instabil sein. Rubberduck wird beim nächsten Start der VBE normal laden.</value>
-  </data>
-  <data name="IndenterSettings_PreviewCode" xml:space="preserve">
-    <value>Public Enum BeispielEnum
-' Enum Kommentar.
-Foo
-Bar ' Member-Kommentar.
-End Enum
-
-' Beispielprozedur
-Sub BeispielProc()
-
-' SMART INDENTER
-' Der originale VB6-Code wurde Rubberduck gnädigerweise von Stephen Bullen &amp; Rob Bovey angeboten
-' © 2016 by Rubberduck VBA.
-
-Dim zaehler As Integer
-Static name As String
-
-If SieMoegenRubberduck Then
-' Einen Stern auf GitHub geben: http://github.com/rubberduck-vba/Rubberduck
-' Auf Twitter folgen @rubberduckvba
-' http://rubberduckvba.com für Neuigkeiten und Aktualisierungen
-
-Select Case X
-Case "A"
-' Falls sie Kommentare oder Vorschläge haben, _
-oder validen VBA code gefunden haben, der nicht korrekt eingerückt wird,
-
-#If VBA6 Then
-MsgBox "Kontaktieren Sie contact@rubberduck-vba.com"
-#End If
-
-Case "Fortgeführte Strings und Parameter können" _
-&amp; "zur Lesbarkeit aufgereiht werden. Optional können" _
-&amp; "beliebige Operatoren (&amp;+, usw.) am Zeilenbeginn ignoriert werden."
-
-Debug.Print "X&lt;&gt;1"
-End Select      'Case X
-End If      'Mehr Werkzeuge? Vorschläge an http://github.com/rubberduck-vba/Rubberduck/Issues/New
-
-End Sub</value>
   </data>
   <data name="ParserErrorToolTipText" xml:space="preserve">
     <value>{0} Modul(e) konnten nicht geparsed werden; Klicken Sie für Details.</value>
@@ -840,17 +742,8 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
     <value>Variablenname der Lokalen Kopie festlegen</value>
   </data>
-  <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
-    <value>Eingerücktes Codebeispiel</value>
-  </data>
   <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
     <value>Bitte geben Sie einen Namen für die lokale Kopie von ByVal {0} '{1}'.</value>
-  </data>
-  <data name="IndenterSettings_VerticalSpacing" xml:space="preserve">
-    <value>Vertikalen Abstand aufrecht erhalten</value>
-  </data>
-  <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
-    <value>Vertikalen Abstand</value>
   </data>
   <data name="DeclarationType_BracketedExpression" xml:space="preserve">
     <value>Laufzeitausdruck</value>
@@ -988,9 +881,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   <data name="GroupingStyle_ByCategory" xml:space="preserve">
     <value>Nach Kategorie</value>
   </data>
-  <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
-    <value>Leerzeilen bei der Suche nach dem ersten Kommentar und nach Deklarationsblöcken ignorieren</value>
-  </data>
   <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
     <value>Schweregrad:</value>
   </data>
@@ -1005,9 +895,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   </data>
   <data name="EmptyLineHandling_Remove" xml:space="preserve">
     <value>Entfernen</value>
-  </data>
-  <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
-    <value>Leerzeilenbehandlung:</value>
   </data>
   <data name="References_BrowseFilterAllFiles" xml:space="preserve">
     <value>Alle Dateien(*.*)|*.*</value>

@@ -122,6 +122,9 @@
     <Compile Update="Settings\GeneralSettingsPage.Designer.cs">
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Update="Settings\IndenterSettingsPage.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="Settings\SettingsUI.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -237,6 +240,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Settings\GeneralSettingsPage.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Settings\IndenterSettingsPage.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Settings\SettingsUI.resx">
