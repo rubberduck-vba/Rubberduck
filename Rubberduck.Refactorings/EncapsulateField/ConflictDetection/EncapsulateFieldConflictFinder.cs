@@ -268,13 +268,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             //Only check IdentifierReferences in the declaring module because encapsulated field 
             //references in other modules will be module-qualified.
-            var candidateLocalReferences = candidate.Declaration.References.Where(rf => rf.QualifiedModuleName == candidate.QualifiedModuleName);
+            var candidateLocalReferences = candidate.Declaration.References.Where(rf => rf.QualifiedModuleName == candidate.QualifiedModuleName
+                && !UsesMeQualifier(rf));
 
             var localDeclarationConflictCandidates = membersToEvaluate.Where(localDec => candidateLocalReferences
                .Any(cr => cr.ParentScoping == localDec.ParentScopeDeclaration));
 
             return localDeclarationConflictCandidates.Any(m => m.IdentifierName.IsEquivalentVBAIdentifierTo(identifierToCompare));
         }
+
+        private static bool UsesMeQualifier(IdentifierReference identifierReference) 
+            => identifierReference.Context.Parent is VBAParser.MemberAccessExprContext || identifierReference.Context.Parent is VBAParser.WithMemberAccessExprContext;
 
         private bool HasConflictingFieldIdentifier(IObjectStateUDT candidate, string identifierToCompare)
         {
