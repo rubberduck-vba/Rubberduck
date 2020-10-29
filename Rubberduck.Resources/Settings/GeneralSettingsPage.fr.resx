@@ -257,4 +257,19 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
     <value>Explorateur de tests</value>
   </data>
+  <data name="Language_EN" xml:space="preserve">
+    <value>Anglais</value>
+  </data>
+  <data name="Language_FR" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="Language_ES" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="Language_DE" xml:space="preserve">
+    <value>Allemand</value>
+  </data>
+  <data name="Language_CS" xml:space="preserve">
+    <value>Tchèque</value>
+  </data>
 </root>

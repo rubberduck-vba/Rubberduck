@@ -257,4 +257,19 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
     <value>Explorador de pruebas</value>
   </data>
+  <data name="Language_EN" xml:space="preserve">
+    <value>Inglés</value>
+  </data>
+  <data name="Language_FR" xml:space="preserve">
+    <value>Francés</value>
+  </data>
+  <data name="Language_ES" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="Language_DE" xml:space="preserve">
+    <value>Alemán</value>
+  </data>
+  <data name="Language_CS" xml:space="preserve">
+    <value>Checo</value>
+  </data>
 </root>

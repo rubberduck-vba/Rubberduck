@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Xml.Serialization;
 using Rubberduck.Resources;
+using Rubberduck.Resources.Settings;
 
 namespace Rubberduck.Settings
 {
@@ -34,7 +35,7 @@ namespace Rubberduck.Settings
             }
 
             var resource = "Language_" + Code.Substring(0, 2).ToUpper();
-            Name = RubberduckUI.ResourceManager.GetString(resource, culture);
+            Name = GeneralSettingsPage.ResourceManager.GetString(resource, culture);
         }
 
         [XmlIgnore]

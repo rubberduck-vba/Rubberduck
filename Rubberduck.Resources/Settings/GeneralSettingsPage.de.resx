@@ -257,4 +257,19 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
     <value>Test Explorer</value>
   </data>
+  <data name="Language_EN" xml:space="preserve">
+    <value>Englisch</value>
+  </data>
+  <data name="Language_FR" xml:space="preserve">
+    <value>Französisch</value>
+  </data>
+  <data name="Language_ES" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="Language_DE" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="Language_CS" xml:space="preserve">
+    <value>Tschechisch</value>
+  </data>
 </root>

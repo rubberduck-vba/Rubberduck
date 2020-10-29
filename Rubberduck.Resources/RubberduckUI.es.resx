@@ -366,12 +366,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="Result" xml:space="preserve">
     <value>Resultado</value>
   </data>
-  <data name="Language_EN" xml:space="preserve">
-    <value>Inglés</value>
-  </data>
-  <data name="Language_FR" xml:space="preserve">
-    <value>Francés</value>
-  </data>
   <data name="RemoveParamsDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Eliminar Parámetros</value>
   </data>
@@ -484,9 +478,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
     <value>{0} problemas</value>
     <comment>{0} = número</comment>
-  </data>
-  <data name="Language_DE" xml:space="preserve">
-    <value>Alemán</value>
   </data>
   <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
     <value>Todos los archivos abiertos</value>
@@ -886,9 +877,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   <data name="GroupingStyle_ByCategory" xml:space="preserve">
     <value>Por categoria</value>
   </data>
-  <data name="Language_CS" xml:space="preserve">
-    <value>Checo</value>
-  </data>
   <data name="EmptyLineHandling_Ignore" xml:space="preserve">
     <value>Ignorar</value>
   </data>
@@ -1077,9 +1065,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   </data>
   <data name="GroupingStyle_BySeverity" xml:space="preserve">
     <value>Por severidad</value>
-  </data>
-  <data name="Language_ES" xml:space="preserve">
-    <value>Español</value>
   </data>
   <data name="References_BrowseButtonText" xml:space="preserve">
     <value>Navegando...</value>

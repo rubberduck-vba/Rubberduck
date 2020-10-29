@@ -358,12 +358,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Result" xml:space="preserve">
     <value>Ergebnis</value>
   </data>
-  <data name="Language_EN" xml:space="preserve">
-    <value>Englisch</value>
-  </data>
-  <data name="Language_FR" xml:space="preserve">
-    <value>Französisch</value>
-  </data>
   <data name="RemoveParamsDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Parameter entfernen</value>
   </data>
@@ -476,9 +470,6 @@ Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
     <value>{0} ({1} Problem)</value>
-  </data>
-  <data name="Language_DE" xml:space="preserve">
-    <value>Deutsch</value>
   </data>
   <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
     <value>Aktuelle Datei</value>
@@ -869,9 +860,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   <data name="GroupingStyle_ByCategory" xml:space="preserve">
     <value>Nach Kategorie</value>
   </data>
-  <data name="Language_CS" xml:space="preserve">
-    <value>Tschechisch</value>
-  </data>
   <data name="EmptyLineHandling_Ignore" xml:space="preserve">
     <value>Ignorieren</value>
   </data>
@@ -1030,9 +1018,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   </data>
   <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
     <value>In der Methode, die '{0}' verwendet, referenziert der Name dieser Variable bereits die Deklaration '{1}.</value>
-  </data>
-  <data name="Language_ES" xml:space="preserve">
-    <value>Español</value>
   </data>
   <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
     <value>Refactoring fehlgeschlagen.</value>

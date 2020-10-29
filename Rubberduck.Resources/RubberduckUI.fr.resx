@@ -357,12 +357,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Les options du module devraient être spécifiées en premier</value>
   </data>
-  <data name="Language_EN" xml:space="preserve">
-    <value>Anglais</value>
-  </data>
-  <data name="Language_FR" xml:space="preserve">
-    <value>Français</value>
-  </data>
   <data name="ParseErrors_Caption" xml:space="preserve">
     <value>Rubberduck - Erreurs d'analyse</value>
   </data>
@@ -488,9 +482,6 @@ Continuer?</value>
   <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
     <value>{0} problèmes</value>
     <comment>{0}=number</comment>
-  </data>
-  <data name="Language_DE" xml:space="preserve">
-    <value>Allemand</value>
   </data>
   <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
     <value>Référer explicitement au classeur actif</value>
@@ -882,9 +873,6 @@ les projets dans le VBE.</value>
   <data name="EmptyLineHandling_Remove" xml:space="preserve">
     <value>Supprimer</value>
   </data>
-  <data name="Language_CS" xml:space="preserve">
-    <value>Tchèque</value>
-  </data>
   <data name="References" xml:space="preserve">
     <value>Références</value>
   </data>
@@ -1010,9 +998,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="TodoSettings_TextLabel" xml:space="preserve">
     <value>Texte:</value>
-  </data>
-  <data name="Language_ES" xml:space="preserve">
-    <value>Español</value>
   </data>
   <data name="MemberAttributeRecoveryRewriteFailedMessage" xml:space="preserve">
     <value>Échec de la récupération des attributs.</value>

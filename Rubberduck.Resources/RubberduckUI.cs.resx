@@ -267,12 +267,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="Type" xml:space="preserve">
     <value>Typ</value>
   </data>
-  <data name="Language_EN" xml:space="preserve">
-    <value>Angličtina</value>
-  </data>
-  <data name="Language_FR" xml:space="preserve">
-    <value>Francouzština</value>
-  </data>
   <data name="Result" xml:space="preserve">
     <value>Výsledek</value>
   </data>
@@ -516,9 +510,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   </data>
   <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
     <value>{0} problémů</value>
-  </data>
-  <data name="Language_DE" xml:space="preserve">
-    <value>Němčina</value>
   </data>
   <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
     <value>Všechny Otevřené Soubory</value>
@@ -864,9 +855,6 @@ Přejete si toto nastavení importovat do Rubberducku?</value>
   <data name="GroupingGrid_FilterBy" xml:space="preserve">
     <value>Filtrovat</value>
   </data>
-  <data name="Language_CS" xml:space="preserve">
-    <value>Čeština</value>
-  </data>
   <data name="EmptyLineHandling_Ignore" xml:space="preserve">
     <value>Ignorovat</value>
   </data>
@@ -992,9 +980,6 @@ Přejete si toto nastavení importovat do Rubberducku?</value>
   </data>
   <data name="References_RemoveToolTip" xml:space="preserve">
     <value>Odebrat z projektu</value>
-  </data>
-  <data name="Language_ES" xml:space="preserve">
-    <value>Español</value>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
     <value>'{0}' je globálně přístupno a je využíváno.</value>

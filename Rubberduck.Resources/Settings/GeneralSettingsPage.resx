@@ -237,4 +237,19 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
     <value>Test Explorer</value>
   </data>
+  <data name="Language_EN" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Language_FR" xml:space="preserve">
+    <value>French</value>
+  </data>
+  <data name="Language_ES" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="Language_DE" xml:space="preserve">
+    <value>German</value>
+  </data>
+  <data name="Language_CS" xml:space="preserve">
+    <value>Czech</value>
+  </data>
 </root>

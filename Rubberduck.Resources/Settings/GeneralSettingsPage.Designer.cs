@@ -378,6 +378,51 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Czech.
+        /// </summary>
+        public static string Language_CS {
+            get {
+                return ResourceManager.GetString("Language_CS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to German.
+        /// </summary>
+        public static string Language_DE {
+            get {
+                return ResourceManager.GetString("Language_DE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to English.
+        /// </summary>
+        public static string Language_EN {
+            get {
+                return ResourceManager.GetString("Language_EN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Español.
+        /// </summary>
+        public static string Language_ES {
+            get {
+                return ResourceManager.GetString("Language_ES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to French.
+        /// </summary>
+        public static string Language_FR {
+            get {
+                return ResourceManager.GetString("Language_FR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display language:.
         /// </summary>
         public static string LanguageLabel {

@@ -257,4 +257,19 @@ POZNÁMKA: Pro aplikování tohoto nastavení je třeba restartovat Excel.</valu
   <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
     <value>Test Explorer</value>
   </data>
+  <data name="Language_EN" xml:space="preserve">
+    <value>Angličtina</value>
+  </data>
+  <data name="Language_FR" xml:space="preserve">
+    <value>Francouzština</value>
+  </data>
+  <data name="Language_ES" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="Language_DE" xml:space="preserve">
+    <value>Němčina</value>
+  </data>
+  <data name="Language_CS" xml:space="preserve">
+    <value>Čeština</value>
+  </data>
 </root>
