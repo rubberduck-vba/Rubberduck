@@ -1693,21 +1693,6 @@ Importación cancelada.</value>
 Si necesita una interfaz 'Private', cambie las clases que la instancian a 'Private' también.
 Una clase privada puede asimismo implementar una interfaz pública.</value>
   </data>
-  <data name="AnnotationArgumentType_Text" xml:space="preserve">
-    <value>Texto</value>
-  </data>
-  <data name="AnnotationArgumentType_Number" xml:space="preserve">
-    <value>Número</value>
-  </data>
-  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
-    <value>Nombre de Inspección</value>
-  </data>
-  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
-    <value>Booleano</value>
-  </data>
-  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
-    <value>Atributo</value>
-  </data>
   <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
     <value>No es posible cambiar sólo mayúsculas/minúsculas de un identificador en VBA.</value>
   </data>

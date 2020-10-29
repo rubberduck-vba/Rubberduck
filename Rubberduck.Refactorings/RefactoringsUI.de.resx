@@ -177,4 +177,19 @@
   <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
     <value>Annotationsargumente vom Typ 'Attributname' dürfen keine Leerzeichen enthalten.</value>
   </data>
+  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
+    <value>Inspektionsname</value>
+  </data>
+  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
+    <value>Attribut</value>
+  </data>
+  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
+    <value>Wahrheitswert</value>
+  </data>
+  <data name="AnnotationArgumentType_Number" xml:space="preserve">
+    <value>Zahl</value>
+  </data>
+  <data name="AnnotationArgumentType_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
 </root>

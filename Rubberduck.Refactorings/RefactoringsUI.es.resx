@@ -177,4 +177,19 @@
   <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
     <value>Los argumentos de anotaciones del tipo 'Nombre de Atributo' no pueden contener espacios.</value>
   </data>
+  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
+    <value>Nombre de Inspección</value>
+  </data>
+  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
+    <value>Atributo</value>
+  </data>
+  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
+    <value>Booleano</value>
+  </data>
+  <data name="AnnotationArgumentType_Number" xml:space="preserve">
+    <value>Número</value>
+  </data>
+  <data name="AnnotationArgumentType_Text" xml:space="preserve">
+    <value>Texto</value>
+  </data>
 </root>

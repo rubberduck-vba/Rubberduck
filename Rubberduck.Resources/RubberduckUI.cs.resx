@@ -1542,12 +1542,6 @@ Import přerušen.</value>
   <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
     <value>Jméno složky nemůže být prázdné.</value>
   </data>
-  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
-    <value>Atribut</value>
-  </data>
-  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
-    <value>Boolean</value>
-  </data>
   <data name="EncapsulateField_PrivateUDTPropertyText" xml:space="preserve">
     <value>Vytvoří property pro každý UDT člen</value>
   </data>
@@ -1569,9 +1563,6 @@ Import přerušen.</value>
   <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
     <value>Plná nová složka:</value>
   </data>
-  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
-    <value>Název Inspekce</value>
-  </data>
   <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
     <value>Instancování</value>
   </data>
@@ -1589,9 +1580,6 @@ Import přerušen.</value>
   </data>
   <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
     <value>Cíl nebyl specifikován.</value>
-  </data>
-  <data name="AnnotationArgumentType_Number" xml:space="preserve">
-    <value>Číslo</value>
   </data>
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value>Název Parametru:</value>
@@ -1629,9 +1617,6 @@ Import přerušen.</value>
   <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
     <value>Je přesunováno několik složek se tejným jménem. Toto je spojí.
 Chcete pokračovat?</value>
-  </data>
-  <data name="AnnotationArgumentType_Text" xml:space="preserve">
-    <value>Text</value>
   </data>
   <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
     <value>Komponenta '{0}' by byla ovlivněna refactorováním, avšak její stav v paměti Rubberducku je zastaralý. Prosím obnovte Rubberduck a zkuste to znovu.</value>

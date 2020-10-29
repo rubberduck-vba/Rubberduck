@@ -1830,21 +1830,6 @@ Import aborted.</value>
 If you require a 'Private' interface, change the classes instancing to private as well.
 A private class can still implement a public interface.</value>
   </data>
-  <data name="AnnotationArgumentType_Text" xml:space="preserve">
-    <value>Text</value>
-  </data>
-  <data name="AnnotationArgumentType_Number" xml:space="preserve">
-    <value>Number</value>
-  </data>
-  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
-    <value>Inspection Name</value>
-  </data>
-  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
-    <value>Boolean</value>
-  </data>
-  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
-    <value>Attribute</value>
-  </data>
   <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
     <value>The refactoring can only annotate components, members and variables, but the target had type '{0}'.</value>
     <comment>{0} declaration type</comment>

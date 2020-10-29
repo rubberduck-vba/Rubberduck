@@ -158,4 +158,19 @@
   <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
     <value>Annotation arguments of type 'Attribute Name' cannot contain whitespace.</value>
   </data>
+  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
+    <value>Inspection Name</value>
+  </data>
+  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
+    <value>Attribute</value>
+  </data>
+  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
+    <value>Boolean</value>
+  </data>
+  <data name="AnnotationArgumentType_Number" xml:space="preserve">
+    <value>Number</value>
+  </data>
+  <data name="AnnotationArgumentType_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
 </root>

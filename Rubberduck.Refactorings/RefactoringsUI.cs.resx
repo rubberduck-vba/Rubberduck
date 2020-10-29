@@ -177,4 +177,19 @@
   <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
     <value>Argumenty anotace typu 'Attribute Name' nemohou obsahovat mezeru.</value>
   </data>
+  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
+    <value>Název Inspekce</value>
+  </data>
+  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
+    <value>Atribut</value>
+  </data>
+  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
+    <value>Boolean</value>
+  </data>
+  <data name="AnnotationArgumentType_Number" xml:space="preserve">
+    <value>Číslo</value>
+  </data>
+  <data name="AnnotationArgumentType_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
 </root>

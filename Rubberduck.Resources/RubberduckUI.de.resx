@@ -1607,21 +1607,6 @@ Import abgebrochen.</value>
   <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
     <value>Die Komponente '{0}' würde durch das Refactoring verändert, aber ihr Inhalt ist in Rubberduck veraltet. Bitte lassen Sie Rubberduck seinen Stand aktualisieren und versuchen Sie es erneut.</value>
   </data>
-  <data name="AnnotationArgumentType_Text" xml:space="preserve">
-    <value>Text</value>
-  </data>
-  <data name="AnnotationArgumentType_Number" xml:space="preserve">
-    <value>Zahl</value>
-  </data>
-  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
-    <value>Inspektionsname</value>
-  </data>
-  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
-    <value>Wahrheitswert</value>
-  </data>
-  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
-    <value>Attribut</value>
-  </data>
   <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
     <value>Das Refactoring kann Annotationen nur zu Komponenten, Methoden und Variablen hinzufügen. Die Zieldeklaration hatte allerdings den Typ '{0}'.</value>
   </data>
