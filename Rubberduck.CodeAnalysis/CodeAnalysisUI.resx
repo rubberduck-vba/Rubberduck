@@ -119,4 +119,19 @@
 {1} issues found.</value>
     <comment>{0}=timestamp; {1}=number</comment>
   </data>
+  <data name="CodeInspectionSettingsPage_InspectionSeveritySettingsLabel" xml:space="preserve">
+    <value>Inspection Severities</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersLabel" xml:space="preserve">
+    <value>Allowed Identifiers</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_Misc" xml:space="preserve">
+    <value>Miscellaneous</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
+    <value>Run inspections automatically on successful parse</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersDescription" xml:space="preserve">
+    <value>These identifiers will be ignored by the 'Use meaningful names' inspection.</value>
+  </data>
 </root>

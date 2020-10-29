@@ -137,4 +137,19 @@
     <value>Inspecciones del código de Rubberduck - {0}
 {1} problemas encontrados.</value>
   </data>
+  <data name="CodeInspectionSettingsPage_InspectionSeveritySettingsLabel" xml:space="preserve">
+    <value>Severidad de la inspección</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersLabel" xml:space="preserve">
+    <value>Identificadores en lista blanca</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_Misc" xml:space="preserve">
+    <value>Misceláneas</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
+    <value>Ejecutar inspecciones automáticamente en el análisis exitoso</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersDescription" xml:space="preserve">
+    <value>Estos identificadores serán ignorados por la inspección 'Usar nombres significativos'.</value>
+  </data>
 </root>

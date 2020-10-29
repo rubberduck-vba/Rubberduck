@@ -115,5 +115,50 @@ namespace Rubberduck.CodeAnalysis {
                 return ResourceManager.GetString("CodeInspections_NumberOfIssuesFound_Singular", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inspection Severities.
+        /// </summary>
+        public static string CodeInspectionSettingsPage_InspectionSeveritySettingsLabel {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettingsPage_InspectionSeveritySettingsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Miscellaneous.
+        /// </summary>
+        public static string CodeInspectionSettingsPage_Misc {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettingsPage_Misc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run inspections automatically on successful parse.
+        /// </summary>
+        public static string CodeInspectionSettingsPage_Misc_RunInspectionsOnSuccessfulParse {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettingsPage_Misc_RunInspectionsOnSuccessfulParse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to These identifiers will be ignored by the &apos;Use meaningful names&apos; inspection..
+        /// </summary>
+        public static string CodeInspectionSettingsPage_WhitelistedIdentifiersDescription {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettingsPage_WhitelistedIdentifiersDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allowed Identifiers.
+        /// </summary>
+        public static string CodeInspectionSettingsPage_WhitelistedIdentifiersLabel {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettingsPage_WhitelistedIdentifiersLabel", resourceCulture);
+            }
+        }
     }
 }

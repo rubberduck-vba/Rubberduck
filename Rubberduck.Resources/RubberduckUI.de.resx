@@ -804,20 +804,11 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Assistent für Reguläre Ausdrücke</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Explizit erlaubte Namen</value>
-  </data>
   <data name="RegexAssistant_Instructions" xml:space="preserve">
     <value>Einen Regulären Ausdruck zur Analyse in die Box unten eingeben.</value>
   </data>
   <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
     <value>Ignoriere Groß-/Kleinschreibung</value>
-  </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>Diese Namen werden von der Inspektion "Nutze aussagekräftige Namen" ignoriert.</value>
-  </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Inspektionsschwere</value>
   </data>
   <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
     <value>Beschreibung</value>
@@ -828,17 +819,11 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
     <value>Kommentare in Enums und Typen wie in Prozeduren einrücken</value>
   </data>
-  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
-    <value>Inspektionen nach erfolgreichem Parsen automatisch starten</value>
-  </data>
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck wird nicht neu geladen</value>
   </data>
   <data name="GeneralSettings_ShowSplash" xml:space="preserve">
     <value>Ein Startlogo zu Beginn zeigen</value>
-  </data>
-  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
-    <value>Verschiedenes</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Werkzeugfenster wurden nicht korrekt entfernt und/oder konnten nicht wieder hergestellt werden; Die VBE könnte instabil sein. Rubberduck wird beim nächsten Start der VBE normal laden.</value>

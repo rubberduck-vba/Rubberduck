@@ -792,12 +792,6 @@ Continuer?</value>
   <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
     <value>Info</value>
   </data>
-  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
-    <value>Autres options</value>
-  </data>
-  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
-    <value>Exécuter les inspections automatiquement</value>
-  </data>
   <data name="GeneralSettings_ShowSplash" xml:space="preserve">
     <value>Afficher l'écran d'initialisation</value>
   </data>
@@ -863,9 +857,6 @@ End Sub</value>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Analyseur d'expressions Regex</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Identifiants permis</value>
-  </data>
   <data name="RegexAssistant_Instructions" xml:space="preserve">
     <value>Entrer une expression Regex à analyser dans l'espace ci-dessous.</value>
   </data>
@@ -875,14 +866,8 @@ End Sub</value>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Les fenêtres ancrables n'ont probablement pas été correctement détruites, et/ou n'ont pas pu être recréées. l'environnement peut ne pas être dans un état stable. Rubberduck démerrera normalement à la prochaine initialisation du VBE.</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>L'inspection des noms ignorera ces identifiants.</value>
-  </data>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Résolution des références...</value>
-  </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Niveau de sévérité</value>
   </data>
   <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
     <value>Description</value>

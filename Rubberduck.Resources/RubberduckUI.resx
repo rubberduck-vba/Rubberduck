@@ -873,20 +873,8 @@ Do you want to proceed with this rename?</value>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Regular Expression Analyzer</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Allowed Identifiers</value>
-  </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>These identifiers will be ignored by the 'Use meaningful names' inspection.</value>
-  </data>
   <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refactor / Encapsulate Field</value>
-  </data>
-  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
-    <value>Miscellaneous</value>
-  </data>
-  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
-    <value>Run inspections automatically on successful parse</value>
   </data>
   <data name="GeneralSettings_ShowSplash" xml:space="preserve">
     <value>Show splash screen at startup</value>
@@ -1012,9 +1000,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
     <value>{0} {1} cannot be changed.</value>
     <comment>0: DeclarationType; 1: IdentifierName</comment>
-  </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Inspection Severities</value>
   </data>
   <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
     <value>Method '{0}' is an EventHandler for control '{1}'.  Only the control can be renamed.  Rename '{1}' instead?</value>

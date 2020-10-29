@@ -829,20 +829,8 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Analyzátor Regulárních Výrazů</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Dovolené Identifikátory</value>
-  </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>Tyto identifikátory budou ignorovány inspekcí 'Použij smysluplné názvy'.</value>
-  </data>
   <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refaktorovat / Zapouzdřit Pole</value>
-  </data>
-  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
-    <value>Různé</value>
-  </data>
-  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
-    <value>Spustit automaticky inspekce po úspěšném parsování</value>
   </data>
   <data name="GeneralSettings_ShowSplash" xml:space="preserve">
     <value>Zobrazit úvodní obrazovku po spuštění</value>
@@ -908,9 +896,6 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
   </data>
   <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
     <value>{0} {1} není možno změnit.</value>
-  </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Závažnosti Inspekce</value>
   </data>
   <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
     <value>Metoda '{0}' je EventHandler pro ovládací prvek '{1}'. Přejmenovat lze pouze ovládací prvek. Místo toho přejmenovat '{1}'?</value>

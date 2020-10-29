@@ -137,4 +137,19 @@
     <value>Inspections Rubberduck - {0}
 {1} problèmes trouvés.</value>
   </data>
+  <data name="CodeInspectionSettingsPage_InspectionSeveritySettingsLabel" xml:space="preserve">
+    <value>Niveau de sévérité</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersLabel" xml:space="preserve">
+    <value>Identifiants permis</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_Misc" xml:space="preserve">
+    <value>Autres options</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
+    <value>Exécuter les inspections automatiquement</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersDescription" xml:space="preserve">
+    <value>L'inspection des noms ignorera ces identifiants.</value>
+  </data>
 </root>

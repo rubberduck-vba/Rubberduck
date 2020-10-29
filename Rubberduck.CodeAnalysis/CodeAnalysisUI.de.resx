@@ -137,4 +137,19 @@
     <value>Rubberduck Code Untersuchung - {0} 
 {1} Probleme gefunden.</value>
   </data>
+  <data name="CodeInspectionSettingsPage_InspectionSeveritySettingsLabel" xml:space="preserve">
+    <value>Inspektionsschwere</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersLabel" xml:space="preserve">
+    <value>Explizit erlaubte Namen</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_Misc" xml:space="preserve">
+    <value>Verschiedenes</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
+    <value>Inspektionen nach erfolgreichem Parsen automatisch starten</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersDescription" xml:space="preserve">
+    <value>Diese Namen werden von der Inspektion "Nutze aussagekräftige Namen" ignoriert.</value>
+  </data>
 </root>

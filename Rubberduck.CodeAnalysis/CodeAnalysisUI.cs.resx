@@ -137,4 +137,19 @@
     <value>Rubberduck Inspekce Kódu - {0}
 Nalezeno {1} problémů.</value>
   </data>
+  <data name="CodeInspectionSettingsPage_InspectionSeveritySettingsLabel" xml:space="preserve">
+    <value>Závažnosti Inspekce</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersLabel" xml:space="preserve">
+    <value>Dovolené Identifikátory</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_Misc" xml:space="preserve">
+    <value>Různé</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
+    <value>Spustit automaticky inspekce po úspěšném parsování</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersDescription" xml:space="preserve">
+    <value>Tyto identifikátory budou ignorovány inspekcí 'Použij smysluplné názvy'.</value>
+  </data>
 </root>
