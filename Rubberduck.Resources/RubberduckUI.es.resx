@@ -1023,16 +1023,6 @@ End Sub</value>
   <data name="DeclarationType_BracketedExpression" xml:space="preserve">
     <value>expresión en tiempo de ejecución</value>
   </data>
-  <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
-    <value>Parámetro ByVal asignado. Solución rápida: Hacer una copia local</value>
-  </data>
-  <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Especifique un nombre para usar para la copia local de ByVal {0} '{1}'.</value>
-    <comment>0: Tipo de declaración; 1: Nombre del identificador</comment>
-  </data>
-  <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
-    <value>Especifique el nombre de la variable de copia local</value>
-  </data>
   <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
     <value>Ejemplo de código indentado</value>
   </data>

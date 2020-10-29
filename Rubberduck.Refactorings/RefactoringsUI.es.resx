@@ -198,4 +198,13 @@
   <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
     <value>{0} Considere utilizar otro nombre.</value>
   </data>
+  <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
+    <value>Parámetro ByVal asignado. Solución rápida: Hacer una copia local</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Especifique un nombre para usar para la copia local de ByVal {0} '{1}'.</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
+    <value>Especifique el nombre de la variable de copia local</value>
+  </data>
 </root>

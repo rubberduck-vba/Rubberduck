@@ -183,4 +183,13 @@
   <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
     <value>{0} Considérez utiliser un nom plus descriptif.</value>
   </data>
+  <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
+    <value>Introduire une variable locale</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Veuillez spécifier le nom à utiliser pour la copie locale du paramètre {0} '{1}'.</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
+    <value>Nommer la variable locale</value>
+  </data>
 </root>

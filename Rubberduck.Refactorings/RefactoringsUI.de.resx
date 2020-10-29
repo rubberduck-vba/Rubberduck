@@ -198,4 +198,13 @@
   <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
     <value>{0} Überlegen Sie, einen anderen Namen zu wählen.</value>
   </data>
+  <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
+    <value>ByVal zugewiesener Parameter QuickFix - Lokale Kopie erstellen</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Bitte geben Sie einen Namen für die lokale Kopie von ByVal {0} '{1}'.</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
+    <value>Variablenname der Lokalen Kopie festlegen</value>
+  </data>
 </root>

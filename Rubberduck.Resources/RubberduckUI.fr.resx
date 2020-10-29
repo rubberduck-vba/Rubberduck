@@ -980,9 +980,6 @@ Vous pouvez désactiver cette fonctionnalité dans le menu Rubberduck &gt; Param
   <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
     <value>Des paramètres utilisés par Smart Indenter existent dans votre registre. Voulez-vous les importer dans Rubberduck?</value>
   </data>
-  <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
-    <value>Nommer la variable locale</value>
-  </data>
   <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
     <value>Échantillon de code indenté</value>
   </data>
@@ -991,9 +988,6 @@ Vous pouvez désactiver cette fonctionnalité dans le menu Rubberduck &gt; Param
   </data>
   <data name="ContextMultipleControlsSelection" xml:space="preserve">
     <value>contrôles multiples</value>
-  </data>
-  <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Veuillez spécifier le nom à utiliser pour la copie locale du paramètre {0} '{1}'.</value>
   </data>
   <data name="IndenterSettings_VerticalSpacing" xml:space="preserve">
     <value>Maintenir l'espacement vertical</value>
@@ -1006,9 +1000,6 @@ Vous pouvez désactiver cette fonctionnalité dans le menu Rubberduck &gt; Param
   </data>
   <data name="DeclarationType_BracketedExpression" xml:space="preserve">
     <value>expression résolue à l'exécution</value>
-  </data>
-  <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
-    <value>Introduire une variable locale</value>
   </data>
   <data name="WindowSettings_StartupVisibilityHeader" xml:space="preserve">
     <value>Visibilité au démarrage</value>

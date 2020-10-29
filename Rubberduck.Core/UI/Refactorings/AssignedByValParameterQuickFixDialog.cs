@@ -20,15 +20,15 @@ namespace Rubberduck.UI.Refactorings
 
         private void InitializeCaptions(string identifierName, string targetDeclarationType)
         {
-            Text = RubberduckUI.AssignedByValParamQFixDialog_Caption;
+            Text = RefactoringsUI.AssignedByValParamQFixDialog_Caption;
             OkButton.Text = RubberduckUI.OK;
             CancelDialogButton.Text = RubberduckUI.CancelButtonText;
-            TitleLabel.Text = RubberduckUI.AssignedByValParamQFixDialog_TitleText;
+            TitleLabel.Text = RefactoringsUI.AssignedByValParamQFixDialog_TitleText;
             NameLabel.Text = RubberduckUI.NameLabelText;
 
             var declarationType =
             RubberduckUI.ResourceManager.GetString("DeclarationType_" + targetDeclarationType, Settings.Settings.Culture);
-            InstructionsLabel.Text = string.Format(RubberduckUI.AssignedByValParamQFixDialog_InstructionsLabelText, declarationType,
+            InstructionsLabel.Text = string.Format(RefactoringsUI.AssignedByValParamQFixDialog_InstructionsLabelText, declarationType,
                 identifierName);
         }
 

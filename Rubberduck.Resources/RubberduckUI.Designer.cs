@@ -213,33 +213,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assigned ByVal parameter QuickFix - Make Local Copy.
-        /// </summary>
-        public static string AssignedByValParamQFixDialog_Caption {
-            get {
-                return ResourceManager.GetString("AssignedByValParamQFixDialog_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please specify a name to use for the local copy of ByVal {0} &apos;{1}&apos;..
-        /// </summary>
-        public static string AssignedByValParamQFixDialog_InstructionsLabelText {
-            get {
-                return ResourceManager.GetString("AssignedByValParamQFixDialog_InstructionsLabelText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Specify Local Copy Variable Name.
-        /// </summary>
-        public static string AssignedByValParamQFixDialog_TitleText {
-            get {
-                return ResourceManager.GetString("AssignedByValParamQFixDialog_TitleText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap BrokenReference {

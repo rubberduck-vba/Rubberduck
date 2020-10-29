@@ -923,15 +923,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>procedura knihovny</value>
   </data>
-  <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
-    <value>Přiřazen ByVal parametr QuickFix - Udělat Lokální Kopii</value>
-  </data>
-  <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Prosím specifikujte název, který se má použít na lokální kopii ByVal {0} '{1}'.</value>
-  </data>
-  <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
-    <value>Specifikujte Název Kopie Lokální Proměnné</value>
-  </data>
   <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
     <value>Příklad Odsazeného Kódu</value>
   </data>
