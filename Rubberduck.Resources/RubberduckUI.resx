@@ -697,9 +697,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>Compile On Demand Setting</value>
   </data>
-  <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
-    <value>Description:</value>
-  </data>
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Busy</value>
   </data>
@@ -751,9 +748,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="GroupingStyle_ByCategory" xml:space="preserve">
     <value>By category</value>
-  </data>
-  <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
-    <value>Severity:</value>
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Czech</value>

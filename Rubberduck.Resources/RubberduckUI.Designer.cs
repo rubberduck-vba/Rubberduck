@@ -943,24 +943,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Description:.
-        /// </summary>
-        public static string InspectionSettings_FilterByDescription {
-            get {
-                return ResourceManager.GetString("InspectionSettings_FilterByDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Severity:.
-        /// </summary>
-        public static string InspectionSettings_FilterBySeverity {
-            get {
-                return ResourceManager.GetString("InspectionSettings_FilterBySeverity", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Introduce Field.
         /// </summary>
         public static string IntroduceField_Caption {

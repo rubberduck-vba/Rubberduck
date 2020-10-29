@@ -867,9 +867,6 @@ les projets dans le VBE.</value>
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Occupé</value>
   </data>
-  <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
-    <value>Sévérité:</value>
-  </data>
   <data name="GroupingGrid_FilterBy" xml:space="preserve">
     <value>Filtrer par</value>
   </data>

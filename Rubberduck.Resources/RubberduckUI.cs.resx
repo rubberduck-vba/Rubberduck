@@ -864,9 +864,6 @@ Přejete si toto nastavení importovat do Rubberducku?</value>
   <data name="GroupingGrid_FilterBy" xml:space="preserve">
     <value>Filtrovat</value>
   </data>
-  <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
-    <value>Závažnost:</value>
-  </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Čeština</value>
   </data>

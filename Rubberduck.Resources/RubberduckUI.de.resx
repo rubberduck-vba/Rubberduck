@@ -869,9 +869,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   <data name="GroupingStyle_ByCategory" xml:space="preserve">
     <value>Nach Kategorie</value>
   </data>
-  <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
-    <value>Schweregrad:</value>
-  </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Tschechisch</value>
   </data>

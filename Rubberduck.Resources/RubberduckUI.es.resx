@@ -886,9 +886,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   <data name="GroupingStyle_ByCategory" xml:space="preserve">
     <value>Por categoria</value>
   </data>
-  <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
-    <value>Severidad:</value>
-  </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Checo</value>
   </data>
