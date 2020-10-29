@@ -944,18 +944,6 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>Zkopírovat do schránky</value>
   </data>
-  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
-    <value>Metrika Kódu</value>
-  </data>
-  <data name="CodeMetrics_Complexity" xml:space="preserve">
-    <value>Cyklomatická Komplexita</value>
-  </data>
-  <data name="CodeMetrics_Lines" xml:space="preserve">
-    <value>Řádky</value>
-  </data>
-  <data name="CodeMetrics_Nesting" xml:space="preserve">
-    <value>Maximální Vnoření</value>
-  </data>
   <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
     <value>Klávesové zkratky by měly obsahovat buď Alt a/nebo Ctrl.</value>
   </data>

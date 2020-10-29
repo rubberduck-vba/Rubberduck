@@ -1044,18 +1044,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>Copiar al portapapeles</value>
   </data>
-  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
-    <value>Métricas de Código</value>
-  </data>
-  <data name="CodeMetrics_Complexity" xml:space="preserve">
-    <value>Complejidad ciclomática</value>
-  </data>
-  <data name="CodeMetrics_Lines" xml:space="preserve">
-    <value>Líneas</value>
-  </data>
-  <data name="CodeMetrics_Nesting" xml:space="preserve">
-    <value>Anidamiento maximo</value>
-  </data>
   <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
     <value>Las teclas de acceso rápido deben incluir Alt y / o Ctrl.</value>
   </data>

@@ -985,18 +985,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
     <value>Rubberduck TODO Markierungen - {0}
 {1} Markierungen gefunden.</value>
   </data>
-  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
-    <value>Codemetrikergebnisse</value>
-  </data>
-  <data name="CodeMetrics_Complexity" xml:space="preserve">
-    <value>Zyklomatische Komplexität</value>
-  </data>
-  <data name="CodeMetrics_Lines" xml:space="preserve">
-    <value>Codezeilen</value>
-  </data>
-  <data name="CodeMetrics_Nesting" xml:space="preserve">
-    <value>Maximale Einrückung</value>
-  </data>
   <data name="ParserState_Started" xml:space="preserve">
     <value>Gestartet</value>
   </data>

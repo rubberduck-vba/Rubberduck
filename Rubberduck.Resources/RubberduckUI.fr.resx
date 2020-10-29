@@ -995,18 +995,6 @@ les projets dans le VBE.</value>
     <value>Rubberduck marqueurs TODO - {0}
 {1} marqueurs trouvés.</value>
   </data>
-  <data name="CodeMetrics_Nesting" xml:space="preserve">
-    <value>Imbrication</value>
-  </data>
-  <data name="CodeMetrics_Complexity" xml:space="preserve">
-    <value>Complexité Cyclomatique</value>
-  </data>
-  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
-    <value>Statistiques</value>
-  </data>
-  <data name="CodeMetrics_Lines" xml:space="preserve">
-    <value>Lignes</value>
-  </data>
   <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
     <value>Indenter le module</value>
   </data>

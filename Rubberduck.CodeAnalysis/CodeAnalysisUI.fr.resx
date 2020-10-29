@@ -152,4 +152,16 @@
   <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersDescription" xml:space="preserve">
     <value>L'inspection des noms ignorera ces identifiants.</value>
   </data>
+  <data name="CodeMetrics_Lines" xml:space="preserve">
+    <value>Lignes</value>
+  </data>
+  <data name="CodeMetrics_Complexity" xml:space="preserve">
+    <value>Complexité Cyclomatique</value>
+  </data>
+  <data name="CodeMetrics_Nesting" xml:space="preserve">
+    <value>Imbrication</value>
+  </data>
+  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
+    <value>Statistiques</value>
+  </data>
 </root>

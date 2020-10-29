@@ -134,4 +134,16 @@
   <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersDescription" xml:space="preserve">
     <value>These identifiers will be ignored by the 'Use meaningful names' inspection.</value>
   </data>
+  <data name="CodeMetrics_Lines" xml:space="preserve">
+    <value>Lines</value>
+  </data>
+  <data name="CodeMetrics_Complexity" xml:space="preserve">
+    <value>Cyclomatic Complexity</value>
+  </data>
+  <data name="CodeMetrics_Nesting" xml:space="preserve">
+    <value>Maximum Nesting</value>
+  </data>
+  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
+    <value>Code Metrics</value>
+  </data>
 </root>

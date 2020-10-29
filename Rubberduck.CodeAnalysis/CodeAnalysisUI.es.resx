@@ -152,4 +152,16 @@
   <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersDescription" xml:space="preserve">
     <value>Estos identificadores serán ignorados por la inspección 'Usar nombres significativos'.</value>
   </data>
+  <data name="CodeMetrics_Lines" xml:space="preserve">
+    <value>Líneas</value>
+  </data>
+  <data name="CodeMetrics_Complexity" xml:space="preserve">
+    <value>Complejidad ciclomática</value>
+  </data>
+  <data name="CodeMetrics_Nesting" xml:space="preserve">
+    <value>Anidamiento maximo</value>
+  </data>
+  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
+    <value>Métricas de Código</value>
+  </data>
 </root>

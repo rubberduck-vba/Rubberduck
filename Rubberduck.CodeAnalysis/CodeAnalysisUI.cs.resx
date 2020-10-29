@@ -152,4 +152,16 @@ Nalezeno {1} problémů.</value>
   <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersDescription" xml:space="preserve">
     <value>Tyto identifikátory budou ignorovány inspekcí 'Použij smysluplné názvy'.</value>
   </data>
+  <data name="CodeMetrics_Lines" xml:space="preserve">
+    <value>Řádky</value>
+  </data>
+  <data name="CodeMetrics_Complexity" xml:space="preserve">
+    <value>Cyklomatická Komplexita</value>
+  </data>
+  <data name="CodeMetrics_Nesting" xml:space="preserve">
+    <value>Maximální Vnoření</value>
+  </data>
+  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
+    <value>Metrika Kódu</value>
+  </data>
 </root>

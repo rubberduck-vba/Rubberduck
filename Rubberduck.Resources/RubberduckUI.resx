@@ -1054,18 +1054,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>Copy to clipboard</value>
   </data>
-  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
-    <value>Code Metrics</value>
-  </data>
-  <data name="CodeMetrics_Complexity" xml:space="preserve">
-    <value>Cyclomatic Complexity</value>
-  </data>
-  <data name="CodeMetrics_Lines" xml:space="preserve">
-    <value>Lines</value>
-  </data>
-  <data name="CodeMetrics_Nesting" xml:space="preserve">
-    <value>Maximum Nesting</value>
-  </data>
   <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
     <value>Hotkeys should include either Alt and/or Ctrl.</value>
   </data>
