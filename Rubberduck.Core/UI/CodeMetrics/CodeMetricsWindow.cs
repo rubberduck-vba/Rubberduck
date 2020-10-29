@@ -19,14 +19,10 @@ namespace Rubberduck.UI.CodeMetrics
 
         public CodeMetricsWindow(CodeMetricsViewModel viewModel) : this()
         {
-            _viewModel = viewModel;
-            codeMetricsControl1.DataContext = _viewModel;
+            ViewModel = viewModel;
+            codeMetricsControl1.DataContext = ViewModel;
         }
 
-        private readonly CodeMetricsViewModel _viewModel;
-        public CodeMetricsViewModel ViewModel
-        {
-            get { return _viewModel; }
-        }
+        public CodeMetricsViewModel ViewModel { get; }
     }
 }
