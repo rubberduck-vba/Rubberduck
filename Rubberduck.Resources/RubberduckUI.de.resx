@@ -304,9 +304,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementierungen von '{0}'</value>
   </data>
-  <data name="CodeInspections" xml:space="preserve">
-    <value>Code Untersuchung</value>
-  </data>
   <data name="Fix" xml:space="preserve">
     <value>Beheben</value>
   </data>
@@ -1036,20 +1033,8 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
     <value>Warnung</value>
   </data>
-  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
-    <value>Folgende(s) Projekt(e) können nicht kompiliert werden. Dies führt höchstwahrscheinlich zu Parserfehlern. Trotzdem fortfahren? {0}</value>
-  </data>
-  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
-    <value>Konnte nicht vor dem Parsen kompilieren.</value>
-  </data>
   <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
     <value>Code vor dem Parsen kompilieren</value>
-  </data>
-  <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
-    <value>Die VBE-Einstellung "Bei Bedarf Kompilieren" ist aktuell eingeschalten. Dies ist nicht empfohlen, da Kompilierungsfehler und Probleme beim Parsen versteckt werden können. Trotzdem Parsen?</value>
-  </data>
-  <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
-    <value>Einstellung "Bei Bedarf Kompilieren"</value>
   </data>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
     <value>Die VBE-Einstellung "Bei Bedarf Kompilieren" ist aktuell eingeschalten. Wir raten stark dazu, diese Option über den Einstellungsdialog unter "Allgemein" auszuschalten, um das "Vor dem Parsen kompilieren"-Feature zu nutzen. Die Einstellung jetzt anpassen?

@@ -550,51 +550,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Code Inspections.
-        /// </summary>
-        public static string CodeInspections {
-            get {
-                return ResourceManager.GetString("CodeInspections", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The following project(s) cannot be compiled, which will most likely result in parser errors. Continue anyway? {0}.
-        /// </summary>
-        public static string Command_Reparse_CannotCompile {
-            get {
-                return ResourceManager.GetString("Command_Reparse_CannotCompile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to compile for parsing..
-        /// </summary>
-        public static string Command_Reparse_CannotCompile_Caption {
-            get {
-                return ResourceManager.GetString("Command_Reparse_CannotCompile_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The VBE setting &quot;Compile On Demand&quot; is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?.
-        /// </summary>
-        public static string Command_Reparse_CompileOnDemandEnabled {
-            get {
-                return ResourceManager.GetString("Command_Reparse_CompileOnDemandEnabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Compile On Demand Setting.
-        /// </summary>
-        public static string Command_Reparse_CompileOnDemandEnabled_Caption {
-            get {
-                return ResourceManager.GetString("Command_Reparse_CompileOnDemandEnabled_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Code Explorer.
         /// </summary>
         public static string CommandDescription_CodeExplorerCommand {

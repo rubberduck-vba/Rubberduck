@@ -164,4 +164,19 @@
   <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
     <value>Statistiques</value>
   </data>
+  <data name="CodeInspections" xml:space="preserve">
+    <value>Inspections</value>
+  </data>
+  <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
+    <value>L'option VBE "Compile on demand" est présentement activée. Cette configuration n'est pas recommandée, puisqu'elle peut masquer des erreurs de compilation in interférer avec l'analyse. Poursuivre l'analyse?</value>
+  </data>
+  <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
+    <value>Paramètre "Compile on demand"</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
+    <value>La compilation a échoué.</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
+    <value>Les projets suivants ne peuvent être compilés, ce qui causera probablement des erreurs d'analyse. Continuer? {0}</value>
+  </data>
 </root>

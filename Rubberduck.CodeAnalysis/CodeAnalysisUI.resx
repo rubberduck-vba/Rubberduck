@@ -146,4 +146,19 @@
   <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
     <value>Code Metrics</value>
   </data>
+  <data name="CodeInspections" xml:space="preserve">
+    <value>Code Inspections</value>
+  </data>
+  <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
+    <value>The VBE setting "Compile On Demand" is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?</value>
+  </data>
+  <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
+    <value>Compile On Demand Setting</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
+    <value>Unable to compile for parsing.</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
+    <value>The following project(s) cannot be compiled, which will most likely result in parser errors. Continue anyway? {0}</value>
+  </data>
 </root>

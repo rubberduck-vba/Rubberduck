@@ -308,9 +308,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementations of '{0}'</value>
   </data>
-  <data name="CodeInspections" xml:space="preserve">
-    <value>Code Inspections</value>
-  </data>
   <data name="Fix" xml:space="preserve">
     <value>Fix</value>
   </data>
@@ -1063,12 +1060,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
     <value>Modifier Warning</value>
   </data>
-  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
-    <value>The following project(s) cannot be compiled, which will most likely result in parser errors. Continue anyway? {0}</value>
-  </data>
-  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
-    <value>Unable to compile for parsing.</value>
-  </data>
   <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
     <value>Compile code before parsing</value>
   </data>
@@ -1077,12 +1068,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="ParserState_UnexpectedError" xml:space="preserve">
     <value>Unexpected Error</value>
-  </data>
-  <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
-    <value>The VBE setting "Compile On Demand" is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?</value>
-  </data>
-  <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
-    <value>Compile On Demand Setting</value>
   </data>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
     <value>The VBE setting "Compile On Demand" is currently enabled. It is strongly recommended that you disable the setting via the VBE Options dialog under General tab in order to use the Compile Before Parse feature. Do you want to disable it now?

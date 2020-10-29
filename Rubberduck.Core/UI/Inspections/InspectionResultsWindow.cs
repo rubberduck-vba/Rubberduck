@@ -1,5 +1,5 @@
 ﻿using System.Windows.Forms;
-using Rubberduck.Resources;
+using Rubberduck.CodeAnalysis;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -7,7 +7,7 @@ namespace Rubberduck.UI.Inspections
     {
         private const string ClassId = "D3B2A683-9856-4246-BDC8-6B0795DC875B";
         string IDockableUserControl.ClassId { get { return ClassId; } }
-        string IDockableUserControl.Caption { get { return RubberduckUI.CodeInspections; } }
+        string IDockableUserControl.Caption => CodeAnalysisUI.CodeInspections;
         
         private InspectionResultsWindow()
         {

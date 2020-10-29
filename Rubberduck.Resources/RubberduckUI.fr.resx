@@ -363,9 +363,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Change" xml:space="preserve">
     <value>Modifier</value>
   </data>
-  <data name="CodeInspections" xml:space="preserve">
-    <value>Inspections</value>
-  </data>
   <data name="Go" xml:space="preserve">
     <value>Aller</value>
   </data>
@@ -1037,12 +1034,6 @@ les projets dans le VBE.</value>
   <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
     <value>Avertissement</value>
   </data>
-  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
-    <value>Les projets suivants ne peuvent être compilés, ce qui causera probablement des erreurs d'analyse. Continuer? {0}</value>
-  </data>
-  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
-    <value>La compilation a échoué.</value>
-  </data>
   <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
     <value>Compiler le code avant d'analyser</value>
   </data>
@@ -1051,12 +1042,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="ParserState_UnexpectedError" xml:space="preserve">
     <value>Erreur inattendue</value>
-  </data>
-  <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
-    <value>L'option VBE "Compile on demand" est présentement activée. Cette configuration n'est pas recommandée, puisqu'elle peut masquer des erreurs de compilation in interférer avec l'analyse. Poursuivre l'analyse?</value>
-  </data>
-  <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
-    <value>Paramètre "Compile on demand"</value>
   </data>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
     <value>L'option VBE "Compile on demand" est activée. Il est fortement recommandé de désactiver cette option afin d'utiliser l'option "Compiler avant l'analyse". Voulez-vous désactiver "Compile on demand"?

@@ -305,9 +305,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementaciones de '{0}'</value>
   </data>
-  <data name="CodeInspections" xml:space="preserve">
-    <value>Inspecciones de código</value>
-  </data>
   <data name="Fix" xml:space="preserve">
     <value>Arreglo</value>
   </data>
@@ -1053,12 +1050,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
     <value>Advertencia para modificador</value>
   </data>
-  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
-    <value>Los siguientes proyectos no pueden compilarse, lo que probablemente resultará en errores del analizador. ¿Continua de todas maneras? {0}</value>
-  </data>
-  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
-    <value>No se puede compilar para analizar.</value>
-  </data>
   <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
     <value>Compilar código antes de analizar</value>
   </data>
@@ -1067,12 +1058,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   </data>
   <data name="ParserState_UnexpectedError" xml:space="preserve">
     <value>Error inesperado</value>
-  </data>
-  <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
-    <value>El VBEsetting "Compile On Demand" está habilitado actualmente. No se recomienda, ya que puede ocultar errores de compilación y causar problemas con el análisis. ¿Quieres analizar de todos modos?</value>
-  </data>
-  <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
-    <value>Ajuste "Compilar A Demanda"</value>
   </data>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
     <value>La configuración de VBE "Compile On Demand" está actualmente habilitada. Se recomienda encarecidamente que deshabilite la configuración a través del cuadro de diálogo Opciones de VBE en la pestaña General para utilizar la función Compilar antes de analizar. ¿Quieres desactivarlo ahora?

@@ -348,9 +348,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="RubberduckLoadFailure" xml:space="preserve">
     <value>Nebylo možno načíst Rubberduck Add-In</value>
   </data>
-  <data name="CodeInspections" xml:space="preserve">
-    <value>Inspekce kódu</value>
-  </data>
   <data name="Passed" xml:space="preserve">
     <value>V pořádku</value>
   </data>
@@ -953,12 +950,6 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
   <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
     <value>Varování Modifikátoru</value>
   </data>
-  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
-    <value>Následující projekt(y) nemohou být zkompilovány, což je s největší pravděpodobností kvůli parsovacím chybám. I přesto pokračovat? {0}</value>
-  </data>
-  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
-    <value>Není možno zkompilovat pro parsování.</value>
-  </data>
   <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
     <value>Zkompilovat kód před parsováním</value>
   </data>
@@ -967,12 +958,6 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
   </data>
   <data name="ParserState_UnexpectedError" xml:space="preserve">
     <value>Neočekávaná Chyba</value>
-  </data>
-  <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
-    <value>VBE nastavení "Zkompilovat Na Žádost" je aktuálně povoleno. Toto není doporučeno a může vyústit v kompilační chyby a způsobit problémy při parsování. Chcete i přesto spustit parser?</value>
-  </data>
-  <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
-    <value>Nastavení Zkompilování Na Žádost</value>
   </data>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
     <value>VBE nastavení "Zkompilovat Na Žádost" je aktuálně povoleno. Je silně doporučeno toto nastavení zakázat přes dialog VBE Nastavení nacházející se v panelu Obecné a změnit na Kompilování Před Parsováním. Přejete si toto nastavení nyní zakázat?

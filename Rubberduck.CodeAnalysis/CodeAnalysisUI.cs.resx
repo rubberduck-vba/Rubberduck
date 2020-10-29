@@ -164,4 +164,19 @@ Nalezeno {1} problémů.</value>
   <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
     <value>Metrika Kódu</value>
   </data>
+  <data name="CodeInspections" xml:space="preserve">
+    <value>Inspekce kódu</value>
+  </data>
+  <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
+    <value>VBE nastavení "Zkompilovat Na Žádost" je aktuálně povoleno. Toto není doporučeno a může vyústit v kompilační chyby a způsobit problémy při parsování. Chcete i přesto spustit parser?</value>
+  </data>
+  <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
+    <value>Nastavení Zkompilování Na Žádost</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
+    <value>Není možno zkompilovat pro parsování.</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
+    <value>Následující projekt(y) nemohou být zkompilovány, což je s největší pravděpodobností kvůli parsovacím chybám. I přesto pokračovat? {0}</value>
+  </data>
 </root>
