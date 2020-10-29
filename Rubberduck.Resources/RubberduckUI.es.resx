@@ -1693,39 +1693,6 @@ Importación cancelada.</value>
 Si necesita una interfaz 'Private', cambie las clases que la instancian a 'Private' también.
 Una clase privada puede asimismo implementar una interfaz pública.</value>
   </data>
-  <data name="AnnotateDeclarationDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Anotar Declaración</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_TitleText" xml:space="preserve">
-    <value>Anotar Declaración</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_DeclarationLabel" xml:space="preserve">
-    <value>Declaración a Anotar:</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_AnnotationLabel" xml:space="preserve">
-    <value>Anotación a Agregar:</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_ArgumentsLabel" xml:space="preserve">
-    <value>Argumentos de la anotación:</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_ArgumentTypeHeader" xml:space="preserve">
-    <value>Tipo</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_ArgumentValueHeader" xml:space="preserve">
-    <value>Valor</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_AddArgumentButtonLabel" xml:space="preserve">
-    <value>Agregar</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_RemoveArgumentButtonLabel" xml:space="preserve">
-    <value>Eliminar</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
-    <value>Agregar/Modificar atributo</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_Instructions" xml:space="preserve">
-    <value>Seleccione una anotación (y valores) para agregar a la declaración.</value>
-  </data>
   <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
     <value>Los argumentos de anotaciones no pueden contener caracteres de control.</value>
   </data>

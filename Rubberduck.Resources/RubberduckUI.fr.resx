@@ -1525,39 +1525,6 @@ Mise à jour annulée.</value>
 
 Échec de l'importation.</value>
   </data>
-  <data name="AnnotateDeclarationDialog_AddArgumentButtonLabel" xml:space="preserve">
-    <value>Ajouter</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
-    <value>Ajouter/Ajuster l'Attribut</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_AnnotationLabel" xml:space="preserve">
-    <value>Annotation à ajouter:</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_ArgumentsLabel" xml:space="preserve">
-    <value>Arguments de l'annotation:</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_ArgumentTypeHeader" xml:space="preserve">
-    <value>Type</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_ArgumentValueHeader" xml:space="preserve">
-    <value>Valeur</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Annoter la Déclaration</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_DeclarationLabel" xml:space="preserve">
-    <value>Déclaration:</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_Instructions" xml:space="preserve">
-    <value>Sélectionner une annotation et les valeurs associées.</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_RemoveArgumentButtonLabel" xml:space="preserve">
-    <value>Supprimer</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_TitleText" xml:space="preserve">
-    <value>Annoter la déclaration</value>
-  </data>
   <data name="AnnotationArgument_ValidationError_AttributeNameStart" xml:space="preserve">
     <value>Les arguments de type 'Attribute Name' doivent débuter par 'VB_'.</value>
   </data>

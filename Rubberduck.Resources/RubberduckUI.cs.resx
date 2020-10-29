@@ -1542,20 +1542,11 @@ Import přerušen.</value>
   <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
     <value>Jméno složky nemůže být prázdné.</value>
   </data>
-  <data name="AnnotateDeclarationDialog_AddArgumentButtonLabel" xml:space="preserve">
-    <value>Přidat</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
-    <value>Přidat/Upravit atribut</value>
-  </data>
   <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
     <value>Atribut</value>
   </data>
   <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
     <value>Boolean</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_TitleText" xml:space="preserve">
-    <value>Deklarace Anotace</value>
   </data>
   <data name="AnnotationArgument_ValidationError_Newline" xml:space="preserve">
     <value>Argumenty anotace mohou obsahovat pouze jeden řádek.</value>
@@ -1584,17 +1575,8 @@ Import přerušen.</value>
   <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
     <value>Argumenty anotace typu 'Number' musejí být validní číslo ve formátu integer nebo float.</value>
   </data>
-  <data name="AnnotateDeclarationDialog_ArgumentsLabel" xml:space="preserve">
-    <value>Argumenty Anotace:</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_AnnotationLabel" xml:space="preserve">
-    <value>Přidat Anotaci:</value>
-  </data>
   <data name="EncapsulateField_PrivateUDTPropertyText" xml:space="preserve">
     <value>Vytvoří property pro každý UDT člen</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_DeclarationLabel" xml:space="preserve">
-    <value>Deklarace k Anotaci:</value>
   </data>
   <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
     <value>Povolit drag and drop v Code Exploreru</value>
@@ -1659,23 +1641,14 @@ Import přerušen.</value>
   <data name="EncapsulateField_ReadOnlyCheckBoxContent" xml:space="preserve">
     <value>Pouze ke čtení</value>
   </data>
-  <data name="AnnotateDeclarationDialog_RemoveArgumentButtonLabel" xml:space="preserve">
-    <value>Odstranit</value>
-  </data>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Přejmenovat složku</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Anotace Deklarace</value>
   </data>
   <data name="MoveFoldersDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Přesunout Složky</value>
   </data>
   <data name="MoveToFolderDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Přesunout do Složky</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_Instructions" xml:space="preserve">
-    <value>Vyberte anotaci (a hodnoty) pro přidání deklaraci.</value>
   </data>
   <data name="EncapsulateField_SetterType" xml:space="preserve">
     <value>Typ Setteru:</value>
@@ -1713,14 +1686,8 @@ Chcete pokračovat?</value>
     <value>Cílová složka '{0}' již obsahuje podsložky '{1}'. Přemístění složek je sloučí s existujícími složkami s korespondujícími jmény.
 Chcete pokračovat?</value>
   </data>
-  <data name="AnnotateDeclarationDialog_ArgumentTypeHeader" xml:space="preserve">
-    <value>Typ</value>
-  </data>
   <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
     <value>Nelze zapouzdřit '{0}'. ReDim ({0}) výrok(y) existují v jiných modulech.</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_ArgumentValueHeader" xml:space="preserve">
-    <value>Hodnota</value>
   </data>
   <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
     <value>Obalit Pole Privátním Typem</value>
