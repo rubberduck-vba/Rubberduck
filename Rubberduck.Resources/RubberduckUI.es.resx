@@ -880,18 +880,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   <data name="Settings" xml:space="preserve">
     <value>Ajustes</value>
   </data>
-  <data name="InspectionResults_FilterByError" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="InspectionResults_FilterByHint" xml:space="preserve">
-    <value>Consejo</value>
-  </data>
-  <data name="InspectionResults_FilterBySuggestion" xml:space="preserve">
-    <value>Sugerencia</value>
-  </data>
-  <data name="InspectionResults_FilterByWarning" xml:space="preserve">
-    <value>Advertencia</value>
-  </data>
   <data name="GroupingGrid_FilterBy" xml:space="preserve">
     <value>Filtrado por</value>
   </data>
@@ -1092,12 +1080,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   </data>
   <data name="GroupingStyle_BySeverity" xml:space="preserve">
     <value>Por severidad</value>
-  </data>
-  <data name="InspectionResults_CollapseAll" xml:space="preserve">
-    <value>Colapsar todo</value>
-  </data>
-  <data name="InspectionResults_ExpandAll" xml:space="preserve">
-    <value>Expandir todo</value>
   </data>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>

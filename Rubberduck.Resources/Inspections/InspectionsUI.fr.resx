@@ -207,4 +207,22 @@
   <data name="QuickFix_Selection" xml:space="preserve">
     <value>Occurrences sélectionnées</value>
   </data>
+  <data name="CollapseAll" xml:space="preserve">
+    <value>Réduire tout</value>
+  </data>
+  <data name="ExpandAll" xml:space="preserve">
+    <value>Développer tout</value>
+  </data>
+  <data name="FilterByError" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+  <data name="FilterByHint" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="FilterBySuggestion" xml:space="preserve">
+    <value>Suggestion</value>
+  </data>
+  <data name="FilterByWarning" xml:space="preserve">
+    <value>Avertissement</value>
+  </data>
 </root>

@@ -746,18 +746,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
-  <data name="InspectionResults_FilterByError" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="InspectionResults_FilterByHint" xml:space="preserve">
-    <value>Hint</value>
-  </data>
-  <data name="InspectionResults_FilterBySuggestion" xml:space="preserve">
-    <value>Suggestion</value>
-  </data>
-  <data name="InspectionResults_FilterByWarning" xml:space="preserve">
-    <value>Warning</value>
-  </data>
   <data name="GroupingGrid_FilterBy" xml:space="preserve">
     <value>Filter by</value>
   </data>
@@ -1002,12 +990,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="GroupingStyle_BySeverity" xml:space="preserve">
     <value>By severity</value>
-  </data>
-  <data name="InspectionResults_CollapseAll" xml:space="preserve">
-    <value>Collapse all</value>
-  </data>
-  <data name="InspectionResults_ExpandAll" xml:space="preserve">
-    <value>Expand all</value>
   </data>
   <data name="clock" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Fugue\clock.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

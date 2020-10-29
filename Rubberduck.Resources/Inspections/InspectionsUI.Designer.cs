@@ -178,6 +178,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collapse all.
+        /// </summary>
+        public static string CollapseAll {
+            get {
+                return ResourceManager.GetString("CollapseAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap cross_circle {
@@ -203,6 +212,15 @@ namespace Rubberduck.Resources.Inspections {
             get {
                 object obj = ResourceManager.GetObject("exclamation", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand all.
+        /// </summary>
+        public static string ExpandAll {
+            get {
+                return ResourceManager.GetString("ExpandAll", resourceCulture);
             }
         }
         
@@ -257,6 +275,42 @@ namespace Rubberduck.Resources.Inspections {
         public static string ExportColumnHeader_Type {
             get {
                 return ResourceManager.GetString("ExportColumnHeader_Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string FilterByError {
+            get {
+                return ResourceManager.GetString("FilterByError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hint.
+        /// </summary>
+        public static string FilterByHint {
+            get {
+                return ResourceManager.GetString("FilterByHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suggestion.
+        /// </summary>
+        public static string FilterBySuggestion {
+            get {
+                return ResourceManager.GetString("FilterBySuggestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string FilterByWarning {
+            get {
+                return ResourceManager.GetString("FilterByWarning", resourceCulture);
             }
         }
         
