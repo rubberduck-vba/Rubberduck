@@ -7,6 +7,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;
 using Rubberduck.Refactorings.Common;
+using Rubberduck.CodeAnalysis;
 
 namespace Rubberduck.UI.Refactorings.Rename
 {
@@ -36,7 +37,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                     return string.Empty;
                 }
 
-                var declarationType = RubberduckUI.ResourceManager.GetString("DeclarationType_" + Target.DeclarationType, CultureInfo.CurrentUICulture);
+                var declarationType = CodeAnalysisUI.ResourceManager.GetString("DeclarationType_" + Target.DeclarationType, CultureInfo.CurrentUICulture);
                 return string.Format(RubberduckUI.RenameDialog_InstructionsLabelText, declarationType, Target.IdentifierName);
             }
         }

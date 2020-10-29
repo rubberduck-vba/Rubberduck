@@ -73,7 +73,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected override string ResultDescription(Declaration declaration)
         {
             var qualifiedName = declaration.QualifiedModuleName.ToString();
-            var declarationType = Resources.RubberduckUI.ResourceManager
+            var declarationType = CodeAnalysisUI.ResourceManager
                 .GetString("DeclarationType_" + declaration.DeclarationType)
                 .Capitalize();
             var identifierName = declaration.IdentifierName;

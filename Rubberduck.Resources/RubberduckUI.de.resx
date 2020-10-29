@@ -120,54 +120,6 @@
   <data name="CancelButtonText" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
-  <data name="DeclarationType_ClassModule" xml:space="preserve">
-    <value>Klasse</value>
-  </data>
-  <data name="DeclarationType_Constant" xml:space="preserve">
-    <value>Konstante</value>
-  </data>
-  <data name="DeclarationType_Enumeration" xml:space="preserve">
-    <value>Enum</value>
-  </data>
-  <data name="DeclarationType_EnumerationMember" xml:space="preserve">
-    <value>Enum-Element (Konstante)</value>
-  </data>
-  <data name="DeclarationType_Event" xml:space="preserve">
-    <value>Ereignis</value>
-  </data>
-  <data name="DeclarationType_Function" xml:space="preserve">
-    <value>Funktion</value>
-  </data>
-  <data name="DeclarationType_LibraryFunction" xml:space="preserve">
-    <value>Bibliotheks-Funktion</value>
-  </data>
-  <data name="DeclarationType_ProceduralModule" xml:space="preserve">
-    <value>Modul</value>
-  </data>
-  <data name="DeclarationType_Parameter" xml:space="preserve">
-    <value>Parameter</value>
-  </data>
-  <data name="DeclarationType_Procedure" xml:space="preserve">
-    <value>Prozedur</value>
-  </data>
-  <data name="DeclarationType_PropertyGet" xml:space="preserve">
-    <value>Get-Eigenschaftsprozedur</value>
-  </data>
-  <data name="DeclarationType_PropertyLet" xml:space="preserve">
-    <value>Let-Eigenschaftsprozedur</value>
-  </data>
-  <data name="DeclarationType_PropertySet" xml:space="preserve">
-    <value>Set-Eigenschaftsprozedur</value>
-  </data>
-  <data name="DeclarationType_UserDefinedType" xml:space="preserve">
-    <value>Nutzerdefinierter Typ</value>
-  </data>
-  <data name="DeclarationType_UserDefinedTypeMember" xml:space="preserve">
-    <value>Element eines nutzerdefinierten Typs</value>
-  </data>
-  <data name="DeclarationType_Variable" xml:space="preserve">
-    <value>Variable</value>
-  </data>
   <data name="NameLabelText" xml:space="preserve">
     <value>Name:</value>
   </data>
@@ -183,9 +135,6 @@
   </data>
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Identifikator umbenennen</value>
-  </data>
-  <data name="DeclarationType_LineLabel" xml:space="preserve">
-    <value>Sprungmarke</value>
   </data>
   <data name="ExtractMethod_OutputNone" xml:space="preserve">
     <value>(nichts)</value>
@@ -207,9 +156,6 @@
   </data>
   <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
     <value>Parameter umordnen</value>
-  </data>
-  <data name="DeclarationType_Control" xml:space="preserve">
-    <value>VBDesigner-Objekt</value>
   </data>
   <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
     <value>Optionale Parameter müssen am Ende der Parameterliste deklariert werden.</value>
@@ -407,9 +353,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Zeile</value>
   </data>
   <data name="Project" xml:space="preserve">
-    <value>Projekt</value>
-  </data>
-  <data name="DeclarationType_Project" xml:space="preserve">
     <value>Projekt</value>
   </data>
   <data name="Change" xml:space="preserve">
@@ -735,9 +678,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Nach Markierung</value>
   </data>
-  <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
-    <value>Bibliotheksprozedur</value>
-  </data>
   <data name="Find" xml:space="preserve">
     <value>Suchen</value>
   </data>
@@ -896,9 +836,6 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   </data>
   <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
     <value>Vertikalen Abstand</value>
-  </data>
-  <data name="DeclarationType_BracketedExpression" xml:space="preserve">
-    <value>Laufzeitausdruck</value>
   </data>
   <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
     <value>ByVal zugewiesener Parameter QuickFix - Lokale Kopie erstellen</value>

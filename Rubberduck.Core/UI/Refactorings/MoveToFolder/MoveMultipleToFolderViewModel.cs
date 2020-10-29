@@ -5,6 +5,7 @@ using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources;
 using Rubberduck.Refactorings.MoveToFolder;
+using Rubberduck.CodeAnalysis;
 
 namespace Rubberduck.UI.Refactorings.MoveToFolder
 {
@@ -29,7 +30,7 @@ namespace Rubberduck.UI.Refactorings.MoveToFolder
                 {
                     var target = Targets.First();
                     var moduleName = target.IdentifierName;
-                    var declarationType = RubberduckUI.ResourceManager.GetString("DeclarationType_" + target.DeclarationType, CultureInfo.CurrentUICulture);
+                    var declarationType = CodeAnalysisUI.ResourceManager.GetString("DeclarationType_" + target.DeclarationType, CultureInfo.CurrentUICulture);
                     var currentFolder = target.CustomFolder;
                     return string.Format(RubberduckUI.MoveToFolderDialog_InstructionsLabelText, declarationType, moduleName, currentFolder);
                 }

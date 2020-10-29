@@ -5,9 +5,9 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using NLog;
+using Rubberduck.CodeAnalysis;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -63,7 +63,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
 
                 var nameWithDeclarationType =
-                    $"{Declaration.IdentifierName} - ({RubberduckUI.ResourceManager.GetString("DeclarationType_" + Declaration.DeclarationType, CultureInfo.CurrentUICulture)})";
+                    $"{Declaration.IdentifierName} - ({CodeAnalysisUI.ResourceManager.GetString("DeclarationType_" + Declaration.DeclarationType, CultureInfo.CurrentUICulture)})";
 
                 if (string.IsNullOrEmpty(Declaration.AsTypeName))
                 {

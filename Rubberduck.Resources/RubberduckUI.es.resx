@@ -120,54 +120,6 @@
   <data name="CancelButtonText" xml:space="preserve">
     <value>Cancelar</value>
   </data>
-  <data name="DeclarationType_ClassModule" xml:space="preserve">
-    <value>clase</value>
-  </data>
-  <data name="DeclarationType_Constant" xml:space="preserve">
-    <value>constante</value>
-  </data>
-  <data name="DeclarationType_Enumeration" xml:space="preserve">
-    <value>enumerar</value>
-  </data>
-  <data name="DeclarationType_EnumerationMember" xml:space="preserve">
-    <value>enumerar miembro</value>
-  </data>
-  <data name="DeclarationType_Event" xml:space="preserve">
-    <value>evento</value>
-  </data>
-  <data name="DeclarationType_Function" xml:space="preserve">
-    <value>función</value>
-  </data>
-  <data name="DeclarationType_LibraryFunction" xml:space="preserve">
-    <value>biblioteca de funciones</value>
-  </data>
-  <data name="DeclarationType_ProceduralModule" xml:space="preserve">
-    <value>módulo</value>
-  </data>
-  <data name="DeclarationType_Parameter" xml:space="preserve">
-    <value>parámetro</value>
-  </data>
-  <data name="DeclarationType_Procedure" xml:space="preserve">
-    <value>procedimiento</value>
-  </data>
-  <data name="DeclarationType_PropertyGet" xml:space="preserve">
-    <value>propiedad Get</value>
-  </data>
-  <data name="DeclarationType_PropertyLet" xml:space="preserve">
-    <value>propiedad Let</value>
-  </data>
-  <data name="DeclarationType_PropertySet" xml:space="preserve">
-    <value>propiedad Set</value>
-  </data>
-  <data name="DeclarationType_UserDefinedType" xml:space="preserve">
-    <value>tipo definido por el usuario</value>
-  </data>
-  <data name="DeclarationType_UserDefinedTypeMember" xml:space="preserve">
-    <value>miembro de tipo definido por el usuario</value>
-  </data>
-  <data name="DeclarationType_Variable" xml:space="preserve">
-    <value>variable</value>
-  </data>
   <data name="NameLabelText" xml:space="preserve">
     <value>Nombre:</value>
   </data>
@@ -183,9 +135,6 @@
   </data>
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Renombrar identificador</value>
-  </data>
-  <data name="DeclarationType_LineLabel" xml:space="preserve">
-    <value>etiqueta de línea</value>
   </data>
   <data name="ExtractMethod_OutputNone" xml:space="preserve">
     <value>(ninguno)</value>
@@ -207,9 +156,6 @@
   </data>
   <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
     <value>Reordenar parametros</value>
-  </data>
-  <data name="DeclarationType_Control" xml:space="preserve">
-    <value>control</value>
   </data>
   <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
     <value>Los parámetros opcionales deben especificarse al final de la lista de parámetros.</value>
@@ -412,9 +358,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   </data>
   <data name="Project" xml:space="preserve">
     <value>Proyecto</value>
-  </data>
-  <data name="DeclarationType_Project" xml:space="preserve">
-    <value>proyecto</value>
   </data>
   <data name="Change" xml:space="preserve">
     <value>Cambiar</value>
@@ -789,9 +732,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Por marcador</value>
   </data>
-  <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
-    <value>biblioteca de procedimientos</value>
-  </data>
   <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
     <value>Delimitador de carpeta:</value>
   </data>
@@ -940,9 +880,6 @@ End Sub</value>
   </data>
   <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
     <value>Espaciamiento vertical</value>
-  </data>
-  <data name="DeclarationType_BracketedExpression" xml:space="preserve">
-    <value>expresión en tiempo de ejecución</value>
   </data>
   <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
     <value>Parámetro ByVal asignado. Solución rápida: Hacer una copia local</value>

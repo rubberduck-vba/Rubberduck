@@ -120,54 +120,6 @@
   <data name="CancelButtonText" xml:space="preserve">
     <value>Annuler</value>
   </data>
-  <data name="DeclarationType_ClassModule" xml:space="preserve">
-    <value>la classe</value>
-  </data>
-  <data name="DeclarationType_Constant" xml:space="preserve">
-    <value>la constante</value>
-  </data>
-  <data name="DeclarationType_Enumeration" xml:space="preserve">
-    <value>l'énumération</value>
-  </data>
-  <data name="DeclarationType_EnumerationMember" xml:space="preserve">
-    <value>le membre de l'énumération</value>
-  </data>
-  <data name="DeclarationType_Event" xml:space="preserve">
-    <value>l'événement</value>
-  </data>
-  <data name="DeclarationType_Function" xml:space="preserve">
-    <value>la fonction</value>
-  </data>
-  <data name="DeclarationType_LibraryFunction" xml:space="preserve">
-    <value>la fonction externe</value>
-  </data>
-  <data name="DeclarationType_ProceduralModule" xml:space="preserve">
-    <value>le module</value>
-  </data>
-  <data name="DeclarationType_Parameter" xml:space="preserve">
-    <value>le paramètre</value>
-  </data>
-  <data name="DeclarationType_Procedure" xml:space="preserve">
-    <value>la procédure</value>
-  </data>
-  <data name="DeclarationType_PropertyGet" xml:space="preserve">
-    <value>l'accesseur property get</value>
-  </data>
-  <data name="DeclarationType_PropertyLet" xml:space="preserve">
-    <value>l'accesseur property let</value>
-  </data>
-  <data name="DeclarationType_PropertySet" xml:space="preserve">
-    <value>l'accesseur property set</value>
-  </data>
-  <data name="DeclarationType_UserDefinedType" xml:space="preserve">
-    <value>le type définit par l'utilisateur</value>
-  </data>
-  <data name="DeclarationType_UserDefinedTypeMember" xml:space="preserve">
-    <value>le membre d'un type définit par l'utilisateur</value>
-  </data>
-  <data name="DeclarationType_Variable" xml:space="preserve">
-    <value>la variable</value>
-  </data>
   <data name="NameLabelText" xml:space="preserve">
     <value>Nom:</value>
   </data>
@@ -183,12 +135,6 @@
   </data>
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Renommer l'identifiant</value>
-  </data>
-  <data name="DeclarationType_Project" xml:space="preserve">
-    <value>le projet</value>
-  </data>
-  <data name="DeclarationType_LineLabel" xml:space="preserve">
-    <value>l'étiquette de ligne</value>
   </data>
   <data name="ExtractMethod_OutputNone" xml:space="preserve">
     <value>(aucun)</value>
@@ -210,9 +156,6 @@
   </data>
   <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
     <value>Modifier l'ordre des paramètres</value>
-  </data>
-  <data name="DeclarationType_Control" xml:space="preserve">
-    <value>le contrôle</value>
   </data>
   <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
     <value>Les paramètres optionels doivent être spéficiés à la fin de la liste.</value>
@@ -708,9 +651,6 @@ Continuer?</value>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Par marqueur</value>
   </data>
-  <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
-    <value>la procédure externe</value>
-  </data>
   <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
     <value>Aligner les commentaires avec le code</value>
   </data>
@@ -925,9 +865,6 @@ Vous pouvez désactiver cette fonctionnalité dans le menu Rubberduck &gt; Param
   </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>La varaible '{0}' est assignée. Supprimer l'/les assignation(s)?</value>
-  </data>
-  <data name="DeclarationType_BracketedExpression" xml:space="preserve">
-    <value>expression résolue à l'exécution</value>
   </data>
   <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
     <value>Introduire une variable locale</value>

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using Rubberduck.Common;
+using Rubberduck.CodeAnalysis;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Resources;
@@ -27,7 +27,7 @@ namespace Rubberduck.UI.Refactorings
             NameLabel.Text = RubberduckUI.NameLabelText;
 
             var declarationType =
-            RubberduckUI.ResourceManager.GetString("DeclarationType_" + targetDeclarationType, Settings.Settings.Culture);
+            CodeAnalysisUI.ResourceManager.GetString("DeclarationType_" + targetDeclarationType, Settings.Settings.Culture);
             InstructionsLabel.Text = string.Format(RubberduckUI.AssignedByValParamQFixDialog_InstructionsLabelText, declarationType,
                 identifierName);
         }

@@ -65,7 +65,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete.Refactoring
         public override string Description(IInspectionResult result)
         {
             return string.Format(RubberduckUI.Rename_DeclarationType,
-                RubberduckUI.ResourceManager.GetString("DeclarationType_" + result.Target.DeclarationType,
+                CodeAnalysisUI.ResourceManager.GetString("DeclarationType_" + result.Target.DeclarationType,
                     CultureInfo.CurrentUICulture));
         }
     }

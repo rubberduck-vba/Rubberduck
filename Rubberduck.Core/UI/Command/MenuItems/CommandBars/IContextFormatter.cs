@@ -1,9 +1,8 @@
-using System;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
+using Rubberduck.CodeAnalysis;
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {
@@ -49,7 +48,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         private string FormatDeclaration(Declaration declaration, bool multipleControls = false)
         {
             var moduleName = declaration.QualifiedName.QualifiedModuleName;
-            var declarationType = RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, Settings.Settings.Culture);
+            var declarationType = CodeAnalysisUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, Settings.Settings.Culture);
 
             var typeName = TypeName(declaration, multipleControls, declarationType);
             var formattedDeclaration = FormattedDeclaration(declaration, typeName, moduleName, declarationType);
