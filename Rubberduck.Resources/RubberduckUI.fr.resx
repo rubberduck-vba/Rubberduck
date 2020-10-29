@@ -285,9 +285,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Warning" xml:space="preserve">
     <value>Avertissement</value>
   </data>
-  <data name="EasterEgg_Continuator" xml:space="preserve">
-    <value>Vous obtenez le badge "Continuator"!</value>
-  </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Les options du module devraient être spécifiées en premier</value>
   </data>
@@ -1014,15 +1011,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
     <value>Ignorer les lignes vides lors de la recherche du premier bloc de commentaire ou de déclarations</value>
-  </data>
-  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
-    <value>Ignorer</value>
-  </data>
-  <data name="EmptyLineHandling_Indent" xml:space="preserve">
-    <value>Indenter</value>
-  </data>
-  <data name="EmptyLineHandling_Remove" xml:space="preserve">
-    <value>Supprimer</value>
   </data>
   <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
     <value>Traitement des lignes vides:</value>

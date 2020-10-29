@@ -241,5 +241,230 @@ namespace Rubberduck.CodeAnalysis {
                 return ResourceManager.GetString("Command_Reparse_CompileOnDemandEnabled_Caption", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to runtime expression.
+        /// </summary>
+        public static string DeclarationType_BracketedExpression {
+            get {
+                return ResourceManager.GetString("DeclarationType_BracketedExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to class.
+        /// </summary>
+        public static string DeclarationType_ClassModule {
+            get {
+                return ResourceManager.GetString("DeclarationType_ClassModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to constant.
+        /// </summary>
+        public static string DeclarationType_Constant {
+            get {
+                return ResourceManager.GetString("DeclarationType_Constant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to control.
+        /// </summary>
+        public static string DeclarationType_Control {
+            get {
+                return ResourceManager.GetString("DeclarationType_Control", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to enum.
+        /// </summary>
+        public static string DeclarationType_Enumeration {
+            get {
+                return ResourceManager.GetString("DeclarationType_Enumeration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to enum member.
+        /// </summary>
+        public static string DeclarationType_EnumerationMember {
+            get {
+                return ResourceManager.GetString("DeclarationType_EnumerationMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to event.
+        /// </summary>
+        public static string DeclarationType_Event {
+            get {
+                return ResourceManager.GetString("DeclarationType_Event", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to function.
+        /// </summary>
+        public static string DeclarationType_Function {
+            get {
+                return ResourceManager.GetString("DeclarationType_Function", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to library function.
+        /// </summary>
+        public static string DeclarationType_LibraryFunction {
+            get {
+                return ResourceManager.GetString("DeclarationType_LibraryFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to library procedure.
+        /// </summary>
+        public static string DeclarationType_LibraryProcedure {
+            get {
+                return ResourceManager.GetString("DeclarationType_LibraryProcedure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to line label.
+        /// </summary>
+        public static string DeclarationType_LineLabel {
+            get {
+                return ResourceManager.GetString("DeclarationType_LineLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to parameter.
+        /// </summary>
+        public static string DeclarationType_Parameter {
+            get {
+                return ResourceManager.GetString("DeclarationType_Parameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to module.
+        /// </summary>
+        public static string DeclarationType_ProceduralModule {
+            get {
+                return ResourceManager.GetString("DeclarationType_ProceduralModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to procedure.
+        /// </summary>
+        public static string DeclarationType_Procedure {
+            get {
+                return ResourceManager.GetString("DeclarationType_Procedure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to project.
+        /// </summary>
+        public static string DeclarationType_Project {
+            get {
+                return ResourceManager.GetString("DeclarationType_Project", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to property get accessor.
+        /// </summary>
+        public static string DeclarationType_PropertyGet {
+            get {
+                return ResourceManager.GetString("DeclarationType_PropertyGet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to property let accessor.
+        /// </summary>
+        public static string DeclarationType_PropertyLet {
+            get {
+                return ResourceManager.GetString("DeclarationType_PropertyLet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to property set accessor.
+        /// </summary>
+        public static string DeclarationType_PropertySet {
+            get {
+                return ResourceManager.GetString("DeclarationType_PropertySet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to user-defined type.
+        /// </summary>
+        public static string DeclarationType_UserDefinedType {
+            get {
+                return ResourceManager.GetString("DeclarationType_UserDefinedType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to user-defined type member.
+        /// </summary>
+        public static string DeclarationType_UserDefinedTypeMember {
+            get {
+                return ResourceManager.GetString("DeclarationType_UserDefinedTypeMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to variable.
+        /// </summary>
+        public static string DeclarationType_Variable {
+            get {
+                return ResourceManager.GetString("DeclarationType_Variable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You&apos;ve earned the &quot;Continuator&quot; badge!.
+        /// </summary>
+        public static string EasterEgg_Continuator {
+            get {
+                return ResourceManager.GetString("EasterEgg_Continuator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore.
+        /// </summary>
+        public static string EmptyLineHandling_Ignore {
+            get {
+                return ResourceManager.GetString("EmptyLineHandling_Ignore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent.
+        /// </summary>
+        public static string EmptyLineHandling_Indent {
+            get {
+                return ResourceManager.GetString("EmptyLineHandling_Indent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string EmptyLineHandling_Remove {
+            get {
+                return ResourceManager.GetString("EmptyLineHandling_Remove", resourceCulture);
+            }
+        }
     }
 }

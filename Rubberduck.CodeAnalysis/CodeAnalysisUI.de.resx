@@ -242,4 +242,16 @@
   <data name="DeclarationType_Variable" xml:space="preserve">
     <value>Variable</value>
   </data>
+  <data name="EasterEgg_Continuator" xml:space="preserve">
+    <value>Sie haben das Abzeichen "Continuator" erhalten!</value>
+  </data>
+  <data name="EmptyLineHandling_Indent" xml:space="preserve">
+    <value>Einrücken</value>
+  </data>
+  <data name="EmptyLineHandling_Remove" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
+  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
+    <value>Ignorieren</value>
+  </data>
 </root>

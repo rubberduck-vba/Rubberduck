@@ -3,7 +3,6 @@ using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
@@ -48,7 +47,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             var parameterText = context.Context.unrestrictedIdentifier().GetText();
             return string.Format(
                 context.Context.GetSelection().LineCount > 3
-                    ? RubberduckUI.EasterEgg_Continuator
+                    ? CodeAnalysisUI.EasterEgg_Continuator
                     : Resources.Inspections.InspectionResults.MultilineParameterInspection,
                 parameterText);
         }

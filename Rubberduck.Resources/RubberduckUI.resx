@@ -293,9 +293,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
-  <data name="EasterEgg_Continuator" xml:space="preserve">
-    <value>You've earned the "Continuator" badge!</value>
-  </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Module options should be specified first</value>
   </data>
@@ -1089,15 +1086,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Czech</value>
-  </data>
-  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
-    <value>Ignore</value>
-  </data>
-  <data name="EmptyLineHandling_Indent" xml:space="preserve">
-    <value>Indent</value>
-  </data>
-  <data name="EmptyLineHandling_Remove" xml:space="preserve">
-    <value>Remove</value>
   </data>
   <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
     <value>Empty line handling:</value>

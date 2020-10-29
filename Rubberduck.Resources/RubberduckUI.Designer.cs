@@ -885,48 +885,12 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You&apos;ve earned the &quot;Continuator&quot; badge!.
-        /// </summary>
-        public static string EasterEgg_Continuator {
-            get {
-                return ResourceManager.GetString("EasterEgg_Continuator", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap edit_size {
             get {
                 object obj = ResourceManager.GetObject("edit_size", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ignore.
-        /// </summary>
-        public static string EmptyLineHandling_Ignore {
-            get {
-                return ResourceManager.GetString("EmptyLineHandling_Ignore", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Indent.
-        /// </summary>
-        public static string EmptyLineHandling_Indent {
-            get {
-                return ResourceManager.GetString("EmptyLineHandling_Indent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Remove.
-        /// </summary>
-        public static string EmptyLineHandling_Remove {
-            get {
-                return ResourceManager.GetString("EmptyLineHandling_Remove", resourceCulture);
             }
         }
         

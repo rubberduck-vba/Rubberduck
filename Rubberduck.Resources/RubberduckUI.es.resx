@@ -290,9 +290,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="Warning" xml:space="preserve">
     <value>Advertencia</value>
   </data>
-  <data name="EasterEgg_Continuator" xml:space="preserve">
-    <value>¡Has ganado la insignia de "Continuador"!</value>
-  </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Las opciones del módulo deben especificarse primero</value>
   </data>
@@ -1042,15 +1039,6 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Checo</value>
-  </data>
-  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
-    <value>Ignorar</value>
-  </data>
-  <data name="EmptyLineHandling_Indent" xml:space="preserve">
-    <value>Indentar</value>
-  </data>
-  <data name="EmptyLineHandling_Remove" xml:space="preserve">
-    <value>Eliminar</value>
   </data>
   <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
     <value>Manejo de línea vacía:</value>

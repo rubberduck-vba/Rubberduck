@@ -315,9 +315,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="TodoExplorer_Caption" xml:space="preserve">
     <value>Todo Explorer</value>
   </data>
-  <data name="EasterEgg_Continuator" xml:space="preserve">
-    <value>Získali jste odznak "Continuator"!</value>
-  </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Nastavení modulu by měla být specifikována jako první</value>
   </data>
@@ -989,15 +986,6 @@ End Enum</value>
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Čeština</value>
-  </data>
-  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
-    <value>Ignorovat</value>
-  </data>
-  <data name="EmptyLineHandling_Indent" xml:space="preserve">
-    <value>Odsadit</value>
-  </data>
-  <data name="EmptyLineHandling_Remove" xml:space="preserve">
-    <value>Odstranit</value>
   </data>
   <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
     <value>Zacházení s prázdnými řádky:</value>

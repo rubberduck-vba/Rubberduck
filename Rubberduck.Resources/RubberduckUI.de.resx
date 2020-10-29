@@ -289,9 +289,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Warning" xml:space="preserve">
     <value>Warnung</value>
   </data>
-  <data name="EasterEgg_Continuator" xml:space="preserve">
-    <value>Sie haben das Abzeichen "Continuator" erhalten!</value>
-  </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Modul-Optionen sollten zuerst deklariert werden</value>
   </data>
@@ -1028,15 +1025,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Tschechisch</value>
-  </data>
-  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
-    <value>Ignorieren</value>
-  </data>
-  <data name="EmptyLineHandling_Indent" xml:space="preserve">
-    <value>Einrücken</value>
-  </data>
-  <data name="EmptyLineHandling_Remove" xml:space="preserve">
-    <value>Entfernen</value>
   </data>
   <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
     <value>Leerzeilenbehandlung:</value>

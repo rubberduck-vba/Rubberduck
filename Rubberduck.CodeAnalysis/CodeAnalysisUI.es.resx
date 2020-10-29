@@ -242,4 +242,16 @@
   <data name="DeclarationType_Variable" xml:space="preserve">
     <value>variable</value>
   </data>
+  <data name="EasterEgg_Continuator" xml:space="preserve">
+    <value>¡Has ganado la insignia de "Continuador"!</value>
+  </data>
+  <data name="EmptyLineHandling_Indent" xml:space="preserve">
+    <value>Indentar</value>
+  </data>
+  <data name="EmptyLineHandling_Remove" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
+    <value>Ignorar</value>
+  </data>
 </root>

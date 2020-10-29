@@ -242,4 +242,16 @@ Nalezeno {1} problémů.</value>
   <data name="DeclarationType_Variable" xml:space="preserve">
     <value>proměnná</value>
   </data>
+  <data name="EasterEgg_Continuator" xml:space="preserve">
+    <value>Získali jste odznak "Continuator"!</value>
+  </data>
+  <data name="EmptyLineHandling_Indent" xml:space="preserve">
+    <value>Odsadit</value>
+  </data>
+  <data name="EmptyLineHandling_Remove" xml:space="preserve">
+    <value>Odstranit</value>
+  </data>
+  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
+    <value>Ignorovat</value>
+  </data>
 </root>
