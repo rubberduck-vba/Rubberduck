@@ -173,4 +173,12 @@
   <data name="AnnotationArgumentType_Text" xml:space="preserve">
     <value>Text</value>
   </data>
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
+    <value>'{0}' is already accessible to this scope.</value>
+    <comment>{0} = proposed variable name.</comment>
+  </data>
+  <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
+    <value>{0} Consider choosing a different name.</value>
+    <comment>{0} = Meaningless name message</comment>
+  </data>
 </root>

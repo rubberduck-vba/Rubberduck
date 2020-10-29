@@ -946,9 +946,6 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Při startu zkontrolovat, zda je dostupná nová verze.</value>
   </data>
-  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
-    <value>'{0}' je již přístupný v tomto rozsahu.</value>
-  </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>Proměnná '{0}' je přidělena. Odstranit přidělení instrukce?</value>
   </data>
@@ -1424,9 +1421,6 @@ End Enum</value>
   </data>
   <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
     <value>Identifikátor '{0}' zobrazí inspekci 'Použij Smysluplnější Slovo'.</value>
-  </data>
-  <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
-    <value>{0} Zvaž použití jiného jména.</value>
   </data>
   <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
     <value>Oznámení, pokud je k dispozici novější verze předběžného vydání.</value>

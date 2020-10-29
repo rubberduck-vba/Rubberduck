@@ -2,6 +2,7 @@
 using Rubberduck.Interaction;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Resources;
+using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
@@ -11,7 +12,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             : base(messageBox)
         { }
 
-        protected override string Caption => RubberduckUI.AnnotateDeclarationDialog_Caption;
+        protected override string Caption => RefactoringsUI.AnnotateDeclarationDialog_Caption;
 
         protected override string Message(RefactoringException exception)
         {

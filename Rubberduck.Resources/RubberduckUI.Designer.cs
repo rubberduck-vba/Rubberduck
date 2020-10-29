@@ -154,51 +154,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attribute.
-        /// </summary>
-        public static string AnnotationArgumentType_Attribute {
-            get {
-                return ResourceManager.GetString("AnnotationArgumentType_Attribute", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Boolean.
-        /// </summary>
-        public static string AnnotationArgumentType_Boolean {
-            get {
-                return ResourceManager.GetString("AnnotationArgumentType_Boolean", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Inspection Name.
-        /// </summary>
-        public static string AnnotationArgumentType_Inspection {
-            get {
-                return ResourceManager.GetString("AnnotationArgumentType_Inspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Number.
-        /// </summary>
-        public static string AnnotationArgumentType_Number {
-            get {
-                return ResourceManager.GetString("AnnotationArgumentType_Number", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Text.
-        /// </summary>
-        public static string AnnotationArgumentType_Text {
-            get {
-                return ResourceManager.GetString("AnnotationArgumentType_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Apply.
         /// </summary>
         public static string ApplyButtonText {
@@ -254,24 +209,6 @@ namespace Rubberduck.Resources {
             get {
                 object obj = ResourceManager.GetObject("arrow_circle_double", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} Consider choosing a different name..
-        /// </summary>
-        public static string AssignedByValDialog_MeaninglessNameFormat {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_MeaninglessNameFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is already accessible to this scope..
-        /// </summary>
-        public static string AssignedByValDialog_NewNameAlreadyUsedFormat {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_NewNameAlreadyUsedFormat", resourceCulture);
             }
         }
         

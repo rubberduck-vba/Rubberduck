@@ -991,9 +991,6 @@ Um den Change Log anzuschauen und Rubberduck manuell zu aktualisieren, klicken S
 
 Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Diese können unter Rubberduck &gt; Einstellungen deaktiviert werden.</value>
   </data>
-  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
-    <value>'{0}' ist in diesem Kontext bereits verfügbar.</value>
-  </data>
   <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
     <value>Bitte stellen Sie zur Umbenennung sicher, dass genau ein Control-Objekt ausgewählt ist.</value>
   </data>
@@ -1456,9 +1453,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
     <value>Der Name '{0}' wird die "Sinnige Namen verwenden"-Inspektion auslösen.</value>
-  </data>
-  <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
-    <value>{0} Überlegen Sie, einen anderen Namen zu wählen.</value>
   </data>
   <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
     <value>Informiere mich, wenn ein neuer Prerelease verfügbar ist.</value>

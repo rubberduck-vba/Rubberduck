@@ -177,4 +177,10 @@
   <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
     <value>Les arguments de type 'Attribute Name' ne peuvent contenir d'espaces.</value>
   </data>
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
+    <value>'{0}' est déjà accessible à cette procédure.</value>
+  </data>
+  <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
+    <value>{0} Considérez utiliser un nom plus descriptif.</value>
+  </data>
 </root>

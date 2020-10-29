@@ -1047,10 +1047,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Compruebe si hay una versión más nueva disponible en el inicio</value>
   </data>
-  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
-    <value>'{0}' ya está accesible para este ámbito.</value>
-    <comment>{0} = nombre de la variable propuesta.</comment>
-  </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>Se asigna la variable '{0}'. Eliminar instrucciones de asignación)?</value>
   </data>
@@ -1418,9 +1414,6 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   </data>
   <data name="References_BrowseButtonText" xml:space="preserve">
     <value>Navegando...</value>
-  </data>
-  <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
-    <value>{0} Considere utilizar otro nombre.</value>
   </data>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Guardar y Cerrar</value>

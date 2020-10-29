@@ -192,4 +192,10 @@
   <data name="AnnotationArgumentType_Text" xml:space="preserve">
     <value>Text</value>
   </data>
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
+    <value>'{0}' je již přístupný v tomto rozsahu.</value>
+  </data>
+  <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
+    <value>{0} Zvaž použití jiného jména.</value>
+  </data>
 </root>

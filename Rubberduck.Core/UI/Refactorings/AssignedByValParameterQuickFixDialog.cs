@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Resources;
+using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings
 {
@@ -57,7 +57,7 @@ namespace Rubberduck.UI.Refactorings
 
             if (_isConflictingName(NewName))
             {
-                return string.Format(RubberduckUI.AssignedByValDialog_NewNameAlreadyUsedFormat, NewName);
+                return string.Format(RefactoringsUI.AssignedByValDialog_NewNameAlreadyUsedFormat, NewName);
             }
 
             if (VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(NewName, DeclarationType.Variable, out var invalidMessage))
@@ -67,7 +67,7 @@ namespace Rubberduck.UI.Refactorings
 
             if (VBAIdentifierValidator.TryMatchMeaninglessIdentifierCriteria(NewName, out var meaninglessNameMessage))
             {
-                return string.Format(RubberduckUI.AssignedByValDialog_MeaninglessNameFormat, meaninglessNameMessage);
+                return string.Format(RefactoringsUI.AssignedByValDialog_MeaninglessNameFormat, meaninglessNameMessage);
             }
 
             return string.Empty;

@@ -23,4 +23,17 @@
       <Version>4.6.4</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="RefactoringsUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RefactoringsUI.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="RefactoringsUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RefactoringsUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>
