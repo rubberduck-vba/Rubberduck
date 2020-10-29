@@ -126,4 +126,15 @@
   <data name="CodeInspectionResults_Location" xml:space="preserve">
     <value>Lokace</value>
   </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Rubberduck Inspekce Kódu - {0}
+{1} problém nalezen.</value>
+  </data>
+  <data name="CodeInspections_Inspecting" xml:space="preserve">
+    <value>Kontroluji...</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
+    <value>Rubberduck Inspekce Kódu - {0}
+Nalezeno {1} problémů.</value>
+  </data>
 </root>

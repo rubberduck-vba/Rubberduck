@@ -126,4 +126,15 @@
   <data name="CodeInspectionResults_Location" xml:space="preserve">
     <value>Ubicación</value>
   </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Inspecciones del código de Rubberduck - {0}
+{1} problema encontrado.</value>
+  </data>
+  <data name="CodeInspections_Inspecting" xml:space="preserve">
+    <value>Inspeccionando...</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
+    <value>Inspecciones del código de Rubberduck - {0}
+{1} problemas encontrados.</value>
+  </data>
 </root>

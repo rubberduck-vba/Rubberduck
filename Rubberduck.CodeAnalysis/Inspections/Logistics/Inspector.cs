@@ -17,6 +17,7 @@ using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor;
+using Rubberduck.CodeAnalysis;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Logistics
 {
@@ -63,7 +64,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Logistics
             }
             token.ThrowIfCancellationRequested();
 
-            state.OnStatusMessageUpdate(RubberduckUI.CodeInspections_Inspecting);
+            state.OnStatusMessageUpdate(CodeAnalysisUI.CodeInspections_Inspecting);
             var allIssues = new ConcurrentBag<IInspectionResult>();
             token.ThrowIfCancellationRequested();
 

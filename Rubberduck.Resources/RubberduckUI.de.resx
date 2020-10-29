@@ -187,9 +187,6 @@
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>Sprungmarke</value>
   </data>
-  <data name="CodeInspections_Inspecting" xml:space="preserve">
-    <value>Inspiziere...</value>
-  </data>
   <data name="ExtractMethod_OutputNone" xml:space="preserve">
     <value>(nichts)</value>
   </data>
@@ -310,9 +307,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="CodeInspections" xml:space="preserve">
     <value>Code Untersuchung</value>
   </data>
-  <data name="CodeInspections_Run" xml:space="preserve">
-    <value>Code-Untersuchung ausführen</value>
-  </data>
   <data name="Fix" xml:space="preserve">
     <value>Beheben</value>
   </data>
@@ -394,26 +388,8 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Rename" xml:space="preserve">
     <value>Umbenennen</value>
   </data>
-  <data name="CodeInspections_CopyToolTip" xml:space="preserve">
-    <value>Untersuchungsergebnisse in Zwischenablage kopieren</value>
-  </data>
   <data name="Go" xml:space="preserve">
     <value>Los</value>
-  </data>
-  <data name="CodeInspections_GoToolTip" xml:space="preserve">
-    <value>Zum ausgewählten Problem navigieren</value>
-  </data>
-  <data name="CodeInspections_NextToolTip" xml:space="preserve">
-    <value>Zum nächsten Problem navigieren</value>
-  </data>
-  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
-    <value>Zum vorigen Problem navigieren</value>
-  </data>
-  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
-    <value>Das Problem beheben</value>
-  </data>
-  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
-    <value>Code-Untersuchung ausführen</value>
   </data>
   <data name="TodoExplorer_Description" xml:space="preserve">
     <value>Beschreibung</value>
@@ -470,26 +446,6 @@ Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>{0} Umbenennen</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
-    <value>{0} Problem</value>
-  </data>
-  <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
-    <value>{0} ({1} Probleme)</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck Code Untersuchung - {0} 
-{1} Problem gefunden.</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
-    <value>{0} Probleme</value>
-  </data>
-  <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
-    <value>{0} ({1} Problem)</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck Code Untersuchung - {0} 
-{1} Probleme gefunden.</value>
   </data>
   <data name="Language_DE" xml:space="preserve">
     <value>Deutsch</value>

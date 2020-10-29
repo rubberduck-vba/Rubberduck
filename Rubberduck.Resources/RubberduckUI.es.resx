@@ -187,9 +187,6 @@
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>etiqueta de línea</value>
   </data>
-  <data name="CodeInspections_Inspecting" xml:space="preserve">
-    <value>Inspeccionando...</value>
-  </data>
   <data name="ExtractMethod_OutputNone" xml:space="preserve">
     <value>(ninguno)</value>
   </data>
@@ -311,16 +308,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="CodeInspections" xml:space="preserve">
     <value>Inspecciones de código</value>
   </data>
-  <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
-    <value>{0} ({1} problema)</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
-    <value>{0} problema</value>
-    <comment>{0} = número</comment>
-  </data>
-  <data name="CodeInspections_Run" xml:space="preserve">
-    <value>Ejecutar inspecciones de código</value>
-  </data>
   <data name="Fix" xml:space="preserve">
     <value>Arreglo</value>
   </data>
@@ -405,26 +392,8 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="Rename" xml:space="preserve">
     <value>Renombrar</value>
   </data>
-  <data name="CodeInspections_CopyToolTip" xml:space="preserve">
-    <value>Copiar los resultados de la inspección al portapapeles</value>
-  </data>
   <data name="Go" xml:space="preserve">
     <value>Ir</value>
-  </data>
-  <data name="CodeInspections_GoToolTip" xml:space="preserve">
-    <value>Navegar al problema seleccionado</value>
-  </data>
-  <data name="CodeInspections_NextToolTip" xml:space="preserve">
-    <value>Navegar al problema siguiente</value>
-  </data>
-  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
-    <value>Navegar al problema anterior</value>
-  </data>
-  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
-    <value>Arreglar el problema</value>
-  </data>
-  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
-    <value>Ejecutar inspecciones de código</value>
   </data>
   <data name="TodoExplorer_Description" xml:space="preserve">
     <value>Descripción</value>
@@ -465,11 +434,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="Navigation" xml:space="preserve">
     <value>Navegación</value>
   </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Inspecciones del código de Rubberduck - {0}
-{1} problemas encontrados.</value>
-    <comment>{0} = marca de tiempo; {1} = número</comment>
-  </data>
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>El método '{0}' implementa '{1}. {2}'. ¿Renombrar el miembro de la interfaz?</value>
     <comment>0: objetivo seleccionado; 1: nombre de la interfaz; 2: nombre del miembro de la interfaz</comment>
@@ -490,19 +454,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Renombrar {0}</value>
-  </data>
-  <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
-    <value>{0} ({1} problemas)</value>
-    <comment>{0} = estado; {1} = número</comment>
-  </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Inspecciones del código de Rubberduck - {0}
-{1} problema encontrado.</value>
-    <comment>{0} = marca de tiempo; {1} = número</comment>
-  </data>
-  <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
-    <value>{0} problemas</value>
-    <comment>{0} = número</comment>
   </data>
   <data name="Language_DE" xml:space="preserve">
     <value>Alemán</value>

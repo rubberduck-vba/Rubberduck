@@ -22,7 +22,7 @@ namespace Rubberduck.CodeAnalysis {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class CodeAnalysisUI {
+    public class CodeAnalysisUI {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Rubberduck.CodeAnalysis {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.CodeAnalysis.CodeAnalysisUI", typeof(CodeAnalysisUI).Assembly);
@@ -51,7 +51,7 @@ namespace Rubberduck.CodeAnalysis {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Rubberduck.CodeAnalysis {
         /// <summary>
         ///   Looks up a localized string similar to Issue.
         /// </summary>
-        internal static string CodeInspectionResults_Issue {
+        public static string CodeInspectionResults_Issue {
             get {
                 return ResourceManager.GetString("CodeInspectionResults_Issue", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Rubberduck.CodeAnalysis {
         /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
-        internal static string CodeInspectionResults_Location {
+        public static string CodeInspectionResults_Location {
             get {
                 return ResourceManager.GetString("CodeInspectionResults_Location", resourceCulture);
             }
@@ -81,9 +81,38 @@ namespace Rubberduck.CodeAnalysis {
         /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
-        internal static string CodeInspectionResults_Type {
+        public static string CodeInspectionResults_Type {
             get {
                 return ResourceManager.GetString("CodeInspectionResults_Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inspecting....
+        /// </summary>
+        public static string CodeInspections_Inspecting {
+            get {
+                return ResourceManager.GetString("CodeInspections_Inspecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck Code Inspections - {0}
+        ///{1} issues found..
+        /// </summary>
+        public static string CodeInspections_NumberOfIssuesFound_Plural {
+            get {
+                return ResourceManager.GetString("CodeInspections_NumberOfIssuesFound_Plural", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck Code Inspections - {0}
+        ///{1} issue found..
+        /// </summary>
+        public static string CodeInspections_NumberOfIssuesFound_Singular {
+            get {
+                return ResourceManager.GetString("CodeInspections_NumberOfIssuesFound_Singular", resourceCulture);
             }
         }
     }

@@ -126,4 +126,15 @@
   <data name="CodeInspectionResults_Location" xml:space="preserve">
     <value>Ort</value>
   </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Rubberduck Code Untersuchung - {0} 
+{1} Problem gefunden.</value>
+  </data>
+  <data name="CodeInspections_Inspecting" xml:space="preserve">
+    <value>Inspiziere...</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
+    <value>Rubberduck Code Untersuchung - {0} 
+{1} Probleme gefunden.</value>
+  </data>
 </root>

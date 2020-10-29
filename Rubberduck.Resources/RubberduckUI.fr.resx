@@ -190,9 +190,6 @@
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>l'étiquette de ligne</value>
   </data>
-  <data name="CodeInspections_Inspecting" xml:space="preserve">
-    <value>Inspection...</value>
-  </data>
   <data name="ExtractMethod_OutputNone" xml:space="preserve">
     <value>(aucun)</value>
   </data>
@@ -273,10 +270,6 @@
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Aucune implémentation trouvée pour '{0}'.</value>
   </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Inspections Rubberduck - {0}
-{1} problèmes trouvés.</value>
-  </data>
   <data name="Home" xml:space="preserve">
     <value>Accueil</value>
   </data>
@@ -318,15 +311,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implémentations de '{0}'</value>
-  </data>
-  <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
-    <value>{0} ({1} problème)</value>
-  </data>
-  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
-    <value>Naviguer au problème précédent</value>
-  </data>
-  <data name="CodeInspections_Run" xml:space="preserve">
-    <value>Exécuter les inspections</value>
   </data>
   <data name="Fix" xml:space="preserve">
     <value>Régler</value>
@@ -382,12 +366,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="CodeInspections" xml:space="preserve">
     <value>Inspections</value>
   </data>
-  <data name="CodeInspections_CopyToolTip" xml:space="preserve">
-    <value>Copier les résultats au presse-papier</value>
-  </data>
-  <data name="CodeInspections_GoToolTip" xml:space="preserve">
-    <value>Naviguer au problème sélectionné</value>
-  </data>
   <data name="Go" xml:space="preserve">
     <value>Aller</value>
   </data>
@@ -442,19 +420,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>Liste:</value>
   </data>
-  <data name="CodeInspections_NextToolTip" xml:space="preserve">
-    <value>Naviguer au prochain problème</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
-    <value>{0} problème</value>
-    <comment>{0}=number</comment>
-  </data>
-  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
-    <value>Appliquer une solution</value>
-  </data>
-  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
-    <value>Exécuter les inspections à nouveau</value>
-  </data>
   <data name="Component" xml:space="preserve">
     <value>Componsant</value>
   </data>
@@ -490,19 +455,6 @@ Continuer?</value>
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Renommer {0}</value>
-  </data>
-  <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
-    <value>{0} ({1} problèmes)</value>
-    <comment>{0}=status; {1}=number</comment>
-  </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Inspections Rubberduck - {0}
-{1} problème trouvé.</value>
-    <comment>{0}=timestamp; {1}=number</comment>
-  </data>
-  <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
-    <value>{0} problèmes</value>
-    <comment>{0}=number</comment>
   </data>
   <data name="Language_DE" xml:space="preserve">
     <value>Allemand</value>

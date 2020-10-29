@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using NLog;
+using Rubberduck.CodeAnalysis;
 using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.Common;
@@ -809,8 +810,8 @@ namespace Rubberduck.UI.Inspections
                 .ToArray();
 
             var resource = resultArray.Length == 1
-                ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
-                : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
+                ? CodeAnalysisUI.CodeInspections_NumberOfIssuesFound_Singular
+                : CodeAnalysisUI.CodeInspections_NumberOfIssuesFound_Plural;
 
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), resultArray.Count());
 

@@ -61,6 +61,11 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="CodeAnalysisUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CodeAnalysisUI.resx</DependentUpon>
+    </Compile>
     <Compile Update="Properties\CodeInspectionDefaults.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -70,6 +75,7 @@
   <ItemGroup>
     <EmbeddedResource Update="CodeAnalysisUI.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CodeAnalysisUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

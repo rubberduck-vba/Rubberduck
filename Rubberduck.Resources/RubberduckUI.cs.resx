@@ -168,9 +168,6 @@
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Přejmenovat identifikátor</value>
   </data>
-  <data name="CodeInspections_Inspecting" xml:space="preserve">
-    <value>Kontroluji...</value>
-  </data>
   <data name="ExtractMethod_OutputNone" xml:space="preserve">
     <value>(žádné)</value>
   </data>
@@ -354,15 +351,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="CodeInspections" xml:space="preserve">
     <value>Inspekce kódu</value>
   </data>
-  <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
-    <value>{0} ({1} problém}</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
-    <value>{0} problém</value>
-  </data>
-  <data name="CodeInspections_Run" xml:space="preserve">
-    <value>Spustit inspekce kódu</value>
-  </data>
   <data name="Passed" xml:space="preserve">
     <value>V pořádku</value>
   </data>
@@ -390,26 +378,8 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="Navigate" xml:space="preserve">
     <value>Navigovat</value>
   </data>
-  <data name="CodeInspections_CopyToolTip" xml:space="preserve">
-    <value>Zkopírovat výsledky kontroly do schránky</value>
-  </data>
   <data name="Go" xml:space="preserve">
     <value>Go</value>
-  </data>
-  <data name="CodeInspections_GoToolTip" xml:space="preserve">
-    <value>Navigovat na vybraný problém</value>
-  </data>
-  <data name="CodeInspections_NextToolTip" xml:space="preserve">
-    <value>Navigovat na následující problém</value>
-  </data>
-  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
-    <value>Navigovat na předchozí problém</value>
-  </data>
-  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
-    <value>Řešit problém</value>
-  </data>
-  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
-    <value>Spustit inspekci kódu</value>
   </data>
   <data name="ModuleName" xml:space="preserve">
     <value>Název modulu</value>
@@ -531,22 +501,12 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
     <value>Vyberte parametr a dvojím poklepáním na něj, nebo použitím tlačítek, ho odstraňte nebo obnovte.</value>
   </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck Inspekce Kódu - {0}
-Nalezeno {1} problémů.</value>
-  </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
     <value>Přejmenování na '{0}' je ve střetu s existující deklarací '{1}. Přejmenování '{2}' na '{0}' může vyústit v nekompatibilní kód nebo změnu v jeho logice.
 Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   </data>
   <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
     <value>Přesvědčte se, že máte před přejemnováním vybrán pouze 1 control.</value>
-  </data>
-  <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
-    <value>{0} ({1} problémů)</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
-    <value>{0} problémů</value>
   </data>
   <data name="Language_DE" xml:space="preserve">
     <value>Němčina</value>
@@ -1080,10 +1040,6 @@ End Enum</value>
   </data>
   <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
     <value>Zvol parametr a za použití táhnutí myši nebo pomocí tlačítek ho přesuň výše nebo níže.</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck Inspekce Kódu - {0}
-{1} problém nalezen.</value>
   </data>
   <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
     <value>Vynutit pokyny kompilátoru do sloupce 1</value>
