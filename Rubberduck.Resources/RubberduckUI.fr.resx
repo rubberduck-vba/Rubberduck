@@ -1525,33 +1525,6 @@ Mise à jour annulée.</value>
 
 Échec de l'importation.</value>
   </data>
-  <data name="AnnotationArgument_ValidationError_AttributeNameStart" xml:space="preserve">
-    <value>Les arguments de type 'Attribute Name' doivent débuter par 'VB_'.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_EmptyArgument" xml:space="preserve">
-    <value>Les arguments ne peuvent être laissés vides.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_InspectionName" xml:space="preserve">
-    <value>Les arguments de type 'Inspection Name' doivent correspondre au nom d'une inspection existante.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_Newline" xml:space="preserve">
-    <value>Les arguments d'annotations doivent tenir sur une seule ligne.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
-    <value>La valeur des arguments de type 'Boolean' doit être 'True' ou 'False'.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
-    <value>La valeur des arguments de type 'Number' doit être un nombre entier ou décimal valide.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
-    <value>La valeur des arguments ne doit pas contenir de caractères de contrôle.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_TooLong" xml:space="preserve">
-    <value>La valeur des arguments ne peut dépasser {0} caractères.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
-    <value>Les arguments de type 'Attribute Name' ne peuvent contenir d'espaces.</value>
-  </data>
   <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
     <value>Impossible d'encapsuler le champ '{0}'. Une ou plusieurs instructions ReDim({0}) existent dans d'autres modules.</value>
   </data>

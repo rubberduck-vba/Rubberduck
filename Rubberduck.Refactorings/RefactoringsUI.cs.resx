@@ -150,4 +150,31 @@
   <data name="AnnotateDeclarationDialog_TitleText" xml:space="preserve">
     <value>Deklarace Anotace</value>
   </data>
+  <data name="AnnotationArgument_ValidationError_AttributeNameStart" xml:space="preserve">
+    <value>Argumenty anotace typu 'Attribute Name' musejí začínat 'VB_'.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_EmptyArgument" xml:space="preserve">
+    <value>Argumenty anotace nemohou být prázdné.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_InspectionName" xml:space="preserve">
+    <value>Argumenty anotace typu 'Inspection Name' musejí být jméno existující inspekce.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_Newline" xml:space="preserve">
+    <value>Argumenty anotace mohou obsahovat pouze jeden řádek.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
+    <value>Argumenty anotace typu 'Boolean' musejí být buď 'True' nebo 'False'.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
+    <value>Argumenty anotace typu 'Number' musejí být validní číslo ve formátu integer nebo float.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
+    <value>Argumenty anotace nesmějí obsahovat 'control' charaktery.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_TooLong" xml:space="preserve">
+    <value>Argumenty anotace nemohou být delší než {0} charakterů.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
+    <value>Argumenty anotace typu 'Attribute Name' nemohou obsahovat mezeru.</value>
+  </data>
 </root>

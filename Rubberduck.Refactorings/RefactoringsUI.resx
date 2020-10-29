@@ -130,4 +130,32 @@
   <data name="AnnotateDeclarationDialog_AnnotationLabel" xml:space="preserve">
     <value>Annotation to Add:</value>
   </data>
+  <data name="AnnotationArgument_ValidationError_AttributeNameStart" xml:space="preserve">
+    <value>Annotation arguments of type 'Attribute Name' have to start with 'VB_'.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_EmptyArgument" xml:space="preserve">
+    <value>Annotation arguments cannot be empty.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_InspectionName" xml:space="preserve">
+    <value>Annotation arguments of type 'Inspection Name' have to be the name of an existing inspection.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_Newline" xml:space="preserve">
+    <value>Annotation arguments can only contain a single line.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
+    <value>Annotation arguments of type 'Boolean' have to either be 'True' or 'False'.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
+    <value>Annotation arguments of type 'Number' have to be a valid number in integer of floating point format.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
+    <value>Annotation arguments must not contain control characters.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_TooLong" xml:space="preserve">
+    <value>Annotation arguments cannot be longer than {0} characters.</value>
+    <comment>{0} max allowed characters</comment>
+  </data>
+  <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
+    <value>Annotation arguments of type 'Attribute Name' cannot contain whitespace.</value>
+  </data>
 </root>

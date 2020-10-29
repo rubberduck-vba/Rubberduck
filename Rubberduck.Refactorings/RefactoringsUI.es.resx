@@ -150,4 +150,31 @@
   <data name="AnnotateDeclarationDialog_TitleText" xml:space="preserve">
     <value>Anotar Declaración</value>
   </data>
+  <data name="AnnotationArgument_ValidationError_AttributeNameStart" xml:space="preserve">
+    <value>Los argumentos de anotaciones del tipo 'Nombre de Atributo' deben comenzar con 'VB_'.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_EmptyArgument" xml:space="preserve">
+    <value>Los argumentos de anotaciones no pueden estar vacíos.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_InspectionName" xml:space="preserve">
+    <value>Los argumentos de anotaciones del tipo 'Nombre de Inspección' deben usar el nombre de una inspección existente.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_Newline" xml:space="preserve">
+    <value>Los argumentos de anotaciones sólo pueden incluir una sóla línea.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
+    <value>Los argumentos de anotaciones del tipo 'Booleano' deben ser 'True' o 'False'.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
+    <value>Los argumentos de anotaciones del tipo 'Número' deben ser un numero válido entero o en formato de punto flotante.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
+    <value>Los argumentos de anotaciones no pueden contener caracteres de control.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_TooLong" xml:space="preserve">
+    <value>Los argumentos de anotaciones no pueden tener más de {0} caracteres.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
+    <value>Los argumentos de anotaciones del tipo 'Nombre de Atributo' no pueden contener espacios.</value>
+  </data>
 </root>
