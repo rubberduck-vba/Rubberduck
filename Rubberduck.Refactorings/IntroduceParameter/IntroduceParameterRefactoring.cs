@@ -3,7 +3,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.IntroduceParameter;
-using Rubberduck.Resources;
+using Refactoring = Rubberduck.Resources.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
@@ -92,11 +92,11 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return true;
             }
 
-            var message = string.Format(RubberduckUI.IntroduceParameter_PromptIfTargetIsInterface,
+            var message = string.Format(Refactoring.Refactorings.IntroduceParameter_PromptIfTargetIsInterface,
                 functionDeclaration.IdentifierName, interfaceImplementation.ComponentName,
                 interfaceImplementation.IdentifierName);
 
-            return _messageBox.Question(message, RubberduckUI.IntroduceParameter_Caption);
+            return _messageBox.Question(message, Refactoring.Refactorings.IntroduceParameter_Caption);
         }
     }
 }

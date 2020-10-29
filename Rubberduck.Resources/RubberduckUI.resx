@@ -413,16 +413,6 @@ Do you want to proceed with this rename?</value>
     <value>'{0}' has references in multiple methods.</value>
     <comment>{0}: Variable Name</comment>
   </data>
-  <data name="IntroduceField_Caption" xml:space="preserve">
-    <value>Rubberduck - Introduce Field</value>
-  </data>
-  <data name="IntroduceParameter_Caption" xml:space="preserve">
-    <value>Rubberduck - Introduce Parameter</value>
-  </data>
-  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
-    <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (Will propagate to all implementations.)</value>
-    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
-  </data>
   <data name="ImplementInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Implement Interface</value>
   </data>
@@ -1019,14 +1009,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
     <value>No implements selected.</value>
-  </data>
-  <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
-    <value>The target '{0}' is already a field.</value>
-    <comment>{0}: name of target</comment>
-  </data>
-  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
-    <value>The target '{0}' is not contained in a method.</value>
-    <comment>{0}: name of target</comment>
   </data>
   <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
     <value>Declaration type of target '{0}' is '{1}' instead of one of the expected '{2}'.</value>

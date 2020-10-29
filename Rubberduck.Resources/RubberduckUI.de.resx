@@ -546,15 +546,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' hat Referenzen in mehrere Methoden.</value>
   </data>
-  <data name="IntroduceField_Caption" xml:space="preserve">
-    <value>Rubberduck - Feld einfügen</value>
-  </data>
-  <data name="IntroduceParameter_Caption" xml:space="preserve">
-    <value>Rubberduck - Parameter einfügen</value>
-  </data>
-  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
-    <value>Methode '{0}' implementiert '{1}.{2}'. Ändern der Interface Signatur? (Wird auf alle Implementierungen angewendet.)</value>
-  </data>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Näher an die Nutzung führen</value>
   </data>
@@ -1048,12 +1039,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   </data>
   <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
     <value>Es ist keine Implements-Anweisung selektiert.</value>
-  </data>
-  <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
-    <value>Das Ziel '{0}' ist bereits ein Feld.</value>
-  </data>
-  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
-    <value>Das Ziel '{0}' ist nicht in einer Methode enthalten.</value>
   </data>
   <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
     <value>Der Typ des Ziels '{0}'ist '{1}' anstatt eines der erwarteten Typen '{2}'.</value>

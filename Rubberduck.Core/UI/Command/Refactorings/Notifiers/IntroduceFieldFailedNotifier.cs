@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.IntroduceField;
+using Refactoring = Rubberduck.Resources.Refactorings;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
@@ -11,7 +12,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             : base(messageBox)
         { }
 
-        protected override string Caption => Resources.RubberduckUI.IntroduceField_Caption;
+        protected override string Caption => Refactoring.Refactorings.IntroduceField_Caption;
 
         protected override string Message(RefactoringException exception)
         {
@@ -19,7 +20,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             {
                 case TargetIsAlreadyAFieldException isAlreadyAField:
                     Logger.Warn(isAlreadyAField);
-                    return string.Format(Resources.RubberduckUI.IntroduceFieldFailed_TargetIsAlreadyAField,
+                    return string.Format(Refactoring.Refactorings.IntroduceFieldFailed_TargetIsAlreadyAField,
                         isAlreadyAField.TargetDeclaration.QualifiedName);
                 case InvalidDeclarationTypeException invalidDeclarationType:
                     Logger.Warn(invalidDeclarationType);

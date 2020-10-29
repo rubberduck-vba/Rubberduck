@@ -943,51 +943,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck - Introduce Field.
-        /// </summary>
-        public static string IntroduceField_Caption {
-            get {
-                return ResourceManager.GetString("IntroduceField_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The target &apos;{0}&apos; is already a field..
-        /// </summary>
-        public static string IntroduceFieldFailed_TargetIsAlreadyAField {
-            get {
-                return ResourceManager.GetString("IntroduceFieldFailed_TargetIsAlreadyAField", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rubberduck - Introduce Parameter.
-        /// </summary>
-        public static string IntroduceParameter_Caption {
-            get {
-                return ResourceManager.GetString("IntroduceParameter_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (Will propagate to all implementations.).
-        /// </summary>
-        public static string IntroduceParameter_PromptIfTargetIsInterface {
-            get {
-                return ResourceManager.GetString("IntroduceParameter_PromptIfTargetIsInterface", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The target &apos;{0}&apos; is not contained in a method..
-        /// </summary>
-        public static string IntroduceParameterFailed_TargetNotContainedInMethod {
-            get {
-                return ResourceManager.GetString("IntroduceParameterFailed_TargetNotContainedInMethod", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; does not start with a letter..
         /// </summary>
         public static string InvalidNameCriteria_DoesNotStartWithLetterFormat {
@@ -1038,51 +993,6 @@ namespace Rubberduck.Resources {
         public static string Issue {
             get {
                 return ResourceManager.GetString("Issue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Czech.
-        /// </summary>
-        public static string Language_CS {
-            get {
-                return ResourceManager.GetString("Language_CS", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to German.
-        /// </summary>
-        public static string Language_DE {
-            get {
-                return ResourceManager.GetString("Language_DE", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to English.
-        /// </summary>
-        public static string Language_EN {
-            get {
-                return ResourceManager.GetString("Language_EN", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Español.
-        /// </summary>
-        public static string Language_ES {
-            get {
-                return ResourceManager.GetString("Language_ES", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to French.
-        /// </summary>
-        public static string Language_FR {
-            get {
-                return ResourceManager.GetString("Language_FR", resourceCulture);
             }
         }
         
