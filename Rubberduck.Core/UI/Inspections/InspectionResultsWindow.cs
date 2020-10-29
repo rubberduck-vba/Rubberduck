@@ -16,14 +16,10 @@ namespace Rubberduck.UI.Inspections
 
         public InspectionResultsWindow(InspectionResultsViewModel viewModel) : this()
         {
-            _viewModel = viewModel;
-            wpfInspectionResultsControl.DataContext = _viewModel;
+            ViewModel = viewModel;
+            wpfInspectionResultsControl.DataContext = ViewModel;
         }
 
-        private readonly InspectionResultsViewModel _viewModel;
-        public InspectionResultsViewModel ViewModel
-        {
-            get { return _viewModel; }
-        }
+        public InspectionResultsViewModel ViewModel { get; }
     }
 }
