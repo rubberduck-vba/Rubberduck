@@ -715,21 +715,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
     <value>Indentar procedimiento</value>
   </data>
-  <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
-    <value>Por módulo</value>
-  </data>
-  <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
-    <value>Por tipo de inspección</value>
-  </data>
-  <data name="CodeInspectionResults_Issue" xml:space="preserve">
-    <value>Problema</value>
-  </data>
-  <data name="CodeInspectionResults_Location" xml:space="preserve">
-    <value>Ubicación</value>
-  </data>
-  <data name="CodeInspectionResults_Type" xml:space="preserve">
-    <value>Tipo</value>
-  </data>
   <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
     <value>Agrupamiento</value>
   </data>

@@ -68,6 +68,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="CodeAnalysisUI.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <None Update="Properties\CodeInspectionDefaults.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>CodeInspectionDefaults.Designer.cs</LastGenOutput>

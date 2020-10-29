@@ -683,21 +683,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Spezielle Optionen</value>
   </data>
-  <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
-    <value>Nach Modul</value>
-  </data>
-  <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
-    <value>Nach Inspektionstyp</value>
-  </data>
-  <data name="CodeInspectionResults_Issue" xml:space="preserve">
-    <value>Problem</value>
-  </data>
-  <data name="CodeInspectionResults_Location" xml:space="preserve">
-    <value>Ort</value>
-  </data>
-  <data name="CodeInspectionResults_Type" xml:space="preserve">
-    <value>Typ</value>
-  </data>
   <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
     <value>Gruppierung</value>
   </data>

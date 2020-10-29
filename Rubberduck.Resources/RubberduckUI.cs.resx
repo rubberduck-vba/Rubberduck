@@ -501,9 +501,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="IndenterSettings_IndentOptionsLabel" xml:space="preserve">
     <value>Nastavení odsazení</value>
   </data>
-  <data name="CodeInspectionResults_Type" xml:space="preserve">
-    <value>Typ</value>
-  </data>
   <data name="Settings" xml:space="preserve">
     <value>Nastavení</value>
   </data>
@@ -700,18 +697,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   </data>
   <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
     <value>Odsadit Proceduru</value>
-  </data>
-  <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
-    <value>Dle modulu</value>
-  </data>
-  <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
-    <value>Dle typu inspekce</value>
-  </data>
-  <data name="CodeInspectionResults_Issue" xml:space="preserve">
-    <value>Problém</value>
-  </data>
-  <data name="CodeInspectionResults_Location" xml:space="preserve">
-    <value>Lokace</value>
   </data>
   <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
     <value>Seskupení</value>

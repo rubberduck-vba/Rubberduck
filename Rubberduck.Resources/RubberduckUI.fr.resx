@@ -648,9 +648,6 @@ Continuer?</value>
   <data name="EndOfLineCommentStyle_AlignInColumn" xml:space="preserve">
     <value>Aligner dans la colonne</value>
   </data>
-  <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
-    <value>Par type d'inspection</value>
-  </data>
   <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
     <value>Raccourcis:</value>
   </data>
@@ -750,9 +747,6 @@ Continuer?</value>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Sévérité:</value>
   </data>
-  <data name="CodeInspectionResults_Issue" xml:space="preserve">
-    <value>Problème</value>
-  </data>
   <data name="IndenterSettings_IndentFirstDeclarationBlock" xml:space="preserve">
     <value>Indenter le premier bloc de déclarations</value>
   </data>
@@ -771,14 +765,8 @@ Continuer?</value>
   <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
     <value>Aligner les commentaires avec le code</value>
   </data>
-  <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
-    <value>Par module</value>
-  </data>
   <data name="SearchResults_AllImplementationsTabFormat" xml:space="preserve">
     <value>Implémentations: '{0}'</value>
-  </data>
-  <data name="CodeInspectionResults_Type" xml:space="preserve">
-    <value>Type</value>
   </data>
   <data name="IndenterSettings_AlignContinuations" xml:space="preserve">
     <value>Aligner les continuations</value>
@@ -800,9 +788,6 @@ Continuer?</value>
   </data>
   <data name="ParserState_Parsing" xml:space="preserve">
     <value>Analyse…</value>
-  </data>
-  <data name="CodeInspectionResults_Location" xml:space="preserve">
-    <value>Emplacement</value>
   </data>
   <data name="SearchResults_Location" xml:space="preserve">
     <value>Emplacement</value>
