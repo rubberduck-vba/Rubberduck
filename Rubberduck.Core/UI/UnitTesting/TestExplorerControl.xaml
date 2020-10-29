@@ -47,6 +47,7 @@
             <BitmapImage x:Key="OutcomeFail" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
             <BitmapImage x:Key="OutcomeInconclusive" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
             <BitmapImage x:Key="OutcomeSucceeded" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick-circle.png" />
+            <BitmapImage x:Key="OutcomeIgnored" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/minus-white.png" />
             <BitmapImage x:Key="IgnoreTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-empty.png" />
 			<BitmapImage x:Key="UnignoreTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-undo.png" />
 
@@ -230,6 +231,11 @@
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Succeeded}"
                               IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Succeeded}}" >
                     <Image Source="{StaticResource OutcomeSucceeded}" />
+                </ToggleButton>
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Ignored}"
+                              IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Ignored}}">
+                    <Image Source="{StaticResource OutcomeIgnored}" />
                 </ToggleButton>
 
                 <Separator />
