@@ -652,60 +652,6 @@ Do you want to proceed with this rename?</value>
   <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
     <value>Standard Gap</value>
   </data>
-  <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
-    <value>Align comments with code</value>
-  </data>
-  <data name="IndenterSettings_AlignContinuations" xml:space="preserve">
-    <value>Align continuations</value>
-  </data>
-  <data name="IndenterSettings_AlignDims" xml:space="preserve">
-    <value>Align dims</value>
-  </data>
-  <data name="IndenterSettings_AlignmentOptionsLabel" xml:space="preserve">
-    <value>Alignment Options</value>
-  </data>
-  <data name="IndenterSettings_EnableOptionsLabel" xml:space="preserve">
-    <value>Enable Options</value>
-  </data>
-  <data name="IndenterSettings_EnableUndo" xml:space="preserve">
-    <value>Enable undo</value>
-  </data>
-  <data name="IndenterSettings_EndOfLineCommentStyle" xml:space="preserve">
-    <value>End-of-line comment style:</value>
-  </data>
-  <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
-    <value>Force compiler directives to column 1</value>
-  </data>
-  <data name="IndenterSettings_ForceDebugDirectivesToColumn1" xml:space="preserve">
-    <value>Force debug directives to column 1</value>
-  </data>
-  <data name="IndenterSettings_IgnoreOperators" xml:space="preserve">
-    <value>Ignore operators</value>
-  </data>
-  <data name="IndenterSettings_IndentCase" xml:space="preserve">
-    <value>Indent case</value>
-  </data>
-  <data name="IndenterSettings_IndentCompilerDirectives" xml:space="preserve">
-    <value>Indent compiler directives</value>
-  </data>
-  <data name="IndenterSettings_IndentEntireProcedureBody" xml:space="preserve">
-    <value>Indent entire procedure body</value>
-  </data>
-  <data name="IndenterSettings_IndentFirstCommentBlock" xml:space="preserve">
-    <value>Indent first comment block</value>
-  </data>
-  <data name="IndenterSettings_IndentFirstDeclarationBlock" xml:space="preserve">
-    <value>Indent first declaration block</value>
-  </data>
-  <data name="IndenterSettings_IndentOptionsLabel" xml:space="preserve">
-    <value>Indent Options</value>
-  </data>
-  <data name="IndenterSettings_IndentSpaces" xml:space="preserve">
-    <value>Indent spaces:</value>
-  </data>
-  <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
-    <value>Special Options</value>
-  </data>
   <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
     <value>Indent Module</value>
   </data>
@@ -889,50 +835,6 @@ Do you want to proceed with this rename?</value>
   <data name="ReparseToolTipText" xml:space="preserve">
     <value>{0}. Click to refresh.</value>
   </data>
-  <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
-    <value>Indent comments in Enum and Type blocks like in procedures</value>
-  </data>
-  <data name="IndenterSettings_PreviewCode" xml:space="preserve">
-    <value>Public Enum ExampleEnum
-' Enum comment.
-Foo
-Bar ' Member comment.
-End Enum
-
-' Example Procedure
-Sub ExampleProc()
-
-' SMART INDENTER
-' Original VB6 code graciously offered to Rubberduck by Stephen Bullen &amp; Rob Bovey
-' © 2016 by Rubberduck VBA.
-
-Dim count As Integer
-Static name As String
-
-If YouLikeRubberduck Then
-' Star us on GitHub http://github.com/rubberduck-vba/Rubberduck
-' Follow us on Twitter @rubberduckvba
-' Visit http://rubberduckvba.com for news and updates
-
-Select Case X
-Case "A"
-' If you have any comments or suggestions, _
-or find valid VBA code that isn't indented correctly,
-
-#If VBA6 Then
-MsgBox "Contact contact@rubberduck-vba.com"
-#End If
-
-Case "Continued strings and parameters can be" _
-&amp; "lined up for easier reading, optionally ignoring" _
-&amp; "any operators (&amp;+, etc) at the start of the line."
-
-Debug.Print "X&lt;&gt;1"
-End Select      'Case X
-End If      'More Tools? Suggestions http://github.com/rubberduck-vba/Rubberduck/Issues/New
-
-End Sub</value>
-  </data>
   <data name="ContextReferences" xml:space="preserve">
     <value>references</value>
     <comment>Used to display number of references in commandbar's context selection</comment>
@@ -944,12 +846,6 @@ End Sub</value>
   <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
     <value>Smart Indenter settings were found in your registry.
 Would you like to import them to Rubberduck?</value>
-  </data>
-  <data name="IndenterSettings_VerticalSpacing" xml:space="preserve">
-    <value>Maintain vertical spacing</value>
-  </data>
-  <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
-    <value>Vertical Spacing</value>
   </data>
   <data name="DeclarationType_BracketedExpression" xml:space="preserve">
     <value>runtime expression</value>
@@ -963,9 +859,6 @@ Would you like to import them to Rubberduck?</value>
   </data>
   <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
     <value>Specify Local Copy Variable Name</value>
-  </data>
-  <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
-    <value>Indented Code Sample</value>
   </data>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
     <value>You are currently running Rubberduck version {0}.
@@ -1140,9 +1033,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="GroupingGrid_FilterBy" xml:space="preserve">
     <value>Filter by</value>
   </data>
-  <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
-    <value>Ignore empty lines when locating first comment and declaration blocks</value>
-  </data>
   <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
     <value>Severity:</value>
   </data>
@@ -1157,9 +1047,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="EmptyLineHandling_Remove" xml:space="preserve">
     <value>Remove</value>
-  </data>
-  <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
-    <value>Empty line handling:</value>
   </data>
   <data name="References" xml:space="preserve">
     <value>References</value>
