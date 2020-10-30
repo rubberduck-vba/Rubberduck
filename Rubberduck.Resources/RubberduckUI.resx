@@ -1956,4 +1956,7 @@ Do you want to proceed?</value>
   <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
     <value>Add/Adjust attribute</value>
   </data>
+  <data name="TestOutcome_Ignored" xml:space="preserve">
+    <value>Ignored</value>
+  </data>
 </root>
