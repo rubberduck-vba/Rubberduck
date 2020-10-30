@@ -278,4 +278,10 @@ Une classe privée peut toujours implémenter une interface publique.</value>
   <data name="ExtractMethod_TitleText" xml:space="preserve">
     <value>Extraction d'une méthode</value>
   </data>
+  <data name="ImplementInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Implémenter une interface</value>
+  </data>
+  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
+    <value>Une instruction 'Implements' doit être sélectionnée.</value>
+  </data>
 </root>

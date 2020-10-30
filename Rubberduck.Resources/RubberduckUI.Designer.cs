@@ -1685,33 +1685,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck - Implement Interface.
-        /// </summary>
-        public static string ImplementInterface_Caption {
-            get {
-                return ResourceManager.GetString("ImplementInterface_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The current selection is not valid..
-        /// </summary>
-        public static string ImplementInterface_InvalidSelectionMessage {
-            get {
-                return ResourceManager.GetString("ImplementInterface_InvalidSelectionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No implements selected..
-        /// </summary>
-        public static string ImplementInterfaceFailed_NoImplementsStatementSelected {
-            get {
-                return ResourceManager.GetString("ImplementInterfaceFailed_NoImplementsStatementSelected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to For file &apos;{0}&apos;, the required binary file(s) &apos;{1}&apos; are missing and the target component &apos;{2}&apos; does not already exists.
         ///
         ///Import aborted..

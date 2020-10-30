@@ -559,12 +559,6 @@ Do you want to proceed with this rename?</value>
     <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (Will propagate to all implementations.)</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
-  <data name="ImplementInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Implement Interface</value>
-  </data>
-  <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
-    <value>The current selection is not valid.</value>
-  </data>
   <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Invalid Selection.</value>
   </data>
@@ -1491,9 +1485,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
     <value>Declaration type of target '{0}' is '{1}' instead of the expected '{2}'.</value>
     <comment>{0}: name of target; {1}: actual declaration type; {2}: expected declaration type</comment>
-  </data>
-  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
-    <value>No implements selected.</value>
   </data>
   <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
     <value>The target '{0}' is already a field.</value>

@@ -542,12 +542,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Ungültige Auswahl.</value>
   </data>
-  <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
-    <value>Die aktuelle Auswahl ist ungültig.</value>
-  </data>
-  <data name="ImplementInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Interface Implementieren</value>
-  </data>
   <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
     <value>Anzeigesprache:</value>
   </data>
@@ -1318,9 +1312,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
     <value>Der Typ des Ziels '{0}'ist '{1}' anstatt des erwarteten Typs '{2}'.</value>
-  </data>
-  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
-    <value>Es ist keine Implements-Anweisung ausgewählt.</value>
   </data>
   <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
     <value>Das Ziel '{0}' ist bereits ein Feld.</value>

@@ -510,9 +510,6 @@ Continuer?</value>
   <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
     <value>Rechercher:</value>
   </data>
-  <data name="ImplementInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Implémenter une interface</value>
-  </data>
   <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
     <value>Remplacement:</value>
   </data>
@@ -533,9 +530,6 @@ Continuer?</value>
   </data>
   <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
     <value>Tous les projets ouverts</value>
-  </data>
-  <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
-    <value>La sélection courante n'est pas valide pour cette opération.</value>
   </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>La sélection n'est pas une variable.</value>
@@ -1350,9 +1344,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
     <value>Le type de déclaration de la cible '{0}' est '{1}', plutôt que '{2}' tel qu'attendu.</value>
-  </data>
-  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
-    <value>Une instruction 'Implements' doit être sélectionnée.</value>
   </data>
   <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
     <value>La cible '{0}' est déjà un champ.</value>

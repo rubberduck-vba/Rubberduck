@@ -296,4 +296,10 @@ Privání třída může stále implementovat public (veřejný) interface.</val
   <data name="ExtractMethod_TitleText" xml:space="preserve">
     <value>Extrahovat metodu</value>
   </data>
+  <data name="ImplementInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Implementovat Rozhraní</value>
+  </data>
+  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
+    <value>Nebyl vybrán žádný příkaz implementace.</value>
+  </data>
 </root>

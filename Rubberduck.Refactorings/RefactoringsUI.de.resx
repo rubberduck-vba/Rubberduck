@@ -302,4 +302,10 @@ Eine private Klasse kann eine private Schnittstelle implementieren.</value>
   <data name="ExtractMethod_TitleText" xml:space="preserve">
     <value>Methode extrahieren</value>
   </data>
+  <data name="ImplementInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Interface Implementieren</value>
+  </data>
+  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
+    <value>Es ist keine Implements-Anweisung ausgewählt.</value>
+  </data>
 </root>

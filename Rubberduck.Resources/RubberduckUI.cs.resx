@@ -590,12 +590,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
     <value>Metoda '{0}' implementuje '{1}.{2}'. Změnit podpis rozhraní? (Rozšíří se na všechny implementace.)</value>
   </data>
-  <data name="ImplementInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Implementovat Rozhraní</value>
-  </data>
-  <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
-    <value>Aktuální výběr není platný.</value>
-  </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Vážnost:</value>
   </data>
@@ -1283,9 +1277,6 @@ End Enum</value>
   </data>
   <data name="RefactoringFailure_TargetNull" xml:space="preserve">
     <value>Cílová deklarace je 'Null'.</value>
-  </data>
-  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
-    <value>Nebyl vybrán žádný příkaz implementace.</value>
   </data>
   <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
     <value>Cílový control '{0}' nebyl nalezen.</value>

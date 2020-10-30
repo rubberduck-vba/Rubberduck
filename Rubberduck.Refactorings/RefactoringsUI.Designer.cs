@@ -610,5 +610,23 @@ namespace Rubberduck.Refactorings {
                 return ResourceManager.GetString("ExtractMethod_TitleText", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Implement Interface.
+        /// </summary>
+        public static string ImplementInterface_Caption {
+            get {
+                return ResourceManager.GetString("ImplementInterface_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No implements selected..
+        /// </summary>
+        public static string ImplementInterfaceFailed_NoImplementsStatementSelected {
+            get {
+                return ResourceManager.GetString("ImplementInterfaceFailed_NoImplementsStatementSelected", resourceCulture);
+            }
+        }
     }
 }

@@ -556,12 +556,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
     <value>El método '{0}' implementa '{1}. {2}'. ¿Cambiar la firma de la interfaz? (Se propagará a todas las implementaciones.)</value>
     <comment>0: objetivo seleccionado; 1: nombre de la interfaz; 2: nombre del miembro de la interfaz</comment>
   </data>
-  <data name="ImplementInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Implementar interfaz</value>
-  </data>
-  <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
-    <value>La selección actual no es válida.</value>
-  </data>
   <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Selección invalida.</value>
   </data>
@@ -1408,9 +1402,6 @@ Importación cancelada.</value>
   </data>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Renombrar carpeta</value>
-  </data>
-  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
-    <value>No se seleccionaron implementaciones.</value>
   </data>
   <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
     <value>retorno-carro</value>
