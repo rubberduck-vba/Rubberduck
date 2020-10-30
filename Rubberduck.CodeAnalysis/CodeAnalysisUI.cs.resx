@@ -260,4 +260,10 @@ Nalezeno {1} problémů.</value>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filtr</value>
   </data>
+  <data name="CodeInspectionSettingsPage_FilterByDescription" xml:space="preserve">
+    <value>Popis:</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_FilterBySeverity" xml:space="preserve">
+    <value>Závažnost:</value>
+  </data>
 </root>

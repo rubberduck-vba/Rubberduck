@@ -126,6 +126,24 @@ namespace Rubberduck.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description:.
+        /// </summary>
+        public static string CodeInspectionSettingsPage_FilterByDescription {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettingsPage_FilterByDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Severity:.
+        /// </summary>
+        public static string CodeInspectionSettingsPage_FilterBySeverity {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettingsPage_FilterBySeverity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inspection Severities.
         /// </summary>
         public static string CodeInspectionSettingsPage_InspectionSeveritySettingsLabel {

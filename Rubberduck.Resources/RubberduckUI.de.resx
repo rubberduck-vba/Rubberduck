@@ -990,9 +990,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="IndentCurrentProject" xml:space="preserve">
     <value>Aktuelles Projekt</value>
   </data>
-  <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
-    <value>Beschreibung:</value>
-  </data>
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Beschäftigt</value>
   </data>
@@ -1013,9 +1010,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
     <value>Leerzeilen bei der Suche nach dem ersten Kommentar und nach Deklarationsblöcken ignorieren</value>
-  </data>
-  <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
-    <value>Schweregrad:</value>
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Tschechisch</value>

@@ -260,4 +260,10 @@
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filter</value>
   </data>
+  <data name="CodeInspectionSettingsPage_FilterByDescription" xml:space="preserve">
+    <value>Beschreibung:</value>
+  </data>
+  <data name="CodeInspectionSettingsPage_FilterBySeverity" xml:space="preserve">
+    <value>Schweregrad:</value>
+  </data>
 </root>

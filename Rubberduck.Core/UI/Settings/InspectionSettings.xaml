@@ -61,11 +61,11 @@
                                 </StackPanel.Resources>
                                 <Label Content="-" />
                                 <Image Source="{StaticResource FilterImage}" Width="19" />
-                                <Label Content="{Resx Key=InspectionSettings_FilterByDescription, ResxName=Rubberduck.Resources.RubberduckUI}" />
+                                <Label Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_FilterByDescription}" />
                                 <controls:SearchBox Width="100"
                                                     Text="{Binding InspectionSettingsDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="26" />
                                 <Border Width="10" />
-                                <Label Content="{Resx Key=InspectionSettings_FilterBySeverity, ResxName=Rubberduck.Resources.RubberduckUI}" />
+                                <Label Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_FilterBySeverity}" />
                                 <ComboBox Width="100"
                                           ItemsSource="{Binding SeverityFilters, UpdateSourceTrigger=PropertyChanged}"
                                           SelectedItem="{Binding SelectedSeverityFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

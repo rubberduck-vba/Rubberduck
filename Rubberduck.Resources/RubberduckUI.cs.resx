@@ -960,9 +960,6 @@ End Enum</value>
   <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
     <value>Ignoruj prázdné řádky při vyhledávání prvních poznámek a deklaračních bloků</value>
   </data>
-  <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
-    <value>Popis:</value>
-  </data>
   <data name="InspectionResults_FilterByError" xml:space="preserve">
     <value>Chyba</value>
   </data>
@@ -974,9 +971,6 @@ End Enum</value>
   </data>
   <data name="InspectionResults_FilterByWarning" xml:space="preserve">
     <value>Varování</value>
-  </data>
-  <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
-    <value>Závažnost:</value>
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Čeština</value>

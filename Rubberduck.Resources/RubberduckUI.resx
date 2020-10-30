@@ -1008,9 +1008,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>Compile On Demand currently enabled</value>
   </data>
-  <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
-    <value>Description:</value>
-  </data>
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Busy</value>
   </data>
@@ -1074,9 +1071,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
     <value>Ignore empty lines when locating first comment and declaration blocks</value>
-  </data>
-  <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
-    <value>Severity:</value>
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Czech</value>
