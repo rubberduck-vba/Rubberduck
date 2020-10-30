@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Resources;
 using Rubberduck.Interaction;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ReorderParameters;
 
@@ -43,7 +44,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private bool UserConfirmsInterfaceTarget(ReorderParametersModel model)
         {
-            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation,
+            var message = string.Format(RefactoringsUI.Refactoring_TargetIsInterfaceMemberImplementation,
                 model.OriginalTarget.IdentifierName, Model.TargetDeclaration.ComponentName, model.TargetDeclaration.IdentifierName);
             return UserConfirmsNewTarget(message);
         }
