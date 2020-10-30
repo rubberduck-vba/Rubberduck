@@ -332,4 +332,31 @@ Una clase privada puede asimismo implementar una interfaz pública.</value>
   <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
     <value>'{0}' es una palabra reservada.</value>
   </data>
+  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
+    <value>Rubberduck - Acercar al uso</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
+    <value>Selección invalida.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+    <value>El método que usa '{0}' ya posee la declaración '{1}' de igual nombre en el ámbito.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
+    <value>'{0}' no se usa en ninguna parte.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
+    <value>'{0}' no está definido en el mismo proyecto que se usa.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
+    <value>'{0}' no está definido en el componente que se usa ni en un módulo estándar.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+    <value>'{0}' es un miembro público de una clase, formulario o documento.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
+    <value>'{0}' está incorporado.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
+    <value>'{0}' tiene referencias en múltiples métodos.</value>
+  </data>
 </root>

@@ -535,20 +535,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
     <value>La selección no es una variable.</value>
     <comment>Utilizado tanto en Introducir parámetro como en Introducir campo</comment>
   </data>
-  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
-    <value>Rubberduck - Acercar al uso</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
-    <value>'{0}' no se usa en ninguna parte.</value>
-    <comment>{0}: Nombre de la variable</comment>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
-    <value>'{0}' tiene referencias en múltiples métodos.</value>
-    <comment>{0}: Nombre de la variable</comment>
-  </data>
-  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
-    <value>Selección invalida.</value>
-  </data>
   <data name="SelectAll_Button" xml:space="preserve">
     <value>Seleccionar todo</value>
   </data>
@@ -1295,21 +1281,6 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   </data>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Advertencia de rendimiento</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
-    <value>'{0}' está incorporado.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
-    <value>'{0}' no está definido en el mismo proyecto que se usa.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
-    <value>'{0}' no está definido en el componente que se usa ni en un módulo estándar.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
-    <value>'{0}' es un miembro público de una clase, formulario o documento.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
-    <value>El método que usa '{0}' ya posee la declaración '{1}' de igual nombre en el ámbito.</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filtro</value>

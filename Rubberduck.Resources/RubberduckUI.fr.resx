@@ -489,12 +489,6 @@ Continuer?</value>
   <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
     <value>Sélection</value>
   </data>
-  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
-    <value>Rubberduck - Rapprocher la déclaration de son utilisation</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
-    <value>'{0}' n'est jamais utilisé.</value>
-  </data>
   <data name="DeselectAll_Button" xml:space="preserve">
     <value>Désélectionner tout</value>
   </data>
@@ -537,14 +531,8 @@ Continuer?</value>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
     <value>Rechercher un symbole</value>
   </data>
-  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
-    <value>'{0}' est utilisé dans plus d'une méthode.</value>
-  </data>
   <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
     <value>Remplacer tout</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
-    <value>Sélection invalide.</value>
   </data>
   <data name="ParserState_ResolverError" xml:space="preserve">
     <value>Erreur de résolution</value>
@@ -1267,18 +1255,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="MemberAttributeRecoveryFailureCaption" xml:space="preserve">
     <value>Échec de la récupération des attributs</value>
   </data>
-  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
-    <value>'{0}' n'est pas défini par l'utilisateur.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
-    <value>'{0}' doit être défini dans le même projet que la cible.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
-    <value>'{0}' n'est utilisé ni dans le module où il est défini, ni dans un module standard.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
-    <value>La procédure qui utilise '{0}' contient déjà une déclaration '{1}' utilisant cet identifiant.</value>
-  </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filtrer</value>
   </data>
@@ -1296,9 +1272,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="InspectionResults_ExpandAll" xml:space="preserve">
     <value>Développer tout</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
-    <value>'{0}' est accessible globalement, et est utilisé.</value>
   </data>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Enregistrer &amp; Fermer</value>

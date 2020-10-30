@@ -538,20 +538,6 @@ Do you want to proceed with this rename?</value>
     <value>Selection is not a variable.</value>
     <comment>Used in both Introduce Parameter and Introduce Field</comment>
   </data>
-  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
-    <value>Rubberduck - Move Closer To Usage</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
-    <value>'{0}' is not used anywhere.</value>
-    <comment>{0}: Variable Name</comment>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
-    <value>'{0}' has references in multiple methods.</value>
-    <comment>{0}: Variable Name</comment>
-  </data>
-  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
-    <value>Invalid Selection.</value>
-  </data>
   <data name="SelectAll_Button" xml:space="preserve">
     <value>Select All</value>
   </data>
@@ -1393,26 +1379,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Performance Warning</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
-    <value>'{0}' is built-in.</value>
-    <comment>{0}: Variable Name</comment>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
-    <value>'{0}' is not defined in the same project it is used.</value>
-    <comment>{0}: Variable Name</comment>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
-    <value>'{0}' is defined neither in the component component it is used nor in a standard module.</value>
-    <comment>{0}: Variable Name</comment>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
-    <value>'{0}' is a public member of of a class, form or document.</value>
-    <comment>{0}: Variable Name</comment>
-  </data>
-  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
-    <value>The method using '{0}' already has the declaration '{1}' of the same name in scope.</value>
-    <comment>{0}: Variable Name; {1}: name of conflicting declaration</comment>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filter</value>

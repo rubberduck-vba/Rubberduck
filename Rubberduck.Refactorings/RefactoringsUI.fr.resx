@@ -314,4 +314,31 @@ Une classe privée peut toujours implémenter une interface publique.</value>
   <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
     <value>'{0}' est un mot-clé réservé.</value>
   </data>
+  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
+    <value>Rubberduck - Rapprocher la déclaration de son utilisation</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
+    <value>Sélection invalide.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+    <value>La procédure qui utilise '{0}' contient déjà une déclaration '{1}' utilisant cet identifiant.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
+    <value>'{0}' n'est jamais utilisé.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
+    <value>'{0}' doit être défini dans le même projet que la cible.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
+    <value>'{0}' n'est utilisé ni dans le module où il est défini, ni dans un module standard.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+    <value>'{0}' est accessible globalement, et est utilisé.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
+    <value>'{0}' n'est pas défini par l'utilisateur.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
+    <value>'{0}' est utilisé dans plus d'une méthode.</value>
+  </data>
 </root>

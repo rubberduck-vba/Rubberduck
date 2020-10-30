@@ -435,9 +435,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="DeselectAll_Button" xml:space="preserve">
     <value>Odznačit vše</value>
   </data>
-  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
-    <value>Neplatný výběr.</value>
-  </data>
   <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
     <value>Absolutní</value>
   </data>
@@ -571,15 +568,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>Výběr není proměnná.</value>
-  </data>
-  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
-    <value>Rubberduck - Přesuň na Místo Použití</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
-    <value>'{0}' není nikde použito.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
-    <value>'{0}' má odkazy ve více metodách.</value>
   </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Vážnost:</value>
@@ -1205,10 +1193,6 @@ End Enum</value>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
   </data>
-  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
-    <value>'{0}' je globálně přístupno a je využíváno.</value>
-    <comment>FIXME: needs rewording/clarification</comment>
-  </data>
   <data name="MemberAttributeRecoveryFailureCaption" xml:space="preserve">
     <value>Selhání obnovy atributu člena</value>
   </data>
@@ -1227,15 +1211,6 @@ End Enum</value>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Varování o výkonu</value>
   </data>
-  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
-    <value>'{0}' je vestavěná proměnná.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
-    <value>'{0}' není definováno ve stejném projektu, ve kterém je používáno.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
-    <value>'{0}' není definováno ani v komponentě komponenty, ve které je použito, ani ve standardním modulu.</value>
-  </data>
   <data name="References_BrowseButtonText" xml:space="preserve">
     <value>Procházet...</value>
   </data>
@@ -1253,9 +1228,6 @@ End Enum</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filtr</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
-    <value>Metoda používající '{0}' má již jinou deklaraci '{1}' stejného jména v rozsahu.</value>
   </data>
   <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
     <value>Refaktorování selhalo.</value>
