@@ -4,6 +4,7 @@ using Rubberduck.Interaction;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RenameFolder;
 using Rubberduck.Resources;
 
@@ -63,18 +64,18 @@ namespace Rubberduck.UI.Refactorings.RenameFolder
             if (string.IsNullOrEmpty(NewFolderName))
             {
                 //We generally already rename a subfolder, here.
-                errors.Add(RubberduckUI.MoveFolders_EmptySubfolderName);
+                errors.Add(RefactoringsUI.MoveFolders_EmptySubfolderName);
             }
             else
             {
                 if (NewFolderName.Any(char.IsControl))
                 {
-                    errors.Add(RubberduckUI.MoveFolders_ControlCharacter);
+                    errors.Add(RefactoringsUI.MoveFolders_ControlCharacter);
                 }
 
                 if (NewFolderName.Split(FolderExtensions.FolderDelimiter).Any(string.IsNullOrEmpty))
                 {
-                    errors.Add(RubberduckUI.MoveFolders_EmptySubfolderName);
+                    errors.Add(RefactoringsUI.MoveFolders_EmptySubfolderName);
                 }
             }
 

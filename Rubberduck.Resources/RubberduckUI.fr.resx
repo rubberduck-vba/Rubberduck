@@ -1412,39 +1412,6 @@ Mise à jour annulée.</value>
   <data name="MoveToFolderDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Déplacer vers un Dossier</value>
   </data>
-  <data name="MoveFoldersDialog_TitleText" xml:space="preserve">
-    <value>Déplacer les dossiers</value>
-  </data>
-  <data name="MoveFoldersDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Déplacer les Dossiers</value>
-  </data>
-  <data name="MoveFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Veuillez spécifier un nouveau dossier parent pour le sous-dossier '{0}' de '{1}'.</value>
-  </data>
-  <data name="MoveFolders_ControlCharacter" xml:space="preserve">
-    <value>Un nom de dossier ne peut pas contenir certains caractères de contrôle, tels qu'un saut de ligne.</value>
-  </data>
-  <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
-    <value>Un nom de dossier ne peut être vide.</value>
-  </data>
-  <data name="MoveFolders_EmptySubfolderName" xml:space="preserve">
-    <value>Les noms des sous-dossiers ne peuvent pas être vides.</value>
-  </data>
-  <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
-    <value>Plusieurs dossiers portant le même nom seront déplacés. Cette action les fusionnera.
-Procéder?</value>
-  </data>
-  <data name="MoveFolders_SameNameSubfolder" xml:space="preserve">
-    <value>Le dossier cible '{0}' contient déjà un sous-dossier nommé '{1}'. Déplacer ce dossier le fusionnera au dossier existant.
-Procéder?</value>
-  </data>
-  <data name="MoveFolders_SameNameSubfolders" xml:space="preserve">
-    <value>Le dossier cible '{0}' contient déjà les dossiers {1}. Déplacer ces dossiers les fusionnera aux dossiers existants.
-Procéder?</value>
-  </data>
-  <data name="MoveFoldersDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Veuillez spécifier un nouveau dossier parent.</value>
-  </data>
   <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
     <value>Veuillez spécifier le dossier où déplacer ces composants.</value>
   </data>

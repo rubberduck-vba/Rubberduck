@@ -1397,9 +1397,6 @@ Import přerušen.</value>
   <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
     <value>{0} {1} {2} {3} {4} {5}</value>
   </data>
-  <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
-    <value>Jméno složky nemůže být prázdné.</value>
-  </data>
   <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
     <value>Povolit drag and drop v Code Exploreru</value>
   </data>
@@ -1412,17 +1409,11 @@ Import přerušen.</value>
   <data name="MoveToFolderDialog_FolderLabelText" xml:space="preserve">
     <value>Složka:</value>
   </data>
-  <data name="MoveFolders_ControlCharacter" xml:space="preserve">
-    <value>Název složky nemůže obsahovat control charaktery, např. nové řádky.</value>
-  </data>
   <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
     <value>Plná nová složka:</value>
   </data>
   <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
     <value>Ve VBA není možné změnit pouze počáteční písmeno identifikátoru (jazyk ignoruje velká/malá písmena).</value>
-  </data>
-  <data name="MoveFoldersDialog_TitleText" xml:space="preserve">
-    <value>Přesunout Složky</value>
   </data>
   <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
     <value>Přesunout do Složky</value>
@@ -1439,24 +1430,11 @@ Import přerušen.</value>
   <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
     <value>Prosím specifikujte novou nadřazenou složku pro složku '{0}'.</value>
   </data>
-  <data name="MoveFoldersDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Prosím specifikujte novou nadřazenou složku pro složky.</value>
-  </data>
-  <data name="MoveFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Prosím specifikujte novou nadřazenou složku '{1}' pro podsložku '{0}'.</value>
-  </data>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Přejmenovat složku</value>
   </data>
-  <data name="MoveFoldersDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Přesunout Složky</value>
-  </data>
   <data name="MoveToFolderDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Přesunout do Složky</value>
-  </data>
-  <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
-    <value>Je přesunováno několik složek se tejným jménem. Toto je spojí.
-Chcete pokračovat?</value>
   </data>
   <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
     <value>Komponenta '{0}' by byla ovlivněna refactorováním, avšak její stav v paměti Rubberducku je zastaralý. Prosím obnovte Rubberduck a zkuste to znovu.</value>
@@ -1465,18 +1443,7 @@ Chcete pokračovat?</value>
     <value>Složka '{0}' již existuje. Přejmenování '{1}' na '{2}' vyústí ve sloučení s existující složkou.
 Chcete pokračovat?</value>
   </data>
-  <data name="MoveFolders_EmptySubfolderName" xml:space="preserve">
-    <value>Názvy individuálních podsložek nemohou být prázdná.</value>
-  </data>
   <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
     <value>Refaktorování může anotovat pouze komponenty, členy a proměnné, avšak cílový objekt má typ '{0}'.</value>
-  </data>
-  <data name="MoveFolders_SameNameSubfolder" xml:space="preserve">
-    <value>Cílová složka '{0}' již obsahuje podložku '{1}'. Přemístění složky ji sloučí s existující složkou.
-Chcete pokračovat?</value>
-  </data>
-  <data name="MoveFolders_SameNameSubfolders" xml:space="preserve">
-    <value>Cílová složka '{0}' již obsahuje podsložky '{1}'. Přemístění složek je sloučí s existujícími složkami s korespondujícími jmény.
-Chcete pokračovat?</value>
   </data>
 </root>

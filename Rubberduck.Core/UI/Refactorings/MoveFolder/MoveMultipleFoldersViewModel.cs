@@ -2,6 +2,7 @@
 using System.Linq;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveFolder;
 using Rubberduck.Resources;
 using Rubberduck.JunkDrawer.Extensions;
@@ -43,10 +44,10 @@ namespace Rubberduck.UI.Refactorings.MoveFolder
                         return string.Format(RubberduckUI.MoveRootFolderDialog_InstructionsLabelText, sourceFolder);
                     }
 
-                    return string.Format(RubberduckUI.MoveFolderDialog_InstructionsLabelText, sourceFolder, sourceParent);
+                    return string.Format(RefactoringsUI.MoveFolderDialog_InstructionsLabelText, sourceFolder, sourceParent);
                 }
 
-                return string.Format(RubberduckUI.MoveFoldersDialog_InstructionsLabelText);
+                return string.Format(RefactoringsUI.MoveFoldersDialog_InstructionsLabelText);
             }
         }
 
@@ -68,18 +69,18 @@ namespace Rubberduck.UI.Refactorings.MoveFolder
 
             if (string.IsNullOrEmpty(NewFolder))
             {
-                errors.Add(RubberduckUI.MoveFolders_EmptyFolderName);
+                errors.Add(RefactoringsUI.MoveFolders_EmptyFolderName);
             }
             else
             {
                 if (NewFolder.Any(char.IsControl))
                 {
-                    errors.Add(RubberduckUI.MoveFolders_ControlCharacter);
+                    errors.Add(RefactoringsUI.MoveFolders_ControlCharacter);
                 }
 
                 if (NewFolder.Split(FolderExtensions.FolderDelimiter).Any(string.IsNullOrEmpty))
                 {
-                    errors.Add(RubberduckUI.MoveFolders_EmptySubfolderName);
+                    errors.Add(RefactoringsUI.MoveFolders_EmptySubfolderName);
                 }
             }
 
@@ -130,8 +131,8 @@ namespace Rubberduck.UI.Refactorings.MoveFolder
 
         private bool UserConfirmsToProceedWithSourceFolderMerge()
         {
-            var message = RubberduckUI.MoveFolders_SameNameSourceFolders;
-            return _messageBox?.ConfirmYesNo(message, RubberduckUI.MoveFoldersDialog_Caption) ?? false;
+            var message = RefactoringsUI.MoveFolders_SameNameSourceFolders;
+            return _messageBox?.ConfirmYesNo(message, RefactoringsUI.MoveFoldersDialog_Caption) ?? false;
         }
 
         private List<string> FoldersMergedWithTargetFolders()
@@ -157,7 +158,7 @@ namespace Rubberduck.UI.Refactorings.MoveFolder
         private bool UserConfirmsToProceedWithFolderMerge(string targetFolder, List<string> mergedTargetFolders)
         {
             var message = FolderMergeUserConfirmationMessage(targetFolder, mergedTargetFolders);
-            return _messageBox?.ConfirmYesNo(message, RubberduckUI.MoveFoldersDialog_Caption) ?? false;
+            return _messageBox?.ConfirmYesNo(message, RefactoringsUI.MoveFoldersDialog_Caption) ?? false;
         }
 
         private string FolderMergeUserConfirmationMessage(string targetFolder, List<string> mergedTargetFolders)
@@ -165,14 +166,14 @@ namespace Rubberduck.UI.Refactorings.MoveFolder
             if (mergedTargetFolders.Count == 1)
             {
                 return string.Format(
-                    RubberduckUI.MoveFolders_SameNameSubfolder, 
+                    RefactoringsUI.MoveFolders_SameNameSubfolder, 
                     targetFolder,
                     mergedTargetFolders.Single());
             }
 
             var subfolders = $"'{string.Join("', '", mergedTargetFolders)}'";
             return string.Format(
-                RubberduckUI.MoveFolders_SameNameSubfolders,
+                RefactoringsUI.MoveFolders_SameNameSubfolders,
                 targetFolder,
                 subfolders);
         }
