@@ -1433,24 +1433,6 @@ Import abgebrochen.</value>
   <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
     <value>Es war nicht möglich den Parser zum Ausführen des Refactorings temporär zu deaktivieren.</value>
   </data>
-  <data name="MoveToFolderDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - In Ordner verschieben</value>
-  </data>
-  <data name="MoveToFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Bitte geben Sie einen neuen Ordner für {0} '{1}' im Ordner '{2}' an.</value>
-  </data>
-  <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
-    <value>In Ordner verschieben</value>
-  </data>
-  <data name="MoveToFolderDialog_FolderLabelText" xml:space="preserve">
-    <value>Ordner:</value>
-  </data>
-  <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Bitte geben Sie einen neuen Ordner für die Komponenten an.</value>
-  </data>
-  <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Bitte geben Sie einen Ordner an, in den der Ordner '{0}' verschoben werden soll.</value>
-  </data>
   <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
     <value>Es wurde kein Zielordner festgelegt.</value>
   </data>

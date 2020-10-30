@@ -374,4 +374,22 @@ Procéder?</value>
   <data name="MoveFoldersDialog_TitleText" xml:space="preserve">
     <value>Déplacer les dossiers</value>
   </data>
+  <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Veuillez spécifier le dossier où déplacer ces composants.</value>
+  </data>
+  <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Veuillez spécifier un nouveau dossier parent pour '{0}'.</value>
+  </data>
+  <data name="MoveToFolderDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Déplacer vers un Dossier</value>
+  </data>
+  <data name="MoveToFolderDialog_FolderLabelText" xml:space="preserve">
+    <value>Dossier:</value>
+  </data>
+  <data name="MoveToFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Veuillez spécifier un nouveau dossier pour {0} '{1}' dans le dossier '{2}'.</value>
+  </data>
+  <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
+    <value>Déplacer vers un dossier</value>
+  </data>
 </root>

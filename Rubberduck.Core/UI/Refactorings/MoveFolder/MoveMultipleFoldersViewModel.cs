@@ -4,7 +4,6 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveFolder;
-using Rubberduck.Resources;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.VBA;
 
@@ -41,7 +40,7 @@ namespace Rubberduck.UI.Refactorings.MoveFolder
 
                     if (sourceParent.Length == 0)
                     {
-                        return string.Format(RubberduckUI.MoveRootFolderDialog_InstructionsLabelText, sourceFolder);
+                        return string.Format(RefactoringsUI.MoveRootFolderDialog_InstructionsLabelText, sourceFolder);
                     }
 
                     return string.Format(RefactoringsUI.MoveFolderDialog_InstructionsLabelText, sourceFolder, sourceParent);

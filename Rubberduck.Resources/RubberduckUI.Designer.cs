@@ -2298,60 +2298,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please specify new folder for the components..
-        /// </summary>
-        public static string MoveMultipleToFolderDialog_InstructionsLabelText {
-            get {
-                return ResourceManager.GetString("MoveMultipleToFolderDialog_InstructionsLabelText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please specify a new parent folder for the folder &apos;{0}&apos;..
-        /// </summary>
-        public static string MoveRootFolderDialog_InstructionsLabelText {
-            get {
-                return ResourceManager.GetString("MoveRootFolderDialog_InstructionsLabelText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rubberduck - Move to Folder.
-        /// </summary>
-        public static string MoveToFolderDialog_Caption {
-            get {
-                return ResourceManager.GetString("MoveToFolderDialog_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Folder:.
-        /// </summary>
-        public static string MoveToFolderDialog_FolderLabelText {
-            get {
-                return ResourceManager.GetString("MoveToFolderDialog_FolderLabelText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please specify a new folder for {0} &apos;{1}&apos; in folder &apos;{2}&apos;..
-        /// </summary>
-        public static string MoveToFolderDialog_InstructionsLabelText {
-            get {
-                return ResourceManager.GetString("MoveToFolderDialog_InstructionsLabelText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Move to Folder.
-        /// </summary>
-        public static string MoveToFolderDialog_TitleText {
-            get {
-                return ResourceManager.GetString("MoveToFolderDialog_TitleText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string Name {
@@ -4350,7 +4296,5 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("WindowSettings_StartupVisibilityHeader", resourceCulture);
             }
         }
-
-        public static string MoveFolders_EmptySubfolderName { get; set; }
     }
 }

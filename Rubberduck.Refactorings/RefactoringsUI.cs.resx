@@ -392,4 +392,22 @@ Chcete pokračovat?</value>
   <data name="MoveFoldersDialog_TitleText" xml:space="preserve">
     <value>Přesunout Složky</value>
   </data>
+  <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Prosím specifikujte novou složku pro komponenty.</value>
+  </data>
+  <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Prosím specifikujte novou nadřazenou složku pro složku '{0}'.</value>
+  </data>
+  <data name="MoveToFolderDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Přesunout do Složky</value>
+  </data>
+  <data name="MoveToFolderDialog_FolderLabelText" xml:space="preserve">
+    <value>Složka:</value>
+  </data>
+  <data name="MoveToFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Prosím specifikujte novou složku pro {0} '{1}' ve složce '{2}'.</value>
+  </data>
+  <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
+    <value>Přesunout do Složky</value>
+  </data>
 </root>

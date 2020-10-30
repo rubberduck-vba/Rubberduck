@@ -20,7 +20,7 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <StackPanel Background="{StaticResource BackgroundLightBrush}">
-            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=MoveFoldersDialog_TitleText}" FontWeight="Bold" />
+            <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=MoveFoldersDialog_TitleText}" FontWeight="Bold" />
             <TextBlock Text="{Binding Instructions}" Margin="5,0" />
         </StackPanel>
         <Grid Grid.Row="1" Margin="5,10,10,5">
@@ -28,7 +28,7 @@
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=MoveToFolderDialog_FolderLabelText}"
+            <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=MoveToFolderDialog_FolderLabelText}"
                        VerticalAlignment="Top"
                        Margin="0,0,5,0" />
             <TextBox Name="MoveToFolderTextBox"

@@ -32,10 +32,10 @@ namespace Rubberduck.UI.Refactorings.MoveToFolder
                     var moduleName = target.IdentifierName;
                     var declarationType = RubberduckUI.ResourceManager.GetString("DeclarationType_" + target.DeclarationType, CultureInfo.CurrentUICulture);
                     var currentFolder = target.CustomFolder;
-                    return string.Format(RubberduckUI.MoveToFolderDialog_InstructionsLabelText, declarationType, moduleName, currentFolder);
+                    return string.Format(RefactoringsUI.MoveToFolderDialog_InstructionsLabelText, declarationType, moduleName, currentFolder);
                 }
 
-                return string.Format(RubberduckUI.MoveMultipleToFolderDialog_InstructionsLabelText);
+                return string.Format(RefactoringsUI.MoveMultipleToFolderDialog_InstructionsLabelText);
             }
         }
 
@@ -68,7 +68,7 @@ namespace Rubberduck.UI.Refactorings.MoveToFolder
 
                 if (NewFolder.Split(FolderExtensions.FolderDelimiter).Any(string.IsNullOrEmpty))
                 {
-                    errors.Add(RubberduckUI.MoveFolders_EmptySubfolderName);
+                    errors.Add(RefactoringsUI.MoveFolders_EmptySubfolderName);
                 }
             }
 

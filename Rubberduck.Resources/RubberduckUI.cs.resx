@@ -1406,35 +1406,17 @@ Import přerušen.</value>
   <data name="RenameDialog_FolderLabel" xml:space="preserve">
     <value>Složka:</value>
   </data>
-  <data name="MoveToFolderDialog_FolderLabelText" xml:space="preserve">
-    <value>Složka:</value>
-  </data>
   <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
     <value>Plná nová složka:</value>
   </data>
   <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
     <value>Ve VBA není možné změnit pouze počáteční písmeno identifikátoru (jazyk ignoruje velká/malá písmena).</value>
   </data>
-  <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
-    <value>Přesunout do Složky</value>
-  </data>
   <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
     <value>Cíl nebyl specifikován.</value>
   </data>
-  <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Prosím specifikujte novou složku pro komponenty.</value>
-  </data>
-  <data name="MoveToFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Prosím specifikujte novou složku pro {0} '{1}' ve složce '{2}'.</value>
-  </data>
-  <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Prosím specifikujte novou nadřazenou složku pro složku '{0}'.</value>
-  </data>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Přejmenovat složku</value>
-  </data>
-  <data name="MoveToFolderDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Přesunout do Složky</value>
   </data>
   <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
     <value>Komponenta '{0}' by byla ovlivněna refactorováním, avšak její stav v paměti Rubberducku je zastaralý. Prosím obnovte Rubberduck a zkuste to znovu.</value>

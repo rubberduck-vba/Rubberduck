@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.MoveToFolder;
 
@@ -11,7 +12,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             : base(messageBox)
         {}
 
-        protected override string Caption => Resources.RubberduckUI.MoveFoldersDialog_Caption;
+        protected override string Caption => RefactoringsUI.MoveFoldersDialog_Caption;
 
         protected override string Message(RefactoringException exception)
         {

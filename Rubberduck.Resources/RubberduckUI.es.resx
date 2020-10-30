@@ -1477,24 +1477,6 @@ Importación cancelada.</value>
   <data name="ComponentType_VBForm" xml:space="preserve">
     <value>Formulario VB</value>
   </data>
-  <data name="MoveToFolderDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Mover a Carpeta</value>
-  </data>
-  <data name="MoveToFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Por favor especificar una nueva carpeta para {0} '{1}' en la carpeta '{2}'.</value>
-  </data>
-  <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
-    <value>Mover hacia carpeta</value>
-  </data>
-  <data name="MoveToFolderDialog_FolderLabelText" xml:space="preserve">
-    <value>Carpeta:</value>
-  </data>
-  <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Por favor especificar nueva carpeta para los componentes.</value>
-  </data>
-  <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Por favor especificar una nueva carpeta padre para la carpeta '{0}'.</value>
-  </data>
   <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
     <value>El componente '{0}' habría sido afectado por la refactorización, pero su estado en la memoria de Rubberduck está desactualizado. Por favor actualice el estado de Rubberduck e intente de nuevo.</value>
   </data>
