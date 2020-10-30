@@ -947,18 +947,6 @@ Přejete si toto nastavení importovat do Rubberducku?</value>
   <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
     <value>Popis:</value>
   </data>
-  <data name="InspectionResults_FilterByError" xml:space="preserve">
-    <value>Chyba</value>
-  </data>
-  <data name="InspectionResults_FilterByHint" xml:space="preserve">
-    <value>Nápověda</value>
-  </data>
-  <data name="InspectionResults_FilterBySuggestion" xml:space="preserve">
-    <value>Návrh</value>
-  </data>
-  <data name="InspectionResults_FilterByWarning" xml:space="preserve">
-    <value>Varování</value>
-  </data>
   <data name="GroupingGrid_FilterBy" xml:space="preserve">
     <value>Filtrovat</value>
   </data>
@@ -1130,12 +1118,6 @@ Přejete si toto nastavení importovat do Rubberducku?</value>
   </data>
   <data name="References_BrowseButtonText" xml:space="preserve">
     <value>Procházet...</value>
-  </data>
-  <data name="InspectionResults_CollapseAll" xml:space="preserve">
-    <value>Sbalit vše</value>
-  </data>
-  <data name="InspectionResults_ExpandAll" xml:space="preserve">
-    <value>Rozbalit vše</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filtr</value>

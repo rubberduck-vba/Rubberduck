@@ -61,6 +61,60 @@ namespace Rubberduck.UI.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collapse all.
+        /// </summary>
+        public static string CollapseAll {
+            get {
+                return ResourceManager.GetString("CollapseAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand all.
+        /// </summary>
+        public static string ExpandAll {
+            get {
+                return ResourceManager.GetString("ExpandAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string FilterByError {
+            get {
+                return ResourceManager.GetString("FilterByError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hint.
+        /// </summary>
+        public static string FilterByHint {
+            get {
+                return ResourceManager.GetString("FilterByHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suggestion.
+        /// </summary>
+        public static string FilterBySuggestion {
+            get {
+                return ResourceManager.GetString("FilterBySuggestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string FilterByWarning {
+            get {
+                return ResourceManager.GetString("FilterByWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By inspection type.
         /// </summary>
         public static string GroupingStyle_ByInspectionType {

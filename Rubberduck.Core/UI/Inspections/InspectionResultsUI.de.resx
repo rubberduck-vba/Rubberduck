@@ -126,4 +126,22 @@
   <data name="GroupingStyle_BySeverity" xml:space="preserve">
     <value>Nach Schweregrad</value>
   </data>
+  <data name="CollapseAll" xml:space="preserve">
+    <value>Alle einklappen</value>
+  </data>
+  <data name="ExpandAll" xml:space="preserve">
+    <value>Alle ausklappen</value>
+  </data>
+  <data name="FilterByError" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="FilterByHint" xml:space="preserve">
+    <value>Tipp</value>
+  </data>
+  <data name="FilterBySuggestion" xml:space="preserve">
+    <value>Vorschlag</value>
+  </data>
+  <data name="FilterByWarning" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
 </root>

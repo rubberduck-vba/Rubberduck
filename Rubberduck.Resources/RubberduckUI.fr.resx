@@ -975,18 +975,6 @@ les projets dans le VBE.</value>
   <data name="Language_CS" xml:space="preserve">
     <value>Tchèque</value>
   </data>
-  <data name="InspectionResults_FilterByError" xml:space="preserve">
-    <value>Erreur</value>
-  </data>
-  <data name="InspectionResults_FilterByHint" xml:space="preserve">
-    <value>Note</value>
-  </data>
-  <data name="InspectionResults_FilterBySuggestion" xml:space="preserve">
-    <value>Suggestion</value>
-  </data>
-  <data name="InspectionResults_FilterByWarning" xml:space="preserve">
-    <value>Avertissement</value>
-  </data>
   <data name="References" xml:space="preserve">
     <value>Références</value>
   </data>
@@ -1140,14 +1128,8 @@ les projets dans le VBE.</value>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filtrer</value>
   </data>
-  <data name="InspectionResults_CollapseAll" xml:space="preserve">
-    <value>Réduire tout</value>
-  </data>
   <data name="References_BrowseButtonText" xml:space="preserve">
     <value>Parcourir...</value>
-  </data>
-  <data name="InspectionResults_ExpandAll" xml:space="preserve">
-    <value>Développer tout</value>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
     <value>'{0}' est accessible globalement, et est utilisé.</value>

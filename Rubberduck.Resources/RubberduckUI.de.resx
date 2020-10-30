@@ -952,18 +952,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Beschäftigt</value>
   </data>
-  <data name="InspectionResults_FilterByError" xml:space="preserve">
-    <value>Fehler</value>
-  </data>
-  <data name="InspectionResults_FilterByHint" xml:space="preserve">
-    <value>Tipp</value>
-  </data>
-  <data name="InspectionResults_FilterBySuggestion" xml:space="preserve">
-    <value>Vorschlag</value>
-  </data>
-  <data name="InspectionResults_FilterByWarning" xml:space="preserve">
-    <value>Warnung</value>
-  </data>
   <data name="GroupingGrid_FilterBy" xml:space="preserve">
     <value>Filtern nach</value>
   </data>
@@ -1176,12 +1164,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filter</value>
-  </data>
-  <data name="InspectionResults_CollapseAll" xml:space="preserve">
-    <value>Alle einklappen</value>
-  </data>
-  <data name="InspectionResults_ExpandAll" xml:space="preserve">
-    <value>Alle ausklappen</value>
   </data>
   <data name="References_BrowseButtonText" xml:space="preserve">
     <value>Durchsuchen...</value>

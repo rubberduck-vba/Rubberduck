@@ -126,4 +126,22 @@
   <data name="GroupingStyle_BySeverity" xml:space="preserve">
     <value>Dle závažnosti</value>
   </data>
+  <data name="CollapseAll" xml:space="preserve">
+    <value>Sbalit vše</value>
+  </data>
+  <data name="ExpandAll" xml:space="preserve">
+    <value>Rozbalit vše</value>
+  </data>
+  <data name="FilterByError" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="FilterByHint" xml:space="preserve">
+    <value>Nápověda</value>
+  </data>
+  <data name="FilterBySuggestion" xml:space="preserve">
+    <value>Návrh</value>
+  </data>
+  <data name="FilterByWarning" xml:space="preserve">
+    <value>Varování</value>
+  </data>
 </root>
