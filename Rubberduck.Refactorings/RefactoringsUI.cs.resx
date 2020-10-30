@@ -410,4 +410,40 @@ Chcete pokračovat?</value>
   <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
     <value>Přesunout do Složky</value>
   </data>
+  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
+    <value>Typ deklarace cíle '{0}' je '{1}' namísto jednoho z očekávaných '{2}'.</value>
+  </data>
+  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Metoda '{0}' implementuje '{1}.{2}'. Změnit podpis rozhraní? (Rozšíří se na všechny implementace.)</value>
+  </data>
+  <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
+    <value>Komponenta '{0}' by byla ovlivněna refactorováním, avšak její stav v paměti Rubberducku je zastaralý. Prosím obnovte Rubberduck a zkuste to znovu.</value>
+  </data>
+  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
+    <value>Refaktorování může anotovat pouze komponenty, členy a proměnné, avšak cílový objekt má typ '{0}'.</value>
+  </data>
+  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
+    <value>Refaktorování selhalo.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
+    <value>Deklarace typu cíle '{0}' je '{1}' namísto očekávaného '{2}'.</value>
+  </data>
+  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
+    <value>Neexistuje žádný aktivní výběr.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
+    <value>Vybraný cíl nejde refaktorovat.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
+    <value>Cíl nebyl specifikován.</value>
+  </data>
+  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
+    <value>Nelze přerušit Parser k provedení operace refaktoringu.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
+    <value>Cíl není uživatelsky definován.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
+    <value>Cílová deklarace je 'Null'.</value>
+  </data>
 </root>

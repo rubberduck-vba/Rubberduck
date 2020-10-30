@@ -21,12 +21,12 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
                 case InvalidDeclarationTypeException invalidDeclarationType:
                     Logger.Warn(invalidDeclarationType);
                     return string.Format(
-                        Resources.RubberduckUI.RefactoringFailure_InvalidDeclarationType,
+                        RefactoringsUI.RefactoringFailure_InvalidDeclarationType,
                         invalidDeclarationType.TargetDeclaration.QualifiedName,
                         invalidDeclarationType.TargetDeclaration.DeclarationType,
                         DeclarationType.Module);
                 case NoTargetFolderException noTargetFolder:
-                    return Resources.RubberduckUI.RefactoringFailure_NoTargetFolder;
+                    return RefactoringsUI.RefactoringFailure_NoTargetFolder;
                 default:
                     return base.Message(exception);
             }

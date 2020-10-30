@@ -23,7 +23,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
                     return RefactoringsUI.ImplementInterfaceFailed_NoImplementsStatementSelected;
                 case InvalidDeclarationTypeException invalidDeclarationType:
                     Logger.Warn(invalidDeclarationType);
-                    return string.Format(Resources.RubberduckUI.RefactoringFailure_InvalidDeclarationType,
+                    return string.Format(RefactoringsUI.RefactoringFailure_InvalidDeclarationType,
                         invalidDeclarationType.TargetDeclaration.QualifiedModuleName,
                         invalidDeclarationType.TargetDeclaration.DeclarationType,
                         DeclarationType.ClassModule);

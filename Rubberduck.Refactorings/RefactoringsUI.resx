@@ -422,4 +422,46 @@ Do you want to proceed?</value>
   <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
     <value>Move to Folder</value>
   </data>
+  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
+    <value>Declaration type of target '{0}' is '{1}' instead of one of the expected '{2}'.</value>
+    <comment>{0}: name of target; {1}: actual declaration type; {2}: expected declaration types</comment>
+  </data>
+  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (Will propagate to all implementations.)</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
+  </data>
+  <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
+    <value>The component '{0}' would have been affected by the refactoring, but its state in Rubberduck's memory is stale. Please refresh Rubberduck and try again.</value>
+    <comment>{0} stale module</comment>
+  </data>
+  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
+    <value>The refactoring can only annotate components, members and variables, but the target had type '{0}'.</value>
+    <comment>{0} declaration type</comment>
+  </data>
+  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
+    <value>Refactoring failed.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
+    <value>Declaration type of target '{0}' is '{1}' instead of the expected '{2}'.</value>
+    <comment>{0}: name of target; {1}: actual declaration type; {2}: expected declaration type</comment>
+  </data>
+  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
+    <value>There is no active selection.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
+    <value>No viable target selected.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
+    <value>No target has been specified.</value>
+  </data>
+  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
+    <value>Unable to suspend the Parser to perform the refactoring operation.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
+    <value>The target is not user-defined.</value>
+    <comment>{0}: name of target</comment>
+  </data>
+  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
+    <value>Target declaration is null.</value>
+  </data>
 </root>

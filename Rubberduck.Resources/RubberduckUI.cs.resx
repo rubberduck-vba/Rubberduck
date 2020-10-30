@@ -486,9 +486,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
     <value>Volitelné parametry musejí být specifikovány na konci seznamu parametrů.</value>
   </data>
-  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>Metoda '{0}' implementuje '{1}.{2}'. Změnit podpis rozhraní? (Rozšíří se na všechny implementace.)</value>
-  </data>
   <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
     <value>Vyberte parametr a dvojím poklepáním na něj, nebo použitím tlačítek, ho odstraňte nebo obnovte.</value>
   </data>
@@ -1229,18 +1226,6 @@ End Enum</value>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filtr</value>
   </data>
-  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
-    <value>Refaktorování selhalo.</value>
-  </data>
-  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
-    <value>Neexistuje žádný aktivní výběr.</value>
-  </data>
-  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
-    <value>Vybraný cíl nejde refaktorovat.</value>
-  </data>
-  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
-    <value>Cílová deklarace je 'Null'.</value>
-  </data>
   <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
     <value>Cílový control '{0}' nebyl nalezen.</value>
   </data>
@@ -1249,15 +1234,6 @@ End Enum</value>
   </data>
   <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
     <value>Cíl '{0}' je standardní ovladač událostí, který nemůže být přejmenován.</value>
-  </data>
-  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
-    <value>Cíl není uživatelsky definován.</value>
-  </data>
-  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
-    <value>Deklarace typu cíle '{0}' je '{1}' namísto očekávaného '{2}'.</value>
-  </data>
-  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
-    <value>Typ deklarace cíle '{0}' je '{1}' namísto jednoho z očekávaných '{2}'.</value>
   </data>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Uložit a Zavřít</value>
@@ -1309,9 +1285,6 @@ End Enum</value>
   </data>
   <data name="TestExplorer_AppendHeader" xml:space="preserve">
     <value>Rubberduck: Výsledky Testů - {0}</value>
-  </data>
-  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
-    <value>Nelze přerušit Parser k provedení operace refaktoringu.</value>
   </data>
   <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
     <value>Přípona souboru '{0}' není podporována.
@@ -1412,20 +1385,11 @@ Import přerušen.</value>
   <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
     <value>Ve VBA není možné změnit pouze počáteční písmeno identifikátoru (jazyk ignoruje velká/malá písmena).</value>
   </data>
-  <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
-    <value>Cíl nebyl specifikován.</value>
-  </data>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Přejmenovat složku</value>
-  </data>
-  <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
-    <value>Komponenta '{0}' by byla ovlivněna refactorováním, avšak její stav v paměti Rubberducku je zastaralý. Prosím obnovte Rubberduck a zkuste to znovu.</value>
   </data>
   <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
     <value>Složka '{0}' již existuje. Přejmenování '{1}' na '{2}' vyústí ve sloučení s existující složkou.
 Chcete pokračovat?</value>
-  </data>
-  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
-    <value>Refaktorování může anotovat pouze komponenty, členy a proměnné, avšak cílový objekt má typ '{0}'.</value>
   </data>
 </root>

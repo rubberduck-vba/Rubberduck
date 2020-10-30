@@ -434,10 +434,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Project" xml:space="preserve">
     <value>le projet</value>
   </data>
-  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>La méthode '{0}' implémente '{1}.{2}'. Modifier la signature de l'interface? (cette modification serait propagée à toutes les implémentations)</value>
-    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
-  </data>
   <data name="Navigation" xml:space="preserve">
     <value>Navigation</value>
   </data>
@@ -1285,32 +1281,11 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="VersionCheck_BuildType_Release" xml:space="preserve">
     <value>officielle</value>
   </data>
-  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
-    <value>Échec du refactoring.</value>
-  </data>
-  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
-    <value>Cette opération requiert une sélection active.</value>
-  </data>
-  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
-    <value>La sélection ne semble pas contenir de déclaration utilisable.</value>
-  </data>
-  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
-    <value>La déclaration ciblée est 'null', ...poof?</value>
-  </data>
   <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
     <value>Le module ciblé '{0}' n'est plus trouvable!</value>
   </data>
   <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
     <value>La cible '{0}' est une procédure gestionnaire d'événements, impossible de renommer cette pocédure sans briser quelque chose!</value>
-  </data>
-  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
-    <value>La cible n'est pas définie par l'utilisateur.</value>
-  </data>
-  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
-    <value>Le type de déclaration de la cible '{0}' est '{1}', plutôt que '{2}' tel qu'attendu.</value>
-  </data>
-  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
-    <value>Le type de déclaration de la cible '{0}' est '{1}', mais le type attendu était '{2}'.</value>
   </data>
   <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
     <value>Indiquer les espaces dans la description</value>
@@ -1354,9 +1329,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="TestExplorer_AppendHeader" xml:space="preserve">
     <value>Rubberduck - Résultats des tests : {0}</value>
   </data>
-  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
-    <value>Impossible de suspendre l'analyse en cours pour effectuer le refactoring.</value>
-  </data>
   <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
     <value>L'extension du fichier '{0}' n'est pas prise en charge.
 
@@ -1399,15 +1371,6 @@ Mise à jour annulée.</value>
     <value>Le fichier '{0}' requiert le fichier binaire '{1}', qui est manquant.
 
 Échec de l'importation.</value>
-  </data>
-  <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
-    <value>Le composant '{0}' aurait été affecté par la refactorisation, mais sa représentation interne à Rubberduck est périmée. Veuillez actualiser Rubberduck et réessayer.</value>
-  </data>
-  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
-    <value>Le refactoring ne peut annoter que les composants, les membres et les variables, mais la cible était de type '{0}'.</value>
-  </data>
-  <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
-    <value>Aucune cible n'a été spécifiée.</value>
   </data>
   <data name="RenameDialog_Folder" xml:space="preserve">
     <value>dossier</value>

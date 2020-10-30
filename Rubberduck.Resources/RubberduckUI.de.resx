@@ -234,10 +234,6 @@
   <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
     <value>Parameter entfernen</value>
   </data>
-  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>Die Methode '{0}' implementiert '{1}.{2}'. Signatur Ändern? (Wird auf alle Implementierungen angewendet)</value>
-    <comment>0: Gewähltes Ziel; 1: Name des Interfaces; 2: Name des Interfacemembers</comment>
-  </data>
   <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
     <value>Kann den letzten Parameter eines Setters oder Letters nicht entfernen.</value>
   </data>
@@ -1250,18 +1246,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
   </data>
-  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
-    <value>Refactoring fehlgeschlagen.</value>
-  </data>
-  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
-    <value>Es gibt keine aktive Selektion.</value>
-  </data>
-  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
-    <value>Es ist kein zulässiges Ziel selektiert.</value>
-  </data>
-  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
-    <value>Das Ziel des Refactorings ist null.</value>
-  </data>
   <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
     <value>Es wurde kein Codemodul für das Zielmodul '{0}' gefunden.</value>
   </data>
@@ -1270,15 +1254,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
     <value>Das Ziel '{0}' ist ein Standardeventhandler, welcher nicht umbenannt werden kann.</value>
-  </data>
-  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
-    <value>Das Ziel ist nicht benutzerdefiniert.</value>
-  </data>
-  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
-    <value>Der Typ des Ziels '{0}'ist '{1}' anstatt des erwarteten Typs '{2}'.</value>
-  </data>
-  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
-    <value>Der Typ des Ziels '{0}'ist '{1}' anstatt eines der erwarteten Typen '{2}'.</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filter</value>
@@ -1429,18 +1404,6 @@ Import abgebrochen.</value>
   </data>
   <data name="ComponentType_UserControl" xml:space="preserve">
     <value>Benutzerkontrollelement</value>
-  </data>
-  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
-    <value>Es war nicht möglich den Parser zum Ausführen des Refactorings temporär zu deaktivieren.</value>
-  </data>
-  <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
-    <value>Es wurde kein Zielordner festgelegt.</value>
-  </data>
-  <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
-    <value>Die Komponente '{0}' würde durch das Refactoring verändert, aber ihr Inhalt ist in Rubberduck veraltet. Bitte lassen Sie Rubberduck seinen Stand aktualisieren und versuchen Sie es erneut.</value>
-  </data>
-  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
-    <value>Das Refactoring kann Annotationen nur zu Komponenten, Methoden und Variablen hinzufügen. Die Zieldeklaration hatte allerdings den Typ '{0}'.</value>
   </data>
   <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
     <value>Es ist in VBA nicht möglich nur die Groß- und Kleinschreibung eines Namens zu ändern.</value>

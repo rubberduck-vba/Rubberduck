@@ -946,5 +946,113 @@ namespace Rubberduck.Refactorings {
                 return ResourceManager.GetString("MoveToFolderDialog_TitleText", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (Will propagate to all implementations.).
+        /// </summary>
+        public static string Refactoring_TargetIsInterfaceMemberImplementation {
+            get {
+                return ResourceManager.GetString("Refactoring_TargetIsInterfaceMemberImplementation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The component &apos;{0}&apos; would have been affected by the refactoring, but its state in Rubberduck&apos;s memory is stale. Please refresh Rubberduck and try again..
+        /// </summary>
+        public static string RefactoringFailure_AffectedModuleIsStale {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_AffectedModuleIsStale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The refactoring can only annotate components, members and variables, but the target had type &apos;{0}&apos;..
+        /// </summary>
+        public static string RefactoringFailure_AnnotateDeclaration_InvalidType {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_AnnotateDeclaration_InvalidType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refactoring failed..
+        /// </summary>
+        public static string RefactoringFailure_BaseMessage {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_BaseMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Declaration type of target &apos;{0}&apos; is &apos;{1}&apos; instead of the expected &apos;{2}&apos;..
+        /// </summary>
+        public static string RefactoringFailure_InvalidDeclarationType {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_InvalidDeclarationType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Declaration type of target &apos;{0}&apos; is &apos;{1}&apos; instead of one of the expected &apos;{2}&apos;..
+        /// </summary>
+        public static string RefactoringFailure_InvalidDeclarationType_multipleValid {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_InvalidDeclarationType_multipleValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no active selection..
+        /// </summary>
+        public static string RefactoringFailure_NoActiveSelection {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_NoActiveSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No viable target selected..
+        /// </summary>
+        public static string RefactoringFailure_NoTargetDeclarationForSelection {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_NoTargetDeclarationForSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No target has been specified..
+        /// </summary>
+        public static string RefactoringFailure_NoTargetFolder {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_NoTargetFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to suspend the Parser to perform the refactoring operation..
+        /// </summary>
+        public static string RefactoringFailure_SuspendParserFailure {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_SuspendParserFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target is not user-defined..
+        /// </summary>
+        public static string RefactoringFailure_TargetNotUserDefined {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_TargetNotUserDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Target declaration is null..
+        /// </summary>
+        public static string RefactoringFailure_TargetNull {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_TargetNull", resourceCulture);
+            }
+        }
     }
 }

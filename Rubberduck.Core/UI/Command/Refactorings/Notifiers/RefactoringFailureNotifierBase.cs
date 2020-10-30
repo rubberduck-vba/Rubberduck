@@ -1,6 +1,7 @@
 ﻿using System;
 using NLog;
 using Rubberduck.Interaction;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
@@ -22,7 +23,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
 
         public void Notify(RefactoringException exception)
         {
-            var message = $"{Resources.RubberduckUI.RefactoringFailure_BaseMessage}{Environment.NewLine}{Environment.NewLine}{Message(exception)}";
+            var message = $"{RefactoringsUI.RefactoringFailure_BaseMessage}{Environment.NewLine}{Environment.NewLine}{Message(exception)}";
             _messageBox.NotifyWarn(message, Caption);
         }
 
@@ -32,21 +33,21 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             {
                 case NoActiveSelectionException noActiveSelection:
                     Logger.Error(noActiveSelection);
-                    return Resources.RubberduckUI.RefactoringFailure_NoActiveSelection; 
+                    return RefactoringsUI.RefactoringFailure_NoActiveSelection; 
                 case NoDeclarationForSelectionException noDeclarationForSelection:
                     Logger.Warn(noDeclarationForSelection);
-                    return Resources.RubberduckUI.RefactoringFailure_NoTargetDeclarationForSelection;
+                    return RefactoringsUI.RefactoringFailure_NoTargetDeclarationForSelection;
                 case TargetDeclarationIsNullException targetNull:
                     Logger.Error(targetNull);
-                    return Resources.RubberduckUI.RefactoringFailure_TargetNull;
+                    return RefactoringsUI.RefactoringFailure_TargetNull;
                 case TargetDeclarationNotUserDefinedException targetBuiltIn:
-                    return string.Format(Resources.RubberduckUI.RefactoringFailure_TargetNotUserDefined, targetBuiltIn.TargetDeclaration.QualifiedName);
+                    return string.Format(RefactoringsUI.RefactoringFailure_TargetNotUserDefined, targetBuiltIn.TargetDeclaration.QualifiedName);
                 case SuspendParserFailureException suspendParserFailure:
                     Logger.Warn(suspendParserFailure);
-                    return Resources.RubberduckUI.RefactoringFailure_SuspendParserFailure;
+                    return RefactoringsUI.RefactoringFailure_SuspendParserFailure;
                 case AffectedModuleIsStaleException affectedModuleIsStale:
                     return string.Format(
-                        Resources.RubberduckUI.RefactoringFailure_AffectedModuleIsStale,
+                        RefactoringsUI.RefactoringFailure_AffectedModuleIsStale,
                         affectedModuleIsStale.StaleModule.ToString());
                 default:
                     Logger.Error(exception);

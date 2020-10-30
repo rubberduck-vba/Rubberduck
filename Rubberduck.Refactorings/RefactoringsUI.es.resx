@@ -410,4 +410,40 @@ Una clase privada puede asimismo implementar una interfaz pública.</value>
   <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
     <value>Mover hacia carpeta</value>
   </data>
+  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
+    <value>La declaración de tipo del destino '{0}' es '{1}' en lugar de una de las esperadas '{2}'.</value>
+  </data>
+  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>El método '{0}' implementa '{1}. {2}'. ¿Cambiar la firma de la interfaz? (Se propagará a todas las implementaciones.)</value>
+  </data>
+  <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
+    <value>El componente '{0}' habría sido afectado por la refactorización, pero su estado en la memoria de Rubberduck está desactualizado. Por favor actualice el estado de Rubberduck e intente de nuevo.</value>
+  </data>
+  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
+    <value>La refactorización solo puede anotar componentes, miembros y variables, pero el destino tenía tipo '{0}'.</value>
+  </data>
+  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
+    <value>Refactorización falló.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
+    <value>La declaración de tipo del destino '{0}' es '{1}' en lugar de la esperada '{2}'.</value>
+  </data>
+  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
+    <value>No existe una selección activa.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
+    <value>No se seleccionó un destino viable.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
+    <value>No se especificó un destino.</value>
+  </data>
+  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
+    <value>No se puede suspender el analizador para ejecutar la operación de refactorización.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
+    <value>El destino no está definido por el usuario.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
+    <value>Declaración destino es nula.</value>
+  </data>
 </root>

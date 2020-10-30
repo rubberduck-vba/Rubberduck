@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
@@ -18,7 +19,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             {
                 case InvalidDeclarationTypeException invalidDeclarationType:
                     Logger.Warn(invalidDeclarationType);
-                    return string.Format(Resources.RubberduckUI.RefactoringFailure_InvalidDeclarationType_multipleValid,
+                    return string.Format(RefactoringsUI.RefactoringFailure_InvalidDeclarationType_multipleValid,
                         invalidDeclarationType.TargetDeclaration.QualifiedModuleName,
                         invalidDeclarationType.TargetDeclaration.DeclarationType,
                         $"{DeclarationType.Member}, {DeclarationType.Event}");

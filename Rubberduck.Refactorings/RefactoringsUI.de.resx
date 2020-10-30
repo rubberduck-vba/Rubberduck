@@ -416,4 +416,40 @@ Wollen Sie fortfahren?</value>
   <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
     <value>In Ordner verschieben</value>
   </data>
+  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
+    <value>Der Typ des Ziels '{0}'ist '{1}' anstatt eines der erwarteten Typen '{2}'.</value>
+  </data>
+  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Die Methode '{0}' implementiert '{1}.{2}'. Signatur Ändern? (Wird auf alle Implementierungen angewendet)</value>
+  </data>
+  <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
+    <value>Die Komponente '{0}' würde durch das Refactoring verändert, aber ihr Inhalt ist in Rubberduck veraltet. Bitte lassen Sie Rubberduck seinen Stand aktualisieren und versuchen Sie es erneut.</value>
+  </data>
+  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
+    <value>Das Refactoring kann Annotationen nur zu Komponenten, Methoden und Variablen hinzufügen. Die Zieldeklaration hatte allerdings den Typ '{0}'.</value>
+  </data>
+  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
+    <value>Refactoring fehlgeschlagen.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
+    <value>Der Typ des Ziels '{0}'ist '{1}' anstatt des erwarteten Typs '{2}'.</value>
+  </data>
+  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
+    <value>Es gibt keine aktive Selektion.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
+    <value>Es ist kein zulässiges Ziel selektiert.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
+    <value>Es wurde kein Zielordner festgelegt.</value>
+  </data>
+  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
+    <value>Es war nicht möglich den Parser zum Ausführen des Refactorings temporär zu deaktivieren.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
+    <value>Das Ziel ist nicht benutzerdefiniert.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
+    <value>Das Ziel des Refactorings ist null.</value>
+  </data>
 </root>

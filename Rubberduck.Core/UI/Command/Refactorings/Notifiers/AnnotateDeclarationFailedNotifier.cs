@@ -20,7 +20,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             {
                 Logger.Warn(invalidTypeException);
                 return string.Format(
-                    RubberduckUI.RefactoringFailure_AnnotateDeclaration_InvalidType,
+                    RefactoringsUI.RefactoringFailure_AnnotateDeclaration_InvalidType,
                     invalidTypeException.TargetDeclaration.DeclarationType.ToLocalizedString());
             }
 

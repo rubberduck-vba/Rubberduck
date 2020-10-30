@@ -237,10 +237,6 @@
   <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
     <value>Remove parameters</value>
   </data>
-  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (Will propagate to all implementations.)</value>
-    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
-  </data>
   <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
     <value>Cannot remove last parameter from setter or letter.</value>
   </data>
@@ -1410,18 +1406,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="References_BrowseButtonText" xml:space="preserve">
     <value>Browse...</value>
   </data>
-  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
-    <value>Refactoring failed.</value>
-  </data>
-  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
-    <value>There is no active selection.</value>
-  </data>
-  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
-    <value>No viable target selected.</value>
-  </data>
-  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
-    <value>Target declaration is null.</value>
-  </data>
   <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
     <value>No code module found for the target module '{0}'.</value>
     <comment>{0}: name of module</comment>
@@ -1433,18 +1417,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
     <value>Target '{0}' is a standard event handler, which cannot be renamed.</value>
     <comment>{0}: name of target</comment>
-  </data>
-  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
-    <value>The target is not user-defined.</value>
-    <comment>{0}: name of target</comment>
-  </data>
-  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
-    <value>Declaration type of target '{0}' is '{1}' instead of the expected '{2}'.</value>
-    <comment>{0}: name of target; {1}: actual declaration type; {2}: expected declaration type</comment>
-  </data>
-  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
-    <value>Declaration type of target '{0}' is '{1}' instead of one of the expected '{2}'.</value>
-    <comment>{0}: name of target; {1}: actual declaration type; {2}: expected declaration types</comment>
   </data>
   <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
     <value>Spell out whitespace in the description</value>
@@ -1493,9 +1465,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
     <value>{0} {1} {2} {3} {4} {5}</value>
     <comment>{0}=Project; {1}=Folder; {2}=Component; {3}=DeclarationType; {4}=Scope; {5}=Name</comment>
-  </data>
-  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
-    <value>Unable to suspend the Parser to perform the refactoring operation.</value>
   </data>
   <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
     <value>Tell me if a newer pre-release build is available.</value>
@@ -1593,17 +1562,6 @@ Import aborted.</value>
   </data>
   <data name="ComponentType_VBForm" xml:space="preserve">
     <value>VB Form</value>
-  </data>
-  <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
-    <value>No target has been specified.</value>
-  </data>
-  <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
-    <value>The component '{0}' would have been affected by the refactoring, but its state in Rubberduck's memory is stale. Please refresh Rubberduck and try again.</value>
-    <comment>{0} stale module</comment>
-  </data>
-  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
-    <value>The refactoring can only annotate components, members and variables, but the target had type '{0}'.</value>
-    <comment>{0} declaration type</comment>
   </data>
   <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
     <value>It is not possible to change only the case of an identifier in VBA (language is case-insensitive).</value>

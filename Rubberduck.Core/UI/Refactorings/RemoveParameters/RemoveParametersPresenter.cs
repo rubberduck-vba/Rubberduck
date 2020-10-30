@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Interaction;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Resources;
 using Rubberduck.Refactorings.RemoveParameters;
@@ -46,7 +47,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
         private bool UserConfirmsInterfaceTarget(RemoveParametersModel model)
         {
-            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation,
+            var message = string.Format(RefactoringsUI.Refactoring_TargetIsInterfaceMemberImplementation,
                 model.OriginalTarget.IdentifierName, Model.TargetDeclaration.ComponentName, model.TargetDeclaration.IdentifierName);
             return UserConfirmsNewTarget(message);
         }
