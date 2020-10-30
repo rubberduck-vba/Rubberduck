@@ -78,8 +78,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     internal sealed class DeclareAsExplicitTypeQuickFix : QuickFixBase
     {
         private readonly ICodeOnlyRefactoringAction<ImplicitTypeToExplicitModel> _refactoring;
-
-        public DeclareAsExplicitTypeQuickFix(ICodeOnlyRefactoringAction<ImplicitTypeToExplicitModel> refactoringAction)
+        public DeclareAsExplicitTypeQuickFix(ImplicitTypeToExplicitRefactoringAction refactoringAction)
             : base(typeof(VariableTypeNotDeclaredInspection), typeof(ImplicitlyTypedConstInspection))
         {
             _refactoring = refactoringAction;

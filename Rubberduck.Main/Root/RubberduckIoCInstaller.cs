@@ -14,7 +14,6 @@ using Castle.Windsor;
 using Rubberduck.AutoComplete;
 using Rubberduck.CodeAnalysis.CodeMetrics;
 using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation;
 using Rubberduck.CodeAnalysis.Inspections.Logistics;
 using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.ComClientLibrary.UnitTesting;
@@ -62,7 +61,6 @@ using Rubberduck.VBEditor.VbeRuntime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.UI.Refactorings.AnnotateDeclaration;
 using Rubberduck.Refactoring.ParseTreeValue;
-using Rubberduck.Refactorings.ImplicitTypeToExplicit;
 
 namespace Rubberduck.Root
 {
@@ -390,8 +388,6 @@ namespace Rubberduck.Root
             RegisterUnreachableCaseFactories(container);
 
             RegisterEncapsulateFieldRefactoringFactories(container);
-            
-            RegisterImplicitTypeToExplicitRefactoringAction(container);
         }
 
         private void RegisterUnreachableCaseFactories(IWindsorContainer container)
@@ -414,15 +410,6 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IEncapsulateFieldModelFactory>()
                 .ImplementedBy<EncapsulateFieldModelFactory>()
-                .LifestyleSingleton());
-        }
-
-        //FIXME: Do not think this explicit registration should be necessary.
-        //CW could not resolve ICodeOnlyRefactoringAction<ImplicitTypeToExplicitModel> without this
-        private void RegisterImplicitTypeToExplicitRefactoringAction(IWindsorContainer container)
-        {
-            container.Register(Component.For<ICodeOnlyRefactoringAction<ImplicitTypeToExplicitModel>>()
-                .ImplementedBy<ImplicitTypeToExplicitRefactoringAction>()
                 .LifestyleSingleton());
         }
 
