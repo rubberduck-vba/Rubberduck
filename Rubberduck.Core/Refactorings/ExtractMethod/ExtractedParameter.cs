@@ -13,35 +13,22 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public static readonly string None = RubberduckUI.ExtractMethod_OutputNone;
 
-        private readonly string _name;
-        private readonly string _typeName;
-        private readonly PassedBy _passedBy;
-
         public ExtractedParameter(string typeName, PassedBy passedBy, string name = null)
         {
-            _name = name ?? None;
-            _typeName = typeName;
-            _passedBy = passedBy;
+            Name = name ?? None;
+            TypeName = typeName;
+            Passed = passedBy;
         }
 
-        public string Name
-        {
-            get { return _name; }
-        }
+        public string Name { get; }
 
-        public string TypeName
-        {
-            get { return _typeName; }
-        }
+        public string TypeName { get; }
 
-        public PassedBy Passed
-        {
-            get { return _passedBy; }
-        }
+        public PassedBy Passed { get; }
 
         public override string ToString()
         {
-            return _passedBy.ToString() + ' ' + Name + ' ' + Tokens.As + ' ' + TypeName;
+            return Passed.ToString() + ' ' + Name + ' ' + Tokens.As + ' ' + TypeName;
         }
     }
 }
