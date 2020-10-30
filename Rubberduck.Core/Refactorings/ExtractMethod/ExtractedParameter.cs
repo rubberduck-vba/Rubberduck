@@ -1,5 +1,4 @@
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Resources;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -11,7 +10,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             ByVal
         }
 
-        public static readonly string None = RubberduckUI.ExtractMethod_OutputNone;
+        public static readonly string None = RefactoringsUI.ExtractMethod_OutputNone;
 
         public ExtractedParameter(string typeName, PassedBy passedBy, string name = null)
         {

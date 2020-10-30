@@ -193,9 +193,6 @@
   <data name="CodeInspections_Inspecting" xml:space="preserve">
     <value>Inspection...</value>
   </data>
-  <data name="ExtractMethod_OutputNone" xml:space="preserve">
-    <value>(aucun)</value>
-  </data>
   <data name="Parsing" xml:space="preserve">
     <value>(analyse...)</value>
   </data>
@@ -242,33 +239,6 @@
   </data>
   <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
     <value>Les accesseurs Property Let et Property Set requièrent au moins un paramètre.</value>
-  </data>
-  <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
-    <value>La sélection n'est pas valide.</value>
-  </data>
-  <data name="ExtractMethod_AccessibilityLabel" xml:space="preserve">
-    <value>Accessibilité:</value>
-  </data>
-  <data name="ExtractMethod_Caption" xml:space="preserve">
-    <value>Rubberduck - Extraire une Méthode</value>
-  </data>
-  <data name="ExtractMethod_InstructionsText" xml:space="preserve">
-    <value>Veuillez spécifier le nom de la méthode, le type de sa valeur de retour et les paramètres (si applicable).</value>
-  </data>
-  <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
-    <value>Paramètres:</value>
-  </data>
-  <data name="ExtractMethod_PreviewLabel" xml:space="preserve">
-    <value>Prévisualisation:</value>
-  </data>
-  <data name="ExtractMethod_ReturnLabel" xml:space="preserve">
-    <value>Retour:</value>
-  </data>
-  <data name="ExtractMethod_SetBoxLabel" xml:space="preserve">
-    <value>Set</value>
-  </data>
-  <data name="ExtractMethod_TitleText" xml:space="preserve">
-    <value>Extraction d'une méthode</value>
   </data>
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Aucune implémentation trouvée pour '{0}'.</value>

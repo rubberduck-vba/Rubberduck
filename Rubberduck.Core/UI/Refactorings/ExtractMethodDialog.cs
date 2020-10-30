@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Resources;
 
@@ -31,16 +32,16 @@ namespace Rubberduck.UI.Refactorings
 
         private void Localize()
         {
-            Text = RubberduckUI.ExtractMethod_Caption;
+            Text = RefactoringsUI.ExtractMethod_Caption;
             OkButton.Text = RubberduckUI.OK;
             CancelDialogButton.Text = RubberduckUI.CancelButtonText;
 
-            TitleLabel.Text = RubberduckUI.ExtractMethod_TitleText;
-            InstructionsLabel.Text = RubberduckUI.ExtractMethod_InstructionsText;
+            TitleLabel.Text = RefactoringsUI.ExtractMethod_TitleText;
+            InstructionsLabel.Text = RefactoringsUI.ExtractMethod_InstructionsText;
             NameLabel.Text = RubberduckUI.NameLabelText;
-            AccessibilityLabel.Text = RubberduckUI.ExtractMethod_AccessibilityLabel;
-            ParametersLabel.Text = RubberduckUI.ExtractMethod_ParametersLabel;
-            PreviewLabel.Text = RubberduckUI.ExtractMethod_PreviewLabel;
+            AccessibilityLabel.Text = RefactoringsUI.ExtractMethod_AccessibilityLabel;
+            ParametersLabel.Text = RefactoringsUI.ExtractMethod_ParametersLabel;
+            PreviewLabel.Text = RefactoringsUI.ExtractMethod_PreviewLabel;
         }
 
         private void InitializeParameterGrid()
@@ -168,11 +169,10 @@ namespace Rubberduck.UI.Refactorings
             set
             {
                 _returnValues = new BindingList<ExtractedParameter>(value.ToList());
-                var items = _returnValues.ToArray();
             }
         }
 
-        private ExtractedParameter _returnValue;
+        private ExtractedParameter _returnValue; //never assigned and will always be null
 
         public IEnumerable<ExtractedParameter> Inputs { get; set; }
         public IEnumerable<ExtractedParameter> Outputs { get; set; }

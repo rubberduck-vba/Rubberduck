@@ -190,9 +190,6 @@
   <data name="CodeInspections_Inspecting" xml:space="preserve">
     <value>Inspeccionando...</value>
   </data>
-  <data name="ExtractMethod_OutputNone" xml:space="preserve">
-    <value>(ninguno)</value>
-  </data>
   <data name="Parsing" xml:space="preserve">
     <value>(analizando ...)</value>
   </data>
@@ -243,33 +240,6 @@
   </data>
   <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
     <value>No se puede eliminar el último parámetro del Setter o Letter.</value>
-  </data>
-  <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
-    <value>La selección actual no es válida.</value>
-  </data>
-  <data name="ExtractMethod_AccessibilityLabel" xml:space="preserve">
-    <value>Accesibilidad:</value>
-  </data>
-  <data name="ExtractMethod_Caption" xml:space="preserve">
-    <value>Rubberduck - Extraer procedimiento</value>
-  </data>
-  <data name="ExtractMethod_InstructionsText" xml:space="preserve">
-    <value>Por favor especificar el nombre del método, el tipo de retorno y/o los parámetros (si corresponde) y otras opciones.</value>
-  </data>
-  <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
-    <value>Parámetros:</value>
-  </data>
-  <data name="ExtractMethod_PreviewLabel" xml:space="preserve">
-    <value>Vista previa:</value>
-  </data>
-  <data name="ExtractMethod_ReturnLabel" xml:space="preserve">
-    <value>Retorno:</value>
-  </data>
-  <data name="ExtractMethod_SetBoxLabel" xml:space="preserve">
-    <value>Set</value>
-  </data>
-  <data name="ExtractMethod_TitleText" xml:space="preserve">
-    <value>Extraer procedimiento</value>
   </data>
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>La clase o miembro '{0}' no está implementado.</value>

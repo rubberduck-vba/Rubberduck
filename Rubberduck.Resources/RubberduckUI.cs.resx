@@ -171,9 +171,6 @@
   <data name="CodeInspections_Inspecting" xml:space="preserve">
     <value>Kontroluji...</value>
   </data>
-  <data name="ExtractMethod_OutputNone" xml:space="preserve">
-    <value>(žádné)</value>
-  </data>
   <data name="Parsing" xml:space="preserve">
     <value>(parsuji...)</value>
   </data>
@@ -185,21 +182,6 @@
   </data>
   <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
     <value>Odstranit parametry</value>
-  </data>
-  <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
-    <value>Aktuální výběr není platný.</value>
-  </data>
-  <data name="ExtractMethod_PreviewLabel" xml:space="preserve">
-    <value>Náhled:</value>
-  </data>
-  <data name="ExtractMethod_ReturnLabel" xml:space="preserve">
-    <value>Vrátit:</value>
-  </data>
-  <data name="ExtractMethod_SetBoxLabel" xml:space="preserve">
-    <value>Nastavit</value>
-  </data>
-  <data name="ExtractMethod_TitleText" xml:space="preserve">
-    <value>Extrahovat metodu</value>
   </data>
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Třída nebo člen '{0}' ještě není implementován.</value>
@@ -332,18 +314,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
     <value>Nelze odstranit poslední parametr ze setteru nebo letteru.</value>
-  </data>
-  <data name="ExtractMethod_AccessibilityLabel" xml:space="preserve">
-    <value>Přístupnost:</value>
-  </data>
-  <data name="ExtractMethod_Caption" xml:space="preserve">
-    <value>Rubberduck - Metoda extrakce</value>
-  </data>
-  <data name="ExtractMethod_InstructionsText" xml:space="preserve">
-    <value>Prosím specifikujte jméno metody, return typ a/nebo parametry (pokud je možné aplikovat) a další možnosti.</value>
-  </data>
-  <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
-    <value>Parametry:</value>
   </data>
   <data name="LoadConfigError" xml:space="preserve">
     <value>Chyba při načítání konfigurace Rubberducku</value>
