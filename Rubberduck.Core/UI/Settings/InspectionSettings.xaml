@@ -52,7 +52,7 @@
                     <DockPanel FlowDirection="LeftToRight">
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                             <Label Style="{StaticResource HeaderText}"
-                                Content="{Resx ResxName=Rubberduck.CodeAnalysus.CodeAnalysisUI,Key=CodeInspectionSettingsPage_InspectionSeveritySettingsLabel}" Margin="5,5,0,5" Width="127" />
+                                Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI,Key=CodeInspectionSettingsPage_InspectionSeveritySettingsLabel}" Margin="5,5,0,5" Width="127" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                 <StackPanel.Resources>
                                     <Style BasedOn="{StaticResource HeaderText}" TargetType="Label">
