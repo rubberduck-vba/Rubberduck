@@ -117,6 +117,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="UI\Inspections\InspectionResultsUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InspectionResultsUI.resx</DependentUpon>
+    </Compile>
     <Compile Update="UI\Refactorings\AnnotateDeclaration\AnnotateDeclarationView.xaml.cs">
       <DependentUpon>AnnotateDeclarationView.xaml</DependentUpon>
     </Compile>
@@ -134,15 +139,37 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GeneralSettingsUI.resx</DependentUpon>
     </Compile>
+    <Compile Update="UI\ToDoItems\ToDoExplorerUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ToDoExplorerUI.resx</DependentUpon>
+    </Compile>
+    <Compile Update="UI\UnitTesting\TestExplorerUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestExplorerUI.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="UI\Inspections\InspectionResultsUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionResultsUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="UI\Settings\GeneralSettingsUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>GeneralSettingsUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\ToDoItems\ToDoExplorerUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ToDoExplorerUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\UnitTesting\TestExplorerUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TestExplorerUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

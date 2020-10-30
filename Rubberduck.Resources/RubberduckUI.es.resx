@@ -721,15 +721,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
     <value>Agrupamiento</value>
   </data>
-  <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
-    <value>Por tipo de inspección</value>
-  </data>
-  <data name="GroupingStyle_ByLocation" xml:space="preserve">
-    <value>Por localizacion</value>
-  </data>
-  <data name="GroupingStyle_ByOutcome" xml:space="preserve">
-    <value>Por resultado</value>
-  </data>
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Resultados de la búsqueda</value>
   </data>
@@ -825,9 +816,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   </data>
   <data name="CommandDescription_ReparseCommand" xml:space="preserve">
     <value>Actualizar el estado del analizador</value>
-  </data>
-  <data name="GroupingStyle_ByMarker" xml:space="preserve">
-    <value>Por marcador</value>
   </data>
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>biblioteca de procedimientos</value>
@@ -1105,9 +1093,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   <data name="GroupingGrid_FilterBy" xml:space="preserve">
     <value>Filtrado por</value>
   </data>
-  <data name="GroupingStyle_ByCategory" xml:space="preserve">
-    <value>Por categoria</value>
-  </data>
   <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
     <value>Ignore las líneas vacías al ubicar los bloques de primer comentario y declaración</value>
   </data>
@@ -1302,12 +1287,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filtro</value>
-  </data>
-  <data name="GroupingStyle_ByName" xml:space="preserve">
-    <value>Por inspección</value>
-  </data>
-  <data name="GroupingStyle_BySeverity" xml:space="preserve">
-    <value>Por severidad</value>
   </data>
   <data name="InspectionResults_CollapseAll" xml:space="preserve">
     <value>Colapsar todo</value>
@@ -1695,5 +1674,8 @@ Una clase privada puede asimismo implementar una interfaz pública.</value>
   </data>
   <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
     <value>Nueva carpeta completa:</value>
+  </data>
+  <data name="GroupingStyle_ByLocation" xml:space="preserve">
+    <value>Por localizacion</value>
   </data>
 </root>

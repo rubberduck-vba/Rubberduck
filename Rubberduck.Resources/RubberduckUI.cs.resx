@@ -704,15 +704,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
     <value>Seskupení</value>
   </data>
-  <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
-    <value>Dle typu inspekce</value>
-  </data>
-  <data name="GroupingStyle_ByLocation" xml:space="preserve">
-    <value>Dle lokace</value>
-  </data>
-  <data name="GroupingStyle_ByOutcome" xml:space="preserve">
-    <value>Dle výsledku</value>
-  </data>
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Výsledky Hledání</value>
   </data>
@@ -787,9 +778,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   </data>
   <data name="CommandDescription_ReparseCommand" xml:space="preserve">
     <value>Obnovit stav parseru</value>
-  </data>
-  <data name="GroupingStyle_ByMarker" xml:space="preserve">
-    <value>Dle značky</value>
   </data>
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Chyby Parseru</value>
@@ -1029,9 +1017,6 @@ End Enum</value>
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Zaneprázdněný</value>
   </data>
-  <data name="GroupingStyle_ByCategory" xml:space="preserve">
-    <value>Dle kategorie</value>
-  </data>
   <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
     <value>Ignoruj prázdné řádky při vyhledávání prvních poznámek a deklaračních bloků</value>
   </data>
@@ -1230,12 +1215,6 @@ End Enum</value>
   </data>
   <data name="InspectionResults_ExpandAll" xml:space="preserve">
     <value>Rozbalit vše</value>
-  </data>
-  <data name="GroupingStyle_BySeverity" xml:space="preserve">
-    <value>Dle závažnosti</value>
-  </data>
-  <data name="GroupingStyle_ByName" xml:space="preserve">
-    <value>Dle inspekce</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filtr</value>
@@ -1620,5 +1599,8 @@ Chcete pokračovat?</value>
   </data>
   <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
     <value>Obalit Pole Privátním Typem</value>
+  </data>
+  <data name="GroupingStyle_ByLocation" xml:space="preserve">
+    <value>Dle lokace</value>
   </data>
 </root>

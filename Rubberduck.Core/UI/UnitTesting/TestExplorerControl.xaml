@@ -186,19 +186,19 @@
                 <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" VerticalContentAlignment="Center" />
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByOutcome}"
+                              ToolTip="{Resx ResxName=Rubberduck.UI.UnitTesting.TestExplorerUI, Key=GroupingStyle_ByOutcome}"
                               IsChecked="{Binding Path=TestGrouping, Converter={StaticResource OutcomeConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Outcome}}">
                     <Image Source="{StaticResource GroupByOutcomeImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}"
+                              ToolTip="{Resx ResxName=Rubberduck.UI.UnitTesting.TestExplorerUI, Key=GroupingStyle_ByLocation}"
                               IsChecked="{Binding Path=TestGrouping, Converter={StaticResource LocationConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Location}}">
                     <Image Source="{StaticResource GroupByLocationImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByCategory}"
+                              ToolTip="{Resx ResxName=Rubberduck.UI.UnitTesting.TestExplorerUI, Key=GroupingStyle_ByCategory}"
                               IsChecked="{Binding Path=TestGrouping, Converter={StaticResource CategoryConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Category}}">
                     <Image Source="{StaticResource GroupByCategoryImage}" />
                 </ToggleButton>

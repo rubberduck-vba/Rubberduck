@@ -692,15 +692,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
     <value>Gruppierung</value>
   </data>
-  <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
-    <value>Nach Inspektionstyp</value>
-  </data>
-  <data name="GroupingStyle_ByLocation" xml:space="preserve">
-    <value>Nach Ort</value>
-  </data>
-  <data name="GroupingStyle_ByOutcome" xml:space="preserve">
-    <value>Nach Ergebnis</value>
-  </data>
   <data name="Settings" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
@@ -766,9 +757,6 @@ Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>Hotkey ({0}) ist nicht registriert.</value>
-  </data>
-  <data name="GroupingStyle_ByMarker" xml:space="preserve">
-    <value>Nach Markierung</value>
   </data>
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>Bibliotheksprozedur</value>
@@ -1086,9 +1074,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   <data name="GroupingGrid_FilterBy" xml:space="preserve">
     <value>Filtern nach</value>
   </data>
-  <data name="GroupingStyle_ByCategory" xml:space="preserve">
-    <value>Nach Kategorie</value>
-  </data>
   <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
     <value>Leerzeilen bei der Suche nach dem ersten Kommentar und nach Deklarationsblöcken ignorieren</value>
   </data>
@@ -1304,12 +1289,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filter</value>
-  </data>
-  <data name="GroupingStyle_ByName" xml:space="preserve">
-    <value>Nach Codeuntersuchung</value>
-  </data>
-  <data name="GroupingStyle_BySeverity" xml:space="preserve">
-    <value>Nach Schweregrad</value>
   </data>
   <data name="InspectionResults_CollapseAll" xml:space="preserve">
     <value>Alle einklappen</value>
@@ -1661,5 +1640,8 @@ Eine private Klasse kann eine private Schnittstelle implementieren.</value>
   </data>
   <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
     <value>Sichtbarkeit</value>
+  </data>
+  <data name="GroupingStyle_ByLocation" xml:space="preserve">
+    <value>Nach Ort</value>
   </data>
 </root>

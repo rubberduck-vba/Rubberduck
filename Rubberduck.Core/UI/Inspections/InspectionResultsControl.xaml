@@ -124,25 +124,25 @@
                 <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" VerticalContentAlignment="Center" />
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByInspectionType}"
+                              ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=GroupingStyle_ByInspectionType}"
                               IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Type}}">
                     <Image Source="{StaticResource GroupByInspectionTypeImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByName}"
+                              ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=GroupingStyle_ByName}"
                               IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Name}}">
                     <Image Source="{StaticResource GroupByInspectionImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}"
+                              ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=GroupingStyle_ByLocation}"
                               IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Location}}">
                     <Image Source="{StaticResource GroupByLocationImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_BySeverity}"
+                              ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=GroupingStyle_BySeverity}"
                               IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Severity}}">
                     <Image Source="{StaticResource GroupBySeverityImage}" />
                 </ToggleButton>

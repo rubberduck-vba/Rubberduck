@@ -730,15 +730,6 @@ Do you want to proceed with this rename?</value>
   <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
     <value>Grouping</value>
   </data>
-  <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
-    <value>By inspection type</value>
-  </data>
-  <data name="GroupingStyle_ByLocation" xml:space="preserve">
-    <value>By location</value>
-  </data>
-  <data name="GroupingStyle_ByOutcome" xml:space="preserve">
-    <value>By outcome</value>
-  </data>
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Search Results</value>
   </data>
@@ -834,9 +825,6 @@ Do you want to proceed with this rename?</value>
   </data>
   <data name="CommandDescription_ReparseCommand" xml:space="preserve">
     <value>Refresh parser state</value>
-  </data>
-  <data name="GroupingStyle_ByMarker" xml:space="preserve">
-    <value>By marker</value>
   </data>
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>library procedure</value>
@@ -1152,9 +1140,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="GroupingGrid_FilterBy" xml:space="preserve">
     <value>Filter by</value>
   </data>
-  <data name="GroupingStyle_ByCategory" xml:space="preserve">
-    <value>By category</value>
-  </data>
   <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
     <value>Ignore empty lines when locating first comment and declaration blocks</value>
   </data>
@@ -1411,12 +1396,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filter</value>
-  </data>
-  <data name="GroupingStyle_ByName" xml:space="preserve">
-    <value>By inspection</value>
-  </data>
-  <data name="GroupingStyle_BySeverity" xml:space="preserve">
-    <value>By severity</value>
   </data>
   <data name="InspectionResults_CollapseAll" xml:space="preserve">
     <value>Collapse all</value>
@@ -1854,5 +1833,8 @@ Do you want to proceed?</value>
   </data>
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ignored</value>
+  </data>
+  <data name="GroupingStyle_ByLocation" xml:space="preserve">
+    <value>By location</value>
   </data>
 </root>

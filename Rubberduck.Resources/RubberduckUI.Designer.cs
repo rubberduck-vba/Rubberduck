@@ -1846,65 +1846,11 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to By category.
-        /// </summary>
-        public static string GroupingStyle_ByCategory {
-            get {
-                return ResourceManager.GetString("GroupingStyle_ByCategory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to By inspection type.
-        /// </summary>
-        public static string GroupingStyle_ByInspectionType {
-            get {
-                return ResourceManager.GetString("GroupingStyle_ByInspectionType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to By location.
         /// </summary>
         public static string GroupingStyle_ByLocation {
             get {
                 return ResourceManager.GetString("GroupingStyle_ByLocation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to By marker.
-        /// </summary>
-        public static string GroupingStyle_ByMarker {
-            get {
-                return ResourceManager.GetString("GroupingStyle_ByMarker", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to By inspection.
-        /// </summary>
-        public static string GroupingStyle_ByName {
-            get {
-                return ResourceManager.GetString("GroupingStyle_ByName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to By outcome.
-        /// </summary>
-        public static string GroupingStyle_ByOutcome {
-            get {
-                return ResourceManager.GetString("GroupingStyle_ByOutcome", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to By severity.
-        /// </summary>
-        public static string GroupingStyle_BySeverity {
-            get {
-                return ResourceManager.GetString("GroupingStyle_BySeverity", resourceCulture);
             }
         }
         
