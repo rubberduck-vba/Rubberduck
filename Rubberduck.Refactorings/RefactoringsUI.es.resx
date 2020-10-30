@@ -246,4 +246,24 @@
   <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
     <value>No se puede encapsular {0}. Sentencias ReDim({0}) existen en otros módulos.</value>
   </data>
+  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
+    <value>La clase que implementa es 'Public' obligando a la interfaz a ser pública también.
+Si necesita una interfaz 'Private', cambie las clases que la instancian a 'Private' también.
+Una clase privada puede asimismo implementar una interfaz pública.</value>
+  </data>
+  <data name="ExtractInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Extraer interfaz</value>
+  </data>
+  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
+    <value>Instanciación</value>
+  </data>
+  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
+    <value>Por favor especificar el nombre de la interfaz y los miembros.</value>
+  </data>
+  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
+    <value>Miembros</value>
+  </data>
+  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
+    <value>Extraer interfaz</value>
+  </data>
 </root>

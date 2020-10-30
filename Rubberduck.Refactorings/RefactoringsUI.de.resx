@@ -246,4 +246,30 @@
   <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
     <value>Das Kapseln von '{0}' ist nicht möglich. Es existieren ReDim({0})-Anweisungen in anderen Modulen.</value>
   </data>
+  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
+    <value>Die implementierende Klasse ist öffentlich, was es notwendig macht, dass die Schnittstelle ebenfalls öffentlich ist.
+Falls Sie eine 'private' Schnittstelle benötigen, machen Sie bitte die implementierende Klasse ebenfalls privat.
+Eine private Klasse kann eine private Schnittstelle implementieren.</value>
+  </data>
+  <data name="ExtractInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Extrahiere Interface</value>
+  </data>
+  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
+    <value>Sichtbarkeit</value>
+  </data>
+  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
+    <value>Bitte spezifizieren Sie den Interfacenamen und die Elemente.</value>
+  </data>
+  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
+    <value>Elemente</value>
+  </data>
+  <data name="ExtractInterface_Private" xml:space="preserve">
+    <value>Privat</value>
+  </data>
+  <data name="ExtractInterface_Public" xml:space="preserve">
+    <value>Öffentlich</value>
+  </data>
+  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
+    <value>Extrahiere Interface</value>
+  </data>
 </root>

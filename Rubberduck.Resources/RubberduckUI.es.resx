@@ -595,23 +595,11 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Selección invalida.</value>
   </data>
-  <data name="ExtractInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Extraer interfaz</value>
-  </data>
-  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
-    <value>Extraer interfaz</value>
-  </data>
-  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
-    <value>Por favor especificar el nombre de la interfaz y los miembros.</value>
-  </data>
   <data name="SelectAll_Button" xml:space="preserve">
     <value>Seleccionar todo</value>
   </data>
   <data name="DeselectAll_Button" xml:space="preserve">
     <value>Deseleccionar todo</value>
-  </data>
-  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
-    <value>Miembros</value>
   </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Severidad:</value>
@@ -1628,14 +1616,6 @@ Importación cancelada.</value>
   </data>
   <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
     <value>El componente '{0}' habría sido afectado por la refactorización, pero su estado en la memoria de Rubberduck está desactualizado. Por favor actualice el estado de Rubberduck e intente de nuevo.</value>
-  </data>
-  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
-    <value>Instanciación</value>
-  </data>
-  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
-    <value>La clase que implementa es 'Public' obligando a la interfaz a ser pública también.
-Si necesita una interfaz 'Private', cambie las clases que la instancian a 'Private' también.
-Una clase privada puede asimismo implementar una interfaz pública.</value>
   </data>
   <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
     <value>No es posible cambiar sólo mayúsculas/minúsculas de un identificador en VBA.</value>

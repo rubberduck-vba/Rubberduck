@@ -246,4 +246,24 @@
   <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
     <value>Nelze zapouzdřit '{0}'. ReDim ({0}) výrok(y) existují v jiných modulech.</value>
   </data>
+  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
+    <value>Implementovaná třída je 'Public', což nutí interface být také public.
+Jestliže vyžadujete 'Private' interface, změňte instancování třídy na private.
+Privání třída může stále implementovat public (veřejný) interface.</value>
+  </data>
+  <data name="ExtractInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Extrahovat Rozhraní</value>
+  </data>
+  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
+    <value>Instancování</value>
+  </data>
+  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
+    <value>Prosím, specifikujte jméno rozhraní a jeho členy.</value>
+  </data>
+  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
+    <value>Členové</value>
+  </data>
+  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
+    <value>Extrahovat Rozhraní</value>
+  </data>
 </root>

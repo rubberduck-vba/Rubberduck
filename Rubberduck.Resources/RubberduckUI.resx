@@ -598,23 +598,11 @@ Do you want to proceed with this rename?</value>
   <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Invalid Selection.</value>
   </data>
-  <data name="ExtractInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Extract Interface</value>
-  </data>
-  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
-    <value>Extract Interface</value>
-  </data>
-  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
-    <value>Please specify interface name and members.</value>
-  </data>
   <data name="SelectAll_Button" xml:space="preserve">
     <value>Select All</value>
   </data>
   <data name="DeselectAll_Button" xml:space="preserve">
     <value>Deselect All</value>
-  </data>
-  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
-    <value>Members</value>
   </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Severity:</value>
@@ -1755,22 +1743,6 @@ Import aborted.</value>
   <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
     <value>The component '{0}' would have been affected by the refactoring, but its state in Rubberduck's memory is stale. Please refresh Rubberduck and try again.</value>
     <comment>{0} stale module</comment>
-  </data>
-  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
-    <value>Instancing</value>
-  </data>
-  <data name="ExtractInterface_Private" xml:space="preserve">
-    <value>Private</value>
-    <comment>keyword.. no translations.</comment>
-  </data>
-  <data name="ExtractInterface_Public" xml:space="preserve">
-    <value>Public</value>
-    <comment>keyword.. no translation.</comment>
-  </data>
-  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
-    <value>The implementing class is 'Public' mandating the interface be public as well.
-If you require a 'Private' interface, change the classes instancing to private as well.
-A private class can still implement a public interface.</value>
   </data>
   <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
     <value>The refactoring can only annotate components, members and variables, but the target had type '{0}'.</value>

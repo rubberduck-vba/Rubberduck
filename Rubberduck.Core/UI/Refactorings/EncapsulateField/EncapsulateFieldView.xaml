@@ -82,7 +82,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Margin="0,5"
-                                   Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_MembersGroupBox}" />
+                                   Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractInterface_MembersGroupBox}" />
                         <StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal">
                             <Button Style="{StaticResource CommandButtonStyle}" TabIndex="2"
                                     Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SelectAll_Button}"

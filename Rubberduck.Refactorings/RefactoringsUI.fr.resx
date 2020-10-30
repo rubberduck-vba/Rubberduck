@@ -228,4 +228,24 @@
   <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
     <value>Impossible d'encapsuler le champ '{0}'. Une ou plusieurs instructions ReDim({0}) existent dans d'autres modules.</value>
   </data>
+  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
+    <value>La classe est publique, l'interface extraite sera donc publique également.
+Si une interface privée est nécessaire, veuillez modifier le mode d'instanciation ("instancing") du module de classe pour 'Private'.
+Une classe privée peut toujours implémenter une interface publique.</value>
+  </data>
+  <data name="ExtractInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Extraire une interface</value>
+  </data>
+  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
+    <value>Instanciation</value>
+  </data>
+  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
+    <value>Veuillez spécifier le nom et les membres de l'interface.</value>
+  </data>
+  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
+    <value>Membres</value>
+  </data>
+  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
+    <value>Extraire une interface</value>
+  </data>
 </root>

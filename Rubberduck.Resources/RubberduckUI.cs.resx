@@ -459,20 +459,11 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>Seznam tokenu:</value>
   </data>
-  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
-    <value>Extrahovat Rozhraní</value>
-  </data>
   <data name="SelectAll_Button" xml:space="preserve">
     <value>Označit vše</value>
   </data>
   <data name="DeselectAll_Button" xml:space="preserve">
     <value>Odznačit vše</value>
-  </data>
-  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
-    <value>Členové</value>
-  </data>
-  <data name="ExtractInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Extrahovat Rozhraní</value>
   </data>
   <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Neplatný výběr.</value>
@@ -634,9 +625,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   </data>
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
     <value>Aktuální výběr není platný.</value>
-  </data>
-  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
-    <value>Prosím, specifikujte jméno rozhraní a jeho členy.</value>
   </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Vážnost:</value>
@@ -1527,9 +1515,6 @@ Import přerušen.</value>
   <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
     <value>Plná nová složka:</value>
   </data>
-  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
-    <value>Instancování</value>
-  </data>
   <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
     <value>Ve VBA není možné změnit pouze počáteční písmeno identifikátoru (jazyk ignoruje velká/malá písmena).</value>
   </data>
@@ -1576,11 +1561,6 @@ Chcete pokračovat?</value>
   <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
     <value>Složka '{0}' již existuje. Přejmenování '{1}' na '{2}' vyústí ve sloučení s existující složkou.
 Chcete pokračovat?</value>
-  </data>
-  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
-    <value>Implementovaná třída je 'Public', což nutí interface být také public.
-Jestliže vyžadujete 'Private' interface, změňte instancování třídy na private.
-Privání třída může stále implementovat public (veřejný) interface.</value>
   </data>
   <data name="MoveFolders_EmptySubfolderName" xml:space="preserve">
     <value>Názvy individuálních podsložek nemohou být prázdná.</value>

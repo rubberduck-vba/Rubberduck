@@ -542,23 +542,11 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
     <value>Suche Symbol </value>
   </data>
-  <data name="ExtractInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Extrahiere Interface</value>
-  </data>
   <data name="DeselectAll_Button" xml:space="preserve">
     <value>Alles abwählen</value>
   </data>
   <data name="SelectAll_Button" xml:space="preserve">
     <value>Alles auswählen</value>
-  </data>
-  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
-    <value>Extrahiere Interface</value>
-  </data>
-  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
-    <value>Elemente</value>
-  </data>
-  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
-    <value>Bitte spezifizieren Sie den Interfacenamen und die Elemente.</value>
   </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>Die Auswahl ist keine Variable.</value>
@@ -1622,19 +1610,5 @@ Wollen Sie fortfahren?</value>
   </data>
   <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
     <value>Drag and Drop im Code Explorer aktivieren</value>
-  </data>
-  <data name="ExtractInterface_Private" xml:space="preserve">
-    <value>Privat</value>
-  </data>
-  <data name="ExtractInterface_Public" xml:space="preserve">
-    <value>Öffentlich</value>
-  </data>
-  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
-    <value>Die implementierende Klasse ist öffentlich, was es notwendig macht, dass die Schnittstelle ebenfalls öffentlich ist.
-Falls Sie eine 'private' Schnittstelle benötigen, machen Sie bitte die implementierende Klasse ebenfalls privat.
-Eine private Klasse kann eine private Schnittstelle implementieren.</value>
-  </data>
-  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
-    <value>Sichtbarkeit</value>
   </data>
 </root>

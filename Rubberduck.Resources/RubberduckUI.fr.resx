@@ -522,15 +522,6 @@ Continuer?</value>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Rapprocher la déclaration de son utilisation</value>
   </data>
-  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
-    <value>Extraire une interface</value>
-  </data>
-  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
-    <value>Veuillez spécifier le nom et les membres de l'interface.</value>
-  </data>
-  <data name="ExtractInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Extraire une interface</value>
-  </data>
   <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
     <value>'{0}' n'est jamais utilisé.</value>
   </data>
@@ -578,9 +569,6 @@ Continuer?</value>
   </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>La sélection n'est pas une variable.</value>
-  </data>
-  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
-    <value>Membres</value>
   </data>
   <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
     <value>Remplacer</value>
@@ -1494,14 +1482,6 @@ Mise à jour annulée.</value>
     <value>Aucun module document existant avec le nom '{0}'; le fichier '{1}' ne pourra pas être importé.
 
 Échec de l'importation.</value>
-  </data>
-  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
-    <value>Instanciation</value>
-  </data>
-  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
-    <value>La classe est publique, l'interface extraite sera donc publique également.
-Si une interface privée est nécessaire, veuillez modifier le mode d'instanciation ("instancing") du module de classe pour 'Private'.
-Une classe privée peut toujours implémenter une interface publique.</value>
   </data>
   <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
     <value>Permettre glisser-déposer dans l'Explorateur de Code</value>
