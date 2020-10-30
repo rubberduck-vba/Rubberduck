@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using Rubberduck.Resources;
+using Rubberduck.UI.Settings;
 
 namespace Rubberduck.Settings
 {
@@ -8,7 +8,7 @@ namespace Rubberduck.Settings
         public MinimumLogLevel(int ordinal, string logLevelName)
         {
             Ordinal = ordinal;
-            Name = RubberduckUI.ResourceManager.GetString("GeneralSettings_" + logLevelName + "LogLevel", CultureInfo.CurrentUICulture);
+            Name = GeneralSettingsUI.ResourceManager.GetString(logLevelName + "LogLevel", CultureInfo.CurrentUICulture);
         }
 
         public int Ordinal { get; }

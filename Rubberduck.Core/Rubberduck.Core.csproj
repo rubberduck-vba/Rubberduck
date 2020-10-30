@@ -129,11 +129,20 @@
     <Compile Update="UI\Refactorings\RenameFolder\RenameFolderView.xaml.cs">
       <DependentUpon>RenameFolderView.xaml</DependentUpon>
     </Compile>
+    <Compile Update="UI\Settings\GeneralSettingsUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GeneralSettingsUI.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Settings\GeneralSettingsUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>GeneralSettingsUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

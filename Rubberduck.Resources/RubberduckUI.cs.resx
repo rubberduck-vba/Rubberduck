@@ -276,9 +276,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="Language_FR" xml:space="preserve">
     <value>Francouzština</value>
   </data>
-  <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
-    <value>Jazyk zobrazení:</value>
-  </data>
   <data name="Result" xml:space="preserve">
     <value>Výsledek</value>
   </data>
@@ -482,15 +479,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="EndOfLineCommentStyle_AlignInColumn" xml:space="preserve">
     <value>Zarovnej ve sloupci</value>
-  </data>
-  <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
-    <value>Popis</value>
-  </data>
-  <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
-    <value>Povoleno</value>
-  </data>
-  <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
-    <value>Klíč1</value>
   </data>
   <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
     <value>Zarovnat komenty s kódem</value>
@@ -725,9 +713,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="GroupingStyle_ByOutcome" xml:space="preserve">
     <value>Dle výsledku</value>
   </data>
-  <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
-    <value>Klávesové Zkratky:</value>
-  </data>
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Výsledky Hledání</value>
   </data>
@@ -766,18 +751,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   </data>
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Parsuj všechny otevřené projekty</value>
-  </data>
-  <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
-    <value>Alt</value>
-  </data>
-  <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
-    <value>Ctrl</value>
-  </data>
-  <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
-    <value>Klíč2</value>
-  </data>
-  <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
-    <value>Shift</value>
   </data>
   <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
     <value>Code Explorer</value>
@@ -818,44 +791,8 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Dle značky</value>
   </data>
-  <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
-    <value>Oddělovač složky:</value>
-  </data>
-  <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
-    <value>Tečka (.)</value>
-  </data>
-  <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
-    <value>Lomeno (/)</value>
-  </data>
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Chyby Parseru</value>
-  </data>
-  <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
-    <value>Minimální Úroveň Logu:</value>
-  </data>
-  <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
-    <value>Debug</value>
-  </data>
-  <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
-    <value>Chyba</value>
-  </data>
-  <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
-    <value>Fatální</value>
-  </data>
-  <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
-    <value>Info</value>
-  </data>
-  <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
-    <value>Žádné Logování</value>
-  </data>
-  <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
-    <value>Trace</value>
-  </data>
-  <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
-    <value>Varování</value>
-  </data>
-  <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
-    <value>Otevřít Log Složku</value>
   </data>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Řeším reference...</value>
@@ -899,9 +836,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
     <value>Spustit automaticky inspekce po úspěšném parsování</value>
   </data>
-  <data name="GeneralSettings_ShowSplash" xml:space="preserve">
-    <value>Zobrazit úvodní obrazovku po spuštění</value>
-  </data>
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck nebude obnoven</value>
   </data>
@@ -943,9 +877,6 @@ Chcete-li se podívat na změny a ručně aktualizovat Rubberduck, klikněte na 
 
 Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí. Tuto funkci můžete vypnout v Rubberduck &gt; Nastavení.</value>
   </data>
-  <data name="GeneralSettings_CheckVersion" xml:space="preserve">
-    <value>Při startu zkontrolovat, zda je dostupná nová verze.</value>
-  </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' je již přístupný v tomto rozsahu.</value>
   </data>
@@ -972,12 +903,6 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
   </data>
   <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
     <value>Metoda '{0}' je implementací události '{1}.{2}'. Místo toho přejmenovat událost '{2}'?</value>
-  </data>
-  <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
-    <value>Toto nastavení povolte jen pokud více, to děláte. Povolením a/nebo užíváním věcí z této sekce může skončit nečekanými obtížemi, poruchami kódu a nenávratnou ztrátou dat.</value>
-  </data>
-  <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
-    <value>Experimentální Funkce (Je třeba restartovat Excel, aby se změny projevily):</value>
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Vyberte složku pro export zdrojového kódu {0} do:</value>
@@ -1026,23 +951,11 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
   <data name="CodeMetrics_Nesting" xml:space="preserve">
     <value>Maximální Vnoření</value>
   </data>
-  <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
-    <value>Klávesové zkratky by měly obsahovat buď Alt a/nebo Ctrl.</value>
-  </data>
-  <data name="GeneralSettings_HotkeyRestrictionToolTip" xml:space="preserve">
-    <value>Tato konfigurace klávesové zkratky může vyvolat nežádoucí vedlejší účinky.</value>
-  </data>
-  <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
-    <value>Varování Modifikátoru</value>
-  </data>
   <data name="Command_Reparse_CannotCompile" xml:space="preserve">
     <value>Následující projekt(y) nemohou být zkompilovány, což je s největší pravděpodobností kvůli parsovacím chybám. I přesto pokračovat? {0}</value>
   </data>
   <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
     <value>Není možno zkompilovat pro parsování.</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
-    <value>Zkompilovat kód před parsováním</value>
   </data>
   <data name="ParserState_Started" xml:space="preserve">
     <value>Zahájeno</value>
@@ -1055,14 +968,6 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
   </data>
   <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>Nastavení Zkompilování Na Žádost</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
-    <value>VBE nastavení "Zkompilovat Na Žádost" je aktuálně povoleno. Je silně doporučeno toto nastavení zakázat přes dialog VBE Nastavení nacházející se v panelu Obecné a změnit na Kompilování Před Parsováním. Přejete si toto nastavení nyní zakázat?
-
-POZNÁMKA: Pro aplikování tohoto nastavení je třeba restartovat Excel.</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
-    <value>Zkompilovat na Žádost je aktuálně povoleno</value>
   </data>
   <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
     <value>Ve vašich registrech bylo nalezeno Chytré Odsazování.
@@ -1228,9 +1133,6 @@ End Enum</value>
   </data>
   <data name="TodoSettings_Caption" xml:space="preserve">
     <value>TODO Průzkumník</value>
-  </data>
-  <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
-    <value>Korekce pro displaye s vysokým rozlišením a škálováním</value>
   </data>
   <data name="References_BrowseFilterAccess" xml:space="preserve">
     <value>Microsoft Access Databáze ({0})|{0}</value>
@@ -1428,9 +1330,6 @@ End Enum</value>
   <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
     <value>{0} Zvaž použití jiného jména.</value>
   </data>
-  <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
-    <value>Oznámení, pokud je k dispozici novější verze předběžného vydání.</value>
-  </data>
   <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
     <value>předběžné vydání</value>
   </data>
@@ -1595,9 +1494,6 @@ Import přerušen.</value>
   </data>
   <data name="AnnotateDeclarationDialog_DeclarationLabel" xml:space="preserve">
     <value>Deklarace k Anotaci:</value>
-  </data>
-  <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
-    <value>Povolit drag and drop v Code Exploreru</value>
   </data>
   <data name="RenameDialog_Folder" xml:space="preserve">
     <value>složka</value>

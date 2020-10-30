@@ -13,9 +13,9 @@ namespace Rubberduck.UI.Settings.Converters
             switch (mode)
             {
                 case DelimiterOptions.Period:
-                    return RubberduckUI.GeneralSettings_PeriodDelimiter;
+                    return GeneralSettingsUI.PeriodDelimiter;
                 case DelimiterOptions.Slash:
-                    return RubberduckUI.GeneralSettings_SlashDelimiter;
+                    return GeneralSettingsUI.SlashDelimiter;
                 default:
                     return value;
             }
@@ -24,7 +24,7 @@ namespace Rubberduck.UI.Settings.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var text = (string)value;
-            return text == RubberduckUI.GeneralSettings_PeriodDelimiter
+            return text == GeneralSettingsUI.PeriodDelimiter
                 ? DelimiterOptions.Period
                 : DelimiterOptions.Slash;
         }

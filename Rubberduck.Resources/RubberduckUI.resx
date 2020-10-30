@@ -375,9 +375,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Result" xml:space="preserve">
     <value>Result</value>
   </data>
-  <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
-    <value>Display language:</value>
-  </data>
   <data name="Language_EN" xml:space="preserve">
     <value>English</value>
   </data>
@@ -655,15 +652,6 @@ Do you want to proceed with this rename?</value>
   <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
     <value>Standard Gap</value>
   </data>
-  <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
-    <value>Enabled</value>
-  </data>
-  <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
-    <value>Key1</value>
-  </data>
   <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
     <value>Align comments with code</value>
   </data>
@@ -751,9 +739,6 @@ Do you want to proceed with this rename?</value>
   <data name="GroupingStyle_ByOutcome" xml:space="preserve">
     <value>By outcome</value>
   </data>
-  <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
-    <value>Hotkeys:</value>
-  </data>
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Search Results</value>
   </data>
@@ -814,18 +799,6 @@ Do you want to proceed with this rename?</value>
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Parse all opened projects</value>
   </data>
-  <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
-    <value>Alt</value>
-  </data>
-  <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
-    <value>Ctrl</value>
-  </data>
-  <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
-    <value>Key2</value>
-  </data>
-  <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
-    <value>Shift</value>
-  </data>
   <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
     <value>Code Explorer</value>
   </data>
@@ -868,44 +841,8 @@ Do you want to proceed with this rename?</value>
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>library procedure</value>
   </data>
-  <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
-    <value>Folder Delimiter:</value>
-  </data>
-  <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
-    <value>Period (.)</value>
-  </data>
-  <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
-    <value>Slash (/)</value>
-  </data>
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Parser Errors</value>
-  </data>
-  <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
-    <value>Minimum Log Level:</value>
-  </data>
-  <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
-    <value>Debug</value>
-  </data>
-  <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
-    <value>Fatal</value>
-  </data>
-  <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
-    <value>Info</value>
-  </data>
-  <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
-    <value>No Logging</value>
-  </data>
-  <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
-    <value>Trace</value>
-  </data>
-  <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
-    <value>Warn</value>
-  </data>
-  <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
-    <value>Show Log Folder</value>
   </data>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Resolving references...</value>
@@ -951,9 +888,6 @@ Do you want to proceed with this rename?</value>
   </data>
   <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
     <value>Run inspections automatically on successful parse</value>
-  </data>
-  <data name="GeneralSettings_ShowSplash" xml:space="preserve">
-    <value>Show splash screen at startup</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Toolwindows were not correctly destroyed and/or could not be recreated; the VBE may not be in a stable state. Rubberduck will load normally next time the VBE is initialized.</value>
@@ -1054,9 +988,6 @@ To review the change log and manually upgrade Rubberduck, click 'Yes'.
 This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &gt; Settings.</value>
     <comment>{0}=local; {1}=latest; {2}=buildtype (release/pre-release)</comment>
   </data>
-  <data name="GeneralSettings_CheckVersion" xml:space="preserve">
-    <value>Check if a newer version is available at startup.</value>
-  </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' is already accessible to this scope.</value>
     <comment>{0} = proposed variable name.</comment>
@@ -1087,12 +1018,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
     <value>Method '{0}' is an implementation of event '{1}.{2}'.  Rename event '{2}' instead?</value>
     <comment>0: Selected target Identifier; 1: Event Parent; 2: Event name</comment>
-  </data>
-  <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
-    <value>Only enable these if you know what you're doing. Enabling and/or using features from this section may result in things breaking unexpectedly and irrevocable data loss.</value>
-  </data>
-  <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
-    <value>Experimental Features (Requires a restart to take effect):</value>
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Select a folder to export the source of {0} to:</value>
@@ -1145,23 +1070,11 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="CodeMetrics_Nesting" xml:space="preserve">
     <value>Maximum Nesting</value>
   </data>
-  <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
-    <value>Hotkeys should include either Alt and/or Ctrl.</value>
-  </data>
-  <data name="GeneralSettings_HotkeyRestrictionToolTip" xml:space="preserve">
-    <value>This hotkey configuration may cause undesirable side effects.</value>
-  </data>
-  <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
-    <value>Modifier Warning</value>
-  </data>
   <data name="Command_Reparse_CannotCompile" xml:space="preserve">
     <value>The following project(s) cannot be compiled, which will most likely result in parser errors. Continue anyway? {0}</value>
   </data>
   <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
     <value>Unable to compile for parsing.</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
-    <value>Compile code before parsing</value>
   </data>
   <data name="ParserState_Started" xml:space="preserve">
     <value>Started</value>
@@ -1174,14 +1087,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>Compile On Demand Setting</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
-    <value>The VBE setting "Compile On Demand" is currently enabled. It is strongly recommended that you disable the setting via the VBE Options dialog under General tab in order to use the Compile Before Parse feature. Do you want to disable it now?
-
-NOTE: Restart is required for the setting to take effect.</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
-    <value>Compile On Demand currently enabled</value>
   </data>
   <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
     <value>Description:</value>
@@ -1376,9 +1281,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="TodoSettings_Caption" xml:space="preserve">
     <value>TODO Explorer</value>
-  </data>
-  <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
-    <value>Correction for high-resolution display scalings</value>
   </data>
   <data name="References_BrowseFilterAccess" xml:space="preserve">
     <value>Microsoft Access Databases({0})|{0}</value>
@@ -1657,9 +1559,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
     <value>Unable to suspend the Parser to perform the refactoring operation.</value>
-  </data>
-  <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
-    <value>Tell me if a newer pre-release build is available.</value>
   </data>
   <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
     <value>pre-release</value>
@@ -1949,9 +1848,6 @@ Do you want to proceed?</value>
   </data>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Rename folder</value>
-  </data>
-  <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
-    <value>Enable drag and drop in Code Explorer</value>
   </data>
   <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
     <value>Add/Adjust attribute</value>
