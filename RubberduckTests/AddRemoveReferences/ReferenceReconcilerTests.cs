@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Moq;
 using NUnit.Framework;
 using Rubberduck.AddRemoveReferences;
+using Rubberduck.UI.AddRemoveReferences;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -251,7 +252,7 @@ namespace RubberduckTests.AddRemoveReferences
 
             reconciler.TryAddReference(project.Object, file);
 
-            messageBox.Verify(m => m.NotifyWarn(exception, RubberduckUI.References_AddFailedCaption));
+            messageBox.Verify(m => m.NotifyWarn(exception, AddRemoveReferencesUI.AddFailedCaption));
         }
 
         [Test]
@@ -310,7 +311,7 @@ namespace RubberduckTests.AddRemoveReferences
 
             reconciler.TryAddReference(project.Object, input);
 
-            messageBox.Verify(m => m.NotifyWarn(exception, RubberduckUI.References_AddFailedCaption));
+            messageBox.Verify(m => m.NotifyWarn(exception, AddRemoveReferencesUI.AddFailedCaption));
         }
 
         [Test]

@@ -137,7 +137,7 @@ namespace Rubberduck.AddRemoveReferences
                 }
                 catch (COMException ex)
                 {
-                    _messageBox.NotifyWarn(ex.Message, RubberduckUI.References_AddFailedCaption);
+                    _messageBox.NotifyWarn(ex.Message, AddRemoveReferencesUI.AddFailedCaption);
                 }
                 return null;
             }
@@ -158,7 +158,7 @@ namespace Rubberduck.AddRemoveReferences
                 }
                 catch (COMException ex)
                 {
-                    _messageBox.NotifyWarn(ex.Message, RubberduckUI.References_AddFailedCaption);
+                    _messageBox.NotifyWarn(ex.Message, AddRemoveReferencesUI.AddFailedCaption);
                 }
                 return null;
             }

@@ -975,35 +975,8 @@ les projets dans le VBE.</value>
   <data name="Language_CS" xml:space="preserve">
     <value>Tchèque</value>
   </data>
-  <data name="References" xml:space="preserve">
-    <value>Références</value>
-  </data>
   <data name="ApplyButtonText" xml:space="preserve">
     <value>Appliquer</value>
-  </data>
-  <data name="References_AddFailedCaption" xml:space="preserve">
-    <value>La référence n'a pu être ajoutée</value>
-  </data>
-  <data name="References_BrowseCaption" xml:space="preserve">
-    <value>Parcourir...</value>
-  </data>
-  <data name="References_BrowseFilterActiveX" xml:space="preserve">
-    <value>Contrôles ActiveX (*.ocx)|*.ocx</value>
-  </data>
-  <data name="References_BrowseFilterAllFiles" xml:space="preserve">
-    <value>Tous (*.*)|*.*</value>
-  </data>
-  <data name="References_BrowseFilterExcel" xml:space="preserve">
-    <value>Fichiers Microsoft Excel ({0})|{0}</value>
-  </data>
-  <data name="References_BrowseFilterExecutable" xml:space="preserve">
-    <value>Exécutables (*.exe,*.dll)|*.exe;*.dll</value>
-  </data>
-  <data name="References_BrowseFilterTypes" xml:space="preserve">
-    <value>Bibliothêques (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll</value>
-  </data>
-  <data name="References_Caption" xml:space="preserve">
-    <value>Ajouter/Supprimer Références...</value>
   </data>
   <data name="AllReferences_NoneFoundReference" xml:space="preserve">
     <value>Aucune utilisation de '{0}' n'a été trouvée dans le projet.</value>
@@ -1011,71 +984,8 @@ les projets dans le VBE.</value>
   <data name="AllReferences_PerformanceWarning" xml:space="preserve">
     <value>La recherche des utilisations de la référence '{0}' renvoie {1} résultats. Les afficher pourrait dégrader la performance. Continuer?</value>
   </data>
-  <data name="References_Locale" xml:space="preserve">
-    <value>Langue:</value>
-  </data>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Avertissement - Performance</value>
-  </data>
-  <data name="References_AddToolTip" xml:space="preserve">
-    <value>Ajouter au projet</value>
-  </data>
-  <data name="References_BrowseFilterAccess" xml:space="preserve">
-    <value>Base de données Microsoft Access ({0})|{0}</value>
-  </data>
-  <data name="References_BrowseFilterOutlook" xml:space="preserve">
-    <value>Fichiers VBA Outlook ({0})|{0}</value>
-  </data>
-  <data name="References_BrowseFilterPowerPoint" xml:space="preserve">
-    <value>Fichiers complément PowerPoint ({0})|{0}</value>
-  </data>
-  <data name="References_BrowseFilterPublisher" xml:space="preserve">
-    <value>Fichiers Publisher ({0})|{0}</value>
-  </data>
-  <data name="References_BrowseFilterVisio" xml:space="preserve">
-    <value>Tous les fichiers Visio ({0})|{0}</value>
-  </data>
-  <data name="References_BrowseFilterWord" xml:space="preserve">
-    <value>Documents Word ({0})|{0}</value>
-  </data>
-  <data name="References_CaptionTemplate" xml:space="preserve">
-    <value>Ajouter/Supprimer Références - {0}</value>
-  </data>
-  <data name="References_DefaultLocale" xml:space="preserve">
-    <value>Standard</value>
-  </data>
-  <data name="References_MoveDownToolTip" xml:space="preserve">
-    <value>Déplacer vers le haut</value>
-  </data>
-  <data name="References_MoveUpToolTip" xml:space="preserve">
-    <value>Déplacer vers le bas</value>
-  </data>
-  <data name="References_Pinned" xml:space="preserve">
-    <value>Épingles</value>
-  </data>
-  <data name="References_PinToolTip" xml:space="preserve">
-    <value>Épingler la référence</value>
-  </data>
-  <data name="References_Projects" xml:space="preserve">
-    <value>Projets</value>
-  </data>
-  <data name="References_Recent" xml:space="preserve">
-    <value>Récents</value>
-  </data>
-  <data name="References_RemoveToolTip" xml:space="preserve">
-    <value>Supprimer du projet</value>
-  </data>
-  <data name="References_SearchPlaceholder" xml:space="preserve">
-    <value>Rechercher une référence...</value>
-  </data>
-  <data name="References_SubCaption" xml:space="preserve">
-    <value>Sélectionner les librairies et projets à ajouter ou supprimer aux références du projet.</value>
-  </data>
-  <data name="References_TypeLibs" xml:space="preserve">
-    <value>Bibliothèques</value>
-  </data>
-  <data name="References_Version" xml:space="preserve">
-    <value>Version:</value>
   </data>
   <data name="ReferenceSettings_FixBroken" xml:space="preserve">
     <value>Tenter de réparer la référence</value>
@@ -1127,9 +1037,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filtrer</value>
-  </data>
-  <data name="References_BrowseButtonText" xml:space="preserve">
-    <value>Parcourir...</value>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
     <value>'{0}' est accessible globalement, et est utilisé.</value>
