@@ -540,9 +540,6 @@ Continuer?</value>
   <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
     <value>Raccourcis:</value>
   </data>
-  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
-    <value>Regroupement</value>
-  </data>
   <data name="ParserState_Parsed" xml:space="preserve">
     <value>Analyse complétée</value>
   </data>
@@ -1003,9 +1000,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
     <value>Sévérité:</value>
   </data>
-  <data name="GroupingGrid_FilterBy" xml:space="preserve">
-    <value>Filtrer par</value>
-  </data>
   <data name="GroupingStyle_ByCategory" xml:space="preserve">
     <value>Par catégorie</value>
   </data>
@@ -1182,9 +1176,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
     <value>La procédure qui utilise '{0}' contient déjà une déclaration '{1}' utilisant cet identifiant.</value>
-  </data>
-  <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>Filtrer</value>
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>Par inspection</value>

@@ -604,9 +604,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
     <value>Odsadit Proceduru</value>
   </data>
-  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
-    <value>Seskupení</value>
-  </data>
   <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
     <value>Dle typu inspekce</value>
   </data>
@@ -978,9 +975,6 @@ End Enum</value>
   <data name="InspectionResults_FilterByWarning" xml:space="preserve">
     <value>Varování</value>
   </data>
-  <data name="GroupingGrid_FilterBy" xml:space="preserve">
-    <value>Filtrovat</value>
-  </data>
   <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
     <value>Závažnost:</value>
   </data>
@@ -1158,9 +1152,6 @@ End Enum</value>
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>Dle inspekce</value>
-  </data>
-  <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>Filtr</value>
   </data>
   <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
     <value>Metoda používající '{0}' má již jinou deklaraci '{1}' stejného jména v rozsahu.</value>

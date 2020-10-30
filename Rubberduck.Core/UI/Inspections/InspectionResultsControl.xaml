@@ -121,7 +121,7 @@
 
                 <Separator />
 
-                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" VerticalContentAlignment="Center" />
+                <Label Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=GroupingStyle}" VerticalContentAlignment="Center" />
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByInspectionType}"
@@ -151,7 +151,7 @@
 
                 <Image Source="{StaticResource FilterImage}" />
 
-                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_Filter}" VerticalContentAlignment="Center" />
+                <Label Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=Filter}" VerticalContentAlignment="Center" />
 
                 <controls:SearchBox Width="100"
                                     Text="{Binding InspectionDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" />

@@ -612,9 +612,6 @@ Do you want to proceed with this rename?</value>
   <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
     <value>Indent Procedure</value>
   </data>
-  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
-    <value>Grouping</value>
-  </data>
   <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
     <value>By inspection type</value>
   </data>
@@ -1072,9 +1069,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="InspectionResults_FilterByWarning" xml:space="preserve">
     <value>Warning</value>
   </data>
-  <data name="GroupingGrid_FilterBy" xml:space="preserve">
-    <value>Filter by</value>
-  </data>
   <data name="GroupingStyle_ByCategory" xml:space="preserve">
     <value>By category</value>
   </data>
@@ -1325,9 +1319,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
     <value>The method using '{0}' already has the declaration '{1}' of the same name in scope.</value>
     <comment>{0}: Variable Name; {1}: name of conflicting declaration</comment>
-  </data>
-  <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>Filter</value>
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>By inspection</value>

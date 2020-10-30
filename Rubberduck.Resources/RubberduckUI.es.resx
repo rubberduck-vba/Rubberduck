@@ -603,9 +603,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
     <value>Indentar procedimiento</value>
   </data>
-  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
-    <value>Agrupamiento</value>
-  </data>
   <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
     <value>Por tipo de inspección</value>
   </data>
@@ -1025,9 +1022,6 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   <data name="InspectionResults_FilterByWarning" xml:space="preserve">
     <value>Advertencia</value>
   </data>
-  <data name="GroupingGrid_FilterBy" xml:space="preserve">
-    <value>Filtrado por</value>
-  </data>
   <data name="GroupingStyle_ByCategory" xml:space="preserve">
     <value>Por categoria</value>
   </data>
@@ -1216,9 +1210,6 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   </data>
   <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
     <value>El método que usa '{0}' ya posee la declaración '{1}' de igual nombre en el ámbito.</value>
-  </data>
-  <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>Filtro</value>
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>Por inspección</value>

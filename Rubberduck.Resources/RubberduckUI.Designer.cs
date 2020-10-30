@@ -1603,33 +1603,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter.
-        /// </summary>
-        public static string GroupingGrid_Filter {
-            get {
-                return ResourceManager.GetString("GroupingGrid_Filter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Filter by.
-        /// </summary>
-        public static string GroupingGrid_FilterBy {
-            get {
-                return ResourceManager.GetString("GroupingGrid_FilterBy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Grouping.
-        /// </summary>
-        public static string GroupingGrid_GroupingStyle {
-            get {
-                return ResourceManager.GetString("GroupingGrid_GroupingStyle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to By category.
         /// </summary>
         public static string GroupingStyle_ByCategory {

@@ -254,4 +254,10 @@
   <data name="EmptyLineHandling_Ignore" xml:space="preserve">
     <value>Ignorar</value>
   </data>
+  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
+    <value>Agrupamiento</value>
+  </data>
+  <data name="GroupingGrid_Filter" xml:space="preserve">
+    <value>Filtro</value>
+  </data>
 </root>

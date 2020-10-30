@@ -466,5 +466,23 @@ namespace Rubberduck.CodeAnalysis {
                 return ResourceManager.GetString("EmptyLineHandling_Remove", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter.
+        /// </summary>
+        public static string GroupingGrid_Filter {
+            get {
+                return ResourceManager.GetString("GroupingGrid_Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grouping.
+        /// </summary>
+        public static string GroupingGrid_GroupingStyle {
+            get {
+                return ResourceManager.GetString("GroupingGrid_GroupingStyle", resourceCulture);
+            }
+        }
     }
 }
