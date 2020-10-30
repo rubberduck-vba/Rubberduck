@@ -673,5 +673,50 @@ namespace Rubberduck.Refactorings {
                 return ResourceManager.GetString("IntroduceParameterFailed_TargetNotContainedInMethod", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; does not start with a letter..
+        /// </summary>
+        public static string InvalidNameCriteria_DoesNotStartWithLetterFormat {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_DoesNotStartWithLetterFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; exceeds the maximum allowed string length..
+        /// </summary>
+        public static string InvalidNameCriteria_ExceedsMaximumLengthFormat {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_ExceedsMaximumLengthFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; contains special character(s) other than underscores..
+        /// </summary>
+        public static string InvalidNameCriteria_InvalidCharactersFormat {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_InvalidCharactersFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VBA Identifiers cannot be null or zero-length..
+        /// </summary>
+        public static string InvalidNameCriteria_IsNullOrEmpty {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_IsNullOrEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is a reserved keyword..
+        /// </summary>
+        public static string InvalidNameCriteria_IsReservedKeywordFormat {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_IsReservedKeywordFormat", resourceCulture);
+            }
+        }
     }
 }

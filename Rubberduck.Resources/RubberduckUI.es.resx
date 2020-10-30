@@ -1420,21 +1420,6 @@ Importación cancelada.</value>
   <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
     <value>La descripción contiene espacios en blanco</value>
   </data>
-  <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
-    <value>'{0}' no comienza con una letra.</value>
-  </data>
-  <data name="InvalidNameCriteria_ExceedsMaximumLengthFormat" xml:space="preserve">
-    <value>'{0}' excede el máximo de caracteres permitido.</value>
-  </data>
-  <data name="InvalidNameCriteria_InvalidCharactersFormat" xml:space="preserve">
-    <value>'{0}' contiene caracteres especiales distintos al guión bajo '_'.</value>
-  </data>
-  <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">
-    <value>Los identificadores VBA no pueden ser nulos o de longitud cero.</value>
-  </data>
-  <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
-    <value>'{0}' es una palabra reservada.</value>
-  </data>
   <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
     <value>El identificador '{0}' disparará un resultado de inspección 'Usar nombres significativos'.</value>
   </data>

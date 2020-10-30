@@ -317,4 +317,19 @@ Una clase privada puede asimismo implementar una interfaz pública.</value>
   <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
     <value>El destino '{0}' no está contenido en un método.</value>
   </data>
+  <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">
+    <value>Los identificadores VBA no pueden ser nulos o de longitud cero.</value>
+  </data>
+  <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
+    <value>'{0}' no comienza con una letra.</value>
+  </data>
+  <data name="InvalidNameCriteria_ExceedsMaximumLengthFormat" xml:space="preserve">
+    <value>'{0}' excede el máximo de caracteres permitido.</value>
+  </data>
+  <data name="InvalidNameCriteria_InvalidCharactersFormat" xml:space="preserve">
+    <value>'{0}' contiene caracteres especiales distintos al guión bajo '_'.</value>
+  </data>
+  <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
+    <value>'{0}' es una palabra reservada.</value>
+  </data>
 </root>

@@ -1372,21 +1372,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="TestOutcome_Unknown" xml:space="preserve">
     <value>Inconnu</value>
   </data>
-  <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
-    <value>'{0}' doit débuter par une lettre.</value>
-  </data>
-  <data name="InvalidNameCriteria_ExceedsMaximumLengthFormat" xml:space="preserve">
-    <value>'{0}' excède la longueur maximale permise.</value>
-  </data>
-  <data name="InvalidNameCriteria_InvalidCharactersFormat" xml:space="preserve">
-    <value>'{0}' contient des caractères spéciaux autres que la barre de soulignement.</value>
-  </data>
-  <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">
-    <value>Un identifiant vide n'est pas valide en VBA.</value>
-  </data>
-  <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
-    <value>'{0}' est un mot-clé réservé.</value>
-  </data>
   <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
     <value>L'identifiant '{0}' chatouillera l'inspection suggérant d'utiliser un nom conférant signification et importance.</value>
   </data>
