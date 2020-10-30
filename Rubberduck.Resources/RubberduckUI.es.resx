@@ -565,21 +565,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
     <value>La selección no es una variable.</value>
     <comment>Utilizado tanto en Introducir parámetro como en Introducir campo</comment>
   </data>
-  <data name="EncapsulateField_Caption" xml:space="preserve">
-    <value>Rubberduck - Campo Encapsulado</value>
-  </data>
-  <data name="EncapsulateField_InstructionText" xml:space="preserve">
-    <value>Seleccione uno o más campos para encapsular.  Acepte los valores por default o edite los nommbres de las propiedades.</value>
-  </data>
-  <data name="EncapsulateField_Preview" xml:space="preserve">
-    <value>Vista previa:</value>
-  </data>
-  <data name="EncapsulateField_PropertyName" xml:space="preserve">
-    <value>Nombre de la propiedad:</value>
-  </data>
-  <data name="EncapsulateField_TitleText" xml:space="preserve">
-    <value>Campo encapsulado</value>
-  </data>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Acercar al uso</value>
   </data>
@@ -1408,12 +1393,6 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Guardar y Cerrar</value>
   </data>
-  <data name="EncapsulateField_ParameterName" xml:space="preserve">
-    <value>Nombre del parámetro:</value>
-  </data>
-  <data name="EncapsulateField_SetterType" xml:space="preserve">
-    <value>Tipo de Setter:</value>
-  </data>
   <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
     <value>Refactorización falló.</value>
   </data>
@@ -1616,24 +1595,6 @@ Importación cancelada.</value>
   </data>
   <data name="ComponentType_VBForm" xml:space="preserve">
     <value>Formulario VB</value>
-  </data>
-  <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
-    <value>No se puede encapsular {0}. Sentencias ReDim({0}) existen en otros módulos.</value>
-  </data>
-  <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
-    <value>Conflicto de nombres</value>
-  </data>
-  <data name="EncapsulateField_PreviewMarker" xml:space="preserve">
-    <value>'&lt;===== Propiedad y declaración cambian por encima de esta línea=====&gt;</value>
-  </data>
-  <data name="EncapsulateField_PrivateUDTPropertyText" xml:space="preserve">
-    <value>Crear una propiedad para cada miembro de tipo definido por el usuario</value>
-  </data>
-  <data name="EncapsulateField_ReadOnlyCheckBoxContent" xml:space="preserve">
-    <value>Sólo lectura</value>
-  </data>
-  <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
-    <value>Envolver campos en tipo Privado</value>
   </data>
   <data name="MoveToFolderDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Mover a Carpeta</value>

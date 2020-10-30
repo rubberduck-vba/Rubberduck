@@ -145,7 +145,7 @@ Public mTest As Long
 
                 var previewResult = previewProvider.Preview(model);
 
-                StringAssert.Contains(RubberduckUI.EncapsulateField_PreviewMarker, previewResult);
+                StringAssert.Contains(RefactoringsUI.EncapsulateField_PreviewMarker, previewResult);
             }
         }
 

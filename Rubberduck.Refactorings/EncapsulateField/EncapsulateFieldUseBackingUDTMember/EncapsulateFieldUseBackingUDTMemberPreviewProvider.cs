@@ -1,6 +1,5 @@
 ﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
@@ -20,7 +19,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
         public override string Preview(EncapsulateFieldUseBackingUDTMemberModel model)
         {
             model.NewContentAggregator = _aggregatorFactory.Create();
-            model.NewContentAggregator.AddNewContent(RubberduckUI.EncapsulateField_PreviewMarker, RubberduckUI.EncapsulateField_PreviewMarker);
+            model.NewContentAggregator.AddNewContent(RefactoringsUI.EncapsulateField_PreviewMarker, RefactoringsUI.EncapsulateField_PreviewMarker);
             return base.Preview(model);
         }
 

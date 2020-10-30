@@ -534,9 +534,6 @@ Continuer?</value>
   <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
     <value>'{0}' n'est jamais utilisé.</value>
   </data>
-  <data name="EncapsulateField_TitleText" xml:space="preserve">
-    <value>Encapsuler le champ</value>
-  </data>
   <data name="IntroduceParameter_Caption" xml:space="preserve">
     <value>Rubberduck - Introduire un paramètre</value>
   </data>
@@ -558,9 +555,6 @@ Continuer?</value>
   <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
     <value>Remplacement:</value>
   </data>
-  <data name="EncapsulateField_Caption" xml:space="preserve">
-    <value>Rubberduck - Encapsuler le champ</value>
-  </data>
   <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
     <value>Tous les fichiers ouverts</value>
   </data>
@@ -575,9 +569,6 @@ Continuer?</value>
   </data>
   <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
     <value>Bloc courant</value>
-  </data>
-  <data name="EncapsulateField_PropertyName" xml:space="preserve">
-    <value>Nom de la propriété:</value>
   </data>
   <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
     <value>Tous les projets ouverts</value>
@@ -594,14 +585,8 @@ Continuer?</value>
   <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
     <value>Remplacer</value>
   </data>
-  <data name="EncapsulateField_InstructionText" xml:space="preserve">
-    <value>Veuillez spécifier le nom, l'accessibilité des paramètres, et le type de mutateur pour la nouvelle propriété.</value>
-  </data>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
     <value>Rechercher un symbole</value>
-  </data>
-  <data name="EncapsulateField_Preview" xml:space="preserve">
-    <value>Aperçu:</value>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' est utilisé dans plus d'une méthode.</value>
@@ -1509,27 +1494,6 @@ Mise à jour annulée.</value>
     <value>Aucun module document existant avec le nom '{0}'; le fichier '{1}' ne pourra pas être importé.
 
 Échec de l'importation.</value>
-  </data>
-  <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
-    <value>Impossible d'encapsuler le champ '{0}'. Une ou plusieurs instructions ReDim({0}) existent dans d'autres modules.</value>
-  </data>
-  <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
-    <value>Conflit de nom</value>
-  </data>
-  <data name="EncapsulateField_ParameterName" xml:space="preserve">
-    <value>Nom du paramètre:</value>
-  </data>
-  <data name="EncapsulateField_PreviewMarker" xml:space="preserve">
-    <value>'&lt;===== modifications aux propriétés et déclarations au-dessus de cette ligne =====&gt;</value>
-  </data>
-  <data name="EncapsulateField_ReadOnlyCheckBoxContent" xml:space="preserve">
-    <value>Lecture seule</value>
-  </data>
-  <data name="EncapsulateField_SetterType" xml:space="preserve">
-    <value>Type d'assignation:</value>
-  </data>
-  <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
-    <value>Envelopper les champs dans une structure 'Private Type'</value>
   </data>
   <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
     <value>Instanciation</value>

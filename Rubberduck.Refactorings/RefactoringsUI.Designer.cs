@@ -329,5 +329,122 @@ namespace Rubberduck.Refactorings {
                 return ResourceManager.GetString("AssignedByValParamQFixDialog_TitleText", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to encapsulate &apos;{0}&apos;. ReDim({0}) statement(s) exist in other modules..
+        /// </summary>
+        public static string EncapsulateField_ArrayHasExternalRedimFormat {
+            get {
+                return ResourceManager.GetString("EncapsulateField_ArrayHasExternalRedimFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Encapsulate Field.
+        /// </summary>
+        public static string EncapsulateField_Caption {
+            get {
+                return ResourceManager.GetString("EncapsulateField_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select one or more fields to encapsulate.  Accept the default values or edit property names..
+        /// </summary>
+        public static string EncapsulateField_InstructionText {
+            get {
+                return ResourceManager.GetString("EncapsulateField_InstructionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name conflict.
+        /// </summary>
+        public static string EncapsulateField_NameConflictDetected {
+            get {
+                return ResourceManager.GetString("EncapsulateField_NameConflictDetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter Name:.
+        /// </summary>
+        public static string EncapsulateField_ParameterName {
+            get {
+                return ResourceManager.GetString("EncapsulateField_ParameterName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview:.
+        /// </summary>
+        public static string EncapsulateField_Preview {
+            get {
+                return ResourceManager.GetString("EncapsulateField_Preview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;&lt;===== Property and declaration changes above this line =====&gt;.
+        /// </summary>
+        public static string EncapsulateField_PreviewMarker {
+            get {
+                return ResourceManager.GetString("EncapsulateField_PreviewMarker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a property for each UDT Member.
+        /// </summary>
+        public static string EncapsulateField_PrivateUDTPropertyText {
+            get {
+                return ResourceManager.GetString("EncapsulateField_PrivateUDTPropertyText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property Name:.
+        /// </summary>
+        public static string EncapsulateField_PropertyName {
+            get {
+                return ResourceManager.GetString("EncapsulateField_PropertyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read Only.
+        /// </summary>
+        public static string EncapsulateField_ReadOnlyCheckBoxContent {
+            get {
+                return ResourceManager.GetString("EncapsulateField_ReadOnlyCheckBoxContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setter Type:.
+        /// </summary>
+        public static string EncapsulateField_SetterType {
+            get {
+                return ResourceManager.GetString("EncapsulateField_SetterType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Encapsulate Field.
+        /// </summary>
+        public static string EncapsulateField_TitleText {
+            get {
+                return ResourceManager.GetString("EncapsulateField_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wrap Fields in Private Type.
+        /// </summary>
+        public static string EncapsulateField_WrapFieldsInPrivateType {
+            get {
+                return ResourceManager.GetString("EncapsulateField_WrapFieldsInPrivateType", resourceCulture);
+            }
+        }
     }
 }
