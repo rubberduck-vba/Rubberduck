@@ -581,15 +581,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' má odkazy ve více metodách.</value>
   </data>
-  <data name="IntroduceField_Caption" xml:space="preserve">
-    <value>Rubberduck - Představ Pole</value>
-  </data>
-  <data name="IntroduceParameter_Caption" xml:space="preserve">
-    <value>Rubberduck - Představ Vlastnost</value>
-  </data>
-  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
-    <value>Metoda '{0}' implementuje '{1}.{2}'. Změnit podpis rozhraní? (Rozšíří se na všechny implementace.)</value>
-  </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Vážnost:</value>
   </data>
@@ -1289,12 +1280,6 @@ End Enum</value>
   </data>
   <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
     <value>Cíl není uživatelsky definován.</value>
-  </data>
-  <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
-    <value>Cíl '{0}' je již pole.</value>
-  </data>
-  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
-    <value>Cíl '{0}' není obsažen v metodě.</value>
   </data>
   <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
     <value>Deklarace typu cíle '{0}' je '{1}' namísto očekávaného '{2}'.</value>

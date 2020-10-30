@@ -628,5 +628,50 @@ namespace Rubberduck.Refactorings {
                 return ResourceManager.GetString("ImplementInterfaceFailed_NoImplementsStatementSelected", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Introduce Field.
+        /// </summary>
+        public static string IntroduceField_Caption {
+            get {
+                return ResourceManager.GetString("IntroduceField_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target &apos;{0}&apos; is already a field..
+        /// </summary>
+        public static string IntroduceFieldFailed_TargetIsAlreadyAField {
+            get {
+                return ResourceManager.GetString("IntroduceFieldFailed_TargetIsAlreadyAField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Introduce Parameter.
+        /// </summary>
+        public static string IntroduceParameter_Caption {
+            get {
+                return ResourceManager.GetString("IntroduceParameter_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (Will propagate to all implementations.).
+        /// </summary>
+        public static string IntroduceParameter_PromptIfTargetIsInterface {
+            get {
+                return ResourceManager.GetString("IntroduceParameter_PromptIfTargetIsInterface", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target &apos;{0}&apos; is not contained in a method..
+        /// </summary>
+        public static string IntroduceParameterFailed_TargetNotContainedInMethod {
+            get {
+                return ResourceManager.GetString("IntroduceParameterFailed_TargetNotContainedInMethod", resourceCulture);
+            }
+        }
     }
 }

@@ -495,9 +495,6 @@ Continuer?</value>
   <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
     <value>'{0}' n'est jamais utilisé.</value>
   </data>
-  <data name="IntroduceParameter_Caption" xml:space="preserve">
-    <value>Rubberduck - Introduire un paramètre</value>
-  </data>
   <data name="DeselectAll_Button" xml:space="preserve">
     <value>Désélectionner tout</value>
   </data>
@@ -548,12 +545,6 @@ Continuer?</value>
   </data>
   <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Sélection invalide.</value>
-  </data>
-  <data name="IntroduceField_Caption" xml:space="preserve">
-    <value>Rubberduck - Introduire un champ</value>
-  </data>
-  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
-    <value>La méthode '{0}' implémente '{1}.{2}'. Modifier la signature de l'interface? (se propagera à toutes les implémentations)</value>
   </data>
   <data name="ParserState_ResolverError" xml:space="preserve">
     <value>Erreur de résolution</value>
@@ -1344,12 +1335,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
     <value>Le type de déclaration de la cible '{0}' est '{1}', plutôt que '{2}' tel qu'attendu.</value>
-  </data>
-  <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
-    <value>La cible '{0}' est déjà un champ.</value>
-  </data>
-  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
-    <value>La cible '{0}' n'est pas contenue dans une procédure.</value>
   </data>
   <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
     <value>Le type de déclaration de la cible '{0}' est '{1}', mais le type attendu était '{2}'.</value>

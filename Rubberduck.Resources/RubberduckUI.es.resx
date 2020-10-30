@@ -546,16 +546,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
     <value>'{0}' tiene referencias en múltiples métodos.</value>
     <comment>{0}: Nombre de la variable</comment>
   </data>
-  <data name="IntroduceField_Caption" xml:space="preserve">
-    <value>Rubberduck - Introducir campo</value>
-  </data>
-  <data name="IntroduceParameter_Caption" xml:space="preserve">
-    <value>Rubberduck - Introducir Parámetro</value>
-  </data>
-  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
-    <value>El método '{0}' implementa '{1}. {2}'. ¿Cambiar la firma de la interfaz? (Se propagará a todas las implementaciones.)</value>
-    <comment>0: objetivo seleccionado; 1: nombre de la interfaz; 2: nombre del miembro de la interfaz</comment>
-  </data>
   <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Selección invalida.</value>
   </data>
@@ -1371,12 +1361,6 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   </data>
   <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
     <value>La declaración de tipo del destino '{0}' es '{1}' en lugar de la esperada '{2}'.</value>
-  </data>
-  <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
-    <value>El destino '{0}' ya es un campo.</value>
-  </data>
-  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
-    <value>El destino '{0}' no está contenido en un método.</value>
   </data>
   <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
     <value>La declaración de tipo del destino '{0}' es '{1}' en lugar de una de las esperadas '{2}'.</value>
