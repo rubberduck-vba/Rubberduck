@@ -414,10 +414,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
 {1} problemas encontrados.</value>
     <comment>{0} = marca de tiempo; {1} = número</comment>
   </data>
-  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>El método '{0}' implementa '{1}. {2}'. ¿Renombrar el miembro de la interfaz?</value>
-    <comment>0: objetivo seleccionado; 1: nombre de la interfaz; 2: nombre del miembro de la interfaz</comment>
-  </data>
   <data name="OK_AllCaps" xml:space="preserve">
     <value>OK</value>
   </data>
@@ -922,14 +918,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
     <value>Severidad de la inspección</value>
   </data>
-  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
-    <value>El método '{0}' es un EventHandler para el control '{1}'. Solo el control puede ser renombrado. ¿Renombrar '{1}' en su lugar?</value>
-    <comment>0: identificador de objetivo seleccionado; 1: Nombre de control</comment>
-  </data>
-  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
-    <value>El método '{0}' es una implementación del evento '{1}. {2}'. ¿Renombrar el evento '{2}' en su lugar?</value>
-    <comment>0: identificador de objetivo seleccionado; 1: Evento Padre; 2: nombre del evento</comment>
-  </data>
   <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Solo habilítar si sabe lo que está haciendo. La habilitación y/o el uso de las funciones de esta sección pueden hacer que las cosas se rompan de forma inesperada e irrevocable.</value>
   </data>
@@ -1258,15 +1246,6 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   </data>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Guardar y Cerrar</value>
-  </data>
-  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
-    <value>No se encontró modulo para el módulo destino '{0}'.</value>
-  </data>
-  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
-    <value>No se encontró el control destino '{0}'.</value>
-  </data>
-  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
-    <value>El destino '{0}' es un manejador de eventos estándar, el cual no puede ser renombrado.</value>
   </data>
   <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
     <value>Para el archivo '{0}', faltan los archivos binarios '{1}' y el componente destino '{2}' no existía.

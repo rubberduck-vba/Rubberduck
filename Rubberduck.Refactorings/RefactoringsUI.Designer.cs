@@ -1227,5 +1227,59 @@ namespace Rubberduck.Refactorings {
                 return ResourceManager.GetString("RenameDialog_TitleText_Folder", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Target &apos;{0}&apos; is a standard event handler, which cannot be renamed..
+        /// </summary>
+        public static string RenameFailure_StandardEventHandler {
+            get {
+                return ResourceManager.GetString("RenameFailure_StandardEventHandler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Target control &apos;{0}&apos; not found..
+        /// </summary>
+        public static string RenameFailure_TargetControlNotFound {
+            get {
+                return ResourceManager.GetString("RenameFailure_TargetControlNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No code module found for the target module &apos;{0}&apos;..
+        /// </summary>
+        public static string RenameFailure_TargetModuleWithoutCodeModule {
+            get {
+                return ResourceManager.GetString("RenameFailure_TargetModuleWithoutCodeModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; is an EventHandler for control &apos;{1}&apos;.  Only the control can be renamed.  Rename &apos;{1}&apos; instead?.
+        /// </summary>
+        public static string RenamePresenter_TargetIsControlEventHandler {
+            get {
+                return ResourceManager.GetString("RenamePresenter_TargetIsControlEventHandler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; is an implementation of event &apos;{1}.{2}&apos;.  Rename event &apos;{2}&apos; instead?.
+        /// </summary>
+        public static string RenamePresenter_TargetIsEventHandlerImplementation {
+            get {
+                return ResourceManager.GetString("RenamePresenter_TargetIsEventHandlerImplementation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Rename the interface member?.
+        /// </summary>
+        public static string RenamePresenter_TargetIsInterfaceMemberImplementation {
+            get {
+                return ResourceManager.GetString("RenamePresenter_TargetIsInterfaceMemberImplementation", resourceCulture);
+            }
+        }
     }
 }

@@ -418,10 +418,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Next" xml:space="preserve">
     <value>Suivant</value>
   </data>
-  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>La méthode '{0}' implémente '{1}.{2}'. Modifier l'interface? (cette modification serait propagée à toutes les implémentations)</value>
-    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
-  </data>
   <data name="OK_AllCaps" xml:space="preserve">
     <value>OK</value>
   </data>
@@ -891,9 +887,6 @@ les projets dans le VBE.</value>
   <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
     <value>Fichiers VB</value>
   </data>
-  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
-    <value>La méthode {0} répond aux événements du contrôle '{1}'. Renommer '{1}'?</value>
-  </data>
   <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
     <value>Tous les fichiers</value>
   </data>
@@ -905,9 +898,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Ces fonctionnalités sont présentement en phase de tests et/ou diagnostics. Activer ces fonctionnalités peut produire des erreurs inattendues qui peuvent résulter en pertes de données.</value>
-  </data>
-  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
-    <value>La méthode '{0}' répond à l'événement '{1}.{2}'. Renommer l'événement '{2}'?</value>
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Veuillez sélectionner un dossier où exporter les fichier source de {0}:</value>
@@ -1240,12 +1230,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="VersionCheck_BuildType_Release" xml:space="preserve">
     <value>officielle</value>
   </data>
-  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
-    <value>Le module ciblé '{0}' n'est plus trouvable!</value>
-  </data>
-  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
-    <value>La cible '{0}' est une procédure gestionnaire d'événements, impossible de renommer cette pocédure sans briser quelque chose!</value>
-  </data>
   <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
     <value>Indiquer les espaces dans la description</value>
   </data>
@@ -1281,9 +1265,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
     <value>L'identifiant '{0}' chatouillera l'inspection suggérant d'utiliser un nom conférant signification et importance.</value>
-  </data>
-  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
-    <value>Le contrôle ciblé '{0}' est introuvable.</value>
   </data>
   <data name="TestExplorer_AppendHeader" xml:space="preserve">
     <value>Rubberduck - Résultats des tests : {0}</value>

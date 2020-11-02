@@ -487,4 +487,22 @@ Procéder?</value>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Renommer le dossier</value>
   </data>
+  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
+    <value>La cible '{0}' est une procédure gestionnaire d'événements, impossible de renommer cette pocédure sans briser quelque chose!</value>
+  </data>
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
+    <value>Le contrôle ciblé '{0}' est introuvable.</value>
+  </data>
+  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
+    <value>Le module ciblé '{0}' n'est plus trouvable!</value>
+  </data>
+  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
+    <value>La méthode {0} répond aux événements du contrôle '{1}'. Renommer '{1}'?</value>
+  </data>
+  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
+    <value>La méthode '{0}' répond à l'événement '{1}.{2}'. Renommer l'événement '{2}'?</value>
+  </data>
+  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>La méthode '{0}' implémente '{1}.{2}'. Modifier l'interface? (cette modification serait propagée à toutes les implémentations)</value>
+  </data>
 </root>

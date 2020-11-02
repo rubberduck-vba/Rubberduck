@@ -511,4 +511,22 @@ Wollen Sie fortfahren?</value>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Ordner umbenennen</value>
   </data>
+  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
+    <value>Das Ziel '{0}' ist ein Standardeventhandler, welcher nicht umbenannt werden kann.</value>
+  </data>
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
+    <value>Es wurde das Zielkontrollelement '{0}' nicht gefunden.</value>
+  </data>
+  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
+    <value>Es wurde kein Codemodul für das Zielmodul '{0}' gefunden.</value>
+  </data>
+  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
+    <value>Methode '{0}' ist ein EventHandler für die Schaltfläche '{1}'. Nur die Schaltfläche kann umbenannt werden. Stattdessen '{1}' umbennen?</value>
+  </data>
+  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
+    <value>Die Methode '{0}' ist eine Implementierung des Ereignisses '{1}.{2}'. Stattdessen Ereignis '{2}' umbenennen?</value>
+  </data>
+  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Methode '{0}' implementiert '{1}.{2}'. Wollen Sie den Interfacemember umbenennen?</value>
+  </data>
 </root>

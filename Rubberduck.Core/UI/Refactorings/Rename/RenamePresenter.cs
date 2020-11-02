@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.Rename
 {
@@ -58,19 +57,19 @@ namespace Rubberduck.UI.Refactorings.Rename
 
             if (model.IsControlEventHandlerRename)
             {
-                var message = string.Format(RubberduckUI.RenamePresenter_TargetIsControlEventHandler, initialTarget.IdentifierName, newTarget.IdentifierName);
+                var message = string.Format(RefactoringsUI.RenamePresenter_TargetIsControlEventHandler, initialTarget.IdentifierName, newTarget.IdentifierName);
                 return UserConfirmsRenameOfResolvedTarget(message);
             }
 
             if (model.IsUserEventHandlerRename)
             {
-                var message = string.Format(RubberduckUI.RenamePresenter_TargetIsEventHandlerImplementation, initialTarget.IdentifierName, newTarget.ComponentName, newTarget.IdentifierName);
+                var message = string.Format(RefactoringsUI.RenamePresenter_TargetIsEventHandlerImplementation, initialTarget.IdentifierName, newTarget.ComponentName, newTarget.IdentifierName);
                 return UserConfirmsRenameOfResolvedTarget(message);
             }
 
             if (model.IsInterfaceMemberRename)
             {
-                var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, initialTarget.IdentifierName, newTarget.ComponentName, newTarget.IdentifierName);
+                var message = string.Format(RefactoringsUI.RenamePresenter_TargetIsInterfaceMemberImplementation, initialTarget.IdentifierName, newTarget.ComponentName, newTarget.IdentifierName);
                 return UserConfirmsRenameOfResolvedTarget(message);
             }
 

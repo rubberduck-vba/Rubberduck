@@ -417,10 +417,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
 {1} issues found.</value>
     <comment>{0}=timestamp; {1}=number</comment>
   </data>
-  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>Method '{0}' implements '{1}.{2}'. Rename the interface member?</value>
-    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
-  </data>
   <data name="OK_AllCaps" xml:space="preserve">
     <value>OK</value>
   </data>
@@ -926,14 +922,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
     <value>Inspection Severities</value>
   </data>
-  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
-    <value>Method '{0}' is an EventHandler for control '{1}'.  Only the control can be renamed.  Rename '{1}' instead?</value>
-    <comment>0: Selected target Identifier; 1: Control Name</comment>
-  </data>
-  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
-    <value>Method '{0}' is an implementation of event '{1}.{2}'.  Rename event '{2}' instead?</value>
-    <comment>0: Selected target Identifier; 1: Event Parent; 2: Event name</comment>
-  </data>
   <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Only enable these if you know what you're doing. Enabling and/or using features from this section may result in things breaking unexpectedly and irrevocable data loss.</value>
   </data>
@@ -1362,18 +1350,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="References_BrowseButtonText" xml:space="preserve">
     <value>Browse...</value>
-  </data>
-  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
-    <value>No code module found for the target module '{0}'.</value>
-    <comment>{0}: name of module</comment>
-  </data>
-  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
-    <value>Target control '{0}' not found.</value>
-    <comment>{0}: name of control</comment>
-  </data>
-  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
-    <value>Target '{0}' is a standard event handler, which cannot be renamed.</value>
-    <comment>{0}: name of target</comment>
   </data>
   <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
     <value>Spell out whitespace in the description</value>

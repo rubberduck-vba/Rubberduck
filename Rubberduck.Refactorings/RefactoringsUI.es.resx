@@ -505,4 +505,22 @@ Una clase privada puede asimismo implementar una interfaz pública.</value>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Renombrar carpeta</value>
   </data>
+  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
+    <value>El destino '{0}' es un manejador de eventos estándar, el cual no puede ser renombrado.</value>
+  </data>
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
+    <value>No se encontró el control destino '{0}'.</value>
+  </data>
+  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
+    <value>No se encontró modulo para el módulo destino '{0}'.</value>
+  </data>
+  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
+    <value>El método '{0}' es un EventHandler para el control '{1}'. Solo el control puede ser renombrado. ¿Renombrar '{1}' en su lugar?</value>
+  </data>
+  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
+    <value>El método '{0}' es una implementación del evento '{1}. {2}'. ¿Renombrar el evento '{2}' en su lugar?</value>
+  </data>
+  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>El método '{0}' implementa '{1}. {2}'. ¿Renombrar el miembro de la interfaz?</value>
+  </data>
 </root>

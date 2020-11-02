@@ -387,9 +387,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="Navigation" xml:space="preserve">
     <value>Navigace</value>
   </data>
-  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>Metoda '{0}' implementuje '{1}.{2}'. Přejmenovat člena rozhraní?</value>
-  </data>
   <data name="OK_AllCaps" xml:space="preserve">
     <value>OK</value>
   </data>
@@ -828,12 +825,6 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
   <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
     <value>Závažnosti Inspekce</value>
   </data>
-  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
-    <value>Metoda '{0}' je EventHandler pro ovládací prvek '{1}'. Přejmenovat lze pouze ovládací prvek. Místo toho přejmenovat '{1}'?</value>
-  </data>
-  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
-    <value>Metoda '{0}' je implementací události '{1}.{2}'. Místo toho přejmenovat událost '{2}'?</value>
-  </data>
   <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Toto nastavení povolte jen pokud více, to děláte. Povolením a/nebo užíváním věcí z této sekce může skončit nečekanými obtížemi, poruchami kódu a nenávratnou ztrátou dat.</value>
   </data>
@@ -1185,15 +1176,6 @@ End Enum</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filtr</value>
-  </data>
-  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
-    <value>Cílový control '{0}' nebyl nalezen.</value>
-  </data>
-  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
-    <value>Pro cílový modul '{0}' nebyl nalezen žádný kódový modul.</value>
-  </data>
-  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
-    <value>Cíl '{0}' je standardní ovladač událostí, který nemůže být přejmenován.</value>
   </data>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Uložit a Zavřít</value>

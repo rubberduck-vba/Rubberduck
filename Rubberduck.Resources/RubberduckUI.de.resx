@@ -398,10 +398,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Navigation" xml:space="preserve">
     <value>Navigation</value>
   </data>
-  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>Methode '{0}' implementiert '{1}.{2}'. Wollen Sie den Interfacemember umbenennen?</value>
-    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
-  </data>
   <data name="OK_AllCaps" xml:space="preserve">
     <value>OK</value>
   </data>
@@ -880,9 +876,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
     <value>VB Dateien</value>
   </data>
-  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
-    <value>Methode '{0}' ist ein EventHandler für die Schaltfläche '{1}'. Nur die Schaltfläche kann umbenannt werden. Stattdessen '{1}' umbennen?</value>
-  </data>
   <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
     <value>Alle Dateien</value>
   </data>
@@ -894,9 +887,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   </data>
   <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Auf eigene Verantwortung und Gefahr aktivieren. Aktivierung und / oder Verwendung von Funktionalitäten in dieser Sektion kann zu unvorhergesehenen Fehlern und unwiederbringlichem Datenverlust führen.</value>
-  </data>
-  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
-    <value>Die Methode '{0}' ist eine Implementierung des Ereignisses '{1}.{2}'. Stattdessen Ereignis '{2}' umbenennen?</value>
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Einen Ordner als Ziel für den Quellcode von {0} wählen:</value>
@@ -1204,15 +1194,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
-  </data>
-  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
-    <value>Es wurde kein Codemodul für das Zielmodul '{0}' gefunden.</value>
-  </data>
-  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
-    <value>Es wurde das Zielkontrollelement '{0}' nicht gefunden.</value>
-  </data>
-  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
-    <value>Das Ziel '{0}' ist ein Standardeventhandler, welcher nicht umbenannt werden kann.</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filter</value>

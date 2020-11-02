@@ -527,4 +527,28 @@ Do you want to proceed?</value>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Rename folder</value>
   </data>
+  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
+    <value>Target '{0}' is a standard event handler, which cannot be renamed.</value>
+    <comment>{0}: name of target</comment>
+  </data>
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
+    <value>Target control '{0}' not found.</value>
+    <comment>{0}: name of control</comment>
+  </data>
+  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
+    <value>No code module found for the target module '{0}'.</value>
+    <comment>{0}: name of module</comment>
+  </data>
+  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
+    <value>Method '{0}' is an EventHandler for control '{1}'.  Only the control can be renamed.  Rename '{1}' instead?</value>
+    <comment>0: Selected target Identifier; 1: Control Name</comment>
+  </data>
+  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
+    <value>Method '{0}' is an implementation of event '{1}.{2}'.  Rename event '{2}' instead?</value>
+    <comment>0: Selected target Identifier; 1: Event Parent; 2: Event name</comment>
+  </data>
+  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Method '{0}' implements '{1}.{2}'. Rename the interface member?</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
+  </data>
 </root>
