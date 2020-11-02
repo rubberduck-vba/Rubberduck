@@ -3300,42 +3300,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck - Remove Parameters.
-        /// </summary>
-        public static string RemoveParamsDialog_Caption {
-            get {
-                return ResourceManager.GetString("RemoveParamsDialog_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select a parameter and double-click it or use buttons to remove or restore it..
-        /// </summary>
-        public static string RemoveParamsDialog_InstructionsLabelText {
-            get {
-                return ResourceManager.GetString("RemoveParamsDialog_InstructionsLabelText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot remove last parameter from setter or letter..
-        /// </summary>
-        public static string RemoveParamsDialog_RemoveIllegalSetterLetterParameter {
-            get {
-                return ResourceManager.GetString("RemoveParamsDialog_RemoveIllegalSetterLetterParameter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Remove parameters.
-        /// </summary>
-        public static string RemoveParamsDialog_TitleText {
-            get {
-                return ResourceManager.GetString("RemoveParamsDialog_TitleText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No parameters in method &apos;{0}&apos;..
         /// </summary>
         public static string RemovePresenter_NoParametersError {

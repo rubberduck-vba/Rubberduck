@@ -452,4 +452,16 @@ Wollen Sie fortfahren?</value>
   <data name="RefactoringFailure_TargetNull" xml:space="preserve">
     <value>Das Ziel des Refactorings ist null.</value>
   </data>
+  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
+    <value>Kann den letzten Parameter eines Setters oder Letters nicht entfernen.</value>
+  </data>
+  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Parameter entfernen</value>
+  </data>
+  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Wählen Sie einen Parameter und benutzen Sie die Schaltflächen oder doppelklicken Sie um ihn zu bewegen oder zu löschen.</value>
+  </data>
+  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
+    <value>Parameter entfernen</value>
+  </data>
 </root>

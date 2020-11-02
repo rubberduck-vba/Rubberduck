@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
     public class RemoveParametersPresenter : RefactoringPresenterBase<RemoveParametersModel>, IRemoveParametersPresenter
     {
-        private static readonly DialogData DialogData = DialogData.Create(RubberduckUI.RemoveParamsDialog_Caption, 395, 494);
+        private static readonly DialogData DialogData = DialogData.Create(RefactoringsUI.RemoveParamsDialog_Caption, 395, 494);
         private readonly IMessageBox _messageBox;
 
         public RemoveParametersPresenter(RemoveParametersModel model,
@@ -35,7 +35,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             {
                 case 0:
                     var message = string.Format(RubberduckUI.RemovePresenter_NoParametersError, Model.TargetDeclaration.IdentifierName);
-                    _messageBox.NotifyWarn(message, RubberduckUI.RemoveParamsDialog_TitleText);
+                    _messageBox.NotifyWarn(message, RefactoringsUI.RemoveParamsDialog_TitleText);
                     return null;
                 case 1:
                     Model.RemoveParameters = Model.Parameters;
@@ -54,7 +54,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
         private bool UserConfirmsNewTarget(string message)
         {
-            return _messageBox.ConfirmYesNo(message, RubberduckUI.RemoveParamsDialog_TitleText);
+            return _messageBox.ConfirmYesNo(message, RefactoringsUI.RemoveParamsDialog_TitleText);
         }
     }
 }

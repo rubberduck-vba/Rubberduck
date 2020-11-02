@@ -180,9 +180,6 @@
   <data name="ReorderParamsDialog_MoveUpButtonText" xml:space="preserve">
     <value>Přesunout výše</value>
   </data>
-  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
-    <value>Odstranit parametry</value>
-  </data>
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Třída nebo člen '{0}' ještě není implementován.</value>
   </data>
@@ -312,9 +309,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="AllReferences_Caption" xml:space="preserve">
     <value>Všechny reference: '{0}'</value>
   </data>
-  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
-    <value>Nelze odstranit poslední parametr ze setteru nebo letteru.</value>
-  </data>
   <data name="LoadConfigError" xml:space="preserve">
     <value>Chyba při načítání konfigurace Rubberducku</value>
   </data>
@@ -344,9 +338,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Nastavení modulu by měla být specifikována jako první</value>
-  </data>
-  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Odstranit Parametry</value>
   </data>
   <data name="Restore" xml:space="preserve">
     <value>Obnovit</value>
@@ -485,9 +476,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
     <value>Volitelné parametry musejí být specifikovány na konci seznamu parametrů.</value>
-  </data>
-  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Vyberte parametr a dvojím poklepáním na něj, nebo použitím tlačítek, ho odstraňte nebo obnovte.</value>
   </data>
   <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck Inspekce Kódu - {0}

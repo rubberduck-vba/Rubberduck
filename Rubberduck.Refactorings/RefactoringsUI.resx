@@ -464,4 +464,16 @@ Do you want to proceed?</value>
   <data name="RefactoringFailure_TargetNull" xml:space="preserve">
     <value>Target declaration is null.</value>
   </data>
+  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
+    <value>Cannot remove last parameter from setter or letter.</value>
+  </data>
+  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Remove Parameters</value>
+  </data>
+  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Select a parameter and double-click it or use buttons to remove or restore it.</value>
+  </data>
+  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
+    <value>Remove parameters</value>
+  </data>
 </root>

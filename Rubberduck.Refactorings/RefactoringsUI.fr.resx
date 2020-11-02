@@ -428,4 +428,16 @@ Procéder?</value>
   <data name="RefactoringFailure_TargetNull" xml:space="preserve">
     <value>La déclaration ciblée est 'null', ...poof?</value>
   </data>
+  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
+    <value>Les accesseurs Property Let et Property Set requièrent au moins un paramètre.</value>
+  </data>
+  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Supprimer les paramètres</value>
+  </data>
+  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Sélectionner un paramètre et utiliser les boutons ou un double-clic pour le supprimer.</value>
+  </data>
+  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
+    <value>Supprimer les paramètres</value>
+  </data>
 </root>

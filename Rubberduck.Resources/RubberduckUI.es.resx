@@ -231,12 +231,6 @@
   <data name="AllReferences_Caption" xml:space="preserve">
     <value>Todas las referencias: '{0}'</value>
   </data>
-  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
-    <value>Eliminar parametros</value>
-  </data>
-  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
-    <value>No se puede eliminar el último parámetro del Setter o Letter.</value>
-  </data>
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>La clase o miembro '{0}' no está implementado.</value>
   </data>
@@ -346,12 +340,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   </data>
   <data name="Language_FR" xml:space="preserve">
     <value>Francés</value>
-  </data>
-  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Eliminar Parámetros</value>
-  </data>
-  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Seleccione un parámetro y haga doble clic en él o use los botones para eliminarlo o restaurarlo.</value>
   </data>
   <data name="Restore" xml:space="preserve">
     <value>Restaurar</value>

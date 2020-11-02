@@ -234,12 +234,6 @@
   <data name="AllReferences_Caption" xml:space="preserve">
     <value>All references: '{0}'</value>
   </data>
-  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
-    <value>Remove parameters</value>
-  </data>
-  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
-    <value>Cannot remove last parameter from setter or letter.</value>
-  </data>
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Class or member '{0}' is not implemented.</value>
   </data>
@@ -349,12 +343,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="Language_FR" xml:space="preserve">
     <value>French</value>
-  </data>
-  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Remove Parameters</value>
-  </data>
-  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Select a parameter and double-click it or use buttons to remove or restore it.</value>
   </data>
   <data name="Restore" xml:space="preserve">
     <value>Restore</value>

@@ -446,4 +446,16 @@ Una clase privada puede asimismo implementar una interfaz pública.</value>
   <data name="RefactoringFailure_TargetNull" xml:space="preserve">
     <value>Declaración destino es nula.</value>
   </data>
+  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
+    <value>No se puede eliminar el último parámetro del Setter o Letter.</value>
+  </data>
+  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Eliminar Parámetros</value>
+  </data>
+  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Seleccione un parámetro y haga doble clic en él o use los botones para eliminarlo o restaurarlo.</value>
+  </data>
+  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
+    <value>Eliminar parametros</value>
+  </data>
 </root>

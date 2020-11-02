@@ -446,4 +446,16 @@ Chcete pokračovat?</value>
   <data name="RefactoringFailure_TargetNull" xml:space="preserve">
     <value>Cílová deklarace je 'Null'.</value>
   </data>
+  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
+    <value>Nelze odstranit poslední parametr ze setteru nebo letteru.</value>
+  </data>
+  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Odstranit Parametry</value>
+  </data>
+  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Vyberte parametr a dvojím poklepáním na něj, nebo použitím tlačítek, ho odstraňte nebo obnovte.</value>
+  </data>
+  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
+    <value>Odstranit parametry</value>
+  </data>
 </root>
