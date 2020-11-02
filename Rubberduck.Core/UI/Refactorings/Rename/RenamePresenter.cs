@@ -2,6 +2,7 @@
 using NLog;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;
@@ -10,7 +11,7 @@ namespace Rubberduck.UI.Refactorings.Rename
 {
     internal class RenamePresenter : RefactoringPresenterBase<RenameModel>, IRenamePresenter
     {
-        private static readonly DialogData DialogData = DialogData.Create(RubberduckUI.RenameDialog_Caption, 164, 684);
+        private static readonly DialogData DialogData = DialogData.Create(RefactoringsUI.RenameDialog_Caption, 164, 684);
 
         private readonly IMessageBox _messageBox;
 
@@ -80,7 +81,7 @@ namespace Rubberduck.UI.Refactorings.Rename
 
         private bool UserConfirmsRenameOfResolvedTarget(string message)
         {
-            return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_TitleText) ?? false;
+            return _messageBox?.ConfirmYesNo(message, RefactoringsUI.RenameDialog_TitleText) ?? false;
         }
     }
 }

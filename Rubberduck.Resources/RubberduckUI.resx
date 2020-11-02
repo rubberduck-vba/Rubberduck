@@ -177,16 +177,6 @@
   <data name="SaveAndClose" xml:space="preserve">
     <value>Save &amp; Close</value>
   </data>
-  <data name="RenameDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Rename</value>
-  </data>
-  <data name="RenameDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Please specify new name for {0} '{1}'.</value>
-    <comment>0: DeclarationType; 1: IdentifierName</comment>
-  </data>
-  <data name="RenameDialog_TitleText" xml:space="preserve">
-    <value>Rename identifier</value>
-  </data>
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>line label</value>
   </data>
@@ -436,17 +426,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="New" xml:space="preserve">
     <value>New</value>
-  </data>
-  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>'{0}' conflicts with the name of the existing declaration '{1}'. Renaming '{2}' to '{0}' may result in uncompilable  code or a change in logic.
-Do you want to proceed with this rename?</value>
-    <comment>{0}: NewName {1}: conflicting declaration {2}: CurrentName</comment>
-  </data>
-  <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
-    <value>Please ensure that exactly 1 control is selected before renaming.</value>
-  </data>
-  <data name="Rename_DeclarationType" xml:space="preserve">
-    <value>Rename {0}</value>
   </data>
   <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
     <value>{0} ({1} issues)</value>
@@ -943,16 +922,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="Preview" xml:space="preserve">
     <value>Preview</value>
-  </data>
-  <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
-    <value>Could not rename {0}.</value>
-  </data>
-  <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
-    <value>Could not rename Interface Member {0}.</value>
-  </data>
-  <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
-    <value>{0} {1} cannot be changed.</value>
-    <comment>0: DeclarationType; 1: IdentifierName</comment>
   </data>
   <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
     <value>Inspection Severities</value>
@@ -1550,26 +1519,6 @@ Import aborted.</value>
   </data>
   <data name="ComponentType_VBForm" xml:space="preserve">
     <value>VB Form</value>
-  </data>
-  <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
-    <value>It is not possible to change only the case of an identifier in VBA (language is case-insensitive).</value>
-  </data>
-  <data name="RenameDialog_Folder" xml:space="preserve">
-    <value>folder</value>
-  </data>
-  <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
-    <value>The folder '{0}' already exists. Renaming '{1}' to '{2}' will lead to a merge with the existing folder.
-Do you want to proceed?</value>
-    <comment>{0} new full folder name; {1} folder part to rename; {2} new folder part name</comment>
-  </data>
-  <data name="RenameDialog_FolderLabel" xml:space="preserve">
-    <value>Folder:</value>
-  </data>
-  <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
-    <value>Full new folder:</value>
-  </data>
-  <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
-    <value>Rename folder</value>
   </data>
   <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
     <value>Enable drag and drop in Code Explorer</value>

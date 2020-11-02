@@ -174,16 +174,6 @@
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
-  <data name="RenameDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Umbenennen</value>
-  </data>
-  <data name="RenameDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Bitte geben Sie einen neuen Namen für {0} '{1}' an.</value>
-    <comment>0: Deklarationstyp; 1: Identifikationsname</comment>
-  </data>
-  <data name="RenameDialog_TitleText" xml:space="preserve">
-    <value>Identifikator umbenennen</value>
-  </data>
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>Sprungmarke</value>
   </data>
@@ -417,13 +407,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="New" xml:space="preserve">
     <value>Neu</value>
-  </data>
-  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>Der neue Name '{0}' kollidiert mit dem Namen des existierenden Elements '{1}'. '{2}' in '{0}' umzubenennen kann zu nicht kompilierbarem Code oder einer Änderung der Logik führen.
-Wollen Sie trotzdem fortfahren?</value>
-  </data>
-  <data name="Rename_DeclarationType" xml:space="preserve">
-    <value>{0} Umbenennen</value>
   </data>
   <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
     <value>{0} Problem</value>
@@ -882,20 +865,11 @@ Um den Change Log anzuschauen und Rubberduck manuell zu aktualisieren, klicken S
 
 Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Diese können unter Rubberduck &gt; Einstellungen deaktiviert werden.</value>
   </data>
-  <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
-    <value>Bitte stellen Sie zur Umbenennung sicher, dass genau ein Control-Objekt ausgewählt ist.</value>
-  </data>
   <data name="ContextMultipleControlsSelection" xml:space="preserve">
     <value>Mehrere Schaltflächen</value>
   </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>Variable '{0}' ist zugewiesen. Zuweisung(en) entfernen?</value>
-  </data>
-  <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
-    <value>Konnte Interfacemitglied {0} nicht umbenennen.</value>
-  </data>
-  <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
-    <value>Konnte {0} nicht umbenennen.</value>
   </data>
   <data name="Preview" xml:space="preserve">
     <value>Vorschau</value>
@@ -905,9 +879,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   </data>
   <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
     <value>VB Dateien</value>
-  </data>
-  <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
-    <value>{0} {1} kann nicht geändert werden.</value>
   </data>
   <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
     <value>Methode '{0}' ist ein EventHandler für die Schaltfläche '{1}'. Nur die Schaltfläche kann umbenannt werden. Stattdessen '{1}' umbennen?</value>
@@ -1392,25 +1363,6 @@ Import abgebrochen.</value>
   </data>
   <data name="ComponentType_UserControl" xml:space="preserve">
     <value>Benutzerkontrollelement</value>
-  </data>
-  <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
-    <value>Es ist in VBA nicht möglich nur die Groß- und Kleinschreibung eines Namens zu ändern.</value>
-  </data>
-  <data name="RenameDialog_Folder" xml:space="preserve">
-    <value>Ordner</value>
-  </data>
-  <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
-    <value>Der Ordner '{0}' existiert bereits. '{1}' in '{2}. umzubenennen wird die Ordner verschmelzen.
-Wollen Sie fortfahren?</value>
-  </data>
-  <data name="RenameDialog_FolderLabel" xml:space="preserve">
-    <value>Ordner:</value>
-  </data>
-  <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
-    <value>Kompletter Ordnername:</value>
-  </data>
-  <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
-    <value>Ordner umbenennen</value>
   </data>
   <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
     <value>Drag and Drop im Code Explorer aktivieren</value>

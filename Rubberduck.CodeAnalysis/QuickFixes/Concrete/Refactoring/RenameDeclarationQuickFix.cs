@@ -2,6 +2,7 @@ using System.Globalization;
 using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;
 
@@ -64,7 +65,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete.Refactoring
 
         public override string Description(IInspectionResult result)
         {
-            return string.Format(RubberduckUI.Rename_DeclarationType,
+            return string.Format(RefactoringsUI.Rename_DeclarationType,
                 RubberduckUI.ResourceManager.GetString("DeclarationType_" + result.Target.DeclarationType,
                     CultureInfo.CurrentUICulture));
         }

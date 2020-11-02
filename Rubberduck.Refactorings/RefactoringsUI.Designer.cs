@@ -1090,5 +1090,142 @@ namespace Rubberduck.Refactorings {
                 return ResourceManager.GetString("RemoveParamsDialog_TitleText", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename {0}.
+        /// </summary>
+        public static string Rename_DeclarationType {
+            get {
+                return ResourceManager.GetString("Rename_DeclarationType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please ensure that exactly 1 control is selected before renaming..
+        /// </summary>
+        public static string RenameDialog_AmbiguousSelection {
+            get {
+                return ResourceManager.GetString("RenameDialog_AmbiguousSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} {1} cannot be changed..
+        /// </summary>
+        public static string RenameDialog_BuiltInNameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_BuiltInNameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Rename.
+        /// </summary>
+        public static string RenameDialog_Caption {
+            get {
+                return ResourceManager.GetString("RenameDialog_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; conflicts with the name of the existing declaration &apos;{1}&apos;. Renaming &apos;{2}&apos; to &apos;{0}&apos; may result in uncompilable  code or a change in logic.
+        ///Do you want to proceed with this rename?.
+        /// </summary>
+        public static string RenameDialog_ConflictingNames {
+            get {
+                return ResourceManager.GetString("RenameDialog_ConflictingNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not rename {0}..
+        /// </summary>
+        public static string RenameDialog_DefaultRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_DefaultRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to folder.
+        /// </summary>
+        public static string RenameDialog_Folder {
+            get {
+                return ResourceManager.GetString("RenameDialog_Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The folder &apos;{0}&apos; already exists. Renaming &apos;{1}&apos; to &apos;{2}&apos; will lead to a merge with the existing folder.
+        ///Do you want to proceed?.
+        /// </summary>
+        public static string RenameDialog_FolderAlreadyExists {
+            get {
+                return ResourceManager.GetString("RenameDialog_FolderAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folder:.
+        /// </summary>
+        public static string RenameDialog_FolderLabel {
+            get {
+                return ResourceManager.GetString("RenameDialog_FolderLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full new folder:.
+        /// </summary>
+        public static string RenameDialog_FullNewFolderLabel {
+            get {
+                return ResourceManager.GetString("RenameDialog_FullNewFolderLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify new name for {0} &apos;{1}&apos;..
+        /// </summary>
+        public static string RenameDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("RenameDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not rename Interface Member {0}..
+        /// </summary>
+        public static string RenameDialog_InterfaceRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_InterfaceRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It is not possible to change only the case of an identifier in VBA (language is case-insensitive)..
+        /// </summary>
+        public static string RenameDialog_OnlyCasingDifferent {
+            get {
+                return ResourceManager.GetString("RenameDialog_OnlyCasingDifferent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename identifier.
+        /// </summary>
+        public static string RenameDialog_TitleText {
+            get {
+                return ResourceManager.GetString("RenameDialog_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename folder.
+        /// </summary>
+        public static string RenameDialog_TitleText_Folder {
+            get {
+                return ResourceManager.GetString("RenameDialog_TitleText_Folder", resourceCulture);
+            }
+        }
     }
 }

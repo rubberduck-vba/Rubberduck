@@ -458,4 +458,51 @@ Una clase privada puede asimismo implementar una interfaz pública.</value>
   <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
     <value>Eliminar parametros</value>
   </data>
+  <data name="Rename_DeclarationType" xml:space="preserve">
+    <value>Renombrar {0}</value>
+  </data>
+  <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
+    <value>Asegúrese de que se haya seleccionado exactamente 1 control antes de cambiar el nombre.</value>
+  </data>
+  <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
+    <value>{0} {1} no se puede cambiar.</value>
+  </data>
+  <data name="RenameDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Renombrar</value>
+  </data>
+  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
+    <value>'{0}' entra en conflicto con el nombre de la declaración existente '{1}'. Renombrar de '{2}' a '{0}' puede resultar en un código no compilable o un cambio en la lógica.
+¿Desea continuar con este renombre?</value>
+  </data>
+  <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
+    <value>No se pudo renombrar {0}.</value>
+  </data>
+  <data name="RenameDialog_Folder" xml:space="preserve">
+    <value>carpeta</value>
+  </data>
+  <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
+    <value>La carpeta '{0}' ya existe. Cambiar el nombre de '{1}' a '{2}' implica una combinación de carpetas.
+¿Desea continuar?</value>
+  </data>
+  <data name="RenameDialog_FolderLabel" xml:space="preserve">
+    <value>Carpeta:</value>
+  </data>
+  <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
+    <value>Nueva carpeta completa:</value>
+  </data>
+  <data name="RenameDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Por favor especificar un nuevo nombre para {0} '{1}'.</value>
+  </data>
+  <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
+    <value>No se pudo renombrar el miembro de la interfaz {0}.</value>
+  </data>
+  <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
+    <value>No es posible cambiar sólo mayúsculas/minúsculas de un identificador en VBA.</value>
+  </data>
+  <data name="RenameDialog_TitleText" xml:space="preserve">
+    <value>Renombrar identificador</value>
+  </data>
+  <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
+    <value>Renombrar carpeta</value>
+  </data>
 </root>

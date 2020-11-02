@@ -440,4 +440,51 @@ Procéder?</value>
   <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
     <value>Supprimer les paramètres</value>
   </data>
+  <data name="Rename_DeclarationType" xml:space="preserve">
+    <value>Renommer {0}</value>
+  </data>
+  <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
+    <value>Veuillez sélectionner 1 seul contrôle à renommer.</value>
+  </data>
+  <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
+    <value>{0}{1} ne peut être renommé.</value>
+  </data>
+  <data name="RenameDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Renommer</value>
+  </data>
+  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
+    <value>Le nom '{0}' entre en collision avec '{1}', ayant la même portée. Renommer '{2}' à '{0}' peut résulter en code non-compilable ou sournoisement modifier la logique du code appelant.
+Continuer?</value>
+  </data>
+  <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
+    <value>Impossible de renommer {0}.</value>
+  </data>
+  <data name="RenameDialog_Folder" xml:space="preserve">
+    <value>dossier</value>
+  </data>
+  <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
+    <value>Le dossier '{0}' existe déjà. Renommer '{1}' à '{2}' fusionnera les deux dossiers.
+Procéder?</value>
+  </data>
+  <data name="RenameDialog_FolderLabel" xml:space="preserve">
+    <value>Dossier:</value>
+  </data>
+  <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
+    <value>Nouveau dossier (chemin complet):</value>
+  </data>
+  <data name="RenameDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Veuillez spécifier un nouveau nom pour {0} '{1}'.</value>
+  </data>
+  <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
+    <value>Impossible de renommer le membre '{0}' de l'interface.</value>
+  </data>
+  <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
+    <value>Impossible de modifier la casse d'un identifiant VBA (le language est insensible à la casse).</value>
+  </data>
+  <data name="RenameDialog_TitleText" xml:space="preserve">
+    <value>Renommer l'identifiant</value>
+  </data>
+  <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
+    <value>Renommer le dossier</value>
+  </data>
 </root>

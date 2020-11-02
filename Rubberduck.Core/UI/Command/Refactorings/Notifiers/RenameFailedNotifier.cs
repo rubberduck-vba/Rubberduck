@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Interaction;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.Rename;
 
@@ -10,7 +11,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             : base(messageBox)
         {}
 
-        protected override string Caption => Resources.RubberduckUI.RenameDialog_Caption;
+        protected override string Caption => RefactoringsUI.RenameDialog_Caption;
 
         protected override string Message(RefactoringException exception)
         {

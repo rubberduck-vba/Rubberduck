@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Interaction;
+using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
@@ -8,6 +9,6 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             : base(messageBox)
         {}
 
-        protected override string Caption => Resources.RubberduckUI.RenameDialog_Caption;
+        protected override string Caption => RefactoringsUI.RenameDialog_Caption;
     }
 }

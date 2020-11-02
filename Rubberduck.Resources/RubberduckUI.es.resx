@@ -174,16 +174,6 @@
   <data name="OK" xml:space="preserve">
     <value>Ok</value>
   </data>
-  <data name="RenameDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Renombrar</value>
-  </data>
-  <data name="RenameDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Por favor especificar un nuevo nombre para {0} '{1}'.</value>
-    <comment>0: Tipo de declaración; 1: Nombre del identificador</comment>
-  </data>
-  <data name="RenameDialog_TitleText" xml:space="preserve">
-    <value>Renombrar identificador</value>
-  </data>
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>etiqueta de línea</value>
   </data>
@@ -433,17 +423,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   </data>
   <data name="New" xml:space="preserve">
     <value>Nuevo</value>
-  </data>
-  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>'{0}' entra en conflicto con el nombre de la declaración existente '{1}'. Renombrar de '{2}' a '{0}' puede resultar en un código no compilable o un cambio en la lógica.
-¿Desea continuar con este renombre?</value>
-    <comment>0: Nuevo nombre 1: Nombre actual</comment>
-  </data>
-  <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
-    <value>Asegúrese de que se haya seleccionado exactamente 1 control antes de cambiar el nombre.</value>
-  </data>
-  <data name="Rename_DeclarationType" xml:space="preserve">
-    <value>Renombrar {0}</value>
   </data>
   <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
     <value>{0} ({1} problemas)</value>
@@ -940,16 +919,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   <data name="Preview" xml:space="preserve">
     <value>Vista previa</value>
   </data>
-  <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
-    <value>No se pudo renombrar {0}.</value>
-  </data>
-  <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
-    <value>No se pudo renombrar el miembro de la interfaz {0}.</value>
-  </data>
-  <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
-    <value>{0} {1} no se puede cambiar.</value>
-    <comment>0: Tipo de declaración; 1: Nombre del identificador</comment>
-  </data>
   <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
     <value>Severidad de la inspección</value>
   </data>
@@ -1304,9 +1273,6 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
 
 Importación cancelada.</value>
   </data>
-  <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
-    <value>Renombrar carpeta</value>
-  </data>
   <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
     <value>retorno-carro</value>
   </data>
@@ -1430,22 +1396,6 @@ Importación cancelada.</value>
   </data>
   <data name="ComponentType_VBForm" xml:space="preserve">
     <value>Formulario VB</value>
-  </data>
-  <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
-    <value>No es posible cambiar sólo mayúsculas/minúsculas de un identificador en VBA.</value>
-  </data>
-  <data name="RenameDialog_Folder" xml:space="preserve">
-    <value>carpeta</value>
-  </data>
-  <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
-    <value>La carpeta '{0}' ya existe. Cambiar el nombre de '{1}' a '{2}' implica una combinación de carpetas.
-¿Desea continuar?</value>
-  </data>
-  <data name="RenameDialog_FolderLabel" xml:space="preserve">
-    <value>Carpeta:</value>
-  </data>
-  <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
-    <value>Nueva carpeta completa:</value>
   </data>
   <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
     <value>Habilitar arrastrar y soltar en Explorador de Código</value>

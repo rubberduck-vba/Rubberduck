@@ -34,8 +34,8 @@ namespace Rubberduck.UI.Refactorings.RenameFolder
                 var folderToRename = Model.OriginalFolder;
 
                 return string.Format(
-                    RubberduckUI.RenameDialog_InstructionsLabelText,
-                    RubberduckUI.RenameDialog_Folder,
+                    RefactoringsUI.RenameDialog_InstructionsLabelText,
+                    RefactoringsUI.RenameDialog_Folder,
                     folderToRename);
             }
         }
@@ -122,11 +122,11 @@ namespace Rubberduck.UI.Refactorings.RenameFolder
         private bool UserConfirmsToProceedWithFolderMerge(string fullTargetFolder, string partToRename, string newFolderPart)
         {
             var message = string.Format(
-                RubberduckUI.RenameDialog_FolderAlreadyExists,
+                RefactoringsUI.RenameDialog_FolderAlreadyExists,
                 fullTargetFolder,
                 partToRename,
                 newFolderPart);
-            return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_Caption) ?? false;
+            return _messageBox?.ConfirmYesNo(message, RefactoringsUI.RenameDialog_Caption) ?? false;
         }
     }
 }
