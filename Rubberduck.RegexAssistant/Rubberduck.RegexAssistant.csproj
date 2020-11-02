@@ -34,11 +34,20 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AssistantResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="RegexAssistantUI.Designer.cs">
+      <DependentUpon>RegexAssistantUI.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="i18n\AssistantResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AssistantResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="RegexAssistantUI.resx">
+      <LastGenOutput>RegexAssistantUI.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

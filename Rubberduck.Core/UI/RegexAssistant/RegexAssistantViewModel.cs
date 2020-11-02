@@ -1,7 +1,6 @@
 ﻿using Rubberduck.RegexAssistant;
 using Rubberduck.RegexAssistant.Atoms;
 using Rubberduck.RegexAssistant.Expressions;
-using Rubberduck.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,7 +76,7 @@ namespace Rubberduck.UI.RegexAssistant
         {
             if (_pattern.Equals(string.Empty))
             {
-                DescriptionResults = RubberduckUI.RegexAssistant_NoPatternError;
+                DescriptionResults = RegexAssistantUI.NoPatternError;
                 var results = new List<TreeViewItem>();
 
                 var rootTreeItem = new TreeViewItem

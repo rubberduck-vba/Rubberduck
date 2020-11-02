@@ -54,7 +54,7 @@
 
         <GroupBox Grid.Row="0">
             <GroupBox.Header>
-                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RegexAssistant_RegexPatternLabel}" FontWeight="SemiBold" />
+                <Label Content="{Resx ResxName=Rubberduck.RegexAssistant.RegexAssistantUI, Key=RegexPatternLabel}" FontWeight="SemiBold" />
             </GroupBox.Header>
 
             <StackPanel>
@@ -64,13 +64,13 @@
                             Text="{Binding Pattern, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
-                    <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RegexAssistant_GlobalFlag}" 
+                    <CheckBox Content="{Resx ResxName=Rubberduck.RegexAssistant.RegexAssistantUI, Key=GlobalFlag}" 
                                 IsChecked="{Binding GlobalFlag}"
                                 Margin="0,0,5,0"/>
-                    <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RegexAssistant_IgnoreCaseFlag}"
+                    <CheckBox Content="{Resx ResxName=Rubberduck.RegexAssistant.RegexAssistantUI, Key=IgnoreCaseFlag}"
                                 IsChecked="{Binding IgnoreCaseFlag}"
                                 Margin="0,0,5,0"/>
-                    <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RegexAssistant_EncloseWhitespaceFlag}"
+                    <CheckBox Content="{Resx ResxName=Rubberduck.RegexAssistant.RegexAssistantUI, Key=EncloseWhitespaceFlag}"
                               IsChecked="{Binding SpellOutWhiteSpace}"
                               Margin="0,0,5,0" />
 
@@ -80,7 +80,7 @@
 
         <GroupBox Grid.Row="1" Margin="0,5">
             <GroupBox.Header>
-                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RegexAssistant_DescriptionResultsLabel}" FontWeight="SemiBold" />
+                <Label Content="{Resx ResxName=Rubberduck.RegexAssistant.RegexAssistantUI, Key=DescriptionResultsLabel}" FontWeight="SemiBold" />
             </GroupBox.Header>
 
             <TreeView Margin="5" 
