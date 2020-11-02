@@ -7,10 +7,9 @@ namespace Rubberduck.UI.Command.MenuItems
     {
         public ProjectExplorerRefactorRenameCommandMenuItem(ProjectExplorerRefactorRenameCommand command)
             : base(command)
-        {
-        }
+        {}
 
         public override string Key => "RefactorMenu_Rename";
-        public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.RenameIdentifier;
+        public override int DisplayOrder => (int)ProjectExplorerContextMenuItemDisplayOrder.RenameIdentifier;
     }
 }

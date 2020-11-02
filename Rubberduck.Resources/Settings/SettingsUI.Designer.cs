@@ -214,6 +214,15 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignored Files.
+        /// </summary>
+        public static string FilesHeader_IgnoredProjectsSettings {
+            get {
+                return ResourceManager.GetString("FilesHeader_IgnoredProjectsSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Warning! No Modifier!.
         /// </summary>
         public static string HotKeys_Exclamation {
@@ -246,6 +255,15 @@ namespace Rubberduck.Resources.Settings {
         public static string PageHeader_GeneralSettings {
             get {
                 return ResourceManager.GetString("PageHeader_GeneralSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignored Projects.
+        /// </summary>
+        public static string PageHeader_IgnoredProjectsSettings {
+            get {
+                return ResourceManager.GetString("PageHeader_IgnoredProjectsSettings", resourceCulture);
             }
         }
         
