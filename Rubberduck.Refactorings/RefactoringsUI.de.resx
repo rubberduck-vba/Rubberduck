@@ -529,4 +529,7 @@ Wollen Sie fortfahren?</value>
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>Methode '{0}' implementiert '{1}.{2}'. Wollen Sie den Interfacemember umbenennen?</value>
   </data>
+  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
+    <value>Keine Parameter in Methode '{0}'.</value>
+  </data>
 </root>

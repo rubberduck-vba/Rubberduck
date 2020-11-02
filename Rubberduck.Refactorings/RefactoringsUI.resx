@@ -551,4 +551,8 @@ Do you want to proceed?</value>
     <value>Method '{0}' implements '{1}.{2}'. Rename the interface member?</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
+  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
+    <value>No parameters in method '{0}'.</value>
+    <comment>0: Selected target</comment>
+  </data>
 </root>

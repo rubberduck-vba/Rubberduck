@@ -523,4 +523,7 @@ Una clase privada puede asimismo implementar una interfaz pública.</value>
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>El método '{0}' implementa '{1}. {2}'. ¿Renombrar el miembro de la interfaz?</value>
   </data>
+  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
+    <value>No hay parámetros en el método '{0}'.</value>
+  </data>
 </root>

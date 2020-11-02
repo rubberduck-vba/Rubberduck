@@ -34,7 +34,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             switch (Model.Parameters.Count)
             {
                 case 0:
-                    var message = string.Format(RubberduckUI.RemovePresenter_NoParametersError, Model.TargetDeclaration.IdentifierName);
+                    var message = string.Format(RefactoringsUI.RemovePresenter_NoParametersError, Model.TargetDeclaration.IdentifierName);
                     _messageBox.NotifyWarn(message, RefactoringsUI.RemoveParamsDialog_TitleText);
                     return null;
                 case 1:

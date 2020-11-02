@@ -217,10 +217,6 @@
   <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
     <value>ParamArray parameter must be specified last.</value>
   </data>
-  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
-    <value>No parameters in method '{0}'.</value>
-    <comment>0: Selected target</comment>
-  </data>
   <data name="AllReferences_Caption" xml:space="preserve">
     <value>All references: '{0}'</value>
   </data>

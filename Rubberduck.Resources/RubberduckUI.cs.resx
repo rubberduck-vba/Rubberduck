@@ -294,9 +294,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
     <value>Parametr ParamArray musí být specifikován naposled.</value>
   </data>
-  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
-    <value>V metodě '{0}' nejsou žádné parametry.</value>
-  </data>
   <data name="AllReferences_Caption" xml:space="preserve">
     <value>Všechny reference: '{0}'</value>
   </data>

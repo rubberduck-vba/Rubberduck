@@ -505,4 +505,7 @@ Procéder?</value>
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>La méthode '{0}' implémente '{1}.{2}'. Modifier l'interface? (cette modification serait propagée à toutes les implémentations)</value>
   </data>
+  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
+    <value>La méthode '{0}' n'a pas de paramètres.</value>
+  </data>
 </root>

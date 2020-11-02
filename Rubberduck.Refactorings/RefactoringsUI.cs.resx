@@ -523,4 +523,7 @@ Chcete pokračovat?</value>
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>Metoda '{0}' implementuje '{1}.{2}'. Přejmenovat člena rozhraní?</value>
   </data>
+  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
+    <value>V metodě '{0}' nejsou žádné parametry.</value>
+  </data>
 </root>

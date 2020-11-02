@@ -1092,6 +1092,15 @@ namespace Rubberduck.Refactorings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No parameters in method &apos;{0}&apos;..
+        /// </summary>
+        public static string RemovePresenter_NoParametersError {
+            get {
+                return ResourceManager.GetString("RemovePresenter_NoParametersError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rename {0}.
         /// </summary>
         public static string Rename_DeclarationType {
