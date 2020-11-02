@@ -507,44 +507,8 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="Language_DE" xml:space="preserve">
     <value>Alemán</value>
   </data>
-  <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
-    <value>Todos los archivos abiertos</value>
-  </data>
-  <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
-    <value>Todos los proyectos abiertos</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
-    <value>Bloque actual</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
-    <value>Archivo actual</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
-    <value>Proyecto actual</value>
-  </data>
-  <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
-    <value>Selección</value>
-  </data>
-  <data name="RegexSearchReplace_Caption" xml:space="preserve">
-    <value>Buscar y reemplazar Regex</value>
-  </data>
   <data name="Find" xml:space="preserve">
     <value>Encontrar</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
-    <value>Reemplaza todo</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
-    <value>Reemplazar</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
-    <value>Reemplazar:</value>
-  </data>
-  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
-    <value>Ámbito:</value>
-  </data>
-  <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
-    <value>Buscar:</value>
   </data>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Detalles</value>

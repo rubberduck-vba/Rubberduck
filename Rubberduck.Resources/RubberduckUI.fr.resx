@@ -513,12 +513,6 @@ Continuer?</value>
   <data name="SelectAll_Button" xml:space="preserve">
     <value>Sélectionner tout</value>
   </data>
-  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
-    <value>Portée:</value>
-  </data>
-  <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
-    <value>Sélection</value>
-  </data>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Rapprocher la déclaration de son utilisation</value>
   </data>
@@ -543,29 +537,11 @@ Continuer?</value>
   <data name="DeselectAll_Button" xml:space="preserve">
     <value>Désélectionner tout</value>
   </data>
-  <data name="RegexSearchReplace_Caption" xml:space="preserve">
-    <value>Rechercher/remplacer avec une RegEx</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
-    <value>Projet courant</value>
-  </data>
-  <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
-    <value>Rechercher:</value>
-  </data>
   <data name="ImplementInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Implémenter une interface</value>
   </data>
-  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
-    <value>Remplacement:</value>
-  </data>
   <data name="EncapsulateField_Caption" xml:space="preserve">
     <value>Rubberduck - Encapsuler le champ</value>
-  </data>
-  <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
-    <value>Tous les fichiers ouverts</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
-    <value>Fichier courant</value>
   </data>
   <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
     <value>Référer explicitement à la feuille active</value>
@@ -573,14 +549,8 @@ Continuer?</value>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Détails</value>
   </data>
-  <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
-    <value>Bloc courant</value>
-  </data>
   <data name="EncapsulateField_PropertyName" xml:space="preserve">
     <value>Nom de la propriété:</value>
-  </data>
-  <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
-    <value>Tous les projets ouverts</value>
   </data>
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
     <value>La sélection courante n'est pas valide pour cette opération.</value>
@@ -590,9 +560,6 @@ Continuer?</value>
   </data>
   <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
     <value>Membres</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
-    <value>Remplacer</value>
   </data>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">
     <value>Veuillez spécifier le nom, l'accessibilité des paramètres, et le type de mutateur pour la nouvelle propriété.</value>
@@ -605,9 +572,6 @@ Continuer?</value>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' est utilisé dans plus d'une méthode.</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
-    <value>Remplacer tout</value>
   </data>
   <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Sélection invalide.</value>
