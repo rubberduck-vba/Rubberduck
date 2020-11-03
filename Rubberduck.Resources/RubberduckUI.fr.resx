@@ -307,15 +307,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Rubberduck_AboutBuild" xml:space="preserve">
     <value>Version {0}</value>
   </data>
-  <data name="TodoMarkerBug" xml:space="preserve">
-    <value>BUG </value>
-  </data>
-  <data name="TodoMarkerNote" xml:space="preserve">
-    <value>NOTE </value>
-  </data>
-  <data name="TodoMarkerTodo" xml:space="preserve">
-    <value>TODO </value>
-  </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implémentations de '{0}'</value>
   </data>

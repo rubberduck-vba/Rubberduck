@@ -1254,15 +1254,6 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   <data name="References_Version" xml:space="preserve">
     <value>Versión:</value>
   </data>
-  <data name="TodoMarkerBug" xml:space="preserve">
-    <value>BUG</value>
-  </data>
-  <data name="TodoMarkerNote" xml:space="preserve">
-    <value>NOTA</value>
-  </data>
-  <data name="TodoMarkerTodo" xml:space="preserve">
-    <value>TODO</value>
-  </data>
   <data name="TodoSettings_TextLabel" xml:space="preserve">
     <value>Texto:</value>
   </data>
