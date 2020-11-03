@@ -541,4 +541,7 @@ Una clase privada puede asimismo implementar una interfaz pública.</value>
   <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
     <value>Reordenar parametros</value>
   </data>
+  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
+    <value>Menos de dos parámetros en el método '{0}'.</value>
+  </data>
 </root>

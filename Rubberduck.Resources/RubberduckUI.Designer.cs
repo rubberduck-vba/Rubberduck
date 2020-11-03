@@ -3309,33 +3309,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Less than two parameters in method &apos;{0}&apos;..
-        /// </summary>
-        public static string ReorderPresenter_LessThanTwoParametersError {
-            get {
-                return ResourceManager.GetString("ReorderPresenter_LessThanTwoParametersError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Optional parameters must be specified at the end of the parameter list..
-        /// </summary>
-        public static string ReorderPresenter_OptionalParametersMustBeLastError {
-            get {
-                return ResourceManager.GetString("ReorderPresenter_OptionalParametersMustBeLastError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ParamArray parameter must be specified last..
-        /// </summary>
-        public static string ReorderPresenter_ParamArrayError {
-            get {
-                return ResourceManager.GetString("ReorderPresenter_ParamArrayError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0}. Click to refresh..
         /// </summary>
         public static string ReparseToolTipText {

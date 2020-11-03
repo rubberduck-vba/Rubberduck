@@ -189,18 +189,8 @@
   <data name="DeclarationType_Control" xml:space="preserve">
     <value>control</value>
   </data>
-  <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
-    <value>Optional parameters must be specified at the end of the parameter list.</value>
-  </data>
-  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
-    <value>Less than two parameters in method '{0}'.</value>
-    <comment>0: Selected target</comment>
-  </data>
   <data name="AllReferences_NoneFound" xml:space="preserve">
     <value>No references were found for identifier '{0}'.</value>
-  </data>
-  <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
-    <value>ParamArray parameter must be specified last.</value>
   </data>
   <data name="AllReferences_Caption" xml:space="preserve">
     <value>All references: '{0}'</value>

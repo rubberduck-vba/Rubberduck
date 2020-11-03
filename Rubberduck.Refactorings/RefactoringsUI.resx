@@ -570,4 +570,8 @@ Do you want to proceed?</value>
   <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
     <value>Reorder parameters</value>
   </data>
+  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
+    <value>Less than two parameters in method '{0}'.</value>
+    <comment>0: Selected target</comment>
+  </data>
 </root>

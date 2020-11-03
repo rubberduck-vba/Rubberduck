@@ -547,4 +547,7 @@ Wollen Sie fortfahren?</value>
   <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
     <value>Parameter umordnen</value>
   </data>
+  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
+    <value>Weniger als zwei Parameter für die Methode '{0}'.</value>
+  </data>
 </root>

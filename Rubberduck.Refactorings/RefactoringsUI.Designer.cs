@@ -1335,5 +1335,14 @@ namespace Rubberduck.Refactorings {
                 return ResourceManager.GetString("ReorderParamsDialog_TitleText", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Less than two parameters in method &apos;{0}&apos;..
+        /// </summary>
+        public static string ReorderPresenter_LessThanTwoParametersError {
+            get {
+                return ResourceManager.GetString("ReorderPresenter_LessThanTwoParametersError", resourceCulture);
+            }
+        }
     }
 }

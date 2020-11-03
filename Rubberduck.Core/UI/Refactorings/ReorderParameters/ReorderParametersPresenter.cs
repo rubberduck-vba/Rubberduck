@@ -34,7 +34,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             if (Model.Parameters.Count < 2)
             {
-                var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, Model.TargetDeclaration.IdentifierName);
+                var message = string.Format(RefactoringsUI.ReorderPresenter_LessThanTwoParametersError, Model.TargetDeclaration.IdentifierName);
                 _messageBox.NotifyWarn(message, RefactoringsUI.ReorderParamsDialog_TitleText);
                 return null;
             }

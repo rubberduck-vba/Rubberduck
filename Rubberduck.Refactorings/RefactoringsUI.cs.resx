@@ -541,4 +541,7 @@ Chcete pokračovat?</value>
   <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
     <value>Přeuspořádat parametry</value>
   </data>
+  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
+    <value>V metodě '{0}' je méně než 2 parametry.</value>
+  </data>
 </root>

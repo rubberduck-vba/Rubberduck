@@ -186,18 +186,8 @@
   <data name="DeclarationType_Control" xml:space="preserve">
     <value>VBDesigner-Objekt</value>
   </data>
-  <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
-    <value>Optionale Parameter müssen am Ende der Parameterliste deklariert werden.</value>
-  </data>
-  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
-    <value>Weniger als zwei Parameter für die Methode '{0}'.</value>
-    <comment>0: Gewähltes Ziel</comment>
-  </data>
   <data name="AllReferences_NoneFound" xml:space="preserve">
     <value>Keine Referenzen für '{0}' gefunden.</value>
-  </data>
-  <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
-    <value>ParamArray-Parameter muss als letztes spezifiziert werden.</value>
   </data>
   <data name="AllReferences_Caption" xml:space="preserve">
     <value>Alle Referenzen: '{0}'</value>

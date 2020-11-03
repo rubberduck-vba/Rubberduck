@@ -523,4 +523,7 @@ Procéder?</value>
   <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
     <value>Modifier l'ordre des paramètres</value>
   </data>
+  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
+    <value>La méthode '{0}' compte moins de deux paramètres.</value>
+  </data>
 </root>

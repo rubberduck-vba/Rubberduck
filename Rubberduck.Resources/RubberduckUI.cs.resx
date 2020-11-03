@@ -273,14 +273,8 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="DeclarationType_Control" xml:space="preserve">
     <value>VBDesigner-Objekt</value>
   </data>
-  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
-    <value>V metodě '{0}' je méně než 2 parametry.</value>
-  </data>
   <data name="AllReferences_NoneFound" xml:space="preserve">
     <value>V ukazateli '{0}' nebyly nalezeny žádné reference.</value>
-  </data>
-  <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
-    <value>Parametr ParamArray musí být specifikován naposled.</value>
   </data>
   <data name="AllReferences_Caption" xml:space="preserve">
     <value>Všechny reference: '{0}'</value>
@@ -443,9 +437,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="Add" xml:space="preserve">
     <value>Přidat</value>
-  </data>
-  <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
-    <value>Volitelné parametry musejí být specifikovány na konci seznamu parametrů.</value>
   </data>
   <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck Inspekce Kódu - {0}
