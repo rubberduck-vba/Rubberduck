@@ -21,10 +21,10 @@ namespace Rubberduck.UI.AddRemoveReferences
             UpdateCurrentSelection((Selector)sender);
 
             var cs = ViewModel.CurrentSelection;
-            Description.Text = cs.Description;
-            Version.Text = cs.Version;
-            LocaleName.Text = cs.LocaleName;
-            FullPath.Text = cs.FullPath;
+            Description.Text = cs?.Description ?? string.Empty;
+            Version.Text = cs?.Version ?? string.Empty;
+            LocaleName.Text = cs?.LocaleName ?? string.Empty;
+            FullPath.Text = cs?.FullPath ?? string.Empty;
         }
 
         private void UpdateCurrentSelection(Selector sender)

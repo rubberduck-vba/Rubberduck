@@ -40,41 +40,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
-    internal sealed class ImplicitActiveWorkbookReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase
+    internal sealed class ImplicitActiveWorkbookReferenceInspection : ImplicitWorkbookReferenceInspectionBase
     {
         public ImplicitActiveWorkbookReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {}
 
-        private static readonly string[] InterestingMembers =
+        private static readonly List<string> _alwaysActiveWorkbookReferenceParents = new List<string>
         {
-            "Worksheets", "Sheets", "Names"
+            "_Application", "Application"
         };
 
-        private static readonly string[] InterestingClasses =
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            "_Global", "_Application", "Global", "Application"
-        };
-
-        protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
-        {
-            var excel = finder.Projects
-                .SingleOrDefault(project => project.IdentifierName == "Excel" && !project.IsUserDefined);
-            if (excel == null)
-            {
-                return Enumerable.Empty<Declaration>();
-            }
-
-            var relevantClasses = InterestingClasses
-                .Select(className => finder.FindClassModule(className, excel, true))
-                .OfType<ModuleDeclaration>();
-
-            var relevantProperties = relevantClasses
-                .SelectMany(classDeclaration => classDeclaration.Members)
-                .OfType<PropertyGetDeclaration>()
-                .Where(member => InterestingMembers.Contains(member.IdentifierName));
-
-            return relevantProperties;
+            return !(Declaration.GetModuleParent(reference.ParentNonScoping) is DocumentModuleDeclaration document)
+                   || !document.SupertypeNames.Contains("Workbook")
+                   || _alwaysActiveWorkbookReferenceParents.Contains(reference.Declaration.ParentDeclaration.IdentifierName);
         }
 
         protected override string ResultDescription(IdentifierReference reference)

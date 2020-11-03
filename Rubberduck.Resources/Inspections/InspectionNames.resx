@@ -362,19 +362,15 @@
   </data>
   <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
     <value>Keyword used as member name</value>
-    
   </data>
   <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
     <value>Line continuation between keywords</value>
-    
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
     <value>Identifier containing a non-breaking space</value>
-    
   </data>
   <data name="NegativeLineNumberInspection" xml:space="preserve">
     <value>Negative line number</value>
-    
   </data>
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>OnErrorGoto -1</value>
@@ -445,5 +441,14 @@
   </data>
   <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
     <value>Superfluous annotation arguments</value>
+  </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>Implicit reference to containing Worksheet module</value>
+  </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>Implicit reference to the containing Workbook module</value>
+  </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>Misleading ByRef parameter modifier</value>
   </data>
 </root>

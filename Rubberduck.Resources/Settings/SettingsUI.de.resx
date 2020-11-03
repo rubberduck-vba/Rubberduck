@@ -231,4 +231,10 @@
   <data name="HotKeys_Exclamation" xml:space="preserve">
     <value>Warnung! Kein Modifikator ausgewählt!</value>
   </data>
+  <data name="PageHeader_IgnoredProjectsSettings" xml:space="preserve">
+    <value>Ignorierte Projekte</value>
+  </data>
+  <data name="FilesHeader_IgnoredProjectsSettings" xml:space="preserve">
+    <value>Ignorierte Dateien</value>
+  </data>
 </root>

@@ -31,15 +31,14 @@ namespace Rubberduck.UnitTesting
         /// </remarks>
         public override void AreEqual(object expected, object actual, string message = "")
         {
-            // vbNullString is marshalled as null. assume value semantics:
-            expected = expected ?? string.Empty;
-            actual = actual ?? string.Empty;
-
-            if (!PermissiveComparer.Equals(expected, actual))
+            if (PermissiveComparer.Equals(expected, actual))
+            {
+                AssertHandler.OnAssertSucceeded();
+            }
+            else
             {
                 AssertHandler.OnAssertFailed(message);
             }
-            AssertHandler.OnAssertSucceeded();
         }
 
         public override void AreNotEqual(object expected, object actual, string message = "")
