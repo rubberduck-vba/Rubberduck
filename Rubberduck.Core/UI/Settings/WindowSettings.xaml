@@ -52,7 +52,7 @@
                       IsChecked="{Binding TestExplorerVisibleOnStartup, Mode=TwoWay}"
                       Margin="5,0,0,5"
                       HorizontalAlignment="Left" />
-            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TodoExplorer_Caption}"
+            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_Caption}"
                       IsChecked="{Binding TodoExplorerVisibleOnStartup, Mode=TwoWay}"
                       Margin="5,0,0,5"
                       HorizontalAlignment="Left" />

@@ -354,9 +354,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="Type" xml:space="preserve">
     <value>Tipo</value>
   </data>
-  <data name="TodoExplorer_Caption" xml:space="preserve">
-    <value>TODO Explorer</value>
-  </data>
   <data name="Warning" xml:space="preserve">
     <value>Advertencia</value>
   </data>
@@ -425,12 +422,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   </data>
   <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
     <value>Ejecutar inspecciones de código</value>
-  </data>
-  <data name="TodoExplorer_Description" xml:space="preserve">
-    <value>Descripción</value>
-  </data>
-  <data name="TodoExplorer_LineNumber" xml:space="preserve">
-    <value>Número de línea</value>
   </data>
   <data name="ProjectName" xml:space="preserve">
     <value>Nombre del proyecto</value>
@@ -1106,22 +1097,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   </data>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck no ve nada todavía.</value>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Ítems de TODO de Rubberduck - {0}
-{1} ítems encontrados.</value>
-    <comment>{0} = marca de tiempo; {1} = número</comment>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Ítem de TODO de Rubberduck - {0}
-{1} ítem encontrado.</value>
-    <comment>{0} = marca de tiempo; {1} = número</comment>
-  </data>
-  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
-    <value>{0}: {1} - {2}. {3} línea {4}.</value>
-  </data>
-  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
-    <value>Copiar al portapapeles</value>
   </data>
   <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
     <value>Métricas de Código</value>

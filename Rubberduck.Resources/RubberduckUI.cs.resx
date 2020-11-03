@@ -297,12 +297,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="ProjectName" xml:space="preserve">
     <value>Jméno projektu</value>
   </data>
-  <data name="TodoExplorer_LineNumber" xml:space="preserve">
-    <value>Číslo řádku</value>
-  </data>
-  <data name="TodoExplorer_Description" xml:space="preserve">
-    <value>Popisek</value>
-  </data>
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>označení řádku</value>
   </data>
@@ -365,9 +359,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="Passed" xml:space="preserve">
     <value>V pořádku</value>
-  </data>
-  <data name="TodoExplorer_Caption" xml:space="preserve">
-    <value>Todo Explorer</value>
   </data>
   <data name="EasterEgg_Continuator" xml:space="preserve">
     <value>Získali jste odznak "Continuator"!</value>
@@ -999,20 +990,6 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
   </data>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck prozatím nic nevidí.</value>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck TODO položky - {0}
-{1} položek nalezeno.</value>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck TODO položky - {0}
-{1} položka nalezena.</value>
-  </data>
-  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
-    <value>{0}: {1} - {2}.{3} řádek {4}.</value>
-  </data>
-  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
-    <value>Zkopírovat do schránky</value>
   </data>
   <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
     <value>Metrika Kódu</value>

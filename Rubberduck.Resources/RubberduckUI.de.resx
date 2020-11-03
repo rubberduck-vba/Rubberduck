@@ -346,9 +346,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Type" xml:space="preserve">
     <value>Typ</value>
   </data>
-  <data name="TodoExplorer_Caption" xml:space="preserve">
-    <value>ToDo Liste</value>
-  </data>
   <data name="Warning" xml:space="preserve">
     <value>Warnung</value>
   </data>
@@ -414,12 +411,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
     <value>Code-Untersuchung ausführen</value>
-  </data>
-  <data name="TodoExplorer_Description" xml:space="preserve">
-    <value>Beschreibung</value>
-  </data>
-  <data name="TodoExplorer_LineNumber" xml:space="preserve">
-    <value>Zeilennummer</value>
   </data>
   <data name="ProjectName" xml:space="preserve">
     <value>Projektname</value>
@@ -1044,20 +1035,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   </data>
   <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
     <value>Experimentelle Funktionalität:</value>
-  </data>
-  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
-    <value>In die Zwischenablage kopieren</value>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck TODO Markierungen - {0}
-{1} Markierungen gefunden.</value>
-  </data>
-  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
-    <value>{0}: {1} - {2}.{3} Zeile {4}.</value>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck TODO Markierungen - {0}
-{1} Markierungen gefunden.</value>
   </data>
   <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
     <value>Codemetrikergebnisse</value>
