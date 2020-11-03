@@ -328,9 +328,9 @@ End Enum
 
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("Private numberType_1 As NumberTypes", actualCode);
+            StringAssert.Contains("Private numberType1 As NumberTypes", actualCode);
             StringAssert.Contains("Public Property Get NumberType() As NumberTypes", actualCode);
-            StringAssert.Contains("NumberType = numberType_1", actualCode);
+            StringAssert.Contains("NumberType = numberType1", actualCode);
         }
 
         //5.3.1 The declared type of a function declaration may not be a private enum name.
@@ -357,9 +357,9 @@ Private numberT|ype As NumberTypes{declarationList ?? string.Empty}
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             var expectedPropertyType = enumTypeAccessibility == "Public" ? "NumberTypes" : "Long";
-            StringAssert.Contains("Private numberType_1 As NumberTypes", actualCode);
+            StringAssert.Contains("Private numberType1 As NumberTypes", actualCode);
             StringAssert.Contains($"Public Property Get NumberType() As {expectedPropertyType}", actualCode);
-            StringAssert.Contains("NumberType = numberType_1", actualCode);
+            StringAssert.Contains("NumberType = numberType1", actualCode);
         }
 
         [Test]
@@ -373,12 +373,12 @@ Private numberT|ype As NumberTypes{declarationList ?? string.Empty}
             var presenterAction = Support.SetParametersForSingleTarget("fizz");
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("Private fizz_1 As Integer, fuzz As Integer,", actualCode);
+            StringAssert.Contains("Private fizz1 As Integer, fuzz As Integer,", actualCode);
             StringAssert.Contains("Public Property Get Fizz() As Integer", actualCode);
             StringAssert.Contains("Public Property Let Fizz(", actualCode);
             StringAssert.Contains($"(ByVal {Support.RHSIdentifier} As Integer)", actualCode);
-            StringAssert.Contains("Fizz = fizz_1", actualCode);
-            StringAssert.Contains($"fizz_1 = {Support.RHSIdentifier}", actualCode);
+            StringAssert.Contains("Fizz = fizz1", actualCode);
+            StringAssert.Contains($"fizz1 = {Support.RHSIdentifier}", actualCode);
             StringAssert.Contains("End Property", actualCode);
         }
 
@@ -396,8 +396,8 @@ Private numberT|ype As NumberTypes{declarationList ?? string.Empty}
             StringAssert.Contains("Public Property Get Fizz() As Integer", actualCode);
             StringAssert.Contains("Public Property Let Fizz(", actualCode);
             StringAssert.Contains($"(ByVal {Support.RHSIdentifier} As Integer)", actualCode);
-            StringAssert.Contains("Fizz = fizz_1", actualCode);
-            StringAssert.Contains($"fizz_1 = {Support.RHSIdentifier}", actualCode);
+            StringAssert.Contains("Fizz = fizz1", actualCode);
+            StringAssert.Contains($"fizz1 = {Support.RHSIdentifier}", actualCode);
             StringAssert.Contains("End Property", actualCode);
         }
 
