@@ -1531,9 +1531,6 @@ Importación cancelada.</value>
   <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
     <value>El identificador '{0}' disparará un resultado de inspección 'Usar nombres significativos'.</value>
   </data>
-  <data name="TestExplorer_AppendHeader" xml:space="preserve">
-    <value>Rubberduck Resultados de pruebas - {0}</value>
-  </data>
   <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
     <value>No se puede suspender el analizador para ejecutar la operación de refactorización.</value>
   </data>

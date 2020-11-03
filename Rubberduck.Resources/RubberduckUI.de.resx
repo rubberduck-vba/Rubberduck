@@ -1511,9 +1511,6 @@ Import abgebrochen.</value>
 
 Import abgebrochen.</value>
   </data>
-  <data name="TestExplorer_AppendHeader" xml:space="preserve">
-    <value>Rubberduck: Testergebnisse - {0}</value>
-  </data>
   <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
     <value>ActiveX-Designer</value>
   </data>

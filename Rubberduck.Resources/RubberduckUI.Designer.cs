@@ -4904,15 +4904,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck Test Results - {0}.
-        /// </summary>
-        public static string TestExplorer_AppendHeader {
-            get {
-                return ResourceManager.GetString("TestExplorer_AppendHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap tick_circle {

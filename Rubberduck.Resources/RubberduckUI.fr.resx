@@ -1477,9 +1477,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
     <value>Le contrôle ciblé '{0}' est introuvable.</value>
   </data>
-  <data name="TestExplorer_AppendHeader" xml:space="preserve">
-    <value>Rubberduck - Résultats des tests : {0}</value>
-  </data>
   <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
     <value>Impossible de suspendre l'analyse en cours pour effectuer le refactoring.</value>
   </data>

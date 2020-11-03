@@ -1434,9 +1434,6 @@ End Enum</value>
   <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
     <value>V popisu uveďte mezeru</value>
   </data>
-  <data name="TestExplorer_AppendHeader" xml:space="preserve">
-    <value>Rubberduck: Výsledky Testů - {0}</value>
-  </data>
   <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
     <value>Nelze přerušit Parser k provedení operace refaktoringu.</value>
   </data>
