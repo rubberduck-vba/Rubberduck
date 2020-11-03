@@ -26,7 +26,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
     public class ProjectExplorerAddRemoveReferencesCommandMenuItem : AddRemoveReferencesCommandMenuItemBase
     {
-        public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.AddRemoveReferences;
+        public override int DisplayOrder => (int)ProjectExplorerContextMenuItemDisplayOrder.AddRemoveReferences;
 
         public ProjectExplorerAddRemoveReferencesCommandMenuItem(AddRemoveReferencesCommand command) : base(command) { }
     }

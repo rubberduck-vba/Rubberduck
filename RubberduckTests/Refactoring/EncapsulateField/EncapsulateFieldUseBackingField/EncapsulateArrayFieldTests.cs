@@ -148,8 +148,8 @@ End Sub
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Public Property Get MyArray() As Variant", actualCode);
             StringAssert.DoesNotContain("Public Property Let MyArray(", actualCode);
-            StringAssert.Contains("Redim myArray_1(size)", actualCode);
-            StringAssert.Contains("myArray_1(idx) = idx", actualCode);
+            StringAssert.Contains("Redim myArray1(size)", actualCode);
+            StringAssert.Contains("myArray1(idx) = idx", actualCode);
         }
 
         [Test]
