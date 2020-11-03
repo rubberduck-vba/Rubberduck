@@ -1453,18 +1453,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
     <value>espace-non-identifié</value>
   </data>
-  <data name="TestOutcome_Fail" xml:space="preserve">
-    <value>Échec</value>
-  </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Inconcluant</value>
-  </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Succès</value>
-  </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Inconnu</value>
-  </data>
   <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
     <value>'{0}' doit débuter par une lettre.</value>
   </data>

@@ -1510,18 +1510,6 @@ Importación cancelada.</value>
   <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
     <value>espacio-sin-identificar</value>
   </data>
-  <data name="TestOutcome_Fail" xml:space="preserve">
-    <value>Fallo</value>
-  </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Indefinido</value>
-  </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Exitoso</value>
-  </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Desconocido</value>
-  </data>
   <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
     <value>La descripción contiene espacios en blanco</value>
   </data>

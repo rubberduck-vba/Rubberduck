@@ -1427,18 +1427,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="RegexAssistant_SpelledOut_Tab" xml:space="preserve">
     <value>Tab</value>
   </data>
-  <data name="TestOutcome_Fail" xml:space="preserve">
-    <value>Fehlgeschlagen</value>
-  </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Erfolgreich</value>
-  </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Unbekannt</value>
-  </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Uneindeutig</value>
-  </data>
   <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
     <value>'{0}' beginnt nicht mit einem Buchstaben.</value>
   </data>

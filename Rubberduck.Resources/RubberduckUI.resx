@@ -1609,18 +1609,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
     <value>unidentified-whitespace</value>
   </data>
-  <data name="TestOutcome_Fail" xml:space="preserve">
-    <value>Fail</value>
-  </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Inconclusive</value>
-  </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Succeeded</value>
-  </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Unknown</value>
-  </data>
   <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
     <value>'{0}' does not start with a letter.</value>
     <comment>{0} = code element name</comment>
@@ -1955,8 +1943,5 @@ Do you want to proceed?</value>
   </data>
   <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
     <value>Add/Adjust attribute</value>
-  </data>
-  <data name="TestOutcome_Ignored" xml:space="preserve">
-    <value>Ignored</value>
   </data>
 </root>

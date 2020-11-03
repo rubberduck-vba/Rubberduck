@@ -1395,18 +1395,6 @@ End Enum</value>
   <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
     <value>neidentifikovaná-mezera</value>
   </data>
-  <data name="TestOutcome_Fail" xml:space="preserve">
-    <value>Selhání</value>
-  </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Úspěch</value>
-  </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Neznámý</value>
-  </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Bezvýsledný</value>
-  </data>
   <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
     <value>'{0}' nezačíná písmenem.</value>
   </data>
