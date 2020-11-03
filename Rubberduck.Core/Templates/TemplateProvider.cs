@@ -37,6 +37,22 @@ namespace Rubberduck.Templates
                 list.Add(new Template(templateName, handler));
             }
 
+            var set = Resources.Templates.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+            foreach (DictionaryEntry entry in set)
+            {
+                const string NameSuffix = "_Name";
+                var key = (string)entry.Key;
+                if (key.EndsWith(NameSuffix))
+                {
+                    var templateName = key.Substring(0, key.Length - NameSuffix.Length);
+                    var handler = _provider.CreateTemplateFileHandler(templateName);
+                    if (!list.Any(t => t.Name == templateName))
+                    {
+                        list.Add(new Template(templateName, handler));
+                    }
+                }
+            }
+
             return list;
         });
 

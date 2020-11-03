@@ -61,6 +61,24 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing Template File.
+        /// </summary>
+        public static string Menu_Warning_CannotFindTemplate_Caption {
+            get {
+                return ResourceManager.GetString("Menu_Warning_CannotFindTemplate_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot find the template for &apos;{0}&apos;. The file may have been renamed or deleted. Expected file name: &apos;{1}&apos;.
+        /// </summary>
+        public static string Menu_Warning_CannotFindTemplate_Message {
+            get {
+                return ResourceManager.GetString("Menu_Warning_CannotFindTemplate_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Predeclared Class module (.cls).
         /// </summary>
         public static string PredeclaredClassModule_Caption {

@@ -13,13 +13,19 @@ namespace Rubberduck.Templates
     /// </remarks>
     public class Template : ITemplate
     {
+        public const string TemplateExtension = ".template";
+        public static int ExtensionLength = TemplateExtension.Length;
+
         private readonly ITemplateFileHandler _handler;
+        private readonly string _builtInCode;
+
         public Template(string name, ITemplateFileHandler handler)
         {
             _handler = handler;
-
-            Name = name.EndsWith(".rdt") ? name.Substring(0, name.Length - 4) : name;
-            IsUserDefined = VerifyIfUserDefined(Name);
+            
+            Name = name.EndsWith(TemplateExtension) ? name.Substring(0, name.Length - ExtensionLength) : name;
+            _builtInCode = Resources.Templates.ResourceManager.GetString(Name + "_Code");
+            IsUserDefined = string.IsNullOrWhiteSpace(_builtInCode);
 
             if (IsUserDefined)
             {
@@ -57,15 +63,9 @@ namespace Rubberduck.Templates
         public string Caption { get; }
         public string Description { get; }
 
-        public string Read() => _handler.Read();
+        public string Read() => _handler.Read() ?? _builtInCode;
         
         public void Write(string content) => _handler.Write(content);
-
-        private static bool VerifyIfUserDefined(string name)
-        {
-            var builtInCode = Resources.Templates.ResourceManager.GetString(name + "_Code");
-            return builtInCode == null;
-        }
 
         private static void VerifyFile(string name, ITemplateFileHandler handler)
         {

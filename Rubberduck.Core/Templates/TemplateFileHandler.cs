@@ -39,7 +39,7 @@ namespace Rubberduck.Templates
         public IEnumerable<string> GetTemplateNames()
         {
             var info = new DirectoryInfo(_rootPath);
-            return info.GetFiles().Select(file => file.Name).ToList();
+            return info.GetFiles().Select(file => file.Name).Where(name => name.EndsWith(Template.TemplateExtension)).ToList();
         }
     }
 
@@ -56,7 +56,7 @@ namespace Rubberduck.Templates
 
         public TemplateFileHandler(string fullPath)
         {
-            _fullPath = fullPath + (fullPath.EndsWith(".rdt") ? string.Empty : ".rdt");
+            _fullPath = fullPath + (fullPath.EndsWith(Template.TemplateExtension) ? string.Empty : Template.TemplateExtension);
         }
 
         public bool Exists => File.Exists(_fullPath);
