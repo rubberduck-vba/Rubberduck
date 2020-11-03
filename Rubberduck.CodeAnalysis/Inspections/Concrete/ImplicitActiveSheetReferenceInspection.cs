@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.Parsing.Symbols;
@@ -10,7 +9,7 @@ using Rubberduck.Resources.Inspections;
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
-    /// Locates unqualified Worksheet.Range/Cells/Columns/Rows member calls that implicitly refer to ActiveSheet.
+    /// Locates unqualified Worksheet.Range/Cells/Columns/Rows member calls inside worksheet modules.
     /// </summary>
     /// <reference name="Excel" />
     /// <why>
@@ -42,42 +41,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
-    internal sealed class ImplicitActiveSheetReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase
+    internal sealed class ImplicitActiveSheetReferenceInspection : ImplicitSheetReferenceInspectionBase
     {
         public ImplicitActiveSheetReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {}
 
-        protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            var excel = finder.Projects
-                .SingleOrDefault(item => !item.IsUserDefined
-                                         && item.IdentifierName == "Excel");
-            if (excel == null)
-            {
-                return Enumerable.Empty<Declaration>();
-            }
-
-            var globalModules = GlobalObjectClassNames
-                .Select(className => finder.FindClassModule(className, excel, true))
-                .OfType<ModuleDeclaration>();
-
-            return globalModules
-                .SelectMany(moduleClass => moduleClass.Members)
-                .Where(declaration => TargetMemberNames.Contains(declaration.IdentifierName) 
-                                      && declaration.DeclarationType.HasFlag(DeclarationType.Member)
-                                      && declaration.AsTypeName == "Range");
+            return !(Declaration.GetModuleParent(reference.ParentNonScoping) is DocumentModuleDeclaration document)
+                || !document.SupertypeNames.Contains("Worksheet");
         }
-
-        private static readonly string[] GlobalObjectClassNames =
-        {
-            "Global", "_Global"
-        };
-
-        private static readonly string[] TargetMemberNames =
-        {
-            "Cells", "Range", "Columns", "Rows"
-        };
 
         protected override string ResultDescription(IdentifierReference reference)
         {

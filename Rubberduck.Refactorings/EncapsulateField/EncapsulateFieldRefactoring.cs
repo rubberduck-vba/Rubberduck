@@ -1,10 +1,8 @@
 ﻿using System.Linq;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor;
-using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -17,40 +15,35 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class EncapsulateFieldRefactoring : InteractiveRefactoringBase<EncapsulateFieldModel>
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
-        private readonly IIndenter _indenter;
-        private readonly ICodeBuilder _codeBuilder;
-        private readonly IRewritingManager _rewritingManager;
+        private readonly EncapsulateFieldRefactoringAction _refactoringAction;
+        private readonly EncapsulateFieldPreviewProvider _previewProvider;
+        private readonly IEncapsulateFieldModelFactory _modelFactory;
 
         public EncapsulateFieldRefactoring(
-                IDeclarationFinderProvider declarationFinderProvider,
-                IIndenter indenter,
-                RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
-                IRewritingManager rewritingManager,
-                ISelectionProvider selectionProvider,
-                ISelectedDeclarationProvider selectedDeclarationProvider,
-                ICodeBuilder codeBuilder)
-            :base(selectionProvider, userInteraction)
+            EncapsulateFieldRefactoringAction refactoringAction,
+            EncapsulateFieldPreviewProvider previewProvider,
+            IEncapsulateFieldModelFactory encapsulateFieldModelFactory,
+            RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider)
+                :base(selectionProvider, userInteraction)
         {
-            _declarationFinderProvider = declarationFinderProvider;
+            _refactoringAction = refactoringAction;
+            _previewProvider = previewProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
-            _indenter = indenter;
-            _codeBuilder = codeBuilder;
-            _rewritingManager = rewritingManager;
+            _modelFactory = encapsulateFieldModelFactory;
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
             var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
-            if (selectedDeclaration == null
-                || selectedDeclaration.DeclarationType != DeclarationType.Variable
-                || selectedDeclaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
-            {
-                return null;
-            }
 
-            return selectedDeclaration;
+            var isInvalidSelection = selectedDeclaration == null
+                || selectedDeclaration.DeclarationType != DeclarationType.Variable
+                || selectedDeclaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
+
+            return isInvalidSelection ? null : selectedDeclaration;
         }
 
         protected override EncapsulateFieldModel InitializeModel(Declaration target)
@@ -65,58 +58,49 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 throw new InvalidDeclarationTypeException(target);
             }
 
-            var builder = new EncapsulateFieldElementsBuilder(_declarationFinderProvider, target.QualifiedModuleName);
+            var model = _modelFactory.Create(target);
 
-            var selected = builder.Candidates.Single(c => c.Declaration == target);
-            selected.EncapsulateFlag = true;
+            model.PreviewProvider = _previewProvider;
 
-            var model = new EncapsulateFieldModel(
-                                target,
-                                builder.Candidates,
-                                builder.ObjectStateUDTCandidates,
-                                builder.DefaultObjectStateUDT,
-                                PreviewRewrite,
-                                _declarationFinderProvider,
-                                builder.ValidationsProvider);
+            model.StrategyChangedAction = OnStrategyChanged;
 
-            if (builder.ObjectStateUDT != null)
-            {
-                model.EncapsulateFieldStrategy = EncapsulateFieldStrategy.ConvertFieldsToUDTMembers;
-                model.ObjectStateUDTField = builder.ObjectStateUDT;
-            }
+            model.ObjectStateFieldChangedAction = OnObjectStateUDTChanged;
+
+            model.ConflictFinder.AssignNoConflictIdentifiers(model.EncapsulationCandidates);
 
             return model;
         }
 
         protected override void RefactorImpl(EncapsulateFieldModel model)
         {
-            var executableRewriteSession = _rewritingManager.CheckOutCodePaneSession();
-
-            RefactorRewrite(model, executableRewriteSession);
-
-            if (!executableRewriteSession.TryRewrite())
+            if (!model.SelectedFieldCandidates.Any())
             {
-                throw new RewriteFailedException(executableRewriteSession);
+                return;
             }
+
+            _refactoringAction.Refactor(model);
         }
 
-        private string PreviewRewrite(EncapsulateFieldModel model)
+        private void OnStrategyChanged(EncapsulateFieldModel model)
         {
-            var previewSession = RefactorRewrite(model, _rewritingManager.CheckOutCodePaneSession(), true);
+            if (model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.UseBackingFields)
+            {
+                foreach (var objectStateCandidate in model.EncapsulateFieldUseBackingUDTMemberModel.ObjectStateUDTCandidates)
+                {
+                    objectStateCandidate.IsSelected = !objectStateCandidate.IsExistingDeclaration;
+                }
+            }
 
-            return previewSession.CheckOutModuleRewriter(model.QualifiedModuleName)
-                .GetText();
+            var candidates = model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.UseBackingFields
+                ? model.EncapsulateFieldUseBackingFieldModel.EncapsulationCandidates
+                : model.EncapsulateFieldUseBackingUDTMemberModel.EncapsulationCandidates;
+
+            model.ConflictFinder.AssignNoConflictIdentifiers(candidates);
         }
 
-        private IRewriteSession RefactorRewrite(EncapsulateFieldModel model, IRewriteSession refactorRewriteSession, bool asPreview = false)
+        private void OnObjectStateUDTChanged(EncapsulateFieldModel model)
         {
-            if (!model.SelectedFieldCandidates.Any()) { return refactorRewriteSession; }
-
-            var strategy = model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
-                ? new ConvertFieldsToUDTMembers(_declarationFinderProvider, model, _indenter, _codeBuilder) as IEncapsulateStrategy
-                : new UseBackingFields(_declarationFinderProvider, model, _indenter, _codeBuilder) as IEncapsulateStrategy;
-
-            return strategy.RefactorRewrite(refactorRewriteSession, asPreview);
+            model.ConflictFinder.AssignNoConflictIdentifiers(model.EncapsulateFieldUseBackingUDTMemberModel.EncapsulationCandidates);
         }
     }
 }

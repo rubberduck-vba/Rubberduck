@@ -507,14 +507,25 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementExtractInterfaceCommand()
         {
-            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(null, new CodeBuilder());
+            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(null, CreateCodeBuilder());
             var addComponentService = TestAddComponentService(State.ProjectsProvider);
             var extractInterfaceBaseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, State, State, null, State.ProjectsProvider, addComponentService);
             var userInteraction = new RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel>(null, _uiDispatcher.Object);
             ViewModel.CodeExplorerExtractInterfaceCommand = new CodeExplorerExtractInterfaceCommand(
-                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, userInteraction, null, new CodeBuilder()),
+                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, userInteraction, null, CreateCodeBuilder()),
                 State, null, VbeEvents.Object);
             return this;
+        }
+
+        private ICodeBuilder CreateCodeBuilder()
+            => new CodeBuilder(new Indenter(Vbe.Object, CreateIndenterSettings));
+
+        private static IndenterSettings CreateIndenterSettings()
+        {
+            var s = IndenterSettingsTests.GetMockIndenterSettings();
+            s.VerticallySpaceProcedures = true;
+            s.LinesBetweenProcedures = 1;
+            return s;
         }
 
         private static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)
