@@ -436,12 +436,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Remove" xml:space="preserve">
     <value>Entfernen</value>
   </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Markierungstext:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Markierungen:</value>
-  </data>
   <data name="Navigation" xml:space="preserve">
     <value>Navigation</value>
   </data>
@@ -1187,15 +1181,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
     <value>Korrektur für hochauflösende Displayskalierung</value>
-  </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>TODO Explorer</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Text</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Text:</value>
   </data>
   <data name="ReferenceSettings_FixBroken" xml:space="preserve">
     <value>Versuche fehlerhafte Referenzen zu reparieren</value>

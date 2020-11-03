@@ -435,12 +435,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="DeclarationType_UserDefinedTypeMember" xml:space="preserve">
     <value>uživatelsky-definovaný člen</value>
   </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Text tokenu:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Seznam tokenu:</value>
-  </data>
   <data name="ExtractInterface_TitleLabel" xml:space="preserve">
     <value>Extrahovat Rozhraní</value>
   </data>
@@ -1187,15 +1181,6 @@ End Enum</value>
   </data>
   <data name="References_Version" xml:space="preserve">
     <value>Verze:</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Text:</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Text</value>
-  </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>TODO Průzkumník</value>
   </data>
   <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
     <value>Korekce pro displaye s vysokým rozlišením a škálováním</value>

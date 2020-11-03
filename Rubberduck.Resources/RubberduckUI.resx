@@ -450,12 +450,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Remove" xml:space="preserve">
     <value>Remove</value>
   </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Token Text:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Token List:</value>
-  </data>
   <data name="Navigation" xml:space="preserve">
     <value>Navigation</value>
   </data>
@@ -1333,15 +1327,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="References_Version" xml:space="preserve">
     <value>Version:</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Text:</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Text</value>
-  </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>TODO Explorer</value>
   </data>
   <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
     <value>Correction for high-resolution display scalings</value>

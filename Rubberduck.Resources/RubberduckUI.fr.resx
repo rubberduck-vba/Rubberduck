@@ -418,12 +418,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Run" xml:space="preserve">
     <value>Exécuter</value>
   </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Texte:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Liste:</value>
-  </data>
   <data name="CodeInspections_NextToolTip" xml:space="preserve">
     <value>Naviguer au prochain problème</value>
   </data>
@@ -1297,15 +1291,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
     <value>Inclure les références qui n'ont pas été ajoutées par Rubberduck</value>
-  </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>Explorateur de tâches</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Texte</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Texte:</value>
   </data>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>

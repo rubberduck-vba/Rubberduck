@@ -447,12 +447,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="Remove" xml:space="preserve">
     <value>Eliminar</value>
   </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Etiqueta:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Lista de Etiquetas:</value>
-  </data>
   <data name="Navigation" xml:space="preserve">
     <value>Navegación</value>
   </data>
@@ -1253,15 +1247,6 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   </data>
   <data name="References_Version" xml:space="preserve">
     <value>Versión:</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Texto:</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Texto</value>
-  </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>Explorador TODO</value>
   </data>
   <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
     <value>Corrección para escalas de pantalla de alta resolución</value>
