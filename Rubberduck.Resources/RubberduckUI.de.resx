@@ -183,21 +183,6 @@
   <data name="Parsing" xml:space="preserve">
     <value>(Parse...)</value>
   </data>
-  <data name="ReorderParamsDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Parameter umordnen</value>
-  </data>
-  <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Wählen sie einen Parameter und bewegen Sie ihn mit der Maus oder den Schaltflächen nach oben oder unten.</value>
-  </data>
-  <data name="ReorderParamsDialog_MoveDownButtonText" xml:space="preserve">
-    <value>Nach unten</value>
-  </data>
-  <data name="ReorderParamsDialog_MoveUpButtonText" xml:space="preserve">
-    <value>Nach oben</value>
-  </data>
-  <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
-    <value>Parameter umordnen</value>
-  </data>
   <data name="DeclarationType_Control" xml:space="preserve">
     <value>VBDesigner-Objekt</value>
   </data>

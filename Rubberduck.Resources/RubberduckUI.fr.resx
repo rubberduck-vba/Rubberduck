@@ -186,21 +186,6 @@
   <data name="Parsing" xml:space="preserve">
     <value>(analyse...)</value>
   </data>
-  <data name="ReorderParamsDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Modifier l'ordre des paramètres</value>
-  </data>
-  <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Veuillez sélectionner un paramètre et glisser-déposer, ou utilisez les boutons pour modifier l'ordre.</value>
-  </data>
-  <data name="ReorderParamsDialog_MoveDownButtonText" xml:space="preserve">
-    <value>Déplacer vers le bas</value>
-  </data>
-  <data name="ReorderParamsDialog_MoveUpButtonText" xml:space="preserve">
-    <value>Déplacer vers le haut</value>
-  </data>
-  <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
-    <value>Modifier l'ordre des paramètres</value>
-  </data>
   <data name="DeclarationType_Control" xml:space="preserve">
     <value>le contrôle</value>
   </data>

@@ -526,4 +526,19 @@ Una clase privada puede asimismo implementar una interfaz pública.</value>
   <data name="RemovePresenter_NoParametersError" xml:space="preserve">
     <value>No hay parámetros en el método '{0}'.</value>
   </data>
+  <data name="ReorderParamsDialog_MoveUpButtonText" xml:space="preserve">
+    <value>Mover hacia arriba</value>
+  </data>
+  <data name="ReorderParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Reordenar Parámetros</value>
+  </data>
+  <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Seleccione un parámetro y arrástrelo o use los botones para moverlo hacia arriba o hacia abajo.</value>
+  </data>
+  <data name="ReorderParamsDialog_MoveDownButtonText" xml:space="preserve">
+    <value>Mover hacia abajo</value>
+  </data>
+  <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
+    <value>Reordenar parametros</value>
+  </data>
 </root>

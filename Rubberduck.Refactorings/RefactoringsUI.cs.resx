@@ -526,4 +526,19 @@ Chcete pokračovat?</value>
   <data name="RemovePresenter_NoParametersError" xml:space="preserve">
     <value>V metodě '{0}' nejsou žádné parametry.</value>
   </data>
+  <data name="ReorderParamsDialog_MoveUpButtonText" xml:space="preserve">
+    <value>Přesunout výše</value>
+  </data>
+  <data name="ReorderParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Přeuspořádat parametry</value>
+  </data>
+  <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Zvol parametr a za použití táhnutí myši nebo pomocí tlačítek ho přesuň výše nebo níže.</value>
+  </data>
+  <data name="ReorderParamsDialog_MoveDownButtonText" xml:space="preserve">
+    <value>Přesunout níže</value>
+  </data>
+  <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
+    <value>Přeuspořádat parametry</value>
+  </data>
 </root>

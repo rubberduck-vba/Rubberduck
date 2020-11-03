@@ -165,12 +165,6 @@
   <data name="Parsing" xml:space="preserve">
     <value>(parsuji...)</value>
   </data>
-  <data name="ReorderParamsDialog_MoveDownButtonText" xml:space="preserve">
-    <value>Přesunout níže</value>
-  </data>
-  <data name="ReorderParamsDialog_MoveUpButtonText" xml:space="preserve">
-    <value>Přesunout výše</value>
-  </data>
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Třída nebo člen '{0}' ještě není implementován.</value>
   </data>
@@ -276,14 +270,8 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>označení řádku</value>
   </data>
-  <data name="ReorderParamsDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Přeuspořádat parametry</value>
-  </data>
   <data name="DeclarationType_Control" xml:space="preserve">
     <value>VBDesigner-Objekt</value>
-  </data>
-  <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
-    <value>Přeuspořádat parametry</value>
   </data>
   <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
     <value>V metodě '{0}' je méně než 2 parametry.</value>
@@ -941,9 +929,6 @@ End Enum</value>
   </data>
   <data name="DeclarationType_PropertySet" xml:space="preserve">
     <value>Set accessor vlastnosti</value>
-  </data>
-  <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Zvol parametr a za použití táhnutí myši nebo pomocí tlačítek ho přesuň výše nebo níže.</value>
   </data>
   <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
     <value>Rubberduck Inspekce Kódu - {0}

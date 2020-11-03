@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             : base(messageBox)
         { }
 
-        protected override string Caption => Resources.RubberduckUI.ReorderParamsDialog_Caption;
+        protected override string Caption => RefactoringsUI.ReorderParamsDialog_Caption;
 
         protected override string Message(RefactoringException exception)
         {

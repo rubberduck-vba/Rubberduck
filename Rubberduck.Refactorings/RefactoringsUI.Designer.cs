@@ -1290,5 +1290,50 @@ namespace Rubberduck.Refactorings {
                 return ResourceManager.GetString("RenamePresenter_TargetIsInterfaceMemberImplementation", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Reorder Parameters.
+        /// </summary>
+        public static string ReorderParamsDialog_Caption {
+            get {
+                return ResourceManager.GetString("ReorderParamsDialog_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a parameter and drag it or use buttons to move it up or down..
+        /// </summary>
+        public static string ReorderParamsDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("ReorderParamsDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move down.
+        /// </summary>
+        public static string ReorderParamsDialog_MoveDownButtonText {
+            get {
+                return ResourceManager.GetString("ReorderParamsDialog_MoveDownButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move up.
+        /// </summary>
+        public static string ReorderParamsDialog_MoveUpButtonText {
+            get {
+                return ResourceManager.GetString("ReorderParamsDialog_MoveUpButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reorder parameters.
+        /// </summary>
+        public static string ReorderParamsDialog_TitleText {
+            get {
+                return ResourceManager.GetString("ReorderParamsDialog_TitleText", resourceCulture);
+            }
+        }
     }
 }
