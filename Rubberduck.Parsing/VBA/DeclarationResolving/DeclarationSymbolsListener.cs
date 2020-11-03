@@ -646,8 +646,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
         private void AddLineNumberLabelDeclaration(VBAParser.LineNumberLabelContext context)
         {
-            var statementText = context.numberLiteral().GetText();
-            var statementSelection = context.numberLiteral().GetSelection();
+            var statementText = context.GetText().Trim();
+            var statementSelection = context.GetSelection();
 
             AddDeclaration(
                 CreateDeclaration(

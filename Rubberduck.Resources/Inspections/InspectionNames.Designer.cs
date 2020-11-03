@@ -358,6 +358,24 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Implicit reference to the containing Workbook module.
+        /// </summary>
+        public static string ImplicitContainingWorkbookReferenceInspection {
+            get {
+                return ResourceManager.GetString("ImplicitContainingWorkbookReferenceInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit reference to containing Worksheet module.
+        /// </summary>
+        public static string ImplicitContainingWorksheetReferenceInspection {
+            get {
+                return ResourceManager.GetString("ImplicitContainingWorksheetReferenceInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Implicit default member access.
         /// </summary>
         public static string ImplicitDefaultMemberAccessInspection {

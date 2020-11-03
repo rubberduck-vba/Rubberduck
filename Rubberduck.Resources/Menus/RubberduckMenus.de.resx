@@ -253,15 +253,21 @@
     <value>Annotation hinzufügen</value>
   </data>
   <data name="AnnotateMenu_SelectedDeclaration" xml:space="preserve">
-    <value>Selektierte Deklaration</value>
+    <value>Ausgewählte Deklaration</value>
   </data>
   <data name="AnnotateMenu_SelectedMember" xml:space="preserve">
-    <value>Selektierte Methode</value>
+    <value>Ausgewählte Methode</value>
   </data>
   <data name="AnnotateMenu_SelectedModule" xml:space="preserve">
-    <value>Selektiertes Modul</value>
+    <value>Ausgewähltes Modul</value>
   </data>
   <data name="RubberduckMenu_CodePaneRefactor" xml:space="preserve">
     <value>Um&amp;gestalten</value>
+  </data>
+  <data name="ProjectExplorer_IgnoreProject" xml:space="preserve">
+    <value>Projekt ignorieren</value>
+  </data>
+  <data name="ProjectExplorer_UnignoreProject" xml:space="preserve">
+    <value>Projekt verarbeiten</value>
   </data>
 </root>

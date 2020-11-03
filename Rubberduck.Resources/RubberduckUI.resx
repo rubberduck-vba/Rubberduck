@@ -1971,4 +1971,7 @@ Do you want to proceed?</value>
   <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
     <value>Replace Members with Interface Members</value>
   </data>
+  <data name="TestOutcome_Ignored" xml:space="preserve">
+    <value>Ignored</value>
+  </data>
 </root>

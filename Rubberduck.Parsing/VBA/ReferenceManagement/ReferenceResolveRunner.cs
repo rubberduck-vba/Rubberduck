@@ -5,6 +5,7 @@ using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
@@ -17,13 +18,15 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         public ReferenceResolveRunner(
             RubberduckParserState state, 
             IParserStateManager parserStateManager, 
-            IModuleToModuleReferenceManager moduletToModuleReferenceManager,
-            IReferenceRemover referenceRemover) 
+            IModuleToModuleReferenceManager moduleToModuleReferenceManager,
+            IReferenceRemover referenceRemover,
+            IUserComProjectProvider userComProjectProvider) 
         :base(state, 
             parserStateManager, 
-            moduletToModuleReferenceManager,
-            referenceRemover)
-        { }
+            moduleToModuleReferenceManager,
+            referenceRemover,
+            userComProjectProvider)
+        {}
 
 
         protected override void ResolveReferences(ICollection<KeyValuePair<QualifiedModuleName, IParseTree>> toResolve, CancellationToken token)

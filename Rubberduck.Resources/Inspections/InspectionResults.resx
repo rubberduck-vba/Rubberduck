@@ -513,6 +513,13 @@ In memoriam, 1972-2018</value>
     <value>The annotation '{0}' was expected to have less arguments.</value>
     <comment>{0} annotation name</comment>
   </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>Member '{0}' implicitly references the containing workbook document module.</value>
+    <comment>{0} member name</comment>
+  </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>Member '{0}' implicitly references the containing worksheet document module.</value>
+  </data>
   <data name="MisleadingByRefParameterInspection" xml:space="preserve">
     <value>Misleading ByRef modifier used for parameter '{0}' ({1}).</value>
     <comment>{0} Parameter, {1} Member</comment>

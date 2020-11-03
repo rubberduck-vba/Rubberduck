@@ -130,10 +130,10 @@
     <value>Enum</value>
   </data>
   <data name="DeclarationType_EnumerationMember" xml:space="preserve">
-    <value>Memberkonstante</value>
+    <value>Enum-Element (Konstante)</value>
   </data>
   <data name="DeclarationType_Event" xml:space="preserve">
-    <value>Event</value>
+    <value>Ereignis</value>
   </data>
   <data name="DeclarationType_Function" xml:space="preserve">
     <value>Funktion</value>
@@ -163,7 +163,7 @@
     <value>Nutzerdefinierter Typ</value>
   </data>
   <data name="DeclarationType_UserDefinedTypeMember" xml:space="preserve">
-    <value>Mitglied eines nutzerdefinierten Typs</value>
+    <value>Element eines nutzerdefinierten Typs</value>
   </data>
   <data name="DeclarationType_Variable" xml:space="preserve">
     <value>Variable</value>
@@ -272,7 +272,7 @@
     <value>Methode extrahieren</value>
   </data>
   <data name="AllImplementations_NoneFound" xml:space="preserve">
-    <value>Klasse oder Member '{0}' ist nicht implementiert.</value>
+    <value>Klasse oder Element '{0}' ist nicht implementiert.</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Start</value>
@@ -540,7 +540,7 @@ Wollen Sie trotzdem fortfahren?</value>
     <value>Setze die Referenz explizit auf das 'ActiveSheet'</value>
   </data>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
-    <value>Finde Symbol</value>
+    <value>Suche Symbol </value>
   </data>
   <data name="ExtractInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Extrahiere Interface</value>
@@ -555,10 +555,10 @@ Wollen Sie trotzdem fortfahren?</value>
     <value>Extrahiere Interface</value>
   </data>
   <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
-    <value>Mitglieder</value>
+    <value>Elemente</value>
   </data>
   <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
-    <value>Bitte spezifizieren Sie den Interface-Namen und die Mitglieder.</value>
+    <value>Bitte spezifizieren Sie den Interfacenamen und die Elemente.</value>
   </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>Die Auswahl ist keine Variable.</value>
@@ -651,10 +651,10 @@ Wollen Sie trotzdem fortfahren?</value>
     <value>Zeilenende Kommentarstil:</value>
   </data>
   <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
-    <value>Nutze Kompilerdirektiven in Spalte 1</value>
+    <value>Erzwinge Kompilerdirektiven in Spalte 1</value>
   </data>
   <data name="IndenterSettings_ForceDebugDirectivesToColumn1" xml:space="preserve">
-    <value>Nutze Debugdirektiven in Spalte 1</value>
+    <value>Erzwinge Debugdirektiven in Spalte 1</value>
   </data>
   <data name="IndenterSettings_IgnoreOperators" xml:space="preserve">
     <value>Ignoriere Operatoren</value>
@@ -684,7 +684,7 @@ Wollen Sie trotzdem fortfahren?</value>
     <value>Spezielle Optionen</value>
   </data>
   <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
-    <value>Nach Modulen</value>
+    <value>Nach Modul</value>
   </data>
   <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
     <value>Nach Inspektionstyp</value>
@@ -906,7 +906,7 @@ Wollen Sie trotzdem fortfahren?</value>
     <value>Public Enum BeispielEnum
 ' Enum Kommentar.
 Foo
-Bar ' Member-Kommentar.
+Bar ' Element-Kommentar.
 End Enum
 
 ' Beispielprozedur
@@ -1389,7 +1389,7 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
     <value>Der Typ des Ziels '{0}'ist '{1}' anstatt des erwarteten Typs '{2}'.</value>
   </data>
   <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
-    <value>Es ist keine Implements-Anweisung selektiert.</value>
+    <value>Es ist keine Implements-Anweisung ausgewählt.</value>
   </data>
   <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
     <value>Das Ziel '{0}' ist bereits ein Feld.</value>
@@ -1509,7 +1509,7 @@ Import abgebrochen.</value>
 Import abgebrochen.</value>
   </data>
   <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
-    <value>Es existiert kein Dokumentenmodul namens '{0}', s.d. die Datei '{1}' nicht importiert werden kann.
+    <value>Es existiert kein Dokumentenmodul namens '{0}', weshalb die Datei '{1}' nicht importiert werden kann.
 
 Import abgebrochen.</value>
   </data>
@@ -1614,7 +1614,7 @@ Import abgebrochen.</value>
     <value>Annotation hinzufügen</value>
   </data>
   <data name="AnnotateDeclarationDialog_ArgumentsLabel" xml:space="preserve">
-    <value>Annotationsarguments:</value>
+    <value>Annotationsargumente:</value>
   </data>
   <data name="AnnotateDeclarationDialog_AnnotationLabel" xml:space="preserve">
     <value>Hinzuzufügende Annotation:</value>
@@ -1653,7 +1653,7 @@ Import abgebrochen.</value>
     <value>Annotationsargumente vom Typ 'Wahrheitswert' müssen entweder 'True' oder 'False' sein.</value>
   </data>
   <data name="AnnotationArgument_ValidationError_EmptyArgument" xml:space="preserve">
-    <value>Annotationsargumente können nicht leer sein.</value>
+    <value>Annotationsargumente dürfen nicht leer sein.</value>
   </data>
   <data name="AnnotationArgumentType_Text" xml:space="preserve">
     <value>Text</value>
@@ -1671,7 +1671,7 @@ Import abgebrochen.</value>
     <value>Attribut</value>
   </data>
   <data name="AnnotationArgument_ValidationError_Newline" xml:space="preserve">
-    <value>Annotationsargumente können nur aus einer einzigen Zeile bestehen.</value>
+    <value>Annotationsargumente dürfen nur aus einer einzigen Zeile bestehen.</value>
   </data>
   <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
     <value>Annotationsargumente vom Typ 'Attributname' dürfen keine Leerzeichen enthalten.</value>
@@ -1686,7 +1686,7 @@ Import abgebrochen.</value>
     <value>Es ist in VBA nicht möglich nur die Groß- und Kleinschreibung eines Namens zu ändern.</value>
   </data>
   <data name="MoveFolders_SameNameSubfolder" xml:space="preserve">
-    <value>Der Zielordner '{0}' enthält bereits einen Unterordner '{1}'. Die Ordner werden verschmolzen, wenn der Ordner verschoben wird.
+    <value>Der Zielordner '{0}' enthält bereits einen Unterordner '{1}'. Die Ordner werden zusammengelegt, wenn der Ordner verschoben wird.
 Wollen Sie fortfahren?</value>
   </data>
   <data name="MoveFolders_SameNameSubfolders" xml:space="preserve">
@@ -1694,7 +1694,7 @@ Wollen Sie fortfahren?</value>
 Wollen Sie fortfahren?</value>
   </data>
   <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
-    <value>Mehrere Ordner mit demselben Namenfolders werden verschoben. Dies verschmilzt sie.
+    <value>Mehrere Ordner mit demselben Namen werden verschoben. Dies wird Sie zusammenlegen.
 Wollen Sie fortfahren?</value>
   </data>
   <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
@@ -1726,7 +1726,7 @@ Wollen Sie fortfahren?</value>
     <value>Drag and Drop im Code Explorer aktivieren</value>
   </data>
   <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
-    <value>Attribut hinzufügen / anpassen</value>
+    <value>Attribut hinzufügen/anpassen</value>
   </data>
   <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
     <value>Das Kapseln von '{0}' ist nicht möglich. Es existieren ReDim({0})-Anweisungen in anderen Modulen.</value>
@@ -1738,7 +1738,7 @@ Wollen Sie fortfahren?</value>
     <value>'&lt;===== Eigenschafts- und Deklarationsänderungen oberhalb dieser Zeile =====&gt;</value>
   </data>
   <data name="EncapsulateField_PrivateUDTPropertyText" xml:space="preserve">
-    <value>Erstellt eine Eigenschaft für jedes UDT-Mitglied</value>
+    <value>Erstellt eine Eigenschaft für jedes UDT-Element</value>
   </data>
   <data name="EncapsulateField_ReadOnlyCheckBoxContent" xml:space="preserve">
     <value>Schreibgeschützt</value>
