@@ -223,7 +223,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             //Since we do not have a declaration for the hidden interface, we have to go one more step up the hierarchy.
             var additionalInterfaces = relevantInterfaces
                 .Where(i => i.Name.Equals("_" + comModule.Name))
-                .SelectMany(i => i.InheritedInterfaces);
+                .SelectMany(i => i.InheritedInterfaces)
+                .ToList();
 
             relevantInterfaces.AddRange(additionalInterfaces);
 
