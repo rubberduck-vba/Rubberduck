@@ -1,5 +1,4 @@
-﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
 using System;
 using System.Collections.Generic;
@@ -10,16 +9,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         IEnumerable<IUserDefinedTypeMemberCandidate> Members { get; }
         void AddMember(IUserDefinedTypeMemberCandidate member);
-        bool TypeDeclarationIsPrivate { set; get; }
-        bool CanBeObjectStateUDT { set; get; }
-        bool IsSelectedObjectStateUDT { set; get; }
+        bool TypeDeclarationIsPrivate { get; }
     }
 
     public class UserDefinedTypeCandidate : EncapsulateFieldCandidate, IUserDefinedTypeCandidate
     {
-        public UserDefinedTypeCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator)
-            : base(declaration, identifierValidator)
+        public UserDefinedTypeCandidate(Declaration declaration)
+            : base(declaration)
         {
+            BackingIdentifierMutator = Declaration.AsTypeDeclaration.HasPrivateAccessibility()
+                ? null
+                : base.BackingIdentifierMutator;
         }
 
         public void AddMember(IUserDefinedTypeMemberCandidate member)
@@ -30,54 +30,28 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private List<IUserDefinedTypeMemberCandidate> _udtMembers = new List<IUserDefinedTypeMemberCandidate>();
         public IEnumerable<IUserDefinedTypeMemberCandidate> Members => _udtMembers;
 
-        private bool _isPrivate;
         public bool TypeDeclarationIsPrivate
-        {
-            set => _isPrivate = value;
-            get => Declaration.AsTypeDeclaration?.HasPrivateAccessibility() ?? false;
-        }
+            => Declaration.AsTypeDeclaration?.HasPrivateAccessibility() ?? false;
 
-        public bool IsSelectedObjectStateUDT { set; get; }
+        public override string BackingIdentifier =>
+            BackingIdentifierMutator is null
+                ? _fieldAndProperty.TargetFieldName
+                : _fieldAndProperty.Field;
 
-        private bool _canBeObjectStateUDT;
-        public bool CanBeObjectStateUDT
-        {
-            set => _canBeObjectStateUDT = value;
-            get => _canBeObjectStateUDT;
-        }
+        public override Action<string> BackingIdentifierMutator { get; } 
 
-        public override string BackingIdentifier
-        {
-            get => TypeDeclarationIsPrivate ? _fieldAndProperty.TargetFieldName : _fieldAndProperty.Field;
-            set => _fieldAndProperty.Field = value;
-        }
-
-        private IValidateVBAIdentifiers _namesValidator;
-        public override IValidateVBAIdentifiers NameValidator
-        {
-            set
-            {
-                _namesValidator = value;
-                foreach (var member in Members)
-                {
-                    member.NameValidator = value;
-                }
-            }
-            get => _namesValidator;
-        }
-
-        private IEncapsulateFieldConflictFinder _conflictsValidator;
+        private IEncapsulateFieldConflictFinder _conflictsFinder;
         public override IEncapsulateFieldConflictFinder ConflictFinder
         {
             set
             {
-                _conflictsValidator = value;
+                _conflictsFinder = value;
                 foreach (var member in Members)
                 {
                     member.ConflictFinder = value;
                 }
             }
-            get => _conflictsValidator;
+            get => _conflictsFinder;
         }
 
         private bool _isReadOnly;
@@ -98,6 +72,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             set
             {
+                base.EncapsulateFlag = value;
                 if (TypeDeclarationIsPrivate)
                 {
                     foreach (var member in Members)
@@ -105,79 +80,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         member.EncapsulateFlag = value;
                     }
                 }
-                base.EncapsulateFlag = value;
             }
             get => base.EncapsulateFlag;
         }
 
-        protected override string IdentifierForLocalReferences(IdentifierReference idRef)
-        {
-            if (idRef.Context.Parent.Parent is VBAParser.WithStmtContext wsc)
-            {
-                return BackingIdentifier;
-            }
-
-            return TypeDeclarationIsPrivate ? BackingIdentifier : PropertyIdentifier;
-        }
-
         public override bool Equals(object obj)
-        {
-            if (obj is IUserDefinedTypeCandidate udt)
-            {
-                return udt.TargetID.Equals(TargetID);
-            }
-            return false;
-        }
+            => (obj is IUserDefinedTypeCandidate udt && udt.TargetID.Equals(TargetID));
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        public override IEnumerable<PropertyAttributeSet> PropertyAttributeSets
-        {
-            get
-            {
-                if (TypeDeclarationIsPrivate)
-                {
-                    var specs = new List<PropertyAttributeSet>();
-                    foreach (var member in Members)
-                    {
-                        var sets = member.PropertyAttributeSets;
-                        var modifiedSets = new List<PropertyAttributeSet>();
-                        PropertyAttributeSet newSet;
-                        foreach (var set in sets)
-                        {
-                            newSet = set;
-                            newSet.BackingField = $"{BackingIdentifier}.{set.BackingField}";
-                            modifiedSets.Add(newSet);
-                        }
-                        specs.AddRange(modifiedSets);
-                    }
-                    return specs;
-                }
-                return new List<PropertyAttributeSet>() { AsPropertyAttributeSet };
-            }
-        }
-
-        protected override PropertyAttributeSet AsPropertyAttributeSet
-        {
-            get
-            {
-                return new PropertyAttributeSet()
-                {
-                    PropertyName = PropertyIdentifier,
-                    BackingField = IdentifierInNewProperties,
-                    AsTypeName = PropertyAsTypeName,
-                    ParameterName = ParameterName,
-                    GenerateLetter = ImplementLet,
-                    GenerateSetter = ImplementSet,
-                    UsesSetAssignment = Declaration.IsObject,
-                    IsUDTProperty = true,
-                    Declaration = Declaration
-                };
-            }
-        }
-
+        public override int GetHashCode() => base.GetHashCode();
     }
 }

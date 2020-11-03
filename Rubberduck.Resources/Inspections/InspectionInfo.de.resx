@@ -227,16 +227,16 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Das Schlüsselwort 'Public' kann nur auf Modulebene verwendet werden; Sein Konterpart 'Private' kann auch nur auf Modulebene verwendet werden. 'Dim' jedoch kann verwendet werden, um sowohl modulweite als auch prozedurweite Variablen zu deklarieren. Um der Konsistenz Willen ist es besser, 'Dim' nur für lokale Variablen zu verwenden, also 'Private' statt 'Dim' auf Modulebene zu verwenden.</value>
   </data>
   <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
-    <value>Ein Member ist als Funktion geschrieben, wird aber überall wie eine Prozedur verwendet. Sie sollten in Erwägung ziehen die 'Function' in ein 'Sub' zu konvertieren.</value>
+    <value>Ein Element ist als Funktion geschrieben, wird aber überall wie eine Prozedur verwendet. Sie sollten in Erwägung ziehen die 'Function' in ein 'Sub' zu konvertieren.</value>
   </data>
   <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
-    <value>Es wird ein Memberzugriff verwendet, der vom Interface des Objektes nicht deklariert wird. Dies ist höchstwahrscheinlich ein Fehler. Falls der Memberzugriff das erweiterbare Interface des Objektes verwendet, erwägen Sie ein nicht erweiterbares Äquivalent zu verwenden um Prüfungen zur Kompilierzeit zu ermöglichen und das Auftreten von Laufzeitfehler 438 zu verhindern.</value>
+    <value>Es wird ein Elementzugriff verwendet, der vom Interface des Objektes nicht deklariert wird. Dies ist höchstwahrscheinlich ein Fehler. Falls der Elementzugriff das erweiterbare Interface des Objektes verwendet, erwägen Sie ein nicht erweiterbares Äquivalent zu verwenden um Prüfungen zur Kompilierzeit zu ermöglichen und das Auftreten von Laufzeitfehler 438 zu verhindern.</value>
   </data>
   <data name="HungarianNotationInspection" xml:space="preserve">
     <value>'Ungarische Notation' macht Code weniger lesbar und ist redundant, sobald stark typisierte Variablen und aussagekräftige Namen verwendet werden.</value>
   </data>
   <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
-    <value>Das Excel Application-Objekt implementiert das WorksheetFunction interface direkt. Alle Aufrufe an WorksheetFunction-Member werden als laufzeitgebunden behandelt und Fehler im aufgerufenen Member werden in ein Variant des Typs VbVarType.Error gekapselt. Dadurch können Fehler nicht mit Fehleranweisungen behandelt werden und gegenüber skriptzeitgebundenen Aufrufen sinkt die Performanz. Ziehen Sie in Erwägung Application.WorksheetFunction explizit aufzurufen. Bedenken Sie: Falls dieser Aufruf in der Vergangenheit Fehler erzeugt hat, wurden diese ignoriert. Es sollte eine Fehlerbehandlung vorhanden sein, bevor Sie die schnelle Korrektur anwenden.</value>
+    <value>Das Excel Application-Objekt implementiert das WorksheetFunction Interface nicht direkt. Alle Aufrufe an WorksheetFunction Elemente werden als spät gebunden behandelt und Fehler im aufgerufenen Element werden in ein Variant des Typs VbVarType.Error gekapselt. Dadurch können Fehler nicht mit Fehleranweisungen behandelt werden und gegenüber früh gebundenen Aufrufen sinkt die Performanz. Ziehen Sie in Erwägung Application.WorksheetFunction explizit aufzurufen. Bedenken Sie: Falls dieser Aufruf in der Vergangenheit Fehler erzeugt hat, wurden diese ignoriert. Es sollte eine Fehlerbehandlung vorhanden sein, bevor Sie die schnelle Korrektur anwenden.</value>
   </data>
   <data name="HostSpecificExpressionInspection" xml:space="preserve">
     <value>Geklammerte Ausdrücke werden von der Hostanwendung zur Laufzeit ausgewertet, was bedeutet, dass VBA den Ausdruck nicht zur Kompilierzeit validieren kann. Erwägen sie, das hostspezifische Objektmodell zu verwenden.</value>
@@ -296,7 +296,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Eine leere 'Do…While'-Schleife ohne ausführbare Anweisungen lässt andere Entwickler über die Absicht des Codes im unklaren. Vermeiden Sie das Schreiben von unnötigem Code.</value>
   </data>
   <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
-    <value>Ein Mitglied wird in verschiedenen Zweigen einer if-Anweisung mit True / False zugewiesen, wobei keine anderen Anweisungen in der Bedingung enthalten sind. Verwenden Sie die Bedingung stattdessen direkt für das Mitglied.</value>
+    <value>Ein Element wird in verschiedenen Zweigen einer if-Anweisung mit True / False zugewiesen, wobei keine anderen Anweisungen in der Bedingung enthalten sind. Verwenden Sie die Bedingung stattdessen direkt (als Zuweisung) für das Element.</value>
   </data>
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Leere Module und Klassen weisen entweder auf noch nicht implementierte Funktionalitäten hin oder stellen unnötigen Ballast dar, der die Wartbarkeit eines Projekts behindern kann.</value>
@@ -317,7 +317,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Excel already defines a globally scoped object variable with this reference. Consider using the sheet's 'CodeName' property.</value>
   </data>
   <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
-    <value>Dieser Member ist als '@Obsolete' markiert. Er sollte nicht länger verwendet werden: eine bessere Alternative müsste existieren.</value>
+    <value>Dieses Element ist als '@Obsolete' markiert. Er sollte nicht länger verwendet werden: eine bessere Alternative müsste existieren.</value>
   </data>
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
     <value>Windows-Implementierungen von Visual Basic unterstützen nur die StdCall Aufrufkonvention. Die CDecl Aufrufkonvention wird nur von Macintosh-Versionen von VBA unterstützt. Dieses Schlüsselwort unter Windows zu verwenden, wird zum Laufzeitfehler 49 - 'Falsche DLL-Aufrufkonvention' führen. Falls diese Prozedur nur auf Macintosh-Hostanwendungen verwendet werden soll, sollte sie bedingt kompiliert werden.</value>
@@ -341,10 +341,10 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Eine Zuweisung wird direkt überschrieben oder nie referenziert.</value>
   </data>
   <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
-    <value>Ein Klassenmodul, das Member mit Unterstrichen im Namen beinhaltet, kann nicht von anderen Klassen implementiert werden. Der Unterstrich ist als Trennzeichen zwischen Interface-/Objektname und dem Namen des implementierten Members definiert. Ein Unterstrich im Membernamen verwirrt den Übersetzer, der eine Übersetzung des Projektes dann verweigert. Die 'PascalCase'-Namenskonvention erlaubt, Unterstriche in Membernamen zu vermeiden.</value>
+    <value>Ein Klassenmodul, das Element(e) mit Unterstrichen im Namen beinhaltet, kann nicht von anderen Klassen implementiert werden. Der Unterstrich ist als Trennzeichen zwischen Interface-/Objektname und dem Namen des implementierten Members definiert. Ein Unterstrich im Elementnamen verwirrt den Compiler, der eine Übersetzung des Projektes dann verweigert. Die 'PascalCase'-Namenskonvention erlaubt, Unterstriche in Elementnamen zu vermeiden.</value>
   </data>
   <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
-    <value>Eine Prozedur, die ein Objekt zurückgibt, kann 'Nothing' zurückgeben. Dies wird bei darauffolgenden Memberzugriff zum Laufzeitfehler 91 - 'Objektblockvariable oder With-Blockvariable nicht festgelegt' führen. Prüfen sie mit 'Is Nothing' nach dem 'Set', um einen Laufzeitfehler auszuschließen.</value>
+    <value>Eine Prozedur, die ein Objekt zurückgibt, kann 'Nothing' zurückgeben. Dies wird bei darauffolgenden Elementzugriff zum Laufzeitfehler 91 - 'Objektblockvariable oder With-Blockvariable nicht festgelegt' führen. Prüfen sie mit 'Is Nothing' nach dem 'Set', um einen Laufzeitfehler auszuschließen.</value>
   </data>
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>Funktionen, die für EXCEL als benutzerdefinierte Funktionen sichtbar sind, werden einen '#REF!'-Fehler erzeugen, wenn sie in einem Arbeitsblatt verwendet werden, in dem ihr Name dem einer korrekten Zellreferenz entspricht. Wenn die Funktion als benutzerdefinierte Funktion gedacht ist, muss sie umbenannt werden. Wenn die Funktion nicht als benutzerdefinierte Funktion gedacht ist, sollte sie 'Private' deklariert oder aus einem Standardmodul herausgenommen werden.</value>
@@ -365,10 +365,10 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Es befinden sich Zeilenfortsetzungszeichen zwischen Schlüsselwörtern. Dafür gibt es keinen guten Grund. Sie sollten in Betracht ziehen sie zu entfernen.</value>
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
-    <value>Der Bezeichner enthält ein geschütztes Leerzeichen, welches wie eine gewöhnliches Leerzeichen aussieht (nicht zulässig in Bezeichnern). Die macht es schwerer den Programmcode zu lesen. Sie sollten in Betracht ziehen stattdessen sichtbare Zeichen zu verwenden.</value>
+    <value>Der Bezeichner enthält ein geschütztes Leerzeichen, welches wie eine gewöhnliches Leerzeichen aussieht (nicht zulässig in Bezeichnern). Das macht es schwerer den Programmcode zu lesen. Sie sollten in Betracht ziehen stattdessen sichtbare Zeichen zu verwenden.</value>
   </data>
   <data name="NegativeLineNumberInspection" xml:space="preserve">
-    <value>Negative Zeilennummern können nur im Hexadezimalformat eingegeben werden, welches der VBE in negative Dezimalzahlen wandelt. Wird der Programmcode kopiert, mach die negative Dezimalzahl als Zeilennummer ihn illegal.</value>
+    <value>Negative Zeilennummern können nur als Hexadezimalzahlen eingegeben werden, welche der VBE in Dezimalzahlen umwandelt. Wird die Programmzeile erneut bearbeitet, macht die negative Zeilennummer die Zeile ungültig.</value>
   </data>
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>Hierbei handelt es sich um ein schlecht dokumentiertes Feature: Im Normallfall wird der Fehlerspeicher geleert und jegliche Fehlerbehandlung deaktiviert. Sollte allerdings -1 als Zeilennummer vorhanden sein, kann diese als Marker der zu verwendenden Fehlerbehandlung interpretiert werden.</value>
@@ -380,7 +380,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Objekt einer Variables Set-zugewiesen wird mit einem inkompatiblen Objekttype, d.h. deren Typ weder identisch, ein Subtyp noch ein Supertyp ist. In fast allen Fällen führt dies zu einem Laufzeitfehler, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist. In allen anderen Fällen kann der Quallcode so geändert werden, dass er ausschließlich Zuweisungen zwischen kompatiblen deklarierten Typen verwendet.</value>
   </data>
   <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
-    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Objekt als Argument für einen Parameter übergeben wird mit einem inkompatiblen Objekttype, d.h. dessen Typ weder identisch, ein Subtyp noch ein Supertyp ist. In fast allen Fällen führt dies zu einem Laufzeitfehler, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist. In allen anderen Fällen kann der Quallcode so geändert werden, dass ausschließlich Argumente mit kompatiblen deklarierten Typen verwendet werden.</value>
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Objekt als Argument für einen Parameter mit einem inkompatiblen Objekttyp übergeben wird, d.h. dessen Typ weder identisch, ein Subtyp, noch ein Supertyp ist. In fast allen Fällen führt dies zu einem Laufzeitfehler, der schwer zu entdecken ist und auf einen Programmierfehler hinweist. In allen anderen Fällen kann der Quellcode so geändert werden, dass ausschließlich Argumente mit kompatiblen deklarierten Typen verwendet werden.</value>
   </data>
   <data name="EmptyMethodInspection" xml:space="preserve">
     <value>Methoden ohne ausführbare Anweisungen können den Eindruck erwecken, dass sie etwas tun, was sie eigentlich nicht tun. Dies kann zu unerwartetem Verhalten führen.</value>
@@ -389,46 +389,46 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Eine Klasse, die dafür gedacht ist von anderen Klassen als Interface genutzt zu werden, sollte gewöhnlicher Weise keine Implementierungen enthalten. Falls die Intention ist diese Klasse direkt als konkrete Klasse zu verwenden, kann dieses Inspektionsresultat ignoriert werden.</value>
   </data>
   <data name="ValueRequiredInspection" xml:space="preserve">
-    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Objekt an einer Stelle verwendet wird, die einen Wert verlangt, und der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler 91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Objekt an einer Stelle verwendet wird, die einen Wert verlangt, und der deklarierte Type des Objekts keinen passendes Standardelement hat. In fast allen Fällen führt dies zu einem Laufzeitfehler 91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
   </data>
   <data name="ProcedureRequiredInspection" xml:space="preserve">
-    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn eine Objektvariable an einer Stelle verwendet wird, die eine Prozedur erfordert, und der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn eine Objektvariable an einer Stelle verwendet wird, die eine Prozedur erfordert, und der deklarierte Type des Objekts kein passendes Standardelement hat. In fast allen Fällen führt dies zu einem Laufzeitfehler 91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
   </data>
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
-    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Standardmemberzugriff nötig ist, aber der der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Standardelementzugriff nötig ist, aber der der deklarierte Type des Objekts kein passendes Standardelement hat. In fast allen Fällen führt dies zu einem Laufzeitfehler 91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
   </data>
   <data name="UseOfBangNotationInspection" xml:space="preserve">
     <value>Die Ausrufezeichennotation erweckt den Eindruck, dass es sich um einen Zugriff handelt, der Typchecks unterliegt. Allerdings handelt es sich lediglich um einen Zugriff auf den Standardmember des Objekts, auf das sie angewendet wird, bei dem das Argument als Zeichenkette übergeben wird.</value>
   </data>
   <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
-    <value>Die Ausrufezeichennotation erweckt den Eindruck, dass es sich um einen Zugriff handelt, der Typchecks unterliegt. Allerdings handelt es sich lediglich um einen Zugriff auf den Standardmember des Objekts, auf das sie angewendet wird, bei dem das Argument als Zeichenkette übergeben wird. Dies ist besonders verwirrend, wenn der Standardmember des Objekts selber keine Zeichenkette akzeptiert und deshalb ein rekursiver Zugriff auf den parameterlosen Standardmember erfolgen muss.</value>
+    <value>Die Ausrufezeichennotation erweckt den Eindruck, dass es sich um einen Zugriff handelt, der Typprüfungen unterliegt. Allerdings handelt es sich lediglich um einen Zugriff auf das Standardelement des Objekts, auf das sie angewendet wird, bei dem das Argument als Zeichenkette übergeben wird. Dies ist besonders verwirrend, wenn das Standardelement des Objekts selber keine Zeichenkette akzeptiert und deshalb ein rekursiver Zugriff auf das parameterlose Standardelement erfolgen muss.</value>
   </data>
   <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
-    <value>Die Ausrufezeichennotation erweckt den Eindruck, dass es sich um einen Zugriff handelt, der Typchecks unterliegt. Allerdings handelt es sich lediglich um einen Zugriff auf den Standardmember des Objekts, auf das sie angewendet wird, bei dem das Argument als Zeichenkette übergeben wird. Dies ist besonders verwirrend, wenn der Standardmember nicht zum Zeitpunkt des Kompilierens ermittelt werden kann.</value>
+    <value>Die Ausrufezeichennotation erweckt den Eindruck, dass es sich um einen Zugriff handelt, der Typchecks unterliegt. Allerdings handelt es sich lediglich um einen Zugriff auf das Standardelement des Objekts, auf das sie angewendet wird, bei dem das Argument als Zeichenkette übergeben wird. Dies ist besonders verwirrend, wenn das Standardelement nicht zum Zeitpunkt des Kompilierens ermittelt werden kann.</value>
   </data>
   <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
-    <value>Wenn ein Objekt mit einem Standardmember an einer Stelle verwendet wird, die nach einer Prozedur verlangt, wird implizit der Standardmember aufgerufen. Die ist wahrscheinlich nicht beabsichtigt, minder aber zu Mindest die Lesbarkeit des Programms.</value>
+    <value>Wenn ein Objekt mit einem Standardelement an einer Stelle verwendet wird, die nach einer Prozedur verlangt, wird implizit das Standardelement aufgerufen. Die ist wahrscheinlich nicht beabsichtigt und mindert die Lesbarkeit des Programms.</value>
   </data>
   <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Auch wenn im Fall eines paramtrisierten Zugriffs ersichtlich ist, dass ein Zugriff erfolgt, so ist es in der Regel für die Lesbarkeit zuträglich explizit zu sein.</value>
+    <value>Zugriffe auf Standardelemente verstecken, welches Element aufgerufen wird. Auch wenn im Fall eines paramtrisierten Zugriffs ersichtlich ist, dass ein Zugriff erfolgt, so ist es in der Regel für die Lesbarkeit zuträglich, explizit zu sein.</value>
   </data>
   <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Auch wenn im Fall eines paramtrisierten Zugriffs ersichtlich ist, dass ein Zugriff erfolgt, so ist es in der Regel für die Lesbarkeit zuträglich explizit zu sein. Dies trifft besonders zu, wenn der Standardmember nicht auf dem Interface des Objekts selber zu finden ist uns stattdessen mittels einer Kette von Standrdmemberzugriffen erreicht werden muss.</value>
+    <value>Zugriffe auf Standardelemente verstecken, welches Element aufgerufen wird. Auch wenn im Fall eines paramtrisierten Zugriffs ersichtlich ist, dass ein Zugriff erfolgt, so ist es in der Regel für die Lesbarkeit zuträglich explizit zu sein. Dies trifft besonders zu, wenn das Standardelement nicht auf dem Interface des Objekts selber zu finden ist uns stattdessen mittels einer Kette von Standardelementzugriffen erreicht werden muss.</value>
   </data>
   <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Auch wenn im Fall eines paramtrisierten Zugriffs ersichtlich ist, dass ein Zugriff erfolgt, so ist es in der Regel für die Lesbarkeit zuträglich explizit zu sein. Dies trifft insbesondere zu, wenn der Standardmember erst zur Laufzeit ermittelt werden kann. Sollte dann kein passender Standardmember existieren, kommt es zu einem Fehler 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht'.</value>
+    <value>Zugriffe auf Standardelemente verstecken, welches Element aufgerufen wird. Auch wenn im Fall eines paramtrisierten Zugriffs ersichtlich ist, dass ein Zugriff erfolgt, so ist es in der Regel für die Lesbarkeit zuträglich explizit zu sein. Dies trifft insbesondere zu, wenn das Standardelement erst zur Laufzeit ermittelt werden kann. Sollte dann kein passendes Standardelement existieren, kommt es zu einem Fehler 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht'.</value>
   </data>
   <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt. Dies kann dazu führen, dass Fehler durch vergessene Memberaufrufe nicht erkannt werden.</value>
+    <value>Zugriffe auf Standardelemente verstecken, welches Element aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt. Dies kann dazu führen, dass Fehler durch vergessene Elementaufrufe nicht erkannt werden.</value>
   </data>
   <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt, und zudem der Standardmember nicht auf dem Interface des Objekts selber zu finden ist. Dies kann dazu führen, dass Fehler durch vergessene Memberaufrufe nicht erkannt werden.</value>
+    <value>Zugriffe auf Standardelement verstecken, welches Element aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt, und zudem das Standardelement nicht auf dem Interface des Objekts selber zu finden ist. Dies kann dazu führen, dass Fehler durch vergessene Elementaufrufe nicht erkannt werden..</value>
   </data>
   <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt, und zudem der Standardmember erst zur Laufzeit ermittelt werden kann. Dies kann dazu führen, dass Fehler durch vergessene Memberaufrufe nicht erkannt werden. Sollte weiterhin zur Laufzeit kein Standardmember auf dem Objekt existsieren, so kommt es zu einem Fehler 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht'.</value>
+    <value>Zugriffe auf Standardelemente verstecken, welches Element aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt, und zudem das Standarelement erst zur Laufzeit ermittelt werden kann. Dies kann dazu führen, dass Fehler durch vergessene Elementaufrufe nicht erkannt werden. Sollte weiterhin zur Laufzeit kein Standardelement auf dem Objekt existsieren, so kommt es zu einem Fehler 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht'.</value>
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
-    <value>Wenn beide Seiten einer Zuweisung ohne Set Objekte sind, kommt es zu einer Zuweisung vom Standardmember der rechten Seite zu dem der linken. Auch wenn dies manchmal beabsichtigt sein kann, kann es in vielen Fällen dazu führen, dass nicht bemerkt wird, dass Set fehlerhafter Weise vergessen wurde.</value>
+    <value>Wenn beide Seiten einer Zuweisung ohne Set Objekte sind, kommt es zu einer Zuweisung vom Standardelement der rechten Seite zu dem der linken. Auch wenn dies manchmal beabsichtigt sein kann, verschleiert es meistens, dass Set fehlerhafter Weise vergessen wurde.</value>
   </data>
   <data name="UnreachableCaseInspection" xml:space="preserve">
     <value>Eine Bedingung in einem Case-Ausdruck ist entweder nie erfüllt, verursacht einen Laufzeitfehler oder kann nicht erfüllt werden, da die vorherigen Case-Ausdrücke bereits alle zulässigen Werte abdecken. Infolgedessen wird der Code in dem Case-Zweig nie ausgeführt und stellt "toten Code" dar oder der Case-Ausdruck stellt sogar einen Laufzeitfehler dar, der nur darauf wartet irgendwann aufzutreten. Der Case-Zweig sollte entweder gelöscht, verändert oder an eine andere Stelle verschoben werden.</value>
@@ -441,5 +441,11 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   </data>
   <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
     <value>Eine Annotation hat mehr Argumente als erlaubt. Die überzähligen Argumente werden ignoriert.</value>
+  </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>Implizite Referenzen zu Elementen eines Workbooks in einem Workbook-Modul können mit Referenzen zum aktiven Workbook verwechselt werden, da dies das Verhalten für solche Referenzen ist überall außerhalb von Workbook-Modulen. Die Uneindeutigkeit kann aufgelöst werden, indem die Referenzen mit 'Me' qualifiziert werden.</value>
+  </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>Implizite Referenzen zu Elementen eines Worksheets in einem Worksheet-Modul können mit Referenzen zum aktiven Worksheet verwechselt werden, da dies das Verhalten für solche Referenzen ist überall außerhalb von Worksheet-Modulen. Die Uneindeutigkeit kann aufgelöst werden, indem die Referenzen mit 'Me' qualifiziert werden.</value>
   </data>
 </root>

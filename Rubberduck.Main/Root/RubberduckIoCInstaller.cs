@@ -382,7 +382,14 @@ namespace Rubberduck.Root
             container.Register(Component.For<IAnnotationArgumentViewModelFactory>()
                 .ImplementedBy<AnnotationArgumentViewModelFactory>()
                 .LifestyleSingleton());
+
+            container.Register(Component.For<IReplacePrivateUDTMemberReferencesModelFactory>()
+                .ImplementedBy<ReplacePrivateUDTMemberReferencesModelFactory>()
+                .LifestyleSingleton());
+
             RegisterUnreachableCaseFactories(container);
+
+            RegisterEncapsulateFieldRefactoringFactories(container);
         }
 
         private void RegisterUnreachableCaseFactories(IWindsorContainer container)
@@ -392,6 +399,21 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
         }
 
+        private void RegisterEncapsulateFieldRefactoringFactories(IWindsorContainer container)
+        {
+            container.Register(Component.For<IEncapsulateFieldCandidateFactory>()
+                .ImplementedBy<EncapsulateFieldCandidateFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IEncapsulateFieldUseBackingUDTMemberModelFactory>()
+                .ImplementedBy<EncapsulateFieldUseBackingUDTMemberModelFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IEncapsulateFieldUseBackingFieldModelFactory>()
+                .ImplementedBy<EncapsulateFieldUseBackingFieldModelFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IEncapsulateFieldModelFactory>()
+                .ImplementedBy<EncapsulateFieldModelFactory>()
+                .LifestyleSingleton());
+        }
 
         private void RegisterQuickFixes(IWindsorContainer container, Assembly[] assembliesToRegister)
         {
@@ -596,10 +618,12 @@ namespace Rubberduck.Root
             return new[]
             {
                 typeof(ProjectExplorerRefactorRenameCommandMenuItem),
-                typeof(FindSymbolCommandMenuItem),
-                typeof(FindAllReferencesCommandMenuItem),
-                typeof(FindAllImplementationsCommandMenuItem),
-                typeof(ProjectExplorerAddRemoveReferencesCommandMenuItem)
+                typeof(ProjectExplorerFindSymbolCommandMenuItem),
+                typeof(ProjectExplorerFindAllReferencesCommandMenuItem),
+                typeof(ProjectExplorerFindAllImplementationsCommandMenuItem),
+                typeof(ProjectExplorerAddRemoveReferencesCommandMenuItem),
+                typeof(ProjectExplorerIgnoreProjectCommandMenuItem),
+                typeof(ProjectExplorerUnignoreProjectCommandMenuItem)
             };
         }
 

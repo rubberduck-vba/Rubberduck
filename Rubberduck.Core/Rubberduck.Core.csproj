@@ -130,6 +130,9 @@
     <Compile Update="UI\Refactorings\RenameFolder\RenameFolderView.xaml.cs">
       <DependentUpon>RenameFolderView.xaml</DependentUpon>
     </Compile>
+    <Compile Update="UI\Settings\IgnoredProjectsSettingsView.xaml.cs">
+      <DependentUpon>IgnoredProjectsSettingsView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
@@ -142,6 +145,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
       <Generator>SettingsSingleFileGenerator</Generator>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\IgnoredProjects\" />
   </ItemGroup>
   <!-- END WINDOWS FORMS WORKAROUND SECTION -->
 

@@ -109,8 +109,7 @@ namespace Rubberduck.UI.Settings
             target.FixBrokenReferences = FixBrokenReferences;
             target.AddToRecentOnReferenceEvents = AddToRecentOnReferenceEvents;
             target.ProjectPaths = new List<string>(ProjectPaths);
-            // ReSharper disable once ExplicitCallerInfoArgument
-            OnPropertyChanged("ProjectPaths");
+            OnPropertyChanged(nameof(ProjectPaths));
         }
 
         public void UpdateConfig(Configuration config)

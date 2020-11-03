@@ -21,7 +21,7 @@ namespace RubberduckTests.Refactoring
     {
         [Test]
         [Category("Refactorings")]
-        public void NoActiveSelection_Throws()
+        public virtual void NoActiveSelection_Throws()
         {
             var rewritingManager = new Mock<IRewritingManager>().Object;
             var refactoring = TestRefactoring(rewritingManager, null, initialSelection: null);

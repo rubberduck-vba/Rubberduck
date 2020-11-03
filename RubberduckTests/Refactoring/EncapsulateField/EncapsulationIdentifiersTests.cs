@@ -8,12 +8,18 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 
+        [SetUp]
+        public void ExecutesBeforeAllTests()
+        {
+            Support.ResetResolver();
+        }
+
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         public void FieldNameAttributeValidation_DefaultsToAvailableFieldName()
         {
-            string inputCode =
+            var inputCode =
 $@"Public fizz As String
 
             'fizz1 is the intial default name for encapsulating 'fizz'            
@@ -36,33 +42,32 @@ $@"Public fizz As String
         [Category("Encapsulate Field")]
         public void FieldNameValuesPerSequenceOfPropertyNameChanges()
         {
-            string inputCode = "Public fizz As String";
+            var inputCode = "Public fizz As String";
 
             var encapsulatedField = Support.RetrieveEncapsulateFieldCandidate(inputCode, "fizz");
-            StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.BackingIdentifier);
+            StringAssert.AreEqualIgnoringCase("fizz1", encapsulatedField.BackingIdentifier);
 
             encapsulatedField.PropertyIdentifier = "Test";
             StringAssert.AreEqualIgnoringCase("fizz", encapsulatedField.BackingIdentifier);
 
             encapsulatedField.PropertyIdentifier = "Fizz";
-            StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.BackingIdentifier);
+            StringAssert.AreEqualIgnoringCase("fizz1", encapsulatedField.BackingIdentifier);
 
             encapsulatedField.PropertyIdentifier = "Fiz";
             StringAssert.AreEqualIgnoringCase("fizz", encapsulatedField.BackingIdentifier);
 
             encapsulatedField.PropertyIdentifier = "Fizz";
-            StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.BackingIdentifier);
+            StringAssert.AreEqualIgnoringCase("fizz1", encapsulatedField.BackingIdentifier);
         }
 
         [TestCase("strValue", "Value", "strValue")]
         [TestCase("m_Text", "Text", "m_Text")]
-        [TestCase("notAHungarianName", "NotAHungarianName", "notAHungarianName_1")]
+        [TestCase("notAHungarianName", "NotAHungarianName", "notAHungarianName1")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         public void AccountsForHungarianNamesAndMemberPrefix(string inputName, string expectedPropertyName, string expectedFieldName)
         {
-            var validator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
-            var sut = new EncapsulationIdentifiers(inputName, validator);
+            var sut = new EncapsulationIdentifiers(inputName);
 
             Assert.AreEqual(expectedPropertyName, sut.DefaultPropertyName);
             Assert.AreEqual(expectedFieldName, sut.DefaultNewFieldName);

@@ -60,4 +60,18 @@
       <Version>4.5.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\ParsingSettings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ParsingSettings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\ParsingSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>ParsingSettings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
 </Project>
