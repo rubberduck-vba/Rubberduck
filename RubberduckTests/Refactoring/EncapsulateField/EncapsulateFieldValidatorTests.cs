@@ -75,11 +75,11 @@ End Property
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Public Property Get Variable() As Integer", actualCode);
-            StringAssert.Contains("Variable = variable_1", actualCode);
+            StringAssert.Contains("Variable = variable3", actualCode);
             StringAssert.Contains("Public Property Get Variable1() As Long", actualCode);
-            StringAssert.Contains("Variable1 = variable1_1", actualCode);
+            StringAssert.Contains("Variable1 = variable4", actualCode);
             StringAssert.Contains("Public Property Get Variable2() As Integer", actualCode);
-            StringAssert.Contains("Variable2 = variable2_1", actualCode);
+            StringAssert.Contains("Variable2 = variable5", actualCode);
             StringAssert.DoesNotContain("Public Property Get Variable3() As Integer", actualCode);
         }
 
@@ -117,11 +117,11 @@ $@"Public fizz As String
             Private fizzle As String
 
             'fizz1 is the initial default name for encapsulating 'fizz'            
-            Public Property Get Fizz_1() As String
-                Fizz_1 = fizzle
+            Public Property Get Fizz1() As String
+                Fizz1 = fizzle
             End Property
 
-            Public Property Let Fizz_1(ByVal value As String)
+            Public Property Let Fizz1(ByVal value As String)
                 fizzle = value
             End Property
             ";
@@ -256,7 +256,7 @@ Public wholeNumber As String
 Public Enum NumberTypes 
      Whole = -1 
      Integral = 0 
-     Rational_1 = 1 
+     Rational1 = 1 
 End Enum
 
 Private rati|onal As NumberTypes
@@ -265,7 +265,7 @@ Private rati|onal As NumberTypes
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Public Property Get Rational() As NumberTypes", actualCode);
-            StringAssert.Contains("Rational = rational_2", actualCode);
+            StringAssert.Contains("Rational = rational2", actualCode);
         }
 
         [Test]
@@ -287,7 +287,7 @@ Private whe|els As Integer
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Public Property Get Wheels()", actualCode);
-            StringAssert.Contains("Wheels = wheels_1", actualCode);
+            StringAssert.Contains("Wheels = wheels1", actualCode);
         }
 
         [Test]
@@ -329,8 +329,8 @@ End Function
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Test", actualCode);
-            StringAssert.Contains("test_1", actualCode);
-            StringAssert.DoesNotContain("Test_1", actualCode);
+            StringAssert.Contains("test1", actualCode);
+            StringAssert.DoesNotContain("Test1", actualCode);
         }
 
         [TestCase("Dim test As String", "arg")] //Local variable
@@ -369,17 +369,17 @@ End Function
             var inputCode =
 $@"
 Private tes|t As String
-Private test_1 As String
+Private test1 As String
 
 Public Sub Foo(arg As String)
-    test = arg & test_1
+    test = arg & test1
 End Sub
 ";
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Test", actualCode);
-            StringAssert.Contains("Private test_2 As String", actualCode);
-            StringAssert.DoesNotContain("test_1 = arg & test_1", actualCode);
+            StringAssert.Contains("Private test2 As String", actualCode);
+            StringAssert.DoesNotContain("test1 = arg & test1", actualCode);
         }
 
         [TestCase(MockVbeBuilder.TestModuleName)]
@@ -472,7 +472,7 @@ Public mF|oo As Long
             var actualModuleCode = Support.RefactoredCode(presenterAction, 
                 (moduleOneName, inputCode.ToCodeString(), ComponentType.StandardModule));
 
-            StringAssert.Contains($"Private Type TModuleOne_1", actualModuleCode[moduleOneName]);
+            StringAssert.Contains($"Private Type TModuleOne1", actualModuleCode[moduleOneName]);
         }
 
         [Test]
@@ -682,7 +682,7 @@ Private {fieldUT} As Double
 
                 model.ConflictFinder.AssignNoConflictIdentifiers(objectStateUDT);
 
-                StringAssert.AreEqualIgnoringCase("this_1", objectStateUDT.IdentifierName);
+                StringAssert.AreEqualIgnoringCase("this1", objectStateUDT.IdentifierName);
             }
         }
 
