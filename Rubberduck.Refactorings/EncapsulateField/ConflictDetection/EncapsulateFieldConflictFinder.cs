@@ -223,6 +223,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             return HasInternalPropertyAndBackingFieldConflict(candidate)
                 || HasConflictsWithOtherEncapsulationPropertyIdentifiers(candidate, identifierToCompare)
+                || HasConflictsWithOtherEncapsulationBackingIdentifiers(candidate, identifierToCompare)
                 || HasConflictsWithUnmodifiedPropertyAndFieldIdentifiers(candidate, identifierToCompare)
                 || HasConflictWithLocalDeclarationIdentifiers(candidate, identifierToCompare);
         }
@@ -232,10 +233,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 && candidate.EncapsulateFlag
                 && candidate.PropertyIdentifier.IsEquivalentVBAIdentifierTo(candidate.BackingIdentifier);
 
-        private bool HasConflictsWithOtherEncapsulationPropertyIdentifiers(IEncapsulateFieldCandidate candidate, string identifierToCompare) 
+        private bool HasConflictsWithOtherEncapsulationPropertyIdentifiers(IEncapsulateFieldCandidate candidate, string identifierToCompare)
             => _allCandidates.Where(c => c.TargetID != candidate.TargetID
                 && c.EncapsulateFlag
                 && c.PropertyIdentifier.IsEquivalentVBAIdentifierTo(identifierToCompare)).Any();
+
+        private bool HasConflictsWithOtherEncapsulationBackingIdentifiers(IEncapsulateFieldCandidate candidate, string identifierToCompare)
+        {
+            return candidate is IEncapsulateFieldAsUDTMemberCandidate || candidate is IUserDefinedTypeMemberCandidate
+                ? false
+                : _allCandidates.Where(c => c.TargetID != candidate.TargetID
+                    && c.EncapsulateFlag
+                    && c.BackingIdentifier.IsEquivalentVBAIdentifierTo(identifierToCompare)).Any();
+        }
 
         private bool HasConflictsWithUnmodifiedPropertyAndFieldIdentifiers(IEncapsulateFieldCandidate candidate, string identifierToCompare)
         {

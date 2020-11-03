@@ -43,9 +43,9 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
             var projectIdsToBeLoaded = _projectsToResolveFromComProjectSelector.ProjectsToResolveFromComProjects;
             var newProjectIdsToBeLoaded =
-                projectIdsToBeLoaded.Where(projectId => !_currentlyLoadedProjectIds.Contains(projectId));
+                projectIdsToBeLoaded.Where(projectId => !_currentlyLoadedProjectIds.Contains(projectId)).ToList();
             var projectsToBeUnloaded =
-                _currentlyLoadedProjectIds.Where(projectId => !projectIdsToBeLoaded.Contains(projectId));
+                _currentlyLoadedProjectIds.Where(projectId => !projectIdsToBeLoaded.Contains(projectId)).ToList();
 
             LoadProjects(newProjectIdsToBeLoaded);
             UnloadProjects(projectsToBeUnloaded);
