@@ -24,7 +24,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldConflictFinder))]
-        public void AvoidsFalsePositive_MemberAccessExpression_Me()
+        public void RespectsMemberAccessExpressionUsingMe()
         {
             var targetField = "Fizz";
 
@@ -43,7 +43,7 @@ End Sub";
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldConflictFinder))]
-        public void AvoidsFalsePositive_WithMemberAccessExpression_Me()
+        public void RespectsWithMemberAccessExpressionUsingMe()
         {
             var targetField = "Fizz";
 
@@ -57,6 +57,85 @@ Public Sub NoConflict(Fizz As Integer)
 End Sub";
             var result = TestIsConflictingIdentifier("Fizz", inputCode, targetField);
             Assert.IsFalse(result);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(EncapsulateFieldConflictFinder))]
+        public void RespectsWithMemberAccessExpressionUsingMe_Parameter()
+        {
+            var targetField = "Fizz";
+            var inputCode =
+$@"Public Fizz As Integer
+
+Public Sub CopyFromAnotherInstance(Fizz As MockVbeBuilder.TestModuleName)
+    Me.Fizz = Fizz.Fizz
+End Sub";
+
+            var result = TestIsConflictingIdentifier("Fizz", inputCode, targetField);
+            Assert.IsFalse(result);
+        }
+
+        [TestCase("Dim thisConflicts As Long", null, true)]
+        [TestCase("Dim thisConflicts As Long", "Me.", false)]
+        [TestCase("Const thisConflicts As Long = 10", null, true)]
+        [TestCase("Const thisConflicts As Long = 10", "Me.", false)]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(EncapsulateFieldConflictFinder))]
+        public void LocalDeclarationsRespectsQualifier(string declaration, string qualifier, bool expected)
+        {
+            var targetField = "Fizz";
+            var inputCode =
+$@"Public Fizz As Integer
+
+Public Sub DoSomething()
+    {declaration}
+    {qualifier}Fizz = thisConflicts + 1
+End Sub";
+
+            var result = TestIsConflictingIdentifier("thisConflicts", inputCode, targetField);
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestCase("thisConFlicts", true)]
+        [TestCase("DoSomething", true)]
+        [TestCase("TestString", true)]
+        [TestCase("TestConst", true)]
+        [TestCase("FirstValue", false)]
+        [TestCase("LocalConst", false)]
+        [TestCase("LocalVariable", false)]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(EncapsulateFieldConflictFinder))]
+        public void DetectsModuleEntityConflicts(string newName, bool expected)
+        {
+            var targetField = "Fizz";
+            var inputCode =
+$@"
+Public Fizz As Integer
+Private TestString As String
+
+Private Const TestConst As Long = 10
+
+Private Enum TestEnum
+    ThisConflicts
+    EnumTwo
+End Enum
+
+Private Type TestType
+    FirstValue As Long
+End Type
+
+Private Sub DoSomething()
+    Const localConst As String = ""Test""
+    Dim localVariable As Long
+End Sub
+";
+
+            var result = TestIsConflictingIdentifier(newName, inputCode, targetField);
+            Assert.AreEqual(expected, result);
         }
 
         private bool TestIsConflictingIdentifier(string testIdentifier, string inputCode, string targetFieldName)
