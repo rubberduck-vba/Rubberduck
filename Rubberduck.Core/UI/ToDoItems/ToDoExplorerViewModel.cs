@@ -318,7 +318,7 @@ namespace Rubberduck.UI.ToDoItems
                     _toDoFilter = value;
                     OnPropertyChanged();
                     Items.Filter = FilterResults;
-                    OnPropertyChanged(nameof(Items)); //after filtering, grouping headers collapse.
+                    OnPropertyChanged(nameof(Items));
                 }
             }
         }
@@ -327,7 +327,12 @@ namespace Rubberduck.UI.ToDoItems
         {
             var toDoItem = marker as ToDoItem;
 
-            var passesMarkerFilter = toDoItem.Description.ToUpper().Contains(ToDoFilter?.ToUpper() ?? string.Empty);
+            if (string.IsNullOrEmpty(ToDoFilter))
+            {
+                return true;
+            }
+            
+            var passesMarkerFilter = toDoItem.Description.ToUpper().Contains(ToDoFilter.ToUpper());
 
             return passesMarkerFilter;
         }
