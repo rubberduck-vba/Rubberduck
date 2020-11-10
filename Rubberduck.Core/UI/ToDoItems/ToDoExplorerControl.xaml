@@ -76,6 +76,12 @@
 
                 <Separator />
 
+                <Label Content="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=FilterLabel}" />
+                <controls:SearchBox Width="100"
+                                    Text="{Binding ToDoFilter, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
+
+                <Separator />
+
                 <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}"
                         ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_CollapseAll}">
                     <Image Source="{StaticResource CollapseAllImage}" Style="{StaticResource ToolbarImageOpacity}" />

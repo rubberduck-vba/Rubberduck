@@ -306,5 +306,30 @@ namespace Rubberduck.UI.ToDoItems
                 _state.StateChanged -= HandleStateChanged;
             }
         }
+
+        private string _toDoFilter;
+        public string ToDoFilter 
+        { 
+            get => _toDoFilter;
+            set
+            {
+                if (_toDoFilter != value)
+                {
+                    _toDoFilter = value;
+                    OnPropertyChanged();
+                    Items.Filter = FilterResults;
+                    OnPropertyChanged(nameof(Items)); //after filtering, grouping headers collapse.
+                }
+            }
+        }
+
+        private bool FilterResults(object marker)
+        {
+            var toDoItem = marker as ToDoItem;
+
+            var passesMarkerFilter = toDoItem.Description.ToUpper().Contains(ToDoFilter?.ToUpper() ?? string.Empty);
+
+            return passesMarkerFilter;
+        }
     }
 }
