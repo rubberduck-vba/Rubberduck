@@ -327,14 +327,7 @@ namespace Rubberduck.UI.ToDoItems
         {
             var toDoItem = marker as ToDoItem;
 
-            if (string.IsNullOrEmpty(ToDoFilter))
-            {
-                return true;
-            }
-            
-            var passesMarkerFilter = toDoItem.Description.ToUpper().Contains(ToDoFilter.ToUpper());
-
-            return passesMarkerFilter;
+            return string.IsNullOrEmpty(ToDoFilter) || toDoItem.Description.ToUpper().Contains(ToDoFilter.ToUpper());
         }
     }
 }
