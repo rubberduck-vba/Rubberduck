@@ -21,12 +21,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 
-        [SetUp]
-        public void ExecutesBeforeAllTests()
-        {
-            Support.ResetResolver();
-        }
-
         [TestCase("fizz", true, "baz", true, "buzz", true)]
         [TestCase("fizz", false, "baz", true, "buzz", true)]
         [TestCase("fizz", false, "baz", false, "buzz", true)]

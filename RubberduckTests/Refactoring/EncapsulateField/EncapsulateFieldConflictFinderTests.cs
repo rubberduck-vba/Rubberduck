@@ -12,14 +12,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     [TestFixture]
     public class EncapsulateFieldConflictFinderTests
     {
-        private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
-
-        [SetUp]
-        public void ExecutesBeforeAllTests()
-        {
-            Support.ResetResolver();
-        }
-
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
@@ -145,12 +137,13 @@ End Sub
             var state = MockParser.CreateAndParse(vbe.Object);
             using (state)
             {
+
                 var field = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                     .Single(d => d.IdentifierName == targetFieldName);
 
                 var fieldModel = new FieldEncapsulationModel(field as VariableDeclaration);
 
-                var modelFactory = Support.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>(state);
+                var modelFactory = EncapsulateFieldTestSupport.GetResolver(state).Resolve<IEncapsulateFieldUseBackingFieldModelFactory>();
                 var model = modelFactory.Create(new List<FieldEncapsulationModel>() { fieldModel });
 
                 var efCandidate = model.EncapsulationCandidates.First(c => c.Declaration == field);

@@ -17,12 +17,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 
-        [SetUp]
-        public void ExecutesBeforeAllTests()
-        {
-            Support.ResetResolver();
-        }
-
         [TestCase("Private", "mArray(5) As String", "mArray(5) As String")]
         [TestCase("Public", "mArray(5) As String", "mArray(5) As String")]
         [TestCase("Private", "mArray(5,2,3) As String", "mArray(5,2,3) As String")]
