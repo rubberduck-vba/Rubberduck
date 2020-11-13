@@ -52,7 +52,7 @@ Private this As Long";
             var presenterAction = Support.UserAcceptsDefaults(convertFieldToUDTMember: true);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Private this As Long", actualCode);
-            StringAssert.Contains($"Private this_1 As {Support.StateUDTDefaultTypeName}", actualCode);
+            StringAssert.Contains($"Private this1 As {Support.StateUDTDefaultTypeName}", actualCode);
         }
 
         [Test]
@@ -371,7 +371,7 @@ End Property
         [Category("Encapsulate Field")]
         public void UserDefinedTypeDefaultNameHasConflict()
         {
-            var expectedIdentifier = "TTestModule1_1";
+            var expectedIdentifier = "TTestModule2";
             var inputCode =
 $@"
 

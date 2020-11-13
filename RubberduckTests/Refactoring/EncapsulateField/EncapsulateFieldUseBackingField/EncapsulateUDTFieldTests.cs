@@ -82,12 +82,12 @@ Public that As TBar";
                 StringAssert.Contains($"Property Get Second", actualCode);
 
                 StringAssert.Contains($"Private {expectedThat.TargetFieldName} As TBar", actualCode);
-                StringAssert.Contains($"First_1 = {expectedThat.TargetFieldName}.First", actualCode);
-                StringAssert.Contains($"Second_1 = {expectedThat.TargetFieldName}.Second", actualCode);
+                StringAssert.Contains($"First1 = {expectedThat.TargetFieldName}.First", actualCode);
+                StringAssert.Contains($"Second1 = {expectedThat.TargetFieldName}.Second", actualCode);
                 StringAssert.Contains($"{expectedThat.TargetFieldName}.First = {Support.RHSIdentifier}", actualCode);
                 StringAssert.Contains($"{expectedThat.TargetFieldName}.Second = {Support.RHSIdentifier}", actualCode);
-                StringAssert.Contains($"Property Get First_1", actualCode);
-                StringAssert.Contains($"Property Get Second_1", actualCode);
+                StringAssert.Contains($"Property Get First1", actualCode);
+                StringAssert.Contains($"Property Get Second1", actualCode);
 
                 StringAssert.Contains($"Private {expectedThis.TargetFieldName} As TBar", actualCode);
                 StringAssert.Contains($"Private {expectedThat.TargetFieldName} As TBar", actualCode);
@@ -743,7 +743,7 @@ End Function";
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
 
-            StringAssert.Contains("Public Property Let First_1", actualCode);
+            StringAssert.Contains("Public Property Let First1", actualCode);
             StringAssert.Contains("Public Property Let Second", actualCode);
         }
 
@@ -803,8 +803,8 @@ Private my|Bar As TBar
 
             StringAssert.Contains("Public Property Let Foo(", actualCode);
             StringAssert.Contains("Public Property Let Bar(", actualCode);
-            StringAssert.Contains("Public Property Let Foo_1(", actualCode);
-            StringAssert.Contains("Public Property Let Bar_1(", actualCode);
+            StringAssert.Contains("Public Property Let Foo1(", actualCode);
+            StringAssert.Contains("Public Property Let Bar1(", actualCode);
             StringAssert.Contains($"myBar.FooBar.Foo = {Support.RHSIdentifier}", actualCode);
             StringAssert.Contains($"myBar.ReBar.Foo = {Support.RHSIdentifier}", actualCode);
         }

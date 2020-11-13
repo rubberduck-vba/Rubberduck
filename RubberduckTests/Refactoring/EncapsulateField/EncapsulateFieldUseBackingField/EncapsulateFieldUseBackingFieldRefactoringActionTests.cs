@@ -43,7 +43,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
 
             var backingField = propertyIdentifier != null
                 ? target
-                : $"{target}_1";
+                : $"{target}1";
 
             StringAssert.Contains($"Public Property Get {resultPropertyIdentifier}()", refactoredCode);
             StringAssert.Contains($"{resultPropertyIdentifier} = {backingField}", refactoredCode);

@@ -196,6 +196,24 @@ namespace Rubberduck.Resources.Menus {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore Project.
+        /// </summary>
+        public static string ProjectExplorer_IgnoreProject {
+            get {
+                return ResourceManager.GetString("ProjectExplorer_IgnoreProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unignore Project.
+        /// </summary>
+        public static string ProjectExplorer_UnignoreProject {
+            get {
+                return ResourceManager.GetString("ProjectExplorer_UnignoreProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Encapsulate Field.
         /// </summary>
         public static string RefactorMenu_EncapsulateField {
