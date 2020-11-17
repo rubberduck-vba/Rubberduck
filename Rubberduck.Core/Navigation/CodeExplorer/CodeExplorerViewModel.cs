@@ -418,7 +418,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CodeExplorerMoveToFolderDragAndDropCommand MoveToFolderDragAndDropCommand { get; set; }
 
-    public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
+        public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
         {
             if (declaration == null)
             {
