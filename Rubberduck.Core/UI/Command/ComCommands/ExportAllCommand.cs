@@ -101,15 +101,12 @@ namespace Rubberduck.UI.Command.ComCommands
             }
         }
 
+        private string cachedExportPath = null;
         private void Export(IVBProject project)
         {
             var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog_Title, project.Name);
 
-            // If .GetDirectoryName is passed an empty string for a RootFolder, 
-            // it defaults to the Documents library (Win 7+) or equivalent.
-            var path = string.IsNullOrWhiteSpace(project.FileName)
-                ? string.Empty
-                : Path.GetDirectoryName(project.FileName);
+            var path = ExportPath();
 
             using (var _folderBrowser = _factory.CreateFolderBrowser(desc, true, path))
             {
@@ -117,8 +114,23 @@ namespace Rubberduck.UI.Command.ComCommands
 
                 if (result == DialogResult.OK)
                 {
-                    project.ExportSourceFiles(_folderBrowser.SelectedPath);
+                    cachedExportPath = _folderBrowser.SelectedPath;
+                    project.ExportSourceFiles(cachedExportPath);
                 }
+            }
+
+            string ExportPath()
+            {
+                if (!string.IsNullOrWhiteSpace(cachedExportPath))
+                {
+                    return cachedExportPath;
+                }
+
+                // If .GetDirectoryName is passed an empty string for a RootFolder, 
+                // it defaults to the Documents library (Win 7+) or equivalent.
+                return string.IsNullOrWhiteSpace(project.FileName)
+                    ? string.Empty
+                    : Path.GetDirectoryName(project.FileName);
             }
         }
     }

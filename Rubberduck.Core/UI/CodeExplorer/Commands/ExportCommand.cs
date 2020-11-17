@@ -79,6 +79,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             PromptFileNameAndExport(node.Declaration.QualifiedName.QualifiedModuleName);
         }
 
+        private string cachedExportPath = null;
+
         public bool PromptFileNameAndExport(QualifiedModuleName qualifiedModule)
         {
             if (!_exportableFileExtensions.TryGetValue(qualifiedModule.ComponentType, out var extension))
@@ -89,6 +91,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             using (var dialog = _dialogFactory.CreateSaveFileDialog())
             {
                 dialog.OverwritePrompt = true;
+                dialog.InitialDirectory = cachedExportPath ?? string.Empty;
                 dialog.FileName = qualifiedModule.ComponentName + extension;
 
                 var result = dialog.ShowDialog();
@@ -97,11 +100,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                     return false;
                 }
 
+                cachedExportPath = System.IO.Path.GetDirectoryName(dialog.FileName);
                 var component = ProjectsProvider.Component(qualifiedModule);
                 try
                 {
-                    var path = System.IO.Path.GetDirectoryName(dialog.FileName);
-                    component.ExportAsSourceFile(path, false, true); // skipped optional parameters interfere with mock setup
+                    component.ExportAsSourceFile(cachedExportPath, false, true); // skipped optional parameters interfere with mock setup
                 }
                 catch (Exception ex)
                 {
