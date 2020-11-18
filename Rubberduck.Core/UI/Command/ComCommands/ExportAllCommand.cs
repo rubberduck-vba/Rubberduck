@@ -76,9 +76,17 @@ namespace Rubberduck.UI.Command.ComCommands
 
         protected override void OnExecute(object parameter)
         {
-            var tuple = (ValueTuple<CodeExplorerViewModel, ICodeExplorerNode>)parameter;
-            var viewModel = tuple.Item1;
-            var node = tuple.Item2;
+            dynamic node; //unsure if this the correct usage
+            CodeExplorerViewModel viewModel = null;
+            if (parameter is ValueTuple<CodeExplorerViewModel, ICodeExplorerNode> tuple)
+            {
+                viewModel = tuple.Item1;
+                node = tuple.Item2;
+            }
+            else
+            {
+                node = (IVBProject)parameter;
+            }
 
             switch (node)
             {
@@ -93,13 +101,13 @@ namespace Rubberduck.UI.Command.ComCommands
                     Export(nodeProject, viewModel);
                     break;
                 case IVBProject vbproject:
-                    Export(vbproject, viewModel);
+                    Export(vbproject);
                     break;
                 default:
                 {
                     using (var project = _vbe.ActiveVBProject)
                     {
-                        Export(project, viewModel);
+                        Export(project);
                     }
                     break;
                 }
@@ -114,23 +122,25 @@ namespace Rubberduck.UI.Command.ComCommands
         private void Export(IVBProject project, CodeExplorerViewModel viewModel)
         {
             var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog_Title, project.Name);
-
             var path = ExportPath(viewModel);
-
             using (var _folderBrowser = _factory.CreateFolderBrowser(desc, true, path))
             {
                 var result = _folderBrowser.ShowDialog();
 
                 if (result == DialogResult.OK)
                 {
-                    viewModel.CachedExportPath = _folderBrowser.SelectedPath;
+                    if (viewModel != null)
+                    {
+                        viewModel.CachedExportPath = _folderBrowser.SelectedPath;
+                    }
+
                     project.ExportSourceFiles(_folderBrowser.SelectedPath);
                 }
             }
 
             string ExportPath(CodeExplorerViewModel vm)
             {
-                var cachedPath = vm.CachedExportPath;
+                var cachedPath = vm?.CachedExportPath ?? null;
                 if (!string.IsNullOrWhiteSpace(cachedPath))
                 {
                     return cachedPath;
