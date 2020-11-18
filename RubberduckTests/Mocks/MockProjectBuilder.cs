@@ -231,8 +231,7 @@ namespace RubberduckTests.Mocks
                     {".frm", ComponentType.UserForm}
                 };
 
-                ComponentType type;
-                types.TryGetValue(extension, out type);
+                types.TryGetValue(extension, out ComponentType type);
 
                 _componentsMock.Add(CreateComponentMock(Path.GetFileNameWithoutExtension(s), type, string.Empty, new Selection(), null, out var codeModule));
                 _codeModuleMocks.Add(codeModule);
