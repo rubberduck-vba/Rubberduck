@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Windows.Forms;
 using Rubberduck.Navigation.CodeExplorer;
@@ -75,7 +76,11 @@ namespace Rubberduck.UI.Command.ComCommands
 
         protected override void OnExecute(object parameter)
         {
-            switch (parameter)
+            var tuple = (ValueTuple<CodeExplorerViewModel, ICodeExplorerNode>)parameter;
+            var viewModel = tuple.Item1;
+            var node = tuple.Item2;
+
+            switch (node)
             {
                 case CodeExplorerProjectViewModel projectNode:
                     var nodeProject = projectNode.Declaration != null
@@ -85,28 +90,32 @@ namespace Rubberduck.UI.Command.ComCommands
                     {
                         return;
                     }
-                    Export(nodeProject);
+                    Export(nodeProject, viewModel);
                     break;
                 case IVBProject vbproject:
-                    Export(vbproject);
+                    Export(vbproject, viewModel);
                     break;
                 default:
                 {
                     using (var project = _vbe.ActiveVBProject)
                     {
-                        Export(project);
+                        Export(project, viewModel);
                     }
                     break;
                 }
             }
         }
 
-        private string cachedExportPath = null;
         private void Export(IVBProject project)
+        {
+            Export(project, null);
+        }
+
+        private void Export(IVBProject project, CodeExplorerViewModel viewModel)
         {
             var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog_Title, project.Name);
 
-            var path = ExportPath();
+            var path = ExportPath(viewModel);
 
             using (var _folderBrowser = _factory.CreateFolderBrowser(desc, true, path))
             {
@@ -114,16 +123,17 @@ namespace Rubberduck.UI.Command.ComCommands
 
                 if (result == DialogResult.OK)
                 {
-                    cachedExportPath = _folderBrowser.SelectedPath;
-                    project.ExportSourceFiles(cachedExportPath);
+                    viewModel.CachedExportPath = _folderBrowser.SelectedPath;
+                    project.ExportSourceFiles(_folderBrowser.SelectedPath);
                 }
             }
 
-            string ExportPath()
+            string ExportPath(CodeExplorerViewModel vm)
             {
-                if (!string.IsNullOrWhiteSpace(cachedExportPath))
+                var cachedPath = vm.CachedExportPath;
+                if (!string.IsNullOrWhiteSpace(cachedPath))
                 {
-                    return cachedExportPath;
+                    return cachedPath;
                 }
 
                 // If .GetDirectoryName is passed an empty string for a RootFolder, 
