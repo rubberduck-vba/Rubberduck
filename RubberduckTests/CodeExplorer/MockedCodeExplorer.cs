@@ -450,7 +450,8 @@ namespace RubberduckTests.CodeExplorer
             {
                 ImplementExportAllCommand();
             }
-            ViewModel.ExportAllCommand.Execute(ViewModel.SelectedItem);
+            (CodeExplorerViewModel ViewModel, ICodeExplorerNode SelectedItem) parameter = (ViewModel, ViewModel.SelectedItem);
+            ViewModel.ExportAllCommand.Execute(parameter);
         }
 
         public MockedCodeExplorer ImplementExportAllCommand()
@@ -465,7 +466,8 @@ namespace RubberduckTests.CodeExplorer
             {
                 ImplementExportCommand();
             }
-            ViewModel.ExportCommand.Execute(ViewModel.SelectedItem);
+            (CodeExplorerViewModel ViewModel, ICodeExplorerNode SelectedItem) parameter = (ViewModel, ViewModel.SelectedItem);
+            ViewModel.ExportCommand.Execute(parameter);
         }
 
         public MockedCodeExplorer ImplementExportCommand()
