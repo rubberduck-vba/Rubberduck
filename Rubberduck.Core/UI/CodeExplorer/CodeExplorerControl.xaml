@@ -506,11 +506,11 @@
                     </MenuItem>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Export}"
                               Command="{Binding ExportCommand}"
-                              CommandParameter="{Binding ExportCommandParameter, Mode=OneWay}"
+                              CommandParameter="{Binding ExportCommandsParameter, Mode=OneWay}"
                               Visibility="{Binding ExportVisibility}" />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_ExportAll}"
                               Command="{Binding ExportAllCommand}"
-                              CommandParameter="{Binding ExportCommandParameter, Mode=OneWay}" 
+                              CommandParameter="{Binding ExportCommandsParameter, Mode=OneWay}" 
                               Visibility="{Binding ExportAllVisibility}" />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Remove}"
                               Command="{Binding RemoveCommand}"

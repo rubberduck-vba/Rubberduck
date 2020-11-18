@@ -316,7 +316,6 @@ namespace RubberduckTests.Commands
             project.Verify(m => m.ExportSourceFiles(_path), Times.Never);
         }
 
-
         [Category("Commands")]
         [Test]
         public void ExportAllCommand_Execute_PassedNull_MultipleProjects_BrowserCanceled_ExpectNoExecution()

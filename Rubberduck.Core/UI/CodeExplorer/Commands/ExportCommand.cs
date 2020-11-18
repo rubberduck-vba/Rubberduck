@@ -72,15 +72,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                     return true;
                 }
 
-                if (obj is ValueTuple<CodeExplorerViewModel, ICodeExplorerNode> tuple)
+                if (obj is CodeExplorerViewModel viewModel)
                 {
-                    if (tuple.Item1.SelectedItem is CodeExplorerCustomFolderViewModel)
+                    if (viewModel.SelectedItem is CodeExplorerCustomFolderViewModel)
                     {
                         compType = ComponentType.Undefined;
                         return false;
                     }
 
-                    if (tuple.Item1.SelectedItem is CodeExplorerComponentViewModel componentViewModel)
+                    if (viewModel.SelectedItem is CodeExplorerComponentViewModel componentViewModel)
                     {
                         compType = componentViewModel.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
                         return true;
@@ -97,8 +97,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            var tuple = (ValueTuple<CodeExplorerViewModel, ICodeExplorerNode>)parameter;
-            var viewModel = tuple.Item1;
+            var viewModel = (CodeExplorerViewModel)parameter;
 
             if (!(viewModel.SelectedItem is CodeExplorerComponentViewModel componentViewModel) ||
                 componentViewModel.Declaration == null)

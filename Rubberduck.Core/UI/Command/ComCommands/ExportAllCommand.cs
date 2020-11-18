@@ -76,12 +76,12 @@ namespace Rubberduck.UI.Command.ComCommands
 
         protected override void OnExecute(object parameter)
         {
-            dynamic node; //unsure if this the correct usage
+            dynamic node; // used to get passing tests and feedback on PR.
             CodeExplorerViewModel viewModel = null;
-            if (parameter is ValueTuple<CodeExplorerViewModel, ICodeExplorerNode> tuple)
+            if (parameter is CodeExplorerViewModel)
             {
-                viewModel = tuple.Item1;
-                node = tuple.Item2;
+                viewModel = (CodeExplorerViewModel)parameter;
+                node = viewModel.SelectedItem;
             }
             else
             {

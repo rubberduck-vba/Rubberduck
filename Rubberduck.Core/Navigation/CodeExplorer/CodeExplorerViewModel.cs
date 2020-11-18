@@ -419,7 +419,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CodeExplorerMoveToFolderDragAndDropCommand MoveToFolderDragAndDropCommand { get; set; }
 
         public string CachedExportPath { get; internal set; }
-        public (CodeExplorerViewModel, ICodeExplorerNode) ExportCommandParameter => (this, SelectedItem);
+        public CodeExplorerViewModel ExportCommandsParameter => this;
 
         public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
         {
