@@ -216,7 +216,7 @@ End Sub";
             var builder = new MockVbeBuilder();
 
             var referencedProject = builder.ProjectBuilder("ReferencedProject", ProjectProtection.Unprotected)
-                .AddComponent("SheetFromOtherProject", ComponentType.Document, "",
+                .AddComponent("SheetFromOtherProject", ComponentType.Document, string.Empty,
                     properties: new[]
                     {
                         CreateVBComponentPropertyMock("Name", "SheetFromOtherProject").Object,
@@ -226,7 +226,7 @@ End Sub";
 
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
-                .AddComponent("Sheet1", ComponentType.Document, "",
+                .AddComponent("Sheet1", ComponentType.Document, string.Empty,
                     properties: new[]
                     {
                         CreateVBComponentPropertyMock("Name", sheetName).Object,
