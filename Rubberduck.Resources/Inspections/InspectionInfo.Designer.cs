@@ -259,6 +259,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enumeration defined within Worksheet object..
+        /// </summary>
+        public static string EnumerationDeclaredWithinWorksheetInspection {
+            get {
+                return ResourceManager.GetString("EnumerationDeclaredWithinWorksheetInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A procedure that returns an object may return &apos;Nothing&apos;. That will cause a runtime error 91 - &quot;Object variable or With block variable not set&quot; on subsequent member access. Perform an &apos;Is Nothing&apos; check after the &apos;Set&apos; assignment to guard against runtime errors..
         /// </summary>
         public static string ExcelMemberMayReturnNothingInspection {

@@ -524,4 +524,8 @@ In memoriam, 1972-2018</value>
     <value>Misleading ByRef modifier used for parameter '{0}' ({1}).</value>
     <comment>{0} Parameter, {1} Member</comment>
   </data>
+  <data name="EnumerationDeclaredWithinWorksheetInspection" xml:space="preserve">
+    <value>The enumeration {0} declared within {1} should be declared within a standard module</value>
+    <comment>{0} identifier; {1} declaring Worksheet.</comment>
+  </data>
 </root>
