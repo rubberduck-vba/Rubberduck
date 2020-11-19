@@ -166,9 +166,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return null;
         }
 
-        protected override string ResultDescription(IdentifierReference reference, string codeName)
-        {
-            return InspectionResults.SheetAccessedUsingStringInspection;
-        }
+        protected override string ResultDescription(IdentifierReference reference, string codeName) => InspectionResults.SheetAccessedUsingStringInspection;
     }
 }
