@@ -14,10 +14,11 @@ using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
-    internal class EnumerationDeclaredWithinWorksheetInspection : InspectionBase
+    internal class EnumerationDeclaredWithinWorksheetInspection : DeclarationInspectionBase
     {
         private readonly IProjectsProvider _projectsProvider;
 
@@ -27,25 +28,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             _projectsProvider = projectsProvider;
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var declaredEnums = finder.DeclarationsWithType(DeclarationType.Enumeration)
-                .Where(d => d.QualifiedModuleName.ComponentType == VBEditor.SafeComWrappers.ComponentType.DocObject);
-            
-            return declaredEnums.Select(d => InspectionResult(d));
+            return declaration.DeclarationType == DeclarationType.Enumeration
+                && declaration.QualifiedModuleName.ComponentType == ComponentType.DocObject;
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
+        protected override string ResultDescription(Declaration declaration)
         {
-            var declaredEnums = finder.DeclarationsWithType(DeclarationType.Enumeration)
-                .Where(d => d.QualifiedModuleName == module);
-
-            return declaredEnums.Select(d => InspectionResult(d));
-        }
-
-        protected virtual IInspectionResult InspectionResult(Declaration declaration)
-        {
-            return new DeclarationInspectionResult(this, InspectionResults.EnumerationDeclaredWithinWorksheetInspection, declaration);
+            return string.Format(InspectionResults.EnumerationDeclaredWithinWorksheetInspection,
+                declaration.IdentifierName,
+                declaration.ParentScopeDeclaration.IdentifierName);
         }
     }
 }

@@ -26,48 +26,114 @@ namespace RubberduckTests.Inspections
 
         [Test]
         [Category("Inspections")]
-        public void Project_with_multiple_enumerations_only_returns_worksheet_result()
+        [Category("EnumerationDeclaredWithinWorksheet")]
+        public void Project_with_multiple_enumerations_flags_only_enum_declared_within_worksheets()
         {
             #region InputCode
-            const string worksheet1Code = @"Option Explicit
-Public Enum Worksheet1Enumeration
-    Option1 = 0
-    Option2 = 1
-    Option3 = 3
-    Option4 = 7
-End Enum
-";
-            const string worksheet2Code = @"Option Explicit
-Dim bar As Long";
+            const string worksheetCode = @"Option Explicit
+Public Enum WorksheetEnum
+    wsMember1 = 0
+    wsMember1 = 1
+End Enum";
             const string standardModuleCode = @"Option Explicit
-Public Enum StdModEnumeration
-    Option1 = 0
-    Option2 = 1
-    Option3 = 2
-    Option4 = 4
+Public Enum StdModEnum
+    stdMember1 = 0
+    stdMember1 = 2
 End Enum";
             const string classModuleCode = @"Option Explicit
 Public Enum ClassModEnum
-    Option1 = 0
-    Option2 = 1
+    classMember1 = 0
+    classMember2 = 3
+End Enum";
+            const string userFormModuleCode = @"Option Explicit
+Public Enum FormEnum
+    formMember1 = 0
+    formMember2 = 4
 End Enum";
             #endregion
 
             var vbeBuilder = new MockVbeBuilder();
             var project = vbeBuilder.ProjectBuilder("Project1", ProjectProtection.Unprotected)
-                .AddComponent("Sheet1", ComponentType.DocObject, worksheet1Code)
-                .AddComponent("Sheet2", ComponentType.DocObject, worksheet2Code)
-                .AddComponent("Module1", ComponentType.StandardModule, standardModuleCode)
-                .AddComponent("ClsMod", ComponentType.ClassModule, classModuleCode)                
+                .AddComponent("Sheet", ComponentType.DocObject, worksheetCode)
+                .AddComponent("StdModule", ComponentType.StandardModule, standardModuleCode)
+                .AddComponent("ClsMod", ComponentType.ClassModule, classModuleCode)    
+                .AddComponent("UserFormMod", ComponentType.UserForm, userFormModuleCode)
                 .Build();
 
             vbeBuilder.AddProject(project);
             
             var vbe = vbeBuilder.Build();
 
-            int actual = InspectionResults(vbe.Object).Count();
+            var inspectionResults = InspectionResults(vbe.Object);
+            int actual = inspectionResults.Count();
 
             Assert.AreEqual(1, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("EnumerationDeclaredWithinWorksheet")]
+        [TestCase(ComponentType.ActiveXDesigner)]
+        [TestCase(ComponentType.ClassModule)]
+        [TestCase(ComponentType.ComComponent)]
+        [TestCase(ComponentType.Document)]
+        [TestCase(ComponentType.MDIForm)]
+        [TestCase(ComponentType.PropPage)]
+        [TestCase(ComponentType.RelatedDocument)]
+        [TestCase(ComponentType.ResFile)]
+        [TestCase(ComponentType.StandardModule)]
+        [TestCase(ComponentType.Undefined)]
+        [TestCase(ComponentType.UserControl)]
+        [TestCase(ComponentType.UserForm)]
+        [TestCase(ComponentType.VBForm)]
+        public void Enumerations_declared_within_non_worksheet_object_have_no_inpsection_result(ComponentType componentType)
+        {
+            const string code = @"Option Explicit
+Public Enum TestEnum
+    Member1
+    Member2
+End Enum";
+
+            var vbeBuilder = new MockVbeBuilder();
+            var project = vbeBuilder.ProjectBuilder("UnitTestProject", ProjectProtection.Unprotected)
+                .AddComponent(componentType.ToString() + "module", componentType, code)
+                .Build();
+
+            vbeBuilder.AddProject(project);
+
+            var vbe = vbeBuilder.Build();
+
+            var inspectionResults = InspectionResults(vbe.Object);
+            int actual = inspectionResults.Count();
+
+            Assert.AreEqual(0, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("EnumerationDeclaredWithinWorksheet")]
+        public void Private_type_declared_within_worksheet_has_no_inspection_result()
+        {
+            const string code = @"Option Explicit
+
+Private Type THelper
+    Name As String
+    Address As String
+End Type
+
+Private this as THelper";
+
+            var vbeBuilder = new MockVbeBuilder();
+            var project = vbeBuilder.ProjectBuilder("UnitTestProject", ProjectProtection.Unprotected)
+                .AddComponent("WorksheetForTest", ComponentType.DocObject, code)
+                .Build();
+
+            var vbe = vbeBuilder.Build();
+
+            var inspectionResults = InspectionResults(vbe.Object);
+            int actual = inspectionResults.Count();
+
+            Assert.AreEqual(0, actual);
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
