@@ -259,6 +259,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enumeration declared within worksheet.
+        /// </summary>
+        public static string EnumerationDeclaredWithinWorksheetInspection {
+            get {
+                return ResourceManager.GetString("EnumerationDeclaredWithinWorksheetInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member access may return &apos;Nothing&apos;.
         /// </summary>
         public static string ExcelMemberMayReturnNothingInspection {

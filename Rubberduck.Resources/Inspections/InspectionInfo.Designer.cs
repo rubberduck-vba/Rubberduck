@@ -259,7 +259,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enumeration defined within Worksheet object..
+        ///   Looks up a localized string similar to Copying a worksheet which contains an `Enum` declaration will duplicate the enum resulting in a state which prevents compilation. Moving the enumeration declaration to a standard module will avoid this situation..
         /// </summary>
         public static string EnumerationDeclaredWithinWorksheetInspection {
             get {

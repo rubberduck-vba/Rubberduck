@@ -451,4 +451,7 @@
   <data name="MisleadingByRefParameterInspection" xml:space="preserve">
     <value>Misleading ByRef parameter modifier</value>
   </data>
+  <data name="EnumerationDeclaredWithinWorksheetInspection" xml:space="preserve">
+    <value>Enumeration declared within worksheet</value>
+  </data>
 </root>
