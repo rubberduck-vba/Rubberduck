@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Antlr4.Runtime.Misc;
-using Rubberduck.CodeAnalysis.Inspections.Abstract;
-using Rubberduck.CodeAnalysis.Inspections.Results;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 
