@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 using NUnit.Framework;
 
 namespace RubberduckTests.Inspections
@@ -34,37 +28,34 @@ namespace RubberduckTests.Inspections
 Public Enum WorksheetEnum
     wsMember1 = 0
     wsMember1 = 1
-End Enum";
+End Enum
+";
             const string standardModuleCode = @"Option Explicit
 Public Enum StdModEnum
     stdMember1 = 0
     stdMember1 = 2
-End Enum";
+End Enum
+";
             const string classModuleCode = @"Option Explicit
 Public Enum ClassModEnum
     classMember1 = 0
     classMember2 = 3
-End Enum";
+End Enum
+";
             const string userFormModuleCode = @"Option Explicit
 Public Enum FormEnum
     formMember1 = 0
     formMember2 = 4
-End Enum";
+End Enum
+";
             #endregion
 
-            var vbeBuilder = new MockVbeBuilder();
-            var project = vbeBuilder.ProjectBuilder("Project1", ProjectProtection.Unprotected)
-                .AddComponent("Sheet", ComponentType.DocObject, worksheetCode)
-                .AddComponent("StdModule", ComponentType.StandardModule, standardModuleCode)
-                .AddComponent("ClsMod", ComponentType.ClassModule, classModuleCode)    
-                .AddComponent("UserFormMod", ComponentType.UserForm, userFormModuleCode)
-                .Build();
+            var inspectionResults = InspectionResultsForModules(
+                ("Sheet", worksheetCode, ComponentType.DocObject),
+                ("StdModule", standardModuleCode, ComponentType.StandardModule),
+                ("ClsMod", classModuleCode, ComponentType.ClassModule),
+                ("UserFormMod", userFormModuleCode, ComponentType.UserForm));
 
-            vbeBuilder.AddProject(project);
-            
-            var vbe = vbeBuilder.Build();
-
-            var inspectionResults = InspectionResults(vbe.Object);
             int actual = inspectionResults.Count();
 
             Assert.AreEqual(1, actual);
@@ -92,21 +83,11 @@ End Enum";
 Public Enum TestEnum
     Member1
     Member2
-End Enum";
+End Enum
+";
 
-            var vbeBuilder = new MockVbeBuilder();
-            var project = vbeBuilder.ProjectBuilder("UnitTestProject", ProjectProtection.Unprotected)
-                .AddComponent(componentType.ToString() + "module", componentType, code)
-                .Build();
-
-            vbeBuilder.AddProject(project);
-
-            var vbe = vbeBuilder.Build();
-
-            var inspectionResults = InspectionResults(vbe.Object);
-            int actual = inspectionResults.Count();
-
-            Assert.AreEqual(0, actual);
+            var inspectionResults = InspectionResultsForModules((componentType.ToString() + "module", code, componentType));
+            Assert.IsFalse(inspectionResults.Any());
         }
 
         [Test]
@@ -121,19 +102,12 @@ Private Type THelper
     Address As String
 End Type
 
-Private this as THelper";
+Private this as THelper
+";
 
-            var vbeBuilder = new MockVbeBuilder();
-            var project = vbeBuilder.ProjectBuilder("UnitTestProject", ProjectProtection.Unprotected)
-                .AddComponent("WorksheetForTest", ComponentType.DocObject, code)
-                .Build();
+            var inspectionResults = InspectionResultsForModules(("WorksheetForTest", code, ComponentType.DocObject));
 
-            var vbe = vbeBuilder.Build();
-
-            var inspectionResults = InspectionResults(vbe.Object);
-            int actual = inspectionResults.Count();
-
-            Assert.AreEqual(0, actual);
+            Assert.IsFalse(inspectionResults.Any());
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
