@@ -259,7 +259,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The enumeration {0} declared within {1} should be declared within a standard module.
+        ///   Looks up a localized string similar to The enumeration `{0}` declared within `{1}` should be declared within a standard module.
         /// </summary>
         public static string EnumerationDeclaredWithinWorksheetInspection {
             get {
