@@ -21,7 +21,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             return declaration.DeclarationType == DeclarationType.Enumeration
-                && declaration.QualifiedModuleName.ComponentType == ComponentType.DocObject;
+                && declaration.QualifiedModuleName.ComponentType == ComponentType.Document;
         }
 
         protected override string ResultDescription(Declaration declaration)

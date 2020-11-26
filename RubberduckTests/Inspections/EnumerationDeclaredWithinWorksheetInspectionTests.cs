@@ -51,7 +51,7 @@ End Enum
             #endregion
 
             var inspectionResults = InspectionResultsForModules(
-                ("Sheet", worksheetCode, ComponentType.DocObject),
+                ("Sheet", worksheetCode, ComponentType.Document),
                 ("StdModule", standardModuleCode, ComponentType.StandardModule),
                 ("ClsMod", classModuleCode, ComponentType.ClassModule),
                 ("UserFormMod", userFormModuleCode, ComponentType.UserForm));
@@ -67,7 +67,7 @@ End Enum
         [TestCase(ComponentType.ActiveXDesigner)]
         [TestCase(ComponentType.ClassModule)]
         [TestCase(ComponentType.ComComponent)]
-        [TestCase(ComponentType.Document)]
+        [TestCase(ComponentType.DocObject)]
         [TestCase(ComponentType.MDIForm)]
         [TestCase(ComponentType.PropPage)]
         [TestCase(ComponentType.RelatedDocument)]
