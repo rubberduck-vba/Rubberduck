@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 
@@ -9,7 +10,7 @@ namespace Rubberduck.Templates
     public interface ITemplateProvider
     {
         ITemplate Load(string templateName);
-        IEnumerable<Template> GetTemplates();
+        ObservableCollection<Template> GetTemplates();
     }
 
     public class TemplateProvider : ITemplateProvider
@@ -27,36 +28,34 @@ namespace Rubberduck.Templates
             return new Template(templateName, handler);
         }
 
-        private Lazy<IEnumerable<Template>> LazyList => new Lazy<IEnumerable<Template>>(() =>
+        private Lazy<ObservableCollection<Template>> LazyList => new Lazy<ObservableCollection<Template>>(() =>
         {
-            var list = new List<Template>();
-            var set = Rubberduck.Resources.Templates.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
-            foreach (DictionaryEntry entry in set)
-            {
-                var key = (string)entry.Key;
-                if (key.EndsWith("_Name"))
-                {
-                    var templateName = key.Substring(0, key.Length - "_Name".Length);
-                    var handler = _provider.CreateTemplateFileHandler(templateName);
-                    list.Add(new Template(templateName, handler));
-                }
-            }
-
+            var list = new ObservableCollection<Template>();
             foreach (var templateName in _provider.GetTemplateNames())
             {
-                if (list.Any(e => e.Name == templateName))
-                {
-                    continue;
-                }
-
                 var handler = _provider.CreateTemplateFileHandler(templateName);
                 list.Add(new Template(templateName, handler));
+            }
+
+            var set = Resources.Templates.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+            foreach (DictionaryEntry entry in set)
+            {
+                const string NameSuffix = "_Name";
+                var key = (string)entry.Key;
+                if (key.EndsWith(NameSuffix))
+                {
+                    var templateName = key.Substring(0, key.Length - NameSuffix.Length);
+                    var handler = _provider.CreateTemplateFileHandler(templateName);
+                    if (!list.Any(t => t.Name == templateName))
+                    {
+                        list.Add(new Template(templateName, handler));
+                    }
+                }
             }
 
             return list;
         });
 
-        public IEnumerable<Template> GetTemplates() => LazyList.Value;
+        public ObservableCollection<Template> GetTemplates() => LazyList.Value;
     }
 }

@@ -63,7 +63,7 @@ namespace Rubberduck.Templates
             string fullPath,
             IFileSystem fileSystem)
         {
-            _fullPath = fullPath + (fullPath.EndsWith(".rdt") ? string.Empty : ".rdt");
+            _fullPath = fullPath + (fullPath.EndsWith(Template.TemplateExtension) ? string.Empty : Template.TemplateExtension);
             _filesystem = fileSystem;
         }
 
