@@ -14,7 +14,6 @@ using Castle.Windsor;
 using Rubberduck.AutoComplete;
 using Rubberduck.CodeAnalysis.CodeMetrics;
 using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation;
 using Rubberduck.CodeAnalysis.Inspections.Logistics;
 using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.ComClientLibrary.UnitTesting;
@@ -61,6 +60,8 @@ using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.VbeRuntime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.UI.Refactorings.AnnotateDeclaration;
+using Rubberduck.Refactoring.ParseTreeValue;
+using System.IO.Abstractions;
 
 namespace Rubberduck.Root
 {
@@ -95,6 +96,7 @@ namespace Rubberduck.Root
             ActivateAutoMagicFactories(container);
             OverridePropertyInjection(container);
 
+            RegisterFileSystem(container);
             RegisterInstances(container);
             RegisterAppWithSpecialDependencies(container);
             RegisterUnitTestingComSide(container);
@@ -1112,6 +1114,13 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<App>()
                 .DependsOn(Dependency.OnComponent<CommandBase, VersionCheckCommand>())
+                .LifestyleSingleton());
+        }
+
+        private void RegisterFileSystem(IWindsorContainer container)
+        {
+            container.Register(Component.For<IFileSystem>()
+                .ImplementedBy<FileSystem>()
                 .LifestyleSingleton());
         }
 
