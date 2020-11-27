@@ -513,7 +513,7 @@ namespace RubberduckTests.CodeExplorer
             var extractInterfaceBaseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, State, State, null, State.ProjectsProvider, addComponentService);
             var userInteraction = new RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel>(null, _uiDispatcher.Object);
             ViewModel.CodeExplorerExtractInterfaceCommand = new CodeExplorerExtractInterfaceCommand(
-                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, userInteraction, null, CreateCodeBuilder()),
+                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, userInteraction, null, new Mock<IExtractInterfaceConflictFinderFactory>().Object, CreateCodeBuilder()),
                 State, null, VbeEvents.Object);
             return this;
         }

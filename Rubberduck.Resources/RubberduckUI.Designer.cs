@@ -1628,6 +1628,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Implementation Options:.
+        /// </summary>
+        public static string ExtractInterface_ImplementationOptionsGroupBox {
+            get {
+                return ResourceManager.GetString("ExtractInterface_ImplementationOptionsGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instancing.
         /// </summary>
         public static string ExtractInterface_InstancingGroupBox {
@@ -1651,6 +1660,42 @@ namespace Rubberduck.Resources {
         public static string ExtractInterface_MembersGroupBox {
             get {
                 return ResourceManager.GetString("ExtractInterface_MembersGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Empty Implementation.
+        /// </summary>
+        public static string ExtractInterface_OptionAddEmptyImplementation {
+            get {
+                return ResourceManager.GetString("ExtractInterface_OptionAddEmptyImplementation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forward Object Member Calls to Interface Members.
+        /// </summary>
+        public static string ExtractInterface_OptionForwardToInterfaceMembers {
+            get {
+                return ResourceManager.GetString("ExtractInterface_OptionForwardToInterfaceMembers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forward Interface Member Calls to Object Members.
+        /// </summary>
+        public static string ExtractInterface_OptionForwardToObjectMembers {
+            get {
+                return ResourceManager.GetString("ExtractInterface_OptionForwardToObjectMembers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace Members with Interface Members.
+        /// </summary>
+        public static string ExtractInterface_OptionReplaceMembersWithInterfaceMembers {
+            get {
+                return ResourceManager.GetString("ExtractInterface_OptionReplaceMembersWithInterfaceMembers", resourceCulture);
             }
         }
         
