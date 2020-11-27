@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Windows.Forms;
 using NLog;
@@ -33,6 +33,7 @@ namespace Rubberduck.UI.AddRemoveReferences
         private readonly IReferenceReconciler _reconciler;
         private readonly IFileSystemBrowserFactory _browser;
         private readonly IProjectsProvider _projectsProvider;
+        private readonly IFileSystem _fileSystem;
 
         public AddRemoveReferencesPresenterFactory(IVBE vbe,
             RubberduckParserState state,
@@ -40,7 +41,8 @@ namespace Rubberduck.UI.AddRemoveReferences
             IRegisteredLibraryFinderService finder,
             IReferenceReconciler reconciler,
             IFileSystemBrowserFactory browser,
-            IProjectsProvider projectsProvider)
+            IProjectsProvider projectsProvider,
+            IFileSystem fileSystem)
         {
             _vbe = vbe;
             _state = state;
@@ -49,6 +51,7 @@ namespace Rubberduck.UI.AddRemoveReferences
             _reconciler = reconciler;
             _browser = browser;
             _projectsProvider = projectsProvider;
+            _fileSystem = fileSystem;
         }
 
         public AddRemoveReferencesPresenter Create(ProjectDeclaration projectDeclaration)
@@ -153,7 +156,7 @@ namespace Rubberduck.UI.AddRemoveReferences
 
         private IEnumerable<ReferenceModel> GetUserProjectFolderModels(IReferenceSettings settings)
         {
-            var host = Path.GetFileName(Application.ExecutablePath).ToUpperInvariant();
+            var host = _fileSystem.Path.GetFileName(Application.ExecutablePath).ToUpperInvariant();
             if (!AddRemoveReferencesViewModel.HostFileFilters.ContainsKey(host))
             {
                 return Enumerable.Empty<ReferenceModel>();
@@ -162,19 +165,19 @@ namespace Rubberduck.UI.AddRemoveReferences
             var filter = AddRemoveReferencesViewModel.HostFileFilters[host].Select(ext => $".{ext}").ToList();
             var projects = new List<ReferenceModel>();
             
-            foreach (var path in settings.ProjectPaths.Where(Directory.Exists))
+            foreach (var path in settings.ProjectPaths.Where(_fileSystem.Directory.Exists))
             {
                 try
                 {
-                    foreach (var fullPath in Directory.EnumerateFiles(path))
+                    foreach (var fullPath in _fileSystem.Directory.EnumerateFiles(path))
                     {
                         try
                         {
-                            if (!filter.Contains(Path.GetExtension(fullPath)))
+                            if (!filter.Contains(_fileSystem.Path.GetExtension(fullPath)))
                             {
                                 continue;                               
                             }
-                            var file = Path.GetFileName(fullPath);
+                            var file = _fileSystem.Path.GetFileName(fullPath);
 
                             projects.Add(new ReferenceModel(
                                 new ReferenceInfo(Guid.Empty, file, fullPath, 0, 0),

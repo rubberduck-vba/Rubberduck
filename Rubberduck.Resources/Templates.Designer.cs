@@ -19,7 +19,7 @@ namespace Rubberduck.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Templates {
@@ -61,6 +61,24 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing Template File.
+        /// </summary>
+        public static string Menu_Warning_CannotFindTemplate_Caption {
+            get {
+                return ResourceManager.GetString("Menu_Warning_CannotFindTemplate_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot find the template for &apos;{0}&apos;. The file may have been renamed or deleted. Expected file name: &apos;{1}&apos;.
+        /// </summary>
+        public static string Menu_Warning_CannotFindTemplate_Message {
+            get {
+                return ResourceManager.GetString("Menu_Warning_CannotFindTemplate_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Predeclared Class module (.cls).
         /// </summary>
         public static string PredeclaredClassModule_Caption {
@@ -79,9 +97,8 @@ namespace Rubberduck.Resources {
         ///Attribute VB_PredeclaredId = True
         ///Attribute VB_Exposed = False
         ///Attribute VB_Ext_KEY = &quot;Rubberduck&quot;, &quot;Predeclared Class Module&quot;
-        ///
-        ///Option Explicit
-        ///&apos;@PredeclaredId.
+        ///&apos;@PredeclaredId
+        ///Option Explicit.
         /// </summary>
         public static string PredeclaredClassModule_Code {
             get {

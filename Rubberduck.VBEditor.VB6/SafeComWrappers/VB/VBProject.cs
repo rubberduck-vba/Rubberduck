@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
+using Path = System.IO.Path;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

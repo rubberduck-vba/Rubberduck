@@ -61,6 +61,7 @@ using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.VbeRuntime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.UI.Refactorings.AnnotateDeclaration;
+using System.IO.Abstractions;
 
 namespace Rubberduck.Root
 {
@@ -95,6 +96,7 @@ namespace Rubberduck.Root
             ActivateAutoMagicFactories(container);
             OverridePropertyInjection(container);
 
+            RegisterFileSystem(container);
             RegisterInstances(container);
             RegisterAppWithSpecialDependencies(container);
             RegisterUnitTestingComSide(container);
@@ -1112,6 +1114,13 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<App>()
                 .DependsOn(Dependency.OnComponent<CommandBase, VersionCheckCommand>())
+                .LifestyleSingleton());
+        }
+
+        private void RegisterFileSystem(IWindsorContainer container)
+        {
+            container.Register(Component.For<IFileSystem>()
+                .ImplementedBy<FileSystem>()
                 .LifestyleSingleton());
         }
 

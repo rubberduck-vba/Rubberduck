@@ -21,6 +21,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <CollectionViewSource x:Key="BuiltInTemplatesViewSource" x:Name="BuiltInTemplatesView" Source="{Binding BuiltInTemplates}" />
+            <CollectionViewSource x:Key="UserDefinedTemplatesViewSource" x:Name="BuiltInTemplatesView" Source="{Binding UserDefinedTemplates}" />
             <CollectionViewSource x:Key="AnnotationsViewSource" x:Name="AnnotationsView" Source="{Binding Annotations}" />
 
             <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
@@ -145,6 +146,7 @@
                     <MenuItem.ItemsSource>
                         <CompositeCollection>
                             <CollectionContainer Collection="{Binding Source={StaticResource BuiltInTemplatesViewSource}}" />
+                            <CollectionContainer Collection="{Binding Source={StaticResource UserDefinedTemplatesViewSource}, Mode=OneWay}" />
                         </CompositeCollection>
                     </MenuItem.ItemsSource>
                     <MenuItem.ItemContainerStyle>

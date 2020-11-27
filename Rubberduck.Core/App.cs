@@ -1,23 +1,22 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Infralution.Localization.Wpf;
+﻿using Infralution.Localization.Wpf;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command.MenuItems;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Resources;
-using Rubberduck.Runtime;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
 using Rubberduck.SettingsProvider;
+using System.IO.Abstractions;
 
 namespace Rubberduck
 {
@@ -33,13 +32,15 @@ namespace Rubberduck
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         
         private Configuration _config;
+        private IFileSystem _filesystem;
 
         public App(IMessageBox messageBox,
             IConfigurationService<Configuration> configService,
             IAppMenu appMenus,
             IRubberduckHooks hooks,
             IVersionCheck version,
-            CommandBase checkVersionCommand)
+            CommandBase checkVersionCommand,
+            IFileSystem filesystem)
         {
             _messageBox = messageBox;
             _configService = configService;
@@ -49,6 +50,7 @@ namespace Rubberduck
             _checkVersionCommand = checkVersionCommand;
 
             _configService.SettingsChanged += _configService_SettingsChanged;
+            _filesystem = filesystem;
 
             UiContextProvider.Initialize();
         }
@@ -65,13 +67,13 @@ namespace Rubberduck
             }
         }
 
-        private static void EnsureLogFolderPathExists()
+        private void EnsureLogFolderPathExists()
         {
             try
             {
-                if (!Directory.Exists(ApplicationConstants.LOG_FOLDER_PATH))
+                if (!_filesystem.Directory.Exists(ApplicationConstants.LOG_FOLDER_PATH))
                 {
-                    Directory.CreateDirectory(ApplicationConstants.LOG_FOLDER_PATH);
+                    _filesystem.Directory.CreateDirectory(ApplicationConstants.LOG_FOLDER_PATH);
                 }
             }
             catch
@@ -80,15 +82,15 @@ namespace Rubberduck
             }
         }
 
-        private static void EnsureTempPathExists()
+        private void EnsureTempPathExists()
         {
             // This is required by the parser - allow this to throw. 
-            if (!Directory.Exists(ApplicationConstants.RUBBERDUCK_TEMP_PATH))
+            if (!_filesystem.Directory.Exists(ApplicationConstants.RUBBERDUCK_TEMP_PATH))
             {
-                Directory.CreateDirectory(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
+                _filesystem.Directory.CreateDirectory(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
             }
             // The parser swallows the error if deletions fail - clean up any temp files on startup
-            foreach (var file in new DirectoryInfo(ApplicationConstants.RUBBERDUCK_TEMP_PATH).GetFiles())
+            foreach (var file in _filesystem.DirectoryInfo.FromDirectoryName(ApplicationConstants.RUBBERDUCK_TEMP_PATH).GetFiles())
             {
                 try
                 {
@@ -241,7 +243,7 @@ namespace Rubberduck
                 {
                     $"\tHost Product: {Application.ProductName} {(Environment.Is64BitProcess ? "x64" : "x86")}",
                     $"\tHost Version: {Application.ProductVersion}",
-                    $"\tHost Executable: {Path.GetFileName(Application.ExecutablePath).ToUpper()}", // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
+                    $"\tHost Executable: {_filesystem.Path.GetFileName(Application.ExecutablePath).ToUpper()}", // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
                 });
             }
             catch

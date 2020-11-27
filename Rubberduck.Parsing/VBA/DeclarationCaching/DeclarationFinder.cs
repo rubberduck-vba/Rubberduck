@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using NLog;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
