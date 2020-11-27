@@ -11,4 +11,15 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
         public override bool BeginGroup => true;
     }
+
+    public enum ProjectExplorerContextMenuItemDisplayOrder
+    {
+        RenameIdentifier,
+        FindSymbol,
+        FindAllReferences,
+        FindAllImplementations,
+        AddRemoveReferences,
+        IgnoreProject,
+        UnignoreProject
+    }
 }

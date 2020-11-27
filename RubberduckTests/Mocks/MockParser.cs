@@ -26,6 +26,8 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Settings;
+using Rubberduck.SettingsProvider;
 
 namespace RubberduckTests.Mocks
 {
@@ -65,7 +67,8 @@ namespace RubberduckTests.Mocks
             var compilationArgumentsProvider = MockCompilationArgumentsProvider(vbeVersion);
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
             var userComProjectsRepository = MockUserComProjectRepository();
-            var projectsToBeLoadedFromComSelector = new ProjectsToResolveFromComProjectsSelector(projectRepository);
+            var ignoredProjectsSettingsProvider = MockIgnoredProjectsSettingsProviderMock();
+            var projectsToBeLoadedFromComSelector = new ProjectsToResolveFromComProjectsSelector(projectRepository, ignoredProjectsSettingsProvider);
 
             var path = serializedComProjectsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "Testfiles", "Resolver");
@@ -82,7 +85,7 @@ namespace RubberduckTests.Mocks
             var supertypeClearer = new SynchronousSupertypeClearer(state); 
             var parserStateManager = new SynchronousParserStateManager(state);
             var referenceRemover = new SynchronousReferenceRemover(state, moduleToModuleReferenceManager);
-            var baseComDeserializer = new XmlComProjectSerializer(path);
+            var baseComDeserializer = new XmlComProjectSerializer(new MockFileSystem(), path);
             var comDeserializer = new StaticCachingComDeserializerDecorator(baseComDeserializer);
             var declarationsFromComProjectLoader = new DeclarationsFromComProjectLoader();
             var referencedDeclarationsCollector = new SerializedReferencedDeclarationsCollector(declarationsFromComProjectLoader, comDeserializer);
@@ -183,6 +186,16 @@ namespace RubberduckTests.Mocks
             userComProjectsRepository.Setup(m => m.UserProject(It.IsAny<string>())).Returns((string projectId) => null);
             userComProjectsRepository.Setup(m => m.UserProjects()).Returns(() => null);
             return userComProjectsRepository.Object;
+        }
+
+        private static IConfigurationService<IgnoredProjectsSettings> MockIgnoredProjectsSettingsProviderMock()
+        {
+            var mock = new Mock<IConfigurationService<IgnoredProjectsSettings>>();
+            var defaultSettings = new IgnoredProjectsSettings();
+            var currentSettings = new IgnoredProjectsSettings();
+            mock.Setup(m => m.Read()).Returns(currentSettings);
+            mock.Setup(m => m.ReadDefaults()).Returns(defaultSettings);
+            return mock.Object;
         }
 
         private static ICompilationArgumentsProvider MockCompilationArgumentsProvider(double vbeVersion)

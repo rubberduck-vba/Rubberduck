@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Refactorings.RenameFolder

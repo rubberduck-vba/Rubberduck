@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using IOException = System.IO.IOException;
+using Path = System.IO.Path;
 using System.Text.RegularExpressions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
@@ -61,7 +61,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     return IsWrappingNullReference ? string.Empty : Target.FileName;
                 }
-                catch (System.IO.IOException)
+                catch (IOException)
                 {
                     // thrown by the VBIDE API when wrapped VBProject has no filename yet.
                     return string.Empty;
