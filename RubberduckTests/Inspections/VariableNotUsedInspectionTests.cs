@@ -96,16 +96,47 @@ End Sub";
 
             Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
-
-        //https://github.com/rubberduck-vba/Rubberduck/issues/5088        
+       
         [Test]
         [Category("Inspections")]
+        //See issue #5610 at https://github.com/rubberduck-vba/Rubberduck/issues/5088 
         public void VariableNotUsed_AssignedButNeverReferenced_ReturnsResult()
         {
             const string inputCode =
 @"Sub Foo()
     Dim var1 As String
     var1 = ""test""
+End Sub";
+
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
+        }
+     
+        [Test]
+        [Category("Inspections")]
+        //See issue #5610 at https://github.com/rubberduck-vba/Rubberduck/issues/5610 
+        public void VariableNotUsed_AssignedinForLoop_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim counter As Long
+    For counter = 1 To 1000
+        'Try something
+    Next
+End Sub";
+
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void VariableNotUsed_AssignedinForEachLoop_ReturnsResult()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1 As Variant
+    Dim coll As Scription.Collection
+    For Each var1 In coll
+    Next
 End Sub";
 
             Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
