@@ -1,21 +1,27 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
+using System.IO.Abstractions;
 using System.Management;
-using System.Runtime.CompilerServices;
 using NLog;
 
 namespace Rubberduck.Common
 {
     public sealed class WindowsOperatingSystem : IOperatingSystem
     {
-        public static readonly ILogger _Logger = LogManager.GetCurrentClassLogger(); 
+        private static readonly ILogger _Logger = LogManager.GetCurrentClassLogger();
+        private readonly IFileSystem _filesystem;
+
+        public WindowsOperatingSystem(
+            IFileSystem filesystem)
+        {
+            _filesystem = filesystem;
+        }
 
         public void ShowFolder(string folderPath)
         {
-            if (!Directory.Exists(folderPath))
+            if (!_filesystem.Directory.Exists(folderPath))
             {
-                Directory.CreateDirectory(folderPath);
+                _filesystem.Directory.CreateDirectory(folderPath);
             }
 
             using (Process.Start(folderPath))

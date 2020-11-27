@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Common;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -15,23 +16,25 @@ namespace Rubberduck.VBEditor.Utility
 
     public class ModuleNameFromFileExtractor : IModuleNameFromFileExtractor
     {
+        private readonly IFileSystem _fileSystem = FileSystemProvider.FileSystem;
+
         public string ModuleName(string filename)
         {
-            if (!File.Exists(filename))
+            if (!_fileSystem.File.Exists(filename))
             {
                 return null;
             }
 
-            if (!SupportedExtensions.Contains(Path.GetExtension(filename)))
+            if (!SupportedExtensions.Contains(_fileSystem.Path.GetExtension(filename)))
             {
                 return null;
             }
 
-            var contents = File.ReadLines(filename, Encoding.Default);
+            var contents = _fileSystem.File.ReadLines(filename, Encoding.Default);
             var nameLine = contents.FirstOrDefault(line => line.StartsWith("Attribute VB_Name = "));
             if (nameLine == null)
             {
-                return Path.GetFileNameWithoutExtension(filename);
+                return _fileSystem.Path.GetFileNameWithoutExtension(filename);
             }
 
             //The format is Attribute VB_Name = "ModuleName"

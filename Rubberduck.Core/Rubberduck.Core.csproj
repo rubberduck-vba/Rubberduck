@@ -45,7 +45,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.csproj" />
     <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj" />
-    <ProjectReference Include="..\Rubberduck.JunkDrawer\Rubberduck.JunkDrawer.csproj" />
+    <ProjectReference Include="..\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
     <ProjectReference Include="..\Rubberduck.Refactorings\Rubberduck.Refactorings.csproj" />
     <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj" />
@@ -84,6 +84,7 @@
     <PackageReference Include="NLog.Schema">
       <Version>4.5.10</Version>
     </PackageReference>
+    <PackageReference Include="System.IO.Abstractions" Version="12.2.1" />
     <PackageReference Include="System.ValueTuple">
       <Version>4.5.0</Version>
     </PackageReference>
