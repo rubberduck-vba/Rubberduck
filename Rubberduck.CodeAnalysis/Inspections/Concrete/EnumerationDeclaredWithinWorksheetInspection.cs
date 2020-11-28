@@ -8,11 +8,11 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
-    internal class EnumerationDeclaredWithinWorksheetInspection : DeclarationInspectionBase
+    internal class PublicEnumerationDeclaredWithinWorksheetInspection : DeclarationInspectionBase
     {
         private readonly IProjectsProvider _projectsProvider;
 
-        public EnumerationDeclaredWithinWorksheetInspection(IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider)
+        public PublicEnumerationDeclaredWithinWorksheetInspection(IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider)
             : base(declarationFinderProvider)
         {
             _projectsProvider = projectsProvider;
@@ -27,7 +27,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override string ResultDescription(Declaration declaration)
         {
-            return string.Format(InspectionResults.EnumerationDeclaredWithinWorksheetInspection,
+            return string.Format(InspectionResults.PublicEnumerationDeclaredWithinWorksheetInspection,
                 declaration.IdentifierName,
                 declaration.ParentScopeDeclaration.IdentifierName);
         }

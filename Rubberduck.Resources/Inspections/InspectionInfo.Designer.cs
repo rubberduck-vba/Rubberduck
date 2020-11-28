@@ -259,15 +259,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copying a worksheet which contains an `Enum` declaration will duplicate the enum resulting in a state which prevents compilation. Moving the enumeration declaration to a standard module avoids this situation..
-        /// </summary>
-        public static string EnumerationDeclaredWithinWorksheetInspection {
-            get {
-                return ResourceManager.GetString("EnumerationDeclaredWithinWorksheetInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A procedure that returns an object may return &apos;Nothing&apos;. That will cause a runtime error 91 - &quot;Object variable or With block variable not set&quot; on subsequent member access. Perform an &apos;Is Nothing&apos; check after the &apos;Set&apos; assignment to guard against runtime errors..
         /// </summary>
         public static string ExcelMemberMayReturnNothingInspection {
@@ -831,6 +822,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ProcedureRequiredInspection {
             get {
                 return ResourceManager.GetString("ProcedureRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copying a worksheet which contains a public `Enum` declaration will duplicate the enum resulting in a state which prevents compilation. Moving the enumeration declaration to a standard module avoids this situation..
+        /// </summary>
+        public static string PublicEnumerationDeclaredWithinWorksheetInspection {
+            get {
+                return ResourceManager.GetString("PublicEnumerationDeclaredWithinWorksheetInspection", resourceCulture);
             }
         }
         

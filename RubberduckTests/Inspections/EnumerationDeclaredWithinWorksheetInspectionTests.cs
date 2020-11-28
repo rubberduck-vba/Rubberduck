@@ -7,20 +7,20 @@ using NUnit.Framework;
 
 namespace RubberduckTests.Inspections
 {
-    class EnumerationDeclaredWithinWorksheetInspectionTests : InspectionTestsBase
+    class PublicEnumerationDeclaredWithinWorksheetInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
         public void EnumerationDeclaredWithinWorksheet_InspectionName()
         {
-            var inspection = new EnumerationDeclaredWithinWorksheetInspection(null, null);
+            var inspection = new PublicEnumerationDeclaredWithinWorksheetInspection(null, null);
 
-            Assert.AreEqual(nameof(EnumerationDeclaredWithinWorksheetInspection), inspection.Name);
+            Assert.AreEqual(nameof(PublicEnumerationDeclaredWithinWorksheetInspection), inspection.Name);
         }
 
         [Test]
         [Category("Inspections")]
-        [Category("EnumerationDeclaredWithinWorksheet")]
+        [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
         public void Project_with_multiple_public_enumerations_flags_only_enum_declared_within_worksheets()
         {
             #region InputCode
@@ -63,17 +63,15 @@ End Enum
 
         [Test]
         [Category("Inspections")]
-        [Category("EnumerationDeclaredWithinWorksheet")]
+        [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
         public void Project_with_only_private_worksheet_enumeration_does_not_return_result()
         {
-            #region InputCode
             const string worksheetCode = @"Option Explicit
 Private Enum WorksheetEnum
     wsMember1 = 0
     wsMember1 = 1
 End Enum
 ";
-            #endregion
 
             var inspectionResults = InspectionResultsForModules(
                 ("FirstSheet", worksheetCode, ComponentType.Document));
@@ -85,10 +83,9 @@ End Enum
 
         [Test]
         [Category("Inspections")]
-        [Category("EnumerationDeclaredWithinWorksheet")]
+        [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
         public void Project_with_public_and_private_enumeration_declared_within_worksheets_returns_only_public_declarations()
         {
-            #region InputCode
             const string publicDeclaration = @"Option Explicit
 Public Enum WorksheetEnum
     wsMember1 = 0
@@ -101,7 +98,6 @@ Private Enum WorksheetEnum
     wsMember2 = 1
 End Enum
 ";
-            #endregion
 
             var inspectionResults = InspectionResultsForModules(
                 ("FirstPublicSheet", publicDeclaration, ComponentType.Document),
@@ -117,7 +113,7 @@ End Enum
 
         [Test]
         [Category("Inspections")]
-        [Category("EnumerationDeclaredWithinWorksheet")]
+        [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
         [TestCase(ComponentType.ActiveXDesigner)]
         [TestCase(ComponentType.ClassModule)]
         [TestCase(ComponentType.ComComponent)]
@@ -146,7 +142,7 @@ End Enum
 
         [Test]
         [Category("Inspections")]
-        [Category("EnumerationDeclaredWithinWorksheet")]
+        [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
         public void Private_type_declared_within_worksheet_has_no_inspection_result()
         {
             const string code = @"Option Explicit
@@ -166,7 +162,7 @@ Private this as THelper
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            return new EnumerationDeclaredWithinWorksheetInspection(state, state.ProjectsProvider);
+            return new PublicEnumerationDeclaredWithinWorksheetInspection(state, state.ProjectsProvider);
         }
     }
 }

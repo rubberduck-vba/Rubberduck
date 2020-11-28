@@ -259,15 +259,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The enumeration `{0}` declared within `{1}` should be declared within a standard module.
-        /// </summary>
-        public static string EnumerationDeclaredWithinWorksheetInspection {
-            get {
-                return ResourceManager.GetString("EnumerationDeclaredWithinWorksheetInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Result of &apos;{0}&apos; call is not tested for &apos;Nothing&apos;..
         /// </summary>
         public static string ExcelMemberMayReturnNothingInspection {
@@ -858,6 +849,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ProcedureShouldBeFunctionInspection {
             get {
                 return ResourceManager.GetString("ProcedureShouldBeFunctionInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The public enumeration `{0}` declared within `{1}` should be declared within a standard module.
+        /// </summary>
+        public static string PublicEnumerationDeclaredWithinWorksheetInspection {
+            get {
+                return ResourceManager.GetString("PublicEnumerationDeclaredWithinWorksheetInspection", resourceCulture);
             }
         }
         
