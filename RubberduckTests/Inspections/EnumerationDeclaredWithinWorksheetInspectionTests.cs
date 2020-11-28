@@ -21,40 +21,21 @@ namespace RubberduckTests.Inspections
         [Test]
         [Category("Inspections")]
         [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
-        public void Project_with_multiple_public_enumerations_flags_only_enum_declared_within_worksheets()
+        [TestCase(ComponentType.Document, 1)]
+        [TestCase(ComponentType.StandardModule, 0)]
+        [TestCase(ComponentType.ClassModule, 0)]
+        [TestCase(ComponentType.UserForm, 0)]
+        public void Project_with_public_enumeration_flags_only_enum_declared_within_worksheets(ComponentType componentType, int expected)
         {
-            #region InputCode
-            const string worksheetCode = @"Option Explicit
-Public Enum WorksheetEnum
+            const string code = @"Option Explicit
+Public Enum DeclaredEnum
     wsMember1 = 0
     wsMember1 = 1
 End Enum
 ";
-            const string standardModuleCode = @"Option Explicit
-Public Enum StdModEnum
-    stdMember1 = 0
-    stdMember1 = 2
-End Enum
-";
-            const string classModuleCode = @"Option Explicit
-Public Enum ClassModEnum
-    classMember1 = 0
-    classMember2 = 3
-End Enum
-";
-            const string userFormModuleCode = @"Option Explicit
-Public Enum FormEnum
-    formMember1 = 0
-    formMember2 = 4
-End Enum
-";
-            #endregion
 
             var inspectionResults = InspectionResultsForModules(
-                ("Sheet", worksheetCode, ComponentType.Document),
-                ("StdModule", standardModuleCode, ComponentType.StandardModule),
-                ("ClsMod", classModuleCode, ComponentType.ClassModule),
-                ("UserFormMod", userFormModuleCode, ComponentType.UserForm));
+                (componentType.ToString(), code, componentType));
 
             int actual = inspectionResults.Count();
 
@@ -109,35 +90,6 @@ End Enum
             int actual = inspectionResults.Count();
 
             Assert.AreEqual(2, actual);
-        }
-
-        [Test]
-        [Category("Inspections")]
-        [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
-        [TestCase(ComponentType.ActiveXDesigner)]
-        [TestCase(ComponentType.ClassModule)]
-        [TestCase(ComponentType.ComComponent)]
-        [TestCase(ComponentType.DocObject)]
-        [TestCase(ComponentType.MDIForm)]
-        [TestCase(ComponentType.PropPage)]
-        [TestCase(ComponentType.RelatedDocument)]
-        [TestCase(ComponentType.ResFile)]
-        [TestCase(ComponentType.StandardModule)]
-        [TestCase(ComponentType.Undefined)]
-        [TestCase(ComponentType.UserControl)]
-        [TestCase(ComponentType.UserForm)]
-        [TestCase(ComponentType.VBForm)]
-        public void Public_enumerations_declared_within_non_worksheet_object_have_no_inpsection_result(ComponentType componentType)
-        {
-            const string code = @"Option Explicit
-Public Enum TestEnum
-    Member1
-    Member2
-End Enum
-";
-
-            var inspectionResults = InspectionResultsForModules((componentType.ToString() + "module", code, componentType));
-            Assert.IsFalse(inspectionResults.Any());
         }
 
         [Test]
