@@ -39,7 +39,7 @@ End Enum
 
             int actual = inspectionResults.Count();
 
-            Assert.AreEqual(1, actual);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
