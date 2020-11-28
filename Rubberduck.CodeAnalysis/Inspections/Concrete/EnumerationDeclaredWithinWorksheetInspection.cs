@@ -20,7 +20,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            return declaration.DeclarationType == DeclarationType.Enumeration
+            return declaration.Accessibility == Accessibility.Public
+                && declaration.DeclarationType == DeclarationType.Enumeration
                 && declaration.QualifiedModuleName.ComponentType == ComponentType.Document;
         }
 

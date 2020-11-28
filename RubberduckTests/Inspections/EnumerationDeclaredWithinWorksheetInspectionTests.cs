@@ -21,7 +21,7 @@ namespace RubberduckTests.Inspections
         [Test]
         [Category("Inspections")]
         [Category("EnumerationDeclaredWithinWorksheet")]
-        public void Project_with_multiple_enumerations_flags_only_enum_declared_within_worksheets()
+        public void Project_with_multiple_public_enumerations_flags_only_enum_declared_within_worksheets()
         {
             #region InputCode
             const string worksheetCode = @"Option Explicit
@@ -64,6 +64,60 @@ End Enum
         [Test]
         [Category("Inspections")]
         [Category("EnumerationDeclaredWithinWorksheet")]
+        public void Project_with_only_private_worksheet_enumeration_does_not_return_result()
+        {
+            #region InputCode
+            const string worksheetCode = @"Option Explicit
+Private Enum WorksheetEnum
+    wsMember1 = 0
+    wsMember1 = 1
+End Enum
+";
+            #endregion
+
+            var inspectionResults = InspectionResultsForModules(
+                ("FirstSheet", worksheetCode, ComponentType.Document));
+
+            int actual = inspectionResults.Count();
+
+            Assert.AreEqual(0, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("EnumerationDeclaredWithinWorksheet")]
+        public void Project_with_public_and_private_enumeration_declared_within_worksheets_returns_only_public_declarations()
+        {
+            #region InputCode
+            const string publicDeclaration = @"Option Explicit
+Public Enum WorksheetEnum
+    wsMember1 = 0
+    wsMember2 = 1
+End Enum
+";
+            const string privateDeclaration = @"Option Explicit
+Private Enum WorksheetEnum
+    wsMember1 = 0
+    wsMember2 = 1
+End Enum
+";
+            #endregion
+
+            var inspectionResults = InspectionResultsForModules(
+                ("FirstPublicSheet", publicDeclaration, ComponentType.Document),
+                ("FirstPrivateSheet", privateDeclaration, ComponentType.Document),
+                ("SecondPrivateSheet", privateDeclaration, ComponentType.Document),
+                ("SecondPublicSheet", publicDeclaration, ComponentType.Document),
+                ("ThirdPrivateSheet", privateDeclaration, ComponentType.Document));
+
+            int actual = inspectionResults.Count();
+
+            Assert.AreEqual(2, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("EnumerationDeclaredWithinWorksheet")]
         [TestCase(ComponentType.ActiveXDesigner)]
         [TestCase(ComponentType.ClassModule)]
         [TestCase(ComponentType.ComComponent)]
@@ -77,7 +131,7 @@ End Enum
         [TestCase(ComponentType.UserControl)]
         [TestCase(ComponentType.UserForm)]
         [TestCase(ComponentType.VBForm)]
-        public void Enumerations_declared_within_non_worksheet_object_have_no_inpsection_result(ComponentType componentType)
+        public void Public_enumerations_declared_within_non_worksheet_object_have_no_inpsection_result(ComponentType componentType)
         {
             const string code = @"Option Explicit
 Public Enum TestEnum
