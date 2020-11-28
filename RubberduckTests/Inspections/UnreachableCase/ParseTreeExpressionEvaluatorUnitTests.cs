@@ -3,6 +3,8 @@ using Rubberduck.Parsing.Grammar;
 using System;
 using System.Globalization;
 using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactoring.ParseTreeValue;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {

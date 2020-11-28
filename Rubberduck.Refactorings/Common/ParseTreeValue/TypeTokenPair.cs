@@ -4,9 +4,9 @@ using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
+namespace Rubberduck.Refactoring.ParseTreeValue
 {
-    internal struct TypeTokenPair
+    public struct TypeTokenPair
     {
         public string ValueType { get; }
         public string Token { get; }

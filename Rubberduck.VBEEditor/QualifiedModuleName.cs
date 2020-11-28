@@ -1,4 +1,5 @@
 using System.Globalization;
+using Path = System.IO.Path;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -122,7 +123,7 @@ namespace Rubberduck.VBEditor
         {
             return string.IsNullOrEmpty(_componentName) && string.IsNullOrEmpty(_projectName)
                 ? string.Empty
-                : (string.IsNullOrEmpty(ProjectPath) ? string.Empty : System.IO.Path.GetFileName(ProjectPath) + ";")
+                : (string.IsNullOrEmpty(ProjectPath) ? string.Empty : Path.GetFileName(ProjectPath) + ";")
                      + $"{_projectName}.{_componentName}";
         }
 

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NLog;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
 
@@ -12,8 +12,18 @@ namespace Rubberduck.UI.Refactorings
 {
     public class ExtractInterfaceViewModel : RefactoringViewModelBase<ExtractInterfaceModel>
     {
+        private static ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>> _implementationOptions;
+
         public ExtractInterfaceViewModel(ExtractInterfaceModel model) : base(model)
         {
+            _implementationOptions  = new ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>>()
+            {
+                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface, Resources.RubberduckUI.ExtractInterface_OptionForwardToInterfaceMembers),
+                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers, Resources.RubberduckUI.ExtractInterface_OptionForwardToObjectMembers),
+                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.NoInterfaceImplementation, Resources.RubberduckUI.ExtractInterface_OptionAddEmptyImplementation),
+                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface, Resources.RubberduckUI.ExtractInterface_OptionReplaceMembersWithInterfaceMembers)
+            };
+
             SelectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(true));
             DeselectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(false));
 
@@ -22,6 +32,7 @@ namespace Rubberduck.UI.Refactorings
                 .Where(moduleDeclaration => moduleDeclaration.ProjectId == Model.TargetDeclaration.ProjectId)
                 .Select(module => module.ComponentName)
                 .ToList();
+
         }
 
         public ObservableCollection<InterfaceMember> Members
@@ -51,13 +62,12 @@ namespace Rubberduck.UI.Refactorings
         {
             get
             {
-                var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
+                if (!VBAIdentifierValidator.IsValidIdentifier(InterfaceName, DeclarationType.ClassModule))
+                {
+                    return false;
+                }
 
-                return !ComponentNames.Contains(InterfaceName)
-                       && InterfaceName.Length > 1
-                       && char.IsLetter(InterfaceName.FirstOrDefault())
-                       && !tokenValues.Contains(InterfaceName, StringComparer.InvariantCultureIgnoreCase)
-                       && !InterfaceName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+                return !Model.ConflictFinder.IsConflictingModuleName(InterfaceName);
             }
         }
 
@@ -77,6 +87,24 @@ namespace Rubberduck.UI.Refactorings
                 }
 
                 Model.InterfaceInstancing = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>> ImplementationOptions => _implementationOptions;
+
+        public ExtractInterfaceImplementationOption ImplementationOption
+        {
+            get => Model.ImplementationOption;
+
+            set
+            {
+                if (Model.ImplementationOption == value)
+                {
+                    return;
+                }
+
+                Model.ImplementationOption = value;
                 OnPropertyChanged();
             }
         }

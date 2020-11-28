@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
 
