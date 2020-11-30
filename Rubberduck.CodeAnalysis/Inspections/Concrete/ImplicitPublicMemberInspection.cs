@@ -43,7 +43,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             DeclarationType.PropertyGet,
             DeclarationType.PropertyLet,
             DeclarationType.PropertySet,
-            DeclarationType.Enumeration
+            DeclarationType.Enumeration,
+            DeclarationType.UserDefinedType
         };
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
