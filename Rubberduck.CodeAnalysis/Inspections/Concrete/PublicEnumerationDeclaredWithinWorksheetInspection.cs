@@ -13,7 +13,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         private readonly IProjectsProvider _projectsProvider;
 
         public PublicEnumerationDeclaredWithinWorksheetInspection(IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider)
-            : base(declarationFinderProvider)
+            : base(declarationFinderProvider, new DeclarationType[] { DeclarationType.Enumeration })
         {
             _projectsProvider = projectsProvider;
         }
@@ -21,7 +21,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             return declaration.Accessibility == Accessibility.Public
-                && declaration.DeclarationType == DeclarationType.Enumeration
                 && declaration.QualifiedModuleName.ComponentType == ComponentType.Document;
         }
 
