@@ -8,7 +8,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
-    internal class PublicEnumerationDeclaredWithinWorksheetInspection : DeclarationInspectionBase
+    internal sealed class PublicEnumerationDeclaredWithinWorksheetInspection : DeclarationInspectionBase
     {
         private readonly IProjectsProvider _projectsProvider;
 
