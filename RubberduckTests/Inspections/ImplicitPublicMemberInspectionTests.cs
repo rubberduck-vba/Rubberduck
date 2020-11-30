@@ -15,6 +15,9 @@ namespace RubberduckTests.Inspections
         [TestCase("Private Sub Foo()\r\nEnd Sub\r\n\r\nSub Goo()\r\nEnd Sub", 1)]
         [TestCase("Private Sub Foo()\r\nEnd Sub", 0)]
         [TestCase("'@Ignore ImplicitPublicMember\r\nSub Foo()\r\nEnd Sub", 0)]
+        [TestCase("Enum Foo\r\n    Member\r\nEnd Enum", 1)]
+        [TestCase("Enum Foo\r\n    Member\r\nEnd Enum\r\n\r\nEnum Bar\r\n    Member\r\nEnd Enum", 2)]
+        [TestCase("Private Enum Foo\r\n    Member\r\nEnd Enum\r\n\r\nEnum Bar\r\n    Member\r\nEnd Enum", 1)]
         [Category("Inspections")]
         public void ImplicitPublicMember_Various(string inputCode, int expectedCount)
         {
