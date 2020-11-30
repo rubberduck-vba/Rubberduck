@@ -21,14 +21,19 @@ namespace RubberduckTests.Inspections
         [Test]
         [Category("Inspections")]
         [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
-        [TestCase(ComponentType.Document, 1)]
-        [TestCase(ComponentType.StandardModule, 0)]
-        [TestCase(ComponentType.ClassModule, 0)]
-        [TestCase(ComponentType.UserForm, 0)]
-        public void Project_with_public_enumeration_flags_only_enum_declared_within_worksheets(ComponentType componentType, int expected)
+        [TestCase(ComponentType.Document, false, 1)]
+        [TestCase(ComponentType.Document, true, 1)]
+        [TestCase(ComponentType.StandardModule, false, 0)]
+        [TestCase(ComponentType.StandardModule, true, 0)]
+        [TestCase(ComponentType.ClassModule, false, 0)]
+        [TestCase(ComponentType.ClassModule, true, 0)]
+        [TestCase(ComponentType.UserForm, false, 0)]
+        [TestCase(ComponentType.UserForm, true, 0)]
+        public void Project_with_public_enumeration_flags_enum_declared_within_worksheets(ComponentType componentType, bool isExplicitlyPublic, int expected)
         {
-            const string code = @"Option Explicit
-Public Enum DeclaredEnum
+            var accessModifier = isExplicitlyPublic ? "Public " : string.Empty;
+            var code = $@"Option Explicit
+{accessModifier}Enum DeclaredEnum
     wsMember1 = 0
     wsMember1 = 1
 End Enum
@@ -67,8 +72,14 @@ End Enum
         [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
         public void Project_with_public_and_private_enumeration_declared_within_worksheets_returns_only_public_declarations()
         {
-            const string publicDeclaration = @"Option Explicit
+            const string explicitPublicDeclaration = @"Option Explicit
 Public Enum WorksheetEnum
+    wsMember1 = 0
+    wsMember2 = 1
+End Enum
+";
+            const string implicitPublicDeclaration = @"Option Explicit
+Enum WorksheetEnum
     wsMember1 = 0
     wsMember2 = 1
 End Enum
@@ -81,15 +92,17 @@ End Enum
 ";
 
             var inspectionResults = InspectionResultsForModules(
-                ("FirstPublicSheet", publicDeclaration, ComponentType.Document),
+                ("FirstPublicSheet", explicitPublicDeclaration, ComponentType.Document),
                 ("FirstPrivateSheet", privateDeclaration, ComponentType.Document),
                 ("SecondPrivateSheet", privateDeclaration, ComponentType.Document),
-                ("SecondPublicSheet", publicDeclaration, ComponentType.Document),
-                ("ThirdPrivateSheet", privateDeclaration, ComponentType.Document));
+                ("SecondPublicSheet", explicitPublicDeclaration, ComponentType.Document),
+                ("ThirdPrivateSheet", privateDeclaration, ComponentType.Document),
+                ("ThirdPublicSheet", implicitPublicDeclaration, ComponentType.Document),
+                ("FourthPublicSheet", implicitPublicDeclaration, ComponentType.Document));
 
             int actual = inspectionResults.Count();
 
-            Assert.AreEqual(2, actual);
+            Assert.AreEqual(4, actual);
         }
 
         [Test]
