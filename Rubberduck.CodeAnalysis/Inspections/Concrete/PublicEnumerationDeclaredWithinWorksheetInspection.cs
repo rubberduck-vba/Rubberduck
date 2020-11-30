@@ -10,13 +10,9 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     internal sealed class PublicEnumerationDeclaredWithinWorksheetInspection : DeclarationInspectionBase
     {
-        private readonly IProjectsProvider _projectsProvider;
-
         public PublicEnumerationDeclaredWithinWorksheetInspection(IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider)
             : base(declarationFinderProvider, new DeclarationType[] { DeclarationType.Enumeration })
-        {
-            _projectsProvider = projectsProvider;
-        }
+        {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
