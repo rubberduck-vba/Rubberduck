@@ -8,6 +8,30 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies public enumerations declared within worksheet modules.
+    /// </summary>
+    /// <why>
+    /// Copying a worksheet which contains a public `Enum` declaration will duplicate the enum resulting in a state which prevents compilation.
+    /// </why>
+    /// <example hasResult="true">
+    /// <module name="DocumentModule" type="Document Module">
+    /// <![CDATA[
+    /// Public Enum Foo()
+    ///     ' enumeration members
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="false">
+    /// <module name="DocumentModule" type="Document Module">
+    /// <![CDATA[
+    /// Private Enum Foo()
+    ///     ' enumeration members
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
     internal sealed class PublicEnumerationDeclaredWithinWorksheetInspection : DeclarationInspectionBase
     {
         public PublicEnumerationDeclaredWithinWorksheetInspection(IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider)
