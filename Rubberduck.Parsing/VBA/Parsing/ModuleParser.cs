@@ -114,9 +114,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
                 membersAllowingAttributes,
                 codePaneTokenStream,
                 attributesTokenStream
-            );
-
-            
+            );            
         }
 
         private (IEnumerable<CommentNode> Comments, IEnumerable<IParseTreeAnnotation> Annotations) CommentsAndAnnotations(QualifiedModuleName module, IParseTree tree)
