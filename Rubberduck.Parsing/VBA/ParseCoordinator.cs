@@ -307,7 +307,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             //We need to refresh the DeclarationFinder before the handlers for ResolvedDeclarations run no matter 
-            //whether we parsed or resolved something because modules not referenced by any remeining module might
+            //whether we parsed or resolved something because modules not referenced by any remaining module might
             //have been removed. E.g. the CodeExplorer needs this update. 
             RefreshDeclarationFinder();
             token.ThrowIfCancellationRequested();
