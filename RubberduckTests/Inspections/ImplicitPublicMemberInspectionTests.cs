@@ -18,7 +18,6 @@ namespace RubberduckTests.Inspections
         [TestCase("Enum Foo\r\n    Member\r\nEnd Enum", 1)]
         [TestCase("Enum Foo\r\n    Member\r\nEnd Enum\r\n\r\nEnum Bar\r\n    Member\r\nEnd Enum", 2)]
         [TestCase("Private Enum Foo\r\n    Member\r\nEnd Enum\r\n\r\nEnum Bar\r\n    Member\r\nEnd Enum", 1)]
-        [TestCase("Type Foo\r\n    Name As String\r\nEnd Type", 1)]
         [Category("Inspections")]
         public void ImplicitPublicMember_Various(string inputCode, int expectedCount)
         {
@@ -37,6 +36,36 @@ namespace RubberduckTests.Inspections
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
             return new ImplicitPublicMemberInspection(state);
+        }
+
+        [TestCase(null, 1)]
+        [TestCase(true, 0)]
+        [TestCase(false, 0)]
+        [Category(nameof(ImplicitPublicMemberInspectionTests))]
+        [Category("Inspections")]
+        public void User_defined_type_correctly_flagged_as_implicitly_public(bool? modifier, int expectedCount)
+        {
+            string accessModifier = null;
+            if (!modifier.HasValue)
+            {
+                accessModifier = string.Empty;
+            }
+            else
+            {
+                accessModifier = modifier.Value ? "Public " : "Private ";
+            }
+
+            var code = $@"Option Explicit
+{accessModifier}Type FooType
+    Name As String
+End Type
+";
+
+            var inspectionResults = InspectionResultsForStandardModule(code);
+
+            var actual = inspectionResults.Count();
+
+            Assert.AreEqual(expectedCount, actual);
         }
     }
 }
