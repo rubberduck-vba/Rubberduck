@@ -50,13 +50,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             return declaration is ParameterDeclaration parameter
-                && !(parameter.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
-                && parameter.ParentDeclaration is ModuleBodyElementDeclaration enclosingMethod
+                && !IsAlwaysByRef(declaration)
+                && declaration.ParentDeclaration is ModuleBodyElementDeclaration enclosingMethod
                 && (enclosingMethod.DeclarationType.HasFlag(DeclarationType.PropertyLet)
                     || enclosingMethod.DeclarationType.HasFlag(DeclarationType.PropertySet))
                 && enclosingMethod.Parameters.Last() == parameter
                 && parameter.IsByRef && !parameter.IsImplicitByRef;
         }
+
+        private static bool IsAlwaysByRef(Declaration parameter) 
+            => parameter.IsArray
+                || (parameter.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false);
 
         protected override string ResultDescription(Declaration declaration)
         {
