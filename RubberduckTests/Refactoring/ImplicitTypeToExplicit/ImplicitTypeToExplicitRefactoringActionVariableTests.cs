@@ -3,6 +3,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ImplicitTypeToExplicit;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
+using System;
 using System.Collections.Generic;
 
 namespace RubberduckTests.Refactoring.ImplicitTypeToExplicit
@@ -50,6 +51,20 @@ End Sub";
                 state => TestModel(state, NameAndDeclarationTypeTuple(targetName), (model) => { model.ForceVariantAsType = true; return model; }));
 
             StringAssert.Contains($"{targetName} As Variant", refactoredCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void InvalidTarget_ThrowsArgumentException()
+        {
+            var targetName = "Foo";
+            var inputCode =
+$@"Sub Foo()
+End Sub";
+
+            Assert.Throws<ArgumentException>( () => RefactoredCode(inputCode,
+                state => TestModel(state, (targetName, DeclarationType.Procedure), (model) => model)));
         }
 
         [TestCase("var1 = 42", "Long", "Long")]

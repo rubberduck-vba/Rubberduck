@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
@@ -27,10 +27,15 @@ namespace Rubberduck.Refactorings.ImplicitTypeToExplicit
 
         public override void Refactor(ImplicitTypeToExplicitModel model, IRewriteSession rewriteSession)
         {
-            ParserRuleContext identifierNode =
-                model.Target.Context is VBAParser.VariableSubStmtContext || model.Target.Context is VBAParser.ConstSubStmtContext || model.Target.Context is VBAParser.FunctionStmtContext
-                ? model.Target.Context.children[0]
-                : ((dynamic)model.Target.Context).unrestrictedIdentifier();
+            if (!(model.Target.Context is VBAParser.VariableSubStmtContext
+                    || model.Target.Context is VBAParser.ConstSubStmtContext
+                    || model.Target.Context is VBAParser.ArgContext))
+            {
+                throw new ArgumentException($"Invalid target {model.Target.IdentifierName}");
+            }
+
+            var identifierNode = model.Target.Context.GetChild<VBAParser.IdentifierContext>()
+                        ?? model.Target.Context.GetChild<VBAParser.UnrestrictedIdentifierContext>() as ParserRuleContext;
 
             var insertAfterTarget = model.Target.IsArray
                 ? model.Target.Context.Stop.TokenIndex
