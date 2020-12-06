@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
+using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -17,19 +18,19 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 {
     public class EncapsulateFieldTestSupport : EncapsulateFieldInteractiveRefactoringTest
     {
-        public EncapsulateFieldTestsResolver SetupResolver(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager = null, ISelectionService selectionService = null)
+        public EncapsulateFieldTestsResolver SetupResolver(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager = null, ISelectionService selectionService = null, IIndenter indenter = null)
         {
             return GetResolver(declarationFinderProvider, rewritingManager, selectionService);
         }
 
-        public static EncapsulateFieldTestsResolver GetResolver(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager = null, ISelectionService selectionService = null)
+        public static EncapsulateFieldTestsResolver GetResolver(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager = null, ISelectionService selectionService = null, IIndenter indenter = null)
         {
             if (declarationFinderProvider is null)
             {
                 throw new ArgumentNullException("declarationFinderProvider is null");
             }
 
-            var resolver = new EncapsulateFieldTestsResolver(declarationFinderProvider, rewritingManager, selectionService);
+            var resolver = new EncapsulateFieldTestsResolver(declarationFinderProvider, rewritingManager, selectionService, indenter);
             resolver.Install(new WindsorContainer(), null);
             return resolver;
         }
@@ -222,20 +223,21 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return SupportTestRefactoring(rewritingManager, state, userInteraction, selectionService);
         }
 
-        public string RefactoredCode<TRefactoring,TModel>(string code, Func<RubberduckParserState, EncapsulateFieldTestsResolver, TModel> modelBuilder) where TRefactoring : CodeOnlyRefactoringActionBase<TModel> where TModel : class, IRefactoringModel
+        public string RefactoredCode<TRefactoring,TModel>(string code, Func<RubberduckParserState, EncapsulateFieldTestsResolver, TModel> modelBuilder, IIndenter indenter = null) where TRefactoring : CodeOnlyRefactoringActionBase<TModel> where TModel : class, IRefactoringModel
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _).Object;
             var componentName = vbe.SelectedVBComponent.Name;
-            var refactored = RefactoredCode<TRefactoring,TModel>(vbe, modelBuilder);
+            var refactored = RefactoredCode<TRefactoring,TModel>(vbe, modelBuilder, indenter);
             return refactored[componentName];
         }
 
-        public IDictionary<string, string> RefactoredCode<TRefactoring,TModel>(IVBE vbe, Func<RubberduckParserState, EncapsulateFieldTestsResolver, TModel> modelBuilder) where TRefactoring: CodeOnlyRefactoringActionBase<TModel> where TModel: class, IRefactoringModel
+        public IDictionary<string, string> RefactoredCode<TRefactoring,TModel>(IVBE vbe, Func<RubberduckParserState, EncapsulateFieldTestsResolver, TModel> modelBuilder, IIndenter indenter = null) where TRefactoring: CodeOnlyRefactoringActionBase<TModel> where TModel: class, IRefactoringModel
         {
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {
-                var resolver = GetResolver(state, rewritingManager);
+                
+                var resolver = GetResolver(state, rewritingManager, indenter: indenter);
 
                 var refactoring = resolver.Resolve<TRefactoring>();
 
