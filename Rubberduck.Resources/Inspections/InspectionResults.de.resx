@@ -473,4 +473,7 @@ In Memoriam, 1972-2018</value>
   <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
     <value>Element '{0}' referenziert implizit auf das umgebende Worksheet-Modul.</value>
   </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>Irreführender ByRef Modifizierer für den Parameter '{0}' ({1}) benutzt.</value>
+  </data>
 </root>
