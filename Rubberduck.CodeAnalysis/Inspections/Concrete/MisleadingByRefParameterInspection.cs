@@ -13,17 +13,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// <why>
     /// Regardless of the presence or absence of an explicit ByRef or ByVal modifier, the value-parameter
     /// of a property mutator is always treated as though it had an explicit ByVal modifier.
-    /// Exception: UserDefinedType parameters are always passed by reference.
+    /// Exception: UserDefinedType and Array parameters are always passed by reference.
     /// </why>
     /// <example hasResult="true">
     /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private fizzField As Long
     /// Public Property Get Fizz() As Long
-    ///     Fizz = fizzFiled
+    ///     Fizz = fizzField
     /// End Property
     /// Public Property Let Fizz(ByRef arg As Long)
-    ///     fizzFiled = arg
+    ///     fizzField = arg
     /// End Property
     /// ]]>
     /// </module>
@@ -33,10 +33,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// <![CDATA[
     /// Private fizzField As Long
     /// Public Property Get Fizz() As Long
-    ///     Fizz = fizzFiled
+    ///     Fizz = fizzField
     /// End Property
     /// Public Property Let Fizz(arg As Long)
-    ///     fizzFiled = arg
+    ///     fizzField = arg
     /// End Property
     /// ]]>
     /// </module>
