@@ -35,8 +35,7 @@ namespace RubberduckTests.Mocks
     {
         public static RubberduckParserState ParseString(string inputCode, out QualifiedModuleName qualifiedModuleName)
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component);
             qualifiedModuleName = new QualifiedModuleName(component);
             var parser = Create(vbe.Object);
 
