@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using MemoryStream = System.IO.MemoryStream;
 using System.Net;
 using System.Text;
 using System.Xml;

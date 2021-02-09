@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Refactorings;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
 {

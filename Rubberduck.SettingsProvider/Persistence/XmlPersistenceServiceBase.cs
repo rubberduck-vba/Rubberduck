@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -15,7 +15,8 @@ namespace Rubberduck.SettingsProvider
         protected const string RootElement = "Configuration";
 
         protected static readonly XmlSerializerNamespaces EmptyNamespace = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
-        protected static readonly UTF8Encoding OutputEncoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);        
+        protected static readonly UTF8Encoding OutputEncoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+        
         protected static readonly XmlWriterSettings OutputXmlSettings = new XmlWriterSettings
         {
             NamespaceHandling = NamespaceHandling.OmitDuplicates,
@@ -23,9 +24,14 @@ namespace Rubberduck.SettingsProvider
             Indent = true
         };
 
-        protected XmlPersistenceServiceBase(IPersistencePathProvider pathProvider)
+        protected readonly IFileSystem FileSystem;
+
+        protected XmlPersistenceServiceBase(
+            IPersistencePathProvider pathProvider,
+            IFileSystem fileSystem)
         {
             RootPath = pathProvider.DataRootPath;
+            FileSystem = fileSystem;
         }
         
         protected abstract string FilePath { get; }
@@ -45,10 +51,10 @@ namespace Rubberduck.SettingsProvider
         protected abstract T Read(string path);
         protected abstract void Write(T toSerialize, string path);
 
-        protected static XDocument GetConfigurationDoc(string file)
+        protected XDocument GetConfigurationDoc(string file)
         {
             XDocument output;
-            if (File.Exists(file))
+            if (FileSystem.File.Exists(file))
             {
                 try
                 {
@@ -76,10 +82,10 @@ namespace Rubberduck.SettingsProvider
 
         protected void EnsureDirectoryExists(string filePath)
         {
-            var folder = Path.GetDirectoryName(filePath);
-            if (folder != null && !Directory.Exists(folder))
+            var folder = FileSystem.Path.GetDirectoryName(filePath);
+            if (folder != null && !FileSystem.Directory.Exists(folder))
             {
-                Directory.CreateDirectory(folder);
+                FileSystem.Directory.CreateDirectory(folder);
             }
         }
     }

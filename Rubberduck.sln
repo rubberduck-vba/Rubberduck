@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.29318.209
+VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Parsing", "Rubberduck.Parsing\Rubberduck.Parsing.csproj", "{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -86,7 +86,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Interaction", "R
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.UnitTesting", "Rubberduck.UnitTesting\Rubberduck.UnitTesting.csproj", "{68F55404-32CA-4414-96B8-E284F3B1F846}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.JunkDrawer", "Rubberduck.JunkDrawer\Rubberduck.JunkDrawer.csproj", "{D7A3F7A3-BD90-4845-B098-AC3AFBF0E16F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.InternalApi", "Rubberduck.InternalApi\Rubberduck.InternalApi.csproj", "{D7A3F7A3-BD90-4845-B098-AC3AFBF0E16F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

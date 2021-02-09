@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
@@ -17,19 +17,22 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IProjectsProvider _projectsProvider;
         private readonly IMessageBox _messageBox;
         private readonly IVBE _vbe;
+        private readonly IFileSystem _fileSystem;
 
         public DeleteCommand(
             RemoveCommand removeCommand, 
             IProjectsProvider projectsProvider, 
             IMessageBox messageBox, 
             IVBE vbe, 
-            IVbeEvents vbeEvents) 
+            IVbeEvents vbeEvents,
+            IFileSystem fileSystem) 
             : base(vbeEvents)
         {
             _removeCommand = removeCommand;
             _projectsProvider = projectsProvider;
             _messageBox = messageBox;
             _vbe = vbe;
+            _fileSystem = fileSystem;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
@@ -84,7 +87,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {           
                 try
                 {
-                    File.Delete(file);                    
+                    _fileSystem.File.Delete(file);                    
                 }
                 catch (Exception exception)
                 {

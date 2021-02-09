@@ -4,9 +4,9 @@ using System.Globalization;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.PreProcessing;
 
-namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
+namespace Rubberduck.Refactoring.ParseTreeValue
 {
-    internal struct VBACurrency
+    public struct VBACurrency
     {
         public static decimal MinValue = -922337203685477.5808M;
         public static decimal MaxValue = 922337203685477.5807M;
@@ -36,7 +36,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
         }
     }
 
-    internal struct LetCoerce
+    public struct LetCoerce
     {
         //Content: Dictionary<sourceTypeName,Dictionary<LetDestinationTypeName,CoercionFunc>
         private static Dictionary<string, Dictionary<string, Func<string, string>>> _coercions = new Dictionary<string, Dictionary<string, Func<string, string>>>

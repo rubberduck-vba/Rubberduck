@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Rubberduck.JunkDrawer.Extensions
+namespace Rubberduck.InternalApi.Extensions
 {
     public static class FolderExtensions
     {

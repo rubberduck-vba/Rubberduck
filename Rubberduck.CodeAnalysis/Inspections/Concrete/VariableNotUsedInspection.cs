@@ -54,7 +54,21 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         {
             return !declaration.IsWithEvents
                    && declaration.References
-                       .All(reference => reference.IsAssignment);
+                       .All(reference => reference.IsAssignment)
+                   && !declaration.References.Any(IsForLoopAssignment);
+        }
+
+        private bool IsForLoopAssignment(IdentifierReference reference)
+        {
+            if(!reference.IsAssignment)
+            {
+                return false;
+            }
+
+            //A For Next loop has the form For expr1 = expr2 (Step expr3) ... Next (expr1)
+            var relationalOpAncestor = reference.Context.GetAncestor<VBAParser.RelationalOpContext>();
+            return relationalOpAncestor != null
+                && relationalOpAncestor.Parent is VBAParser.ForNextStmtContext;
         }
 
         protected override IInspectionResult InspectionResult(Declaration declaration)

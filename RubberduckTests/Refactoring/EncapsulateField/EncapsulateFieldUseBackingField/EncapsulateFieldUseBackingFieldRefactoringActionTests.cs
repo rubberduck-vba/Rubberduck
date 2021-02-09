@@ -1,26 +1,20 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Common;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackingField
 {
     [TestFixture]
-    public class EncapsulateFieldUseBackingFieldRefactoringActionTests : RefactoringActionTestBase<EncapsulateFieldUseBackingFieldModel>
+    public class EncapsulateFieldUseBackingFieldRefactoringActionTests
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
-
-        [SetUp]
-        public void ExecutesBeforeAllTests()
-        {
-            Support.ResetResolver();
-        }
 
         [TestCase(false, "Name")]
         [TestCase(true, "Name")]
@@ -34,12 +28,12 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
             var target = "fizz";
             var inputCode = $"Public {target} As Integer";
 
-            EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state)
+            EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
             {
-                var modelFactory = Support.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>(state);
-
                 var field = state.DeclarationFinder.MatchName(target).Single();
                 var fieldModel = new FieldEncapsulationModel(field as VariableDeclaration, isReadOnly, propertyIdentifier);
+
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>();
                 return modelFactory.Create( new List<FieldEncapsulationModel>() { fieldModel });
             }
 
@@ -75,9 +69,9 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
             var target = "fizz";
             var inputCode = $"Public {target} As Integer";
 
-            EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state)
+            EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
             {
-                var modelFactory = Support.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>(state);
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>();
                 return modelFactory.Create(Enumerable.Empty<FieldEncapsulationModel>());
             }
 
@@ -85,9 +79,9 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
             Assert.AreEqual(refactoredCode, inputCode);
         }
 
-        protected override IRefactoringAction<EncapsulateFieldUseBackingFieldModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
+        private string RefactoredCode(string inputCode, Func<RubberduckParserState, EncapsulateFieldTestsResolver, EncapsulateFieldUseBackingFieldModel> modelBuilder)
         {
-            return Support.Resolve<EncapsulateFieldUseBackingFieldRefactoringAction>(state, rewritingManager);
+            return Support.RefactoredCode<EncapsulateFieldUseBackingFieldRefactoringAction, EncapsulateFieldUseBackingFieldModel>(inputCode, modelBuilder);
         }
     }
 }
