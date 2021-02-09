@@ -61,6 +61,7 @@ before_build:
   - cinst innosetup -version 5.6.1
   - cinst codecov
   - cinst opencover.portable
+  - where nuget
   - nuget restore RubberduckMeta.sln
   - nuget restore Rubberduck.sln
 build:
