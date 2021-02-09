@@ -1,9 +1,5 @@
 version: '2.5.1.{build}'
 
-# add nuget api to hosts file, making sure we can actually nuget restore for the build
-hosts:
-  api.nuget.org: 93.184.221.200
-
 # enforce crlf fixing
 init:
   git config --global core.autocrlf true
@@ -29,8 +25,8 @@ branches:
   - next
 skip_tags: true
 
-# build-matrix: all Release CPUs on VS2017
-image: Visual Studio 2017
+# build-matrix: all Release CPUs on Visual Studio
+image: Visual Studio 2019
 configuration: Release
 platform: Any CPU
 

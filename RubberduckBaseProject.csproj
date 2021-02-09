@@ -1,5 +1,7 @@
-<Project Sdk="Sunburst.NET.Sdk.WPF.Patched/1.0.49">
-  <!-- We're specifying the Sdk here to make appveyor happy, but this generates warning MSB4011 -->
+<Project>
+  <PropertyGroup>
+    <RubberduckVersion>2.5.1</RubberduckVersion>
+  </PropertyGroup>
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <Company>Rubberduck-VBA</Company>
@@ -10,22 +12,22 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputPath>bin\$(Configuration)\</OutputPath>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
     <RestorePackages>true</RestorePackages>
     <!-- do not unify output paths by default -->
     <UnifyOutputPath Condition=" '$(UnifyOutputPath)' == ''">false</UnifyOutputPath>
     <!-- Ignore MSB4011 warning, rationale above -->
     <!-- Ignore VisualStudio whining about the CodeAnalysis assembly changing (IDE1001) -->
     <DisabledWarnings>$(DisabledWarnings);4011;1001</DisabledWarnings>
-    <Version Condition=" '$(Version)' == ''">2.5.1</Version>
+    <Version Condition=" '$(Version)' == ''">$(RubberduckVersion)</Version>
+    <FileVersion>$(RubberduckVersion)</FileVersion>
   </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(AssemblyVersion)' == '' ">
+  
+  <PropertyGroup Condition=" '$(AssemblyVersion)' == '' ">    
     <!--
      This assembly version specification is considered nonstandard.
      As such builds that do not override the assembly version generate a warning, which we ignore.
     -->
-    <AssemblyVersion>2.5.1.*</AssemblyVersion>
+    <AssemblyVersion>$(RubberduckVersion).*</AssemblyVersion>
     <!-- Ignore CSharp compiler warning for nonstandard assembly version (CS7035) -->
     <!-- Ignore Linker warning for nonstandard assembly version (AL1053) -->
     <DisabledWarnings>$(DisabledWarnings);7035;1053</DisabledWarnings>
@@ -65,13 +67,6 @@
     <Optimize>true</Optimize>
     <DefineConstants>RELEASE</DefineConstants>
   </PropertyGroup>
-
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
 
   <!-- This section does not work; it seems to find the solution fine but doesn't actually build
        so we work around this by enumerating the projects in the next section below
