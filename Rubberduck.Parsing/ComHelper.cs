@@ -16,18 +16,22 @@ namespace Rubberduck.Parsing
         /// <returns>A string containing the type name.</returns>
         public static string GetTypeName(object comObj)
         {
-
             if (comObj == null)
-                return String.Empty;
+            {
+                return string.Empty;
+            }
 
             if (!Marshal.IsComObject(comObj))
+            {
                 //The specified object is not a COM object
-                return String.Empty;
+                return string.Empty;
+            }
 
-            IDispatch dispatch = comObj as IDispatch;
-            if (dispatch == null)
+            if (!(comObj is IDispatch dispatch))
+            {
                 //The specified COM object doesn't support getting type information
-                return String.Empty;
+                return string.Empty;
+            }
 
             ComTypes.ITypeInfo typeInfo = null;
             try
@@ -43,15 +47,14 @@ namespace Rubberduck.Parsing
                     return string.Empty;
                 }
 
-                string typeName = "";
-                string documentation, helpFile;
+                string typeName = string.Empty;
                 int helpContext = -1;
 
                 try
                 {
                     //retrieves the documentation string for the specified type description 
-                    typeInfo.GetDocumentation(-1, out typeName, out documentation,
-                        out helpContext, out helpFile);
+                    typeInfo.GetDocumentation(-1, out typeName, out string documentation,
+                        out helpContext, out string helpFile);
                 }
                 catch (Exception)
                 {
