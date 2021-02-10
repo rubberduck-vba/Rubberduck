@@ -504,7 +504,7 @@ Wollen Sie trotzdem fortfahren?</value>
     <value>Setze die Referenz explizit auf das 'ActiveSheet'</value>
   </data>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
-    <value>Suche Symbol </value>
+    <value>Suche Symbol</value>
   </data>
   <data name="ExtractInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Extrahiere Interface</value>
@@ -1684,5 +1684,23 @@ Eine private Klasse kann eine private Schnittstelle implementieren.</value>
   </data>
   <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
     <value>Sichtbarkeit</value>
+  </data>
+  <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
+    <value>Implementierungsoptionen:</value>
+  </data>
+  <data name="ExtractInterface_OptionAddEmptyImplementation" xml:space="preserve">
+    <value>Füge leere Implementierung hinzu</value>
+  </data>
+  <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
+    <value>Ersetze Elemente durch Interface-Elemente</value>
+  </data>
+  <data name="TestOutcome_Ignored" xml:space="preserve">
+    <value>Ignoriert</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToInterfaceMembers" xml:space="preserve">
+    <value>Weiterreichen des Object Element Aufrufe an das Interface Element</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
+    <value>Weiterreichen der Interface Elemente Aufrufe an die Object Elemente</value>
   </data>
 </root>
