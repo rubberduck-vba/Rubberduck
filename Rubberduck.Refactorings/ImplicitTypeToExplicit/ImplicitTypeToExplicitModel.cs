@@ -10,5 +10,7 @@ namespace Rubberduck.Refactorings.ImplicitTypeToExplicit
         }
 
         public Declaration Target { get; }
+
+        public bool ForceVariantAsType { set; get; }
     }
 }

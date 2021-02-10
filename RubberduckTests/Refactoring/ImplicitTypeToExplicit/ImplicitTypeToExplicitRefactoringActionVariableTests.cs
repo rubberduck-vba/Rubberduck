@@ -3,6 +3,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ImplicitTypeToExplicit;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
+using System;
 using System.Collections.Generic;
 
 namespace RubberduckTests.Refactoring.ImplicitTypeToExplicit
@@ -18,7 +19,7 @@ namespace RubberduckTests.Refactoring.ImplicitTypeToExplicit
         [TestCase("var1 = 45E10", "Double")]
         [Category("Refactorings")]
         [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
-        public void LocalVariable_AssignedUsingLiteralExpresssion(string assignment, string expectedType)
+        public void LocalVariable_AssignedUsingLiteralExpression(string assignment, string expectedType)
         {
             var targetName = "var1";
             var inputCode =
@@ -31,6 +32,39 @@ End Sub";
                 state => TestModel(state, NameAndDeclarationTypeTuple(targetName), (model) => model));
 
             StringAssert.Contains($"{targetName} As {expectedType}", refactoredCode);
+        }
+
+        [TestCase("var1 = 42")]
+        [TestCase("var1 = 42.5")]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void RespectsForceVariantFlag(string assignment)
+        {
+            var targetName = "var1";
+            var inputCode =
+$@"Sub Foo()
+    Dim var1
+    {assignment}
+End Sub";
+
+            var refactoredCode = RefactoredCode(inputCode,
+                state => TestModel(state, NameAndDeclarationTypeTuple(targetName), (model) => { model.ForceVariantAsType = true; return model; }));
+
+            StringAssert.Contains($"{targetName} As Variant", refactoredCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void InvalidTarget_ThrowsArgumentException()
+        {
+            var targetName = "Foo";
+            var inputCode =
+$@"Sub Foo()
+End Sub";
+
+            Assert.Throws<ArgumentException>( () => RefactoredCode(inputCode,
+                state => TestModel(state, (targetName, DeclarationType.Procedure), (model) => model)));
         }
 
         [TestCase("var1 = 42", "Long", "Long")]
@@ -827,6 +861,21 @@ End {procedureType}
 ";
             var refactoredCode = RefactoredCode(inputCode, NameAndDeclarationTypeTuple(targetName));
             StringAssert.Contains($"{targetName} As {expectedType}", refactoredCode);
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/5646        
+        [TestCase("()")]
+        [TestCase("(1,2,3,4,5)")]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void ArrayVariable(string arrayDimensionExpression)
+        {
+            var targetName = "mTest";
+            var expectedType = "Variant";
+            var inputCode = $"Public {targetName}{arrayDimensionExpression}";
+
+            var refactoredCode = RefactoredCode(inputCode, NameAndDeclarationTypeTuple(targetName));
+            StringAssert.Contains($"{targetName}{arrayDimensionExpression} As {expectedType}", refactoredCode);
         }
 
         private static (string, DeclarationType) NameAndDeclarationTypeTuple(string name)

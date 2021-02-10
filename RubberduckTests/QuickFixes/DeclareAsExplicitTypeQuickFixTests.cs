@@ -19,20 +19,22 @@ using System.Threading;
 namespace RubberduckTests.QuickFixes
 {
     [TestFixture]
-    public class DeclareAsExplicitVariantQuickFixTests
+    public class DeclareAsExplicitTypeQuickFixTests
     {
         [Test]
         [Category("QuickFixes")]
         public void VariableTypeNotDeclared_Variable()
         {
             const string inputCode =
-@"Sub Foo()
+@"Sub Foo(arg As String)
     Dim var1
+    var1 = arg
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
-    Dim var1 As Variant
+@"Sub Foo(arg As String)
+    Dim var1 As String
+    var1 = arg
 End Sub";
 
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode);
@@ -44,11 +46,19 @@ End Sub";
         public void VariableTypeNotDeclared_Parameter()
         {
             const string inputCode =
-@"Sub Foo(arg1)
+@"
+Private mArg As Long
+
+Sub Foo(arg1)
+    arg1 = mArg
 End Sub";
 
             const string expectedCode =
-@"Sub Foo(arg1 As Variant)
+@"
+Private mArg As Long
+
+Sub Foo(arg1 As Long)
+    arg1 = mArg
 End Sub";
 
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode);
@@ -66,7 +76,7 @@ End Sub";
                 var resultToFix = inspectionResults.First();
 
                 var refactoringAction = new ImplicitTypeToExplicitRefactoringAction(state, new ParseTreeValueFactory(), rewritingManager);
-                var quickFix = new DeclareAsExplicitVariantQuickFix(refactoringAction);
+                var quickFix = new DeclareAsExplicitTypeQuickFix(refactoringAction);
 
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
                 quickFix.Fix(resultToFix, rewriteSession);
