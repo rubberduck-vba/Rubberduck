@@ -54,7 +54,7 @@ environment:
 
 before_build:
   - development/java/Rubberduck.Parsing/Grammar/gradlew.bat -p development/java/Rubberduck.Parsing/Grammar clean build
-  - cinst innosetup -version 5.6.1
+  - cinst innosetup -version 6.0.5
   - cinst codecov
   - cinst opencover.portable
   - nuget restore RubberduckMeta.sln
@@ -103,7 +103,7 @@ for:
 
 # Create Installers to store at appveyor and upload to github
 after_test:
-  - cmd: iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"
+  - cmd: '"C:\Program Files (x86)\Inno Setup 6\iscc.exe" /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"'
   - cmd: move %INSTALLER_DIR%\Rubberduck.Setup.exe %INSTALLER_DIR%\%INSTALLER_NAME%
   - ps: |
       $installer = "$env:INSTALLER_DIR\$env:INSTALLER_NAME"
