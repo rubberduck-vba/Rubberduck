@@ -2498,7 +2498,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group Related Properties.
+        ///   Looks up a localized string similar to Remove vertical space between related property members.
         /// </summary>
         public static string IndenterSettings_GroupRelatedProperties {
             get {

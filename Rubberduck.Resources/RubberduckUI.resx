@@ -1890,6 +1890,6 @@ Do you want to proceed?</value>
     <value>Ignored</value>
   </data>
   <data name="IndenterSettings_GroupRelatedProperties" xml:space="preserve">
-    <value>Group Related Properties</value>
+    <value>Remove vertical space between related property members</value>
   </data>
 </root>
