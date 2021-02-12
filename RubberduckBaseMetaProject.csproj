@@ -1,4 +1,4 @@
-<Project Sdk="Sunburst.NET.Sdk.WPF.Patched/1.0.49">
+<Project Sdk="Microsoft.NET.Sdk">
   <!-- We're specifying the Sdk here to make appveyor happy, but this generates warning MSB4011 -->
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -10,14 +10,13 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputPath>bin\$(Configuration)\</OutputPath>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
     <RestorePackages>true</RestorePackages>
     <!-- meta projects should have its path unified for easier discovery by the core solution -->
     <UnifyOutputPath>true</UnifyOutputPath>
     <!-- Ignore MSB4011 warning, rationale above -->
     <!-- Ignore VisualStudio whining about the CodeAnalysis assembly changing (IDE1001) -->
     <DisabledWarnings>$(DisabledWarnings);4011;1001</DisabledWarnings>
-    <Version Condition=" '$(Version)' == ''">2.3.0</Version>
+    <Version Condition=" '$(Version)' == ''">2.4.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(AssemblyVersion)' == '' ">
@@ -25,7 +24,7 @@
      This assembly version specification is considered nonstandard.
      As such builds that do not override the assembly version generate a warning, which we ignore.
     -->
-    <AssemblyVersion>2.3.*</AssemblyVersion>
+    <AssemblyVersion>2.4.*</AssemblyVersion>
     <!-- Ignore CSharp compiler warning for nonstandard assembly version (CS7035) -->
     <!-- Ignore Linker warning for nonstandard assembly version (AL1053) -->
     <DisabledWarnings>$(DisabledWarnings);7035;1053</DisabledWarnings>
@@ -50,13 +49,6 @@
     <Optimize>true</Optimize>
     <DefineConstants>RELEASE</DefineConstants>
   </PropertyGroup>
-
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
 
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 

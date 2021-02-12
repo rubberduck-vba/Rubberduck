@@ -21,5 +21,6 @@ English.WillLaunchAdminInstall=The installer will request for admin privilege to
 English.WillInstallForCurrentUser=Rubberduck Add-In will be made available to the current user only and will not%nrequire admin privileges.
 English.UninstallOldVersionPrompt=There seems to be a previous version of Rubberduck, installed in %s mode, and it should be uninstalled. Proceed?
 English.UninstallOldVersionFail=Unable to uninstall the previous version of Rubberduck. Try and uninstall it via the Programs control panel and run the installer again.
+English.UninstallOldVersionNotFound=The uninstaller could not be found. Do you want to proceed and install anyway? This may potentially overwrite existing installation and may result in a duplicate entry in the Add & Remove Programs. Proceed anyway?
 English.WarnInstallPerUserOverEveryone=There seems to be a version of Rubberduck installed for all users. If you proceed with the per-user install, it will take precedence over the original install. Proceed anyway?
 English.ElevationRequestFailMessage=Unable to uninstall the previous version of Rubberduck. You may need to uninstall it directly before you can install the new version.

@@ -745,7 +745,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
         {
             var identifier = Identifier.GetName(context.untypedIdentifier());
             var identifierSelection = Identifier.GetNameSelection(context.untypedIdentifier());
-            var accessibility = context.visibility()?.PRIVATE() != null ? Accessibility.Private : Accessibility.Public;
+            var accessibility = GetAccessibility(context.visibility());
             var declaration = CreateDeclaration(
                 identifier,
                 null,
@@ -758,6 +758,21 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 null);
             AddDeclaration(declaration);
             _parentDeclaration = declaration; // treat members as child declarations, but keep them scoped to module
+
+            Accessibility GetAccessibility(VBAParser.VisibilityContext visibilityContext)
+            {
+                if (visibilityContext == null)
+                {
+                    return Accessibility.Implicit;
+                }
+
+                if (visibilityContext.PUBLIC() != null)
+                {
+                    return Accessibility.Public;
+                }
+
+                return Accessibility.Private;
+            }
         }
 
         public override void EnterUdtMember(VBAParser.UdtMemberContext context)

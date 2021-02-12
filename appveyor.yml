@@ -1,9 +1,5 @@
 version: '2.5.1.{build}'
 
-# add nuget api to hosts file, making sure we can actually nuget restore for the build
-hosts:
-  api.nuget.org: 93.184.221.200
-
 # enforce crlf fixing
 init:
   git config --global core.autocrlf true
@@ -29,8 +25,8 @@ branches:
   - next
 skip_tags: true
 
-# build-matrix: all Release CPUs on VS2017
-image: Visual Studio 2017
+# build-matrix: all Release CPUs on Visual Studio
+image: Visual Studio 2019
 configuration: Release
 platform: Any CPU
 
@@ -58,7 +54,7 @@ environment:
 
 before_build:
   - development/java/Rubberduck.Parsing/Grammar/gradlew.bat -p development/java/Rubberduck.Parsing/Grammar clean build
-  - cinst innosetup -version 5.6.1
+  - cinst innosetup -version 6.0.5
   - cinst codecov
   - cinst opencover.portable
   - nuget restore RubberduckMeta.sln
@@ -107,7 +103,7 @@ for:
 
 # Create Installers to store at appveyor and upload to github
 after_test:
-  - cmd: iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"
+  - cmd: '"C:\Program Files (x86)\Inno Setup 6\iscc.exe" /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"'
   - cmd: move %INSTALLER_DIR%\Rubberduck.Setup.exe %INSTALLER_DIR%\%INSTALLER_NAME%
   - ps: |
       $installer = "$env:INSTALLER_DIR\$env:INSTALLER_NAME"

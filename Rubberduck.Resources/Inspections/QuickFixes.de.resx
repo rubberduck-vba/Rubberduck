@@ -303,4 +303,7 @@
   <data name="QualifyWithMeQuickFix" xml:space="preserve">
     <value>Qualifiziere die Referenz mit 'Me'.</value>
   </data>
+  <data name="DeclareAsExplicitTypeQuickFix" xml:space="preserve">
+    <value>Als expliziten Typ deklarieren</value>
+  </data>
 </root>

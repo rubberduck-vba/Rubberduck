@@ -126,4 +126,10 @@
   <data name="PredeclaredClassModule_Name" xml:space="preserve">
     <value>PredeclaredId-Klasse</value>
   </data>
+  <data name="Menu_Warning_CannotFindTemplate_Caption" xml:space="preserve">
+    <value>Fehlende Vorlagendatei</value>
+  </data>
+  <data name="Menu_Warning_CannotFindTemplate_Message" xml:space="preserve">
+    <value>Die Vorlage '{0}' konnte nicht gefunden werden. Die Datei wurde vielleicht umbenannt oder gelöscht. Der erwartete Dateiname ist: '{1}'</value>
+  </data>
 </root>

@@ -231,6 +231,24 @@ End Function
             StringAssert.Contains($"{targetName} As {expectedType}", refactoredCode);
         }
 
+        //https://github.com/rubberduck-vba/Rubberduck/issues/5646        
+        [TestCase("argArray()", "argArray() As Variant")]
+        [TestCase("arg1 As Long, arg2 As String, argArray()", "arg1 As Long, arg2 As String, argArray() As Variant")]
+        [TestCase("arg1 As Long, argArray(), arg2 As String", "arg1 As Long, argArray() As Variant, arg2 As String")]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void Parameter_Arrays(string argList, string expectedArgList)
+        {
+            var targetName = "argArray";
+
+            var inputCode =
+$@"Sub Foo({argList})
+End Sub";
+
+            var refactoredCode = RefactoredCode(inputCode, NameAndDeclarationTypeTuple(targetName));
+            StringAssert.Contains(expectedArgList, refactoredCode);
+        }
+
         (string, DeclarationType) NameAndDeclarationTypeTuple(string name)
             => (name, DeclarationType.Parameter);
     }

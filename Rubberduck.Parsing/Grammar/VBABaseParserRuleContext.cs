@@ -9,6 +9,6 @@ namespace Rubberduck.Parsing.Grammar
     {
         public VBABaseParserRuleContext() : base() { }
         
-        public VBABaseParserRuleContext(Antlr4.Runtime.ParserRuleContext parent, int invokingStateNumber) : base(parent, invokingStateNumber) { }
+        public VBABaseParserRuleContext(ParserRuleContext parent, int invokingStateNumber) : base(parent, invokingStateNumber) { }
     }
 }
