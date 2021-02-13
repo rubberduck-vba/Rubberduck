@@ -2498,6 +2498,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove vertical space between related property members.
+        /// </summary>
+        public static string IndenterSettings_GroupRelatedProperties {
+            get {
+                return ResourceManager.GetString("IndenterSettings_GroupRelatedProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignore empty lines when locating first comment and declaration blocks.
         /// </summary>
         public static string IndenterSettings_IgnoreEmptyLinesInFirstBlocks {

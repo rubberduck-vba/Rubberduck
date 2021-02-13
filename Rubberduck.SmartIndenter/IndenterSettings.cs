@@ -118,6 +118,8 @@ namespace Rubberduck.SmartIndenter
             set => _procedureSpacing = value > MaximumVerticalSpacing ? MaximumVerticalSpacing : Math.Max(value, 0);
         }
 
+        public virtual bool GroupRelatedProperties { get; set; }
+
         /// <summary>
         /// Use this ctor for unit testing.
         /// </summary>

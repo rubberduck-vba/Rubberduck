@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Refactorings.EncapsulateField;
 using System.Collections.Generic;
+using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.Refactorings.EncapsulateFieldInsertNewCode
 {
@@ -20,17 +21,20 @@ namespace Rubberduck.Refactorings.EncapsulateFieldInsertNewCode
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IPropertyAttributeSetsGenerator _propertyAttributeSetsGenerator;
         private readonly IEncapsulateFieldCodeBuilder _encapsulateFieldCodeBuilder;
+        private readonly IIndenter _indenter;
 
         public EncapsulateFieldInsertNewCodeRefactoringAction(
             IDeclarationFinderProvider declarationFinderProvider, 
             IRewritingManager rewritingManager,
             IPropertyAttributeSetsGenerator propertyAttributeSetsGenerator,
-            IEncapsulateFieldCodeBuilder encapsulateFieldCodeBuilder)
+            IEncapsulateFieldCodeBuilder encapsulateFieldCodeBuilder,
+            IIndenter indenter)
                 : base(rewritingManager)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _propertyAttributeSetsGenerator = propertyAttributeSetsGenerator;
             _encapsulateFieldCodeBuilder = encapsulateFieldCodeBuilder;
+            _indenter = indenter;
         }
 
         public override void Refactor(EncapsulateFieldInsertNewCodeModel model, IRewriteSession rewriteSession)
@@ -98,6 +102,8 @@ namespace Rubberduck.Refactorings.EncapsulateFieldInsertNewCode
                 allNewContent = $"{allNewContent}{Environment.NewLine}{previewMarker}";
             }
 
+            var formattedContent = string.Join(Environment.NewLine, _indenter.Indent(allNewContent));
+
             var rewriter = rewriteSession.CheckOutModuleRewriter(model.QualifiedModuleName);
 
             var codeSectionStartIndex = _declarationFinderProvider.DeclarationFinder
@@ -107,10 +113,10 @@ namespace Rubberduck.Refactorings.EncapsulateFieldInsertNewCode
 
             if (codeSectionStartIndex.HasValue)
             {
-                rewriter.InsertBefore(codeSectionStartIndex.Value, $"{allNewContent}{NewLines.DOUBLE_SPACE}");
+                rewriter.InsertBefore(codeSectionStartIndex.Value, $"{formattedContent}{NewLines.DOUBLE_SPACE}");
                 return;
             }
-            rewriter.InsertBefore(rewriter.TokenStream.Size - 1, $"{NewLines.DOUBLE_SPACE}{allNewContent}");
+            rewriter.InsertBefore(rewriter.TokenStream.Size - 1, $"{NewLines.DOUBLE_SPACE}{formattedContent}");
         }
     }
 }

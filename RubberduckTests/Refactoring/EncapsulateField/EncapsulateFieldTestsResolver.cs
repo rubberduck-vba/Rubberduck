@@ -38,7 +38,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         private IWindsorContainer _container;
 
-        public EncapsulateFieldTestsResolver(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager = null, ISelectionService selectionService = null)
+        public EncapsulateFieldTestsResolver(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager = null, ISelectionService selectionService = null, IIndenter indenter = null)
         {
             _declarationFinderProvider = declarationFinderProvider;
 
@@ -46,7 +46,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
             _selectionService = selectionService;
 
-            _testIndenter = new Indenter(null, () =>
+            _testIndenter = indenter ?? new Indenter(null, () =>
                {
                    var s = IndenterSettingsTests.GetMockIndenterSettings();
                    s.VerticallySpaceProcedures = true;
