@@ -17,7 +17,7 @@
     <UnifyOutputPath Condition=" '$(UnifyOutputPath)' == ''">false</UnifyOutputPath>
     <!-- Ignore MSB4011 warning, rationale above -->
     <!-- Ignore VisualStudio whining about the CodeAnalysis assembly changing (IDE1001) -->
-    <DisabledWarnings>$(DisabledWarnings);4011;1001</DisabledWarnings>
+    <DisabledWarnings>$(DisabledWarnings);4011;1001;1591</DisabledWarnings>
     <Version Condition=" '$(Version)' == ''">$(RubberduckVersion)</Version>
     <AssemblyVersion Condition=" '$(AssemblyVersion)' == ''">$(RubberduckVersion)</AssemblyVersion>
     <FileVersion>$(RubberduckVersion)</FileVersion>
@@ -32,7 +32,7 @@
     <AssemblyVersion>$(RubberduckVersion).*</AssemblyVersion>
     <!-- Ignore CSharp compiler warning for nonstandard assembly version (CS7035) -->
     <!-- Ignore Linker warning for nonstandard assembly version (AL1053) -->
-    <DisabledWarnings>$(DisabledWarnings);7035;1053;1591</DisabledWarnings>
+    <DisabledWarnings>$(DisabledWarnings);7035;1053</DisabledWarnings>
     <!-- Wildcards are not deterministic, ensure build passes when setting wildcard versions -->
   </PropertyGroup>
 
