@@ -18,8 +18,7 @@
     <!-- Ignore MSB4011 warning, rationale above -->
     <!-- Ignore VisualStudio whining about the CodeAnalysis assembly changing (IDE1001) -->
     <DisabledWarnings>$(DisabledWarnings);4011;1001;1591</DisabledWarnings>
-    <Version Condition=" '$(Version)' == ''">$(RubberduckVersion)</Version>
-    <AssemblyVersion Condition=" '$(AssemblyVersion)' == ''">$(RubberduckVersion)</AssemblyVersion>
+    <Version>$(RubberduckVersion)</Version>
     <FileVersion>$(RubberduckVersion)</FileVersion>
   </PropertyGroup>
   
