@@ -15,6 +15,10 @@
     <!-- This also fixes "Input string was not in the correct format" error message when referring to the current assembly in an XAML-Namespace -->
     <UseWpf>true</UseWpf>
     <UseWindowsForms>true</UseWindowsForms>
+
+    <Deterministic>False</Deterministic>
+    <Version>2.5.1.0</Version>
+    <AssemblyVersion>2.5.1.*</AssemblyVersion>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
