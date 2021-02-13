@@ -8,6 +8,9 @@
     <ProjectGuid>{E8AB5D93-2D0F-423D-BC15-5EE118673E48}</ProjectGuid>
     <!-- Disable "Missing XML documentation" warning (CS1591) -->
     <DisabledWarnings>$(DisabledWarnings);1591</DisabledWarnings>
+    <Deterministic>False</Deterministic>
+    <Version>2.5.1.*</Version>
+    <AssemblyVersion>2.5.1.*</AssemblyVersion>
     <UseWpf>true</UseWpf>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
