@@ -34,7 +34,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         /// <summary>
-        /// For the use of tests & reflection API only
+        /// For the use of tests and reflection API only
         /// </summary>
         private void SetSavedCancellationTokenSource(CancellationTokenSource tokenSource)
         {
