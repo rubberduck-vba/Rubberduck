@@ -21,7 +21,7 @@ skip_commits:
   - License.rtf
 branches:
   only:
-  - master
+  - main
   - next
 skip_tags: true
 
@@ -87,14 +87,14 @@ for:
 - 
   branches:
     only:
-    - master
+    - main
   environment:
     installer_name: Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
     release_name: Rubberduck v%APPVEYOR_BUILD_VERSION%
 - 
   branches:
     except:
-      - master
+      - main
       - next
   environment:
     # fall back to naming the installer something that shows we're in an unexpected state
@@ -135,7 +135,7 @@ deploy:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
     artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
     on: 
-      branch: master
+      branch: main
   - provider: GitHub
     tag: Prerelease-v$(appveyor_build_version)
     release: $(release_name)
