@@ -443,39 +443,6 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void GivenReferencedPublicField_UpdatesReferenceToNewProperty()
-        {
-            var codeClass1 =
-                @"|Public fizz As Integer
-
-Sub Foo()
-    fizz = 1
-End Sub";
-            var codeClass2 =
-@"Sub Foo()
-    Dim theClass As Class1
-    theClass.fizz = 0
-    Bar theClass.fizz
-End Sub
-
-Sub Bar(ByVal v As Integer)
-End Sub";
-
-            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", true);
-
-            var refactoredCode = Support.RefactoredCode(presenterAction,
-                ("Class1", codeClass1.ToCodeString(), ComponentType.ClassModule),
-                ("Class2", codeClass2, ComponentType.ClassModule));
-
-            StringAssert.Contains("Name = 1", refactoredCode["Class1"]);
-            StringAssert.Contains("theClass.Name = 0", refactoredCode["Class2"]);
-            StringAssert.Contains("Bar theClass.Name", refactoredCode["Class2"]);
-            StringAssert.DoesNotContain("fizz", refactoredCode["Class2"]);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
         public void EncapsulateField_PresenterIsNull()
         {
             var inputCode =

@@ -6,6 +6,8 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
 using Rubberduck.SmartIndenter;
+using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 using RubberduckTests.Settings;
 using System;
 using System.Collections.Generic;
@@ -146,6 +148,55 @@ End Sub
             var refactoredCode = RefactoredCode(inputCode, modelBuilder);
 
             StringAssert.Contains($"this.FirstVal = 7", refactoredCode);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        //Forces the 'Read Only" flag to false if there are external write references.
+        //If invoked via the refactoring dialog, the user will not given the option to choose a Readonly implementation
+        //if there are external write references.
+        public void ExternallyReferencedField_IgnoresReadOnlyFlagIfExternalWriteReferencesExist(bool isReadOnly)
+        {
+            var propertyIdentifier = "Name";
+            var codeClass1 =
+@"Public fizz As Integer
+
+Sub Foo()
+    fizz = 1
+End Sub";
+            var codeClass2 =
+@"Sub Foo()
+    Dim theClass As Class1
+    Set theClass = new Class1
+    theClass.fizz = 0
+    Bar theClass.fizz
+End Sub
+
+Sub Bar(ByVal v As Integer)
+End Sub";
+            (string name, string content, ComponentType compType) class1 = ("Class1", codeClass1, ComponentType.ClassModule);
+            (string name, string content, ComponentType compType) class2 = ("Class2", codeClass2, ComponentType.ClassModule);
+
+            EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
+            {
+
+                var field = state.DeclarationFinder.MatchName("fizz").Single();
+                var fieldModel = new FieldEncapsulationModel(field as VariableDeclaration, isReadOnly, propertyIdentifier);
+
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>();
+                return modelFactory.Create(new List<FieldEncapsulationModel>() { fieldModel });
+            }
+
+            var vbe = MockVbeBuilder.BuildFromModules((class1.name, class1.content, class1.compType), (class2.name, class2.content, class2.compType)).Object;
+            var refactoredCode = Support.RefactoredCode<EncapsulateFieldUseBackingFieldRefactoringAction, EncapsulateFieldUseBackingFieldModel>(vbe, modelBuilder);
+
+            StringAssert.Contains("fizz = RHS", refactoredCode["Class1"]);
+            StringAssert.Contains("Name = 1", refactoredCode["Class1"]);
+            StringAssert.Contains($"theClass.{propertyIdentifier} = 0", refactoredCode["Class2"]);
+            StringAssert.Contains($"Bar theClass.{propertyIdentifier}", refactoredCode["Class2"]);
+            StringAssert.DoesNotContain("fizz", refactoredCode["Class2"]);
         }
 
         [TestCase(true)]
