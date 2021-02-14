@@ -71,28 +71,28 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
 
         private void ModifyReferences(EncapsulateFieldUseBackingUDTMemberModel model, IRewriteSession rewriteSession)
         {
-            var privateUDTFields = model.SelectedFieldCandidates
-                .Where(f => (f.Declaration.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
-                    && f.Declaration.AsTypeDeclaration.Accessibility == Accessibility.Private);
+            var privateUDTFields = model.SelectedFieldCandidates.Cast<IEncapsulateFieldAsUDTMemberCandidate>()
+                .Where(f => f.WrappedCandidate is IUserDefinedTypeCandidate udt
+                    && udt.Declaration.AsTypeDeclaration.Accessibility == Accessibility.Private);
 
-            ReplaceUDTMemberReferencesOfPrivateUDTFields(privateUDTFields, rewriteSession);
+            ReplaceMemberReferencesOfPrivateUDTFields(model, privateUDTFields.Select(p => (p, p.WrappedCandidate as IUserDefinedTypeCandidate)), rewriteSession);
 
             ReplaceEncapsulatedFieldReferences(model.SelectedFieldCandidates.Except(privateUDTFields), model.ObjectStateUDTField, rewriteSession);
         }
 
-        private void ReplaceUDTMemberReferencesOfPrivateUDTFields(IEnumerable<IEncapsulateFieldCandidate> udtFields, IRewriteSession rewriteSession)
+        private void ReplaceMemberReferencesOfPrivateUDTFields(EncapsulateFieldUseBackingUDTMemberModel model, IEnumerable<(IEncapsulateFieldAsUDTMemberCandidate candidate, IUserDefinedTypeCandidate wrappedUDT)> privateUDTTuples, IRewriteSession rewriteSession)
         {
-            if (!udtFields.Any())
+            if (!privateUDTTuples.Any())
             {
                 return;
             }
 
             var replacePrivateUDTMemberReferencesModel 
-                = _replaceUDTMemberReferencesModelFactory.Create(udtFields.Select(f => f.Declaration).Cast<VariableDeclaration>());
+                = _replaceUDTMemberReferencesModelFactory.Create(privateUDTTuples.Select(f => f.candidate.Declaration).Cast<VariableDeclaration>());
 
-            foreach (var udtfield in udtFields)
+            foreach (var udtTuple in privateUDTTuples)
             {
-                InitializeModel(replacePrivateUDTMemberReferencesModel, udtfield);
+               InitializeModel(model, replacePrivateUDTMemberReferencesModel, udtTuple);
             }
 
             _replacePrivateUDTMemberReferencesRefactoringAction.Refactor(replacePrivateUDTMemberReferencesModel, rewriteSession);
@@ -118,16 +118,26 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             _replaceReferencesRefactoringAction.Refactor(replaceReferencesModel, rewriteSession);
         }
 
-        private void InitializeModel(ReplacePrivateUDTMemberReferencesModel model, IEncapsulateFieldCandidate udtfield)
+        private void InitializeModel(EncapsulateFieldUseBackingUDTMemberModel model, ReplacePrivateUDTMemberReferencesModel replacePrivateUDTMemberReferencesModel, (IEncapsulateFieldAsUDTMemberCandidate candidate, IUserDefinedTypeCandidate wrappedUDT) privateUDTTuple)
         {
-            foreach (var udtMember in model.UDTMembers)
+            var memberToLocalExpression = new Dictionary<Declaration, string>();
+            foreach (var member in privateUDTTuple.wrappedUDT.Members)
             {
-                var udtExpressions = new PrivateUDTMemberReferenceReplacementExpressions($"{udtfield.IdentifierName}.{udtMember.IdentifierName}")
+                var memberAccessExpression = privateUDTTuple.candidate.IsReadOnly 
+                    ? model.GetLocalBackingExpression(privateUDTTuple.candidate, member) 
+                    : member.PropertyIdentifier;
+
+                memberToLocalExpression.Add(member.Declaration, memberAccessExpression);
+            }
+
+            foreach (var udtMember in replacePrivateUDTMemberReferencesModel.UDTMembers)
+            {
+                var udtExpressions = new PrivateUDTMemberReferenceReplacementExpressions($"{privateUDTTuple.candidate.IdentifierName}.{udtMember.IdentifierName}")
                 {
-                    LocalReferenceExpression = udtMember.IdentifierName,
+                    UDTMemberInternalReferenceExpression = memberToLocalExpression[udtMember]
                 };
 
-                model.AssignUDTMemberReferenceExpressions(udtfield.Declaration as VariableDeclaration, udtMember, udtExpressions);
+                replacePrivateUDTMemberReferencesModel.AssignUDTMemberReferenceExpressions(privateUDTTuple.candidate.Declaration as VariableDeclaration, udtMember, udtExpressions);
             }
         }
 
@@ -137,7 +147,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             {
                 var replacementExpression = field.PropertyIdentifier;
 
-                if (idRef.QualifiedModuleName == field.QualifiedModuleName && field.Declaration.IsArray)
+                if (idRef.QualifiedModuleName == field.QualifiedModuleName && (field.Declaration.IsArray || field.IsReadOnly))
                 {
                     replacementExpression = $"{objectStateUDTField.FieldIdentifier}.{field.BackingIdentifier}";
                 }

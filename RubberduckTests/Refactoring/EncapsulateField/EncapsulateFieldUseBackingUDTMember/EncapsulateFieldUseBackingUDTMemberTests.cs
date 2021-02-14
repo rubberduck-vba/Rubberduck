@@ -312,6 +312,91 @@ Public notAUserDefinedTypeField As String";
             Assert.Throws<ArgumentException>(() => RefactoredCode(inputCode, modelBuilder));
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(EncapsulateFieldUseBackingUDTMemberRefactoringAction))]
+        public void EncapsulatePublicFields_NestedPathForPrivateUDTFieldReadonlyFlag()
+        {
+            var inputCode =
+$@"
+Option Explicit
+
+Private Type TVehicle
+    Wheels As Integer
+End Type
+
+Private mVehicle As TVehicle
+
+Private Sub Class_Initialize()
+    mVehicle.Wheels = 7
+End Sub
+";
+
+            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
+            {
+                var mVehicleField = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(d => d.IdentifierName.Equals("mVehicle"));
+                var fieldModelMVehicleField = new FieldEncapsulationModel(mVehicleField as VariableDeclaration, true, "Vehicle");
+
+                var inputList = new List<FieldEncapsulationModel>() { fieldModelMVehicleField };
+
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>();
+                return modelFactory.Create(inputList);
+            }
+
+            var refactoredCode = RefactoredCode(inputCode, modelBuilder);
+
+            StringAssert.Contains($"T{ MockVbeBuilder.TestModuleName}", refactoredCode);
+
+            StringAssert.Contains($" Vehicle As TVehicle", refactoredCode);
+            StringAssert.Contains($"Property Get Wheels", refactoredCode);
+            StringAssert.Contains($" Wheels = this.Vehicle.Wheels", refactoredCode);
+
+            StringAssert.DoesNotContain($"Property Let Wheels", refactoredCode);
+            StringAssert.Contains($" this.Vehicle.Wheels = 7", refactoredCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(EncapsulateFieldUseBackingUDTMemberRefactoringAction))]
+        public void EncapsulatePublicFields_NestedPathForFieldReadonlyFlag()
+        {
+            var inputCode =
+$@"
+Option Explicit
+
+Public mWheels As Long
+
+Private Sub Class_Initialize()
+    mWheels = 7
+End Sub
+";
+
+            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
+            {
+                var wheels = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(d => d.IdentifierName.Equals("mWheels"));
+                var fieldModelMVehicleField = new FieldEncapsulationModel(wheels as VariableDeclaration, true);
+
+                var inputList = new List<FieldEncapsulationModel>() { fieldModelMVehicleField };
+
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>();
+                return modelFactory.Create(inputList);
+            }
+
+            var refactoredCode = RefactoredCode(inputCode, modelBuilder);
+
+            var wrappingType = $"T{ MockVbeBuilder.TestModuleName}";
+            StringAssert.Contains(wrappingType, refactoredCode);
+
+            StringAssert.Contains($" this As {wrappingType}", refactoredCode);
+            StringAssert.Contains($"Property Get Wheels", refactoredCode);
+            StringAssert.Contains($" Wheels = this.Wheels", refactoredCode);
+
+            StringAssert.DoesNotContain($"Property Let Wheels", refactoredCode);
+            StringAssert.Contains($" this.Wheels = 7", refactoredCode);
+        }
+
         private string RefactoredCode(string inputCode, Func<RubberduckParserState, EncapsulateFieldTestsResolver, EncapsulateFieldUseBackingUDTMemberModel> modelBuilder)
         {
             return Support.RefactoredCode<EncapsulateFieldUseBackingUDTMemberRefactoringAction, EncapsulateFieldUseBackingUDTMemberModel>(inputCode, modelBuilder);

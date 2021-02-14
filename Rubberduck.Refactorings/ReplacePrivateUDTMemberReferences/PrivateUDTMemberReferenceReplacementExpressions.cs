@@ -3,19 +3,19 @@ namespace Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences
 {
     public struct PrivateUDTMemberReferenceReplacementExpressions
     {
-        public PrivateUDTMemberReferenceReplacementExpressions(string memberAccessExpression)
+        public PrivateUDTMemberReferenceReplacementExpressions(string propertyAccessExpression)
         {
-            MemberAccesExpression = memberAccessExpression;
-            _localReferenceExpression = memberAccessExpression;
+            MemberAccesExpression = propertyAccessExpression;
+            _udtMemberLocalReferenceExpression = propertyAccessExpression;
         }
 
         public string MemberAccesExpression { set; get; }
 
-        private string _localReferenceExpression;
-        public string LocalReferenceExpression
+        private string _udtMemberLocalReferenceExpression;
+        public string UDTMemberInternalReferenceExpression
         {
-            set => _localReferenceExpression = value;
-            get => _localReferenceExpression ?? MemberAccesExpression;
+            set => _udtMemberLocalReferenceExpression = value;
+            get => _udtMemberLocalReferenceExpression ?? MemberAccesExpression;
         }
     }
 }

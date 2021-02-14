@@ -10,7 +10,7 @@ namespace Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences
 {
     /// <summary>
     /// Replaces UserDefinedTypeMember <c>IdentifierReference</c>s of a Private <c>UserDefinedType</c>
-    /// with a Property <c>IdentifierReference</c>.
+    /// with an accessor expression.
     /// </summary>
     public class ReplacePrivateUDTMemberReferencesRefactoringAction : CodeOnlyRefactoringActionBase<ReplacePrivateUDTMemberReferencesModel>
     {
@@ -40,10 +40,10 @@ namespace Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences
             var udtInstance = model.UserDefinedTypeInstance(target);
             foreach (var idRef in udtInstance.UDTMemberReferences)
             {
-                var internalExpression = model.LocalReferenceExpression(target, idRef.Declaration);
-                if (internalExpression.HasValue)
+                var (HasValue, Expression) = model.LocalReferenceExpression(target, idRef.Declaration);
+                if (HasValue)
                 {
-                    SetUDTMemberReferenceRewriteContent(target, idRef, internalExpression.Expression);
+                    SetUDTMemberReferenceRewriteContent(target, idRef, Expression);
                 }
             }
         }
