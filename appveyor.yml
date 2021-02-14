@@ -41,8 +41,8 @@ install:
 # patch version specifiers in the base project
 dotnet_csproj:
   patch: true
-  # patch version specifier in Core that's non-wildcard to deal with XAML generated code?
-  file: 'RubberduckBaseProject.csproj' # ;*\Rubberduck.Core.csproj'
+  # attempt to patch version specifiers in all csproj files
+  file: '*.csproj'
   version: '{version}'
   assembly_version: '{version}'
 
@@ -54,7 +54,7 @@ environment:
 
 before_build:
   - development/java/Rubberduck.Parsing/Grammar/gradlew.bat -p development/java/Rubberduck.Parsing/Grammar clean build
-  - cinst innosetup -version 6.0.5
+  - cinst innosetup --version 6.0.5
   - cinst codecov
   - cinst opencover.portable
   - nuget restore RubberduckMeta.sln
