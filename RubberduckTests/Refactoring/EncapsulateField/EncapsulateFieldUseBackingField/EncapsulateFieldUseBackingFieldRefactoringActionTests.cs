@@ -81,6 +81,73 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
             Assert.AreEqual(refactoredCode, inputCode);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(EncapsulateFieldUseBackingFieldRefactoringAction))]
+        public void LocalReadonlyFieldsWriteReferencesLeftAsIs()
+        {
+            var target = "mStuff";
+            var inputCode =
+@"
+Option Explicit
+
+Public mStuff As Collection
+
+Private Sub Class_Initialize()
+    Set mStuff = New Collection
+End Sub
+";
+            EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
+            {
+                var field = state.DeclarationFinder.MatchName(target).Single();
+                var fieldModel = new FieldEncapsulationModel(field as VariableDeclaration, true);
+
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>();
+                return modelFactory.Create(new List<FieldEncapsulationModel>() { fieldModel });
+            }
+
+            var refactoredCode = RefactoredCode(inputCode, modelBuilder);
+
+            StringAssert.Contains($"Set mStuff = New Collection", refactoredCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(EncapsulateFieldUseBackingFieldRefactoringAction))]
+        public void LocalReadonlyUDTMembersWriteReferencesLeftAsIs()
+        {
+            var target = "this";
+            var inputCode =
+@"
+Option Explicit
+
+Private Type TTest
+    FirstVal As Long
+    SecondVal As String
+End Type
+
+Private this As TTest
+
+Private Sub Class_Initialize()
+    this.FirstVal = 7
+End Sub
+";
+            EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
+            {
+                var field = state.DeclarationFinder.MatchName(target).Single();
+                var fieldModel = new FieldEncapsulationModel(field as VariableDeclaration, true);
+
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>();
+                return modelFactory.Create(new List<FieldEncapsulationModel>() { fieldModel });
+            }
+
+            var refactoredCode = RefactoredCode(inputCode, modelBuilder);
+
+            StringAssert.Contains($"this.FirstVal = 7", refactoredCode);
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         [Category("Refactorings")]

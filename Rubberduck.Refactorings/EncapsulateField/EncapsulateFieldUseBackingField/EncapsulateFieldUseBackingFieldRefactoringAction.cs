@@ -141,6 +141,13 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
             {
                 var replacementExpression = field.PropertyIdentifier;
 
+                if (field.IsReadOnly && idRef.IsAssignment)
+                {
+                    replacementExpression = field.BackingIdentifier;
+                }
+
+                //TODO: first predicate checks that the ref is in the same module - needs rework for readonly encapsulation
+                //Probably should throw and error if this occurs
                 if (idRef.QualifiedModuleName == field.QualifiedModuleName && field.Declaration.IsArray)
                 {
                     replacementExpression = field.BackingIdentifier;
@@ -154,9 +161,10 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
         {
             foreach (var udtMember in model.UDTMembers)
             {
-                var udtExpressions = new PrivateUDTMemberReferenceReplacementExpressions($"{udtfield.IdentifierName}.{udtMember.IdentifierName}")
+                var accessorExpression = $"{udtfield.IdentifierName}.{udtMember.IdentifierName}";
+                var udtExpressions = new PrivateUDTMemberReferenceReplacementExpressions(accessorExpression)
                 {
-                    LocalReferenceExpression = udtMember.IdentifierName,
+                    LocalReferenceExpression = udtfield.IsReadOnly ? accessorExpression : udtMember.IdentifierName,
                 };
 
                 model.AssignUDTMemberReferenceExpressions(udtfield.Declaration as VariableDeclaration, udtMember, udtExpressions);
