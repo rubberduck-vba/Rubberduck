@@ -34,7 +34,7 @@ namespace Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences
         {
             if (_udtTargets.TryGetValue((field, udtMember), out var result))
             {
-                return (true, result.LocalReferenceExpression);
+                return (true, result.UDTMemberInternalReferenceExpression);
             }
             return (false, null);
         }

@@ -8,6 +8,8 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
     public class EncapsulateFieldUseBackingUDTMemberModel : IRefactoringModel
     {
         private List<IEncapsulateFieldAsUDTMemberCandidate> _encapsulateAsUDTMemberCandidates;
+        private PropertyAttributeSetsGenerator _propertyAttributeSetsGenerator;
+        private Dictionary<IEncapsulateFieldAsUDTMemberCandidate, List<PropertyAttributeSet>> _fieldToPropertyAttributes;
 
         public EncapsulateFieldUseBackingUDTMemberModel(IObjectStateUDT targetObjectStateUserDefinedTypeField, 
             IEnumerable<IEncapsulateFieldAsUDTMemberCandidate> encapsulateAsUDTMemberCandidates,
@@ -21,6 +23,14 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             ObjectStateUDTCandidates = objectStateUserDefinedTypeCandidates.ToList();
 
             QualifiedModuleName = encapsulateAsUDTMemberCandidates.First().QualifiedModuleName;
+
+            _propertyAttributeSetsGenerator = new PropertyAttributeSetsGenerator();
+
+            _fieldToPropertyAttributes = new Dictionary<IEncapsulateFieldAsUDTMemberCandidate, List<PropertyAttributeSet>>();
+            foreach (var candidate in _encapsulateAsUDTMemberCandidates)
+            {
+                _fieldToPropertyAttributes.Add(candidate, _propertyAttributeSetsGenerator.GeneratePropertyAttributeSets(candidate).ToList());
+            }
         }
 
         public INewContentAggregator NewContentAggregator { set; get; }
@@ -55,6 +65,18 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
                 _encapsulateAsUDTMemberCandidates.ForEach(cf => cf.ObjectStateUDT = value);
             }
             get => _encapsulateAsUDTMemberCandidates.FirstOrDefault()?.ObjectStateUDT;
+        }
+
+        public List<PropertyAttributeSet> GetPropertyAttributeSet(IEncapsulateFieldAsUDTMemberCandidate candidate) 
+        {
+            return _fieldToPropertyAttributes[candidate];
+        }
+
+        public string GetLocalBackingExpression(IEncapsulateFieldAsUDTMemberCandidate candidate, IEncapsulateFieldCandidate udtMember)
+        {
+            var propertyAttributeSets = _fieldToPropertyAttributes[candidate];
+            var pSet = propertyAttributeSets.Find(s => s.PropertyName == udtMember.PropertyIdentifier);
+            return pSet.BackingField;
         }
     }
 }

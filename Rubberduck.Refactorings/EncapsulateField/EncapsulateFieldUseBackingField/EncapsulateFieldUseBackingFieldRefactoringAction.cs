@@ -164,7 +164,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
                 var accessorExpression = $"{udtfield.IdentifierName}.{udtMember.IdentifierName}";
                 var udtExpressions = new PrivateUDTMemberReferenceReplacementExpressions(accessorExpression)
                 {
-                    LocalReferenceExpression = udtfield.IsReadOnly ? accessorExpression : udtMember.IdentifierName,
+                    UDTMemberInternalReferenceExpression = udtfield.IsReadOnly ? accessorExpression : udtMember.IdentifierName,
                 };
 
                 model.AssignUDTMemberReferenceExpressions(udtfield.Declaration as VariableDeclaration, udtMember, udtExpressions);
