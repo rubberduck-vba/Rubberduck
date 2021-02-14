@@ -38,14 +38,6 @@ cache:
 install:
   set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;C:\Program Files (x86)\Java\jdk1.8.0;%PATH%
 
-# patch version specifiers in the base project
-dotnet_csproj:
-  patch: true
-  # attempt to patch version specifiers in all csproj files
-  file: '*.csproj'
-  version: '{version}'
-  assembly_version: '{version}'
-
 # set up the environment variables used later in the build process
 environment:
   installer_dir: Rubberduck.Deployment\InnoSetup\Installers\
@@ -59,9 +51,9 @@ before_build:
   - cinst opencover.portable
   - nuget restore RubberduckMeta.sln
   - nuget restore Rubberduck.sln
-build:
-  verbosity: minimal
-  project: Rubberduck.sln
+build_script:
+  - msbuild "C:\projects\rubberduck\Rubberduck.sln" -property:"Version:${APPVEYOR_BUILD_VERSION}" -verbosity:minimal -logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+ 
 
 # TestScript depends on the build matrix to only contain Release cpu
 # Otherwise we might run tests against artifacts that do not exist
