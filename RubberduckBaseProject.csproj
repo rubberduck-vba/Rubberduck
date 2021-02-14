@@ -1,4 +1,8 @@
-<Project>
+<Project Skd="Microsoft.NET.Sdk">
+  <!--
+    We're specifying the Sdk here to make sure appveyor correctly recognizes this as a .NET Core project
+    Unfortunately this generates the warning MSB4011, because the including projects already define an Sdk
+  -->
   <PropertyGroup>
     <RubberduckVersion>2.5.1</RubberduckVersion>
   </PropertyGroup>
