@@ -294,9 +294,9 @@ namespace Rubberduck.Parsing.Binding
         private IBoundExpression ResolveDefaultMember(string asTypeName, Declaration asTypeDeclaration, ArgumentList argumentList, ParserRuleContext expression, Declaration parent, int defaultMemberResolutionRecursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)
         {
             /*
-                The declared type of <l-expression> is Object or Variant, and <argument-list> contains no 
+                The declared type of 'l-expression' is Object or Variant, and 'argument-list' contains no 
                 named arguments. In this case, the index expression is classified as an unbound member with 
-                a declared type of Variant, referencing <l-expression> with no member name. 
+                a declared type of Variant, referencing 'l-expression' with no member name. 
              */
             if (Tokens.Variant.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase)
                 && !argumentList.HasNamedArguments)
@@ -314,7 +314,7 @@ namespace Rubberduck.Parsing.Binding
             }
 
             /*
-                The declared type of <l-expression> is a specific class, which has a public default Property 
+                The declared type of 'l-expression' is a specific class, which has a public default Property 
                 Get, Property Let, function or subroutine, and one of the following is true:
             */
             if (asTypeDeclaration is ClassModuleDeclaration classModule
@@ -325,7 +325,7 @@ namespace Rubberduck.Parsing.Binding
                 var defaultMemberClassification = DefaultMemberExpressionClassification(defaultMember);
 
                 /*
-                    This default member’s parameter list is compatible with <argument-list>. In this case, the 
+                    This default member’s parameter list is compatible with 'argument-list'. In this case, the 
                     index expression references this default member and takes on its classification and 
                     declared type.  
 
@@ -340,8 +340,8 @@ namespace Rubberduck.Parsing.Binding
 
                 /**
                     This default member can accept no parameters. In this case, the static analysis restarts 
-                    recursively, as if this default member was specified instead for <l-expression> with the 
-                    same <argument-list>.
+                    recursively, as if this default member was specified instead for 'l-expression' with the 
+                    same 'argument-list'.
                 */
                 if (parameters.All(parameter => parameter.IsOptional)
                     && DEFAULT_MEMBER_RECURSION_LIMIT >= defaultMemberResolutionRecursionDepth)

@@ -38,14 +38,6 @@ cache:
 install:
   set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;C:\Program Files (x86)\Java\jdk1.8.0;%PATH%
 
-# patch version specifiers in the base project
-dotnet_csproj:
-  patch: true
-  # patch version specifier in Core that's non-wildcard to deal with XAML generated code?
-  file: 'RubberduckBaseProject.csproj' # ;*\Rubberduck.Core.csproj'
-  version: '{version}'
-  assembly_version: '{version}'
-
 # set up the environment variables used later in the build process
 environment:
   installer_dir: Rubberduck.Deployment\InnoSetup\Installers\
@@ -54,14 +46,14 @@ environment:
 
 before_build:
   - development/java/Rubberduck.Parsing/Grammar/gradlew.bat -p development/java/Rubberduck.Parsing/Grammar clean build
-  - cinst innosetup -version 6.0.5
+  - cinst innosetup --version 6.0.5
   - cinst codecov
   - cinst opencover.portable
   - nuget restore RubberduckMeta.sln
   - nuget restore Rubberduck.sln
-build:
-  verbosity: minimal
-  project: Rubberduck.sln
+build_script:
+  - ps: msbuild "C:\projects\rubberduck\Rubberduck.sln" -property:"Version=$env:APPVEYOR_BUILD_VERSION" -verbosity:minimal -logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+ 
 
 # TestScript depends on the build matrix to only contain Release cpu
 # Otherwise we might run tests against artifacts that do not exist
