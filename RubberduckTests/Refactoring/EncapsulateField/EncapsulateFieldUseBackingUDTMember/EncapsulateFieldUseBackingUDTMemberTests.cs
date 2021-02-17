@@ -324,13 +324,15 @@ $@"
 Option Explicit
 
 Private Type TVehicle
+    Seats As Integer
     Wheels As Integer
 End Type
 
 Private mVehicle As TVehicle
 
 Private Sub Class_Initialize()
-    mVehicle.Wheels = 7
+    mVehicle.Wheels = 4
+    mVehicle.Seats = 2
 End Sub
 ";
 
@@ -352,9 +354,67 @@ End Sub
             StringAssert.Contains($" Vehicle As TVehicle", refactoredCode);
             StringAssert.Contains($"Property Get Wheels", refactoredCode);
             StringAssert.Contains($" Wheels = this.Vehicle.Wheels", refactoredCode);
+            StringAssert.Contains($" Seats = this.Vehicle.Seats", refactoredCode);
 
             StringAssert.DoesNotContain($"Property Let Wheels", refactoredCode);
-            StringAssert.Contains($" this.Vehicle.Wheels = 7", refactoredCode);
+            StringAssert.Contains($" this.Vehicle.Wheels = 4", refactoredCode);
+            StringAssert.Contains($" this.Vehicle.Seats = 2", refactoredCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(EncapsulateFieldUseBackingUDTMemberRefactoringAction))]
+        public void EncapsulatePublicFields_DeeperNestedPathForPrivateUDTFieldReadonlyFlag()
+        {
+            var inputCode =
+$@"
+Option Explicit
+
+Private Type PType1
+    FirstValType1 As Long
+    SecondValType1 As String
+End Type
+
+
+Private Type PType2
+    FirstValType2 As Long
+    SecondValType2 As String
+    Third As PType1
+End Type
+
+Private mTypesField As PType2
+
+Private Sub Class_Initialize()
+    mTypesField.Third.SecondValType1 = ""Wah""
+End Sub
+
+Private Sub TestSub2()
+    TestSub3 mTypesField.Third.SecondValType1
+End Sub
+
+Private Sub TestSub3(ByVal arg As String)
+End Sub
+";
+
+            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
+            {
+                var mVehicleField = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(d => d.IdentifierName.Equals("mTypesField"));
+                var fieldModelMVehicleField = new FieldEncapsulationModel(mVehicleField as VariableDeclaration, true);
+
+                var inputList = new List<FieldEncapsulationModel>() { fieldModelMVehicleField };
+
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>();
+                return modelFactory.Create(inputList);
+            }
+
+            var refactoredCode = RefactoredCode(inputCode, modelBuilder);
+
+            StringAssert.Contains($"T{ MockVbeBuilder.TestModuleName}", refactoredCode);
+
+            StringAssert.DoesNotContain("mTypesField.this", refactoredCode);
+            StringAssert.Contains("this.TypesField.Third.SecondValType1 = \"Wah\"", refactoredCode);
+            StringAssert.Contains("TestSub3 SecondValType1", refactoredCode);
         }
 
         [Test]

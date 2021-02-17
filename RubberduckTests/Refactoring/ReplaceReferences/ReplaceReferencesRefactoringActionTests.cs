@@ -476,7 +476,7 @@ End Sub
                         ? externalName
                         : internalName;
 
-                    model.AssignReferenceReplacementExpression(reference, replacementExpression);
+                    model.RegisterReferenceReplacementExpression(reference, replacementExpression);
                 }
             }
             return model;

@@ -24,6 +24,11 @@ Private Type TBar
     Second As String
 End Type
 
+Public Type ToEnsureValidCounts
+    First As String
+    Second As String
+End Type
+
 Private bizz_ As TBar
 
 Private fizz_ As TBar
@@ -90,23 +95,16 @@ Public Type TBar
     Second As String
 End Type
 
+Public Type ToEnsureValidCounts
+    First As String
+    Second As String
+End Type
+
 Private {classInstance} As {className}
 
 Public Sub Initialize()
     Set {classInstance} = New {className}
 End Sub
-
-'Public Sub Fizz(newValue As String)
-'    With {classInstance}
-'        .this.First = newValue
-'    End With
-'End Sub
-
-'Public Sub Buzz(newValue As String)
-'    With {classInstance}
-'        .this.Second = newValue
-'    End With
-'End Sub
 
 Public Sub Fizz1(newValue As String)
         {classInstance}.this.First = newValue

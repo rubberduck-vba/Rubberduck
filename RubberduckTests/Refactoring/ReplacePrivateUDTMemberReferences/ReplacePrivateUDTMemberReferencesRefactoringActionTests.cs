@@ -16,11 +16,11 @@ namespace RubberduckTests.ReplacePrivateUDTMemberReferences
     public class ReplacePrivateUDTMemberReferencesRefactoringActionTests : RefactoringActionTestBase<ReplacePrivateUDTMemberReferencesModel>
     {
         [TestCase("TheFirst", "TheSecond")]
-        [TestCase("afirst", "asecond")] //respects casing
+        [TestCase("afirst", "asecond")] //check for retention of casing
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(ReplacePrivateUDTMemberReferencesRefactoringAction))]
-        public void RenameFieldReferences(string firstValueRefReplacement, string secondValueRefReplacement)
+        public void ReplaceUdtMemberReferences(string firstValueRefReplacement, string secondValueRefReplacement)
         {
             string inputCode =
 $@"
@@ -42,14 +42,8 @@ End Sub
 
             var vbe = MockVbeBuilder.BuildFromStdModules((MockVbeBuilder.TestModuleName, inputCode));
 
-            var testParam1 = new PrivateUDTExpressions("myBazz", "FirstValue")
-            {
-                InternalName = firstValueRefReplacement,
-            };
-            var testParam2 = new PrivateUDTExpressions("myBazz", "SecondValue")
-            {
-                InternalName = secondValueRefReplacement,
-            };
+            var testParam1 = (("myBazz", "FirstValue"), firstValueRefReplacement);
+            var testParam2 = (("myBazz", "SecondValue"), secondValueRefReplacement);
 
             var results = RefactoredCode(vbe.Object, state => TestModel(state, false, testParam1, testParam2));
             StringAssert.Contains($"  {firstValueRefReplacement} = newValue", results[MockVbeBuilder.TestModuleName]);
@@ -86,14 +80,8 @@ End Sub
 
             var vbe = MockVbeBuilder.BuildFromStdModules((MockVbeBuilder.TestModuleName, inputCode));
 
-            var testParam1 = new PrivateUDTExpressions("myBazz", "FirstValue")
-            {
-                InternalName = "TheFirst",
-            };
-            var testParam2 = new PrivateUDTExpressions("myBazz", "SecondValue")
-            {
-                InternalName = "TheSecond",
-            };
+            var testParam1 = (("myBazz", "FirstValue"), "TheFirst");
+            var testParam2 = (("myBazz", "SecondValue"), "TheSecond");
 
             var results = RefactoredCode(vbe.Object, state => TestModel(state, false, testParam1, testParam2));
             StringAssert.Contains($"  With myBazz{Environment.NewLine}", results[MockVbeBuilder.TestModuleName]);
@@ -101,70 +89,121 @@ End Sub
             StringAssert.Contains("  TheSecond = newValue", results[MockVbeBuilder.TestModuleName]);
         }
 
-        private ReplacePrivateUDTMemberReferencesModel TestModel(RubberduckParserState state, bool moduleQualify = true, params PrivateUDTExpressions[] fieldConversions)
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(ReplacePrivateUDTMemberReferencesRefactoringAction))]
+        public void ReplaceAccessorExpression()
+        {
+            string inputCode =
+$@"
+
+Public exposed As String
+
+Private Type TBazz
+    FirstValue As String
+    SecondValue As Long
+End Type
+
+Private myBazz As TBazz
+
+Public Function GetTheFirstValue() As String
+    GetTheFirstValue = myBazz.FirstValue
+End Function
+
+Public Sub SetTheFirstValue(arg As Long)
+    myBazz.FirstValue = arg
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromStdModules((MockVbeBuilder.TestModuleName, inputCode));
+
+            var testParam1 = (("myBazz", "FirstValue"), "exposed");
+
+            var results = RefactoredCode(vbe.Object, state => TestModel(state, false, testParam1));
+            StringAssert.Contains("exposed = arg", results[MockVbeBuilder.TestModuleName]);
+            StringAssert.Contains("GetTheFirstValue = exposed", results[MockVbeBuilder.TestModuleName]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(ReplacePrivateUDTMemberReferencesRefactoringAction))]
+        public void ReplacePublicUDTAccessorExpression()
+        {
+            string inputCode =
+$@"
+
+Public Type TBazz
+    FirstValue As String
+    SecondValue As Long
+End Type
+
+Public myBazz As TBazz
+
+Public Function GetTheFirstValue() As String
+    GetTheFirstValue = myBazz.FirstValue
+End Function
+
+Public Sub SetTheFirstValue(arg As Long)
+    myBazz.FirstValue = arg
+End Sub
+";
+
+            string referencingCode =
+$@"
+
+Public Function GetBazzFirst() As String
+    GetBazzFirst = myBazz.FirstValue
+End Function
+
+Public Sub SetBazzFirst(arg As Long)
+    myBazz.FirstValue = arg
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromStdModules((MockVbeBuilder.TestModuleName, inputCode),
+                ("ReferencingModule", referencingCode));
+
+            var testParam1 = (("myBazz", "FirstValue"), "NewProperty");
+
+            var results = RefactoredCode(vbe.Object, state => TestModel(state, false, testParam1));
+            StringAssert.Contains("NewProperty = arg", results[MockVbeBuilder.TestModuleName]);
+            StringAssert.Contains("GetTheFirstValue = NewProperty", results[MockVbeBuilder.TestModuleName]);
+            StringAssert.Contains($"GetBazzFirst = {MockVbeBuilder.TestModuleName}.NewProperty", results["ReferencingModule"]);
+            StringAssert.Contains($"{MockVbeBuilder.TestModuleName}.NewProperty = arg", results["ReferencingModule"]);
+        }
+
+        private ReplacePrivateUDTMemberReferencesModel TestModel(RubberduckParserState state, 
+            bool moduleQualify = true, 
+            params ((string instanceID, string udtMemberID) targetTuple, string replacementExpression)[] fieldConversions)
         {
             var fields = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(d => d.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
+                .Where(v => fieldConversions.Select(f => f.targetTuple.instanceID).Contains(v.IdentifierName))
                 .Select(v => v as VariableDeclaration);
 
-            var factory =  new ReplacePrivateUDTMemberReferencesModelFactory(state);
+            var factory = new ReplacePrivateUDTMemberReferencesModelFactory(state);
 
             var model = factory.Create(fields);
 
-            foreach (var fieldConversion in fieldConversions)
+            foreach (var field in fields)
             {
-                var fieldDeclaration = fields.Single(f => f.IdentifierName == fieldConversion.FieldID);
-                var udtMember = model.UDTMembers
-                    .Single(udtm => udtm.ParentDeclaration == fieldDeclaration.AsTypeDeclaration 
-                        && udtm.IdentifierName == fieldConversion.UDTMemberID);
+                var udtInstance = model.UserDefinedTypeInstance(field);
 
-                var expressions = new PrivateUDTMemberReferenceReplacementExpressions(fieldConversion.InternalName);
-
-                model.AssignUDTMemberReferenceExpressions(fieldDeclaration as VariableDeclaration, udtMember, expressions);
+                foreach (var rf in udtInstance.UDTMemberReferences)
+                {
+                    var replacementExpression = fieldConversions.Where(f => f.targetTuple.instanceID == udtInstance.InstanceField.IdentifierName
+                        && f.targetTuple.udtMemberID == rf.Declaration.IdentifierName)
+                        .Select(f => f.replacementExpression).Single();
+                    model.RegisterReferenceReplacementExpression(rf, replacementExpression);
+                }
             }
             return model;
-        }
-
-        private static bool IsExternalReference(IdentifierReference identifierReference)
-            => identifierReference.QualifiedModuleName != identifierReference.Declaration.QualifiedModuleName;
-
-        private static Declaration GetUniquelyNamedDeclaration(IDeclarationFinderProvider declarationFinderProvider, DeclarationType declarationType, string identifier)
-        {
-            return declarationFinderProvider.DeclarationFinder.UserDeclarations(declarationType).Single(d => d.IdentifierName.Equals(identifier));
         }
 
         protected override IRefactoringAction<ReplacePrivateUDTMemberReferencesModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
             return new ReplacePrivateUDTMemberReferencesRefactoringAction(rewritingManager);
         }
-
-        private struct PrivateUDTExpressions
-        {
-            public PrivateUDTExpressions(string fieldID, string udtMemberIdentifier)
-            {
-                FieldID = fieldID;
-                UDTMemberID = udtMemberIdentifier;
-                _externalName = null;
-                _internalName = null;
-            }
-
-            public string FieldID { set; get; }
-
-            public string UDTMemberID {set; get;}
-
-            private string _internalName;
-            public string InternalName
-            {
-                set => _internalName = value;
-                get => _internalName ?? FieldID.CapitalizeFirstLetter();
-            }
-
-            private string _externalName;
-            public string ExternalName
-            {
-                set => _externalName = value;
-                get => _externalName ?? FieldID.CapitalizeFirstLetter();
-            }
     }
-}
 }

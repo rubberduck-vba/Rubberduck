@@ -6,10 +6,9 @@ namespace Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences
 {
     public class ReplacePrivateUDTMemberReferencesModel : IRefactoringModel
     {
-        private Dictionary<(VariableDeclaration, Declaration), PrivateUDTMemberReferenceReplacementExpressions> _udtTargets 
-            = new Dictionary<(VariableDeclaration, Declaration), PrivateUDTMemberReferenceReplacementExpressions>();
-
-        private Dictionary<VariableDeclaration, UserDefinedTypeInstance> _fieldToUserDefinedTypeInstance;
+        private readonly Dictionary<IdentifierReference, string> _udtMemberReferenceReplacements = new Dictionary<IdentifierReference, string>();
+        private readonly Dictionary<VariableDeclaration, UserDefinedTypeInstance> _fieldToUserDefinedTypeInstance;
+        private readonly List<Declaration> _udtMembers;
 
         public ReplacePrivateUDTMemberReferencesModel(Dictionary<VariableDeclaration, UserDefinedTypeInstance> fieldToUserDefinedTypeInstance, IEnumerable<Declaration> userDefinedTypeMembers)
         {
@@ -19,24 +18,23 @@ namespace Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences
 
         public IReadOnlyCollection<VariableDeclaration> Targets => _fieldToUserDefinedTypeInstance.Keys;
 
-        private List<Declaration> _udtMembers;
         public IReadOnlyCollection<Declaration> UDTMembers => _udtMembers;
+
+        public bool ModuleQualifyExternalReplacements { set; get; } = true;
+
+        public void RegisterReferenceReplacementExpression(IdentifierReference rf, string expression)
+        {
+            if (ModuleQualifyExternalReplacements && rf.QualifiedModuleName != Targets.First().QualifiedModuleName)
+            {
+                expression = $"{Targets.First().QualifiedModuleName.ComponentName}.{expression}";
+            }
+            _udtMemberReferenceReplacements.Add(rf, expression);
+        }
 
         public UserDefinedTypeInstance UserDefinedTypeInstance(VariableDeclaration field) 
             => _fieldToUserDefinedTypeInstance[field];
 
-        public void AssignUDTMemberReferenceExpressions(VariableDeclaration field, Declaration udtMember, PrivateUDTMemberReferenceReplacementExpressions expressions)
-        {
-            _udtTargets.Add((field,udtMember), expressions);
-        }
-
-        public (bool HasValue, string Expression) LocalReferenceExpression(VariableDeclaration field, Declaration udtMember)
-        {
-            if (_udtTargets.TryGetValue((field, udtMember), out var result))
-            {
-                return (true, result.UDTMemberInternalReferenceExpression);
-            }
-            return (false, null);
-        }
+        public bool TryGetLocalReferenceExpression(IdentifierReference udtMemberRf, out string expression) 
+            => _udtMemberReferenceReplacements.TryGetValue(udtMemberRf, out expression);
     }
 }

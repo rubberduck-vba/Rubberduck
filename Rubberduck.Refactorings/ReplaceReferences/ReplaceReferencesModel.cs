@@ -12,7 +12,7 @@ namespace Rubberduck.Refactorings.ReplaceReferences
 
         public bool ModuleQualifyExternalReferences { set; get; } = false;
 
-        public void AssignReferenceReplacementExpression(IdentifierReference fieldReference, string replacementIdentifier)
+        public void RegisterReferenceReplacementExpression(IdentifierReference fieldReference, string replacementIdentifier)
         {
             if (_fieldTargets.ContainsKey(fieldReference))
             {

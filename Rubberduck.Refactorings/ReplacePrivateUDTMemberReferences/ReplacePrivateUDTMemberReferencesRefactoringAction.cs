@@ -3,6 +3,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,8 +18,7 @@ namespace Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences
         private Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
 
         public ReplacePrivateUDTMemberReferencesRefactoringAction(IRewritingManager rewritingManager)
-            : base(rewritingManager)
-        { }
+            : base(rewritingManager) { }
 
         public override void Refactor(ReplacePrivateUDTMemberReferencesModel model, IRewriteSession rewriteSession)
         {
@@ -27,48 +27,45 @@ namespace Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences
                 return;
             }
 
-            foreach (var target in model.Targets)
-            {
-                SetRewriteContent(target, model);
-            }
+            SetRewriteContent(model);
 
             RewriteReferences(rewriteSession);
         }
 
-        private void SetRewriteContent(VariableDeclaration target, ReplacePrivateUDTMemberReferencesModel model)
+        private void SetRewriteContent(ReplacePrivateUDTMemberReferencesModel model)
         {
-            var udtInstance = model.UserDefinedTypeInstance(target);
-            foreach (var idRef in udtInstance.UDTMemberReferences)
+            var targetReferences = model.Targets.Select(t => model.UserDefinedTypeInstance(t))
+                .SelectMany(udtInstance => udtInstance.UDTMemberReferences);
+
+            foreach (var idRef in targetReferences)
             {
-                var (HasValue, Expression) = model.LocalReferenceExpression(target, idRef.Declaration);
-                if (HasValue)
+                if (model.TryGetLocalReferenceExpression(idRef, out var expression))
                 {
-                    SetUDTMemberReferenceRewriteContent(target, idRef, Expression);
+                    SetUDTMemberReferenceReplacementExpression(idRef, expression);
                 }
             }
         }
 
-        private void SetUDTMemberReferenceRewriteContent(VariableDeclaration instanceField, IdentifierReference idRef, string replacementText, bool moduleQualify = false)
+        //TODO: Write tests using Member and With access contexts locally and externally - replacement text is different for readOnly scenario
+        private void SetUDTMemberReferenceReplacementExpression(IdentifierReference idRef, string replacementText, bool moduleQualify = false)
         {
-            if (idRef.Context.TryGetAncestor<VBAParser.MemberAccessExprContext>(out var maec))
+            idRef.Context.TryGetAncestor<VBAParser.MemberAccessExprContext>(out var maec); 
+            idRef.Context.TryGetAncestor<VBAParser.WithMemberAccessExprContext>(out var wmac);
+
+            if (maec is null && wmac is null)
             {
-                if (maec.TryGetChildContext<VBAParser.MemberAccessExprContext>(out var childMaec))
-                {
-                    if (childMaec.TryGetChildContext<VBAParser.SimpleNameExprContext>(out var smp))
-                    {
-                        AddIdentifierReplacement(idRef, maec, $"{smp.GetText()}.{replacementText}");
-                    }
-                }
-                else if (maec.TryGetChildContext<VBAParser.WithMemberAccessExprContext>(out var wm))
-                {
-                    AddIdentifierReplacement(idRef, maec, $".{replacementText}");
-                }
-                else
-                {
-                    AddIdentifierReplacement(idRef, maec, replacementText);
-                }
+                throw new ArgumentException();
             }
-            else if (idRef.Context.TryGetAncestor<VBAParser.WithMemberAccessExprContext>(out var wmac))
+
+            if (maec != null)
+            {
+                if (maec.TryGetChildContext<VBAParser.WithMemberAccessExprContext>(out _))
+                {
+                    replacementText = $".{replacementText}";
+                }
+                AddIdentifierReplacement(idRef, maec, replacementText);
+            }
+            else
             {
                 AddIdentifierReplacement(idRef, wmac, replacementText);
             }

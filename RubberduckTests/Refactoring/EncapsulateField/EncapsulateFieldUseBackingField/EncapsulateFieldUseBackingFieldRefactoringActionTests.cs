@@ -199,6 +199,63 @@ End Sub";
             StringAssert.DoesNotContain("fizz", refactoredCode["Class2"]);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(EncapsulateFieldUseBackingFieldRefactoringAction))]
+        public void EncapsulatePublicFields_DeeperNestedPathForPrivateUDTFieldReadonlyFlag()
+        {
+            var inputCode =
+$@"
+Option Explicit
+
+Private Type PType1
+    FirstValType1 As Long
+    SecondValType1 As String
+End Type
+
+
+Private Type PType2
+    FirstValType2 As Long
+    SecondValType2 As String
+    Third As PType1
+End Type
+
+Private mTypesField As PType2
+
+Private Sub Class_Initialize()
+    mTypesField.Third.SecondValType1 = ""Wah""
+End Sub
+
+Private Sub TestSub2()
+    TestSub3 mTypesField.Third.SecondValType1
+End Sub
+
+Private Sub TestSub3(ByVal arg As String)
+End Sub
+";
+
+            EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
+            {
+                var field = state.AllUserDeclarations.Single(d => d.IdentifierName.Equals("mTypesField"));
+                var fieldModel = new FieldEncapsulationModel(field as VariableDeclaration, false);
+
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>();
+                var model = modelFactory.Create(new List<FieldEncapsulationModel>() { fieldModel });
+                foreach (var candidate in model.EncapsulationCandidates)
+                {
+                    candidate.EncapsulateFlag = true;
+                    candidate.IsReadOnly = true;
+                }
+                return model;
+            }
+
+            var refactoredCode = RefactoredCode(inputCode, modelBuilder);
+
+            StringAssert.Contains("TypesField.Third.SecondValType1 = \"Wah\"", refactoredCode);
+            StringAssert.Contains("TestSub3 SecondValType1", refactoredCode);
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         [Category("Refactorings")]
