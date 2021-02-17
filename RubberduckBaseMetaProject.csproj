@@ -16,20 +16,9 @@
     <!-- Ignore MSB4011 warning, rationale above -->
     <!-- Ignore VisualStudio whining about the CodeAnalysis assembly changing (IDE1001) -->
     <DisabledWarnings>$(DisabledWarnings);4011;1001</DisabledWarnings>
-    <Version Condition=" '$(Version)' == ''">2.4.0</Version>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(AssemblyVersion)' == '' ">
-    <!--
-     This assembly version specification is considered nonstandard.
-     As such builds that do not override the assembly version generate a warning, which we ignore.
-    -->
-    <AssemblyVersion>2.4.*</AssemblyVersion>
-    <!-- Ignore CSharp compiler warning for nonstandard assembly version (CS7035) -->
-    <!-- Ignore Linker warning for nonstandard assembly version (AL1053) -->
-    <DisabledWarnings>$(DisabledWarnings);7035;1053</DisabledWarnings>
-    <!-- Wildcards are not deterministic, ensure build passes when setting wildcard versions -->
-    <Deterministic>False</Deterministic>
+    <!-- Declare a Version if it's not already declared as a global property through MSBuild invocation -->
+    <Version Condition=" '$(Version)' == '' ">2.5.1</Version>
+    <!-- all other relevant version numbers are computed from Version automagically -->
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(UnifyOutputPath) ">
