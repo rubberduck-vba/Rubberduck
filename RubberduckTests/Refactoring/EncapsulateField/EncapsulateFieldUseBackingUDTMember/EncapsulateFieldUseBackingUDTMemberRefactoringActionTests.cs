@@ -14,7 +14,7 @@ using System.Linq;
 namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackingUDTMember
 {
     [TestFixture]
-    public class EncapsulateFieldUseBackingUDTMemberTests
+    public class EncapsulateFieldUseBackingUDTMemberRefactoringActionTests
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 

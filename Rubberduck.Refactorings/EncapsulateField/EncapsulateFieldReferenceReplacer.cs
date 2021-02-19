@@ -8,13 +8,6 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IEncapsulateFieldReferenceReplacerFactory
-    {
-        IEncapsulateFieldReferenceReplacer Create(IReplacePrivateUDTMemberReferencesModelFactory replacePrivateUDTMemberReferencesModelFactory,
-            ICodeOnlyRefactoringAction<ReplacePrivateUDTMemberReferencesModel> replacePrivateUDTMemberReferencesRefactoringAction,
-            ICodeOnlyRefactoringAction<ReplaceReferencesModel> replaceReferencesRefactoringAction,
-            IPropertyAttributeSetsGenerator propertyAttributeSetsGenerator);
-    }
     public interface IEncapsulateFieldReferenceReplacer
     {
         void ReplaceReferences<T>(IEnumerable<T> selectedCandidates,

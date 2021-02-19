@@ -148,6 +148,9 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
             container.Kernel.Register(Component.For<IReplacePrivateUDTMemberReferencesModelFactory>()
                 .ImplementedBy<ReplacePrivateUDTMemberReferencesModelFactory>());
+
+            container.Kernel.Register(Component.For<IEncapsulateFieldReferenceReplacerFactory>()
+                .ImplementedBy<EncapsulateFieldReferenceReplacerFactory>());
         }
 
         private static void RegisterInterfaceToImplementationPairsTransient(IWindsorContainer container)
@@ -175,7 +178,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             container.Kernel.Register(Component.For<IEncapsulateFieldCandidateSetsProviderFactory>().AsFactory().LifestyleSingleton());
             container.Kernel.Register(Component.For<IEncapsulateFieldConflictFinderFactory>().AsFactory().LifestyleSingleton());
             container.Kernel.Register(Component.For<INewContentAggregatorFactory>().AsFactory().LifestyleSingleton());
-            container.Kernel.Register(Component.For<IEncapsulateFieldReferenceReplacerFactory>().AsFactory().LifestyleSingleton());
         }
     }
 }

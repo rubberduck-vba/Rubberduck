@@ -13,25 +13,19 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
         private readonly ICodeOnlyRefactoringAction<ModifyUserDefinedTypeModel> _modifyUDTRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> _encapsulateFieldInsertNewCodeRefactoringAction;
         private readonly INewContentAggregatorFactory _newContentAggregatorFactory;
-        private readonly IEncapsulateFieldReferenceReplacer _referenceReplacer;
+        private readonly IEncapsulateFieldReferenceReplacerFactory _encapsulateFieldReferenceReplacerFactory;
 
         public EncapsulateFieldUseBackingUDTMemberRefactoringAction(
             IEncapsulateFieldRefactoringActionsProvider refactoringActionsProvider,
-            IReplacePrivateUDTMemberReferencesModelFactory replaceUDTMemberReferencesModelFactory,
             IEncapsulateFieldReferenceReplacerFactory encapsulateFieldReferenceReplacerFactory,
-            IPropertyAttributeSetsGenerator propertyAttributeSetsGenerator,
             IRewritingManager rewritingManager,
             INewContentAggregatorFactory newContentAggregatorFactory)
                 : base(rewritingManager)
         {
             _modifyUDTRefactoringAction = refactoringActionsProvider.ModifyUserDefinedType;
             _encapsulateFieldInsertNewCodeRefactoringAction = refactoringActionsProvider.EncapsulateFieldInsertNewCode;
+            _encapsulateFieldReferenceReplacerFactory = encapsulateFieldReferenceReplacerFactory;
             _newContentAggregatorFactory = newContentAggregatorFactory;
-
-            _referenceReplacer = encapsulateFieldReferenceReplacerFactory.Create(replaceUDTMemberReferencesModelFactory,
-                refactoringActionsProvider.ReplaceUDTMemberReferences,
-                refactoringActionsProvider.ReplaceReferences,
-                propertyAttributeSetsGenerator);
         }
 
         public override void Refactor(EncapsulateFieldUseBackingUDTMemberModel model, IRewriteSession rewriteSession)
@@ -43,7 +37,8 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
 
             ModifyFields(model, rewriteSession);
 
-            _referenceReplacer.ReplaceReferences(model.SelectedFieldCandidates, rewriteSession, model.ObjectStateUDTField);
+            var referenceReplacer = _encapsulateFieldReferenceReplacerFactory.Create();
+            referenceReplacer.ReplaceReferences(model.SelectedFieldCandidates, rewriteSession, model.ObjectStateUDTField);
 
             InsertNewContent(model, rewriteSession);
         }

@@ -17,13 +17,11 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
         private readonly ICodeOnlyRefactoringAction<ReplaceDeclarationIdentifierModel> _replaceDeclarationIdentifiers;
         private readonly ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> _encapsulateFieldInsertNewCodeRefactoringAction;
         private readonly INewContentAggregatorFactory _newContentAggregatorFactory;
-        private readonly IEncapsulateFieldReferenceReplacer _referenceReplacer;
+        private readonly IEncapsulateFieldReferenceReplacerFactory _encapsulateFieldReferenceReplacerFactory;
 
         public EncapsulateFieldUseBackingFieldRefactoringAction(
             IEncapsulateFieldRefactoringActionsProvider refactoringActionsProvider,
-            IReplacePrivateUDTMemberReferencesModelFactory replaceUDTMemberReferencesModelFactory,
             IEncapsulateFieldReferenceReplacerFactory encapsulateFieldReferenceReplacerFactory,
-            IPropertyAttributeSetsGenerator propertyAttributeSetsGenerator,
             IRewritingManager rewritingManager,
             INewContentAggregatorFactory newContentAggregatorFactory)
                 :base(rewritingManager)
@@ -31,11 +29,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
             _replaceDeclarationIdentifiers = refactoringActionsProvider.ReplaceDeclarationIdentifiers;
             _encapsulateFieldInsertNewCodeRefactoringAction = refactoringActionsProvider.EncapsulateFieldInsertNewCode;
             _newContentAggregatorFactory = newContentAggregatorFactory;
-            
-            _referenceReplacer = encapsulateFieldReferenceReplacerFactory.Create(replaceUDTMemberReferencesModelFactory,
-                refactoringActionsProvider.ReplaceUDTMemberReferences,
-                refactoringActionsProvider.ReplaceReferences,
-                propertyAttributeSetsGenerator);
+            _encapsulateFieldReferenceReplacerFactory = encapsulateFieldReferenceReplacerFactory;
         }
 
         public override void Refactor(EncapsulateFieldUseBackingFieldModel model, IRewriteSession rewriteSession)
@@ -53,7 +47,8 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
 
             ModifyFields(model, publicFieldsDeclaredInListsToReDeclareAsPrivateBackingFields, rewriteSession);
 
-            _referenceReplacer.ReplaceReferences(model.SelectedFieldCandidates, rewriteSession);
+            var referenceReplacer = _encapsulateFieldReferenceReplacerFactory.Create();
+            referenceReplacer.ReplaceReferences(model.SelectedFieldCandidates, rewriteSession);
 
             InsertNewContent(model, publicFieldsDeclaredInListsToReDeclareAsPrivateBackingFields, rewriteSession);
         }
