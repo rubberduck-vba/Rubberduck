@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using NLog;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 
@@ -66,6 +67,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     {
         private readonly string _name;
         private readonly IVBEProject _target_IVBEProject;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public ITypeLibReferenceCollection VBEReferences { get; }
 
@@ -87,6 +89,24 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             try
             {
+                // Prevent a potential access violation by first calling the Placeholder3(). 
+                // Under certain conditions where the VBA project is fully compiled, clicking parse
+                // as soon as Rubberduck has loaded into VBIDE can cause an access violation when 
+                // accessing CompileProject(). We've tried using ComMessagePumper and 
+                // UiDispatcher.FlushMessageQueue but neither helped in preventing the 
+                // access violation. We at least know that Placeholder3() does not save the unsaved
+                // change so hopefully there should be no permanent side effects from invoking the
+                // Placeholder3(). 
+                try
+                {
+                    _target_IVBEProject.Placeholder3();
+                }
+                catch(Exception ex)
+                {
+                    Logger.Info(ex, $"Cannot compile the VBA project '{_name}' because there may be a potential access violation.");
+                    return false;
+                }
+
                 _target_IVBEProject.CompileProject();
                 return true;
             }
