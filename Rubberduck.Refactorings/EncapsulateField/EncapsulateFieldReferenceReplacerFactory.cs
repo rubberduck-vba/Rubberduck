@@ -1,6 +1,5 @@
-﻿using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
-using Rubberduck.Refactorings.ReplaceReferences;
+﻿using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.EncapsulateField;
 
 namespace Rubberduck.Refactorings
 {
@@ -10,26 +9,18 @@ namespace Rubberduck.Refactorings
     }
     public class EncapsulateFieldReferenceReplacerFactory : IEncapsulateFieldReferenceReplacerFactory
     {
-        private readonly IReplacePrivateUDTMemberReferencesModelFactory _replacePrivateUDTMemberReferencesModelFactory;
-        private readonly ICodeOnlyRefactoringAction<ReplacePrivateUDTMemberReferencesModel> _replacePrivateUDTMemberReferencesRefactoringAction;
-        private readonly ICodeOnlyRefactoringAction<ReplaceReferencesModel> _replaceReferencesRefactoringAction;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IPropertyAttributeSetsGenerator _propertyAttributeSetsGenerator;
-        public EncapsulateFieldReferenceReplacerFactory(IReplacePrivateUDTMemberReferencesModelFactory replacePrivateUDTMemberReferencesModelFactory,
-            IEncapsulateFieldRefactoringActionsProvider refactoringActionsProvider,
+        public EncapsulateFieldReferenceReplacerFactory(IDeclarationFinderProvider declarationFinderProvider,
             IPropertyAttributeSetsGenerator propertyAttributeSetsGenerator)
         {
-            _replacePrivateUDTMemberReferencesModelFactory = replacePrivateUDTMemberReferencesModelFactory;
-            _replacePrivateUDTMemberReferencesRefactoringAction = refactoringActionsProvider.ReplaceUDTMemberReferences;
-            _replaceReferencesRefactoringAction = refactoringActionsProvider.ReplaceReferences;
+            _declarationFinderProvider = declarationFinderProvider;
             _propertyAttributeSetsGenerator = propertyAttributeSetsGenerator;
         }
 
         public IEncapsulateFieldReferenceReplacer Create()
         {
-            return new EncapsulateFieldReferenceReplacer(
-                _replacePrivateUDTMemberReferencesModelFactory,
-                _replacePrivateUDTMemberReferencesRefactoringAction,
-                _replaceReferencesRefactoringAction,
+            return new EncapsulateFieldReferenceReplacer(_declarationFinderProvider,
                 _propertyAttributeSetsGenerator);
         }
     }

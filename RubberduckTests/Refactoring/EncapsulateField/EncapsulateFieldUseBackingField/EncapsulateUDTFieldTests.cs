@@ -126,43 +126,6 @@ Public that As TBar";
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void ModifiesCorrectUDTMemberReference_MemberAccess()
-        {
-            var inputCode =
-$@"
-Private Type TBar
-    First As String
-    Second As Long
-End Type
-
-Private th|is As TBar
-
-Private that As TBar
-
-Public Sub Foo(arg1 As String, arg2 As Long)
-    this.First = arg1
-    that.First = arg1
-    this.Second = arg2
-    that.Second = arg2
-End Sub
-";
-
-            var presenterAction = Support.UserAcceptsDefaults();
-
-            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains($"this.First = {Support.RHSIdentifier}", actualCode);
-            StringAssert.Contains($"First = this.First", actualCode);
-            StringAssert.Contains($"this.Second = {Support.RHSIdentifier}", actualCode);
-            StringAssert.Contains($"Second = this.Second", actualCode);
-            StringAssert.Contains($" First = arg1", actualCode);
-            StringAssert.Contains($" Second = arg2", actualCode);
-            StringAssert.Contains($"that.First = arg1", actualCode);
-            StringAssert.Contains($"that.Second = arg2", actualCode);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
         public void ModifiesCorrectUDTMemberReference_WithMemberAccess()
         {
             var inputCode =
@@ -498,10 +461,11 @@ End Sub
             StringAssert.Contains($"Public Property Set TheClass", actualCode);
         }
 
-        [TestCase("SourceModule", "this")]
+        [TestCase("SourceModule.this.First")]
+        [TestCase("this.First")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void StdModuleSource_PublicUDTField_PublicType_StdModuleReference(string sourceModuleName, string referenceQualifier)
+        public void StdModuleSource_PublicUDTField_PublicType_ExternalReference(string assignmentLHS)
         {
             var sourceModuleCode =
 $@"
@@ -510,30 +474,15 @@ Public Type TBar
     Second As Long
 End Type
 
-Public th|is As TBar";
+Public thi|s As TBar";
 
             var moduleReferencingCode =
 $@"Option Explicit
 
 'StdModule referencing the UDT
 
-Private Const fooConst As String = ""Foo""
-
-Private Const barConst As Long = 7
-
 Public Sub Foo()
-    {referenceQualifier}.First = fooConst
-End Sub
-
-Public Sub Bar()
-    {referenceQualifier}.Second = barConst
-End Sub
-
-Public Sub FooBar()
-    With {sourceModuleName}
-        .this.First = fooConst
-        .this.Second = barConst
-    End With
+    {assignmentLHS} = ""Foo""
 End Sub
 ";
             var userInput = new UserInputDataObject()
@@ -542,13 +491,11 @@ End Sub
             var presenterAction = Support.SetParameters(userInput);
 
             var actualModuleCode = Support.RefactoredCode(presenterAction,
-                (sourceModuleName, sourceModuleCode.ToCodeString(), ComponentType.StandardModule),
+                ("SourceModule", sourceModuleCode.ToCodeString(), ComponentType.StandardModule),
                 ("StdModule", moduleReferencingCode, ComponentType.StandardModule));
 
             var referencingModuleCode = actualModuleCode["StdModule"];
-            StringAssert.Contains($"{sourceModuleName}.MyType.First = ", referencingModuleCode);
-            StringAssert.Contains($"{sourceModuleName}.MyType.Second = ", referencingModuleCode);
-            StringAssert.Contains($"  .MyType.Second = ", referencingModuleCode);
+            StringAssert.Contains("SourceModule.MyType.First = ", referencingModuleCode);
         }
 
         [Test]
@@ -603,65 +550,6 @@ End Sub
             StringAssert.Contains($"{sourceClassName}.MyType.First = ", referencingClassCode);
             StringAssert.Contains($"{sourceClassName}.MyType.Second = ", referencingClassCode);
             StringAssert.Contains($"  .MyType.Second = ", referencingClassCode);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void ClassModuleUDTFieldSelection_ExternalReferences_StdModule()
-        {
-            var classModuleName = "SourceModule";
-            var classInstanceName = "theClass";
-            var sourceModuleCode =
-$@"
-
-Public th|is As TBar";
-
-            var procedureModuleReferencingCode =
-$@"Option Explicit
-
-Public Type TBar
-    First As String
-    Second As Long
-End Type
-
-Private {classInstanceName} As {classModuleName}
-Private Const foo As String = ""Foo""
-Private Const bar As Long = 7
-
-Public Sub Initialize()
-    Set {classInstanceName} = New {classModuleName}
-End Sub
-
-Public Sub Foo()
-    {classInstanceName}.this.First = foo
-End Sub
-
-Public Sub Bar()
-    {classInstanceName}.this.Second = bar
-End Sub
-
-Public Sub FooBar()
-    With {classInstanceName}
-        .this.First = foo
-        .this.Second = bar
-    End With
-End Sub
-";
-
-            var userInput = new UserInputDataObject()
-                .UserSelectsField("this", "MyType");
-
-            var presenterAction = Support.SetParameters(userInput);
-
-            var actualModuleCode = Support.RefactoredCode(presenterAction,
-                (classModuleName, sourceModuleCode.ToCodeString(), ComponentType.ClassModule),
-                ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule));
-
-            var referencingModuleCode = actualModuleCode["StdModule"];
-            StringAssert.Contains($"{classInstanceName}.MyType.First = ", referencingModuleCode);
-            StringAssert.Contains($"{classInstanceName}.MyType.Second = ", referencingModuleCode);
-            StringAssert.Contains($"  .MyType.Second = ", referencingModuleCode);
         }
 
         [Test]

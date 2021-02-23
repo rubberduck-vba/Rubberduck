@@ -383,10 +383,6 @@ namespace Rubberduck.Root
                 .ImplementedBy<AnnotationArgumentViewModelFactory>()
                 .LifestyleSingleton());
 
-            container.Register(Component.For<IReplacePrivateUDTMemberReferencesModelFactory>()
-                .ImplementedBy<ReplacePrivateUDTMemberReferencesModelFactory>()
-                .LifestyleSingleton());
-
             RegisterUnreachableCaseFactories(container);
 
             RegisterEncapsulateFieldRefactoringFactories(container);

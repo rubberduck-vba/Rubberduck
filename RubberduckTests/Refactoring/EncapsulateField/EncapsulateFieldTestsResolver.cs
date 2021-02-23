@@ -2,8 +2,6 @@
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.Refactorings.ReplaceReferences;
-using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
 using Rubberduck.Refactorings.ReplaceDeclarationIdentifier;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
@@ -107,10 +105,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             container.Kernel.Register(Component.For<EncapsulateFieldRefactoringAction>());
             container.Kernel.Register(Component.For<EncapsulateFieldUseBackingUDTMemberRefactoringAction>());
             container.Kernel.Register(Component.For<EncapsulateFieldUseBackingFieldRefactoringAction>());
-            container.Kernel.Register(Component.For<ReplacePrivateUDTMemberReferencesRefactoringAction>());
             container.Kernel.Register(Component.For<EncapsulateFieldInsertNewCodeRefactoringAction>());
             container.Kernel.Register(Component.For<ModifyUserDefinedTypeRefactoringAction>());
-            container.Kernel.Register(Component.For<ReplaceReferencesRefactoringAction>());
             container.Kernel.Register(Component.For<ReplaceDeclarationIdentifierRefactoringAction>());
             container.Kernel.Register(Component.For<EncapsulateFieldPreviewProvider>());
             container.Kernel.Register(Component.For<EncapsulateFieldUseBackingFieldPreviewProvider>());
@@ -145,9 +141,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
             container.Kernel.Register(Component.For<IEncapsulateFieldRefactoringActionsProvider>()
                .ImplementedBy<EncapsulateFieldRefactoringActionsProvider>());
-
-            container.Kernel.Register(Component.For<IReplacePrivateUDTMemberReferencesModelFactory>()
-                .ImplementedBy<ReplacePrivateUDTMemberReferencesModelFactory>());
 
             container.Kernel.Register(Component.For<IEncapsulateFieldReferenceReplacerFactory>()
                 .ImplementedBy<EncapsulateFieldReferenceReplacerFactory>());
