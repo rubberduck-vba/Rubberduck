@@ -57,7 +57,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 udtMembers = LowestLeafUdtMembers(udtMembers, _declarationFinderProvider);
             }
 
-
             udtInstanceToLowestLeafMembers.Add(target as VariableDeclaration, udtMembers);
             return udtInstanceToLowestLeafMembers;
         }

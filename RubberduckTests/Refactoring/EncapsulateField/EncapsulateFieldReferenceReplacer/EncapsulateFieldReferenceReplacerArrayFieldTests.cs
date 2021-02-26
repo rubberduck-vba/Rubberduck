@@ -24,7 +24,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void ArrayReferences(bool wrapInPrivateUDT)
+        public void PublicField_DoesNotUsePropertiesWithinDeclaringModule(bool wrapInPrivateUDT)
         {
             var target = "mArray";
             var propertyName = "MyProperty";

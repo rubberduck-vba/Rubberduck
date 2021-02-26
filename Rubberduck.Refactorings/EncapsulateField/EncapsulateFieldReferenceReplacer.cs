@@ -120,7 +120,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        //TODO: Write tests using Member and With access contexts locally and externally - replacement text is different for readOnly scenario
         private void AssignLocalUDTMemberReferenceExpressions<T>(T field, PropertyAttributeSet paSet) where T: IEncapsulateFieldCandidate
         {
             if (field is IEncapsulateFieldAsUDTMemberCandidate wrappedField)
@@ -143,7 +142,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 {
                     continue;
                 }
-
 
                 var expression = rf.IsAssignment ? nonPropertyAssignmentsLHS : paSet.PropertyName;
                 if (rf.Context.Parent is VBAParser.WithMemberAccessExprContext wmaec)

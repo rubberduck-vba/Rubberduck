@@ -24,7 +24,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void PublicValueField_ExternalReference(bool wrapInPrivateUDT)
+        public void PublicField_ExternalReference(bool wrapInPrivateUDT)
         {
             var target = "targetField";
             var propertyName = "MyProperty";
@@ -38,7 +38,6 @@ Option Explicit
 Public targetField As Long";
 
             var declaringModule = (testModuleName, testModuleCode, ComponentType.StandardModule);
-
 
             var procedureModuleReferencingCode =
 $@"
@@ -62,7 +61,7 @@ End Sub
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void PublicValueField_ExternalWithMemberAccessReference(bool wrapInPrivateUDT)
+        public void PublicField_ExternalWithMemberAccessReference(bool wrapInPrivateUDT)
         {
             var target = "targetField";
             var propertyName = "MyProperty";
@@ -76,7 +75,6 @@ Option Explicit
 Public targetField As Long";
 
             var declaringModule = (testModuleName, testModuleCode, ComponentType.StandardModule);
-
 
             var procedureModuleReferencingCode =
 $@"
@@ -108,7 +106,7 @@ End Sub
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void ValueField_LocalReferences(bool wrapInPrivateUDT, bool isReadOnly, string visibility)
+        public void PublicPrivateField_LocalReferences(bool wrapInPrivateUDT, bool isReadOnly, string visibility)
         {
             var target = "targetField";
             var propertyName = "MyProperty";
@@ -150,7 +148,7 @@ End Sub
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void OverrideReadOnlyFlagForExternalReferences(bool wrapInPrivateUDT, bool isReadOnly)
+        public void PublicField_OverrideReadOnlyFlagForExternalReferences(bool wrapInPrivateUDT, bool isReadOnly)
         {
             var target = "targetField";
             var propertyName = "MyProperty";
@@ -206,6 +204,54 @@ End Sub
             StringAssert.Contains($"mValue = {MockVbeBuilder.TestModuleName}.{propertyName} * arg", refactoredCode[referencingModule]);
             StringAssert.Contains($"  {MockVbeBuilder.TestModuleName}.{propertyName} = arg * mValue", refactoredCode[referencingModule]);
         }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+         public void PublicFieldOfClassModule_ExternalReferences(bool wrapInPrivateUDT)
+        {
+            var target = "mFizz";
+            var propertyName = "Fizz";
+
+            var testTargetTuple = (target, propertyName, false);
+
+            var testModuleName = MockVbeBuilder.TestModuleName;
+            var testModuleCode =
+@"Public mFizz As Integer";
+
+            var declaringModule = (testModuleName, testModuleCode, ComponentType.ClassModule);
+
+            var referencingModule = "SomeOtherModule";
+            var referencingModuleCode =
+$@"Sub Bazz()
+    With new {testModuleName}
+        .mFizz = 0
+        Bar .mFizz
+    End With
+End Sub
+
+Sub Bizz()
+    Dim theClass As {testModuleName}
+    Set theClass = new {testModuleName}
+    theClass.mFizz = 0
+    Bar theClass.mFizz
+End Sub
+
+Sub Bar(ByVal v As Integer)
+End Sub";
+            
+            var referencingModuleStdModule = (moduleName: referencingModule, referencingModuleCode, ComponentType.StandardModule);
+
+            var refactoredCode = TestReferenceReplacement(wrapInPrivateUDT, testTargetTuple, declaringModule, referencingModuleStdModule);
+
+            StringAssert.Contains($".{propertyName} = 0", refactoredCode[referencingModule]);
+            StringAssert.Contains($"Bar .{propertyName}", refactoredCode[referencingModule]);
+            StringAssert.Contains($" theClass.{propertyName} = 0", refactoredCode[referencingModule]);
+            StringAssert.Contains($"Bar theClass.{propertyName}", refactoredCode[referencingModule]);
+            StringAssert.DoesNotContain("mFizz", refactoredCode[referencingModule]);
+        }
+
         private static IDictionary<string, string> TestReferenceReplacement(bool wrapInPrivateUDT, (string, string, bool) testTargetTuple, params (string, string, ComponentType)[] moduleTuples)
         {
             return ReferenceReplacerTestSupport.TestReferenceReplacement(wrapInPrivateUDT, testTargetTuple, moduleTuples);

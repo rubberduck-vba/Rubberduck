@@ -13,7 +13,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 {
     public class ReferenceReplacerTestSupport
     {
-        //private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
         public static IDictionary<string, string> TestReferenceReplacement(bool wrapInPrivateUDT, (string, string, bool) testTargetTuple, params (string, string, ComponentType)[] moduleTuples)
         {
             var vbe = MockVbeBuilder.BuildFromModules(moduleTuples);
@@ -43,7 +42,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
                 var fieldDeclaration = state.DeclarationFinder.MatchName(target.fieldID).Single();
 
-
                 var fieldCandidate = encapsulateFieldFactory.CreateFieldCandidate(fieldDeclaration);
 
                 if (wrapInPvtUDT)
@@ -58,7 +56,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
                 var sut = sutFactory.Create();
                 sut.ReplaceReferences(new IEncapsulateFieldCandidate[] { fieldCandidate }, rewriteSession);
-
 
                 if (rewriteSession.TryRewrite())
                 {

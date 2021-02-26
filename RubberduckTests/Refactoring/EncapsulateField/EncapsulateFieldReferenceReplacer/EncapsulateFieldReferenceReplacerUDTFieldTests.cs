@@ -24,7 +24,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void PublicUDTField_ExternalReference(bool wrapInPrivateUDT)
+        public void PublicTypeAndField_ExternalMemberAccessReference(bool wrapInPrivateUDT)
         {
             var target = "targetField";
             var propertyName = "MyProperty";
@@ -43,7 +43,6 @@ End Type
 Public targetField As TestType";
 
             var declaringModule = (testModuleName, testModuleCode, ComponentType.StandardModule);
-
 
             var procedureModuleReferencingCode =
 $@"
@@ -67,7 +66,7 @@ End Sub
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void UDTField_PublicType_StdModuleReferenceWithMemberAccess(bool wrapInPrivateUDT)
+        public void PublicTypeAndField_ExternalWithMemberAccessReference(bool wrapInPrivateUDT)
         {
             var target = "targetField";
             var propertyName = "MyProperty";
@@ -113,7 +112,7 @@ End Sub
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void UDTFieldSelection_ClassModuleSource_ExternalReference(bool wrapInPrivateUDT)
+        public void PublicTypeAndField_ClassModuleSource_ExternalReference(bool wrapInPrivateUDT)
         {
             var target = "targetField";
             var propertyName = "MyProperty";
@@ -176,7 +175,7 @@ End Sub
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void ReplaceUdtMemberReferences(bool wrapInPrivateUDT, bool isReadOnly)
+        public void PrivateTypeAndField_LocalAssignmentReferences(bool wrapInPrivateUDT, bool isReadOnly)
         {
             var target = "myBazz";
             var udtMemberName = "MyBazz";
@@ -224,7 +223,7 @@ End Sub
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void RenameFieldReferences_WithMemberAccess_NoExternalReferences(bool wrapInPrivateUDT, bool isReadOnly)
+        public void PrivateTypeAndField__LocalWithMemberAccess(bool wrapInPrivateUDT, bool isReadOnly)
         {
             var target = "myBazz";
             var propertyName = "MyBazz";
@@ -261,12 +260,12 @@ End Sub
             var expectedWithStmt = wrapInPrivateUDT ? $"  With this.MyBazz{Environment.NewLine}" : $"  With myBazz{Environment.NewLine}";
             StringAssert.Contains(expectedWithStmt, refactoredCode[MockVbeBuilder.TestModuleName]);
 
-            if (isReadOnly) //Get generated
+            if (isReadOnly)
             {
                 StringAssert.Contains("  .FirstValue = newValue", refactoredCode[MockVbeBuilder.TestModuleName]);
                 StringAssert.Contains("  .SecondValue = newValue", refactoredCode[MockVbeBuilder.TestModuleName]);
             }
-            else //Let and Get generated
+            else
             {
                 //The EF refactoring will create a FirstValue and SecondValue property - so the with member access expression
                 //is replaced with the Let property name. The EF refactoring does not remove the 'With' statement block even 
@@ -283,7 +282,7 @@ End Sub
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void ReplaceAccessorExpression(bool wrapInPrivateUDT, bool isReadOnly)
+        public void PrivateTypeAndField_LocalReadAndWriteAccessors(bool wrapInPrivateUDT, bool isReadOnly)
         {
             var target = "myBazz";
             var udtMemberName = "MyBazz";
@@ -328,7 +327,7 @@ End Sub
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void ReplacePublicUDTAccessorExpressions(bool wrapInPrivateUDT)
+        public void PublicTypeAndField_ExternalReadAndWriteExpressions(bool wrapInPrivateUDT)
         {
             var target = "myBazz";
             var propertyName = "MyProperty";
@@ -345,14 +344,6 @@ Public Type TBazz
 End Type
 
 Public myBazz As TBazz
-
-'Public Function GetTheFirstValue() As String
-'    GetTheFirstValue = myBazz.FirstValue
-'End Function
-
-'Public Sub SetTheFirstValue(arg As Long)
-'    myBazz.FirstValue = arg
-'End Sub
 ";
             var declaringModule = (testModuleName, testModuleCode, ComponentType.StandardModule);
 
@@ -384,7 +375,7 @@ End Sub
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void ModifiesCorrectUDTMemberReferences_MemberAccess(bool wrapInPrivateUDT, bool isReadOnly)
+        public void PrivateTypeAndField_ModifiesCorrectUDTMemberReferencess(bool wrapInPrivateUDT, bool isReadOnly)
         {
             var target = "targetField";
             var udtMemberName = "TargetField";
@@ -438,7 +429,7 @@ End Sub
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void NestedUDTMembers(bool wrapInPrivateUDT, bool isReadOnly)
+        public void PrivateTypeAndField_NestedUDTMembers(bool wrapInPrivateUDT, bool isReadOnly)
         {
             var target = "mTypesField";
             var udtMemberName = "TypesField";
@@ -494,7 +485,7 @@ End Sub
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void PublicUDTField_ExternalRefNestedWithStatement(bool wrapInPrivateUDT)
+        public void PublicTypeAndField_ExternalRefNestedWithStatement(bool wrapInPrivateUDT)
         {
             var target = "mTypesField";
 
@@ -550,11 +541,10 @@ End Sub
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void PrivateUDTField_RefNestedWithStatements(bool wrapInPrivateUDT, bool isReadOnly)
+        public void PrivateTypeAndField_RefNestedWithStatements(bool wrapInPrivateUDT, bool isReadOnly)
         {
             var target = "mTypesField";
             var udtMemberName = "TypesField";
-
 
             var testTargetTuple = (target, udtMemberName, isReadOnly);
 
@@ -614,7 +604,7 @@ End Function
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldReferenceReplacer))]
-        public void PrivateUDTFieldMultipleMembers(bool wrapInPrivateUDT, bool isReadOnly)
+        public void PrivateTypeAndField_MultipleMembers(bool wrapInPrivateUDT, bool isReadOnly)
         {
             var target = "mVehicle";
             var wrappedUDTMemberName = "Vehicle";
@@ -658,6 +648,55 @@ End Sub
             StringAssert.Contains(expectedAssignmentExpressionWheels, result);
             StringAssert.Contains(expectedAssignmentExpressionSeats, result);
         }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(EncapsulateFieldReferenceReplacer))]
+        public void PublicTypeAndFieldModifiesCorrectExternalUDTFieldReference(bool wrapInPrivateUDT)
+        {
+            var target = "Fizz";
+            var propertyName = "Fizz";
+
+            var testTargetTuple = (target, propertyName, false);
+
+            var testModuleName = MockVbeBuilder.TestModuleName;
+            var testModuleCode =
+$@"
+Public Type TBar
+    First As String
+    Second As Long
+End Type
+
+Public Fizz As TBar
+
+Public Bazz As TBar
+";
+            var declaringModule = (testModuleName, testModuleCode, ComponentType.StandardModule);
+
+            var referencingModuleName = "AnotherModule";
+            var referencingModuleCode =
+$@"
+Public Sub Foo(arg1 As String, arg2 As Long)
+    With {testModuleName}.Fizz
+        .First = arg1
+        .Second = arg2
+    End With
+
+    With Bazz
+        .First = arg1
+        .Second = arg2
+    End With
+End Sub
+";
+            var referencingModuleStdModule = (moduleName: referencingModuleName, referencingModuleCode, ComponentType.StandardModule);
+            
+            var refactoredCode = TestReferenceReplacement(wrapInPrivateUDT, testTargetTuple, declaringModule, referencingModuleStdModule);
+
+            StringAssert.Contains($"With {testModuleName}.{propertyName}", refactoredCode[referencingModuleName]);
+        }
+
         private static IDictionary<string, string> TestReferenceReplacement(bool wrapInPrivateUDT, (string, string, bool) testTargetTuple, params (string, string, ComponentType)[] moduleTuples)
         {
             return ReferenceReplacerTestSupport.TestReferenceReplacement(wrapInPrivateUDT, testTargetTuple, moduleTuples);
