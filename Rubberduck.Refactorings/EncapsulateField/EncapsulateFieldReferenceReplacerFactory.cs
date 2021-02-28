@@ -11,17 +11,21 @@ namespace Rubberduck.Refactorings
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IPropertyAttributeSetsGenerator _propertyAttributeSetsGenerator;
+        private IUDTMemberReferenceProvider _userDefinedTypeInstanceProvider;
         public EncapsulateFieldReferenceReplacerFactory(IDeclarationFinderProvider declarationFinderProvider,
-            IPropertyAttributeSetsGenerator propertyAttributeSetsGenerator)
+            IPropertyAttributeSetsGenerator propertyAttributeSetsGenerator,
+            IUDTMemberReferenceProvider userDefinedTypeInstanceProvider)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _propertyAttributeSetsGenerator = propertyAttributeSetsGenerator;
+            _userDefinedTypeInstanceProvider = userDefinedTypeInstanceProvider;
         }
 
         public IEncapsulateFieldReferenceReplacer Create()
         {
             return new EncapsulateFieldReferenceReplacer(_declarationFinderProvider,
-                _propertyAttributeSetsGenerator);
+                _propertyAttributeSetsGenerator,
+                _userDefinedTypeInstanceProvider);
         }
     }
 }

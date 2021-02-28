@@ -163,6 +163,10 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             container.Kernel.Register(Component.For<IEncapsulateFieldReferenceReplacer>()
                 .ImplementedBy<EncapsulateFieldReferenceReplacer>()
                 .LifestyleTransient());
+
+            container.Kernel.Register(Component.For<IUDTMemberReferenceProvider>()
+                .ImplementedBy<UDTMemberReferenceProvider>()
+                .LifestyleTransient());
         }
 
         private static void RegisterAutoFactories(IWindsorContainer container)

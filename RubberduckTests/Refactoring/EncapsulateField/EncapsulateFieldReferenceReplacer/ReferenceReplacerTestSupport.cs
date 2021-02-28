@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Rubberduck.Parsing.Symbols;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -16,17 +17,11 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         public static IDictionary<string, string> TestReferenceReplacement(bool wrapInPrivateUDT, (string, string, bool) testTargetTuple, params (string, string, ComponentType)[] moduleTuples)
         {
             var vbe = MockVbeBuilder.BuildFromModules(moduleTuples);
-            return wrapInPrivateUDT
-                ? ReplaceReferencesWrapInPrivateUDT(vbe.Object, testTargetTuple)
-                : ReplaceReferences(vbe.Object, testTargetTuple);
-
+            return ReplaceReferences(vbe.Object, wrapInPrivateUDT, testTargetTuple);
         }
 
-        private static IDictionary<string, string> ReplaceReferences(IVBE vbe, (string fieldID, string fieldProperty, bool readOnly) target, params (string fieldID, string fieldProperty, bool readOnly)[] fieldIDPairs)
-            => ReplaceReferences(vbe, false, target, fieldIDPairs.ToList());
-
-        private static IDictionary<string, string> ReplaceReferencesWrapInPrivateUDT(IVBE vbe, (string fieldID, string fieldProperty, bool readOnly) target, params (string fieldID, string fieldProperty, bool readOnly)[] fieldIDPairs)
-            => ReplaceReferences(vbe, true, target, fieldIDPairs.ToList());
+        private static IDictionary<string, string> ReplaceReferences(IVBE vbe, bool wrapInPvtUDT, (string fieldID, string fieldProperty, bool readOnly) target, params (string fieldID, string fieldProperty, bool readOnly)[] fieldIDPairs)
+            => ReplaceReferences(vbe, wrapInPvtUDT, target, fieldIDPairs.ToList());
 
         private static IDictionary<string, string> ReplaceReferences(IVBE vbe, bool wrapInPvtUDT, (string fieldID, string fieldProperty, bool readOnly) target, IEnumerable<(string fieldID, string fieldProperty, bool readOnly)> fieldIDPairs)
         {
@@ -35,18 +30,14 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             using (state)
             {
                 var support = new EncapsulateFieldTestSupport();
-                var rewriteSession = rewritingManager.CheckOutCodePaneSession();
                 var resolver = support.SetupResolver(state, rewritingManager);
+
                 var encapsulateFieldFactory = resolver.Resolve<IEncapsulateFieldCandidateFactory>();
-                var sutFactory = resolver.Resolve<IEncapsulateFieldReferenceReplacerFactory>();
-
-                var fieldDeclaration = state.DeclarationFinder.MatchName(target.fieldID).Single();
-
-                var fieldCandidate = encapsulateFieldFactory.CreateFieldCandidate(fieldDeclaration);
+                var fieldCandidate = encapsulateFieldFactory.CreateFieldCandidate(state.DeclarationFinder.MatchName(target.fieldID).Single());
 
                 if (wrapInPvtUDT)
                 {
-                    var defaultObjectStateUDT = encapsulateFieldFactory.CreateDefaultObjectStateField(fieldDeclaration.QualifiedModuleName);
+                    var defaultObjectStateUDT = encapsulateFieldFactory.CreateDefaultObjectStateField(fieldCandidate.QualifiedModuleName);
                     fieldCandidate = encapsulateFieldFactory.CreateUDTMemberCandidate(fieldCandidate, defaultObjectStateUDT);
                 }
 
@@ -54,8 +45,10 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 fieldCandidate.IsReadOnly = target.readOnly;
                 fieldCandidate.EncapsulateFlag = true;
 
-                var sut = sutFactory.Create();
-                sut.ReplaceReferences(new IEncapsulateFieldCandidate[] { fieldCandidate }, rewriteSession);
+                var selected = new IEncapsulateFieldCandidate[] { fieldCandidate };
+                var rewriteSession = rewritingManager.CheckOutCodePaneSession();
+                var sut = resolver.Resolve<IEncapsulateFieldReferenceReplacerFactory>().Create();
+                sut.ReplaceReferences(selected, rewriteSession);
 
                 if (rewriteSession.TryRewrite())
                 {
