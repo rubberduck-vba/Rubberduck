@@ -20,10 +20,10 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return ReplaceReferences(vbe.Object, wrapInPrivateUDT, testTargetTuple);
         }
 
-        private static IDictionary<string, string> ReplaceReferences(IVBE vbe, bool wrapInPvtUDT, (string fieldID, string fieldProperty, bool readOnly) target, params (string fieldID, string fieldProperty, bool readOnly)[] fieldIDPairs)
-            => ReplaceReferences(vbe, wrapInPvtUDT, target, fieldIDPairs.ToList());
+        private static IDictionary<string, string> ReplaceReferences(IVBE vbe, bool wrapInPvtUDT, (string fieldID, string propertyOrUDTMemberID, bool readOnly) target, params (string fieldID, string propertyOrUDTMemberID, bool readOnly)[] fieldTuples)
+            => ReplaceReferences(vbe, wrapInPvtUDT, target, fieldTuples.ToList());
 
-        private static IDictionary<string, string> ReplaceReferences(IVBE vbe, bool wrapInPvtUDT, (string fieldID, string fieldProperty, bool readOnly) target, IEnumerable<(string fieldID, string fieldProperty, bool readOnly)> fieldIDPairs)
+        private static IDictionary<string, string> ReplaceReferences(IVBE vbe, bool wrapInPvtUDT, (string fieldID, string propertyOrUDTMemberID, bool readOnly) target, IEnumerable<(string fieldID, string propertyOrUDTMemberID, bool readOnly)> fieldTuples)
         {
             var refactoredCode = new Dictionary<string, string>();
             (var state, var rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
@@ -41,7 +41,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                     fieldCandidate = encapsulateFieldFactory.CreateUDTMemberCandidate(fieldCandidate, defaultObjectStateUDT);
                 }
 
-                fieldCandidate.PropertyIdentifier = target.fieldProperty;
+                //For ReferenceReplacer tests, UDTMember identifiers == PropertyIdentifiers
+                fieldCandidate.PropertyIdentifier = target.propertyOrUDTMemberID;
                 fieldCandidate.IsReadOnly = target.readOnly;
                 fieldCandidate.EncapsulateFlag = true;
 
