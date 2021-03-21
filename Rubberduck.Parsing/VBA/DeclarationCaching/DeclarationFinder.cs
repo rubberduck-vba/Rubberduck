@@ -11,6 +11,7 @@ using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Extensions;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -971,12 +972,44 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return null;
         }
 
+        //TODO: ove this out of the DeclarationFinder into a class only responsible for reference resolution.
         public Declaration OnUndeclaredVariable(Declaration enclosingProcedure, string identifierName, ParserRuleContext context)
         {
             var annotations = FindAnnotations(enclosingProcedure.QualifiedName.QualifiedModuleName, context.Start.Line,AnnotationTarget.Identifier);
             var isReDimVariable = IsContainedInReDimedArrayName(context);
-            var undeclaredLocal =
-                new Declaration(
+
+            Declaration undeclaredLocal;
+            if (IsContainedInReDimedArrayName(context))
+            {
+                var asTypeClause = AsTypeClauseForReDimDeclaredArray(context);
+                var typeHint = TypeHintForReDimDeclaredArray(context);
+                var asTypeName = AsTypeNameForReDimDeclaredArray(asTypeClause, typeHint);
+
+                undeclaredLocal = new Declaration(
+                    new QualifiedMemberName(enclosingProcedure.QualifiedName.QualifiedModuleName, identifierName),
+                    enclosingProcedure,
+                    enclosingProcedure,
+                    asTypeName,
+                    typeHint,
+                    false,
+                    false,
+                    Accessibility.Implicit,
+                    DeclarationType.Variable,
+                    context,
+                    null,
+                    context.GetSelection(),
+                    true,
+                    asTypeClause,
+                    true,
+                    annotations,
+                    null,
+                    false);
+
+                ResolveTypeForReDimDeclaredArray(undeclaredLocal);
+            }
+            else 
+            {
+                undeclaredLocal = new Declaration(
                     new QualifiedMemberName(enclosingProcedure.QualifiedName.QualifiedModuleName, identifierName),
                     enclosingProcedure,
                     enclosingProcedure,
@@ -989,12 +1022,13 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                     context,
                     null,
                     context.GetSelection(),
-                    isReDimVariable,
+                    false,
                     null,
                     true,
                     annotations,
                     null,
-                    !isReDimVariable);
+                    true); 
+            }
 
             var enclosingScope = (enclosingProcedure.QualifiedName, enclosingProcedure.DeclarationType);
             var hasUndeclared = _newUndeclared.ContainsKey(enclosingScope);
@@ -1021,11 +1055,107 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         private static bool IsContainedInReDimedArrayName(ParserRuleContext context)
         {
-            var enclosingReDimContext = context.GetAncestor<VBAParser.RedimVariableDeclarationContext>();
-            return enclosingReDimContext != null 
-                   && enclosingReDimContext.expression().GetSelection().Contains(context.GetSelection());
+            return ContainingReDimContext(context) != null;
         }
 
+        private static VBAParser.RedimVariableDeclarationContext ContainingReDimContext(ParserRuleContext context)
+        {
+            var enclosingReDimContextCandidate = context.GetAncestor<VBAParser.RedimVariableDeclarationContext>();
+            return enclosingReDimContextCandidate == null
+                   || !enclosingReDimContextCandidate.expression().GetSelection().Contains(context.GetSelection())
+                   ? null
+                   : enclosingReDimContextCandidate;
+        }
+
+        private VBAParser.AsTypeClauseContext AsTypeClauseForReDimDeclaredArray(ParserRuleContext context)
+        {
+            return ContainingReDimContext(context)?.asTypeClause();
+        }
+
+        private string TypeHintForReDimDeclaredArray(ParserRuleContext context)
+        {
+            if (context is VBAParser.SimpleNameExprContext simpleNameContext)
+            {
+                var identifier = simpleNameContext.identifier();
+                return identifier != null
+                    ? Identifier.GetTypeHintValue(identifier)
+                    : null;
+            }
+
+            return null;
+        }
+
+        private static string AsTypeNameForReDimDeclaredArray(VBAParser.AsTypeClauseContext asTypeClause, string typeHint)
+        {
+            return typeHint == null
+                ? asTypeClause == null
+                    ? Tokens.Variant
+                    : asTypeClause.type().GetText()
+                : SymbolList.TypeHintToTypeName[typeHint];
+        }
+
+        //note: This is copied from the TypeAnnotationPass.
+        //TODO: Extract common logic from TypeAnnotationPass and inject that. (Requires extracting the calling code out of the DeclarationFinder.)
+        private void ResolveTypeForReDimDeclaredArray(Declaration declaration)
+        {
+            if(string.IsNullOrWhiteSpace(declaration.AsTypeName)
+                || declaration.AsTypeIsBaseType)
+            {
+                return;
+            }
+
+            string typeExpression;
+            if (declaration.AsTypeContext != null && declaration.AsTypeContext.type().complexType() != null)
+            {
+                var typeContext = declaration.AsTypeContext;
+                typeExpression = typeContext.type().complexType().GetText();
+            }
+            else if (!string.IsNullOrWhiteSpace(declaration.AsTypeNameWithoutArrayDesignator) && !SymbolList.BaseTypes.Contains(declaration.AsTypeNameWithoutArrayDesignator.ToUpperInvariant()))
+            {
+                typeExpression = declaration.AsTypeNameWithoutArrayDesignator;
+            }
+            else
+            {
+                return;
+            }
+
+            var module = Declaration.GetModuleParent(declaration);
+            if (module == null)
+            {
+                Logger.Warn("Type annotation failed for {0} because module parent is missing.", typeExpression);
+                return;
+            }
+
+            var (bindingService, expressionParser) = TypeAnnotationServices();
+
+            var expressionContext = expressionParser.Parse(typeExpression.Trim());
+            var boundExpression = bindingService.ResolveType(module, declaration.ParentDeclaration, expressionContext);
+            if (boundExpression.Classification != ExpressionClassification.ResolutionFailed)
+            {
+                declaration.AsTypeDeclaration = boundExpression.ReferencedDeclaration;
+            }
+            else
+            {
+                const string IGNORE_THIS = "DISPATCH";
+                if (typeExpression != IGNORE_THIS)
+                {
+                    Logger.Warn("Failed to resolve type {0}", typeExpression);
+                }
+            }
+        }
+
+        private (BindingService bindingservice, VBAExpressionParser expressionParser) TypeAnnotationServices()
+        {
+            var typeBindingContext = new TypeBindingContext(this);
+            var procedurePointerBindingContext = new ProcedurePointerBindingContext(this);
+            var bindingService = new BindingService(
+                this,
+                new DefaultBindingContext(this, typeBindingContext, procedurePointerBindingContext),
+                typeBindingContext,
+                procedurePointerBindingContext);
+            var expressionParser = new VBAExpressionParser();
+            return (bindingService, expressionParser);
+        }
 
         public void AddUnboundContext(Declaration parentDeclaration, VBAParser.LExpressionContext context, IBoundExpression withExpression)
         {
