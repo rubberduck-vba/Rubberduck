@@ -24,6 +24,10 @@ Without the EasyHook library, many of our more advanced Unit Testing features wo
 
 EasyHook is released under the [MIT license](https://github.com/EasyHook/EasyHook#license).
 
+### [Moq](https://github.com/moq/moq4)
+
+Moq is used within Ruberduck's unit tests for its code and also as mocking engine for VBA mocking framework. Moq makes it easy to create mocks of any types, and rather than investing hours in writing our own mocking framework for VBA, we simply wrap the methods for ease of use within VBA and delegate the work to Moq.
+
 ### [WPF Localization Using RESX Files](http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files)
 
 This library makes localizing WPF applications at runtime using resx files a breeze. Thank you [Grant Frisken](http://www.codeproject.com/script/Membership/View.aspx?mid=1079060)!
