@@ -23,7 +23,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.ComReflection.TypeLibReflection;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.Rewriter;
