@@ -17,7 +17,7 @@
 #define Tlb64bitFullPath BuildDir + Tlb64bit
 #define AppVersion GetFileVersion(BuildDir + "Rubberduck.dll")
 #define AppPublisher "Rubberduck"
-#define AppURL "http://rubberduckvba.com"
+#define AppURL "https://rubberduckvba.com"
 #define License IncludesDir + "eula.rtf"
 #define OutputDirectory SourcePath + "Installers\"
 #define AddinProgId "Rubberduck.Extension"
