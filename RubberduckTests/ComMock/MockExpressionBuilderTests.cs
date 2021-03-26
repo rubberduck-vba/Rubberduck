@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using Moq;
 using NUnit.Framework;
 using Rubberduck.ComClientLibrary.UnitTesting.Mocks;
@@ -96,19 +97,20 @@ namespace RubberduckTests.ComMock
         [Test]
         public void Verify_Compiles()
         {
-            const int expected = 1;
-            var expectedTimes = Moq.Times.Once().ToRubberduckTimes();
+            // Moq.Mock<T>.Verify throws if it's invoked and the verification fails.
 
             var mock = new Mock<ITest1>();
             var builder = MockExpressionBuilder.Create(mock);
             var expression = ArrangeSetupDoExpression();
 
-            builder.As(typeof(ITest1))
-                .Verify(expression, expectedTimes, ArrangeForwardedArgs())
-                .Execute();
+            var badTimes = Moq.Times.Once().ToRubberduckTimes(); // test would be inconclusive with exactly 1 invoke.
 
-            mock.Object.Do();
-            Assert.AreEqual(expected, mock.Invocations.Count);
+            // inner exception would be the MockException.
+            var exception = Assert.Catch<TargetInvocationException>(() =>
+                builder.As(typeof(ITest1))
+                    .Verify(expression, badTimes, ArrangeForwardedArgs())
+                    .Execute());
+            Assert.IsTrue(exception.InnerException is MockException);
         }
 
         private static IReadOnlyDictionary<ParameterExpression, object> ArrangeForwardedArgs()
