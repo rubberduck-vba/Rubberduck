@@ -20,8 +20,8 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
     public interface IRuntimeVerify : IRuntimeExecute
     {
-        IRuntimeVerify Verify(Expression verifyExpression, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs);
-        IRuntimeVerify Verify(Expression verifyExpression, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs, Type returnType);
+        IRuntimeVerify Verify(Expression verifyExpression, ITimes times, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs);
+        IRuntimeVerify Verify(Expression verifyExpression, ITimes times, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs, Type returnType);
     }
 
     public interface IRuntimeCallback : IRuntimeExecute
@@ -163,18 +163,19 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 : Expression.Lambda(_expression, _mockParameterExpression).Compile().DynamicInvoke(args);
         }
 
-        public IRuntimeVerify Verify(Expression verifyExpression, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs)
+        public IRuntimeVerify Verify(Expression verifyExpression, ITimes times, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs)
         {
             switch (verifyExpression.Type.GetGenericArguments().Length)
             {
                 case 2:
-                    // It's a returning method so we need to use the Func version of Setup and ignore the return.
-                    Verify(verifyExpression, forwardedArgs, verifyExpression.Type.GetGenericArguments()[1]);
+                    // It's a returning method so we need to use the Func overload of Setup and ignore the return.
+                    Verify(verifyExpression, times, forwardedArgs, verifyExpression.Type.GetGenericArguments()[1]);
                     return this;
                 case 1:
-                    var verifyMethodInfo = MockMemberInfos.Verify(_currentType, null);
+                    var verifyMethodInfo = MockMemberInfos.Verify(_currentType);
+                    var rdTimes = (Times)times;
                     // Quoting the setup lambda expression ensures that closures will be applied
-                    _expression = Expression.Call(_expression, verifyMethodInfo, Expression.Quote(verifyExpression));
+                    _expression = Expression.Call(_expression, verifyMethodInfo, Expression.Quote(verifyExpression), Expression.Constant(rdTimes.MoqTimes));
                     _currentType = verifyMethodInfo.ReturnType;
                     if (forwardedArgs.Any())
                     {
@@ -187,11 +188,12 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             }
         }
 
-        public IRuntimeVerify Verify(Expression verifyExpression, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs, Type returnType)
+        public IRuntimeVerify Verify(Expression verifyExpression, ITimes times, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs, Type returnType)
         {
-            var verifyMethodInfo = MockMemberInfos.Setup(_currentType, returnType);
+            var verifyMethodInfo = MockMemberInfos.Verify(_currentType, returnType);
+            var rdTimes = (Times)times;
             // Quoting the verify lambda expression ensures that closures will be applied
-            _expression = Expression.Call(_expression, verifyMethodInfo, Expression.Quote(verifyExpression));
+            _expression = Expression.Call(_expression, verifyMethodInfo, Expression.Quote(verifyExpression), Expression.Constant(rdTimes.MoqTimes));
             _currentType = verifyMethodInfo.ReturnType;
             if (forwardedArgs.Any())
             {

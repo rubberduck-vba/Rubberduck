@@ -153,20 +153,36 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             var args = _resolver.ResolveArgs(Args);
             var setupDatas = _setupBuilder.CreateExpression(Name, args);
 
-            try
+            var throwingExecutions = 0;
+            MockException lastException = null;
+            foreach (var setupData in setupDatas)
             {
-                foreach (var setupData in setupDatas)
+                try
                 {
                     var builder = MockExpressionBuilder.Create(Mock);
                     builder.As(setupData.DeclaringType)
-                        .Verify(setupData.SetupExpression, setupData.Args)
+                        .Verify(setupData.SetupExpression, Times, setupData.Args)
                         .Execute();
+
+                    Rubberduck.UnitTesting.AssertHandler.OnAssertSucceeded();
+                }
+                catch (TargetInvocationException exception)
+                {
+                    if (exception.InnerException is MockException inner)
+                    {
+                        throwingExecutions++;
+                        lastException = inner;
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
-            catch (MockException)
+            if (setupDatas.Count() == throwingExecutions)
             {
-                // todo move to resx if this works.. and account for the several possible wordings
-                Rubberduck.UnitTesting.AssertHandler.OnAssertFailed($"Member '{Name}' was invoked {Mock.Invocations.Count(e => e.Method.Name == Name)} times; expected {Times}.");
+                // if all mocked interfaces failed the .Verify call, then none of them succeeded:
+                Rubberduck.UnitTesting.AssertHandler.OnAssertFailed(lastException.Message);
             }
         }
 

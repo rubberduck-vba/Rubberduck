@@ -37,6 +37,11 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
     }
 
 
+    public static class MoqTimesExt
+    {
+        public static ITimes ToRubberduckTimes(this Moq.Times times) => new Times(times);
+    }
+
     [ComVisible(true)]
     [Guid(RubberduckGuid.TimesGuid)]
     [ProgId(RubberduckProgId.TimesProgId)]
@@ -44,47 +49,36 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
     [ComDefaultInterface(typeof(ITimes))]
     public class Times : ITimes, IEquatable<Times>
     {
-        internal int Min { get; }
-        internal int Max { get; }
-
         internal Times() { }
 
-        internal Times(int min, int max)
+        internal Times(Moq.Times moqTimes)
         {
-            Min = min;
-            Max = max;
+            MoqTimes = moqTimes;
         }
 
-        public bool Equals(Times other) => other.Min == Min && other.Max == Max;
+        public bool Equals(Times other) => MoqTimes.Equals(other?.MoqTimes);
 
-        public override bool Equals(object obj) => Equals((Times)obj);
+        public override bool Equals(object obj) => Equals(obj as Times);
 
-        public override int GetHashCode() => HashCode.Compute(Min, Max);
+        public override int GetHashCode() => MoqTimes.GetHashCode();
 
-        public ITimes AtMost(int CallCount) => new Times(0, CallCount);
+        public ITimes AtMost(int CallCount) => new Times(Moq.Times.AtMost(CallCount));
 
-        public ITimes AtMostOnce() => new Times(0, 1);
+        public ITimes AtMostOnce() => new Times(Moq.Times.AtMostOnce());
 
-        public ITimes AtLeast(int CallCount) => new Times(CallCount, int.MaxValue);
+        public ITimes AtLeast(int CallCount) => new Times(Moq.Times.AtLeast(CallCount));
 
-        public ITimes AtLeastOnce() => new Times(1, int.MaxValue);
+        public ITimes AtLeastOnce() => new Times(Moq.Times.AtLeastOnce());
 
         public ITimes Between(int MinCallCount, int MaxCallCount, SetupArgumentRange RangeKind = SetupArgumentRange.Inclusive)
-            => new Times(MinCallCount + RangeKind == SetupArgumentRange.Exclusive ? 1 : 0, MaxCallCount - RangeKind == SetupArgumentRange.Exclusive ? 1 : 0);
+            => new Times(Moq.Times.Between(MinCallCount, MaxCallCount, RangeKind == SetupArgumentRange.Exclusive ? Moq.Range.Exclusive : Moq.Range.Inclusive ));
 
-        public ITimes Exactly(int CallCount) => new Times(CallCount, CallCount);
+        public ITimes Exactly(int CallCount) => new Times(Moq.Times.Exactly(CallCount));
 
-        public ITimes Once() => new Times(1, 1);
+        public ITimes Once() => new Times(Moq.Times.Once());
 
-        public ITimes Never() => new Times(0, 0);
+        public ITimes Never() => new Times(Moq.Times.Never());
 
-        public static bool operator ==(Times lhs, Times rhs) => lhs.Equals(rhs);
-        public static bool operator !=(Times lhs, Times rhs) => !lhs.Equals(rhs);
-
-        public void Deconstruct(out int MinCallCount, out int MaxCallCount)
-        {
-            MinCallCount = Min;
-            MaxCallCount = Max;
-        }
+        internal Moq.Times MoqTimes { get; }
     }
 }

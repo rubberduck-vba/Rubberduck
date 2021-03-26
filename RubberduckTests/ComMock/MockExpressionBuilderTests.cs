@@ -34,7 +34,7 @@ namespace RubberduckTests.ComMock
         }
 
         [Test]
-        public void Setup_Returning_Method_With_Return_Ignored_Compiles()
+        public void Setup_ReturningMethod_WithReturnIgnored_Compiles()
         {
             var mock = new Mock<ITest1>();
             var builder = MockExpressionBuilder.Create(mock);
@@ -46,7 +46,7 @@ namespace RubberduckTests.ComMock
         }
 
         [Test]
-        public void Setup_Returning_Method_Compiles()
+        public void Setup_ReturningMethod_Compiles()
         {
             var mock = new Mock<ITest1>();
             var builder = MockExpressionBuilder.Create(mock);
@@ -58,7 +58,7 @@ namespace RubberduckTests.ComMock
         }
 
         [Test]
-        public void Setup_With_Returns_Compiles()
+        public void SetupWithReturns_Compiles()
         {
             const int expected = 42;
             var mock = new Mock<ITest1>();
@@ -74,7 +74,7 @@ namespace RubberduckTests.ComMock
         }
 
         [Test]
-        public void Setup_With_Callback_Compiles()
+        public void SetupWithCallback_Compiles()
         {
             const int expected = 42;
             var actual = 0;
@@ -93,6 +93,24 @@ namespace RubberduckTests.ComMock
             Assert.AreEqual(expected, actual);
         }
 
+        [Test]
+        public void Verify_Compiles()
+        {
+            const int expected = 1;
+            var expectedTimes = Moq.Times.Once().ToRubberduckTimes();
+
+            var mock = new Mock<ITest1>();
+            var builder = MockExpressionBuilder.Create(mock);
+            var expression = ArrangeSetupDoExpression();
+
+            builder.As(typeof(ITest1))
+                .Verify(expression, expectedTimes, ArrangeForwardedArgs())
+                .Execute();
+
+            mock.Object.Do();
+            Assert.AreEqual(expected, mock.Invocations.Count);
+        }
+
         private static IReadOnlyDictionary<ParameterExpression, object> ArrangeForwardedArgs()
         {
             return new Dictionary<ParameterExpression, object>();
@@ -100,6 +118,8 @@ namespace RubberduckTests.ComMock
 
         private static Expression ArrangeSetupDoExpression()
         {
+            // x => x.Do()
+
             var typeParameterExpression = Expression.Parameter(typeof(ITest1), "x");
             var methodInfo = typeof(ITest1).GetMethod(nameof(ITest1.Do));
             var callExpression = Expression.Call(typeParameterExpression, methodInfo);
@@ -108,6 +128,8 @@ namespace RubberduckTests.ComMock
 
         private static Expression ArrangeSetupDoThisExpression()
         {
+            // x => x.DoThis()
+
             var typeParameterExpression = Expression.Parameter(typeof(ITest1), "x");
             var methodInfo = typeof(ITest1).GetMethod(nameof(ITest1.DoThis));
             var callExpression = Expression.Call(typeParameterExpression, methodInfo);

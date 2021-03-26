@@ -22,16 +22,30 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             return Reflection.GetMethodExt(typeof(Mock), MockMemberNames.As()).MakeGenericMethod(type);
         }
 
+        public static MethodInfo Verify(Type mockType)
+        {
+            var typeHandle = mockType.TypeHandle;
+            var mock = typeof(Mock<>);
+
+            var actionArgExpression = typeof(Expression<>).MakeGenericType(typeof(Action<>));
+            var genericMethod = Reflection.GetMethodExt(mock, MockMemberNames.Verify(), actionArgExpression, typeof(Moq.Times));
+            var specificMethod = (MethodInfo)MethodBase.GetMethodFromHandle(genericMethod.MethodHandle, typeHandle);
+
+            return specificMethod;
+        }
+
         public static MethodInfo Verify(Type mockType, Type returnType)
         {
             var typeHandle = mockType.TypeHandle;
             var mock = typeof(Mock<>);
-            var expression = typeof(Expression<>).MakeGenericType(returnType != null ?
+
+            var funcArgExpression = typeof(Expression<>).MakeGenericType(returnType != null ?
                 typeof(Func<,>) :
                 typeof(Action<>)
             );
-            var genericMethod = Reflection.GetMethodExt(mock, MockMemberNames.Verify(), expression);
+            var genericMethod = Reflection.GetMethodExt(mock, MockMemberNames.Verify(), funcArgExpression, typeof(Moq.Times));
             var specificMethod = (MethodInfo)MethodBase.GetMethodFromHandle(genericMethod.MethodHandle, typeHandle);
+
             return returnType != null ? specificMethod.MakeGenericMethod(returnType) : specificMethod;
         }
 

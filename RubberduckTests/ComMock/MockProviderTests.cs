@@ -537,6 +537,100 @@ namespace RubberduckTests.ComMock
             }
         }
 
+        [Test]
+        [TestCase(IID_FileSystem3_String)]
+        [TestCase(IID_FileSystem_String)]
+        public void Mock_Verify_NoSetup_NoOp(string IID)
+        {
+            var pUnk = IntPtr.Zero;
+            var pProxy = IntPtr.Zero;
+
+            const int expectedAssertsCompleted = 1;
+            const Rubberduck.UnitTesting.TestOutcome expectedOutcome = Rubberduck.UnitTesting.TestOutcome.Succeeded;
+            var assertsCompleted = 0;
+            Rubberduck.UnitTesting.TestOutcome outcome = Rubberduck.UnitTesting.TestOutcome.Unknown;
+            var handleAssertCompleted = new EventHandler<Rubberduck.UnitTesting.AssertCompletedEventArgs>((o, e) => { outcome = e.Outcome; assertsCompleted++; });
+
+            try
+            {
+                Rubberduck.UnitTesting.AssertHandler.OnAssertCompleted += handleAssertCompleted;
+
+                var provider = new MockProvider();
+                var mockFso = provider.Mock("Scripting.FileSystemObject");
+                var obj = mockFso.Object;
+
+                pUnk = Marshal.GetIUnknownForObject(obj);
+
+                var iid = new Guid(IID);
+                var hr = Marshal.QueryInterface(pUnk, ref iid, out pProxy);
+                if (hr != 0)
+                {
+                    throw new InvalidCastException("QueryInterface failed on the proxy type");
+                }
+
+                dynamic mocked = Marshal.GetObjectForIUnknown(pProxy);
+                Assert.IsNull(mocked.Drives, "Expected null reference for not-setup object property.");
+
+                mockFso.Verify("Drives", provider.Times.Never());
+                Assert.AreEqual(expectedAssertsCompleted, assertsCompleted, "Expected asserts mismatched.");
+                Assert.AreEqual(expectedOutcome, outcome, "Expected test outcome mismatched.");
+            }
+            finally
+            {
+                if (pProxy != IntPtr.Zero) Marshal.Release(pProxy);
+                if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
+                Rubberduck.UnitTesting.AssertHandler.OnAssertCompleted -= handleAssertCompleted;
+            }
+        }
+
+        [Test]
+        [TestCase(IID_FileSystem3_String)]
+        [TestCase(IID_FileSystem_String)]
+        public void Mock_Verify_WithSetup_WithExpectedInvocationCount_Passes(string IID)
+        {
+            var pUnk = IntPtr.Zero;
+            var pProxy = IntPtr.Zero;
+
+            const int expectedAssertsCompleted = 1;
+            const Rubberduck.UnitTesting.TestOutcome expectedOutcome = Rubberduck.UnitTesting.TestOutcome.Succeeded;
+            var assertsCompleted = 0;
+            Rubberduck.UnitTesting.TestOutcome outcome = Rubberduck.UnitTesting.TestOutcome.Unknown;
+            var handleAssertCompleted = new EventHandler<Rubberduck.UnitTesting.AssertCompletedEventArgs>((o, e) => { outcome = e.Outcome; assertsCompleted++; });
+
+            try
+            {
+                Rubberduck.UnitTesting.AssertHandler.OnAssertCompleted += handleAssertCompleted;
+
+                var provider = new MockProvider();
+                var mockFso = provider.Mock("Scripting.FileSystemObject");
+                var mockDrives = mockFso.SetupChildMock("Drives");
+                var obj = mockFso.Object;
+
+                pUnk = Marshal.GetIUnknownForObject(obj);
+
+                var iid = new Guid(IID);
+                var hr = Marshal.QueryInterface(pUnk, ref iid, out pProxy);
+                if (hr != 0)
+                {
+                    throw new InvalidCastException("QueryInterface failed on the proxy type");
+                }
+
+                dynamic mocked = Marshal.GetObjectForIUnknown(pProxy);
+                Assert.IsNotNull(mocked.Drives, "Expected non-null reference for set-up object property.");
+
+                mockFso.Verify("Drives", provider.Times.Once());
+                Assert.AreEqual(expectedAssertsCompleted, assertsCompleted, "Expected asserts mismatched.");
+
+                Assert.AreEqual(expectedOutcome, outcome, "Expected test outcome mismatched.");
+            }
+            finally
+            {
+                if (pProxy != IntPtr.Zero) Marshal.Release(pProxy);
+                if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
+                Rubberduck.UnitTesting.AssertHandler.OnAssertCompleted -= handleAssertCompleted;
+            }
+        }
+
         /* Commented to remove the PIA reference to Scripting library, but keeping code in one day they fix type equivalence?
         [Test]
         public void Type_From_ITypeInfo_Are_Equivalent()
