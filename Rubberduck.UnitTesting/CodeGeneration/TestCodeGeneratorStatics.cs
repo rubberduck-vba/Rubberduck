@@ -81,11 +81,13 @@ End Sub";
 
         private static string LateBindingDeclarations =>
 @"    Private Assert As Object
-    Private Fakes As Object";
+    Private Fakes As Object
+    Private Mocks As Object";
 
         private static string EarlyBindingDeclarations =>
 @"    Private Assert As Rubberduck.{0}
-    Private Fakes As Rubberduck.FakesProvider";
+    Private Fakes As Rubberduck.FakesProvider
+    Private Mocks As Rubberduck.MockProvider";
 
         private static string DualBindingDeclarations =>
 $@"#Const {LateBindConstName} = {LateBindDirectiveName}
@@ -98,11 +100,13 @@ $@"#Const {LateBindConstName} = {LateBindDirectiveName}
 
         private static string LateBindingInitialization =>
 @"    Set Assert = CreateObject(""Rubberduck.{0}"")
-    Set Fakes = CreateObject(""Rubberduck.FakesProvider"")";
+    Set Fakes = CreateObject(""Rubberduck.FakesProvider"")
+    Set Mocks = CreateObject(""Rubberduck.MockProvider"")";
 
         private static string EarlyBindingInitialization =>
 @"    Set Assert = New Rubberduck.{0}
-    Set Fakes = New Rubberduck.FakesProvider";
+    Set Fakes = New Rubberduck.FakesProvider
+    Set Mocks = New Rubberduck.MockProvider";
 
         private static string DualBindingInitialization =>
 $@"#If {LateBindConstName} Then
@@ -131,6 +135,7 @@ Private Sub {ModuleCleanupMethod}()
     {ModuleCleanupComment}
     Set Assert = Nothing
     Set Fakes = Nothing
+    Set Mocks = Nothing
 End Sub
 
 '@TestInitialize
