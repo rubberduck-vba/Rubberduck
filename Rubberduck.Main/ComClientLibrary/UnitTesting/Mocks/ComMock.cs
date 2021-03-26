@@ -46,6 +46,24 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         /// Refer to remarks in <see cref="SetupArgumentResolver.ResolveArgs"/> for how the
         /// parameter <paramref name="Args"/> is handled. 
         /// </remarks>
+        public void Setup(string Name, object Args = null)
+        {
+            var args = _resolver.ResolveArgs(Args);
+            var setupDatas = _setupBuilder.CreateExpression(Name, args);
+
+            foreach (var setupData in setupDatas)
+            {
+                var builder = MockExpressionBuilder.Create(Mock);
+                builder.As(setupData.DeclaringType)
+                    .Setup(setupData.SetupExpression, setupData.Args)
+                    .Execute();
+            }
+        }
+
+        /// <remarks>
+        /// Refer to remarks in <see cref="SetupArgumentResolver.ResolveArgs"/> for how the
+        /// parameter <paramref name="Args"/> is handled. 
+        /// </remarks>
         public void SetupWithReturns(string Name, object Value, object Args = null)
         {
             var args = _resolver.ResolveArgs(Args);
@@ -127,6 +145,28 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             {
                 if (pUnkTarget != IntPtr.Zero) Marshal.Release(pUnkTarget);
                 if (pUnkSource != IntPtr.Zero) Marshal.Release(pUnkSource);
+            }
+        }
+
+        public void Verify(string Name, ITimes Times, [MarshalAs(UnmanagedType.Struct), Optional] object Args)
+        {
+            var args = _resolver.ResolveArgs(Args);
+            var setupDatas = _setupBuilder.CreateExpression(Name, args);
+
+            try
+            {
+                foreach (var setupData in setupDatas)
+                {
+                    var builder = MockExpressionBuilder.Create(Mock);
+                    builder.As(setupData.DeclaringType)
+                        .Verify(setupData.SetupExpression, setupData.Args)
+                        .Execute();
+                }
+            }
+            catch (MockException)
+            {
+                // todo move to resx if this works.. and account for the several possible wordings
+                Rubberduck.UnitTesting.AssertHandler.OnAssertFailed($"Member '{Name}' was invoked {Mock.Invocations.Count(e => e.Method.Name == Name)} times; expected {Times}.");
             }
         }
 

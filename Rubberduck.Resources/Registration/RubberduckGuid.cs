@@ -41,6 +41,8 @@
         public const string SetupArgumentCreatorGuid = UnitTestingGuidspace + "EB" + GuidSuffix;
         public const string IComMockedGuid = UnitTestingGuidspace + "EC" + GuidSuffix;
         public const string ComMockedGuid = UnitTestingGuidspace + "ED" + GuidSuffix;
+        public const string ITimesGuid = UnitTestingGuidspace + "EE" + GuidSuffix;
+        public const string TimesGuid = UnitTestingGuidspace + "EF" + GuidSuffix;
 
         // Rubberduck API Guids:
         private const string ApiGuidspace = "69E0F7";

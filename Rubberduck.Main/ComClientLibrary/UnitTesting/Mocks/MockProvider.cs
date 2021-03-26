@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -25,10 +26,16 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
     public interface IMockProvider
     {
         [DispId(1)]
+        [Description("Creates a new mock for the specified interface.")]
         IComMock Mock(string ProgId, [Optional] string Project);
 
         [DispId(2)]
+        [Description("Gets an object that creates argument placeholders for an expression.")]
         SetupArgumentCreator It { get; }
+
+        [DispId(3)]
+        [Description("Gets an object that specifies how many times a verifiable invocation should occur.")]
+        ITimes Times { get; }
     }
 
     [ComVisible(false)]
@@ -51,6 +58,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         public MockProvider()
         {
             It = new SetupArgumentCreator();
+            Times = new Times();
         }
 
         public IComMock Mock(string ProgId, string Project = null)
@@ -111,6 +119,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         }
 
         public SetupArgumentCreator It { get; }
+        public ITimes Times { get; }
 
         private static Type GetComDefaultInterface(Type classType)
         {

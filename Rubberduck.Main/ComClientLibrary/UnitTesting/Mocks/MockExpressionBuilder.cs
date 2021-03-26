@@ -12,10 +12,16 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         IRuntimeSetup As(Type targetInterface);
     }
 
-    public interface IRuntimeSetup : IRuntimeMock, IRuntimeCallback, IRuntimeExecute
+    public interface IRuntimeSetup : IRuntimeMock, IRuntimeCallback, IRuntimeExecute, IRuntimeVerify
     {
         IRuntimeCallback Setup(Expression setupExpression, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs);
         IRuntimeReturns Setup(Expression setupExpression, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs, Type returnType);
+    }
+
+    public interface IRuntimeVerify : IRuntimeExecute
+    {
+        IRuntimeVerify Verify(Expression verifyExpression, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs);
+        IRuntimeVerify Verify(Expression verifyExpression, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs, Type returnType);
     }
 
     public interface IRuntimeCallback : IRuntimeExecute
@@ -40,6 +46,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         IRuntimeSetup,
         IRuntimeCallback,
         IRuntimeReturns,
+        IRuntimeVerify,
         IRuntimeExecute
     {
         private readonly Mock _mock;
@@ -154,6 +161,44 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             return _expression.NodeType == ExpressionType.Lambda 
                 ? ((LambdaExpression)_expression).Compile().DynamicInvoke(args)
                 : Expression.Lambda(_expression, _mockParameterExpression).Compile().DynamicInvoke(args);
+        }
+
+        public IRuntimeVerify Verify(Expression verifyExpression, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs)
+        {
+            switch (verifyExpression.Type.GetGenericArguments().Length)
+            {
+                case 2:
+                    // It's a returning method so we need to use the Func version of Setup and ignore the return.
+                    Verify(verifyExpression, forwardedArgs, verifyExpression.Type.GetGenericArguments()[1]);
+                    return this;
+                case 1:
+                    var verifyMethodInfo = MockMemberInfos.Verify(_currentType, null);
+                    // Quoting the setup lambda expression ensures that closures will be applied
+                    _expression = Expression.Call(_expression, verifyMethodInfo, Expression.Quote(verifyExpression));
+                    _currentType = verifyMethodInfo.ReturnType;
+                    if (forwardedArgs.Any())
+                    {
+                        _lambdaArguments.AddRange(forwardedArgs.Keys);
+                        _args.AddRange(forwardedArgs.Values);
+                    }
+                    return this;
+                default:
+                    throw new NotSupportedException("Verify can only handle 1 or 2 arguments as an input");
+            }
+        }
+
+        public IRuntimeVerify Verify(Expression verifyExpression, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs, Type returnType)
+        {
+            var verifyMethodInfo = MockMemberInfos.Setup(_currentType, returnType);
+            // Quoting the verify lambda expression ensures that closures will be applied
+            _expression = Expression.Call(_expression, verifyMethodInfo, Expression.Quote(verifyExpression));
+            _currentType = verifyMethodInfo.ReturnType;
+            if (forwardedArgs.Any())
+            {
+                _lambdaArguments.AddRange(forwardedArgs.Keys);
+                _args.AddRange(forwardedArgs.Values);
+            }
+            return this;
         }
     }
 }

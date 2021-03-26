@@ -1,8 +1,9 @@
 ﻿using System;
-using System.IO;
+using System.IO.Abstractions;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Microsoft.Win32;
+using Rubberduck.InternalApi.Common;
 using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 
@@ -141,7 +142,7 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
                 return true;
             }
 
-            var file = Path.GetFileName(path);
+            var file = FileSystemProvider.FileSystem.Path.GetFileName(path);
             return LoadTypeLib(file, out lib) == 0;
         }
 
