@@ -24,7 +24,7 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
     /// </remarks>
     public interface ICachedTypeService
     {
-        bool TryInvalidate(string project, string progId);
+        bool TryInvalidate(string project, string progId = null);
         bool TryGetCachedType(string progId, out Type type);
         bool TryGetCachedType(string project, string progId, out Type type);
         bool TryGetCachedType(ITypeInfo typeInfo, out Type type);
@@ -163,11 +163,18 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
             return false;
         }
 
-        public bool TryInvalidate(string project, string progId)
+        public bool TryInvalidate(string project, string progId = null)
         {
             if (TypeCaches.TryGetValue(project?.ToLowerInvariant() ?? string.Empty, out var cache))
             {
-                return cache.Remove(progId);
+                if (!string.IsNullOrWhiteSpace(progId))
+                {
+                    return cache.Remove(progId);
+                }
+                else
+                {
+                    return TypeCaches.TryRemove(cache.Key, out _);
+                }
             }
 
             return false;
