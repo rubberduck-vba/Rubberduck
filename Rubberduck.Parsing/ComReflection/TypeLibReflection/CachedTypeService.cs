@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
@@ -15,7 +16,7 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
     /// returned for each invocation, even for the same ProgID or ITypeInfo. That will cause problems later such
     /// as being unable to cast an instance from one type to another, even though they are based on exactly the
     /// same ProgID/ITypeInfo/etc.. In those cases, the <see cref="Type.IsEquivalentTo"/> incorrectly returns
-    /// false. Thus, those methods should be wrapped in the <see cref="TryCacheType"/> methods to ensure that
+    /// false. Thus, those methods should be wrapped in the <c>TryCachedType</c> methods to ensure that
     /// the repeated invocation will continue to return exactly same <see cref="Type"/>.
     ///
     /// For details on the issue with the <see cref="Type.IsEquivalentTo"/>, refer to:
@@ -23,6 +24,7 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
     /// </remarks>
     public interface ICachedTypeService
     {
+        bool TryInvalidate(string project, string progId);
         bool TryGetCachedType(string progId, out Type type);
         bool TryGetCachedType(string project, string progId, out Type type);
         bool TryGetCachedType(ITypeInfo typeInfo, out Type type);
@@ -158,6 +160,16 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
             }
 
             type = null;
+            return false;
+        }
+
+        public bool TryInvalidate(string project, string progId)
+        {
+            if (TypeCaches.TryGetValue(project?.ToLowerInvariant() ?? string.Empty, out var cache))
+            {
+                return cache.Remove(progId);
+            }
+
             return false;
         }
     }

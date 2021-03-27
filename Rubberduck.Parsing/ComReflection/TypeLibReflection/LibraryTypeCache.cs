@@ -9,6 +9,7 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
         bool TryGetType(string progId, out Type type);
         bool AddType(string progId, Type type);
         Type GetOrAdd(string progId, Type type);
+        bool Remove(string progId);
     }
 
     internal sealed class LibraryTypeCache : ILibraryTypeCache
@@ -42,6 +43,11 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
         public Type GetOrAdd(string progId, Type type)
         {
             return _cache.GetOrAdd(progId.ToLowerInvariant(), s => type);
+        }
+
+        public bool Remove(string progId)
+        {
+            return _cache.TryRemove(progId, out _);
         }
     }
 }
