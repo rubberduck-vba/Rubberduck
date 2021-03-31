@@ -3,9 +3,8 @@
     public enum CommandBarSite
     {
         MenuBar,
-        CodeWindow,
-        ProjectExplorer,
-        MsForm,
-        MsFormControl
+        CodePaneContextMenu,
+        ProjectExplorerContextMenu,
+        FormDesignerContextMenu,
     }
 }

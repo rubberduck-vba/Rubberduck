@@ -28,10 +28,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             CommandBarLocations = new ReadOnlyDictionary<CommandBarSite, CommandBarLocation>(new Dictionary<CommandBarSite, CommandBarLocation>
             {
                 {CommandBarSite.MenuBar, new CommandBarLocation(MenuBar, WindowMenu)},
-                {CommandBarSite.CodeWindow, new CommandBarLocation(CodeWindow, ListProperties)},
-                {CommandBarSite.ProjectExplorer, new CommandBarLocation(ProjectExplorer, ProjectProperties)},
+                {CommandBarSite.CodePaneContextMenu, new CommandBarLocation(CodeWindow, ListProperties)},
+                {CommandBarSite.ProjectExplorerContextMenu, new CommandBarLocation(ProjectExplorer, ProjectProperties)},
                 // {CommandBarSite.MsForm, new CommandBarLocation(MsForm, UpdateUserControls)}, // FIXME - quick hack for #4280
-                {CommandBarSite.MsFormControl, new CommandBarLocation(MsFormControl, ViewCode)}
+                {CommandBarSite.FormDesignerContextMenu, new CommandBarLocation(MsFormControl, ViewCode)}
             });
         }
 

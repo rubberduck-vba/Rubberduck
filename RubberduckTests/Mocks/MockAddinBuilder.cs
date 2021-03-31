@@ -22,9 +22,9 @@ namespace RubberduckTests.Mocks
             addIn.Setup(a => a.CommandBarLocations).Returns(new ReadOnlyDictionary<CommandBarSite, CommandBarLocation>(new Dictionary<CommandBarSite, CommandBarLocation>
             {
                 {CommandBarSite.MenuBar, new CommandBarLocation(1, 1)},
-                {CommandBarSite.CodeWindow, new CommandBarLocation(2, 2)},
-                {CommandBarSite.ProjectExplorer, new CommandBarLocation(3, 3)},
-                {CommandBarSite.MsForm, new CommandBarLocation(4, 4)},
+                {CommandBarSite.CodePaneContextMenu, new CommandBarLocation(2, 2)},
+                {CommandBarSite.ProjectExplorerContextMenu, new CommandBarLocation(3, 3)},
+                {CommandBarSite.FormDesignerContextMenu, new CommandBarLocation(4, 4)},
                 {CommandBarSite.MsFormControl, new CommandBarLocation(5, 5)}
             }));
 
