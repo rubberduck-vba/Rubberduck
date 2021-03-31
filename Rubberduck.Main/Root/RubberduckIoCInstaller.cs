@@ -174,6 +174,7 @@ namespace Rubberduck.Root
             RegisterRubberduckMenu(container);
             RegisterCodePaneContextMenu(container);
             RegisterFormDesignerContextMenu(container);
+            RegisterFormDesignerControlContextMenu(container);
             RegisterProjectExplorerContextMenu(container);
 
             RegisterWindowsHooks(container);
@@ -592,6 +593,21 @@ namespace Rubberduck.Root
             var beforeIndex = FindRubberduckMenuInsertionIndex(parent, location.BeforeControlId);
             var menuItemTypes = FormDesignerContextMenuItems();
             RegisterMenu<FormDesignerContextParentMenu>(container, parent, beforeIndex, menuItemTypes);
+        }
+
+        private void RegisterFormDesignerControlContextMenu(IWindsorContainer container)
+        {
+            if (!_addin.CommandBarLocations.TryGetValue(CommandBarSite.FormDesignerControlContextMenu, out var location))
+            {
+                return;
+            }
+
+            var parent = location.ParentId != default
+                ? MainCommandBarControls(location.ParentId)
+                : MainCommandBarControls(location.ParentName);
+            var beforeIndex = FindRubberduckMenuInsertionIndex(parent, location.BeforeControlId);
+            var menuItemTypes = FormDesignerContextMenuItems();
+            RegisterMenu<FormDesignerControlContextParentMenu>(container, parent, beforeIndex, menuItemTypes);
         }
 
         private Type[] FormDesignerContextMenuItems()

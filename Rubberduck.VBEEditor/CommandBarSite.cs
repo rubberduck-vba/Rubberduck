@@ -6,5 +6,6 @@
         CodePaneContextMenu,
         ProjectExplorerContextMenu,
         FormDesignerContextMenu,
+        FormDesignerControlContextMenu,
     }
 }

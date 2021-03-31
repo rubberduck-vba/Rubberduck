@@ -25,7 +25,7 @@ namespace RubberduckTests.Mocks
                 {CommandBarSite.CodePaneContextMenu, new CommandBarLocation(2, 2)},
                 {CommandBarSite.ProjectExplorerContextMenu, new CommandBarLocation(3, 3)},
                 {CommandBarSite.FormDesignerContextMenu, new CommandBarLocation(4, 4)},
-                {CommandBarSite.MsFormControl, new CommandBarLocation(5, 5)}
+                {CommandBarSite.FormDesignerControlContextMenu, new CommandBarLocation(5, 5)}
             }));
 
             return addIn;

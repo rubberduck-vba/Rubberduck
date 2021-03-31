@@ -43,6 +43,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {CommandBarSite.CodePaneContextMenu, new CommandBarLocation(VbeCommandBarMenuNames.CodePaneContext, ListProperties)},
                 {CommandBarSite.ProjectExplorerContextMenu, new CommandBarLocation(VbeCommandBarMenuNames.ProjectExplorerContext, ProjectProperties)},
                 {CommandBarSite.FormDesignerContextMenu, new CommandBarLocation(VbeCommandBarMenuNames.FormDesignerContext, ViewCode)},
+                {CommandBarSite.FormDesignerControlContextMenu, new CommandBarLocation(VbeCommandBarMenuNames.FormDesignerControlContext, ViewCode)},
             });
         }
 
