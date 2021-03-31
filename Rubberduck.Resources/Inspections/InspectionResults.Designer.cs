@@ -853,6 +853,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The public enumeration `{0}` declared within `{1}` should be declared within a standard module.
+        /// </summary>
+        public static string PublicEnumerationDeclaredWithinWorksheetInspection {
+            get {
+                return ResourceManager.GetString("PublicEnumerationDeclaredWithinWorksheetInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; has a redundant &apos;ByRef&apos; modifier..
         /// </summary>
         public static string RedundantByRefModifierInspection {

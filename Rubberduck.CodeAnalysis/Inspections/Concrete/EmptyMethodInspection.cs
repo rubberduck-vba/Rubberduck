@@ -33,7 +33,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// ]]>
     /// </module>
     /// </example>
-    internal class EmptyMethodInspection : DeclarationInspectionBase
+    internal sealed class EmptyMethodInspection : DeclarationInspectionBase
     {
         public EmptyMethodInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Member)

@@ -826,6 +826,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copying a worksheet which contains a public `Enum` declaration will duplicate the enum resulting in a state which prevents compilation. Moving the enumeration declaration to a standard module avoids this situation..
+        /// </summary>
+        public static string PublicEnumerationDeclaredWithinWorksheetInspection {
+            get {
+                return ResourceManager.GetString("PublicEnumerationDeclaredWithinWorksheetInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By default, all parameters are passed by reference, so it is not necessary to include the &apos;ByRef&apos; modifier..
         /// </summary>
         public static string RedundantByRefModifierInspection {

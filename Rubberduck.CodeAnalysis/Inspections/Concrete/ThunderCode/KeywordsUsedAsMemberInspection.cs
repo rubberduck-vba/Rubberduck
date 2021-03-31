@@ -19,7 +19,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.ThunderCode
     /// While perfectly legal as Type or Enum member names, these identifiers should be avoided: 
     /// they need to be square-bracketed everywhere they are used.
     /// </why>
-    internal class KeywordsUsedAsMemberInspection : DeclarationInspectionBase
+    internal sealed class KeywordsUsedAsMemberInspection : DeclarationInspectionBase
     {
         public KeywordsUsedAsMemberInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.EnumerationMember, DeclarationType.UserDefinedTypeMember)

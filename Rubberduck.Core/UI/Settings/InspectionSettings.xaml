@@ -63,7 +63,7 @@
                                 <Image Source="{StaticResource FilterImage}" Width="19" />
                                 <Label Content="{Resx Key=InspectionSettings_FilterByDescription, ResxName=Rubberduck.Resources.RubberduckUI}" />
                                 <controls:SearchBox Width="100"
-                                                    Text="{Binding InspectionSettingsDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="26" />
+                                                    Text="{Binding InspectionSettingsDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" Height="26" />
                                 <Border Width="10" />
                                 <Label Content="{Resx Key=InspectionSettings_FilterBySeverity, ResxName=Rubberduck.Resources.RubberduckUI}" />
                                 <ComboBox Width="100"

@@ -14,7 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.ThunderCode
     /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
     /// This inspection may accidentally reveal non-breaking spaces in code copied and pasted from a website.
     /// </why>
-    internal class NonBreakingSpaceIdentifierInspection : DeclarationInspectionBase
+    internal sealed class NonBreakingSpaceIdentifierInspection : DeclarationInspectionBase
     {
         private const string Nbsp = "\u00A0";
 
