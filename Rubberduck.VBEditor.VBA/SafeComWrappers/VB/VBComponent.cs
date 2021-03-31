@@ -78,13 +78,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get
             {
-                if (IsWrappingNullReference)
+                try
+                {
+                    if (IsWrappingNullReference)
+                    {
+                        return false;
+                    }
+                    using (var designer = new UserForm(Target.Designer as VB.Forms.UserForm))
+                    {
+                        return !designer.IsWrappingNullReference;
+                    }
+                }
+                catch
                 {
                     return false;
-                }
-                using (var designer = new UserForm(Target.Designer as VB.Forms.UserForm))
-                {
-                    return !designer.IsWrappingNullReference;
                 }
             }
         }
