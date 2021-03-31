@@ -48,7 +48,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                            && (!parameter.IsOptional
                                || !parameter.AsTypeName.Equals(Tokens.Variant)
                                || !string.IsNullOrEmpty(parameter.DefaultValue)
-                               || parameter.IsArray);
+                               || (parameter.IsArray && !parameter.IsParamArray));
             return (isResult, parameter);
         }
 
