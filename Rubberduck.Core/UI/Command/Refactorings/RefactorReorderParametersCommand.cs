@@ -50,7 +50,7 @@ namespace Rubberduck.UI.Command.Refactorings
         private Declaration GetTarget()
         {
             var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration();
-            if (!ValidDeclarationTypes.Contains(selectedDeclaration.DeclarationType))
+            if (selectedDeclaration != null && !ValidDeclarationTypes.Contains(selectedDeclaration.DeclarationType))
             {
                 return selectedDeclaration.DeclarationType == DeclarationType.Parameter
                     ? _selectedDeclarationProvider.SelectedMember()
