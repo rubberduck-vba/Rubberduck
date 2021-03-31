@@ -18,6 +18,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             typeof(CodeExplorerProjectViewModel),
             typeof(CodeExplorerComponentViewModel),
             typeof(CodeExplorerMemberViewModel),
+            typeof(CodeExplorerSubMemberViewModel),
             typeof(CodeExplorerCustomFolderViewModel)
         };
 
