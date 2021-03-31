@@ -88,6 +88,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         {
             return declaration.DeclarationType.HasFlag(DeclarationType.Module)
                    || declaration.DeclarationType.HasFlag(DeclarationType.Project)
+                   || declaration.DeclarationType.HasFlag(DeclarationType.Control)
                    ? new List<string> {"IgnoreOnceQuickFix"}
                    : new List<string>();
         }
