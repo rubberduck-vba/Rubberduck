@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
@@ -50,11 +51,18 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             : base(declarationFinderProvider, DeclarationType.Variable)
         {}
 
+        protected override ICollection<string> DisabledQuickFixes(Declaration declaration)
+        {
+            return declaration.IsUndeclared 
+                ? new List<string> { nameof(QuickFixes.Concrete.RemoveUnusedDeclarationQuickFix) } 
+                : new List<string>();
+        }
+
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            return !declaration.IsWithEvents
-                   && declaration.References
-                       .All(reference => reference.IsAssignment)
+            // exclude undeclared, see #5439
+            return !declaration.IsWithEvents && !declaration.IsUndeclared
+                   && declaration.References.All(reference => reference.IsAssignment)
                    && !declaration.References.Any(IsForLoopAssignment);
         }
 
