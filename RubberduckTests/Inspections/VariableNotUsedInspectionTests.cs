@@ -159,22 +159,15 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void UndeclaredVariableNotUsed_RemoveUnusedDeclarationQuickFixDisabled()
+        public void UndeclaredVariableNotUsed_NoResults()
         {
-            var expected = nameof(Rubberduck.CodeAnalysis.QuickFixes.Concrete.RemoveUnusedDeclarationQuickFix);
-
             // "Dim undeclared As Object" was previously removed; see #5439
             const string inputCode =
 @"Public Sub Foo()
     Set undeclared = Nothing
 End Sub";
             var results = InspectionResultsForStandardModule(inputCode);
-            if (!results.Any())
-            {
-                Assert.Inconclusive("Input code yielded no inspection results.");
-            }
-
-            Assert.That(() => results.All(result => result.DisabledQuickFixes.Contains(expected)));
+            Assert.AreEqual(0, results.Count());
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)

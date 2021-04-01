@@ -51,13 +51,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             : base(declarationFinderProvider, DeclarationType.Variable)
         {}
 
-        protected override ICollection<string> DisabledQuickFixes(Declaration declaration)
-        {
-            return declaration.IsUndeclared 
-                ? new List<string> { nameof(QuickFixes.Concrete.RemoveUnusedDeclarationQuickFix) } 
-                : new List<string>();
-        }
-
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             // exclude undeclared, see #5439
