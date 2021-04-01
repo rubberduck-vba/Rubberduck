@@ -1338,13 +1338,23 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             identifierMatches = identifierMatches.Where(nc => !IsEnumOrUDTMemberDeclaration(nc)).ToList();
             var referenceConflicts = identifierMatches.Where(idm =>
                 renameTarget.References
-                    .Any(renameTargetRef => renameTargetRef.ParentScoping == idm.ParentDeclaration
+                    .Any(renameTargetRef => 
+                        renameTargetRef.ParentScoping == idm.ParentDeclaration
+                        
                         || !renameTarget.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
                             && idm == renameTargetRef.ParentScoping
                             && !UsesScopeResolution(renameTargetRef.Context.Parent)
+
                         || idm.References
                             .Any(idmRef => idmRef.ParentScoping == renameTargetRef.ParentScoping
-                                && !UsesScopeResolution(renameTargetRef.Context.Parent)))
+                                && renameTargetRef.QualifiedModuleName != renameTarget.QualifiedModuleName
+                                && !UsesScopeResolution(renameTargetRef.Context.Parent))
+
+                        || idm.References
+                            .Any(idmRef => idmRef.ParentScoping == renameTargetRef.ParentScoping
+                                && renameTargetRef.QualifiedModuleName == renameTarget.QualifiedModuleName
+                                && !UsesScopeResolution(idmRef.Context.Parent)))
+
                 || idm.DeclarationType.HasFlag(DeclarationType.Variable)
                     && idm.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module)
                     && renameTarget.References.Any(renameTargetRef => renameTargetRef.QualifiedModuleName == idm.ParentDeclaration.QualifiedModuleName))
