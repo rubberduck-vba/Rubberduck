@@ -150,7 +150,7 @@ End Sub
 
         [Test]
         [Category("Inspections")]
-        public void IsMissingOnInappropriateArgument_ReportsParamArray()
+        public void IsMissingOnInappropriateArgument_DoesNotReportParamArray()
         {
             const string inputCode =
                 @"
@@ -159,7 +159,7 @@ Public Sub Foo(ParamArray bar() As Variant)
 End Sub
 ";
 
-            const int expected = 1;
+            const int expected = 0;
             var actual = ArrangeAndGetInspectionCount(inputCode);
 
             Assert.AreEqual(expected, actual);

@@ -45,10 +45,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             var parameter = ParameterForReference(reference, finder);
 
             var isResult = parameter != null
-                           && (!parameter.IsOptional
+                           && ((!parameter.IsOptional && !parameter.IsParamArray)
                                || !parameter.AsTypeName.Equals(Tokens.Variant)
                                || !string.IsNullOrEmpty(parameter.DefaultValue)
-                               || parameter.IsArray);
+                               || (parameter.IsArray && !parameter.IsParamArray));
             return (isResult, parameter);
         }
 

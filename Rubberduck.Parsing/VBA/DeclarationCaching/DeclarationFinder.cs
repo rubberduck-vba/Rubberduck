@@ -270,7 +270,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                         item.WithEventsField,
                         Handlers = item.AvailableEvents.SelectMany(evnt =>
                             Members(item.WithEventsField.ParentDeclaration.QualifiedName.QualifiedModuleName, DeclarationType.Procedure)
-                                .Where(member => member.IdentifierName == $"{item.WithEventsField.IdentifierName}_{evnt.IdentifierName}"))
+                                .Where(member => member.IdentifierName.Equals($"{item.WithEventsField.IdentifierName}_{evnt.IdentifierName}", StringComparison.InvariantCultureIgnoreCase)))
                             .OfType<ModuleBodyElementDeclaration>()
                     })
                     .ToDictionary(item => item.WithEventsField, item => item.Handlers.ToList());
@@ -333,8 +333,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             var withEventsDeclarations = FindWithEventFields(eventDeclaration);
             return withEventsDeclarations
-                .Select(withEventsField => FindHandlersForWithEventsField(withEventsField)
-                                            .Single(handler => handler.IdentifierName == $"{withEventsField.IdentifierName}_{eventDeclaration.IdentifierName}"));
+                .Select(withEventsField => FindHandlersForWithEventsField(withEventsField).Single(handler => 
+                    handler.IdentifierName.Equals($"{withEventsField.IdentifierName}_{eventDeclaration.IdentifierName}", StringComparison.InvariantCultureIgnoreCase)));
         }
 
         public ICollection<Declaration> FindFormControlEventHandlers()
@@ -345,8 +345,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         public IEnumerable<Declaration> FindFormControlEventHandlers(Declaration control)
         {
             return _eventHandlers.Value
-                .Where(handlers=> handlers.ParentScope == control.ParentScope
-                                  && handlers.IdentifierName.StartsWith(control.IdentifierName + "_"));
+                .Where(handlers=> handlers.ParentScope.Equals(control.ParentScope, StringComparison.InvariantCultureIgnoreCase) && 
+                    handlers.IdentifierName.StartsWith(control.IdentifierName + "_", StringComparison.InvariantCultureIgnoreCase));
         }
 
         public ICollection<Declaration> FindFormEventHandlers()
@@ -557,7 +557,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public bool IsMatch(string declarationName, string potentialMatchName)
         {
-            return string.Equals(declarationName, potentialMatchName, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(declarationName, potentialMatchName, StringComparison.InvariantCultureIgnoreCase);
         }
 
         private IEnumerable<Declaration> FindEvents(Declaration module)
@@ -1385,8 +1385,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 {
                     var parentModuleSubtypes = ((ClassModuleDeclaration)e.ParentDeclaration).Subtypes.ToList();
                     return parentModuleSubtypes.Any()
-                        ? parentModuleSubtypes.Select(v => v.IdentifierName + "_" + e.IdentifierName)
-                        : new[] { e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName };
+                        ? parentModuleSubtypes.Select(v => (v.IdentifierName + "_" + e.IdentifierName).ToLowerInvariant())
+                        : new[] { (e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName).ToLowerInvariant() };
                 })
                 .ToHashSet();
 
@@ -1396,7 +1396,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                     IsHostSpecificHandler(item))
                 .Concat(
                     UserDeclarations(DeclarationType.Procedure)
-                        .Where(item => handlerNames.Contains(item.IdentifierName))
+                        .Where(item => handlerNames.Any(n => n.Equals(item.IdentifierName, StringComparison.InvariantCultureIgnoreCase)))
                 )
                 .Concat(_handlersByWithEventsField.Value.AllValues())
                 .Concat(FindFormControlEventHandlers())
@@ -1407,8 +1407,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             bool IsVBAClassSpecificHandler(Declaration item)
             {
                 return item.ParentDeclaration.DeclarationType == DeclarationType.ClassModule && (
-                           item.IdentifierName.Equals("Class_Initialize",
-                               StringComparison.InvariantCultureIgnoreCase) ||
+                           item.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase) ||
                            item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase));
             }
 
@@ -1433,10 +1432,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             var events = BuiltInDeclarations(DeclarationType.Event)
                 .Where(item => item.ParentScope == "FM20.DLL;MSForms.FormEvents");
             var handlerNames = events
-                .Select(item => "UserForm_" + item.IdentifierName)
+                .Select(item => ("UserForm_" + item.IdentifierName).ToLowerInvariant())
                 .ToHashSet();
             var handlers = UserDeclarations(DeclarationType.Procedure)
-                .Where(procedure => handlerNames.Contains(procedure.IdentifierName)
+                .Where(procedure => handlerNames.Contains(procedure.IdentifierName.ToLowerInvariant())
                                     && formScopes.Contains(procedure.ParentScope));
             return handlers.ToHashSet();
         }
@@ -1468,13 +1467,23 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             identifierMatches = identifierMatches.Where(nc => !IsEnumOrUDTMemberDeclaration(nc)).ToList();
             var referenceConflicts = identifierMatches.Where(idm =>
                 renameTarget.References
-                    .Any(renameTargetRef => renameTargetRef.ParentScoping == idm.ParentDeclaration
+                    .Any(renameTargetRef => 
+                        renameTargetRef.ParentScoping == idm.ParentDeclaration
+                        
                         || !renameTarget.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
                             && idm == renameTargetRef.ParentScoping
                             && !UsesScopeResolution(renameTargetRef.Context.Parent)
+
                         || idm.References
                             .Any(idmRef => idmRef.ParentScoping == renameTargetRef.ParentScoping
-                                && !UsesScopeResolution(renameTargetRef.Context.Parent)))
+                                && renameTargetRef.QualifiedModuleName != renameTarget.QualifiedModuleName
+                                && !UsesScopeResolution(renameTargetRef.Context.Parent))
+
+                        || idm.References
+                            .Any(idmRef => idmRef.ParentScoping == renameTargetRef.ParentScoping
+                                && renameTargetRef.QualifiedModuleName == renameTarget.QualifiedModuleName
+                                && !UsesScopeResolution(idmRef.Context.Parent)))
+
                 || idm.DeclarationType.HasFlag(DeclarationType.Variable)
                     && idm.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module)
                     && renameTarget.References.Any(renameTargetRef => renameTargetRef.QualifiedModuleName == idm.ParentDeclaration.QualifiedModuleName))
@@ -1574,7 +1583,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             return reference.Guid.Equals(Guid.Empty)
                 ? UserDeclarations(DeclarationType.Project).OfType<ProjectDeclaration>().FirstOrDefault(proj =>
-                    proj.QualifiedModuleName.ProjectPath.Equals(reference.FullPath, StringComparison.OrdinalIgnoreCase))
+                    proj.QualifiedModuleName.ProjectPath.Equals(reference.FullPath, StringComparison.InvariantCultureIgnoreCase))
                 : BuiltInDeclarations(DeclarationType.Project).OfType<ProjectDeclaration>().FirstOrDefault(proj =>
                     proj.Guid.Equals(reference.Guid) && proj.MajorVersion == reference.Major &&
                     proj.MinorVersion == reference.Minor);
