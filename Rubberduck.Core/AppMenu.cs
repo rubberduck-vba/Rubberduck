@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
@@ -43,8 +44,14 @@ namespace Rubberduck
             {
                 _stateBar.Initialize();
             }
+            catch (COMException exception)
+            {
+                _logger.Error(exception);
+                throw; // NOTE: this exception should bubble up to _Extension.Startup() and cleanly fail the add-in's initialization.
+            }
             catch (Exception exception)
             {
+                // we don't want to abort init just because some CanExecute method threw a NRE
                 _logger.Error(exception);
             }
         }
@@ -57,8 +64,14 @@ namespace Rubberduck
                 {
                     menu.Initialize();
                 }
+                catch (COMException exception)
+                {
+                    _logger.Error(exception);
+                    throw; // NOTE: this exception should bubble up to _Extension.Startup() and cleanly fail the add-in's initialization.
+                }
                 catch (Exception exception)
                 {
+                    // we don't want to abort init just because some CanExecute method threw a NRE
                     _logger.Error(exception);
                 }
             }
@@ -83,8 +96,9 @@ namespace Rubberduck
                 {
                     menu.EvaluateCanExecute(state);
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
+                    // swallow exception to evaluate the other commands
                     _logger.Error(exception);
                 }
             }
