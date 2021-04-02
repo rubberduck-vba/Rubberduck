@@ -36,7 +36,7 @@ namespace Rubberduck.UI
             // VersionLabel
             // 
             this.VersionLabel.AutoSize = true;
-            this.VersionLabel.BackColor = System.Drawing.Color.White;
+            this.VersionLabel.BackColor = System.Drawing.Color.LightGoldenrodYellow;
             this.VersionLabel.Location = new System.Drawing.Point(12, 9);
             this.VersionLabel.Name = "VersionLabel";
             this.VersionLabel.Padding = new System.Windows.Forms.Padding(2);
