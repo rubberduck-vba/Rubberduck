@@ -23,6 +23,10 @@ using Rubberduck.UnitTesting.CodeGeneration;
 using Rubberduck.UnitTesting.Settings;
 using Rubberduck.VBEditor.Events;
 using RubberduckTests.Settings;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.VBEditor.Utility;
+using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace RubberduckTests.Commands
 {
@@ -48,10 +52,10 @@ Private Assert As Object
         [TestCase(typeof(AddTestMethodExpectedErrorCommand))]
         public void AddsTest(Type command)
         {
-            var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, TestModuleBaseName, TestModuleHeader);
+            var (vbe, state, rewriteManager) = ArrangeAndParseTestCodeWithRewritingManager(ComponentType.StandardModule, TestModuleBaseName, TestModuleHeader);
             using (state)
             {
-                var addTestMethodCommand = ArrangeAddTestMethodCommand(command, vbe, state);
+                var addTestMethodCommand = ArrangeAddTestMethodCommandWithRewritingManager(command, vbe, state, rewriteManager);
 
                 addTestMethodCommand.Execute(null);
 
@@ -59,6 +63,65 @@ Private Assert As Object
                     test.Annotations.Any(pta => pta.Annotation is TestMethodAnnotation));
 
                 Assert.NotNull(added);
+            }
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/4169
+        [Category("Commands")]
+        [Test]
+        [TestCase(typeof(AddTestMethodCommand))]
+        [TestCase(typeof(AddTestMethodExpectedErrorCommand))]
+        public void AddsTestTBD(Type command)
+        {
+            var inputCode =
+@"
+Option Explicit
+Option Private Module
+
+'@TestModule
+'@Folder(""Tests"")
+
+Private Assert As Object
+Private Fakes As Object
+
+'@ModuleInitialize
+Private Sub ModuleInitialize()
+    'this method runs once per module.
+    Set Assert = CreateObject(""Rubberduck.AssertClass"")
+    Set Fakes = CreateObject(""Rubberduck.FakesProvider"")
+End Sub
+
+'@ModuleCleanup
+Private Sub ModuleCleanup()
+    'this method runs once per module.
+    Set Assert = Nothing
+    Set Fakes = Nothing
+End Sub
+
+'@TestInitialize
+Private Sub TestInitialize()
+    'This method runs before every test in the module..
+End Sub
+
+'@TestCleanup
+Private Sub TestCleanup()
+    'this method runs after every test in the module.
+End Sub
+";
+        var(vbe, state, addTestMethodCommand) = ParseAndArrangeAddTestMethodCommandTests(command, ComponentType.StandardModule, TestModuleBaseName, inputCode);
+            using (state)
+            {
+                addTestMethodCommand.Execute(null);
+
+                addTestMethodCommand.Execute(null);
+
+                var expectedMethod = $"{TestMethodBaseName}{1}";
+                var generated = state.DeclarationFinder.AllUserDeclarations.SingleOrDefault(test => test.IdentifierName.Equals(expectedMethod));
+
+                var lastExistingProcedure = "TestCleanup";
+                var lastProc = state.DeclarationFinder.AllUserDeclarations.SingleOrDefault(test => test.IdentifierName.Equals(lastExistingProcedure));
+
+                Assert.IsTrue(lastProc.Context.Stop.Line < generated.Context.Start.Line);
             }
         }
 
@@ -83,10 +146,10 @@ Public Sub {TestMethodBaseName}{second}()
 End Sub
 ";
 
-            var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, TestModuleBaseName, input);
+            var (vbe, state, rewritingManager) = ArrangeAndParseTestCodeWithRewritingManager(ComponentType.StandardModule, TestModuleBaseName, input);
             using (state)
             {
-                var addTestMethodCommand = ArrangeAddTestMethodCommand(command, vbe, state);
+                var addTestMethodCommand = ArrangeAddTestMethodCommandWithRewritingManager(command, vbe, state, rewritingManager);
 
                 addTestMethodCommand.Execute(null);
 
@@ -112,10 +175,10 @@ Public Sub {TestMethodBaseName}2()
 End Sub
 ";
 
-            var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, TestModuleBaseName, input);
+            var (vbe, state, rewritingManager) = ArrangeAndParseTestCodeWithRewritingManager(ComponentType.StandardModule, TestModuleBaseName, input);
             using (state)
             {
-                var addTestMethodCommand = ArrangeAddTestMethodCommand(command, vbe, state);
+                var addTestMethodCommand = ArrangeAddTestMethodCommandWithRewritingManager(command, vbe, state, rewritingManager);
 
                 addTestMethodCommand.Execute(null);
 
@@ -132,11 +195,11 @@ End Sub
         [TestCase(typeof(AddTestMethodExpectedErrorCommand))]
         public void AddsTest_NullActiveCodePane(Type command)
         {
-            var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, TestModuleBaseName, TestModuleHeader);
+            var (vbe, state, rewritingManager) = ArrangeAndParseTestCodeWithRewritingManager(ComponentType.StandardModule, TestModuleBaseName, TestModuleHeader);
             using (state)
             {
                 vbe.Setup(s => s.ActiveCodePane).Returns((ICodePane)null);
-                var addTestMethodCommand = ArrangeAddTestMethodCommand(command, vbe, state);
+                var addTestMethodCommand = ArrangeAddTestMethodCommandWithRewritingManager(command, vbe, state, rewritingManager);
 
                 addTestMethodCommand.Execute(null);
 
@@ -153,12 +216,12 @@ End Sub
         [TestCase(typeof(AddTestMethodExpectedErrorCommand))]
         public void AddTest_CanExecute_NonReadyState(Type command)
         {
-            var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, TestModuleBaseName, string.Empty);
+            var (vbe, state, rewritingManager) = ArrangeAndParseTestCodeWithRewritingManager(ComponentType.StandardModule, TestModuleBaseName, TestModuleHeader);
             using (state)
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences, CancellationToken.None);
 
-                var addTestMethodCommand = ArrangeAddTestMethodCommand(command, vbe, state);
+                var addTestMethodCommand = ArrangeAddTestMethodCommandWithRewritingManager(command, vbe, state, rewritingManager);
 
                 Assert.IsFalse(addTestMethodCommand.CanExecute(null));
             }
@@ -170,10 +233,10 @@ End Sub
         [TestCase(typeof(AddTestMethodExpectedErrorCommand))]
         public void AddTest_CanExecute(Type command)
         {
-            var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, TestModuleBaseName, TestModuleHeader);
+            var (vbe, state, rewritingManager) = ArrangeAndParseTestCodeWithRewritingManager(ComponentType.StandardModule, TestModuleBaseName, TestModuleHeader);
             using (state)
             {
-                var addTestMethodCommand = ArrangeAddTestMethodCommand(command, vbe, state);
+                var addTestMethodCommand = ArrangeAddTestMethodCommandWithRewritingManager(command, vbe, state, rewritingManager);
                 Assert.IsTrue(addTestMethodCommand.CanExecute(null));
             }
         }
@@ -184,10 +247,10 @@ End Sub
         [TestCase(typeof(AddTestMethodExpectedErrorCommand))]
         public void AddTest_CanExecute_NoTestModule(Type command)
         {
-            var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, TestModuleBaseName, string.Empty);
+            var (vbe, state, rewritingManager) = ArrangeAndParseTestCodeWithRewritingManager(ComponentType.StandardModule, TestModuleBaseName, string.Empty);
             using (state)
             {
-                var addTestMethodCommand = ArrangeAddTestMethodCommand(command, vbe, state);
+                var addTestMethodCommand = ArrangeAddTestMethodCommandWithRewritingManager(command, vbe, state, rewritingManager);
                 Assert.IsFalse(addTestMethodCommand.CanExecute(null));
             }
         }
@@ -427,13 +490,13 @@ End Enum
         }
 
         // TODO: Remove the temporal copuling with other Arrange*
-        private (Mock<IVBE> Vbe, RubberduckParserState State) ArrangeAndParseTestCode(ComponentType type, string name, string code)
+        private (Mock<IVBE> Vbe, RubberduckParserState State, IRewritingManager rewritingManager) ArrangeAndParseTestCodeWithRewritingManager(ComponentType type, string name, string code)
         {
-            return ArrangeAndParseTestCode(TestProjectName, new List<(ComponentType type, string name, string code)> {(type, name, code)});
+            return ArrangeAndParseTestCodeWithRewritingManager(TestProjectName, new List<(ComponentType type, string name, string code)> { (type, name, code) });
         }
 
         // TODO: Remove the temporal copuling with other Arrange*
-        private (Mock<IVBE> Vbe, RubberduckParserState State) ArrangeAndParseTestCode(string projectName, IEnumerable<(ComponentType type, string name, string code)> components)
+        private (Mock<IVBE> Vbe, RubberduckParserState State, IRewritingManager rewritingManager) ArrangeAndParseTestCodeWithRewritingManager(string projectName, IEnumerable<(ComponentType type, string name, string code)> components)
         {
             var builder = new MockVbeBuilder();
             var projectBuilder = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected, ProjectType.StandAlone);
@@ -448,7 +511,7 @@ End Enum
             vbe.Setup(m => m.ActiveVBProject).Returns(project.Object);
             vbe.Setup(m => m.SelectedVBComponent).Returns(projectBuilder.MockVBComponents.Object.Last());
 
-            var parser = MockParser.Create(vbe.Object, null, MockVbeEvents.CreateMockVbeEvents(vbe));
+            (SynchronousParseCoordinator parser, IRewritingManager rewriteManager) = MockParser.CreateWithRewriteManager(vbe.Object, null, MockVbeEvents.CreateMockVbeEvents(vbe));
             var state = parser.State;
 
             parser.Parse(new CancellationTokenSource());
@@ -457,7 +520,19 @@ End Enum
                 Assert.Inconclusive("Parser Error");
             }
 
-            return (vbe, state);
+            return (vbe, state, rewriteManager);
+        }
+        // TODO: Remove the temporal copuling with other Arrange*
+        private (Mock<IVBE> Vbe, RubberduckParserState State) ArrangeAndParseTestCode(ComponentType type, string name, string code)
+        {
+            return ArrangeAndParseTestCode(TestProjectName, new List<(ComponentType type, string name, string code)> { (type, name, code) });
+        }
+
+        // TODO: Remove the temporal copuling with other Arrange*
+        private (Mock<IVBE> Vbe, RubberduckParserState State) ArrangeAndParseTestCode(string projectName, IEnumerable<(ComponentType type, string name, string code)> components)
+        {
+            var result = ArrangeAndParseTestCodeWithRewritingManager(TestProjectName, components);
+            return (result.Vbe, result.State);
         }
 
         // TODO: Remove the temporal copuling with other Arrange*
@@ -492,26 +567,26 @@ End Enum
         }
 
         // TODO: Remove the temporal coupling with other Arrange*
-        private ICommand ArrangeAddTestMethodCommand(Type command, Mock<IVBE> vbe, RubberduckParserState state)
+        private ICommand ArrangeAddTestMethodCommandWithRewritingManager(Type command, Mock<IVBE> vbe, RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            return ArrangeAddTestMethodCommand(command, vbe, state, ArrangeCodeGenerator(vbe.Object, state));
+            return ArrangeAddTestMethodCommandWithRewriter(command, vbe, state, rewritingManager, ArrangeCodeGenerator(vbe.Object, state));
         }
 
         // TODO: Remove the temporal coupling with other Arrange*
-        private ICommand ArrangeAddTestMethodCommand(Type command, Mock<IVBE> vbe, RubberduckParserState state,
-            ITestCodeGenerator testCodeGenerator)
+        private ICommand ArrangeAddTestMethodCommandWithRewriter(Type command, Mock<IVBE> vbe, RubberduckParserState state,
+            IRewritingManager rewritingManager, ITestCodeGenerator testCodeGenerator)
         {
-            return ArrangeAddTestMethodCommand(command, vbe, state, testCodeGenerator, MockVbeEvents.CreateMockVbeEvents(vbe));
+            return ArrangeAddTestMethodCommandWithRewriter(command, vbe, state, rewritingManager, testCodeGenerator, MockVbeEvents.CreateMockVbeEvents(vbe));
         }
 
         // TODO: Remove the temporal coupling with other Arrange*
-        private ICommand ArrangeAddTestMethodCommand(Type command, Mock<IVBE> vbe, RubberduckParserState state,
+        private ICommand ArrangeAddTestMethodCommandWithRewriter(Type command, Mock<IVBE> vbe, RubberduckParserState state, IRewritingManager rewritingManager,
             ITestCodeGenerator testCodeGenerator, Mock<IVbeEvents> vbeEvents)
         {
-            return (ICommand) Activator.CreateInstance(command, vbe.Object, state, testCodeGenerator, vbeEvents.Object);
+            return (ICommand)Activator.CreateInstance(command, vbe.Object, state, rewritingManager, testCodeGenerator, vbeEvents.Object);
         }
 
-        private ITestCodeGenerator ArrangeCodeGenerator(IVBE vbe, RubberduckParserState state)
+        private static ITestCodeGenerator ArrangeCodeGenerator(IVBE vbe, RubberduckParserState state)
         {
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var settings = new Mock<IConfigurationService<UnitTestSettings>>();
