@@ -25,6 +25,7 @@
         int IndentSpaces { get; set; }
         bool VerticallySpaceProcedures { get; set; }
         int LinesBetweenProcedures { get; set; }
+        bool GroupRelatedProperties { get; set; }
         bool LegacySettingsExist();
         void LoadLegacyFromRegistry();
     }

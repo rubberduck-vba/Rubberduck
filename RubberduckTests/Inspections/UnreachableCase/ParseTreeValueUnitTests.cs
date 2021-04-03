@@ -2,17 +2,11 @@
 using Rubberduck.Parsing.Grammar;
 using System;
 using System.Collections.Generic;
-using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactoring.ParseTreeValue;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {
-    /*
-        ParseTreeValue is a support class of the UnreachableCaseInspection
-
-        Test Parameter encoding:
-        <operand>?<declaredType>
-        If there is no "?<declaredType>", then <operand>'s type is derived by the ParseTreeValue instance.
-    */
     [TestFixture]
     public class ParseTreeValueUnitTests
     {

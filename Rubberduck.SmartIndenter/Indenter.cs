@@ -279,7 +279,7 @@ namespace Rubberduck.SmartIndenter
                     inProcedure = true;                    
                 }                               
                 line.InsideProcedureTypeOrEnum = inProcedure || enumStart;
-                inProcedure = inProcedure && !line.IsProcudureEnd && !line.IsEnumOrTypeEnd;
+                inProcedure = inProcedure && !line.IsProcedureEnd && !line.IsEnumOrTypeEnd;
                 if (line.IsProcedureStart || line.IsEnumOrTypeStart)
                 {
                     indents = 0;
@@ -311,6 +311,8 @@ namespace Rubberduck.SmartIndenter
                 var lines = logical.ToArray();
                 var header = true;
                 var inEnumType = false;
+                var propertyGroupIdentifier = string.Empty;
+
                 for (var i = 0; i < lines.Length; i++)
                 {
                     indent.Add(lines[i]);
@@ -328,19 +330,42 @@ namespace Rubberduck.SmartIndenter
                     {
                         header = false;
                         SpaceHeader(indent, settings);
+
+                        propertyGroupIdentifier = lines[i].IsPropertyStart
+                            ? ExtractPropertyIdentifier(lines[i].ToString())
+                            : string.Empty;
+
                         continue;
                     }
-                    if (!lines[i].IsEnumOrTypeEnd && !lines[i].IsProcudureEnd)
+                    if (!lines[i].IsEnumOrTypeEnd && !lines[i].IsProcedureEnd)
                     {
                         continue;
                     }
+
                     while (++i < lines.Length && lines[i].IsEmpty) { }
                     if (i != lines.Length)
                     {
-                        if (settings.LinesBetweenProcedures > 0)
+                        var linesBetweenProcedures = settings.LinesBetweenProcedures;
+
+                        if (lines[i].IsPropertyStart)
                         {
-                            indent.Add(new LogicalCodeLine(Enumerable.Repeat(new AbsoluteCodeLine(string.Empty, settings), settings.LinesBetweenProcedures), settings));
+                            var propertyIdentifier = ExtractPropertyIdentifier(lines[i].ToString());
+                            if (propertyIdentifier.Equals(propertyGroupIdentifier, StringComparison.InvariantCultureIgnoreCase)
+                                && settings.GroupRelatedProperties)
+                            {
+                                linesBetweenProcedures = 0;
+                            }
+                            else
+                            {
+                                propertyGroupIdentifier = propertyIdentifier;
+                            }
                         }
+
+                        if (linesBetweenProcedures > 0)
+                        {
+                            indent.Add(new LogicalCodeLine(Enumerable.Repeat(new AbsoluteCodeLine(string.Empty, settings), linesBetweenProcedures), settings));
+                        }
+
                         indent.Add(lines[i]);
                     }
                     else if (forceTrailingNewLines && i == lines.Length)
@@ -359,6 +384,12 @@ namespace Rubberduck.SmartIndenter
                 output.AddRange(line.Indented().Split(new[] { Environment.NewLine }, StringSplitOptions.None));
             }
             return output;
+        }
+
+        private static string ExtractPropertyIdentifier(string line)
+        {
+            var declarationElementsStartingAtGetLetOrSet = line.ToString().Split(' ').SkipWhile(c => !c.EndsWith("et")).ToArray();
+            return declarationElementsStartingAtGetLetOrSet[1].Split(new string[] { "(" }, StringSplitOptions.None).FirstOrDefault();
         }
 
         private static void SpaceHeader(IList<LogicalCodeLine> header, IIndenterSettings settings)

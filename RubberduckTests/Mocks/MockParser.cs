@@ -35,8 +35,7 @@ namespace RubberduckTests.Mocks
     {
         public static RubberduckParserState ParseString(string inputCode, out QualifiedModuleName qualifiedModuleName)
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component);
             qualifiedModuleName = new QualifiedModuleName(component);
             var parser = Create(vbe.Object);
 
@@ -85,7 +84,7 @@ namespace RubberduckTests.Mocks
             var supertypeClearer = new SynchronousSupertypeClearer(state); 
             var parserStateManager = new SynchronousParserStateManager(state);
             var referenceRemover = new SynchronousReferenceRemover(state, moduleToModuleReferenceManager);
-            var baseComDeserializer = new XmlComProjectSerializer(path);
+            var baseComDeserializer = new XmlComProjectSerializer(new MockFileSystem(), path);
             var comDeserializer = new StaticCachingComDeserializerDecorator(baseComDeserializer);
             var declarationsFromComProjectLoader = new DeclarationsFromComProjectLoader();
             var referencedDeclarationsCollector = new SerializedReferencedDeclarationsCollector(declarationsFromComProjectLoader, comDeserializer);

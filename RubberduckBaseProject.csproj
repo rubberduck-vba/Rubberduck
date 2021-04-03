@@ -1,36 +1,27 @@
-<Project Sdk="Sunburst.NET.Sdk.WPF.Patched/1.0.49">
-  <!-- We're specifying the Sdk here to make appveyor happy, but this generates warning MSB4011 -->
+<Project Skd="Microsoft.NET.Sdk">
+  <!--
+    We're specifying the Sdk here to make sure appveyor correctly recognizes this as a .NET Core project
+    Unfortunately this generates the warning MSB4011, because the including projects already define an Sdk
+  -->
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <Company>Rubberduck-VBA</Company>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
     <LangVersion>7.2</LangVersion>
     <SolutionDir>$(MSBuildProjectDirectory)</SolutionDir>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputPath>bin\$(Configuration)\</OutputPath>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
     <RestorePackages>true</RestorePackages>
     <!-- do not unify output paths by default -->
     <UnifyOutputPath Condition=" '$(UnifyOutputPath)' == ''">false</UnifyOutputPath>
     <!-- Ignore MSB4011 warning, rationale above -->
     <!-- Ignore VisualStudio whining about the CodeAnalysis assembly changing (IDE1001) -->
-    <DisabledWarnings>$(DisabledWarnings);4011;1001</DisabledWarnings>
-    <Version Condition=" '$(Version)' == ''">2.5.1</Version>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(AssemblyVersion)' == '' ">
-    <!--
-     This assembly version specification is considered nonstandard.
-     As such builds that do not override the assembly version generate a warning, which we ignore.
-    -->
-    <AssemblyVersion>2.5.1.*</AssemblyVersion>
-    <!-- Ignore CSharp compiler warning for nonstandard assembly version (CS7035) -->
-    <!-- Ignore Linker warning for nonstandard assembly version (AL1053) -->
-    <DisabledWarnings>$(DisabledWarnings);7035;1053</DisabledWarnings>
-    <!-- Wildcards are not deterministic, ensure build passes when setting wildcard versions -->
-    <Deterministic>False</Deterministic>
+    <DisabledWarnings>$(DisabledWarnings);4011;1001;1591</DisabledWarnings>
+    <!-- Declare a Version if it's not already declared as a global property through MSBuild invocation -->
+    <Version Condition=" '$(Version)' == '' ">2.5.1</Version>
+    <!-- all other relevant version numbers are computed from Version automagically -->
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(UnifyOutputPath) ">
@@ -57,7 +48,18 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <!-- Valid Constants used in the solution: 
+      LOG_COM_RELEASE     // Records COM objects released when a safe COM wrapper has been disposed
+      PRETTY_XML          // Includes whitespace and formatting to serialized XML files for XmlComProjectSerializer
+      REF_COUNT           // Tracks the reported reference counts when acquiring/disposing COM objects
+      THRISTY_DUCK        // Outputs the message content from the message pump in VBENativeServices / SubclassingWindow
+      THRISTY_DUCK_EVT    // Outptus the events raised from the message pump in VBENativeServices / SubclassingWindow
+      TRACE_COM_SAFE      // Tracks the COM wrappers added & removed to the ComSafe and also allow serializing the contents of ComSafe
+      TRACE_TYPEAPI       // Tracks the methods called on the wrapped ITypeLib & ITypeInfo
+      TRACE_COM_POINTERS  // Tracks the ComPointer access & disposal
+      TRACE_MARSHAL       // Tracks the calls made through the RdMarshal class (useful for tracking all Marshal methods)
+    -->
+    <DefineConstants>DEBUG;TRACE;</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
@@ -65,13 +67,6 @@
     <Optimize>true</Optimize>
     <DefineConstants>RELEASE</DefineConstants>
   </PropertyGroup>
-
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
 
   <!-- This section does not work; it seems to find the solution fine but doesn't actually build
        so we work around this by enumerating the projects in the next section below

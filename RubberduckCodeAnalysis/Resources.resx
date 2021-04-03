@@ -315,4 +315,16 @@
   <data name="MissingAnnotationSummaryElementDescription" xml:space="preserve">
     <value>All annotations must have a short &lt;summary&gt; xml-doc comment describing what the annotation is used for, that reads comfortably in IntelliSense.</value>
   </data>
+  <data name="FileSystemUsageCategory" xml:space="preserve">
+    <value>Filesystem API Management</value>
+  </data>
+  <data name="FileSystemUsageDescription" xml:space="preserve">
+    <value>To avoid issues with testability and controlling the behaviors, all production code should use abstractions (e.g. System.IO.Abstractions) instead of System.IO. For non-filesystem uses such as stream use using statement with the classes (e.g. "using Path = System.IO.Path;").</value>
+  </data>
+  <data name="FileSystemUsageMessageFormat" xml:space="preserve">
+    <value>File '{0}' contains an unqualified using statement for System.IO. Abstractions should be used instead.</value>
+  </data>
+  <data name="FileSystemUsageTile" xml:space="preserve">
+    <value>Invalid use of filesystem API</value>
+  </data>
 </root>

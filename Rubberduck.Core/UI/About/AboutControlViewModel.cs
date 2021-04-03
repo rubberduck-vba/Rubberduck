@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using Path = System.IO.Path;
 using NLog;
 using NLog.Targets;
 using Rubberduck.Resources.About;
 using Rubberduck.UI.Command;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
-using System.IO;
 
 namespace Rubberduck.UI.About
 {

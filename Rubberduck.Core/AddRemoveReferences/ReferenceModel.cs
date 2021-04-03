@@ -1,6 +1,6 @@
 using System;
 using System.ComponentModel;
-using System.IO;
+using Path = System.IO.Path;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;

@@ -1,3 +1,4 @@
+using Path = System.IO.Path;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Resources;
@@ -98,21 +99,21 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             {
                 case DeclarationType.Project:
                 case DeclarationType.BracketedExpression:
-                    var filename = System.IO.Path.GetFileName(declaration.QualifiedName.QualifiedModuleName.ProjectPath);
+                    var filename = Path.GetFileName(declaration.QualifiedName.QualifiedModuleName.ProjectPath);
                     return $"{filename}{(string.IsNullOrEmpty(filename) ? string.Empty : ";")}{declaration.IdentifierName} ({declarationType})";
                 case DeclarationType.Enumeration:
                 case DeclarationType.UserDefinedType:
                     return !declaration.IsUserDefined
                         // built-in enums & UDT's don't have a module
-                        ? $"{System.IO.Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.IdentifierName}"
+                        ? $"{Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.IdentifierName}"
                         : moduleName.ToString();
                 case DeclarationType.EnumerationMember:
                 case DeclarationType.UserDefinedTypeMember:
                     return declaration.IsUserDefined
                         ? $"{moduleName}.{declaration.ParentDeclaration.IdentifierName}.{declaration.IdentifierName} {typeName}"
-                        : $"{System.IO.Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.ParentDeclaration.IdentifierName}.{declaration.IdentifierName} {typeName}";
+                        : $"{Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.ParentDeclaration.IdentifierName}.{declaration.IdentifierName} {typeName}";
                 case DeclarationType.ComAlias:
-                    return $"{System.IO.Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.IdentifierName} (alias:{declaration.AsTypeName})";
+                    return $"{Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.IdentifierName} (alias:{declaration.AsTypeName})";
             }
 
             return string.Empty;

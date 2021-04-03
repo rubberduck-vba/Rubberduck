@@ -34,8 +34,8 @@ namespace Rubberduck.Parsing.UIContext
         void FlushMessageQueue();
 
         /// <summary>
-        /// Raises a COM-visible event on the UI thread. This will use <see cref="UiDispatcher.Invoke()" /> internally
-        /// but with additional error handling & retry logic for transient failure to fire COM event due to the host
+        /// Raises a COM-visible event on the UI thread. This will use <see cref="UiDispatcher.Invoke" /> internally
+        /// but with additional error handling and retry logic for transient failure to fire COM event due to the host
         /// being too busy to accept event.
         /// </summary>
         /// <param name="comEventHandler">The handler for setting up and firing the COM event on the UI thread</param>

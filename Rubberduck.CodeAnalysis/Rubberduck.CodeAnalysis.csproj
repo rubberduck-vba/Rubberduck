@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Sunburst.NET.Sdk.WPF.Patched/1.0.49">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Product>Rubberduck.CodeAnalysis</Product>
     <Description>Assembly Containing the Code Analysis features exposed by Rubberduck</Description>
@@ -24,7 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj" />
-    <ProjectReference Include="..\Rubberduck.JunkDrawer\Rubberduck.JunkDrawer.csproj" />
+    <ProjectReference Include="..\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Private>False</Private>
     </ProjectReference>

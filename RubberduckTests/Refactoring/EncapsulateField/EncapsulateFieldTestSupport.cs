@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
+using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -17,34 +18,21 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 {
     public class EncapsulateFieldTestSupport : EncapsulateFieldInteractiveRefactoringTest
     {
-        private EncapsulateFieldTestsResolver _testResolver;
-
-        public void ResetResolver()
+        public EncapsulateFieldTestsResolver SetupResolver(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager = null, ISelectionService selectionService = null, IIndenter indenter = null)
         {
-            _testResolver = null;
+            return GetResolver(declarationFinderProvider, rewritingManager, selectionService);
         }
 
-        public T Resolve<T>(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager = null, ISelectionService selectionService = null) where T : class
-        {
-            SetupResolver(declarationFinderProvider, rewritingManager, selectionService);
-            return Resolve<T>() as T;
-        }
-
-        public T Resolve<T>() where T : class 
-            => _testResolver?.Resolve<T>() as T ?? throw new InvalidOperationException("Test Resolver not initialized.  Call 'SetupResolver(...)' or use one of the 'Resolve<T>()' overloads");
-
-        public void SetupResolver(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager = null, ISelectionService selectionService = null)
+        public static EncapsulateFieldTestsResolver GetResolver(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager = null, ISelectionService selectionService = null, IIndenter indenter = null)
         {
             if (declarationFinderProvider is null)
             {
                 throw new ArgumentNullException("declarationFinderProvider is null");
             }
 
-            if (_testResolver is null)
-            {
-                _testResolver = new EncapsulateFieldTestsResolver(declarationFinderProvider, rewritingManager, selectionService);
-                _testResolver.Install(new WindsorContainer(), null);
-            }
+            var resolver = new EncapsulateFieldTestsResolver(declarationFinderProvider, rewritingManager, selectionService, indenter);
+            resolver.Install(new WindsorContainer(), null);
+            return resolver;
         }
 
         public string RHSIdentifier => Rubberduck.Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
@@ -148,13 +136,13 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             RefactoringUserInteraction<IEncapsulateFieldPresenter, EncapsulateFieldModel> userInteraction,
             ISelectionService selectionService)
         {
-            SetupResolver(state, rewritingManager, selectionService);
-            return new EncapsulateFieldRefactoring(Resolve<EncapsulateFieldRefactoringAction>(state, rewritingManager, selectionService),
-                Resolve<EncapsulateFieldPreviewProvider>(),
-                Resolve<IEncapsulateFieldModelFactory>(),
+            var resolver = SetupResolver(state, rewritingManager, selectionService);
+            return new EncapsulateFieldRefactoring(resolver.Resolve<EncapsulateFieldRefactoringAction>(),
+                resolver.Resolve<EncapsulateFieldPreviewProvider>(),
+                resolver.Resolve<IEncapsulateFieldModelFactory>(),
                 userInteraction,
                 selectionService,
-                Resolve<ISelectedDeclarationProvider>());
+                resolver.Resolve<ISelectedDeclarationProvider>());
         }
 
         public IDictionary<string, string> RefactoredCode(
@@ -202,9 +190,11 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             var state = MockParser.CreateAndParse(vbe);
             using (state)
             {
+                var resolver = SetupResolver(state);
+
                 var match = state.DeclarationFinder.MatchName(fieldName).Where(m => m.DeclarationType.Equals(declarationType)).Single();
 
-                var model = Resolve<IEncapsulateFieldModelFactory>(state).Create(match);
+                var model = resolver.Resolve<IEncapsulateFieldModelFactory>().Create(match);
 
                 model.ConflictFinder.AssignNoConflictIdentifiers(model[match.IdentifierName]);
 
@@ -231,6 +221,33 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             ISelectionService selectionService)
         {
             return SupportTestRefactoring(rewritingManager, state, userInteraction, selectionService);
+        }
+
+        public string RefactoredCode<TRefactoring,TModel>(string code, Func<RubberduckParserState, EncapsulateFieldTestsResolver, TModel> modelBuilder, IIndenter indenter = null) where TRefactoring : CodeOnlyRefactoringActionBase<TModel> where TModel : class, IRefactoringModel
+        {
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _).Object;
+            var componentName = vbe.SelectedVBComponent.Name;
+            var refactored = RefactoredCode<TRefactoring,TModel>(vbe, modelBuilder, indenter);
+            return refactored[componentName];
+        }
+
+        public IDictionary<string, string> RefactoredCode<TRefactoring,TModel>(IVBE vbe, Func<RubberduckParserState, EncapsulateFieldTestsResolver, TModel> modelBuilder, IIndenter indenter = null) where TRefactoring: CodeOnlyRefactoringActionBase<TModel> where TModel: class, IRefactoringModel
+        {
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                
+                var resolver = GetResolver(state, rewritingManager, indenter: indenter);
+
+                var refactoring = resolver.Resolve<TRefactoring>();
+
+                var model = modelBuilder(state, resolver);
+
+                refactoring.Refactor(model);
+
+                return vbe.ActiveVBProject.VBComponents
+                    .ToDictionary(component => component.Name, component => component.CodeModule.Content());
+            }
         }
     }
 

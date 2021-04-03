@@ -4,6 +4,8 @@ using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.ImplicitTypeToExplicit;
 
 namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 {
@@ -36,19 +38,21 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// </example>
     internal sealed class DeclareAsExplicitVariantQuickFix : QuickFixBase
     {
-        public DeclareAsExplicitVariantQuickFix()
+        private readonly ICodeOnlyRefactoringAction<ImplicitTypeToExplicitModel> _refactoring;
+        public DeclareAsExplicitVariantQuickFix(ImplicitTypeToExplicitRefactoringAction refactoringAction)
             : base(typeof(VariableTypeNotDeclaredInspection))
-        {}
+        {
+            _refactoring = refactoringAction;
+        }
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var rewriter = rewriteSession.CheckOutModuleRewriter(result.Target.QualifiedModuleName);
+            var model = new ImplicitTypeToExplicitModel(result.Target)
+            {
+                ForceVariantAsType = true
+            };
 
-            ParserRuleContext identifierNode =
-                result.Context is VBAParser.VariableSubStmtContext || result.Context is VBAParser.ConstSubStmtContext
-                ? result.Context.children[0]
-                : ((dynamic) result.Context).unrestrictedIdentifier();
-            rewriter.InsertAfter(identifierNode.Stop.TokenIndex, " As Variant");
+            _refactoring.Refactor(model, rewriteSession);
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.DeclareAsExplicitVariantQuickFix;

@@ -108,7 +108,7 @@ namespace Rubberduck.UI.Refactorings.Rename
 
         private bool UserConfirmsToProceedWithConflictingName(string newName, Declaration target, Declaration conflictingDeclaration)
         {
-            var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, newName, target.IdentifierName, conflictingDeclaration.QualifiedName.ToString());
+            var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, newName, conflictingDeclaration.QualifiedName.ToString(), target.IdentifierName);
             return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_Caption) ?? false;
         }
     }

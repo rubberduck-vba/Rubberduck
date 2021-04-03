@@ -457,44 +457,8 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="Language_DE" xml:space="preserve">
     <value>Němčina</value>
   </data>
-  <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
-    <value>Všechny Otevřené Soubory</value>
-  </data>
-  <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
-    <value>Všechny Otevřené Projekty</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
-    <value>Aktuální Blok</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
-    <value>Aktální Soubor</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
-    <value>Aktuální Projekt</value>
-  </data>
-  <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
-    <value>Výběr</value>
-  </data>
-  <data name="RegexSearchReplace_Caption" xml:space="preserve">
-    <value>Regex Hledej a Nahraď</value>
-  </data>
   <data name="Find" xml:space="preserve">
     <value>Hledat</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
-    <value>Nahradit Vše</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
-    <value>Nahradit</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
-    <value>Nahradit:</value>
-  </data>
-  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
-    <value>Rozsah:</value>
-  </data>
-  <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
-    <value>Vyhledávání:</value>
   </data>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Detaily</value>
@@ -771,6 +735,12 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   </data>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Analyzátor Regulárních Výrazů</value>
+  </data>
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
+    <value>Dovolené Identifikátory</value>
+  </data>
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
+    <value>Tyto identifikátory budou ignorovány inspekcí 'Použij smysluplné názvy'.</value>
   </data>
   <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refaktorovat / Zapouzdřit Pole</value>
@@ -1192,18 +1162,6 @@ End Enum</value>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Uložit a Zavřít</value>
   </data>
-  <data name="RegexAssistant_SpelledOut_NewLine" xml:space="preserve">
-    <value>nový-řádek</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_Space" xml:space="preserve">
-    <value>mezera</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_Tab" xml:space="preserve">
-    <value>tab</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
-    <value>neidentifikovaná-mezera</value>
-  </data>
   <data name="TestOutcome_Fail" xml:space="preserve">
     <value>Selhání</value>
   </data>
@@ -1252,9 +1210,6 @@ End Enum</value>
   <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
     <value>ActiveX Designer</value>
   </data>
-  <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
-    <value>V popisu uveďte mezeru</value>
-  </data>
   <data name="TestExplorer_AppendHeader" xml:space="preserve">
     <value>Rubberduck: Výsledky Testů - {0}</value>
   </data>
@@ -1265,12 +1220,6 @@ End Enum</value>
     <value>Přípona souboru '{0}' není podporována.
 
 Import přerušen.</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
-    <value>carriage-return (CR)</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_CarriageReturnNewLine" xml:space="preserve">
-    <value>carriage-return-new-line</value>
   </data>
   <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Nahrazení obsahu projektu ze souborů</value>

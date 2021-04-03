@@ -51,6 +51,7 @@ namespace RubberduckTests.Settings
             output.SetupProperty(s => s.IndentSpaces);
             output.SetupProperty(s => s.VerticallySpaceProcedures);
             output.SetupProperty(s => s.LinesBetweenProcedures);
+            output.SetupProperty(s => s.GroupRelatedProperties);
 
             output.Object.IndentEntireProcedureBody = !nondefault;
             output.Object.IndentFirstCommentBlock = !nondefault;
@@ -74,6 +75,7 @@ namespace RubberduckTests.Settings
             output.Object.IndentSpaces = nondefault ? NondefaultIndentSpaces : DefaultIndentSpaces;
             output.Object.VerticallySpaceProcedures = !nondefault;
             output.Object.LinesBetweenProcedures = nondefault ? NondefaultLinesBetweenProcedures : DefaultLinesBetweenProcedures;
+            output.Object.GroupRelatedProperties = nondefault;
 
             return output.Object;
         }
@@ -125,6 +127,7 @@ namespace RubberduckTests.Settings
                 Assert.AreEqual(config.UserSettings.IndenterSettings.IndentSpaces, viewModel.IndentSpaces);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.VerticallySpaceProcedures, viewModel.VerticallySpaceProcedures);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.LinesBetweenProcedures, viewModel.LinesBetweenProcedures);
+                Assert.AreEqual(config.UserSettings.IndenterSettings.GroupRelatedProperties, viewModel.GroupRelatedProperties);
             });
         }
 
@@ -162,6 +165,7 @@ namespace RubberduckTests.Settings
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentSpaces, viewModel.IndentSpaces);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.VerticallySpaceProcedures, viewModel.VerticallySpaceProcedures);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.LinesBetweenProcedures, viewModel.LinesBetweenProcedures);
+                Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.GroupRelatedProperties, viewModel.GroupRelatedProperties);
             });
         }
 
@@ -333,6 +337,16 @@ namespace RubberduckTests.Settings
             var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.LinesBetweenProcedures, viewModel.LinesBetweenProcedures);
+        }
+
+        [Test]
+        [Category("Settings")]
+        public void GroupRelatedPropertiesIsSetInCtor()
+        {
+            var defaultConfig = GetDefaultConfig();
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
+
+            Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.GroupRelatedProperties, viewModel.GroupRelatedProperties);
         }
 
         [Test]

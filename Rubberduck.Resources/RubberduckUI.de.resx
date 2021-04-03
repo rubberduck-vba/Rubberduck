@@ -387,42 +387,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="Language_DE" xml:space="preserve">
     <value>Deutsch</value>
   </data>
-  <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
-    <value>Aktuelle Datei</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
-    <value>Aktueller Block</value>
-  </data>
-  <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
-    <value>Alle geöffneten Projekte</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
-    <value>Aktuelles Projekt</value>
-  </data>
-  <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
-    <value>Alle geöffneten Dateien</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
-    <value>Ersetzen</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
-    <value>Alles Ersetzen</value>
-  </data>
-  <data name="RegexSearchReplace_Caption" xml:space="preserve">
-    <value>Regex Suchen &amp; Ersetzen</value>
-  </data>
-  <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
-    <value>Auswahl</value>
-  </data>
-  <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
-    <value>Suche nach:</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
-    <value>Ersetze durch:</value>
-  </data>
-  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
-    <value>Bereich:</value>
-  </data>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Details</value>
   </data>
@@ -433,7 +397,7 @@ Wollen Sie trotzdem fortfahren?</value>
     <value>Setze die Referenz explizit auf das 'ActiveSheet'</value>
   </data>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
-    <value>Suche Symbol </value>
+    <value>Suche Symbol</value>
   </data>
   <data name="ExtractInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Extrahiere Interface</value>
@@ -746,6 +710,15 @@ Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
     <value>Ausdruck</value>
+  </data>
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
+    <value>Explizit erlaubte Namen</value>
+  </data>
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
+    <value>Diese Namen werden von der Inspektion "Nutze aussagekräftige Namen" ignoriert.</value>
+  </data>
+  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
+    <value>Inspektionsschwere</value>
   </data>
   <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
     <value>Kommentare in Enums und Typen wie in Prozeduren einrücken</value>
@@ -1230,12 +1203,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Speichern &amp; Schließen</value>
   </data>
-  <data name="RegexAssistant_SpelledOut_Space" xml:space="preserve">
-    <value>Leerzeichen</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_Tab" xml:space="preserve">
-    <value>Tab</value>
-  </data>
   <data name="TestOutcome_Fail" xml:space="preserve">
     <value>Fehlgeschlagen</value>
   </data>
@@ -1271,21 +1238,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
     <value>Informiere mich, wenn ein neuer Prerelease verfügbar ist.</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
-    <value>unerkanntes-Leerzeichen</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
-    <value>Wagenrücklaufzeichen</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_CarriageReturnNewLine" xml:space="preserve">
-    <value>Wagenrücklaufzeichen-Zeilenumbruch</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_NewLine" xml:space="preserve">
-    <value>Zeilenumbruch</value>
-  </data>
-  <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
-    <value>Textformatierungszeichen ausschreiben</value>
   </data>
   <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
     <value>Prerelease</value>
@@ -1574,5 +1526,23 @@ Eine private Klasse kann eine private Schnittstelle implementieren.</value>
   </data>
   <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
     <value>Sichtbarkeit</value>
+  </data>
+  <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
+    <value>Implementierungsoptionen:</value>
+  </data>
+  <data name="ExtractInterface_OptionAddEmptyImplementation" xml:space="preserve">
+    <value>Füge leere Implementierung hinzu</value>
+  </data>
+  <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
+    <value>Ersetze Elemente durch Interface-Elemente</value>
+  </data>
+  <data name="TestOutcome_Ignored" xml:space="preserve">
+    <value>Ignoriert</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToInterfaceMembers" xml:space="preserve">
+    <value>Weiterreichen des Object Element Aufrufe an das Interface Element</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
+    <value>Weiterreichen der Interface Elemente Aufrufe an die Object Elemente</value>
   </data>
 </root>

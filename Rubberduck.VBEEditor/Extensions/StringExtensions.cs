@@ -1,5 +1,7 @@
 ﻿using System;
-using System.IO;
+using MemoryStream = System.IO.MemoryStream;
+using Stream = System.IO.Stream;
+using StreamWriter = System.IO.StreamWriter;
 
 namespace Rubberduck.VBEditor.Extensions
 {

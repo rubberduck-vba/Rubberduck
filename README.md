@@ -4,11 +4,11 @@
 
 |Branch     | Description | Build Status | Download link |
 |------------|---|--------------|-|
-| **master** | The last released build | ![master branch build status][masterBuildStatus] | [stable](https://github.com/rubberduck-vba/Rubberduck/releases/latest) |
+| **main** | The last released build | ![main branch build status][mainBuildStatus] | [stable](https://github.com/rubberduck-vba/Rubberduck/releases/latest) |
 | **next**   | The current build (dev)  | ![next branch build status][nextBuildStatus] | [dev](https://github.com/rubberduck-vba/Rubberduck/releases) |
 
 [nextBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/next?svg=true
-[masterBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/master?svg=true
+[mainBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/main?svg=true
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/Rubberduck-vba/rubberduck.svg)](http://isitmaintained.com/project/Rubberduck-vba/rubberduck "Average time to resolve an issue")
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/Rubberduck-vba/rubberduck.svg)](http://isitmaintained.com/project/Rubberduck-vba/rubberduck "Percentage of issues still open")
 [![Chat on stackexchange](https://img.shields.io/badge/chat-on%20stackexchange-blue.svg)](https://chat.stackexchange.com/rooms/14929/vba-rubberducking)

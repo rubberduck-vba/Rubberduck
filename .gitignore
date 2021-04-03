@@ -192,3 +192,4 @@ Rubberduck.Parsing.xml
 /.gradle/
 /Rubberduck.CodeAnalysis/Rubberduck.CodeAnalysis.xml
 /Rubberduck.Parsing/Rubberduck.Parsing.xml
+/.nuget/NuGet.Config
