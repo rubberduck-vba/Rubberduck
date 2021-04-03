@@ -21,7 +21,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
             parser)
         { }
 
-        protected override IReadOnlyCollection<(QualifiedModuleName module, ModuleParseResults results)> ModulePareResults(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
+        protected override IReadOnlyCollection<(QualifiedModuleName module, ModuleParseResults results)> ModuleParseResults(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
             if (!modules.Any())
             {

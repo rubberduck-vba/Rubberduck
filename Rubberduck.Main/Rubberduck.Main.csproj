@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Sunburst.NET.Sdk.WPF.Patched/1.0.49">
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <RootNamespace>Rubberduck</RootNamespace>
     <AssemblyName>Rubberduck</AssemblyName>
@@ -8,6 +8,8 @@
     <ProjectGuid>{E8AB5D93-2D0F-423D-BC15-5EE118673E48}</ProjectGuid>
     <!-- Disable "Missing XML documentation" warning (CS1591) -->
     <DisabledWarnings>$(DisabledWarnings);1591</DisabledWarnings>
+    <UseWpf>true</UseWpf>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
 

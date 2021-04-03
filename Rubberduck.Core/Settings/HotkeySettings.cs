@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common.Hotkeys;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck.Settings
 {

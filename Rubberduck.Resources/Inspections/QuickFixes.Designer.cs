@@ -169,6 +169,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Declare as Explicit Type.
+        /// </summary>
+        public static string DeclareAsExplicitTypeQuickFix {
+            get {
+                return ResourceManager.GetString("DeclareAsExplicitTypeQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Declare as explicit Variant.
         /// </summary>
         public static string DeclareAsExplicitVariantQuickFix {

@@ -60,7 +60,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var module = result.Target.QualifiedModuleName;
+            var module = result.QualifiedSelection.QualifiedName;
             var moduleDeclaration = _state.DeclarationFinder.Members(module, DeclarationType.Module)
                 .FirstOrDefault();
 

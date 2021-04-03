@@ -513,12 +513,6 @@ Continuer?</value>
   <data name="SelectAll_Button" xml:space="preserve">
     <value>Sélectionner tout</value>
   </data>
-  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
-    <value>Portée:</value>
-  </data>
-  <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
-    <value>Sélection</value>
-  </data>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Rapprocher la déclaration de son utilisation</value>
   </data>
@@ -543,29 +537,11 @@ Continuer?</value>
   <data name="DeselectAll_Button" xml:space="preserve">
     <value>Désélectionner tout</value>
   </data>
-  <data name="RegexSearchReplace_Caption" xml:space="preserve">
-    <value>Rechercher/remplacer avec une RegEx</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
-    <value>Projet courant</value>
-  </data>
-  <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
-    <value>Rechercher:</value>
-  </data>
   <data name="ImplementInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Implémenter une interface</value>
   </data>
-  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
-    <value>Remplacement:</value>
-  </data>
   <data name="EncapsulateField_Caption" xml:space="preserve">
     <value>Rubberduck - Encapsuler le champ</value>
-  </data>
-  <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
-    <value>Tous les fichiers ouverts</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
-    <value>Fichier courant</value>
   </data>
   <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
     <value>Référer explicitement à la feuille active</value>
@@ -573,14 +549,8 @@ Continuer?</value>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Détails</value>
   </data>
-  <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
-    <value>Bloc courant</value>
-  </data>
   <data name="EncapsulateField_PropertyName" xml:space="preserve">
     <value>Nom de la propriété:</value>
-  </data>
-  <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
-    <value>Tous les projets ouverts</value>
   </data>
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
     <value>La sélection courante n'est pas valide pour cette opération.</value>
@@ -590,9 +560,6 @@ Continuer?</value>
   </data>
   <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
     <value>Membres</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
-    <value>Remplacer</value>
   </data>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">
     <value>Veuillez spécifier le nom, l'accessibilité des paramètres, et le type de mutateur pour la nouvelle propriété.</value>
@@ -605,9 +572,6 @@ Continuer?</value>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' est utilisé dans plus d'une méthode.</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
-    <value>Remplacer tout</value>
   </data>
   <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Sélection invalide.</value>
@@ -911,29 +875,11 @@ End If      'Plus d'outils? Suggestions http://github.com/rubberduck-vba/Rubberd
 
 End Sub</value>
   </data>
-  <data name="RegexAssistant_NoPatternError" xml:space="preserve">
-    <value>(pas d'expression)</value>
-  </data>
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck ne redémarre pas</value>
   </data>
-  <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
-    <value>Global</value>
-  </data>
-  <data name="RegexAssistant_Caption" xml:space="preserve">
-    <value>Rubberduck - Analyseur Regex</value>
-  </data>
-  <data name="RegexAssistant_Title" xml:space="preserve">
-    <value>Analyseur d'expressions Regex</value>
-  </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
     <value>Identifiants permis</value>
-  </data>
-  <data name="RegexAssistant_Instructions" xml:space="preserve">
-    <value>Entrer une expression Regex à analyser dans l'espace ci-dessous.</value>
-  </data>
-  <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
-    <value>Ignorer la casse</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Les fenêtres ancrables n'ont probablement pas été correctement détruites, et/ou n'ont pas pu être recréées. l'environnement peut ne pas être dans un état stable. Rubberduck démerrera normalement à la prochaine initialisation du VBE.</value>
@@ -946,12 +892,6 @@ End Sub</value>
   </data>
   <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
     <value>Niveau de sévérité</value>
-  </data>
-  <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
-    <value>Expression</value>
   </data>
   <data name="ParserState_ResolvingDeclarations" xml:space="preserve">
     <value>Résolution des déclarations...</value>
@@ -1422,27 +1362,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
     <value>Le type de déclaration de la cible '{0}' est '{1}', mais le type attendu était '{2}'.</value>
-  </data>
-  <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
-    <value>Indiquer les espaces dans la description</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
-    <value>retour</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_CarriageReturnNewLine" xml:space="preserve">
-    <value>retour-nouvelle-ligne</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_NewLine" xml:space="preserve">
-    <value>nouvelle-ligne</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_Space" xml:space="preserve">
-    <value>espace</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_Tab" xml:space="preserve">
-    <value>tab.</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
-    <value>espace-non-identifié</value>
   </data>
   <data name="TestOutcome_Fail" xml:space="preserve">
     <value>Échec</value>

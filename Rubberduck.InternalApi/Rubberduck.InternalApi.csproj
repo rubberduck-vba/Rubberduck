@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Title>Rubberduck.InternalApi</Title>
+    <Product>Rubberduck.InternalApi</Product>
+    <Copyright>Copyright © 2019</Copyright>
+    <ProjectGuid>{D7A3F7A3-BD90-4845-B098-AC3AFBF0E16F}</ProjectGuid>
+    <RootNamespace>Rubberduck.InternalApi</RootNamespace>
+    <TargetFramework>net46</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;;4011;1001;7035;1053;1591</NoWarn>
+  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+  <ItemGroup>
+    <PackageReference Include="System.IO.Abstractions" Version="12.2.1" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+</Project>

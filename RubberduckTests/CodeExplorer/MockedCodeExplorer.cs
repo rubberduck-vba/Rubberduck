@@ -35,6 +35,7 @@ using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Settings;
 using Rubberduck.Refactorings;
+using System.IO.Abstractions;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -380,20 +381,20 @@ namespace RubberduckTests.CodeExplorer
             Func<string, string> fileNameToModuleNameConverter = null,
             Mock<IMessageBox> mockMessageBock = null,
             IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileNameExtractors = null,
-            Mock<IFileExistenceChecker> fileChecker = null)
+            Mock<IFileSystem> fileSystem = null)
         {
             var messageBox = mockMessageBock?.Object ?? new Mock<IMessageBox>().Object;
             var mockModuleNameExtractor = new Mock<IModuleNameFromFileExtractor>();
             var fileNameConverter = fileNameToModuleNameConverter ?? ((fileName) => fileName);
             mockModuleNameExtractor.Setup(m => m.ModuleName(It.IsAny<string>())).Returns((string filename) => fileNameConverter(filename));
             var extractors = binaryFileNameExtractors ?? Enumerable.Empty<IRequiredBinaryFilesFromFileNameExtractor>();
-            var mockFileChecker = fileChecker;
-            if (mockFileChecker == null)
+            var mockFileSystem = fileSystem;
+            if (mockFileSystem == null)
             {
-                mockFileChecker = new Mock<IFileExistenceChecker>();
-                mockFileChecker.Setup(m => m.FileExists(It.IsAny<string>())).Returns(true);
+                mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(It.IsAny<string>())).Returns(true);
             }
-            ViewModel.ImportCommand = new ImportCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileChecker.Object, messageBox);
+            ViewModel.ImportCommand = new ImportCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileSystem.Object, messageBox);
             ViewModel.ImportCommand.Execute(ViewModel.SelectedItem);
         }
 
@@ -401,19 +402,19 @@ namespace RubberduckTests.CodeExplorer
             Func<string, string> fileNameToModuleNameConverter, 
             Mock<IMessageBox> mockMessageBox = null, 
             IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileNameExtractors = null, 
-            Mock<IFileExistenceChecker> fileChecker = null)
+            Mock<IFileSystem> fileSystem = null)
         {
             var messageBox = mockMessageBox?.Object ?? new Mock<IMessageBox>().Object;
             var mockModuleNameExtractor = new Mock<IModuleNameFromFileExtractor>();
             mockModuleNameExtractor.Setup(m => m.ModuleName(It.IsAny<string>())).Returns((string filename) => fileNameToModuleNameConverter(filename));
             var extractors = binaryFileNameExtractors ?? Enumerable.Empty<IRequiredBinaryFilesFromFileNameExtractor>();
-            var mockFileChecker = fileChecker;
-            if (mockFileChecker == null)
+            var mockFileSystem = fileSystem;
+            if (mockFileSystem == null)
             {
-                mockFileChecker = new Mock<IFileExistenceChecker>();
-                mockFileChecker.Setup(m => m.FileExists(It.IsAny<string>())).Returns(true);
+                mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(It.IsAny<string>())).Returns(true);
             }
-            ViewModel.UpdateFromFilesCommand = new UpdateFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileChecker.Object, messageBox);
+            ViewModel.UpdateFromFilesCommand = new UpdateFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileSystem.Object, messageBox);
             ViewModel.UpdateFromFilesCommand.Execute(ViewModel.SelectedItem);
         }
 
@@ -421,7 +422,7 @@ namespace RubberduckTests.CodeExplorer
             Func<string, string> fileNameToModuleNameConverter = null,
             Mock<IMessageBox> mockMessageBock = null,
             IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileNameExtractors = null,
-            Mock<IFileExistenceChecker> fileChecker = null)
+            Mock<IFileSystem> fileSystem = null)
         {
             var messageBoxMock = mockMessageBock;
             if (messageBoxMock == null)
@@ -435,13 +436,13 @@ namespace RubberduckTests.CodeExplorer
             var fileNameConverter = fileNameToModuleNameConverter ?? ((fileName) => fileName);
             mockModuleNameExtractor.Setup(m => m.ModuleName(It.IsAny<string>())).Returns((string filename) => fileNameConverter(filename));
             var extractors = binaryFileNameExtractors ?? Enumerable.Empty<IRequiredBinaryFilesFromFileNameExtractor>();
-            var mockFileChecker = fileChecker;
-            if (mockFileChecker == null)
+            var mockFileSystem = fileSystem;
+            if (mockFileSystem == null)
             {
-                mockFileChecker = new Mock<IFileExistenceChecker>();
-                mockFileChecker.Setup(m => m.FileExists(It.IsAny<string>())).Returns(true);
+                mockFileSystem = new Mock<IFileSystem>();
+                mockFileSystem.Setup(m => m.File.Exists(It.IsAny<string>())).Returns(true);
             }
-            ViewModel.ReplaceProjectContentsFromFilesCommand = new ReplaceProjectContentsFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileChecker.Object, messageBoxMock.Object);
+            ViewModel.ReplaceProjectContentsFromFilesCommand = new ReplaceProjectContentsFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileSystem.Object, messageBoxMock.Object);
             ViewModel.ReplaceProjectContentsFromFilesCommand.Execute(ViewModel.SelectedItem);
         }
 
@@ -512,7 +513,7 @@ namespace RubberduckTests.CodeExplorer
             var extractInterfaceBaseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, State, State, null, State.ProjectsProvider, addComponentService);
             var userInteraction = new RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel>(null, _uiDispatcher.Object);
             ViewModel.CodeExplorerExtractInterfaceCommand = new CodeExplorerExtractInterfaceCommand(
-                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, userInteraction, null, CreateCodeBuilder()),
+                new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, userInteraction, null, new Mock<IExtractInterfaceConflictFinderFactory>().Object, CreateCodeBuilder()),
                 State, null, VbeEvents.Object);
             return this;
         }

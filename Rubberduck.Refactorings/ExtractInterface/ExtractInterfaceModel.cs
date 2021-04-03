@@ -12,6 +12,14 @@ namespace Rubberduck.Refactorings.ExtractInterface
         Public
     }
 
+    public enum ExtractInterfaceImplementationOption
+    {
+        ForwardObjectMembersToInterface,
+        ForwardInterfaceToObjectMembers,
+        NoInterfaceImplementation,
+        ReplaceObjectMembersWithInterface
+    }
+
     public class ExtractInterfaceModel : IRefactoringModel
     {
         public IDeclarationFinderProvider DeclarationFinderProvider { get; }
@@ -24,6 +32,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
         public ClassInstancing ImplementingClassInstancing => TargetDeclaration.IsExposed 
             ? ClassInstancing.Public 
             : ClassInstancing.Private;
+        public IExtractInterfaceConflictFinder ConflictFinder { set; get; }
+
+        public ExtractInterfaceImplementationOption ImplementationOption { set; get; } = ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers;
 
         public static readonly DeclarationType[] MemberTypes =
         {
@@ -50,13 +61,16 @@ namespace Rubberduck.Refactorings.ExtractInterface
             LoadMembers(codeBuilder);
         }
 
+        public string ImplementingMemberName(string memberIdentifier) => $"{InterfaceName}_{memberIdentifier}";
+
         private void LoadMembers(ICodeBuilder codeBuilder)
         {
             Members = new ObservableCollection<InterfaceMember>(DeclarationFinderProvider.DeclarationFinder
                 .Members(TargetDeclaration.QualifiedModuleName)
                 .Where(item =>
                     (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Implicit)
-                    && MemberTypes.Contains(item.DeclarationType))
+                    && MemberTypes.Contains(item.DeclarationType)
+                    && !item.IdentifierName.Contains("_"))
                 .OrderBy(o => o.Selection.StartLine)
                 .ThenBy(t => t.Selection.StartColumn)
                 .Select(d => new InterfaceMember(d, codeBuilder))
