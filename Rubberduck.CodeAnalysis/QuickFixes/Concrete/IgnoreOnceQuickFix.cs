@@ -37,8 +37,8 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
         private readonly RubberduckParserState _state;
         private readonly IAnnotationUpdater _annotationUpdater;
 
-        public AnnotateEntryPointQuickFix(IAnnotationUpdater annotationUpdater, RubberduckParserState state, IEnumerable<IInspection> inspections)
-            : base(inspections.Select(s => s.GetType()).Where(i => i.CustomAttributes.All(a => a.AttributeType != typeof(CannotAnnotateAttribute))).ToArray())
+        public AnnotateEntryPointQuickFix(IAnnotationUpdater annotationUpdater, RubberduckParserState state)
+            : base(new[] { typeof(Inspections.Concrete.ProcedureNotUsedInspection) }.ToArray())
         {
             _state = state;
             _annotationUpdater = annotationUpdater;
