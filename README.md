@@ -1,6 +1,6 @@
 ![banner](https://user-images.githubusercontent.com/5751684/113501222-8edfe880-94f1-11eb-99a9-64583e413ef3.png)
 
-• [Attributions](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/Attributions.md) • [Installing](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing) • [Contributing](https://github.com/rubberduck-vba/Rubberduck/blob/next/CONTRIBUTING.md)
+[**Installing**](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing) • [Contributing](https://github.com/rubberduck-vba/Rubberduck/blob/next/CONTRIBUTING.md) • [Attributions](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/Attributions.md) • [Blog](https://rubberduckvba.blog) • [Wiki](https://github.com/rubberduck-vba/Rubberduck/wiki) • [rubberduckvba.com](https://rubberduckvba.com)
 
 ## Build Status
 
@@ -31,15 +31,6 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 Since the project's early days, JetBrains' Open-Source team has been supporting Rubberduck with free OSS licenses for all core contributors - and we deeply thank them for that. ReSharper has been not only a tool we couldn't do without; it's been an inspiration, the ultimate level of polished perfection to strive for in our own IDE add-in project. So just like you're missing out if you write VBA and you're not using Rubberduck, you're missing out if you write C# and aren't using ReSharper.
 
 <sub>Note: Rubberduck is not a JetBrains product. JetBrains does not contribute and is not affiliated to the Rubberduck project in any way.</sub>
-
----
-
-## Media
-
-- [rubberduckvba.com](https://rubberduckvba.com)  
-- [Blog](https://rubberduckvba.blog)  
-- [Twitter](https://twitter.com/rubberduckvba)  
-- [Facebook](https://www.facebook.com/rubberduckvba)
 
 ---
 
@@ -94,6 +85,4 @@ Rubberduck isn't a lightweight add-in and consumes a large amount of memory. So 
 
 Feel free to [ask for support](https://github.com/rubberduck-vba/Rubberduck/issues/new?assignees=&labels=support&template=support.md), we're always happy to help. You may also want to browse [Rubberduck questions on Stack Overflow](https://stackoverflow.com/questions/tagged/rubberduck) (mind post dates!) or ask a new one. If you have 20+ reputation on Stack Exchange, you can join the [dev chat](https://chat.stackexchange.com/rooms/14929/vba-rubberducking) and ask anyone anything about Rubberduck or VBA.
 
-For more information please see [Getting Started](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/GettingStarted.md) in the project's wiki.
-
-> See something out of place? Edit it!
+For more information please see [Getting Started](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/GettingStarted.md) in the project's wiki, and follow the project's blog for project updates and advanced VBA OOP reading material.
