@@ -49,10 +49,15 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     {
         public MemberAttributeAnnotation()
             : base("MemberAttribute", AnnotationTarget.Member | AnnotationTarget.Variable, _argumentTypes, true)
-        {}
+        {
+            _incompatibleComponentTypes = base.IncompatibleComponentTypes
+                .Concat(new[] { ComponentType.Document })
+                .Distinct().ToList();
+        }
 
-        public override IReadOnlyList<ComponentType> IncompatibleComponentTypes => 
-            base.IncompatibleComponentTypes.Concat(new[] { ComponentType.Document }).Distinct().ToList();
+        private readonly IReadOnlyList<ComponentType> _incompatibleComponentTypes;
+        public override IReadOnlyList<ComponentType> IncompatibleComponentTypes => _incompatibleComponentTypes;
+            
 
         private static AnnotationArgumentType[] _argumentTypes = new[]
         {

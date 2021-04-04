@@ -25,10 +25,12 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected QualifiedContext Context(IParseTreeAnnotation pta) =>
             new QualifiedContext(pta.QualifiedSelection.QualifiedName, pta.Context);
 
-        protected sealed override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder) =>
-            finder.UserDeclarations(DeclarationType.Module)
-                  .Where(module => module != null)
-                  .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder));
+        protected sealed override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
+        {
+            return finder.UserDeclarations(DeclarationType.Module)
+.Where(module => module != null)
+.SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder));
+        }
 
         protected IInspectionResult InspectionResult(IParseTreeAnnotation pta) =>
             new QualifiedContextInspectionResult(this, ResultDescription(pta), Context(pta));
@@ -138,15 +140,23 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             : base(declarationFinderProvider) { }
 
         protected override IEnumerable<IParseTreeAnnotation> GetInvalidAnnotations(
-            IEnumerable<IParseTreeAnnotation> annotations, 
-            IEnumerable<Declaration> userDeclarations, 
-            IEnumerable<IdentifierReference> identifierReferences) =>
-                from pta in annotations
-                let annotation = pta.Annotation
-                let componentType = pta.QualifiedSelection.QualifiedName.ComponentType
-                where (annotation.RequiredComponentType.HasValue && annotation.RequiredComponentType != componentType)
-                    || annotation.IncompatibleComponentTypes.Contains(componentType)
-                select pta;
+            IEnumerable<IParseTreeAnnotation> annotations,
+            IEnumerable<Declaration> userDeclarations,
+            IEnumerable<IdentifierReference> identifierReferences)
+        {
+            foreach (var pta in annotations)
+            {
+                var annotation = pta.Annotation;
+                var componentType = pta.QualifiedSelection.QualifiedName.ComponentType;
+                if (annotation.RequiredComponentType.HasValue && annotation.RequiredComponentType != componentType
+                       || annotation.IncompatibleComponentTypes.Contains(componentType))
+                {
+                    yield return pta;
+                }
+            }
+
+            yield break;
+        }
 
         protected override string ResultDescription(IParseTreeAnnotation pta)
         {
@@ -211,6 +221,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             IEnumerable<IdentifierReference> identifierReferences)
         {
             return GetUnboundAnnotations(annotations, userDeclarations, identifierReferences)
+                .Where(pta => pta.Annotation.Target != AnnotationTarget.General)
                 .Concat(AttributeAnnotationsOnDeclarationsNotAllowingAttributes(annotations, userDeclarations, identifierReferences))
                 .ToList();
         }
