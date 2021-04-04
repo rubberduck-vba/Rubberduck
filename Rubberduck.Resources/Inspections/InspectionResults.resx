@@ -258,8 +258,8 @@
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>Component '{0}' uses 'Option Base 0'.</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Annotation '{0}' is illegal in this context.</value>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Annotation '{0}' is invalid in this context.</value>
     <comment>{0} annotation name</comment>
   </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
@@ -523,5 +523,17 @@ In memoriam, 1972-2018</value>
   <data name="MisleadingByRefParameterInspection" xml:space="preserve">
     <value>Misleading ByRef modifier used for parameter '{0}' ({1}).</value>
     <comment>{0} Parameter, {1} Member</comment>
+  </data>
+  <data name="InvalidAnnotationInspection_IncompatibleComponentType" xml:space="preserve">
+    <value>Annotation '{0}' cannot be used in a '{1}'.</value>
+    <comment>{0} Annotation name; {1} annotation component type</comment>
+  </data>
+  <data name="InvalidAnnotationInspection_NotInRequiredComponentType" xml:space="preserve">
+    <value>Annotation '{0}' is used in a '{1}', but is only valid in a '{2}'.</value>
+    <comment>{0} Annotation name; {1} annotation component type; {2} annotation required component type</comment>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>'{0}' is not a recognized Rubberduck annotation (yet?)</value>
+    <comment>{0} Unrecognized annotation name</comment>
   </data>
 </root>

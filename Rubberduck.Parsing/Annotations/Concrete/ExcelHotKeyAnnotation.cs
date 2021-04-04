@@ -4,6 +4,7 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.Annotations.Concrete
 {
@@ -43,17 +44,17 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     public sealed class ExcelHotKeyAnnotation : FlexibleAttributeValueAnnotationBase
     {
         public ExcelHotKeyAnnotation()
-            : base("ExcelHotkey", AnnotationTarget.Member, "VB_ProcData.VB_Invoke_Func", 1, new[] { AnnotationArgumentType.Text})
-        {}
-
-        public override IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues)
+            : base("ExcelHotkey", AnnotationTarget.Member, "VB_ProcData.VB_Invoke_Func", 1, new[] { AnnotationArgumentType.Text}) 
         {
-            return annotationValues.Take(1).Select(v => (v.UnQuote()[0] + @"\n14").EnQuote()).ToList();
         }
 
-        public override IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues)
-        {
-            return attributeValues.Select(keySpec => keySpec.UnQuote().Substring(0, 1)).ToList();
-        }
+        public override ComponentType? RequiredComponentType => ComponentType.StandardModule;
+
+        public override IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues) =>
+            annotationValues.Take(1).Select(v => (v.UnQuote()[0] + @"\n14").EnQuote()).ToList();
+        
+        public override IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues) =>        
+            attributeValues.Select(keySpec => keySpec.UnQuote().Substring(0, 1)).ToList();
+       
     }
 }

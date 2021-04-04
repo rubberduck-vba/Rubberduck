@@ -774,7 +774,7 @@ End Sub
         public void InspectionName()
         {
             const string inspectionName = "IllegalAnnotationInspection";
-            var inspection = new IllegalAnnotationInspection(null);
+            var inspection = new InvalidAnnotationInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
@@ -796,7 +796,7 @@ End Sub";
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            return new IllegalAnnotationInspection(state);
+            return new InvalidAnnotationInspection(state);
         }
     }
 }
