@@ -8,7 +8,110 @@ using Rubberduck.VBEditor.SafeComWrappers;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class IllegalAnnotationsInspectionTests : InspectionTestsBase
+    public class AnnotationInIncompatibleComponentTypeInspectionTests : InspectionTestsBase
+    {
+        [Test]
+        [Category("Inspections")]
+        public void MemberAttributeAnnotationInDocumentReturnsResult()
+        {
+            const string inputCode = @"
+'@MemberAttribute VB_Description, ""Desc""
+Public Sub Foo()
+End Sub
+";
+
+            var inspectionResults = InspectionResultsForModules(("TestDocument", inputCode, ComponentType.Document));
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void AttributeAnnotationOnDeclarationNotAllowingAttributes_OneResult()
+        {
+            const string inputCode =
+                @"
+Private Sub Foo()
+'local variables do not allow attributes
+    '@VariableDescription(""Desc"")
+    Dim bar As Variant
+End Sub
+";
+
+            var inspectionResults = InspectionResultsForStandardModule(inputCode);
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = nameof(AnnotationInIncompatibleComponentTypeInspection);
+            var inspection = new InvalidAnnotationInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state) => new AnnotationInIncompatibleComponentTypeInspection(state);
+    }
+
+    [TestFixture]
+    public class UnrecognizedAnnotationInspectionTests : InspectionTestsBase
+    {
+        [Test]
+        [Category("Inspections")]
+        public void NonExistentModuleAnnotation_OneResult()
+        {
+            const string inputCode = @"
+'@ThisDoesNotExist
+Option Explicit
+Option Private Module
+
+Public Sub Test1()
+End Sub
+
+Public Sub Test2()
+End Sub
+";
+
+            var inspectionResults = InspectionResultsForStandardModule(inputCode);
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void NonExistentMemberAnnotation_OneResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+Public Sub Test1()
+End Sub
+
+'@ThisDoesNotExist
+Public Sub Test2()
+End Sub
+";
+
+            var inspectionResults = InspectionResultsForStandardModule(inputCode);
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = nameof(UnrecognizedAnnotationInspection);
+            var inspection = new InvalidAnnotationInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state) => new UnrecognizedAnnotationInspection(state);
+    }
+
+    [TestFixture]
+    public class InvalidAnnotationsInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -166,46 +269,6 @@ Public Sub Test1()
 End Sub
 
 '@TestModule
-Public Sub Test2()
-End Sub
-";
-
-            var inspectionResults = InspectionResultsForStandardModule(inputCode);
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void NonExistentModuleAnnotation_OneResult()
-        {
-            const string inputCode = @"
-'@ThisDoesNotExist
-Option Explicit
-Option Private Module
-
-Public Sub Test1()
-End Sub
-
-Public Sub Test2()
-End Sub
-";
-
-            var inspectionResults = InspectionResultsForStandardModule(inputCode);
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void NonExistentMemberAnnotation_OneResult()
-        {
-            const string inputCode = @"
-Option Explicit
-Option Private Module
-
-Public Sub Test1()
-End Sub
-
-'@ThisDoesNotExist
 Public Sub Test2()
 End Sub
 ";
@@ -740,40 +803,9 @@ Implements IWorkbookData
 
         [Test]
         [Category("Inspections")]
-        public void MemberAttributeAnnotationInDocumentReturnsResult()
-        {
-            const string inputCode = @"
-'@MemberAttribute VB_Description, ""Desc""
-Public Sub Foo()
-End Sub
-";
-
-            var inspectionResults = InspectionResultsForModules(("TestDocument", inputCode, ComponentType.Document));
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void AttributeAnnotationOnDeclarationNotAllowingAttributes_OneResult()
-        {
-            const string inputCode =
-                @"
-Private Sub Foo()
-'local variables do not allow attributes
-    '@VariableDescription(""Desc"")
-    Dim bar As Variant
-End Sub
-";
-
-            var inspectionResults = InspectionResultsForStandardModule(inputCode);
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [Test]
-        [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "IllegalAnnotationInspection";
+            const string inspectionName = nameof(InvalidAnnotationInspection);
             var inspection = new InvalidAnnotationInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
@@ -794,9 +826,6 @@ End Sub";
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        protected override IInspection InspectionUnderTest(RubberduckParserState state)
-        {
-            return new InvalidAnnotationInspection(state);
-        }
+        protected override IInspection InspectionUnderTest(RubberduckParserState state) => new InvalidAnnotationInspection(state);        
     }
 }
