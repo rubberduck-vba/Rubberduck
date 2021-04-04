@@ -221,7 +221,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             IEnumerable<IdentifierReference> identifierReferences)
         {
             return GetUnboundAnnotations(annotations, userDeclarations, identifierReferences)
-                .Where(pta => pta.Annotation.Target != AnnotationTarget.General)
+                .Where(pta => !pta.Annotation.Target.HasFlag(AnnotationTarget.General) || pta.AnnotatedLine == null)
                 .Concat(AttributeAnnotationsOnDeclarationsNotAllowingAttributes(annotations, userDeclarations, identifierReferences))
                 .ToList();
         }
