@@ -8,11 +8,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class AddIn : SafeComWrapper<VB.AddIn>, IAddIn
     {
+        // this one is an index, not an ID:
         private const int MenuBar = 1;
-        private const int CodeWindow = 9;
-        private const int ProjectExplorer = 14;
-        private const int MsForm = 17;
-        private const int MsFormControl = 18;
 
         private const int WindowMenu = 30009;
         private const int ListProperties = 2529;
@@ -25,12 +22,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             CommandBarLocations = new ReadOnlyDictionary<CommandBarSite, CommandBarLocation>(new Dictionary<CommandBarSite, CommandBarLocation>
             {
                 {CommandBarSite.MenuBar, new CommandBarLocation(MenuBar, WindowMenu)},
-                {CommandBarSite.CodeWindow, new CommandBarLocation(CodeWindow, ListProperties)},
-                {CommandBarSite.ProjectExplorer, new CommandBarLocation(ProjectExplorer, ProjectProperties)},
-                {CommandBarSite.MsForm, new CommandBarLocation(MsForm, ViewCode)},
-                {CommandBarSite.MsFormControl, new CommandBarLocation(MsFormControl, ViewCode)}
+                {CommandBarSite.CodePaneContextMenu, new CommandBarLocation(VbeCommandBarMenuNames.CodePaneContext, ListProperties)},
+                {CommandBarSite.ProjectExplorerContextMenu, new CommandBarLocation(VbeCommandBarMenuNames.ProjectExplorerContext, ProjectProperties)},
+                {CommandBarSite.FormDesignerContextMenu, new CommandBarLocation(VbeCommandBarMenuNames.FormDesignerContext, ViewCode)},
+                {CommandBarSite.FormDesignerControlContextMenu, new CommandBarLocation(VbeCommandBarMenuNames.FormDesignerControlContext, ViewCode)},
             });
-
         }
 
 
