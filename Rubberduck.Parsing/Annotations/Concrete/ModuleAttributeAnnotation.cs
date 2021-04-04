@@ -2,6 +2,8 @@
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
+using System.Linq;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.Annotations.Concrete
 {
@@ -41,9 +43,16 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// </example>
     public class ModuleAttributeAnnotation : FlexibleAttributeAnnotationBase
     {
-        public ModuleAttributeAnnotation() 
+        public ModuleAttributeAnnotation()
         : base("ModuleAttribute", AnnotationTarget.Module, _argumentTypes, true)
-        {}
+        {
+            _incompatibleComponentTypes = base.IncompatibleComponentTypes
+                .Concat(new[] { ComponentType.Document })
+                .Distinct().ToList();
+        }
+
+        private readonly IReadOnlyList<ComponentType> _incompatibleComponentTypes;
+        public override IReadOnlyList<ComponentType> IncompatibleComponentTypes => _incompatibleComponentTypes;
 
         private static AnnotationArgumentType[] _argumentTypes = new[]
         {

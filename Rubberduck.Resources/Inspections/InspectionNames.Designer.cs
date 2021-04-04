@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Inspections {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InspectionNames {
@@ -57,6 +57,15 @@ namespace Rubberduck.Resources.Inspections {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation in incompatible component type.
+        /// </summary>
+        public static string AnnotationInIncompatibleComponentTypeInspection {
+            get {
+                return ResourceManager.GetString("AnnotationInIncompatibleComponentTypeInspection", resourceCulture);
             }
         }
         
@@ -313,15 +322,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Illegal annotation.
-        /// </summary>
-        public static string IllegalAnnotationInspection {
-            get {
-                return ResourceManager.GetString("IllegalAnnotationInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Implemented member of interface class.
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
@@ -462,6 +462,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string IntegerDataTypeInspection {
             get {
                 return ResourceManager.GetString("IntegerDataTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid annotation.
+        /// </summary>
+        public static string InvalidAnnotationInspection {
+            get {
+                return ResourceManager.GetString("InvalidAnnotationInspection", resourceCulture);
             }
         }
         
@@ -966,6 +975,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UnreachableCaseInspection {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unrecognized annotation.
+        /// </summary>
+        public static string UnrecognizedAnnotationInspection {
+            get {
+                return ResourceManager.GetString("UnrecognizedAnnotationInspection", resourceCulture);
             }
         }
         

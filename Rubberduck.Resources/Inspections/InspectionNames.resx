@@ -246,8 +246,8 @@
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>'Option Base 0' is redundant</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Illegal annotation</value>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Invalid annotation</value>
   </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Missing attribute</value>
@@ -450,5 +450,11 @@
   </data>
   <data name="MisleadingByRefParameterInspection" xml:space="preserve">
     <value>Misleading ByRef parameter modifier</value>
+  </data>
+  <data name="AnnotationInIncompatibleComponentTypeInspection" xml:space="preserve">
+    <value>Annotation in incompatible component type</value>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>Unrecognized annotation</value>
   </data>
 </root>

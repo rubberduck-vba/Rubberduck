@@ -27,6 +27,18 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Inspections\InspectionInfo.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Inspections\InspectionNames.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Inspections\InspectionResults.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Inspections\QuickFixes.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="RubberduckUI.Designer.cs">
       <DesignTime>True</DesignTime>
     </Compile>

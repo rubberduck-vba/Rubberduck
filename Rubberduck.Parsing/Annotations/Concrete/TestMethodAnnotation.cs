@@ -2,6 +2,7 @@
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.Annotations.Concrete
 {
@@ -44,5 +45,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
             }
             return result;
         }
+
+        public override ComponentType? RequiredComponentType => ComponentType.StandardModule;
     }
 }
