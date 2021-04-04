@@ -38,6 +38,12 @@ Since the project's early days, JetBrains' Open-Source team has been supporting 
 
 The Visual Basic Editor (VBE) has stood still for over 20 years, and there is no chance a first-party update to the legacy IDE ever brings it up to speed with modern-day tooling. Rubberduck aims to bring the VBE into this century by doing exactly that.
 
+Read more about contributing here:
+
+[![contribute!](https://user-images.githubusercontent.com/5751684/113513709-071dcc80-9539-11eb-833d-d21532065306.png)](https://github.com/rubberduck-vba/Rubberduck/blob/next/CONTRIBUTING.md)
+
+The add-in has *many* features - below is a quick overview.
+
 ### Enhanced Navigation
 
 The Rubberduck *command bar* displays docstring for the current member
@@ -52,7 +58,7 @@ All references to any identifier, whether defined in your project or any of its 
 
 Rubberduck analyses your code in various configurable ways and can help avoiding beginner mistakes, keeping a consistent programming style, and finding all sorts of potential bugs and problems. Many code inspections were implemented as a result of frequently-asked [VBA questions on Stack Overflow](https://stackoverflow.com/questions/tagged/vba), and in many occasions an automatic quick-fix is available.
 
-Rename variables to meaningful identifiers without worrying about breaking something. Promote local variables to parameters, extract interfaces and methods, encapsulate fields; change the ordering of parameters, or delete a parameter, and automatically update all callers.
+Rename variables to meaningful identifiers without worrying about breaking something. Promote local variables to parameters, extract interfaces and methods out of a selection, encapsulate fields into properties; reorder and/or delete parameters, and automatically update all callers. 
 
 ### Unit Testing
 
