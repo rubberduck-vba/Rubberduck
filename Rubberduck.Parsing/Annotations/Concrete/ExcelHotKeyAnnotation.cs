@@ -14,13 +14,16 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// <parameter name="Key" type="Text">
     /// A single-letter string argument maps the hotkey. If the letter is in UPPER CASE, the hotkey is Ctrl+Shift+letter; if the letter is lower case, the hotkey is Ctrl+letter. Avoid remapping commonly used keyboard shortcuts!
     /// </parameter>
+    /// <remarks>
+    /// Members with this annotation are ignored by the ProcedureNotUsed inspection. Use the @EntryPoint annotation to similarly affect the ProcedureNotUsed inspection without mapping a hotkey or ignoring the inspection.
+    /// </remarks>
     /// <example>
     /// <before>
     /// <module name="Module1" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     ///
-    /// '@ExcelHotkey("D")
+    /// '@ExcelHotkey "D"
     /// Public Sub DoSomething()
     ///     '...
     /// End Sub
@@ -32,7 +35,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// <![CDATA[
     /// Option Explicit
     ///
-    /// '@ExcelHotkey("D")
+    /// '@ExcelHotkey "D"
     /// Public Sub DoSomething()
     /// Attribute DoSomething.VB_ProcData.VB_Invoke_Func = "D\n14"
     ///     '...

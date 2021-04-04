@@ -21,7 +21,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// <remarks>
     /// Not all unused procedures can/should be removed: ignore any inspection results for 
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such, or annotate them with @EntryPoint.
-    /// Members that are annotated with @EntryPoint are not flagged by this inspection regardless of the presence or absence of user code references.
+    /// Members that are annotated with @EntryPoint (or @ExcelHotkey) are not flagged by this inspection, regardless of the presence or absence of user code references.
     /// </remarks>
     /// <example hasResult="true">
     /// <module name="Module1" type="Standard Module">
@@ -153,7 +153,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         }
 
         private static bool IsEntryPoint(Declaration procedure) => 
-            procedure.Annotations.Any(pta => pta.Annotation is EntryPointAnnotation);
+            procedure.Annotations.Any(pta => pta.Annotation is EntryPointAnnotation || pta.Annotation is ExcelHotKeyAnnotation);
 
         private static bool IsClassLifeCycleHandler(Declaration procedure)
         {
