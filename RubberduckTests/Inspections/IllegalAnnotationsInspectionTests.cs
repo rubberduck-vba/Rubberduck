@@ -12,6 +12,19 @@ namespace RubberduckTests.Inspections
     {
         [Test]
         [Category("Inspections")]
+        public void ModuleAttributeAnnotationInDocumentReturnsResult()
+        {
+            const string inputCode = @"
+'@ModuleAttribute VB_Description, ""Desc""
+
+";
+
+            var inspectionResults = InspectionResultsForModules(("TestDocument", inputCode, ComponentType.Document));
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void MemberAttributeAnnotationInDocumentReturnsResult()
         {
             const string inputCode = @"
@@ -26,27 +39,10 @@ End Sub
 
         [Test]
         [Category("Inspections")]
-        public void AttributeAnnotationOnDeclarationNotAllowingAttributes_OneResult()
-        {
-            const string inputCode =
-                @"
-Private Sub Foo()
-'local variables do not allow attributes
-    '@VariableDescription(""Desc"")
-    Dim bar As Variant
-End Sub
-";
-
-            var inspectionResults = InspectionResultsForStandardModule(inputCode);
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [Test]
-        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = nameof(AnnotationInIncompatibleComponentTypeInspection);
-            var inspection = new InvalidAnnotationInspection(null);
+            var inspection = InspectionUnderTest(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
@@ -102,7 +98,7 @@ End Sub
         public void InspectionName()
         {
             const string inspectionName = nameof(UnrecognizedAnnotationInspection);
-            var inspection = new InvalidAnnotationInspection(null);
+            var inspection = InspectionUnderTest(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
@@ -124,6 +120,23 @@ End Sub";
 
             var inspectionResults = InspectionResultsForStandardModule(inputCode);
             Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void AttributeAnnotationOnDeclarationNotAllowingAttributes_OneResult()
+        {
+            const string inputCode =
+                @"
+Private Sub Foo()
+'local variables do not allow attributes
+    '@VariableDescription(""Desc"")
+    Dim bar As Variant
+End Sub
+";
+
+            var inspectionResults = InspectionResultsForStandardModule(inputCode);
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [Test]
@@ -790,23 +803,10 @@ Implements IWorkbookData
 
         [Test]
         [Category("Inspections")]
-        public void ModuleAttributeAnnotationInDocumentReturnsResult()
-        {
-            const string inputCode = @"
-'@ModuleAttribute VB_Description, ""Desc""
-
-";
-
-            var inspectionResults = InspectionResultsForModules(("TestDocument", inputCode, ComponentType.Document));
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [Test]
-        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = nameof(InvalidAnnotationInspection);
-            var inspection = new InvalidAnnotationInspection(null);
+            var inspection = InspectionUnderTest(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

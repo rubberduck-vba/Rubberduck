@@ -6,7 +6,6 @@ using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -211,6 +210,16 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             IEnumerable<Declaration> userDeclarations,
             IEnumerable<IdentifierReference> identifierReferences)
         {
+            return GetUnboundAnnotations(annotations, userDeclarations, identifierReferences)
+                .Concat(AttributeAnnotationsOnDeclarationsNotAllowingAttributes(annotations, userDeclarations, identifierReferences))
+                .ToList();
+        }
+
+        private IEnumerable<IParseTreeAnnotation> GetUnboundAnnotations(
+            IEnumerable<IParseTreeAnnotation> annotations,
+            IEnumerable<Declaration> userDeclarations,
+            IEnumerable<IdentifierReference> identifierReferences)
+        {
             var boundAnnotationsSelections = userDeclarations
                 .SelectMany(declaration => declaration.Annotations)
                 .Concat(identifierReferences.SelectMany(reference => reference.Annotations))
@@ -218,8 +227,19 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 .ToHashSet();
 
             return annotations
-                .Where(pta => pta.Annotation.GetType() != typeof(NotRecognizedAnnotation) && !boundAnnotationsSelections.Contains(pta.QualifiedSelection))
-                .ToList();
+                .Where(pta => pta.Annotation.GetType() != typeof(NotRecognizedAnnotation) && !boundAnnotationsSelections.Contains(pta.QualifiedSelection));
+        }
+
+        private IEnumerable<IParseTreeAnnotation> AttributeAnnotationsOnDeclarationsNotAllowingAttributes(
+            IEnumerable<IParseTreeAnnotation> annotations,
+            IEnumerable<Declaration> userDeclarations,
+            IEnumerable<IdentifierReference> identifierReferences)
+        {
+            return userDeclarations
+                .Where(declaration => declaration.AttributesPassContext == null
+                                      && !declaration.DeclarationType.HasFlag(DeclarationType.Module))
+                .SelectMany(declaration => declaration.Annotations)
+                .Where(pta => pta.Annotation is IAttributeAnnotation);
         }
     }
 }
