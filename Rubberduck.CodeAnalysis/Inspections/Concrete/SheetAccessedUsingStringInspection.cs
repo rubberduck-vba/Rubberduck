@@ -129,8 +129,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         private string CodeNameOfVBComponentMatchingSheetName(string projectId, string sheetName)
         {
             var components = _projectsProvider.Components(projectId);
-
-            foreach (var (module, component) in components)
+            foreach (var (_, component) in components)
             {
                 if (component.Type != ComponentType.Document)
                 {

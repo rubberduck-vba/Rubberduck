@@ -1,0 +1,13 @@
+﻿[*.cs]
+
+# CS1584: XML comment has syntactically incorrect cref attribute
+dotnet_diagnostic.CS1584.severity = none
+
+# CS1041: expected identifier, invalid keyword
+dotnet_diagnostic.CS1041.severity = none
+
+# CS1658: Warning is overriding an error
+dotnet_diagnostic.CS1658.severity = none
+
+# IDE0079: Remove unnecessary suppression
+dotnet_diagnostic.IDE0079.severity = none
