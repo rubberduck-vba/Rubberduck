@@ -898,9 +898,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             string memberName, DeclarationType memberType)
         {
             var allMatches = MatchName(memberName);
+            var parentClass = parent as ClassModuleDeclaration;
             var memberMatches = allMatches
                 .Where(m => m.DeclarationType.HasFlag(memberType)
-                            && parent.Equals(m.ParentDeclaration))
+                            && (parent.Equals(m.ParentDeclaration) || (parentClass?.Supertypes.Any(t => t.Equals(m.ParentDeclaration)) ?? false)))
                 .ToList();
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
@@ -934,21 +935,23 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
             // Classes such as Worksheet have properties such as Range that can be access in a user defined class such as Sheet1,
             // that's why we have to walk the type hierarchy and find these implementations.
-            foreach (var supertype in ClassModuleDeclaration.GetSupertypes(callingModule))
+            if (callingModule is ClassModuleDeclaration callingClass)
             {
-                // Only built-in classes such as Worksheet can be considered "real base classes".
-                // User created interfaces work differently and don't allow accessing accessing implementations.
-                if (supertype.IsUserDefined)
+                foreach (var supertype in callingClass.Supertypes)
                 {
-                    continue;
-                }
-                var supertypeMatch = FindMemberEnclosingModule(supertype, callingParent, memberName, memberType);
-                if (supertypeMatch != null)
-                {
-                    return supertypeMatch;
+                    // Only built-in classes such as Worksheet can be considered "real base classes".
+                    // User created interfaces work differently and don't allow accessing accessing implementations.
+                    if (supertype.IsUserDefined)
+                    {
+                        continue;
+                    }
+                    var supertypeMatch = FindMemberEnclosingModule(supertype, callingParent, memberName, memberType);
+                    if (supertypeMatch != null)
+                    {
+                        return supertypeMatch;
+                    }
                 }
             }
-
             return null;
         }
 
