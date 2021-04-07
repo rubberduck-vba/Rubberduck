@@ -357,6 +357,17 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         public IEnumerable<Declaration> Classes => _classes.Value;
         public IEnumerable<Declaration> Projects => _projects.Value;
 
+        /// <summary>
+        /// Gets the <see cref="ProjectDeclaration"/> object for specified referenced project/library.
+        /// </summary>
+        /// <param name="name">The identifier name of the project declaration to find.</param>
+        /// <param name="result">The <see cref="ProjectDeclaration"/> result, if found; null otherwise.</param>
+        public bool TryFindProjectDeclaration(string name, out Declaration result)
+        {
+            result = _projects.Value.SingleOrDefault(project => project.IdentifierName.Equals(name, StringComparison.InvariantCultureIgnoreCase) && !project.IsUserDefined);
+            return result != null;
+        }
+
         public IEnumerable<Declaration> UserDeclarations(DeclarationType type)
         {
             return _userDeclarationsByType.TryGetValue(type, out var result)
