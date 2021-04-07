@@ -147,14 +147,6 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 var membersAllowingAttributes = _state.GetMembersAllowingAttributes(module);
 
                 var moduleDeclaration = NewModuleDeclaration(module, tree, annotationsOnWhiteSpaceLines, attributes, projectDeclaration);
-                if (moduleDeclaration is DocumentModuleDeclaration documentModule)
-                {
-                    var varAttributes = new Attributes();
-                    //varAttributes.AddMemberDescriptionAttribute(documentModule.IdentifierName, "An object variable VBA creates automatically to refer to a specific document module.");
-                    var variableDeclaration = new VariableDeclaration(documentModule.QualifiedName, documentModule, documentModule, 
-                        documentModule.IdentifierName, null, true, false, Accessibility.Public, null, null, Selection.Empty, false, null, attributes:varAttributes, isUserDefined:false);
-                    _state.AddDeclaration(variableDeclaration);
-                }
                 _state.AddDeclaration(moduleDeclaration);
 
                 var controlDeclarations = DeclarationsFromControls(moduleDeclaration);
