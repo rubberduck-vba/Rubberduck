@@ -333,7 +333,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             var withEventsDeclarations = FindWithEventFields(eventDeclaration);
             return withEventsDeclarations
-                .Select(withEventsField => FindHandlersForWithEventsField(withEventsField).Single(handler => 
+                .Select(withEventsField => FindHandlersForWithEventsField(withEventsField).SingleOrDefault(handler => 
                     handler.IdentifierName.Equals($"{withEventsField.IdentifierName}_{eventDeclaration.IdentifierName}", StringComparison.InvariantCultureIgnoreCase)));
         }
 
@@ -362,9 +362,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         /// </summary>
         /// <param name="name">The identifier name of the project declaration to find.</param>
         /// <param name="result">The <see cref="ProjectDeclaration"/> result, if found; null otherwise.</param>
-        public bool TryFindProjectDeclaration(string name, out Declaration result)
+        /// <param name="includeUserDefined">True to include user-defined projects in the search; false by default.</param>
+        public bool TryFindProjectDeclaration(string name, out Declaration result, bool includeUserDefined = false)
         {
-            result = _projects.Value.SingleOrDefault(project => project.IdentifierName.Equals(name, StringComparison.InvariantCultureIgnoreCase) && !project.IsUserDefined);
+            result = _projects.Value.FirstOrDefault(project => project.IdentifierName.Equals(name, StringComparison.InvariantCultureIgnoreCase) && project.IsUserDefined == includeUserDefined);
             return result != null;
         }
 
