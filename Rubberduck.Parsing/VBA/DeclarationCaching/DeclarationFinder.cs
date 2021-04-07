@@ -333,7 +333,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             var withEventsDeclarations = FindWithEventFields(eventDeclaration);
             return withEventsDeclarations
-                .Select(withEventsField => FindHandlersForWithEventsField(withEventsField).Single(handler => 
+                .Select(withEventsField => FindHandlersForWithEventsField(withEventsField).SingleOrDefault(handler => 
                     handler.IdentifierName.Equals($"{withEventsField.IdentifierName}_{eventDeclaration.IdentifierName}", StringComparison.InvariantCultureIgnoreCase)));
         }
 
@@ -356,6 +356,18 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public IEnumerable<Declaration> Classes => _classes.Value;
         public IEnumerable<Declaration> Projects => _projects.Value;
+
+        /// <summary>
+        /// Gets the <see cref="ProjectDeclaration"/> object for specified referenced project/library.
+        /// </summary>
+        /// <param name="name">The identifier name of the project declaration to find.</param>
+        /// <param name="result">The <see cref="ProjectDeclaration"/> result, if found; null otherwise.</param>
+        /// <param name="includeUserDefined">True to include user-defined projects in the search; false by default.</param>
+        public bool TryFindProjectDeclaration(string name, out Declaration result, bool includeUserDefined = false)
+        {
+            result = _projects.Value.FirstOrDefault(project => project.IdentifierName.Equals(name, StringComparison.InvariantCultureIgnoreCase) && project.IsUserDefined == includeUserDefined);
+            return result != null;
+        }
 
         public IEnumerable<Declaration> UserDeclarations(DeclarationType type)
         {
@@ -898,9 +910,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             string memberName, DeclarationType memberType)
         {
             var allMatches = MatchName(memberName);
+            var parentClass = parent as ClassModuleDeclaration;
             var memberMatches = allMatches
                 .Where(m => m.DeclarationType.HasFlag(memberType)
-                            && parent.Equals(m.ParentDeclaration))
+                            && (parent.Equals(m.ParentDeclaration) || (parentClass?.Supertypes.Any(t => t.Equals(m.ParentDeclaration)) ?? false)))
                 .ToList();
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
@@ -934,21 +947,23 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
             // Classes such as Worksheet have properties such as Range that can be access in a user defined class such as Sheet1,
             // that's why we have to walk the type hierarchy and find these implementations.
-            foreach (var supertype in ClassModuleDeclaration.GetSupertypes(callingModule))
+            if (callingModule is ClassModuleDeclaration callingClass)
             {
-                // Only built-in classes such as Worksheet can be considered "real base classes".
-                // User created interfaces work differently and don't allow accessing accessing implementations.
-                if (supertype.IsUserDefined)
+                foreach (var supertype in callingClass.Supertypes)
                 {
-                    continue;
-                }
-                var supertypeMatch = FindMemberEnclosingModule(supertype, callingParent, memberName, memberType);
-                if (supertypeMatch != null)
-                {
-                    return supertypeMatch;
+                    // Only built-in classes such as Worksheet can be considered "real base classes".
+                    // User created interfaces work differently and don't allow accessing accessing implementations.
+                    if (supertype.IsUserDefined)
+                    {
+                        continue;
+                    }
+                    var supertypeMatch = FindMemberEnclosingModule(supertype, callingParent, memberName, memberType);
+                    if (supertypeMatch != null)
+                    {
+                        return supertypeMatch;
+                    }
                 }
             }
-
             return null;
         }
 

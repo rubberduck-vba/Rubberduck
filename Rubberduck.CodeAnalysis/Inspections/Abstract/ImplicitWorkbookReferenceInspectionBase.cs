@@ -24,9 +24,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            var excel = finder.Projects
-                .SingleOrDefault(project => project.IdentifierName == "Excel" && !project.IsUserDefined);
-            if (excel == null)
+            if (!finder.TryFindProjectDeclaration("Excel", out var excel))
             {
                 return Enumerable.Empty<Declaration>();
             }
