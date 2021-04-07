@@ -59,16 +59,15 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             _projectsProvider = projectsProvider;
         }
 
-        private static readonly string[] InterestingMembers =
-        {
-            "Worksheets", // gets a Sheets object containing Worksheet objects.
-            "Sheets", // gets a Sheets object containing all sheets (not just Worksheet sheets) in the qualifying workbook.
-        };
-
         private static readonly string[] InterestingClasses =
         {
-            "Workbook", // unqualified member call
-            "_Workbook", // qualified member call
+            "Sheets", // Sheets class is returned by Workbook.Worksheets and Workbook.Sheets properties.
+        };
+
+        private static readonly string[] InterestingMembers =
+        {
+            "Item", // explicit default member call
+            "_Default", // implicit default member call
         };
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
