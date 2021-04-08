@@ -10,6 +10,7 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
+    [Ignore("TODO: figure out how to mock retrieving the document module supertypes from the usercode ITypeLib; none of these tests are conclusive until then...")]
     [TestFixture]
     public class AccessSheetUsingCodeNameQuickFixTests : QuickFixTestBase 
     {

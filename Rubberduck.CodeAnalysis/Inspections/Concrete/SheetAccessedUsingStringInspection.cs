@@ -59,11 +59,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             _projectsProvider = projectsProvider;
         }
 
-        private static readonly string[] InterestingClasses =
-        {
-            "Sheets", // Sheets class is returned by Workbook.Worksheets and Workbook.Sheets properties.
-        };
-
         private static readonly string[] InterestingMembers =
         {
             "Item", // explicit default member call
@@ -77,20 +72,59 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 return Enumerable.Empty<Declaration>();
             }
 
-            var relevantClasses = InterestingClasses
-                .Select(className => finder.FindClassModule(className, excel, true))
-                .OfType<ModuleDeclaration>();
+            var sheetsClass = (ModuleDeclaration)finder.FindClassModule("Sheets", excel, true);
 
-            var relevantProperties = relevantClasses
-                .SelectMany(classDeclaration => classDeclaration.Members)
-                .OfType<PropertyDeclaration>()
+            return sheetsClass.Members.OfType<PropertyDeclaration>()
                 .Where(member => InterestingMembers.Contains(member.IdentifierName));
+        }
 
-            return relevantProperties;
+        private static ClassModuleDeclaration GetHostWorkbookDeclaration(DeclarationFinder finder)
+        {
+            var documentModuleQMNs = finder.AllModules.Where(m => m.ComponentType == ComponentType.Document);
+            ClassModuleDeclaration result = null;
+            foreach (var qmn in documentModuleQMNs)
+            {
+                var declaration = finder.ModuleDeclaration(qmn) as ClassModuleDeclaration;
+                if (declaration.Supertypes.Any(t => t.IdentifierName.Equals("_Workbook") && t.ProjectName == "Excel" && !t.IsUserDefined))
+                {
+                    result = declaration;
+                    break;
+                }
+            }
+
+            return result ?? throw new System.InvalidOperationException("Failed to find the host Workbook declaration.");
+        }
+
+        private static ClassModuleDeclaration GetHostApplicationDeclaration(DeclarationFinder finder)
+        {
+            var result = finder.MatchName("Application").OfType<ClassModuleDeclaration>().FirstOrDefault(t => t.ProjectName == "Excel" && !t.IsUserDefined) as ClassModuleDeclaration;
+            return result ?? throw new System.InvalidOperationException("Failed to find the host Application declaration.");
         }
 
         protected override (bool isResult, string properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder)
         {
+            var isHostWorkbookQualifier = false;
+            var hostWorkbookDeclaration = GetHostWorkbookDeclaration(finder);
+            var appObjectDeclaration = GetHostApplicationDeclaration(finder);
+
+            var context = reference.Context.Parent;
+            if (context is VBAParser.MemberAccessExprContext memberAccess)
+            {
+                isHostWorkbookQualifier = memberAccess.lExpression().GetText().Equals(hostWorkbookDeclaration.IdentifierName, System.StringComparison.InvariantCultureIgnoreCase);
+                bool isApplicationQualifier = memberAccess.lExpression().GetText().Equals(appObjectDeclaration.IdentifierName, System.StringComparison.InvariantCultureIgnoreCase);
+                if (isApplicationQualifier)
+                {
+                    // Application.Sheets(...) is referring to the ActiveWorkbook, not necessarily ThisWorkbook.
+                    return (false, null);
+                }
+            }
+
+            if (!isHostWorkbookQualifier && reference.ParentScoping.ParentDeclaration is ProceduralModuleDeclaration)
+            {
+                // in a standard module the reference is against ActiveWorkbook unless it's explicitly against ThisWorkbook.
+                return (false, null);
+            }
+
             var sheetNameArgumentLiteralExpressionContext = SheetNameArgumentLiteralExpressionContext(reference);
 
             if (sheetNameArgumentLiteralExpressionContext?.STRINGLITERAL() == null)
