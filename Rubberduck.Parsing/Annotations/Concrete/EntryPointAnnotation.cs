@@ -16,7 +16,6 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     /// </remarks>
     /// <example>
     /// <module name="Module1" type="Standard Module">
-    /// </module>
     /// <![CDATA[
     /// Option Explicit
     /// Option Private Module
@@ -31,6 +30,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
     ///     '...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     public sealed class EntryPointAnnotation : AnnotationBase
     {
