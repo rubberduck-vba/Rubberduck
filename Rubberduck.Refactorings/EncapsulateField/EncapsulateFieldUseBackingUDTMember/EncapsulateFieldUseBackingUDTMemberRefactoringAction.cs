@@ -8,15 +8,17 @@ using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldInsertNewCode;
 using System.Collections.Generic;
 using Rubberduck.Refactorings.ModifyUserDefinedType;
+using Rubberduck.Refactorings.DeleteDeclarations;
 
 namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
 {
     public class EncapsulateFieldUseBackingUDTMemberRefactoringAction : CodeOnlyRefactoringActionBase<EncapsulateFieldUseBackingUDTMemberModel>
     {
-        private readonly ICodeOnlyRefactoringAction<ModifyUserDefinedTypeModel> _modifyUDTRefactoringAction;
+        private readonly ICodeOnlyRefactoringAction<ModifyUserDefinedTypeModel> _modifyUDTRefactoringAction;       
         private readonly ICodeOnlyRefactoringAction<ReplacePrivateUDTMemberReferencesModel> _replacePrivateUDTMemberReferencesRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<ReplaceReferencesModel> _replaceReferencesRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> _encapsulateFieldInsertNewCodeRefactoringAction;
+        private readonly ICodeOnlyRefactoringAction<DeleteDeclarationsModel> _deleteDeclarationsRefactoringAction;
         private readonly INewContentAggregatorFactory _newContentAggregatorFactory;
         private readonly IReplacePrivateUDTMemberReferencesModelFactory _replaceUDTMemberReferencesModelFactory;
 
@@ -31,6 +33,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             _replacePrivateUDTMemberReferencesRefactoringAction = refactoringActionsProvider.ReplaceUDTMemberReferences;
             _replaceReferencesRefactoringAction = refactoringActionsProvider.ReplaceReferences;
             _encapsulateFieldInsertNewCodeRefactoringAction = refactoringActionsProvider.EncapsulateFieldInsertNewCode;
+            _deleteDeclarationsRefactoringAction = refactoringActionsProvider.DeleteDeclarations;
             _replaceUDTMemberReferencesModelFactory = replaceUDTMemberReferencesModelFactory;
             _newContentAggregatorFactory = newContentAggregatorFactory;
         }
@@ -65,8 +68,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
                 _modifyUDTRefactoringAction.Refactor(model,rewriteSession);
             }
 
-            rewriter.RemoveVariables(encapsulateFieldModel.SelectedFieldCandidates.Select(f => f.Declaration)
-                .Cast<VariableDeclaration>());
+            _deleteDeclarationsRefactoringAction.Refactor(new DeleteDeclarationsModel(encapsulateFieldModel.SelectedFieldCandidates.Select(f => f.Declaration)), rewriteSession);
         }
 
         private void ModifyReferences(EncapsulateFieldUseBackingUDTMemberModel model, IRewriteSession rewriteSession)

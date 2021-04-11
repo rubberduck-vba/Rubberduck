@@ -3,6 +3,7 @@ using Rubberduck.Refactorings.ReplaceReferences;
 using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
 using Rubberduck.Refactorings.EncapsulateFieldInsertNewCode;
 using Rubberduck.Refactorings.ModifyUserDefinedType;
+using Rubberduck.Refactorings.DeleteDeclarations;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -13,6 +14,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         ICodeOnlyRefactoringAction<ReplaceDeclarationIdentifierModel> ReplaceDeclarationIdentifiers { get; }
         ICodeOnlyRefactoringAction<ModifyUserDefinedTypeModel> ModifyUserDefinedType { get; }
         ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> EncapsulateFieldInsertNewCode { get; }
+        ICodeOnlyRefactoringAction<DeleteDeclarationsModel> DeleteDeclarations { get; }
     }
 
     /// <summary>
@@ -26,19 +28,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly ReplacePrivateUDTMemberReferencesRefactoringAction _replaceUDTMemberReferencesRefactoringAction;
         private readonly ModifyUserDefinedTypeRefactoringAction _modifyUDTRefactoringAction;
         private readonly EncapsulateFieldInsertNewCodeRefactoringAction _encapsulateFieldInsertNewCodeRefactoringAction;
+        private readonly DeleteDeclarationsRefactoringAction _deleteDeclarationRefactoringAction;
 
         public EncapsulateFieldRefactoringActionsProvider(
             ReplaceReferencesRefactoringAction replaceReferencesRefactoringAction,
             ReplacePrivateUDTMemberReferencesRefactoringAction replaceUDTMemberReferencesRefactoringAction,
             ReplaceDeclarationIdentifierRefactoringAction replaceDeclarationIdentifierRefactoringAction,
             ModifyUserDefinedTypeRefactoringAction modifyUserDefinedTypeRefactoringAction,
-            EncapsulateFieldInsertNewCodeRefactoringAction encapsulateFieldInsertNewCodeRefactoringAction)
+            EncapsulateFieldInsertNewCodeRefactoringAction encapsulateFieldInsertNewCodeRefactoringAction,
+            DeleteDeclarationsRefactoringAction deleteDeclarationsRefactoringAction)
         {
             _replaceReferences = replaceReferencesRefactoringAction;
             _replaceUDTMemberReferencesRefactoringAction = replaceUDTMemberReferencesRefactoringAction;
             _replaceDeclarationIdentifiers = replaceDeclarationIdentifierRefactoringAction;
             _modifyUDTRefactoringAction = modifyUserDefinedTypeRefactoringAction;
             _encapsulateFieldInsertNewCodeRefactoringAction = encapsulateFieldInsertNewCodeRefactoringAction;
+            _deleteDeclarationRefactoringAction = deleteDeclarationsRefactoringAction;
         }
 
         public ICodeOnlyRefactoringAction<ReplaceReferencesModel> ReplaceReferences 
@@ -55,5 +60,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> EncapsulateFieldInsertNewCode
             => _encapsulateFieldInsertNewCodeRefactoringAction;
+
+        public ICodeOnlyRefactoringAction<DeleteDeclarationsModel> DeleteDeclarations
+            => _deleteDeclarationRefactoringAction;
     }
 }
