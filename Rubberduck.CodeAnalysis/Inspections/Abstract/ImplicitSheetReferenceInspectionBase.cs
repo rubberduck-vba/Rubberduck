@@ -26,6 +26,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
                 .Select(className => finder.FindClassModule(className, excel, true))
                 .OfType<ModuleDeclaration>();
 
+
             return globalModules
                 .SelectMany(moduleClass => moduleClass.Members)
                 .Where(declaration => TargetMemberNames.Contains(declaration.IdentifierName)
@@ -35,7 +36,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 
         private static readonly string[] GlobalObjectClassNames =
         {
-            "Global", "_Global"
+            "Global", "_Global", 
+            "Worksheet", "_Worksheet"
         };
 
         private static readonly string[] TargetMemberNames =

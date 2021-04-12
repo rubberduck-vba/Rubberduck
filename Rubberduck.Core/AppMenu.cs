@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
@@ -33,10 +34,46 @@ namespace Rubberduck
 
         public void Initialize()
         {
-            _stateBar.Initialize();
+            InitializeRubberduckCommandBar();
+            InitializeRubberduckMenus();
+        }
+
+        private void InitializeRubberduckCommandBar()
+        {
+            try
+            {
+                _stateBar.Initialize();
+            }
+            catch (COMException exception)
+            {
+                _logger.Error(exception);
+                throw; // NOTE: this exception should bubble up to _Extension.Startup() and cleanly fail the add-in's initialization.
+            }
+            catch (Exception exception)
+            {
+                // we don't want to abort init just because some CanExecute method threw a NRE
+                _logger.Error(exception);
+            }
+        }
+
+        private void InitializeRubberduckMenus()
+        { 
             foreach (var menu in _menus)
             {
-                menu.Initialize();
+                try
+                {
+                    menu.Initialize();
+                }
+                catch (COMException exception)
+                {
+                    _logger.Error(exception);
+                    throw; // NOTE: this exception should bubble up to _Extension.Startup() and cleanly fail the add-in's initialization.
+                }
+                catch (Exception exception)
+                {
+                    // we don't want to abort init just because some CanExecute method threw a NRE
+                    _logger.Error(exception);
+                }
             }
             EvaluateCanExecute(_parser.State);
         }
@@ -55,18 +92,49 @@ namespace Rubberduck
         {
             foreach (var menu in _menus)
             {
-                menu.EvaluateCanExecute(state);
+                try
+                {
+                    menu.EvaluateCanExecute(state);
+                }
+                catch (Exception exception)
+                {
+                    // swallow exception to evaluate the other commands
+                    _logger.Error(exception);
+                }
             }
         }
 
         public void Localize()
         {
-            _stateBar.Localize();
-            _stateBar.SetStatusLabelCaption(_parser.State.Status);
+            LocalizeRubberduckCommandBar();
+            LocalizeRubberduckMenus();
+        }
 
+        private void LocalizeRubberduckCommandBar()
+        {
+            try
+            {
+                _stateBar.Localize();
+                _stateBar.SetStatusLabelCaption(_parser.State.Status);
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception);
+            }
+        }
+
+        private void LocalizeRubberduckMenus()
+        {
             foreach (var menu in _menus)
             {
-                menu.Localize();
+                try
+                {
+                    menu.Localize();
+                }
+                catch (Exception exception)
+                {
+                    _logger.Error(exception);
+                }
             }
         }
 
@@ -95,13 +163,20 @@ namespace Rubberduck
         {
             foreach (var menu in _menus.Where(menu => menu.Item != null))
             {
-                _logger.Debug($"Starting removal of top-level menu {menu.GetType()}.");
-                menu.RemoveMenu();
-                //We do this here and not in the menu items because we only want to dispose of/release the parents of the top level parent menus.
-                //The parents further down get disposed of/released as part of the remove chain.
-                _logger.Trace($"Removing parent menu of top-level menu {menu.GetType()}.");
-                menu.Parent.Dispose();
-                menu.Parent = null;
+                try
+                {
+                    _logger.Debug($"Starting removal of top-level menu {menu.GetType()}.");
+                    menu.RemoveMenu();
+                    //We do this here and not in the menu items because we only want to dispose of/release the parents of the top level parent menus.
+                    //The parents further down get disposed of/released as part of the remove chain.
+                    _logger.Trace($"Removing parent menu of top-level menu {menu.GetType()}.");
+                    menu.Parent.Dispose();
+                    menu.Parent = null;
+                }
+                catch (Exception exception)
+                {
+                    _logger.Error(exception);
+                }
             }
         }
     }

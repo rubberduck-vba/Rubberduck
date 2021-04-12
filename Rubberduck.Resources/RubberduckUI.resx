@@ -1892,4 +1892,7 @@ Do you want to proceed?</value>
   <data name="IndenterSettings_GroupRelatedProperties" xml:space="preserve">
     <value>Remove vertical space between related property members</value>
   </data>
+  <data name="DeclarationType_Document" xml:space="preserve">
+    <value>document</value>
+  </data>
 </root>

@@ -11,9 +11,6 @@
     <!-- Disable "Missing XML documentation" warning (CS1591) -->
     <DisabledWarnings>$(DisabledWarnings);1591</DisabledWarnings>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
-    <!-- Give a fixed version to not blow XAML generated code to smithereens -->
-    <!-- This also fixes "Input string was not in the correct format" error message when referring to the current assembly in an XAML-Namespace -->
-    <AssemblyVersion>2.5.1</AssemblyVersion>
     <UseWpf>true</UseWpf>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>

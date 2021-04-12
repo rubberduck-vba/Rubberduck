@@ -157,6 +157,19 @@ End Sub";
             Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void UndeclaredVariableNotUsed_NoResults()
+        {
+            // "Dim undeclared As Object" was previously removed; see #5439
+            const string inputCode =
+@"Public Sub Foo()
+    Set undeclared = Nothing
+End Sub";
+            var results = InspectionResultsForStandardModule(inputCode);
+            Assert.AreEqual(0, results.Count());
+        }
+
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
             return new VariableNotUsedInspection(state);

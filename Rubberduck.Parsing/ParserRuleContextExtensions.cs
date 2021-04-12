@@ -44,7 +44,7 @@ namespace Rubberduck.Parsing
         }
 
         /// <summary>
-        ///  Gets the original source, without "synthetic" text such as "<EOF>
+        ///  Gets the original source, without "synthetic" text such as an 'EOF' token.
         /// </summary>
         public static string GetText(this ParserRuleContext context, ICharStream stream)
         {
