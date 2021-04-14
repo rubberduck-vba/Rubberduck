@@ -789,6 +789,51 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Class modules.
+        /// </summary>
+        public static string ImportCommand_OpenDialog_Filter_ClassModules {
+            get {
+                return ResourceManager.GetString("ImportCommand_OpenDialog_Filter_ClassModules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document modules.
+        /// </summary>
+        public static string ImportCommand_OpenDialog_Filter_DocumentModules {
+            get {
+                return ResourceManager.GetString("ImportCommand_OpenDialog_Filter_DocumentModules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Form modules.
+        /// </summary>
+        public static string ImportCommand_OpenDialog_Filter_FormModules {
+            get {
+                return ResourceManager.GetString("ImportCommand_OpenDialog_Filter_FormModules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Non-document modules.
+        /// </summary>
+        public static string ImportCommand_OpenDialog_Filter_NonDocumentModules {
+            get {
+                return ResourceManager.GetString("ImportCommand_OpenDialog_Filter_NonDocumentModules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Standard modules.
+        /// </summary>
+        public static string ImportCommand_OpenDialog_Filter_StandardModules {
+            get {
+                return ResourceManager.GetString("ImportCommand_OpenDialog_Filter_StandardModules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap lock__exclamation {
