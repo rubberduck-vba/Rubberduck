@@ -148,18 +148,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private int _cachedFilterIndex = 1;
 
-        private string IndividualFilter(string filterDescription, string fileExtension)
-        {
-            return fileExtension != null
-                ? $"{filterDescription} ({fileExtension})|{fileExtension}"
-                : null;
-        }
-
-        private string CompositeFilter(string separator, params string[] filters)
-        {
-            return string.Join(separator, filters.Where(filter => !string.IsNullOrEmpty(filter)));
-        }
-
         protected virtual ICollection<string> FilesToImport(object parameter)
         {
             using (var dialog = _dialogFactory.CreateOpenFileDialog())
@@ -204,6 +192,18 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
 
                 return fileNames;
+            }
+
+            string IndividualFilter(string filterDescription, string fileExtension)
+            {
+                return fileExtension != null
+                    ? $"{filterDescription} ({fileExtension})|{fileExtension}"
+                    : null;
+            }
+
+            string CompositeFilter(string separator, params string[] filters)
+            {
+                return string.Join(separator, filters.Where(filter => !string.IsNullOrEmpty(filter)));
             }
         }
 
