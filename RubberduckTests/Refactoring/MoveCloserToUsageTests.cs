@@ -11,6 +11,10 @@ using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.MoveCloserToUsage;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
+using Rubberduck.Refactorings.DeleteDeclarations;
+using Rubberduck.SmartIndenter;
+using RubberduckTests.Settings;
+using System;
 
 namespace RubberduckTests.Refactoring
 {
@@ -19,6 +23,7 @@ namespace RubberduckTests.Refactoring
     {
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ModuleVariable_ClearsResidualNewLines()
         {
@@ -48,6 +53,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_LocalVariable_ClearsResidualNewLines()
         {
@@ -81,6 +87,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_Field()
         {
@@ -107,6 +114,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_LineNumbers()
         {
@@ -131,6 +139,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_Field_MultipleLines()
         {
@@ -158,6 +167,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_FieldInOtherClass()
         {
@@ -194,6 +204,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_Variable()
         {
@@ -220,25 +231,26 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_VariableWithLineNumbers()
         {
-            //Input
-            const string inputCode =
-                @"Private Sub Foo()
-1   Dim bar As Boolean
-2   Dim bat As Integer
-3   bar = True
+            var indent = "   ";
+
+            var inputCode =
+                $@"Private Sub Foo()
+1{indent}Dim bar As Boolean
+2{indent}Dim bat As Integer
+3{indent}bar = True
 End Sub";
             var selection = new Selection(4, 6, 4, 8);
 
-            //Expectation
-            const string expectedCode =
-                @"Private Sub Foo()
-1   
-2   Dim bat As Integer
-    Dim bar As Boolean
-3   bar = True
+            var expectedCode =
+                $@"Private Sub Foo()
+1{indent}
+2{indent}Dim bat As Integer
+{indent} Dim bar As Boolean
+3{indent}bar = True
 End Sub";
 
             var actualCode = RefactoredCode(inputCode, selection);
@@ -247,6 +259,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_Variable_MultipleLines()
         {
@@ -276,6 +289,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFields_MoveSecond()
         {
@@ -306,6 +320,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveFirst()
         {
@@ -336,6 +351,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveSecond()
         {
@@ -366,6 +382,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveLast()
         {
@@ -396,6 +413,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveFirst()
         {
@@ -428,6 +446,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveSecond()
         {
@@ -460,6 +479,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveLast()
         {
@@ -492,6 +512,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_Assignment()
         {
@@ -515,6 +536,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_PassAsParam()
         {
@@ -542,6 +564,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_PassAsParam_ReferenceIsNotFirstLine()
         {
@@ -573,6 +596,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsSeparatedWithColon()
         {
@@ -595,6 +619,7 @@ Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_WorksWithNamedParameters()
         {
@@ -629,6 +654,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_WorksWithNamedParametersAndStatementSeparators()
         {
@@ -657,6 +683,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void IntroduceFieldRefactoring_PassInTarget_NonVariable()
         {
@@ -673,6 +700,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void IntroduceFieldRefactoring_DeclarationOfInvalidTypeSelected()
         {
@@ -690,6 +718,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_NoReferences()
         {
@@ -706,6 +735,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferencedInMultipleProcedures()
         {
@@ -726,6 +756,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_VariableWithSameNameAlreadyExistsInProcedure()
         {
@@ -753,6 +784,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ModuleVariableWithSameNameAlreadyExists()
         {
@@ -780,6 +812,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_NonPrivateInNonStandardModule()
         {
@@ -802,6 +835,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_TargetInDifferentNonStandardModule()
         {
@@ -829,6 +863,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_TargetInDifferentProject()
         {
@@ -874,6 +909,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_TargetNotUserDefined()
         {
@@ -911,6 +947,7 @@ End Sub";
 
         [Test]
         [Category("Move Closer")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Refactorings")]
         public void MoveCloser_RespectsMemberAccess_ContextOwners()
         {
@@ -952,6 +989,7 @@ End Sub";
 
         [Test]
         [Category("Move Closer")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Refactorings")]
         public void MoveCloser_RespectsObjectProperties_InUsages()
         {
@@ -1013,6 +1051,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_DynamicArray()
         {
@@ -1039,6 +1078,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_FixedArray()
         {
@@ -1063,6 +1103,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_FixedArrayBounded()
         {
@@ -1087,6 +1128,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultiDimensionalArray()
         {
@@ -1111,6 +1153,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_SelfAssigned()
         {
@@ -1136,8 +1179,19 @@ End Sub";
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var baseRefactoring = new MoveCloserToUsageRefactoringAction(rewritingManager);
+            var baseRefactoring = new MoveCloserToUsageRefactoringAction(new DeleteDeclarationsRefactoringAction(state, rewritingManager, CreateIndenter()), rewritingManager);
             return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
+        }
+
+        private static IIndenter CreateIndenter()
+        {
+            return new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.VerticallySpaceProcedures = true;
+                s.LinesBetweenProcedures = 1;
+                return s;
+            });
         }
     }
 }

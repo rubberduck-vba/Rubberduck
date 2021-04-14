@@ -3,13 +3,16 @@ using NUnit.Framework;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.DeleteDeclarations;
 using Rubberduck.Refactorings.MoveCloserToUsage;
+using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
+using RubberduckTests.Settings;
 
 namespace RubberduckTests.Commands.RefactorCommands
 {
@@ -98,7 +101,7 @@ End Sub";
         {
             var msgBox = new Mock<IMessageBox>().Object;
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var baseRefactoring = new MoveCloserToUsageRefactoringAction(rewritingManager);
+            var baseRefactoring = new MoveCloserToUsageRefactoringAction(new DeleteDeclarationsRefactoringAction(state, rewritingManager, CreateIndenter()), rewritingManager);
             var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
             var notifier = new MoveCloserToUsageFailedNotifier(msgBox);
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
@@ -115,6 +118,17 @@ Sub Foo()
 End Sub";
             var selection = new Selection(1, 17, 1, 17);
             return TestVbe(input, selection);
+        }
+
+        private static IIndenter CreateIndenter()
+        {
+            return new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.VerticallySpaceProcedures = true;
+                s.LinesBetweenProcedures = 1;
+                return s;
+            });
         }
     }
 }

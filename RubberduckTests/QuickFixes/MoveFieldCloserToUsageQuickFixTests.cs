@@ -9,6 +9,8 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.SmartIndenter;
+using RubberduckTests.Settings;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -124,7 +126,7 @@ End Sub";
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
                 var selectionService = MockedSelectionService();
                 var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-                var baseRefactoring = new MoveCloserToUsageRefactoringAction(rewritingManager);
+                var baseRefactoring = new MoveCloserToUsageRefactoringAction(new Rubberduck.Refactorings.DeleteDeclarations.DeleteDeclarationsRefactoringAction(state, rewritingManager, CreateIndenter()), rewritingManager);
                 var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
                 var quickFix = new MoveFieldCloserToUsageQuickFix(refactoring);
 
@@ -142,6 +144,17 @@ End Sub";
             selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
                 .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
             return selectionServiceMock.Object;
+        }
+
+        private static IIndenter CreateIndenter()
+        {
+            return new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.VerticallySpaceProcedures = true;
+                s.LinesBetweenProcedures = 1;
+                return s;
+            });
         }
     }
 }
