@@ -10,6 +10,8 @@ using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources;
+using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
@@ -38,6 +40,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IModuleNameFromFileExtractor _moduleNameFromFileExtractor;
         private readonly IDictionary<ComponentType, List<IRequiredBinaryFilesFromFileNameExtractor>> _binaryFileExtractors;
         private readonly IFileSystem _fileSystem;
+        private readonly IConfigurationService<ProjectSettings> _projectSettingsProvider;
 
         protected readonly IDeclarationFinderProvider DeclarationFinderProvider;
         protected readonly IMessageBox MessageBox;
@@ -52,7 +55,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             IModuleNameFromFileExtractor moduleNameFromFileExtractor,
             IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileExtractors,
             IFileSystem fileSystem,
-            IMessageBox messageBox)
+            IMessageBox messageBox,
+            IConfigurationService<ProjectSettings> projectSettingsProvider)
             : base(vbeEvents)
         {
             _vbe = vbe;
@@ -66,6 +70,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             MessageBox = messageBox;
             DeclarationFinderProvider = declarationFinderProvider;
+
+            _projectSettingsProvider = projectSettingsProvider;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
 
@@ -146,10 +152,21 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return dict;
         }
 
-        private int _cachedFilterIndex = 1;
+
+        private ProjectSettings _cachedProjectSettings;
+        internal void UpdateFilterIndex(int index)
+        {
+            _cachedProjectSettings.OpenFileDialogFilterIndex = index;
+            _projectSettingsProvider.Save(_cachedProjectSettings);
+        }
 
         protected virtual ICollection<string> FilesToImport(object parameter)
         {
+            if (_cachedProjectSettings == null)
+            {
+                _cachedProjectSettings = _projectSettingsProvider.Read();
+            }
+
             using (var dialog = _dialogFactory.CreateOpenFileDialog())
             {
                 dialog.AddExtension = true;
@@ -159,7 +176,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 dialog.Multiselect = true;
                 dialog.ShowHelp = false;
                 dialog.Title = DialogsTitle;
-                dialog.FilterIndex = _cachedFilterIndex;
+                dialog.FilterIndex = _cachedProjectSettings.OpenFileDialogFilterIndex;
                 var vbFilesFilter = IndividualFilter(RubberduckUI.ImportCommand_OpenDialog_Filter_VBFiles, FilterExtension);
                 var nonDocumentModulesFilter = IndividualFilter(Resources.CodeExplorer.CodeExplorerUI.ImportCommand_OpenDialog_Filter_NonDocumentModules, AllNonDocumentModulesExtension);
                 var standardModulesFilter = IndividualFilter(Resources.CodeExplorer.CodeExplorerUI.ImportCommand_OpenDialog_Filter_StandardModules, StandardModuleExtension);
@@ -181,7 +198,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                     return new List<string>();
                 }
 
-                _cachedFilterIndex = dialog.FilterIndex;
+                if (_cachedProjectSettings.OpenFileDialogFilterIndex != dialog.FilterIndex)
+                {
+                    UpdateFilterIndex(dialog.FilterIndex);
+                }
 
                 var fileNames = dialog.FileNames;
                 var fileExtensions = fileNames.Select(Path.GetExtension);

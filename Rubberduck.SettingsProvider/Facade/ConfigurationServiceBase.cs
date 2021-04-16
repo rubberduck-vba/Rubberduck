@@ -20,7 +20,7 @@ namespace Rubberduck.SettingsProvider
 
         protected void OnSettingsChanged()
         {
-            var eventArgs = new ConfigurationChangedEventArgs(false, false, false, false);
+            var eventArgs = new ConfigurationChangedEventArgs(false, false, false, false, false);
             SettingsChanged?.Invoke(this, eventArgs);
         }
 

@@ -20,13 +20,16 @@ namespace Rubberduck.SettingsProvider
         public bool InspectionSettingsChanged { get; }
         public bool RunInspectionsOnReparse { get; }
         public bool AutoCompleteSettingsChanged { get; }
+        public bool OpenFileDialogFilterIndexChanged { get; }
 
-        public ConfigurationChangedEventArgs(bool runInspections, bool languageChanged, bool inspectionSettingsChanged, bool autoCompleteSettingsChanged)
+        public ConfigurationChangedEventArgs(bool runInspections, bool languageChanged, bool inspectionSettingsChanged, bool autoCompleteSettingsChanged, 
+            bool openFileDialogFilterIndexChanged)
         {
             AutoCompleteSettingsChanged = autoCompleteSettingsChanged;
             RunInspectionsOnReparse = runInspections;
             LanguageChanged = languageChanged;
             InspectionSettingsChanged = inspectionSettingsChanged;
+            OpenFileDialogFilterIndexChanged = openFileDialogFilterIndexChanged;
         }
     }
 }
