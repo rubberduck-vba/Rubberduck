@@ -527,7 +527,7 @@ End Sub";
                 .AddProjectToVbeBuilder()
                 .Build();
 
-            var (expected, actual) = DeclarationsFromParse(vbe.Object, DeclarationType.Parameter, "Link", "EXCEL.EXE;Excel.Worksheet.Paste");
+            var (expected, actual) = DeclarationsFromParse(vbe.Object, DeclarationType.Parameter, "Link", "EXCEL.EXE;Excel._Worksheet.Paste");
 
             Assert.AreEqual(expected, actual);
         }

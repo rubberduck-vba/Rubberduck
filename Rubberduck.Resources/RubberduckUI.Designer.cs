@@ -1211,6 +1211,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to document.
+        /// </summary>
+        public static string DeclarationType_Document {
+            get {
+                return ResourceManager.GetString("DeclarationType_Document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to enum.
         /// </summary>
         public static string DeclarationType_Enumeration {
