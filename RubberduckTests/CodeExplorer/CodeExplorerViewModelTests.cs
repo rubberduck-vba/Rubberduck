@@ -729,7 +729,7 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         [TestCase(1, 1)]
         [TestCase(2, 2)]
-        public void OpenFileDialog_filter_index_matches_cached_values_Saving_filterIndex_to_config_file_doesnt_occur(int configFilterIndex, int selectedFilterIndex)
+        public void OpenFileDialog_filterIndex_matches_cached_value_Saving_filterIndex_to_config_file_doesnt_occur(int configFilterIndex, int selectedFilterIndex)
         {
             const string path = @"C:\Users\Rubberduck\Desktop\StdModule.bas";
             const string code = @"Option Explicit
@@ -775,7 +775,7 @@ End Sub";
         [Test]
         [TestCase(1, 2)]
         [TestCase(2, 1)]
-        public void OpenFileDialog_filter_index_differs_from_cached_values_Saving_filterIndex_to_config_file_occurs(int configFilterIndex, int selectedFilterIndex)
+        public void OpenFileDialog_filterIndex_differs_from_cached_value_Saving_filterIndex_to_config_file_occurs(int configFilterIndex, int selectedFilterIndex)
         {
             const string path = @"C:\Users\Rubberduck\Desktop\StdModule.bas";
             const string code = @"Option Explicit
@@ -814,6 +814,96 @@ End Sub";
 
                 projectSettingsProvider.Verify(provider => provider.Save(projectSettings), Times.Once());
                 Assert.AreEqual(selectedFilterIndex, projectSettings.OpenFileDialogFilterIndex);
+            }
+        }
+
+        [Category("CodeExplorer")]
+        [Test]
+        [TestCase(1, 2)]
+        [TestCase(2, 1)]
+        public void OpenFileDialog_filterIndex_differs_from_cached_value_Canceling_dialog_doesnt_save(int configFilterIndex, int selectedFilterIndex)
+        {
+            const string path = @"C:\Users\Rubberduck\Desktop\StdModule.bas";
+            const string code = @"Option Explicit
+
+Public Sub FooBar()
+
+End Sub";
+            var openDialog = new Mock<Rubberduck.UI.IOpenFileDialog>();
+            openDialog.Setup(dialog => dialog.ShowDialog()).Returns(DialogResult.Cancel);
+            openDialog.Setup(dialog => dialog.FileNames).Returns(new[] { path });
+            openDialog.Setup(dialog => dialog.FilterIndex).Returns(selectedFilterIndex);
+            using (var mockedCodeExplorer = new MockedCodeExplorer(ProjectType.HostProject)
+                .ConfigureOpenDialog(openDialog.Object)
+                .SelectFirstProject())
+            {
+                var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _);
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var generalSettings = new GeneralSettings();
+                var generalSettingsProvider = new Mock<IConfigurationService<GeneralSettings>>();
+                generalSettingsProvider.Setup(provider => provider.Read())
+                    .Returns(generalSettings);
+
+                var projectSettings = new ProjectSettings(configFilterIndex);
+                var projectSettingsProvider = new Mock<IConfigurationService<ProjectSettings>>();
+                projectSettingsProvider.Setup(provider => provider.Read())
+                    .Returns(projectSettings);
+
+                var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+                var codeExplorerSyncProvider = new CodeExplorerSyncProvider(vbe.Object, state, vbeEvents.Object);
+
+                var viewModel = new CodeExplorerViewModel(state, null, generalSettingsProvider.Object, null, projectSettingsProvider.Object, null, vbe.Object, null, codeExplorerSyncProvider, new List<IAnnotation>());
+                mockedCodeExplorer.ViewModel = viewModel;
+
+                mockedCodeExplorer.ExecuteImportCommand(projectSettingsProvider: projectSettingsProvider);
+
+                projectSettingsProvider.Verify(provider => provider.Save(projectSettings), Times.Never());
+            }
+        }
+
+        [Category("CodeExplorer")]
+        [Test]
+        [TestCase(1, 2)]
+        [TestCase(2, 1)]
+        public void OpenFileDialog_filterIndex_differs_from_cached_value_Canceling_doesnt_update_cached_filterIndex(int configFilterIndex, int selectedFilterIndex)
+        {
+            const string path = @"C:\Users\Rubberduck\Desktop\StdModule.bas";
+            const string code = @"Option Explicit
+
+Public Sub FooBar()
+
+End Sub";
+            var openDialog = new Mock<Rubberduck.UI.IOpenFileDialog>();
+            openDialog.Setup(dialog => dialog.ShowDialog()).Returns(DialogResult.Cancel);
+            openDialog.Setup(dialog => dialog.FileNames).Returns(new[] { path });
+            openDialog.Setup(dialog => dialog.FilterIndex).Returns(selectedFilterIndex);
+            using (var mockedCodeExplorer = new MockedCodeExplorer(ProjectType.HostProject)
+                .ConfigureOpenDialog(openDialog.Object)
+                .SelectFirstProject())
+            {
+                var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _);
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var generalSettings = new GeneralSettings();
+                var generalSettingsProvider = new Mock<IConfigurationService<GeneralSettings>>();
+                generalSettingsProvider.Setup(provider => provider.Read())
+                    .Returns(generalSettings);
+
+                var projectSettings = new ProjectSettings(configFilterIndex);
+                var projectSettingsProvider = new Mock<IConfigurationService<ProjectSettings>>();
+                projectSettingsProvider.Setup(provider => provider.Read())
+                    .Returns(projectSettings);
+
+                var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+                var codeExplorerSyncProvider = new CodeExplorerSyncProvider(vbe.Object, state, vbeEvents.Object);
+
+                var viewModel = new CodeExplorerViewModel(state, null, generalSettingsProvider.Object, null, projectSettingsProvider.Object, null, vbe.Object, null, codeExplorerSyncProvider, new List<IAnnotation>());
+                mockedCodeExplorer.ViewModel = viewModel;
+
+                mockedCodeExplorer.ExecuteImportCommand(projectSettingsProvider: projectSettingsProvider);
+
+                Assert.AreEqual(projectSettings.OpenFileDialogFilterIndex, configFilterIndex);
             }
         }
 
