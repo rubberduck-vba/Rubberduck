@@ -38,13 +38,13 @@ namespace RubberduckTests.Inspections
         public IEnumerable<IInspectionResult> InspectionResultsForModules((string name, string content, ComponentType componentType) module, params ReferenceLibrary[] libraries)
             => InspectionResultsForModules(new (string, string, ComponentType)[] { module }, libraries);
 
-        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, ReferenceLibrary library)
-            => InspectionResultsForModules(modules, new ReferenceLibrary[] { library });
+        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, ReferenceLibrary library, IDictionary<string, IEnumerable<string>> documentModuleSupertypeNames = null)
+            => InspectionResultsForModules(modules, new ReferenceLibrary[] { library }, documentModuleSupertypeNames);
 
-        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<ReferenceLibrary> libraries)
+        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<ReferenceLibrary> libraries, IDictionary<string, IEnumerable<string>> documentModuleSupertypeNames = null)
         {
             var vbe = MockVbeBuilder.BuildFromModules(modules, libraries).Object;
-            return InspectionResults(vbe);
+            return InspectionResults(vbe, documentModuleSupertypeNames);
         }
 
         public IEnumerable<IInspectionResult> InspectionResults(IVBE vbe, IDictionary<string, IEnumerable<string>> documentModuleSupertypeNames = null)
