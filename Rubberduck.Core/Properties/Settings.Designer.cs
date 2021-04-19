@@ -389,12 +389,9 @@ namespace Rubberduck.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <ProjectSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <OpenFileDialogFilterIndex>1</OpenFileDialogFilterIndex>
-            <ProjectName>VBAProject</ProjectName>
-          </ProjectSettings>
-        ")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\r\n          <ProjectSettings xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance" +
+            "\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n            <OpenFileDialogFilt" +
+            "erIndex>1</OpenFileDialogFilterIndex>\r\n          </ProjectSettings>\r\n        ")]
         public global::Rubberduck.Settings.ProjectSettings CodeExplorer_ImportCommand_OpenFileDialogFilterIndex {
             get {
                 return ((global::Rubberduck.Settings.ProjectSettings)(this["CodeExplorer_ImportCommand_OpenFileDialogFilterIndex"]));
