@@ -23,14 +23,6 @@
     <Content Include="..\packages\EasyHook.2.7.6684\content\net40\**" CopyToPublishDirectory="PreserveNewest" Link="%(Filename)%(Extension)" />
     <Content Include="$(USERPROFILE)\.nuget\packages\easyHook\2.7.6684\content\net40\**" CopyToPublishDirectory="PreserveNewest" Link="%(Filename)%(Extension)" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="InnoSetup\Graphics\Ducky.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="InnoSetup\Graphics\Ducky.ico" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj" />
     <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj" />
