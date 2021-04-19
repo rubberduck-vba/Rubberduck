@@ -47,10 +47,13 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             : base(declarationFinderProvider)
         {}
 
+        protected override string[] GlobalObjectClassNames => new[] { "Global", "_Global", };
+
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            return !(Declaration.GetModuleParent(reference.ParentNonScoping) is DocumentModuleDeclaration document)
+            var result = !(Declaration.GetModuleParent(reference.ParentNonScoping) is DocumentModuleDeclaration document)
                 || !document.SupertypeNames.Contains("Worksheet");
+            return result;
         }
 
         protected override string ResultDescription(IdentifierReference reference)
