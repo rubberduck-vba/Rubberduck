@@ -144,9 +144,6 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                     .GroupBy(a => a.AnnotatedLine.Value)
                     .ToDictionary();
                 var attributes = _state.GetModuleAttributes(module);
-                if (module.ComponentType == ComponentType.Document)
-                {
-                }
                 var membersAllowingAttributes = _state.GetMembersAllowingAttributes(module);
 
                 var moduleDeclaration = NewModuleDeclaration(module, tree, annotationsOnWhiteSpaceLines, attributes, projectDeclaration);
