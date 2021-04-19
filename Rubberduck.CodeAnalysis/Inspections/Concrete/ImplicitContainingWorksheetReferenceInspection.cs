@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.CodeAnalysis.Inspections.Attributes;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -46,7 +47,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             return Declaration.GetModuleParent(reference.ParentNonScoping) is DocumentModuleDeclaration document
-                   && document.SupertypeNames.Contains("Worksheet");
+                   && document.SupertypeNames.Contains("Worksheet")
+                   && !(reference.Context.Parent is Parsing.Grammar.VBAParser.MemberAccessExprContext); // if it's qualified, it's not an implicit reference
         }
 
         protected override string ResultDescription(IdentifierReference reference)

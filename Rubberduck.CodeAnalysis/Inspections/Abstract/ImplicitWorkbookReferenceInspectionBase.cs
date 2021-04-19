@@ -12,14 +12,14 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
             : base(declarationFinderProvider)
         { }
 
-        private static readonly string[] InterestingMembers =
+        protected virtual string[] InterestingMembers => new[]
         {
             "Worksheets", "Sheets", "Names"
         };
 
-        private static readonly string[] InterestingClasses =
+        protected virtual string[] InterestingClasses => new[]
         {
-            "_Global", "_Application", "Global", "Application"
+            "_Global", "_Application", "Global", "Application", "_Workbook", "Workbook"
         };
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)

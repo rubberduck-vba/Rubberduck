@@ -89,7 +89,11 @@ End Sub
     arr1 = Cells(1,2)
 End Sub
 ";
-            var modules = new (string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
+            var modules = new (string, string, ComponentType)[] {
+                ("Class1", inputCode, ComponentType.ClassModule),
+                ("Sheet1", string.Empty, ComponentType.Document),
+                ("ThisWorkbook", string.Empty, ComponentType.Document)
+            };
             Assert.AreEqual(0, InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count());
         }
 

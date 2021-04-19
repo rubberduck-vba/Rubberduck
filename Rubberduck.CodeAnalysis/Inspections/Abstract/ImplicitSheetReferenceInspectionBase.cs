@@ -14,9 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            var excel = finder.Projects
-                .SingleOrDefault(item => !item.IsUserDefined
-                                         && item.IdentifierName == "Excel");
+            var excel = finder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
             if (excel == null)
             {
                 return Enumerable.Empty<Declaration>();
@@ -25,7 +23,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
             var globalModules = GlobalObjectClassNames
                 .Select(className => finder.FindClassModule(className, excel, true))
                 .OfType<ModuleDeclaration>();
-
 
             return globalModules
                 .SelectMany(moduleClass => moduleClass.Members)
