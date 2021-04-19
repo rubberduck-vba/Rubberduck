@@ -224,7 +224,7 @@ End Sub";
                     })
                 .AddComponent("Sheet1", ComponentType.Document, string.Empty,
                     properties: new[] {
-                        CreateVBComponentPropertyMock("Name", "Sheet1").Object,
+                        CreateVBComponentPropertyMock("Name", sheetName).Object,
                         CreateVBComponentPropertyMock("CodeName", "Sheet1").Object
                     })
                 .AddComponent("CodeName", ComponentType.Document, string.Empty,
