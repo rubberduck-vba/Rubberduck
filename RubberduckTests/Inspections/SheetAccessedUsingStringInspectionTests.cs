@@ -14,6 +14,13 @@ namespace RubberduckTests.Inspections
     [TestFixture]
     public class SheetAccessedUsingStringInspectionTests : InspectionTestsBase
     {
+        private static readonly IDictionary<string, IEnumerable<string>> DefaultDocumentModuleSupertypeNames = new Dictionary<string, IEnumerable<string>>
+        {
+            ["ThisWorkbook"] = new[] { "Workbook", "_Workbook" },
+            ["Sheet1"] = new[] { "Worksheet", "_Worksheet" }
+        };
+
+
         [Test]
         [Category("Inspections")]
         public void SheetAccessedUsingString_ReturnsResult_AccessingUsingWorkbookModule()
@@ -24,7 +31,20 @@ namespace RubberduckTests.Inspections
     ThisWorkbook.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
 
-            Assert.AreEqual(2, ArrangeParserAndGetResults(inputCode).Count());
+            Assert.AreEqual(2, ArrangeParserAndGetResults(inputCode, "Sheet1").Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void SheetAccessedUsingString_ReturnsResult_InThisWorkbookModule()
+        {
+            const string inputCode =
+                @"Public Sub Foo()
+    Me.Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
+    Sheets(""Sheet1"").Range(""A1"") = ""Foo""
+End Sub";
+            var results = ArrangeParserAndGetResults(inputCode, sheetName: "Sheet1", componentType: ComponentType.Document, workbookModule: true).ToList();
+            Assert.AreEqual(2, results.Count);
         }
 
         [Test]
@@ -50,7 +70,7 @@ End Sub";
     ThisWorkbook.Sheets(""NotSheet1"").Range(""A1"") = ""Foo""
 End Sub";
 
-            Assert.AreEqual(2, ArrangeParserAndGetResults(inputCode, "NotSheet1").Count());
+            Assert.AreEqual(2, ArrangeParserAndGetResults(inputCode, "NotSheet1", codeName:"Sheet1").Count());
         }
 
         [Test]
@@ -63,7 +83,7 @@ End Sub";
     ThisWorkbook.Sheets(""She""""et1"").Range(""A1"") = ""Foo""
 End Sub";
 
-            Assert.AreEqual(2, ArrangeParserAndGetResults(inputCode, "She\"et1").Count());
+            Assert.AreEqual(2, ArrangeParserAndGetResults(inputCode, "She\"et1", codeName:"Sheet1").Count());
         }
 
         [Test]
@@ -77,7 +97,7 @@ End Sub";
     Application.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
 
-            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode, "Sheet1").Count());
         }
 
         [Test]
@@ -91,11 +111,11 @@ End Sub";
     Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
 
-            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode, "Sheet1").Count());
         }
 
         [Test]
-        [Ignore("Ref #4329")]
+        //[Ignore("Ref #4329")]
         [Category("Inspections")]
         public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingActiveWorkbookProperty()
         {
@@ -104,11 +124,11 @@ End Sub";
     ActiveWorkbook.Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
     ActiveWorkbook.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
-            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode, "Sheet1").Count());
         }
 
         [Test]
-        [Ignore("Ref #4329")]
+        //[Ignore("Ref #4329")]
         [Category("Inspections")]
         public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingWorkbooksProperty()
         {
@@ -117,11 +137,11 @@ End Sub";
     Workbooks(""Foo"").Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
     Workbooks(""Foo"").Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
-            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode, "Sheet1").Count());
         }
 
         [Test]
-        [Ignore("Ref #4329")]
+        //[Ignore("Ref #4329")]
         [Category("Inspections")]
         public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingWorkbookVariable()
         {
@@ -132,11 +152,11 @@ End Sub";
     wkb.Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
     wkb.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
-            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode, "Sheet1").Count());
         }
 
         [Test]
-        [Ignore("Ref #4329")]
+        //[Ignore("Ref #4329")]
         [Category("Inspections")]
         public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingWorkbookProperty()
         {
@@ -150,11 +170,11 @@ Public Sub Foo()
     MyWorkbook.Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
     MyWorkbook.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
-            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode, "Sheet1").Count());
         }
 
         [Test]
-        [Ignore("Ref #4329")]
+        //[Ignore("Ref #4329")]
         [Category("Inspections")]
         public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingWithBlockVariable()
         {
@@ -165,7 +185,7 @@ End Sub";
         .Sheets(""Sheet1"").Range(""A1"") = ""Foo""
     End With
 End Sub";
-            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode, "Sheet1").Count());
         }
 
         [Test]
@@ -178,7 +198,7 @@ End Sub";
     ThisWorkbook.Sheets(""BadName"").Range(""A1"") = ""Foo""
 End Sub";
 
-            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode, "Sheet1").Count());
         }
 
         [Test]
@@ -192,7 +212,21 @@ End Sub";
 End Sub";
 
             // Referenced project is created inside helper method
-            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode, "Sheet1").Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void SheetAccessedUsingString_DoesNotReturnResult_ReferencedProjectQualified()
+        {
+            const string inputCode =
+                @"Public Sub Foo()
+    ReferencedProject.ThisWorkbook.Worksheets(""SheetFromOtherProject"").Range(""A1"") = ""Foo""
+    ReferencedProject.ThisWorkbook.Sheets(""SheetFromOtherProject"").Range(""A1"") = ""Foo""
+End Sub";
+
+            // Referenced project is created inside helper method
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode, "Sheet1").Count());
         }
 
         [Test]
@@ -208,15 +242,20 @@ End Sub";
     ThisWorkbook.Sheets(s).Range(""A1"") = ""Foo""
 End Sub";
 
-            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode, "Sheet1").Count());
         }
 
-        private IEnumerable<IInspectionResult> ArrangeParserAndGetResults(string inputCode, string sheetName = "Sheet1")
+        private IEnumerable<IInspectionResult> ArrangeParserAndGetResults(string inputCode, string sheetName = "Sheet1", string codeName = null, ComponentType componentType = ComponentType.StandardModule, bool workbookModule = false)
         {
             var builder = new MockVbeBuilder();
 
             var referencedProject = builder.ProjectBuilder("ReferencedProject", ProjectProtection.Unprotected)
-                .AddComponent("SheetFromOtherProject", ComponentType.Document, "",
+                .AddComponent("ThisWorkbook", ComponentType.Document, string.Empty,
+                    properties: new[]
+                    {
+                        CreateVBComponentPropertyMock("Name", "ThisWorkbook").Object,
+                    })
+                .AddComponent("SheetFromOtherProject", ComponentType.Document, string.Empty,
                     properties: new[]
                     {
                         CreateVBComponentPropertyMock("Name", "SheetFromOtherProject").Object,
@@ -224,21 +263,29 @@ End Sub";
                     })
                 .Build();
 
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, inputCode)
-                .AddComponent("Sheet1", ComponentType.Document, "",
+            var projectBuilder = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("ThisWorkbook", ComponentType.Document, componentType == ComponentType.Document && workbookModule ? inputCode : string.Empty,
+                    properties: new[]
+                    {
+                        CreateVBComponentPropertyMock("Name", "ThisWorkbook").Object,
+                    })
+                .AddComponent(sheetName, ComponentType.Document, componentType == ComponentType.Document && !workbookModule ? inputCode : string.Empty,
                     properties: new[]
                     {
                         CreateVBComponentPropertyMock("Name", sheetName).Object,
-                        CreateVBComponentPropertyMock("CodeName", "Sheet1").Object
+                        CreateVBComponentPropertyMock("CodeName", codeName ?? sheetName).Object
                     })
                 .AddReference("ReferencedProject", string.Empty, 0, 0)
-                .AddReference(ReferenceLibrary.Excel)
-                .Build();
+                .AddReference(ReferenceLibrary.Excel);
+            if (componentType == ComponentType.StandardModule)
+            {
+                projectBuilder.AddComponent("Module1", ComponentType.StandardModule, inputCode);
+            }
 
+            var project = projectBuilder.Build();
             var vbe = builder.AddProject(referencedProject).AddProject(project).Build();
 
-            return InspectionResults(vbe.Object);
+            return InspectionResults(vbe.Object, DefaultDocumentModuleSupertypeNames);
         }
 
         // ReSharper disable once InconsistentNaming

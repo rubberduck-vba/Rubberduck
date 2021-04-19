@@ -29,10 +29,10 @@ namespace RubberduckTests.Inspections
             return InspectionResults(vbe);
         }
 
-        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules)
+        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IDictionary<string,IEnumerable<string>> documentModuleSupertypeNames = null)
         {
             var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
-            return InspectionResults(vbe);
+            return InspectionResults(vbe, documentModuleSupertypeNames);
         }
 
         public IEnumerable<IInspectionResult> InspectionResultsForModules((string name, string content, ComponentType componentType) module, params ReferenceLibrary[] libraries)
@@ -47,9 +47,9 @@ namespace RubberduckTests.Inspections
             return InspectionResults(vbe);
         }
 
-        public IEnumerable<IInspectionResult> InspectionResults(IVBE vbe)
+        public IEnumerable<IInspectionResult> InspectionResults(IVBE vbe, IDictionary<string, IEnumerable<string>> documentModuleSupertypeNames = null)
         {
-            using (var state = MockParser.CreateAndParse(vbe))
+            using (var state = MockParser.CreateAndParse(vbe, documentModuleSupertypeNames:documentModuleSupertypeNames))
             {
                 var inspection = InspectionUnderTest(state);
                 return InspectionResults(inspection, state);
