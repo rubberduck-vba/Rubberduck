@@ -43,19 +43,48 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     internal sealed class ImplicitActiveWorkbookReferenceInspection : ImplicitWorkbookReferenceInspectionBase
     {
         public ImplicitActiveWorkbookReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
-            : base(declarationFinderProvider)
-        {}
+            : base(declarationFinderProvider) { }
 
-        private static readonly List<string> _alwaysActiveWorkbookReferenceParents = new List<string>
-        {
-            "_Application", "Application"
-        };
+        private IReadOnlyList<Declaration> _applicationCandidates;
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            return !(Declaration.GetModuleParent(reference.ParentNonScoping) is DocumentModuleDeclaration document)
-                   || !document.SupertypeNames.Contains("Workbook")
-                   || _alwaysActiveWorkbookReferenceParents.Contains(reference.Declaration.ParentDeclaration.IdentifierName);
+            var qualifiers = base.GetQualifierCandidates(reference, finder);
+            var isQualified = qualifiers.Any();
+            var document = Declaration.GetModuleParent(reference.ParentNonScoping) as DocumentModuleDeclaration;
+
+            var isHostWorkbook = (document?.SupertypeNames.Contains("Workbook") ?? false)
+                && (document?.ProjectId?.Equals(reference.QualifiedModuleName.ProjectId) ?? false);
+
+            if (!isQualified)
+            {
+                // unqualified calls aren't referring to ActiveWorkbook only inside a Workbook module:
+                return !isHostWorkbook;
+            }
+            else
+            {
+                if (_applicationCandidates == null)
+                {
+                    var applicationClass = finder.FindClassModule("Application", base.Excel, includeBuiltIn: true);
+                    // note: underscored declarations would be for unqualified calls
+                    var workbookClass = finder.FindClassModule("Workbook", base.Excel, includeBuiltIn: true);
+                    var worksheetClass = finder.FindClassModule("Worksheet", base.Excel, includeBuiltIn: true);
+                    var hostBook = finder.UserDeclarations(DeclarationType.Document)
+                        .Cast<DocumentModuleDeclaration>()
+                        .SingleOrDefault(doc => doc.ProjectId.Equals(reference.QualifiedModuleName.ProjectId)
+                            && doc.SupertypeNames.Contains("Workbook"));
+
+                    _applicationCandidates = finder.MatchName("Application")
+                        .Where(m => m.Equals(applicationClass) 
+                        || (m.ParentDeclaration.Equals(workbookClass) && m.DeclarationType.HasFlag(DeclarationType.PropertyGet))
+                        || (m.ParentDeclaration.Equals(worksheetClass) && m.DeclarationType.HasFlag(DeclarationType.PropertyGet))
+                        || (m.ParentDeclaration.Equals(hostBook) && m.DeclarationType.HasFlag(DeclarationType.PropertyGet)))
+                        .ToList();
+                }
+
+                // qualified calls are referring to ActiveWorkbook if qualifier is the Application object:
+                return _applicationCandidates.Any(candidate => qualifiers.Any(q => q.Equals(candidate)));
+            }
         }
 
         protected override string ResultDescription(IdentifierReference reference)

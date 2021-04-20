@@ -22,23 +22,40 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
             "_Global", "_Application", "Global", "Application", "_Workbook", "Workbook"
         };
 
+        private IReadOnlyList<ModuleDeclaration> _relevantClasses;
+        private IReadOnlyList<PropertyGetDeclaration> _relevantProperties;
+
+        protected Declaration Excel { get; private set; }
+
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            if (!finder.TryFindProjectDeclaration("Excel", out var excel))
+            if (Excel == null)
             {
-                return Enumerable.Empty<Declaration>();
+                if (!finder.TryFindProjectDeclaration("Excel", out var excel))
+                {
+                    return Enumerable.Empty<Declaration>();
+                }
+                Excel = excel;
             }
 
-            var relevantClasses = InterestingClasses
-                .Select(className => finder.FindClassModule(className, excel, true))
-                .OfType<ModuleDeclaration>();
+            if (_relevantClasses == null)
+            {
+                _relevantClasses = InterestingClasses
+                    .Select(className => finder.FindClassModule(className, Excel, true))
+                    .OfType<ModuleDeclaration>()
+                    .ToList();
+            }
 
-            var relevantProperties = relevantClasses
-                .SelectMany(classDeclaration => classDeclaration.Members)
-                .OfType<PropertyGetDeclaration>()
-                .Where(member => InterestingMembers.Contains(member.IdentifierName));
+            if (_relevantProperties == null)
+            {
+                _relevantProperties = _relevantClasses
+                    .SelectMany(classDeclaration => classDeclaration.Members)
+                    .OfType<PropertyGetDeclaration>()
+                    .Where(member => InterestingMembers.Contains(member.IdentifierName))
+                    .ToList();
+            }
 
-            return relevantProperties;
+            return _relevantProperties;
         }
     }
 }

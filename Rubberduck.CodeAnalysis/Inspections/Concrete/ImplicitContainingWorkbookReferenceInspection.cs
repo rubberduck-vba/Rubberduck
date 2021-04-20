@@ -61,38 +61,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            var qualifier = GetQualifier(reference, finder);
+            var qualifiers = base.GetQualifierCandidates(reference, finder);
             return Declaration.GetModuleParent(reference.ParentScoping) is DocumentModuleDeclaration document
                 && document.SupertypeNames.Contains("Workbook")
-                && (qualifier == null);
-        }
-
-        private Declaration GetQualifier(IdentifierReference reference, DeclarationFinder finder)
-        {
-            if (reference.Context.TryGetAncestor<VBAParser.MemberAccessExprContext>(out var memberAccess))
-            {
-                var parentModule = Declaration.GetModuleParent(reference.ParentScoping);
-                var qualifyingExpression = memberAccess.lExpression();
-                var qualifier = qualifyingExpression.children[qualifyingExpression.ChildCount - 1];
-                var qualifyingIdentifier = qualifier.GetText();
-                if (qualifyingIdentifier.Equals(Tokens.Me, System.StringComparison.InvariantCultureIgnoreCase))
-                {
-                    // qualifier is 'Me'
-                    return parentModule;
-                }
-
-                var matches = finder.MatchName(qualifyingIdentifier)
-                    .Where(m => m.ParentScopeDeclaration.Equals(reference.ParentScoping));
-                return matches.FirstOrDefault(); // doesn't matter which, as long as not null.
-            }
-
-            if (reference.Context.TryGetAncestor<VBAParser.WithMemberAccessExprContext>(out var withStatement))
-            {
-                // qualifier is a With block
-                return reference.ParentScoping; // just return any non-null, don't bother resolving the actual With qualifier
-            }
-
-            return null;
+                && (qualifiers.Any());
         }
 
         protected override string ResultDescription(IdentifierReference reference)

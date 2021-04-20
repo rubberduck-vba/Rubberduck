@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections.Results;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -18,6 +20,67 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
         protected abstract string ResultDescription(IdentifierReference reference);
 
         protected virtual ICollection<string> DisabledQuickFixes(IdentifierReference reference) => new List<string>();
+
+        /// <summary>
+        /// Gets the possible <see cref="Declaration"/> that qualifies an identifier reference in a member access expression.
+        /// </summary>
+        protected IEnumerable<Declaration> GetQualifierCandidates(IdentifierReference reference, DeclarationFinder finder)
+        {
+            if (reference.Context.TryGetAncestor<VBAParser.CallStmtContext>(out var callStmt))
+            {
+                if (reference.Context.TryGetAncestor<VBAParser.LExpressionContext>(out var lExpression))
+                {
+                    // reference is in lexpression of a call statement
+
+                    if (lExpression is VBAParser.MemberAccessExprContext member)
+                    {
+                        if (member.lExpression() is VBAParser.SimpleNameExprContext name)
+                        {
+                            if (reference.IdentifierName.Equals(name.identifier().GetText(), System.StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                // unqualified
+                                return Enumerable.Empty<Declaration>();
+                            }
+
+                            return finder.MatchName(name.identifier().GetText())
+                                .Where(candidate => !candidate.Equals(reference.Declaration));
+                        }
+
+                        // todo get the actual qualifying declaration?
+                        return finder.MatchName(member.lExpression().children.First().GetText());
+                    }
+                }
+
+                
+            }
+
+            if (reference.Context.TryGetAncestor<VBAParser.MemberAccessExprContext>(out var memberAccess))
+            {
+                var parentModule = Declaration.GetModuleParent(reference.ParentScoping);
+                var qualifyingExpression = memberAccess.lExpression();
+                if (qualifyingExpression is VBAParser.SimpleNameExprContext simpleName)
+                {
+                    if (simpleName.GetText().Equals(Tokens.Me, System.StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        // qualifier is 'Me'
+                        return new[] { parentModule };
+                    }
+
+                    // todo get the actual qualifying declaration?
+                    return finder.MatchName(simpleName.GetText());
+                }
+            }
+
+            if (reference.Context.TryGetAncestor<VBAParser.WithMemberAccessExprContext>(out var dot))
+            {
+                // qualifier is a With block
+                var withBlock = dot.GetAncestor<VBAParser.WithStmtContext>();
+                return finder.ContainedIdentifierReferences(new QualifiedSelection(reference.QualifiedModuleName, withBlock.GetSelection()))
+                    .Select(r => r.Declaration).Distinct();
+            }
+
+            return Enumerable.Empty<Declaration>();
+        }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
