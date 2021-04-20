@@ -51,9 +51,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            var result = !(Declaration.GetModuleParent(reference.ParentNonScoping) is DocumentModuleDeclaration document)
+            return !(Declaration.GetModuleParent(reference.ParentNonScoping) is DocumentModuleDeclaration document)
                 || !document.SupertypeNames.Contains("Worksheet");
-            return result;
         }
 
         protected override string ResultDescription(IdentifierReference reference)
