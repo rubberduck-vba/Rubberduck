@@ -77,6 +77,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             CollapseAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseNodes, EvaluateCanSwitchNodeState);
             ExpandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes, EvaluateCanSwitchNodeState);
             ClearSearchCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteClearSearchCommand);
+            CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAllCommand);
+            ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAllCommand);
             if (_externalRemoveCommand != null)
             {
                 RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, _externalRemoveCommand.CanExecute);
@@ -345,6 +347,22 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        private void ExecuteCollapseAllCommand(object parameter)
+        {
+            foreach (var project in Projects)
+            {
+                ExecuteCollapseNodes(project);
+            }
+        }
+
+        private void ExecuteExpandAllCommand(object parameter)
+        {
+            foreach (var project in Projects)
+            {
+                ExecuteExpandNodes(project);
+            }
+        }
+
         private bool EvaluateCanSwitchNodeState(object parameter)
         {
             return SelectedItem?.Children?.Any() ?? false;
@@ -420,7 +438,10 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CodeExplorerMoveToFolderDragAndDropCommand MoveToFolderDragAndDropCommand { get; set; }
 
-    public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
+        public CommandBase CollapseAllCommand { get; }
+        public CommandBase ExpandAllCommand { get; }
+
+        public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
         {
             if (declaration == null)
             {
