@@ -97,10 +97,10 @@ namespace RubberduckTests.Commands
             var builder = new MockVbeBuilder();
 
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "")
-                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
-                .AddComponent("Document1", ComponentType.Document, "")
-                .AddComponent("UserForm1", ComponentType.UserForm, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
+                .AddComponent("ClassModule1", ComponentType.ClassModule, string.Empty)
+                .AddComponent("Document1", ComponentType.Document, string.Empty)
+                .AddComponent("UserForm1", ComponentType.UserForm, string.Empty);
 
             var project = projectMock.Build();
             project.SetupGet(m => m.IsSaved).Returns(true);
@@ -130,10 +130,10 @@ namespace RubberduckTests.Commands
             var builder = new MockVbeBuilder();
 
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "")
-                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
-                .AddComponent("Document1", ComponentType.Document, "")
-                .AddComponent("UserForm1", ComponentType.UserForm, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
+                .AddComponent("ClassModule1", ComponentType.ClassModule, string.Empty)
+                .AddComponent("Document1", ComponentType.Document, string.Empty)
+                .AddComponent("UserForm1", ComponentType.UserForm, string.Empty);
 
             var project = projectMock.Build();
             project.SetupGet(m => m.IsSaved).Returns(true);
@@ -164,16 +164,16 @@ namespace RubberduckTests.Commands
             var builder = new MockVbeBuilder();
 
             var projectMock1 = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "")
-                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
-                .AddComponent("Document1", ComponentType.Document, "")
-                .AddComponent("UserForm1", ComponentType.UserForm, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
+                .AddComponent("ClassModule1", ComponentType.ClassModule, string.Empty)
+                .AddComponent("Document1", ComponentType.Document, string.Empty)
+                .AddComponent("UserForm1", ComponentType.UserForm, string.Empty);
 
             var projectMock2 = builder.ProjectBuilder("TestProject2", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "")
-                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
-                .AddComponent("Document1", ComponentType.Document, "")
-                .AddComponent("UserForm1", ComponentType.UserForm, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
+                .AddComponent("ClassModule1", ComponentType.ClassModule, string.Empty)
+                .AddComponent("Document1", ComponentType.Document, string.Empty)
+                .AddComponent("UserForm1", ComponentType.UserForm, string.Empty);
 
             var project1 = projectMock1.Build();
             var project2 = projectMock2.Build();
@@ -211,16 +211,16 @@ namespace RubberduckTests.Commands
             var builder = new MockVbeBuilder();
 
             var projectMock1 = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "")
-                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
-                .AddComponent("Document1", ComponentType.Document, "")
-                .AddComponent("UserForm1", ComponentType.UserForm, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
+                .AddComponent("ClassModule1", ComponentType.ClassModule, string.Empty)
+                .AddComponent("Document1", ComponentType.Document, string.Empty)
+                .AddComponent("UserForm1", ComponentType.UserForm, string.Empty);
 
             var projectMock2 = builder.ProjectBuilder("TestProject2", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "")
-                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
-                .AddComponent("Document1", ComponentType.Document, "")
-                .AddComponent("UserForm1", ComponentType.UserForm, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
+                .AddComponent("ClassModule1", ComponentType.ClassModule, string.Empty)
+                .AddComponent("Document1", ComponentType.Document, string.Empty)
+                .AddComponent("UserForm1", ComponentType.UserForm, string.Empty);
 
             var project1 = projectMock1.Build();
             var project2 = projectMock2.Build();
@@ -257,10 +257,10 @@ namespace RubberduckTests.Commands
             var builder = new MockVbeBuilder();
 
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "")
-                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
-                .AddComponent("Document1", ComponentType.Document, "")
-                .AddComponent("UserForm1", ComponentType.UserForm, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
+                .AddComponent("ClassModule1", ComponentType.ClassModule, string.Empty)
+                .AddComponent("Document1", ComponentType.Document, string.Empty)
+                .AddComponent("UserForm1", ComponentType.UserForm, string.Empty);
 
             var project = projectMock.Build();
             project.SetupGet(m => m.IsSaved).Returns(true);
@@ -290,10 +290,10 @@ namespace RubberduckTests.Commands
             var builder = new MockVbeBuilder();
 
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "")
-                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
-                .AddComponent("Document1", ComponentType.Document, "")
-                .AddComponent("UserForm1", ComponentType.UserForm, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
+                .AddComponent("ClassModule1", ComponentType.ClassModule, string.Empty)
+                .AddComponent("Document1", ComponentType.Document, string.Empty)
+                .AddComponent("UserForm1", ComponentType.UserForm, string.Empty);
 
             var project = projectMock.Build();
             project.SetupGet(m => m.IsSaved).Returns(true);
@@ -316,7 +316,6 @@ namespace RubberduckTests.Commands
             project.Verify(m => m.ExportSourceFiles(_path), Times.Never);
         }
 
-
         [Category("Commands")]
         [Test]
         public void ExportAllCommand_Execute_PassedNull_MultipleProjects_BrowserCanceled_ExpectNoExecution()
@@ -324,16 +323,16 @@ namespace RubberduckTests.Commands
             var builder = new MockVbeBuilder();
 
             var projectMock1 = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "")
-                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
-                .AddComponent("Document1", ComponentType.Document, "")
-                .AddComponent("UserForm1", ComponentType.UserForm, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
+                .AddComponent("ClassModule1", ComponentType.ClassModule, string.Empty)
+                .AddComponent("Document1", ComponentType.Document, string.Empty)
+                .AddComponent("UserForm1", ComponentType.UserForm, string.Empty);
 
             var projectMock2 = builder.ProjectBuilder("TestProject2", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "")
-                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
-                .AddComponent("Document1", ComponentType.Document, "")
-                .AddComponent("UserForm1", ComponentType.UserForm, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
+                .AddComponent("ClassModule1", ComponentType.ClassModule, string.Empty)
+                .AddComponent("Document1", ComponentType.Document, string.Empty)
+                .AddComponent("UserForm1", ComponentType.UserForm, string.Empty);
 
             var project1 = projectMock1.Build();
             var project2 = projectMock2.Build();
@@ -371,16 +370,16 @@ namespace RubberduckTests.Commands
             var builder = new MockVbeBuilder();
 
             var projectMock1 = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "")
-                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
-                .AddComponent("Document1", ComponentType.Document, "")
-                .AddComponent("UserForm1", ComponentType.UserForm, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
+                .AddComponent("ClassModule1", ComponentType.ClassModule, string.Empty)
+                .AddComponent("Document1", ComponentType.Document, string.Empty)
+                .AddComponent("UserForm1", ComponentType.UserForm, string.Empty);
 
             var projectMock2 = builder.ProjectBuilder("TestProject2", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "")
-                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
-                .AddComponent("Document1", ComponentType.Document, "")
-                .AddComponent("UserForm1", ComponentType.UserForm, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
+                .AddComponent("ClassModule1", ComponentType.ClassModule, string.Empty)
+                .AddComponent("Document1", ComponentType.Document, string.Empty)
+                .AddComponent("UserForm1", ComponentType.UserForm, string.Empty);
 
             var project1 = projectMock1.Build();
             var project2 = projectMock2.Build();

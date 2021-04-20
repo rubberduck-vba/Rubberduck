@@ -75,7 +75,19 @@ namespace Rubberduck.UI.Command.ComCommands
 
         protected override void OnExecute(object parameter)
         {
-            switch (parameter)
+            dynamic node; // used to get passing tests and feedback on PR.
+            CodeExplorerViewModel viewModel = null;
+            if (parameter is CodeExplorerViewModel)
+            {
+                viewModel = (CodeExplorerViewModel)parameter;
+                node = viewModel.SelectedItem;
+            }
+            else
+            {
+                node = (IVBProject)parameter;
+            }
+
+            switch (node)
             {
                 case CodeExplorerProjectViewModel projectNode:
                     var nodeProject = projectNode.Declaration != null
@@ -85,7 +97,7 @@ namespace Rubberduck.UI.Command.ComCommands
                     {
                         return;
                     }
-                    Export(nodeProject);
+                    Export(nodeProject, viewModel);
                     break;
                 case IVBProject vbproject:
                     Export(vbproject);
@@ -103,22 +115,41 @@ namespace Rubberduck.UI.Command.ComCommands
 
         private void Export(IVBProject project)
         {
+            Export(project, null);
+        }
+
+        private void Export(IVBProject project, CodeExplorerViewModel viewModel)
+        {
             var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog_Title, project.Name);
-
-            // If .GetDirectoryName is passed an empty string for a RootFolder, 
-            // it defaults to the Documents library (Win 7+) or equivalent.
-            var path = string.IsNullOrWhiteSpace(project.FileName)
-                ? string.Empty
-                : Path.GetDirectoryName(project.FileName);
-
+            var path = ExportPath(viewModel);
             using (var _folderBrowser = _factory.CreateFolderBrowser(desc, true, path))
             {
                 var result = _folderBrowser.ShowDialog();
 
                 if (result == DialogResult.OK)
                 {
+                    if (viewModel != null)
+                    {
+                        viewModel.CachedExportPath = _folderBrowser.SelectedPath;
+                    }
+
                     project.ExportSourceFiles(_folderBrowser.SelectedPath);
                 }
+            }
+
+            string ExportPath(CodeExplorerViewModel vm)
+            {
+                var cachedPath = vm?.CachedExportPath ?? null;
+                if (!string.IsNullOrWhiteSpace(cachedPath))
+                {
+                    return cachedPath;
+                }
+
+                // If .GetDirectoryName is passed an empty string for a RootFolder, 
+                // it defaults to the Documents library (Win 7+) or equivalent.
+                return string.IsNullOrWhiteSpace(project.FileName)
+                    ? string.Empty
+                    : Path.GetDirectoryName(project.FileName);
             }
         }
     }

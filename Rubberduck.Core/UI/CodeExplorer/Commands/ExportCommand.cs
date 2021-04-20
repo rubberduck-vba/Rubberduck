@@ -58,29 +58,63 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         
         private bool SpecialEvaluateCanExecute(object parameter)
         {
-            if (!(parameter is CodeExplorerComponentViewModel node) ||
-                node.Declaration == null)
+            if (!TryAssignComponentType(parameter, out var componentType))
             {
                 return false;
             }
 
-            var componentType = node.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
-
             return _exportableFileExtensions.ContainsKey(componentType);
+
+            bool TryAssignComponentType(object obj, out ComponentType compType)
+            {
+                if (obj is CodeExplorerComponentViewModel vm)
+                {
+                    compType = vm.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
+                    return true;
+                }
+
+                if (obj is CodeExplorerViewModel viewModel)
+                {
+                    if (viewModel.SelectedItem is CodeExplorerCustomFolderViewModel)
+                    {
+                        compType = ComponentType.Undefined;
+                        return false;
+                    }
+
+                    if (viewModel.SelectedItem is CodeExplorerComponentViewModel componentViewModel)
+                    {
+                        compType = componentViewModel.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
+                        return true;
+                    }
+
+                    compType = ComponentType.Undefined;
+                    return false;
+                }
+
+                compType = ComponentType.Undefined;
+                return false;
+            }
         }
 
         protected override void OnExecute(object parameter)
         {
-            if (!(parameter is CodeExplorerComponentViewModel node) ||
-                node.Declaration == null)
+            var viewModel = (CodeExplorerViewModel)parameter;
+
+            if (!(viewModel.SelectedItem is CodeExplorerComponentViewModel componentViewModel) ||
+                componentViewModel.Declaration == null)
             {
                 return;
             }
 
-            PromptFileNameAndExport(node.Declaration.QualifiedName.QualifiedModuleName);
+            PromptFileNameAndExport(componentViewModel.Declaration.QualifiedName.QualifiedModuleName, viewModel);
         }
 
         public bool PromptFileNameAndExport(QualifiedModuleName qualifiedModule)
+        {
+            return PromptFileNameAndExport(qualifiedModule, null);
+        }
+
+        public bool PromptFileNameAndExport(QualifiedModuleName qualifiedModule, CodeExplorerViewModel viewModel)
         {
             if (!_exportableFileExtensions.TryGetValue(qualifiedModule.ComponentType, out var extension))
             {
@@ -90,12 +124,19 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             using (var dialog = _dialogFactory.CreateSaveFileDialog())
             {
                 dialog.OverwritePrompt = true;
+                dialog.InitialDirectory = viewModel?.CachedExportPath ?? string.Empty;
                 dialog.FileName = qualifiedModule.ComponentName + extension;
 
                 var result = dialog.ShowDialog();
                 if (result != DialogResult.OK)
                 {
                     return false;
+                }
+
+                var exportPath = Path.GetDirectoryName(dialog.FileName);
+                if (viewModel != null)
+                {
+                    viewModel.CachedExportPath = exportPath;
                 }
 
                 var component = ProjectsProvider.Component(qualifiedModule);

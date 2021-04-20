@@ -34,7 +34,6 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Settings;
-using Rubberduck.Refactorings;
 using System.IO.Abstractions;
 
 namespace RubberduckTests.CodeExplorer
@@ -452,7 +451,8 @@ namespace RubberduckTests.CodeExplorer
             {
                 ImplementExportAllCommand();
             }
-            ViewModel.ExportAllCommand.Execute(ViewModel.SelectedItem);
+            
+            ViewModel.ExportAllCommand.Execute(ViewModel);
         }
 
         public MockedCodeExplorer ImplementExportAllCommand()
@@ -467,7 +467,8 @@ namespace RubberduckTests.CodeExplorer
             {
                 ImplementExportCommand();
             }
-            ViewModel.ExportCommand.Execute(ViewModel.SelectedItem);
+            
+            ViewModel.ExportCommand.Execute(ViewModel);
         }
 
         public MockedCodeExplorer ImplementExportCommand()
