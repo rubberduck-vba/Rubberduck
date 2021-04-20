@@ -156,6 +156,48 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void ImplicitActiveSheetReference_NoResultForWorksheetFunction()
+        {
+            const string inputCode =
+                @"Sub foo()
+    Debug.Print GetSheet.Cells(1, 1)
+End Sub
+
+Private Function GetSheet() As Worksheet
+End Function
+";
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("ThisWorkbook", string.Empty, ComponentType.Document),
+                ("Sheet1", string.Empty, ComponentType.Document),
+                ("Module1", inputCode, ComponentType.StandardModule)
+            };
+            Assert.AreEqual(0, InspectionResultsForModules(modules, ReferenceLibrary.Excel, DefaultDocumentModuleSupertypeNames).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveSheetReference_NoResultForWorksheetProperty()
+        {
+            const string inputCode =
+                @"Sub foo()
+    Debug.Print GetSheet.Cells(1, 1)
+End Sub
+
+Private Property Get GetSheet() As Worksheet
+End Property
+";
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("ThisWorkbook", string.Empty, ComponentType.Document),
+                ("Sheet1", string.Empty, ComponentType.Document),
+                ("Module1", inputCode, ComponentType.StandardModule)
+            };
+            Assert.AreEqual(0, InspectionResultsForModules(modules, ReferenceLibrary.Excel, DefaultDocumentModuleSupertypeNames).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ImplicitActiveSheetReference_Ignored_DoesNotReportRange()
         {
             const string inputCode =
