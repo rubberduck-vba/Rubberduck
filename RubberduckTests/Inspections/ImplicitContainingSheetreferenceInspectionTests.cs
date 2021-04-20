@@ -144,6 +144,22 @@ End Function
 
         [Test]
         [Category("Inspections")]
+        public void ImplicitContainingSheetReference_NoResultForWorksheetProperty()
+        {
+            const string inputCode =
+@"Sub foo()
+    Dim arr1 As Variant
+    arr1 = GetSheet.Range(""A1:B2"")
+End Sub
+
+Property Get GetSheet() As Worksheet
+End Property
+";
+            Assert.AreEqual(0, InspectionResultsInWorksheet(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             var inspection = new ImplicitContainingWorksheetReferenceInspection(null);
