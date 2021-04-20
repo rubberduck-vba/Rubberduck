@@ -1,101 +1,79 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Refactoring.ParseTreeValue;
+using Rubberduck.Refactorings.ImplicitTypeToExplicit;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Utility;
+using RubberduckTests.Mocks;
+using System;
+using System.Linq;
+using System.Threading;
 
 namespace RubberduckTests.QuickFixes
 {
     [TestFixture]
-    public class DeclareAsExplicitVariantQuickFixTests :  QuickFixTestBase
+    public class DeclareAsExplicitVariantQuickFixTests
     {
-
         [Test]
         [Category("QuickFixes")]
-        public void VariableTypeNotDeclared_QuickFixWorks_Parameter()
+        public void VariableTypeNotDeclared_Variable()
         {
             const string inputCode =
-                @"Sub Foo(arg1)
-End Sub";
-
-            const string expectedCode =
-                @"Sub Foo(arg1 As Variant)
-End Sub";
-
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableTypeNotDeclaredInspection(state));
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-
-        [Test]
-        [Category("QuickFixes")]
-        public void VariableTypeNotDeclared_QuickFixWorks_SubNameContainsParameterName()
-        {
-            const string inputCode =
-                @"Sub Foo(Foo)
-End Sub";
-
-            const string expectedCode =
-                @"Sub Foo(Foo As Variant)
-End Sub";
-
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableTypeNotDeclaredInspection(state));
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-
-        [Test]
-        [Category("QuickFixes")]
-        public void VariableTypeNotDeclared_QuickFixWorks_Variable()
-        {
-            const string inputCode =
-                @"Sub Foo()
+@"Sub Foo()
     Dim var1
 End Sub";
 
             const string expectedCode =
-                @"Sub Foo()
+@"Sub Foo()
     Dim var1 As Variant
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableTypeNotDeclaredInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode);
             Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
         [Category("QuickFixes")]
-        public void VariableTypeNotDeclared_QuickFixWorks_ParameterWithoutDefaultValue()
+        public void VariableTypeNotDeclared_Parameter()
         {
             const string inputCode =
-                @"Sub Foo(ByVal Fizz)
+@"Sub Foo(arg1)
 End Sub";
 
             const string expectedCode =
-                @"Sub Foo(ByVal Fizz As Variant)
+@"Sub Foo(arg1 As Variant)
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableTypeNotDeclaredInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode);
             Assert.AreEqual(expectedCode, actualCode);
         }
-
-        [Test]
-        [Category("QuickFixes")]
-        public void VariableTypeNotDeclared_QuickFixWorks_ParameterWithDefaultValue()
+        
+        private string ApplyQuickFixToFirstInspectionResult(string inputCode)
         {
-            const string inputCode =
-                @"Sub Foo(ByVal Fizz = False)
-End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
+            {
+                var inspection = new VariableTypeNotDeclaredInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+                var resultToFix = inspectionResults.First();
 
-            const string expectedCode =
-                @"Sub Foo(ByVal Fizz As Variant = False)
-End Sub";
+                var refactoringAction = new ImplicitTypeToExplicitRefactoringAction(state, new ParseTreeValueFactory(), rewritingManager);
+                var quickFix = new DeclareAsExplicitVariantQuickFix(refactoringAction);
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableTypeNotDeclaredInspection(state));
-            Assert.AreEqual(expectedCode, actualCode);
-        }
+                var rewriteSession = rewritingManager.CheckOutCodePaneSession();
+                quickFix.Fix(resultToFix, rewriteSession);
+                rewriteSession.TryRewrite();
 
-
-        protected override IQuickFix QuickFix(RubberduckParserState state)
-        {
-            return new DeclareAsExplicitVariantQuickFix();
+                return component.CodeModule.Content();
+            }
         }
     }
 }

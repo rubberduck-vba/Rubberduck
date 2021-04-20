@@ -1,5 +1,4 @@
-using System;
-using System.IO;
+using Path = System.IO.Path;
 using System.Windows.Forms;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Resources;

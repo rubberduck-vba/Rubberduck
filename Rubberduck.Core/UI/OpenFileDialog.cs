@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using System.IO;
+using Stream = System.IO.Stream;
 using System.Runtime.Remoting;
 using System.Windows.Forms;
 // ReSharper disable EventNeverSubscribedTo.Global

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Path = System.IO.Path;
 using System.Windows.Forms;
 using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
@@ -132,15 +133,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                     return false;
                 }
 
-                var path = System.IO.Path.GetDirectoryName(dialog.FileName);
+                var exportPath = Path.GetDirectoryName(dialog.FileName);
                 if (viewModel != null)
                 {
-                    viewModel.CachedExportPath = path;
+                    viewModel.CachedExportPath = exportPath;
                 }
 
                 var component = ProjectsProvider.Component(qualifiedModule);
                 try
                 {
+                    var path = Path.GetDirectoryName(dialog.FileName);
                     component.ExportAsSourceFile(path, false, true); // skipped optional parameters interfere with mock setup
                 }
                 catch (Exception ex)

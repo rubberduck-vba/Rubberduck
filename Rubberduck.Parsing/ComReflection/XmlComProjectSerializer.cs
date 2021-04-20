@@ -1,22 +1,38 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
+using FileAccess = System.IO.FileAccess;
+using FileMode = System.IO.FileMode;
+using Stream = System.IO.Stream;
 using System.Runtime.Serialization;
 using System.Xml;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor;
+using System.IO.Abstractions;
 
 namespace Rubberduck.Parsing.ComReflection
 {
     public class XmlComProjectSerializer : IComProjectSerializationProvider
     {
         public readonly string DefaultSerializationPath;
+        private readonly IFileSystem _fileSystem;
 
-        public XmlComProjectSerializer(IPersistencePathProvider pathProvider)
+        private XmlComProjectSerializer(IFileSystem fileSystem, string defaultPath, string path)
         {
-            DefaultSerializationPath = pathProvider.DataFolderPath("Declarations");
+            _fileSystem = fileSystem;
+            DefaultSerializationPath = defaultPath;
+            Target = path ?? DefaultSerializationPath;
         }
+
+        public XmlComProjectSerializer(
+            IPersistencePathProvider pathProvider,
+            IFileSystem fileSystem)
+            : this(fileSystem, pathProvider.DataFolderPath("Declarations"), null)
+        { }
+
+        public XmlComProjectSerializer(IFileSystem fileSystem, string path)
+            : this(fileSystem, path, path)
+        { }
 
         private static readonly XmlReaderSettings ReaderSettings = new XmlReaderSettings
         {
@@ -46,31 +62,26 @@ namespace Rubberduck.Parsing.ComReflection
             settings.NewLineChars = Environment.NewLine;
         }
 
-        public XmlComProjectSerializer(string path = null)
-        {
-            Target = path ?? DefaultSerializationPath;
-        }
-
         public string Target { get; }
 
         public bool SerializedVersionExists(ReferenceInfo reference)
         {
-            if (!Directory.Exists(Target))
+            if (!_fileSystem.Directory.Exists(Target))
             {
                 return false;
             }
 
             //TODO: This is naively based on file name for now - this should attempt to deserialize any SerializableProject.Nodes in the directory and test for equity.
-            var testFile = Path.Combine(Target, FileName(reference));
-            return File.Exists(testFile);
+            var testFile = _fileSystem.Path.Combine(Target, FileName(reference));
+            return _fileSystem.File.Exists(testFile);
         }
 
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")] //This is fine. XmlWriter disposes the FileStream, but calling twice is a NOP.
         public void SerializeProject(ComProject project)
         {
-            var filepath = Path.Combine(Target, FileName(project));
+            var filepath = _fileSystem.Path.Combine(Target, FileName(project));
 
-            using (var stream = new FileStream(filepath, FileMode.Create, FileAccess.Write))
+            using (var stream = _fileSystem.FileStream.Create(filepath, FileMode.Create, FileAccess.Write))
             using (var xmlWriter = XmlWriter.Create(stream, WriterSettings))
             using (var writer = XmlDictionaryWriter.CreateDictionaryWriter(xmlWriter))
             {
@@ -87,14 +98,14 @@ namespace Rubberduck.Parsing.ComReflection
 
         public ComProject DeserializeProject(ReferenceInfo reference)
         {
-            var filepath = Path.Combine(Target, FileName(reference));
+            var filepath = _fileSystem.Path.Combine(Target, FileName(reference));
 
             if (string.IsNullOrEmpty(filepath))
             {
                 throw new InvalidOperationException();
             }
 
-            using (var stream = new FileStream(filepath, FileMode.Open, FileAccess.Read))
+            using (var stream = _fileSystem.FileStream.Create(filepath, FileMode.Open, FileAccess.Read))
             {
                 return Load(stream);
             }

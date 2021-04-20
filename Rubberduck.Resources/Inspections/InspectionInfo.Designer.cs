@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Inspections {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InspectionInfo {
@@ -57,6 +57,15 @@ namespace Rubberduck.Resources.Inspections {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An annotation was specified in a module type that isn&apos;t compatible with that annotation. Some annotations can only be used in a specific module type; others cannot be used in certain module types..
+        /// </summary>
+        public static string AnnotationInIncompatibleComponentTypeInspection {
+            get {
+                return ResourceManager.GetString("AnnotationInIncompatibleComponentTypeInspection", resourceCulture);
             }
         }
         
@@ -313,15 +322,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level..
-        /// </summary>
-        public static string IllegalAnnotationInspection {
-            get {
-                return ResourceManager.GetString("IllegalAnnotationInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A class module that is meant to be used as interface for concrete classes should generally be abstracted of any implementations. If it is your intention to use this class module as a concrete type, you can safely ignore this inspection result..
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
@@ -462,6 +462,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string IntegerDataTypeInspection {
             get {
                 return ResourceManager.GetString("IntegerDataTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The annotation could not be bound to a target. An annotation meant to be specified at module level cannot be used to annotate members; conversely, annotations meant to be annotate members cannot be used at module level..
+        /// </summary>
+        public static string InvalidAnnotationInspection {
+            get {
+                return ResourceManager.GetString("InvalidAnnotationInspection", resourceCulture);
             }
         }
         
@@ -966,6 +975,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UnreachableCaseInspection {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A comment was parsed as a syntactically valid annotation, but not recognized as a supported annotation type..
+        /// </summary>
+        public static string UnrecognizedAnnotationInspection {
+            get {
+                return ResourceManager.GetString("UnrecognizedAnnotationInspection", resourceCulture);
             }
         }
         

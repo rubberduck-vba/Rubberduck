@@ -47,6 +47,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             : base(declarationFinderProvider)
         {}
 
+        protected override string[] GlobalObjectClassNames => new[] { "Global", "_Global", };
+
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             return !(Declaration.GetModuleParent(reference.ParentNonScoping) is DocumentModuleDeclaration document)

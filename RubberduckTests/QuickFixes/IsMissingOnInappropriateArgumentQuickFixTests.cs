@@ -103,27 +103,6 @@ End Sub
             Assert.AreEqual(expected, actual);
         }
 
-        [Test]
-        [Category("QuickFixes")]
-        public void ParamArray_QuickFixWorks()
-        {
-            const string inputCode =
-                @"
-Public Sub Foo(ParamArray bar() As Variant)
-    Debug.Print IsMissing(bar)
-End Sub
-";
-
-            const string expected =
-                @"
-Public Sub Foo(ParamArray bar() As Variant)
-    Debug.Print LBound(bar) > UBound(bar)
-End Sub
-";
-
-            var actual = ArrangeAndApplyQuickFix(inputCode);
-            Assert.AreEqual(expected, actual);
-        }
 
         [Test]
         [Category("QuickFixes")]

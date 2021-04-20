@@ -29,6 +29,12 @@ namespace RubberduckTests.Templates
             foreach (DictionaryEntry entry in set)
             {
                 var key = (string) entry.Key;
+                
+                if (key.StartsWith("Menu_"))
+                {
+                    continue;
+                }
+
                 var lhs = key.Split('_')[0];
                 if (!dictionary.ContainsKey(lhs))
                 {

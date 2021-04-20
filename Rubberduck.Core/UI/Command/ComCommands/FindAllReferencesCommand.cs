@@ -87,6 +87,7 @@ namespace Rubberduck.UI.Command.ComCommands
                 return declaration;
             }
 
+            Declaration target = null;
             using (var activePane = _vbe.ActiveCodePane)
             {
                 using (var selectedComponent = _vbe.SelectedVBComponent)
@@ -95,12 +96,20 @@ namespace Rubberduck.UI.Command.ComCommands
                         && !activePane.IsWrappingNullReference
                         && (selectedComponent?.HasDesigner ?? false))
                     {
-                        return FindFormDesignerTarget(selectedComponent);
+                        using (var activeWindow = activePane.Window)
+                        using (var designer = selectedComponent.DesignerWindow())
+                        {
+                            // Handle() is 0 for both windows, and IsVisible is true whenever the window is merely opened (active or not, regardless of state).
+                            // Caption will be "UserForm1 (Code)" vs "UserForm1 (UserForm)"
+                            if (designer.IsVisible && designer.Caption == activeWindow.Caption)
+                            {
+                                target = FindFormDesignerTarget(selectedComponent);
+                            }
+                        }
                     }
                 }
             }
-
-            return FindCodePaneTarget();
+            return target ?? FindCodePaneTarget();
         }
 
         private Declaration FindCodePaneTarget()
@@ -108,9 +117,13 @@ namespace Rubberduck.UI.Command.ComCommands
             return _selectedDeclarationProvider.SelectedDeclaration();
         }
 
-        //Assumes the component has a designer.
         private Declaration FindFormDesignerTarget(IVBComponent component)
         {
+            if (!component.HasDesigner)
+            {
+                return null;
+            }
+
             string projectId;
             using (var activeProject = _vbe.ActiveVBProject)
             {

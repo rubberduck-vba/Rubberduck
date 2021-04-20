@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47" ToolsVersion="15.0">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Title>Rubberduck.Resources</Title>
     <Product>Rubberduck.Resources</Product>
@@ -27,196 +27,20 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="About\AboutUI.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AboutUI.resx</DependentUpon>
-    </Compile>
-    <Compile Update="CodeExplorer\CodeExplorerUI.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>CodeExplorerUI.resx</DependentUpon>
-    </Compile>
-    <Compile Update="CommandBarIcons.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>CommandBarIcons.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Experimentals\ExperimentalNames.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ExperimentalNames.resx</DependentUpon>
-    </Compile>
     <Compile Update="Inspections\InspectionInfo.Designer.cs">
       <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>InspectionInfo.resx</DependentUpon>
     </Compile>
     <Compile Update="Inspections\InspectionNames.Designer.cs">
       <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>InspectionNames.resx</DependentUpon>
     </Compile>
     <Compile Update="Inspections\InspectionResults.Designer.cs">
       <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>InspectionResults.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Inspections\InspectionsUI.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>InspectionsUI.resx</DependentUpon>
     </Compile>
     <Compile Update="Inspections\QuickFixes.Designer.cs">
       <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>QuickFixes.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Menus\RubberduckMenus.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>RubberduckMenus.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Refactorings\Refactorings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Refactorings.resx</DependentUpon>
-    </Compile>
-    <Compile Update="RegexAssistant\RegexAssistantUI.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>RegexAssistantUI.resx</DependentUpon>
     </Compile>
     <Compile Update="RubberduckUI.Designer.cs">
       <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
-    <Compile Update="Settings\AutoCompletesPage.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AutoCompletesPage.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Settings\SettingsUI.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingsUI.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Settings\ToDoExplorerPage.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ToDoExplorerPage.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Settings\UnitTestingPage.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>UnitTestingPage.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Templates.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Templates.resx</DependentUpon>
-    </Compile>
-    <Compile Update="ToDoExplorer\ToDoExplorerUI.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ToDoExplorerUI.resx</DependentUpon>
-    </Compile>
-    <Compile Update="UnitTesting\AssertMessages.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AssertMessages.resx</DependentUpon>
-    </Compile>
-    <Compile Update="UnitTesting\TestExplorer.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TestExplorer.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="About\AboutUI.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>AboutUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="CodeExplorer\CodeExplorerUI.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>CodeExplorerUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="CommandBarIcons.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>CommandBarIcons.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Experimentals\ExperimentalNames.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ExperimentalNames.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Inspections\InspectionInfo.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionInfo.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Inspections\InspectionNames.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionNames.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Inspections\InspectionResults.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionResults.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Inspections\InspectionsUI.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Inspections\QuickFixes.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>QuickFixes.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Menus\RubberduckMenus.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>RubberduckMenus.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Refactorings\Refactorings.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Refactorings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="RegexAssistant\RegexAssistantUI.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>RegexAssistantUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="RubberduckUI.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Settings\AutoCompletesPage.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>AutoCompletesPage.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Settings\SettingsUI.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>SettingsUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Settings\ToDoExplorerPage.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ToDoExplorerPage.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Settings\UnitTestingPage.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>UnitTestingPage.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Templates.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Templates.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="ToDoExplorer\ToDoExplorerUI.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ToDoExplorerUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UnitTesting\AssertMessages.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>AssertMessages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UnitTesting\TestExplorer.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>TestExplorer.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources;
 using Rubberduck.Refactorings.MoveToFolder;

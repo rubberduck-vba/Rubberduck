@@ -54,6 +54,7 @@ Private Sub {{0}}() {RenameTestTodoComment}
     Exit Sub
 {TestFailLabel}:
     Assert.Fail ""{TestErrorMessage}"" & Err.Number & "" - "" & Err.Description
+    Resume {TestExitLabel}
 End Sub";
 
         private static string TestMethodExpectedErrorTemplate =>

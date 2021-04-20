@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
+using Rubberduck.InternalApi.Common;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
@@ -12,6 +13,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class VBComponent : SafeComWrapper<VB.VBComponent>, IVBComponent
     {
+        private readonly IFileSystem _fileSystem = FileSystemProvider.FileSystem;
+
         public VBComponent(VB.VBComponent target, bool rewrapping = false) 
             : base(target, rewrapping)
         { }
@@ -39,7 +42,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        private string SafeName => Path.GetInvalidFileNameChars().Aggregate(Name, (current, c) => current.Replace(c.ToString(), "_"));
+        private string SafeName => _fileSystem.Path.GetInvalidFileNameChars().Aggregate(Name, (current, c) => current.Replace(c.ToString(), "_"));
 
         public IControls Controls
         {
@@ -75,13 +78,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get
             {
-                if (IsWrappingNullReference)
+                try
+                {
+                    if (IsWrappingNullReference)
+                    {
+                        return false;
+                    }
+                    using (var designer = new UserForm(Target.Designer as VB.Forms.UserForm))
+                    {
+                        return !designer.IsWrappingNullReference;
+                    }
+                }
+                catch
                 {
                     return false;
-                }
-                using (var designer = new UserForm(Target.Designer as VB.Forms.UserForm))
-                {
-                    return !designer.IsWrappingNullReference;
                 }
             }
         }
@@ -103,12 +113,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             //We probably need to leverage IPersistancePathProvider? ITempSourceFileHandler? 
             //Just not here.
             var fullPath = isTempFile
-                ? Path.Combine(folder, Path.GetRandomFileName())
-                : Path.Combine(folder, SafeName + Type.FileExtension());
+                ? _fileSystem.Path.Combine(folder, _fileSystem.Path.GetRandomFileName())
+                : _fileSystem.Path.Combine(folder, SafeName + Type.FileExtension());
 
-            if (!Directory.Exists(folder))
+            if (!_fileSystem.Directory.Exists(folder))
             {
-                Directory.CreateDirectory(folder);
+                _fileSystem.Directory.CreateDirectory(folder);
             }
 
             switch (Type)
@@ -159,9 +169,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
 
             var tempFile = ExportToTempFile();
-            var tempFilePath = Directory.GetParent(tempFile).FullName;
+            var tempFilePath = _fileSystem.Directory.GetParent(tempFile).FullName;
             var fileEncoding = Encoding.Default;    //We use the current ANSI codepage because that is what the VBE does.
-            var contents = File.ReadAllLines(tempFile, fileEncoding);
+            var contents = _fileSystem.File.ReadAllLines(tempFile, fileEncoding);
             var nonAttributeLines = contents.TakeWhile(line => !line.StartsWith("Attribute")).Count();
             var attributeLines = contents.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
             var declarationsStartLine = nonAttributeLines + attributeLines + 1;
@@ -177,7 +187,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                        contents.Skip(declarationsStartLine + emptyLineCount - legitEmptyLineCount))
                                .ToArray();
             }
-            File.WriteAllLines(path, code, fileEncoding);
+            _fileSystem.File.WriteAllLines(path, code, fileEncoding);
 
             // LINQ hates this search, therefore, iterate the long way
             foreach (string line in contents)
@@ -185,22 +195,22 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 if (line.Contains("OleObjectBlob"))
                 {
                     var binaryFileName = line.Trim().Split('"')[1];
-                    var destPath = Directory.GetParent(path).FullName;
-                    if (File.Exists(Path.Combine(tempFilePath, binaryFileName)) && !destPath.Equals(tempFilePath))
+                    var destPath = _fileSystem.Directory.GetParent(path).FullName;
+                    if (_fileSystem.File.Exists(_fileSystem.Path.Combine(tempFilePath, binaryFileName)) && !destPath.Equals(tempFilePath))
                     {
-                        System.Diagnostics.Debug.WriteLine(Path.Combine(destPath, binaryFileName));
-                        if (File.Exists(Path.Combine(destPath, binaryFileName)))
+                        System.Diagnostics.Debug.WriteLine(_fileSystem.Path.Combine(destPath, binaryFileName));
+                        if (_fileSystem.File.Exists(_fileSystem.Path.Combine(destPath, binaryFileName)))
                         {
                             try
                             {
-                                File.Delete(Path.Combine(destPath, binaryFileName));
+                                _fileSystem.File.Delete(_fileSystem.Path.Combine(destPath, binaryFileName));
                             }
                             catch (Exception)
                             {
                                 // Meh?
                             }
                         }
-                        File.Copy(Path.Combine(tempFilePath, binaryFileName), Path.Combine(destPath, binaryFileName));
+                        _fileSystem.File.Copy(_fileSystem.Path.Combine(tempFilePath, binaryFileName), _fileSystem.Path.Combine(destPath, binaryFileName));
                     }
                     break;
                 }
@@ -217,14 +227,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     //One cannot reimport document modules as such in the VBE; so we simply export and import the contents of the code pane.
                     //Because of this, it is OK, and actually preferable, to use the default UTF8 encoding.
                     var text = codeModule.GetLines(1, lineCount);
-                    File.WriteAllText(path, text, Encoding.UTF8);
+                    _fileSystem.File.WriteAllText(path, text, Encoding.UTF8);
                 }
             }
         }
 
         private string ExportToTempFile()
         {
-            var path = Path.Combine(Path.GetTempPath(), SafeName + Type.FileExtension());
+            var path = _fileSystem.Path.Combine(_fileSystem.Path.GetTempPath(), SafeName + Type.FileExtension());
             Export(path);
             return path;
         }

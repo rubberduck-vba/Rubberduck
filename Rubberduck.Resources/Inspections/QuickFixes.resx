@@ -300,7 +300,13 @@
   <data name="IgnoreInModuleQuickFix" xml:space="preserve">
     <value>Ignore in module</value>
   </data>
+  <data name="DeclareAsExplicitTypeQuickFix" xml:space="preserve">
+    <value>Declare as Explicit Type</value>
+  </data>
   <data name="QualifyWithMeQuickFix" xml:space="preserve">
     <value>Qualify reference with 'Me'.</value>
+  </data>
+  <data name="AnnotateEntryPointQuickFix" xml:space="preserve">
+    <value>Add @EntryPoint annotation</value>
   </data>
 </root>

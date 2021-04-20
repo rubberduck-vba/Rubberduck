@@ -300,4 +300,7 @@
   <data name="IgnoreInModuleQuickFix" xml:space="preserve">
     <value>Ignorer dans le module</value>
   </data>
+  <data name="AnnotateEntryPointQuickFix" xml:space="preserve">
+    <value>Annoter avec @EntryPoint</value>
+  </data>
 </root>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Rubberduck.VBEditor.SafeComWrappers;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Parsing.Annotations
@@ -11,8 +12,14 @@ namespace Rubberduck.Parsing.Annotations
         public IReadOnlyList<AnnotationArgumentType> AllowedArgumentTypes { get; }
         public string Name { get; }
         public AnnotationTarget Target { get; }
+        public virtual IReadOnlyList<ComponentType> IncompatibleComponentTypes { get; } = new ComponentType[] { };
+        public virtual ComponentType? RequiredComponentType { get; } = null;
 
-        protected AnnotationBase(string name, AnnotationTarget target, int requiredArguments = 0, int? allowedArguments = 0, IReadOnlyList<AnnotationArgumentType> allowedArgumentTypes = null, bool allowMultiple = false)
+        protected AnnotationBase(string name, AnnotationTarget target, 
+            int requiredArguments = 0, 
+            int? allowedArguments = 0, 
+            IReadOnlyList<AnnotationArgumentType> allowedArgumentTypes = null, 
+            bool allowMultiple = false)
         {
             Name = name;
             Target = target;
@@ -22,26 +29,12 @@ namespace Rubberduck.Parsing.Annotations
             AllowedArgumentTypes = allowedArgumentTypes ?? new List<AnnotationArgumentType>();
         }
 
-        public virtual IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments)
-        {
-            return arguments.ToList();
-        }
+        public virtual IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments) => arguments.ToList();
 
-        public override bool Equals(object obj)
-        {
-            return obj is AnnotationBase annotation 
-                && Equals(annotation);
-        }
+        public override bool Equals(object obj) => obj is AnnotationBase annotation && Equals(annotation);
 
-        public bool Equals(AnnotationBase other)
-        {
-            return other != null 
-                   && Name.Equals(other.Name);
-        }
-
-        public override int GetHashCode()
-        {
-            return Name.GetHashCode();
-        }
+        public bool Equals(AnnotationBase other) => other != null && Name.Equals(other.Name);
+        
+        public override int GetHashCode() => Name.GetHashCode();
     }
 }
