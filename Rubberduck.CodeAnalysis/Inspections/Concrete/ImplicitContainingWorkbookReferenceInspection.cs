@@ -64,7 +64,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             var qualifiers = base.GetQualifierCandidates(reference, finder);
             return Declaration.GetModuleParent(reference.ParentScoping) is DocumentModuleDeclaration document
                 && document.SupertypeNames.Contains("Workbook")
-                && (qualifiers.Any());
+                && !qualifiers.Any();
         }
 
         protected override string ResultDescription(IdentifierReference reference)

@@ -26,6 +26,39 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
         /// </summary>
         protected IEnumerable<Declaration> GetQualifierCandidates(IdentifierReference reference, DeclarationFinder finder)
         {
+            if (reference.Context.TryGetAncestor<VBAParser.MemberAccessExprContext>(out var memberAccess))
+            {
+                var parentModule = Declaration.GetModuleParent(reference.ParentScoping);
+                var qualifyingExpression = memberAccess.lExpression();
+                if (qualifyingExpression is VBAParser.SimpleNameExprContext simpleName)
+                {
+                    if (simpleName.GetText().Equals(Tokens.Me, System.StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        // qualifier is 'Me'
+                        return new[] { parentModule };
+                    }
+
+                    // todo get the actual qualifying declaration?
+                    return finder.MatchName(simpleName.GetText())
+                        .Where(candidate => !candidate.IdentifierName.Equals(reference.Declaration.IdentifierName, System.StringComparison.InvariantCultureIgnoreCase));
+                }
+
+                if (qualifyingExpression.ChildCount == 1 && qualifyingExpression.GetText().Equals(Tokens.Me, System.StringComparison.InvariantCultureIgnoreCase))
+                {
+                    // qualifier is 'Me'
+                    return new[] { parentModule };
+                }
+            }
+
+            if (reference.Context.TryGetAncestor<VBAParser.WithMemberAccessExprContext>(out var dot))
+            {
+                // qualifier is a With block
+                var withBlock = dot.GetAncestor<VBAParser.WithStmtContext>();
+                return finder.ContainedIdentifierReferences(new QualifiedSelection(reference.QualifiedModuleName, withBlock.GetSelection()))
+                    .Select(r => r.Declaration).Distinct()
+                    .Where(candidate => !candidate.Equals(reference.Declaration));
+            }
+
             if (reference.Context.TryGetAncestor<VBAParser.CallStmtContext>(out var callStmt))
             {
                 if (reference.Context.TryGetAncestor<VBAParser.LExpressionContext>(out var lExpression))
@@ -47,36 +80,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
                         }
 
                         // todo get the actual qualifying declaration?
-                        return finder.MatchName(member.lExpression().children.First().GetText());
+                        return finder.MatchName(member.lExpression().children.First().GetText())
+                            .Where(candidate => !candidate.Equals(reference.Declaration));
                     }
                 }
-
-                
-            }
-
-            if (reference.Context.TryGetAncestor<VBAParser.MemberAccessExprContext>(out var memberAccess))
-            {
-                var parentModule = Declaration.GetModuleParent(reference.ParentScoping);
-                var qualifyingExpression = memberAccess.lExpression();
-                if (qualifyingExpression is VBAParser.SimpleNameExprContext simpleName)
-                {
-                    if (simpleName.GetText().Equals(Tokens.Me, System.StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        // qualifier is 'Me'
-                        return new[] { parentModule };
-                    }
-
-                    // todo get the actual qualifying declaration?
-                    return finder.MatchName(simpleName.GetText());
-                }
-            }
-
-            if (reference.Context.TryGetAncestor<VBAParser.WithMemberAccessExprContext>(out var dot))
-            {
-                // qualifier is a With block
-                var withBlock = dot.GetAncestor<VBAParser.WithStmtContext>();
-                return finder.ContainedIdentifierReferences(new QualifiedSelection(reference.QualifiedModuleName, withBlock.GetSelection()))
-                    .Select(r => r.Declaration).Distinct();
             }
 
             return Enumerable.Empty<Declaration>();
