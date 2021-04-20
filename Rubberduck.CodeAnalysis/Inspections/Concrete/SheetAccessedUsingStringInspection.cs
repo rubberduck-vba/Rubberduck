@@ -3,6 +3,7 @@ using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.Common;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -59,41 +60,104 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             _projectsProvider = projectsProvider;
         }
 
-        private static readonly string[] InterestingMembers =
+        /// <summary>
+        /// We're interested in both explicitly and implicitly bound retrievals from a Sheets collection.
+        /// </summary>
+        private static readonly string[] InterestingProperties =
         {
-            "Worksheets", "Sheets"
-        };
-
-        private static readonly string[] InterestingClasses =
-        {
-            "Workbook"
+            "Item", // explicit member call
+            "_Default", // default member call (usually implicit)
         };
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            var excel = finder.Projects
-                .SingleOrDefault(project => project.IdentifierName == "Excel" && !project.IsUserDefined);
-            if (excel == null)
+            if (!finder.TryFindProjectDeclaration("Excel", out var excel))
             {
-                return Enumerable.Empty<Declaration>();
+                // [RequiredHost] attribute puts this in "should not happen" territory.
+                yield break;
+            }
+            var sheetsClass = (ModuleDeclaration)finder.FindClassModule("Sheets", excel, true);
+            if (sheetsClass == null)
+            {
+                // [RequiredHost] attribute puts this in "should not happen" territory.
+                yield break;
             }
 
-            var relevantClasses = InterestingClasses
-                .Select(className => finder.FindClassModule(className, excel, true))
-                .OfType<ModuleDeclaration>();
+            if (sheetsClass != null)
+            {
+                foreach (var property in sheetsClass.Members.OfType<PropertyDeclaration>())
+                {
+                    if (InterestingProperties.Any(name => name.Equals(property.IdentifierName, System.StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        yield return property;
+                    }
+                }
+            }
+        }
 
-            var relevantProperties = relevantClasses
-                .SelectMany(classDeclaration => classDeclaration.Members)
-                .OfType<PropertyDeclaration>()
-                .Where(member => InterestingMembers.Contains(member.IdentifierName));
+        private static ClassModuleDeclaration GetHostWorkbookDeclaration(DeclarationFinder finder)
+        {
+            var documentModuleQMNs = finder.AllModules.Where(m => m.ComponentType == ComponentType.Document);
+            ClassModuleDeclaration result = null;
+            foreach (var qmn in documentModuleQMNs)
+            {
+                var declaration = finder.ModuleDeclaration(qmn) as ClassModuleDeclaration;
+                if (declaration.Supertypes.Any(t => t.IdentifierName.Equals("Workbook") && t.ProjectName == "Excel" && !t.IsUserDefined))
+                {
+                    result = declaration;
+                    break;
+                }
+            }
 
-            return relevantProperties;
+            return result ?? throw new System.InvalidOperationException("Failed to find the host Workbook declaration.");
+        }
+
+        private static ClassModuleDeclaration GetHostApplicationDeclaration(DeclarationFinder finder)
+        {
+            var result = finder.MatchName("Application").OfType<ClassModuleDeclaration>().FirstOrDefault(t => t.ProjectName == "Excel" && !t.IsUserDefined) as ClassModuleDeclaration;
+            return result ?? throw new System.InvalidOperationException("Failed to find the host Application declaration.");
         }
 
         protected override (bool isResult, string properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder)
         {
-            var sheetNameArgumentLiteralExpressionContext = SheetNameArgumentLiteralExpressionContext(reference);
+            if (reference.IdentifierName.Equals(Tokens.Me, System.StringComparison.InvariantCultureIgnoreCase))
+            {
+                // if Me is a worksheet module, 
+                return (false, null);
+            }
 
+            var hostWorkbookDeclaration = GetHostWorkbookDeclaration(finder);
+
+            var context = reference.Context as VBAParser.MemberAccessExprContext 
+                        ?? reference.Context.Parent as VBAParser.MemberAccessExprContext
+                        ?? reference.Context.Parent.Parent as VBAParser.MemberAccessExprContext;
+
+            if (context is VBAParser.MemberAccessExprContext memberAccess)
+            {
+                var appObjectDeclaration = GetHostApplicationDeclaration(finder);
+                var isApplicationQualifier = appObjectDeclaration.References.Any(appRef => 
+                    context.GetSelection().Contains(appRef.Selection) 
+                    && appRef.QualifiedModuleName.Equals(reference.QualifiedModuleName));
+
+                if (isApplicationQualifier)
+                {
+                    // Application.Sheets(...) is referring to the ActiveWorkbook, not necessarily ThisWorkbook.
+                    return (false, null);
+                }
+            }
+
+            var isHostWorkbookQualifier = hostWorkbookDeclaration.References.Any(thisWorkbookRef =>
+                    context.GetSelection().Contains(thisWorkbookRef.Selection)
+                    && thisWorkbookRef.QualifiedModuleName.Equals(reference.QualifiedModuleName));
+
+            var parentModule = finder.ModuleDeclaration(reference.QualifiedModuleName);
+            if (!isHostWorkbookQualifier && parentModule is ProceduralModuleDeclaration)
+            {
+                // in a standard module the reference is against ActiveWorkbook unless it's explicitly against ThisWorkbook.
+                return (false, null);
+            }
+
+            var sheetNameArgumentLiteralExpressionContext = SheetNameArgumentLiteralExpressionContext(reference);
             if (sheetNameArgumentLiteralExpressionContext?.STRINGLITERAL() == null)
             {
                 return (false, null);

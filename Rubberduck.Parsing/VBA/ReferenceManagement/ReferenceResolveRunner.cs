@@ -20,12 +20,12 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             IParserStateManager parserStateManager, 
             IModuleToModuleReferenceManager moduleToModuleReferenceManager,
             IReferenceRemover referenceRemover,
-            IUserComProjectProvider userComProjectProvider) 
+            IDocumentModuleSuperTypeNamesProvider documentModuleSuperTypeNamesProvider) 
         :base(state, 
             parserStateManager, 
             moduleToModuleReferenceManager,
             referenceRemover,
-            userComProjectProvider)
+            documentModuleSuperTypeNamesProvider)
         {}
 
 

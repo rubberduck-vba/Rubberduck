@@ -133,20 +133,19 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                                                             .Contains(refNode));
 
                 var assignmentsPrecedingReference = assignmentExprNodesWithReference.Any()
-                    ? assignmentExprNodes.TakeWhile(n => n != assignmentExprNodesWithReference.Last())
-                                                .Last()
-                                                .Nodes(new[] { typeof(AssignmentNode) })
+                    ? assignmentExprNodes.TakeWhile(n => n != assignmentExprNodesWithReference.LastOrDefault())
+                                                ?.LastOrDefault()
+                                                ?.Nodes(new[] { typeof(AssignmentNode) })
                     : allAssignmentsAndReferences.TakeWhile(n => n != refNode)
                         .OfType<AssignmentNode>();
 
-                if (assignmentsPrecedingReference.Any())
+                if (assignmentsPrecedingReference?.Any() ?? false)
                 {
-                    usedAssignments.Add(assignmentsPrecedingReference.Last() as AssignmentNode);
+                    usedAssignments.Add(assignmentsPrecedingReference.LastOrDefault() as AssignmentNode);
                 }
             }
 
-            return allAssignmentsAndReferences.OfType<AssignmentNode>()
-                                                .Except(usedAssignments);
+            return allAssignmentsAndReferences.OfType<AssignmentNode>().Except(usedAssignments);
         }
 
         private static bool IsDescendentOfNeverFlagNode(AssignmentNode assignment)

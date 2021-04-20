@@ -23,7 +23,8 @@ namespace Rubberduck.Parsing.Symbols
             bool isArray,
             VBAParser.AsTypeClauseContext asTypeContext,
             IEnumerable<IParseTreeAnnotation> annotations = null,
-            Attributes attributes = null)
+            Attributes attributes = null, 
+            bool isUserDefined = true)
             : base(
                 qualifiedName,
                 parentDeclaration,
@@ -39,7 +40,7 @@ namespace Rubberduck.Parsing.Symbols
                 selection,
                 isArray,
                 asTypeContext,
-                true,
+                isUserDefined,
                 annotations,
                 attributes)
         {
