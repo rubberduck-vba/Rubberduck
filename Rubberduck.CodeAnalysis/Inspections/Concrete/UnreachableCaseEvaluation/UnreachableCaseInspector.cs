@@ -225,7 +225,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
             VBAParser.SelectCaseStmtContext selectStmt,
             IParseTreeVisitorResults parseTreeValues)
         {
-            var (typeName, value) = SelectExpressionTypeNameAndValue(selectStmt, parseTreeValues);
+            var (typeName, _) = SelectExpressionTypeNameAndValue(selectStmt, parseTreeValues);
             return typeName;
         }
 
