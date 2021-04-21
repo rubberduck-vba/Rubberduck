@@ -23,7 +23,7 @@ namespace Rubberduck.UI.Command
         {
             return (parameter ?? FindModuleFromSelection()) is Declaration candidate &&
                    candidate.DeclarationType == DeclarationType.ProceduralModule &&
-                   candidate.Annotations.Any(annotation => annotation is TestModuleAnnotation) &&
+                   candidate.Annotations.Any(pta => pta.Annotation is TestModuleAnnotation) &&
                    _engine.CanRun &&
                    _engine.Tests.Any(test => test.Declaration.QualifiedModuleName.Equals(candidate.QualifiedModuleName));
         }
@@ -32,7 +32,7 @@ namespace Rubberduck.UI.Command
         {
             if (!((parameter ?? FindModuleFromSelection()) is Declaration candidate) ||
                 candidate.DeclarationType != DeclarationType.ProceduralModule ||
-                !candidate.Annotations.Any(annotation => annotation is TestModuleAnnotation) ||
+                !candidate.Annotations.Any(pta => pta.Annotation is TestModuleAnnotation) ||
                 !_engine.CanRun)
             {
                 return;

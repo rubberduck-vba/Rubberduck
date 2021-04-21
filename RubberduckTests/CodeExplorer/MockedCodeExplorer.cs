@@ -34,7 +34,6 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Settings;
-using Rubberduck.Refactorings;
 using System.IO.Abstractions;
 
 namespace RubberduckTests.CodeExplorer
@@ -120,11 +119,11 @@ namespace RubberduckTests.CodeExplorer
                 var item = componentTypes[index];
                 if (item == ComponentType.UserForm)
                 {
-                    project.MockUserFormBuilder($"{item.ToString()}{index}", code is null ? string.Empty : code[index]).AddFormToProjectBuilder();
+                    project.MockUserFormBuilder($"{item}{index}", code is null ? string.Empty : code[index]).AddFormToProjectBuilder();
                 }
                 else
                 {
-                    project.AddComponent($"{item.ToString()}{index}", item, code is null ? string.Empty : code[index]);
+                    project.AddComponent($"{item}{index}", item, code is null ? string.Empty : code[index]);
                 }
             }
 

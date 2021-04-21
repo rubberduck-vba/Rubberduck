@@ -10,12 +10,12 @@ using Rubberduck.Resources.Inspections;
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
-    /// Locates unqualified Worksheet.Range/Cells/Columns/Rows member calls inside worksheet modules that implicitly refer to the containing sheet.
+    /// Locates unqualified Worksheet.Range/Cells/Columns/Rows member calls inside worksheet modules, that implicitly refer to the containing sheet component.
     /// </summary>
-    /// <reference name="Excel" />
+    /// <hostApp name="Excel" />
     /// <why>
-    /// Implicit references inside a worksheet document module can be mistakes for implicit references to the active worksheet, which is the behavior in all other places.
-    /// By explicitly qualifying these member calls with Me, the ambiguity can be resolved.
+    /// Implicit references inside a worksheet document module can easily be mistaken for implicit references to the active worksheet (ActiveSheet), which is the behavior in all other module types.
+    /// By explicitly qualifying these member calls with 'Me', the ambiguity can be resolved. If the intent is to refer to the active worksheet, qualify with 'ActiveSheet' to prevent a bug.
     /// </why>
     /// <example hasResult="true">
     /// <module name="Sheet1" type="Document Module">
@@ -37,7 +37,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// ]]>
     /// </module>
     /// </example>
-    [RequiredLibrary("Excel")]
+    [RequiredHost("Excel")]
     internal sealed class ImplicitContainingWorksheetReferenceInspection : ImplicitSheetReferenceInspectionBase
     {
         public ImplicitContainingWorksheetReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
