@@ -34,7 +34,6 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Settings;
-using Rubberduck.Refactorings;
 using System.IO.Abstractions;
 
 namespace RubberduckTests.CodeExplorer
