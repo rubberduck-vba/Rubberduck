@@ -107,19 +107,47 @@ namespace Rubberduck.Parsing.VBA
                 .Where(m => (m.DeclarationType.HasFlag(DeclarationType.Procedure) // includes PropertyLet and PropertySet and LibraryProcedure
                     || m.DeclarationType.HasFlag(DeclarationType.Function)) // includes PropertyGet and LibraryFunction
                     && !m.DeclarationType.HasFlag(DeclarationType.LibraryFunction)
-                    && !m.DeclarationType.HasFlag(DeclarationType.LibraryProcedure)); 
+                    && !m.DeclarationType.HasFlag(DeclarationType.LibraryProcedure));
             var enclosingProcedure = members.SingleOrDefault(m => m.Context.GetSelection().Contains(qualifiedSelection.Selection));
-
-            var context = enclosingProcedure?.Context.GetDescendents<VBAParser.ArgumentExpressionContext>()
-                .FirstOrDefault(m => m.GetSelection().ContainsFirstCharacter(qualifiedSelection.Selection));
-
-            if (context != null)
+            if (enclosingProcedure == null)
             {
-                return finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(context, enclosingProcedure);
+                return null;
             }
 
-            // fallback to the invoked procedure declaration
-            return finder.FindInvokedMemberFromArgumentExpressionContext(context, qualifiedSelection.QualifiedName);
+            var allArguments = enclosingProcedure.Context.GetDescendents<VBAParser.ArgumentContext>();
+
+            var context = allArguments
+                .Where(arg => arg.missingArgument() == null)
+                .FirstOrDefault(m =>
+                {
+                    var isOnWhitespace = false;
+                    if (m.TryGetPrecedingContext<VBAParser.WhiteSpaceContext>(out var whitespace))
+                    {
+                        isOnWhitespace = whitespace.GetSelection().ContainsFirstCharacter(qualifiedSelection.Selection);
+                    }
+                    return isOnWhitespace || m.GetSelection().ContainsFirstCharacter(qualifiedSelection.Selection);
+                });
+                
+            var skippedArg = allArguments
+                .Where(arg => arg.missingArgument() != null)
+                .FirstOrDefault(m =>
+                {
+                    var isOnWhitespace = false;
+                    if (m.TryGetPrecedingContext<VBAParser.WhiteSpaceContext>(out var whitespace))
+                    {
+                        isOnWhitespace = whitespace.GetSelection().ContainsFirstCharacter(qualifiedSelection.Selection);
+                    }
+                    return isOnWhitespace || m.GetSelection().ContainsFirstCharacter(qualifiedSelection.Selection);
+                });
+
+            context = context ?? skippedArg;
+            if (context != null)
+            {
+                return (Declaration)finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(context, enclosingProcedure)
+                    ?? finder.FindInvokedMemberFromArgumentContext(context, qualifiedSelection.QualifiedName); // fallback to the invoked procedure declaration
+            }
+
+            return null;
         }
 
         private static Declaration SelectedDeclarationViaReference(QualifiedSelection qualifiedSelection, DeclarationFinder finder)
