@@ -654,6 +654,11 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return parameter;
         }
 
+        public ModuleBodyElementDeclaration FindInvokedMemberFromArgumentExpressionContext(VBAParser.ArgumentExpressionContext argumentExpression, QualifiedModuleName module)
+        {
+            return CallingNonDefaultMember(argumentExpression, module);
+        }
+
         private ModuleBodyElementDeclaration CallingNonDefaultMember(VBAParser.ArgumentExpressionContext argumentExpression, QualifiedModuleName module)
         {
             //todo: Make this work for default member calls.

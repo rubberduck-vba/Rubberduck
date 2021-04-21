@@ -90,19 +90,26 @@ namespace Rubberduck.Parsing.VBA
                 return candidateViaArgumentCallSite;
             }
 
+            // fallback to the containing member declaration if we're inside a procedure scope
             var candidateViaContainingMember = SelectedMember(qualifiedSelection);
             if (candidateViaContainingMember != null)
             {
                 return candidateViaContainingMember;
             }
 
+            // otherwise fallback to the containing module declaration
             return SelectedModule(qualifiedSelection);
         }
 
-        private static ParameterDeclaration SelectedDeclarationViaArgument(QualifiedSelection qualifiedSelection, DeclarationFinder finder)
+        private static Declaration SelectedDeclarationViaArgument(QualifiedSelection qualifiedSelection, DeclarationFinder finder)
         {
-            var members = finder.Members(qualifiedSelection.QualifiedName).Where(m => m.DeclarationType.HasFlag(DeclarationType.Procedure));
+            var members = finder.Members(qualifiedSelection.QualifiedName)
+                .Where(m => (m.DeclarationType.HasFlag(DeclarationType.Procedure) // includes PropertyLet and PropertySet and LibraryProcedure
+                    || m.DeclarationType.HasFlag(DeclarationType.Function)) // includes PropertyGet and LibraryFunction
+                    && !m.DeclarationType.HasFlag(DeclarationType.LibraryFunction)
+                    && !m.DeclarationType.HasFlag(DeclarationType.LibraryProcedure)); 
             var enclosingProcedure = members.SingleOrDefault(m => m.Context.GetSelection().Contains(qualifiedSelection.Selection));
+
             var context = enclosingProcedure?.Context.GetDescendents<VBAParser.ArgumentExpressionContext>()
                 .FirstOrDefault(m => m.GetSelection().ContainsFirstCharacter(qualifiedSelection.Selection));
 
@@ -111,7 +118,8 @@ namespace Rubberduck.Parsing.VBA
                 return finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(context, enclosingProcedure);
             }
 
-            return null;
+            // fallback to the invoked procedure declaration
+            return finder.FindInvokedMemberFromArgumentExpressionContext(context, qualifiedSelection.QualifiedName);
         }
 
         private static Declaration SelectedDeclarationViaReference(QualifiedSelection qualifiedSelection, DeclarationFinder finder)
