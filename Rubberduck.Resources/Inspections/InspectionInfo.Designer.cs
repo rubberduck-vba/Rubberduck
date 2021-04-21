@@ -367,7 +367,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit references to worksheet members inside a worksheet document module can be mistaken for implicit references to the active worksheet, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved..
+        ///   Looks up a localized string similar to Implicit references to worksheet members inside a worksheet document module can be mistaken for implicit references to the active worksheet, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved. If the intent is to refer to the active worksheet, qualify with &apos;ActiveSheet&apos; to prevent a bug..
         /// </summary>
         public static string ImplicitContainingWorksheetReferenceInspection {
             get {
