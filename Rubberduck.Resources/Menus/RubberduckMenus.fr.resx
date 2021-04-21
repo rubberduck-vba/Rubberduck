@@ -264,4 +264,10 @@
   <data name="RubberduckMenu_CodePaneRefactor" xml:space="preserve">
     <value>&amp;Refactorer</value>
   </data>
+  <data name="ProjectExplorer_IgnoreProject" xml:space="preserve">
+    <value>Ignorer ce Projet</value>
+  </data>
+  <data name="ProjectExplorer_UnignoreProject" xml:space="preserve">
+    <value>Inclure ce Projet</value>
+  </data>
 </root>

@@ -303,4 +303,10 @@
   <data name="AnnotateEntryPointQuickFix" xml:space="preserve">
     <value>Annoter avec @EntryPoint</value>
   </data>
+  <data name="DeclareAsExplicitTypeQuickFix" xml:space="preserve">
+    <value>Déclarer un type explicite</value>
+  </data>
+  <data name="QualifyWithMeQuickFix" xml:space="preserve">
+    <value>Qualifier la référence avec 'Me'.</value>
+  </data>
 </root>
