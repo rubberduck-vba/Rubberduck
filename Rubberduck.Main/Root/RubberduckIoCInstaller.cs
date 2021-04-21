@@ -409,7 +409,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<IEncapsulateFieldModelFactory>()
                 .ImplementedBy<EncapsulateFieldModelFactory>()
                 .LifestyleSingleton());
-            container.Kernel.Register(Component.For<IEncapsulateFieldReferenceReplacerFactory>()
+            container.Register(Component.For<IEncapsulateFieldReferenceReplacerFactory>()
                 .ImplementedBy<EncapsulateFieldReferenceReplacerFactory>()
                  .LifestyleSingleton());
         }
