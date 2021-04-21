@@ -54,7 +54,9 @@ namespace Rubberduck.UI.UnitTesting
             TestExplorerModel model,
             IClipboardWriter clipboard,
             // ReSharper disable once UnusedParameter.Local - left in place because it will likely be needed for app wide font settings, etc.
+#pragma warning disable IDE0060 // Remove unused parameter
             IConfigurationService<Configuration> configService,
+#pragma warning restore IDE0060 // Remove unused parameter
             ISettingsFormFactory settingsFormFactory,
             IRewritingManager rewritingManager,
             IAnnotationUpdater annotationUpdater)

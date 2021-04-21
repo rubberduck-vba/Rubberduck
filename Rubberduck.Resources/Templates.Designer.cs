@@ -70,7 +70,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot find the template for &apos;{0}&apos;. The file may have been renamed or deleted. Expected file name: &apos;{1}&apos;.
+        ///   Looks up a localized string similar to Cannot find the template for &apos;{0}&apos;. The file may have been renamed or deleted. Expected file name: &apos;{1}&apos;..
         /// </summary>
         public static string Menu_Warning_CannotFindTemplate_Message {
             get {

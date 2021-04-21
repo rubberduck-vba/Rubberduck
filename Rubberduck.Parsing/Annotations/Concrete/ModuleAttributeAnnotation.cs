@@ -54,7 +54,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
         private readonly IReadOnlyList<ComponentType> _incompatibleComponentTypes;
         public override IReadOnlyList<ComponentType> IncompatibleComponentTypes => _incompatibleComponentTypes;
 
-        private static AnnotationArgumentType[] _argumentTypes = new[]
+        private static readonly AnnotationArgumentType[] _argumentTypes = new[]
         {
             AnnotationArgumentType.Attribute,
             AnnotationArgumentType.Text | AnnotationArgumentType.Number | AnnotationArgumentType.Boolean

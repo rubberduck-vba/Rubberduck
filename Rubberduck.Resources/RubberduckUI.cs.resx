@@ -1452,9 +1452,6 @@ Import přerušen.</value>
   <data name="ComponentType_UserControl" xml:space="preserve">
     <value>Uživatelský Control</value>
   </data>
-  <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
-    <value>{0} {1} {2} {3} {4} {5}</value>
-  </data>
   <data name="EncapsulateField_PreviewMarker" xml:space="preserve">
     <value>'&lt;===== Změny v deklaraci a vlastnostech nad tímto řádkem =====&gt;</value>
   </data>

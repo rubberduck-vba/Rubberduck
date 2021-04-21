@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Menu_Warning_CannotFindTemplate_Message" xml:space="preserve">
-    <value>Cannot find the template for '{0}'. The file may have been renamed or deleted. Expected file name: '{1}'</value>
+    <value>Cannot find the template for '{0}'. The file may have been renamed or deleted. Expected file name: '{1}'.</value>
   </data>
   <data name="Menu_Warning_CannotFindTemplate_Caption" xml:space="preserve">
     <value>Missing Template File</value>
