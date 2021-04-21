@@ -640,14 +640,13 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             {
                 // argument is positional: work out its index
                 var argumentList = argumentExpression.GetAncestor<VBAParser.ArgumentListContext>();
-                var arguments = argumentList.GetDescendents<VBAParser.PositionalArgumentContext>().ToArray();
+                var arguments = argumentList.children.Where(t => (t is VBAParser.ArgumentContext)).ToArray();
 
                 var parameterIndex = arguments
-                    .Select((arg, index) => arg.GetDescendent<VBAParser.ArgumentExpressionContext>() == argumentExpression ? (arg, index) : (null, -1))
-                    .SingleOrDefault(item => item.arg != null).index;
+                    .Select((arg, index) => (arg: arg as ParserRuleContext, index))
+                    .SingleOrDefault(item => item.arg.ContainsTokenIndex(argumentExpression.Start.TokenIndex)).index;
 
                 parameter = parameters
-                    .OrderBy(p => p.Selection)
                     .Select((param, index) => (param, index))
                     .SingleOrDefault(item => item.index == parameterIndex).param;
             }

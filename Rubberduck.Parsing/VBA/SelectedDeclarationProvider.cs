@@ -84,6 +84,12 @@ namespace Rubberduck.Parsing.VBA
                 return candidateViaConstantDeclaration;
             }
 
+            var candidateViaArgumentCallSite = SelectedDeclarationViaArgument(qualifiedSelection, finder);
+            if (candidateViaArgumentCallSite != null)
+            {
+                return candidateViaArgumentCallSite;
+            }
+
             var candidateViaContainingMember = SelectedMember(qualifiedSelection);
             if (candidateViaContainingMember != null)
             {
@@ -91,6 +97,21 @@ namespace Rubberduck.Parsing.VBA
             }
 
             return SelectedModule(qualifiedSelection);
+        }
+
+        private static ParameterDeclaration SelectedDeclarationViaArgument(QualifiedSelection qualifiedSelection, DeclarationFinder finder)
+        {
+            var members = finder.Members(qualifiedSelection.QualifiedName).Where(m => m.DeclarationType.HasFlag(DeclarationType.Procedure));
+            var enclosingProcedure = members.SingleOrDefault(m => m.Context.GetSelection().Contains(qualifiedSelection.Selection));
+            var context = enclosingProcedure?.Context.GetDescendents<VBAParser.ArgumentExpressionContext>()
+                .FirstOrDefault(m => m.GetSelection().ContainsFirstCharacter(qualifiedSelection.Selection));
+
+            if (context != null)
+            {
+                return finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(context, enclosingProcedure);
+            }
+
+            return null;
         }
 
         private static Declaration SelectedDeclarationViaReference(QualifiedSelection qualifiedSelection, DeclarationFinder finder)
