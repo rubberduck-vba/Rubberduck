@@ -1591,12 +1591,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
 
             referenceProject = GetProjectDeclarationForReference(reference);
-
             if (!_referencesByProjectId.TryGetValue(referenceProject.ProjectId, out var directReferences))
             {
                 return output;
             }
-
             output.AddRange(directReferences);
 
             var projectId = referenceProject.ProjectId;

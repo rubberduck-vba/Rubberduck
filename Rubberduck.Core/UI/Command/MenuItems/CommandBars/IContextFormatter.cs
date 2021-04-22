@@ -125,9 +125,9 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 return RubberduckUI.ContextMultipleControlsSelection;
             }
 
-            var friendlyTypeName = declaration.AsTypeName.Equals("IDispatch", System.StringComparison.InvariantCultureIgnoreCase)
+            var friendlyTypeName = "IDispatch".Equals(declaration.AsTypeName, System.StringComparison.InvariantCultureIgnoreCase)
                 ? "Object"
-                : declaration.AsTypeName;
+                : declaration.AsTypeName ?? string.Empty;
 
             var typeName = declaration.IsArray
                 ? $"{friendlyTypeName}()"

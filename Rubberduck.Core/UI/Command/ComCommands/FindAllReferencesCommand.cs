@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IVBE _vbe;
-        private readonly FindAllReferencesService _finder;
+        private readonly FindAllReferencesAction _service;
 
         public FindAllReferencesCommand(
             IParserStatusProvider parserStatusProvider,
@@ -26,7 +26,7 @@ namespace Rubberduck.UI.Command.ComCommands
             ISelectedDeclarationProvider selectedDeclarationProvider,
             IVBE vbe, 
             ISearchResultsWindowViewModel viewModel, 
-            FindAllReferencesService finder, 
+            FindAllReferencesAction finder, 
             IVbeEvents vbeEvents)
             : base(vbeEvents)
         {
@@ -34,7 +34,7 @@ namespace Rubberduck.UI.Command.ComCommands
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _vbe = vbe;
-            _finder = finder;
+            _service = finder;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
@@ -77,7 +77,7 @@ namespace Rubberduck.UI.Command.ComCommands
                 return;
             }
 
-            _finder.FindAllReferences(declaration);
+            _service.FindAllReferences(declaration);
         }
 
         private Declaration FindTarget(object parameter)

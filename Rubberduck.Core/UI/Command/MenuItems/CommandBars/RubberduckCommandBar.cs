@@ -64,7 +64,10 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 caption = e.FallbackCaption;
             }
 
-            var refCount = e.Declaration?.References.Count() ?? 0;
+            var refCount = (e.Declaration?.References.Count() ?? 0)
+                + ((e.Declaration is ParameterDeclaration parameter)
+                    ? parameter.ArgumentReferences.Count()
+                    : 0);
             var description = e.Declaration?.DescriptionString ?? string.Empty;
             //& renders the next character as if it was an accelerator.
             SetContextSelectionCaption(caption?.Replace("&", "&&"), refCount, description);
