@@ -19,10 +19,9 @@ namespace Rubberduck.UI.FindSymbol
             DeclarationType.Project
         };
 
-        public FindSymbolViewModel(IEnumerable<Declaration> declarations, DeclarationIconCache cache)
+        public FindSymbolViewModel(IEnumerable<Declaration> declarations)
         {
             _declarations = declarations.Where(declaration => !ExcludedTypes.Contains(declaration.DeclarationType)).ToList();
-            _cache = cache;
             
             Search(string.Empty);
         }
@@ -50,7 +49,6 @@ namespace Rubberduck.UI.FindSymbol
         }
 
         private readonly IEnumerable<Declaration> _declarations;
-        private readonly DeclarationIconCache _cache;
 
         private void Search(string value)
         {
@@ -70,8 +68,8 @@ namespace Rubberduck.UI.FindSymbol
             var results = _declarations
                 .Where(declaration => string.IsNullOrEmpty(value) || declaration.IdentifierName.ToLowerInvariant().Contains(lower))
                 .OrderBy(declaration => declaration.IdentifierName)
-                .Take(80)
-                .Select(declaration => new SearchResult(declaration, _cache[declaration]));
+                .Take(30)
+                .Select(declaration => new SearchResult(declaration));
 
             return results;
         }
@@ -85,6 +83,8 @@ namespace Rubberduck.UI.FindSymbol
                 if (_searchString != value)
                 {
                     _searchString = value;
+                    OnPropertyChanged();
+
                     Search(value);
                 }
             }
@@ -101,10 +101,6 @@ namespace Rubberduck.UI.FindSymbol
                     _selectedItem = value;
                     _searchString = value?.IdentifierName;
                     OnPropertyChanged();
-                }
-                if (_selectedItem != null)
-                {
-                    Execute();
                 }
             }
         }

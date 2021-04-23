@@ -9,10 +9,9 @@ namespace Rubberduck.UI.FindSymbol
 {
     public class SearchResult
     {
-        public SearchResult(Declaration declaration, BitmapImage icon)
+        public SearchResult(Declaration declaration)
         {
             Declaration = declaration;
-            Icon = icon;
         }
 
         public Declaration Declaration { get; }
@@ -20,7 +19,6 @@ namespace Rubberduck.UI.FindSymbol
         public string IdentifierName => Declaration.IdentifierName;
         public string Location => Declaration.Scope;
 
-        public ImageSource Icon { get; }
     }
 
     public class SearchBoxMultiBindingConverter : IMultiValueConverter

@@ -11,22 +11,16 @@ using Rubberduck.Resources.CodeExplorer;
 
 namespace Rubberduck.UI.Converters
 {
-    public class CodeExplorerNodeToIconConverter : ImageSourceConverter, IMultiValueConverter
+    public class DeclarationToIconConverter : ImageSourceConverter
     {
+        private static readonly ImageSource NullIcon = ToImageSource(CodeExplorerUI.status_offline);
         private static readonly ImageSource ExceptionIcon = ToImageSource(CodeExplorerUI.exclamation);
-        private static readonly ImageSource ProjectIcon = ToImageSource(CodeExplorerUI.ObjectLibrary);
         private static readonly ImageSource InterfaceIcon = ToImageSource(CodeExplorerUI.ObjectInterface);
         private static readonly ImageSource PredeclaredIcon = ToImageSource(CodeExplorerUI.ObjectClassPredeclared);
-        private static readonly ImageSource NullIcon = ToImageSource(CodeExplorerUI.status_offline);
         private static readonly ImageSource TestMethodIcon = ToImageSource(CodeExplorerUI.ObjectTestMethod);
 
-        private static readonly ImageSource OpenFolderIcon = ToImageSource(CodeExplorerUI.FolderOpen);
-        private static readonly ImageSource ClosedFolderIcon = ToImageSource(CodeExplorerUI.FolderClosed);
-
-        private static readonly ImageSource ReferenceFolderIcon = ToImageSource(CodeExplorerUI.ObjectAssembly);
-        private static readonly ImageSource ReferenceIcon = ToImageSource(CodeExplorerUI.Reference);
-        private static readonly ImageSource LockedReferenceIcon = ToImageSource(CodeExplorerUI.LockedReference);
-        private static readonly ImageSource BrokenReferenceIcon = ToImageSource(CodeExplorerUI.BrokenReference);
+        protected ImageSource NullIconSource => NullIcon;
+        protected ImageSource ExceptionIconSource => ExceptionIcon;
 
         private static readonly IDictionary<DeclarationType, ImageSource> DeclarationIcons = new Dictionary<DeclarationType, ImageSource>
         {
@@ -57,14 +51,85 @@ namespace Rubberduck.UI.Converters
             { DeclarationType.PropertySet, ToImageSource(CodeExplorerUI.ObjectPropertySet)},
             { DeclarationType.UserDefinedType, ToImageSource(CodeExplorerUI.ObjectValueType)},
             { DeclarationType.UserDefinedTypeMember, ToImageSource(CodeExplorerUI.ObjectField)},
-            { DeclarationType.Variable, ToImageSource(CodeExplorerUI.ObjectField)}
+            { DeclarationType.Variable, ToImageSource(CodeExplorerUI.ObjectField)},
+            { DeclarationType.Parameter, ToImageSource(CodeExplorerUI.ObjectField)},
         };
+
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+            {
+                return NullIcon;
+            }
+
+            if (value is Declaration declaration)
+            {
+                if (declaration is ClassModuleDeclaration classModule)
+                {
+                    if (classModule.QualifiedModuleName.ComponentType == VBEditor.SafeComWrappers.ComponentType.UserForm)
+                    {
+                        // a form has a predeclared ID, but we want it to have a UserForm icon:
+                        return DeclarationIcons[DeclarationType.UserForm];
+                    }
+                    else
+                    {
+                        if (classModule.IsInterface || classModule.Annotations.Any(annotation => annotation.Annotation is InterfaceAnnotation))
+                        {
+                            return InterfaceIcon;
+                        }
+                        if (classModule.HasPredeclaredId)
+                        {
+                            return PredeclaredIcon;
+                        }
+                        return DeclarationIcons.ContainsKey(classModule.DeclarationType)
+                            ? DeclarationIcons[classModule.DeclarationType]
+                            : NullIcon;
+
+                    }
+                }
+                else
+                {
+                    if (DeclarationIcons.ContainsKey(declaration.DeclarationType))
+                    {
+                        if (declaration.Annotations.Any(a => a.Annotation is TestMethodAnnotation))
+                        {
+                            return TestMethodIcon;
+                        }
+                        else
+                        {
+                            return DeclarationIcons[declaration.DeclarationType];
+                        }
+                    }
+                    return NullIcon;
+                }
+            }
+            else
+            {
+                return null;
+                //throw new InvalidCastException($"Expected 'Declaration' value, but the type was '{value.GetType().Name}'");
+            }
+        }
+    }
+
+    public class CodeExplorerNodeToIconConverter : DeclarationToIconConverter, IMultiValueConverter
+    {
+        private static readonly ImageSource ProjectIcon = ToImageSource(CodeExplorerUI.ObjectLibrary);
+
+        private static readonly ImageSource OpenFolderIcon = ToImageSource(CodeExplorerUI.FolderOpen);
+        private static readonly ImageSource ClosedFolderIcon = ToImageSource(CodeExplorerUI.FolderClosed);
+
+        private static readonly ImageSource ReferenceFolderIcon = ToImageSource(CodeExplorerUI.ObjectAssembly);
+        private static readonly ImageSource ReferenceIcon = ToImageSource(CodeExplorerUI.Reference);
+
+        private static readonly ImageSource LockedReferenceIcon = ToImageSource(CodeExplorerUI.LockedReference);
+        private static readonly ImageSource BrokenReferenceIcon = ToImageSource(CodeExplorerUI.BrokenReference);
+
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if ((value as ICodeExplorerNode)?.Declaration is null)
             {
-                return NullIcon;
+                return NullIconSource;
             }
 
             switch (value)
@@ -82,34 +147,13 @@ namespace Rubberduck.UI.Converters
                 case CodeExplorerCustomFolderViewModel folder:
                     return folder.IsExpanded ? OpenFolderIcon : ClosedFolderIcon;
                 case CodeExplorerComponentViewModel component:
-                    if (component.IsPredeclared)
-                    {
-                        return PredeclaredIcon;
-                    }
-
-                    if (component.Declaration is null)
-                    {
-                        return ExceptionIcon;
-                    }
-
-                    if (component.Declaration is ClassModuleDeclaration classModule && 
-                        (classModule.IsInterface || classModule.Annotations.Any(annotation => annotation.Annotation is InterfaceAnnotation)))
-                    {
-                        return InterfaceIcon;
-                    }
-
-                    var isUserForm = component.Declaration.QualifiedModuleName.ComponentType == VBEditor.SafeComWrappers.ComponentType.UserForm; 
-                    return DeclarationIcons.ContainsKey(component.Declaration.DeclarationType)
-                        ? DeclarationIcons[isUserForm ? DeclarationType.UserForm : component.Declaration.DeclarationType]
-                        : ExceptionIcon;
+                    return base.Convert(component.Declaration, targetType, parameter, culture);
                 default:
-                    return value is ICodeExplorerNode node &&
-                           node.Declaration != null &&
-                           DeclarationIcons.ContainsKey(node.Declaration.DeclarationType)
-                        ? node.Declaration.Annotations.Any(a => a.Annotation is TestMethodAnnotation)
-                            ? TestMethodIcon
-                            : DeclarationIcons[node.Declaration.DeclarationType]
-                        : ExceptionIcon;
+                    if (value is ICodeExplorerNode node)
+                    {
+                        return base.Convert(node.Declaration, targetType, parameter, culture);
+                    }
+                    return ExceptionIconSource;
             }
         }
 

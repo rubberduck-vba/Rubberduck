@@ -45,7 +45,9 @@ namespace Rubberduck.UI.Converters
 
                     var highlightRun = new Run(escapedXml.Substring(highlight.StartColumn, highlight.EndColumn - highlight.StartColumn + 1))
                     {
-                        Background = Brushes.Yellow
+                        Background = Brushes.Yellow,
+                        Foreground = Brushes.Black,
+                        FontWeight = FontWeights.Bold
                     };
                     textBlock.Inlines.Add(highlightRun);
 

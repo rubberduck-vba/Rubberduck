@@ -20,23 +20,13 @@ namespace Rubberduck.UI.FindSymbol
 
         private void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            if (ViewModel == null)
-            {
-                return;
-            }
-            
-            ViewModel.Execute();
+            ViewModel?.Execute();
             e.Handled = true;
         }
 
         private void CommandBinding_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (ViewModel == null)
-            {
-                return;
-            }
-
-            e.CanExecute = ViewModel.CanExecute();
+            e.CanExecute = ViewModel?.CanExecute() ?? false;
             e.Handled = true;
         }
 
@@ -44,5 +34,8 @@ namespace Rubberduck.UI.FindSymbol
         {
             searchComboBox.Focus();
         }
+
+        // doing this navigates on arrow-up/down, which isn't expected 
+        //private void searchComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) => ViewModel?.Execute();
     }
 }
