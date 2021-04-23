@@ -105,7 +105,7 @@ Source: "{#IncludesDir}Rubberduck.RegisterAddIn.bat"; DestDir: "{app}"; Flags: i
 Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: ignoreversion replacesameversion;
 
 ; 'LegacyWorkload' initial configuration (disables autocompletion and inspections that could spawn too many results in legacy code)
-Source: "{#SourcePath}\WorkloadConfigs\Legacy\rubberduck.config"; DestDir: "{userappdata}\{#AppName}"; Check: UseLegacyWorkloadConfig;
+Source: "{#SourcePath}\WorkloadConfigs\Legacy\rubberduck.config"; DestDir: "{userappdata}\{#AppName}"; Flags: ignoreversion replacesameversion; Check: CheckUseLegacyWorkloadConfig;
 
 [Registry]
 ; DO NOT attempt to register VBE Add-In with this section. It doesn't work
@@ -535,6 +535,14 @@ begin
     result := IsElevated()
   else
     result := true;
+end;
+
+function CheckUseLegacyWorkloadConfig():boolean;
+begin
+  if UseLegacyWorkloadConfig then
+    result := true;
+  else
+    result := false;
 end;
 
 ///<remarks>
