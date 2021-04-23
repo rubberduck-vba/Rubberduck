@@ -20,6 +20,11 @@ namespace Rubberduck.UI.FindSymbol
 
         private void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            if (ViewModel == null)
+            {
+                return;
+            }
+            
             ViewModel.Execute();
             e.Handled = true;
         }
@@ -33,15 +38,6 @@ namespace Rubberduck.UI.FindSymbol
 
             e.CanExecute = ViewModel.CanExecute();
             e.Handled = true;
-        }
-
-        private void UIElement_OnPreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter && ViewModel.CanExecute())
-            {
-                ViewModel.Execute();
-                e.Handled = true;
-            }
         }
 
         private void FindSymbolControl_Loaded(object sender, System.Windows.RoutedEventArgs e)

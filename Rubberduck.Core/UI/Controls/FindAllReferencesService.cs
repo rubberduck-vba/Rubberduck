@@ -121,12 +121,14 @@ namespace Rubberduck.UI.Controls
             }
         }
 
-        private string GetModuleLine(QualifiedModuleName module, int line)
+        private string GetTrimmedModuleLine(QualifiedModuleName module, int line, out int indent)
         {
             var component = _state.ProjectsProvider.Component(module);
             using (var codeModule = component.CodeModule)
             {
-                return codeModule.GetLines(line, 1).Trim();
+                var code = codeModule.GetLines(line, 1);
+                indent = code.TakeWhile(c => c.Equals(' ')).Count();
+                return code.Trim();
             }
         }
 
@@ -135,7 +137,8 @@ namespace Rubberduck.UI.Controls
             var results = usages.Select(usage =>
                 new SearchResultItem(usage.ParentNonScoping,
                     new NavigateCodeEventArgs(usage.QualifiedModuleName, usage.Selection),
-                    GetModuleLine(usage.QualifiedModuleName, usage.Selection.StartLine)));
+                    GetTrimmedModuleLine(usage.QualifiedModuleName, usage.Selection.StartLine, out var indent),
+                    new Selection(1, reference.Selection.StartColumn - indent, 1, reference.Selection.EndColumn - indent - 1).ToZeroBased()));
 
             var viewModel = new SearchResultsViewModel(_navigateCommand,
                 string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, reference.IdentifierName), project, results);
@@ -152,7 +155,8 @@ namespace Rubberduck.UI.Controls
                     new SearchResultItem(
                         reference.ParentNonScoping,
                         new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection),
-                        GetModuleLine(reference.QualifiedModuleName, reference.Selection.StartLine)));
+                        GetTrimmedModuleLine(reference.QualifiedModuleName, reference.Selection.StartLine, out var indent),
+                        new Selection(1, reference.Selection.StartColumn - indent, 1, reference.Selection.EndColumn - indent - 1).ToZeroBased()));
 
             var accessor = declaration.DeclarationType.HasFlag(DeclarationType.PropertyGet) ? "(get)"
                 : declaration.DeclarationType.HasFlag(DeclarationType.PropertyLet) ? "(let)"

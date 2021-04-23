@@ -16,6 +16,8 @@
 
     <UserControl.Resources>
         <BitmapImage x:Key="ArrowImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow.png" />
+        <local:SearchBoxMultiBindingConverter x:Key="SearchBoxTextConverter" />
+        <KeyBinding x:Key="EnterAndGo" Key="Return" Command="{Binding GoCommand}" />
     </UserControl.Resources>
     
     <Grid>
@@ -28,26 +30,37 @@
         <ComboBox x:Name="searchComboBox"
                   IsEditable="True"
                   ItemsSource="{Binding MatchResults}"
-                  SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   IsTextSearchCaseSensitive="False"
                   IsTextSearchEnabled="True"
-                  Text="{Binding SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   TextSearch.TextPath="IdentifierName"
-                  PreviewKeyDown="UIElement_OnPreviewKeyDown">
-
+                  VirtualizingPanel.IsVirtualizing="True">
+            <ComboBox.Text>
+                <MultiBinding Converter="{StaticResource SearchBoxTextConverter}">
+                    <Binding Path="SearchString" Mode="OneWayToSource" UpdateSourceTrigger="PropertyChanged" />
+                    <Binding Path="SelectedItem.IdentifierName" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" />
+                </MultiBinding>
+            </ComboBox.Text>
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="local:SearchResult">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Height="16" Width="16" Margin="2,0,2,0" Source="{Binding Icon}" />
-                        <TextBlock Margin="2,0,2,0" Text="{Binding IdentifierName}" FontWeight="Bold" MinWidth="160" VerticalAlignment="Center" />
-                        <TextBlock Margin="2,0,2,0" Text="{Binding Location}" VerticalAlignment="Center" />
-                    </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20" />
+                        </Grid.RowDefinitions>
+                        <Image Grid.Column="0" Height="16" Width="16" Margin="2" Source="{Binding Icon, Mode=OneTime}" />
+                        <TextBlock Grid.Column="1" Text="{Binding IdentifierName}" FontWeight="Bold" MinWidth="160" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="2" Text="{Binding Location}" VerticalAlignment="Center" />
+                    </Grid>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
         
         <Button Grid.Column="1" Command="local:FindSymbolControl.GoCommand">
-            <Image Height="16" Source="{StaticResource ArrowImage}" />
+            <Image Height="16" Width="16" Source="{StaticResource ArrowImage}" />
         </Button>
         
     </Grid>

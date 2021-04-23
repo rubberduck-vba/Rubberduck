@@ -21,7 +21,7 @@ namespace Rubberduck.UI.FindSymbol
 
         public FindSymbolViewModel(IEnumerable<Declaration> declarations, DeclarationIconCache cache)
         {
-            _declarations = declarations;
+            _declarations = declarations.Where(declaration => !ExcludedTypes.Contains(declaration.DeclarationType)).ToList();
             _cache = cache;
             
             Search(string.Empty);
@@ -31,7 +31,7 @@ namespace Rubberduck.UI.FindSymbol
 
         public bool CanExecute()
         {
-            return _selectedItem != null;
+            return _searchString?.Equals(_selectedItem?.IdentifierName, StringComparison.InvariantCultureIgnoreCase) ?? false;
         }
 
         public void Execute()
@@ -61,7 +61,6 @@ namespace Rubberduck.UI.FindSymbol
             }
 
             var results = GetSearchResultCollectionOfString(value);
-
             MatchResults = new ObservableCollection<SearchResult>(results);
         }
 
@@ -69,9 +68,9 @@ namespace Rubberduck.UI.FindSymbol
         {
             var lower = value.ToLowerInvariant();
             var results = _declarations
-                .Where(declaration => !ExcludedTypes.Contains(declaration.DeclarationType)
-                                      && (string.IsNullOrEmpty(value) || declaration.IdentifierName.ToLowerInvariant().Contains(lower)))
-                .OrderBy(declaration => declaration.IdentifierName.ToLowerInvariant())
+                .Where(declaration => string.IsNullOrEmpty(value) || declaration.IdentifierName.ToLowerInvariant().Contains(lower))
+                .OrderBy(declaration => declaration.IdentifierName)
+                .Take(80)
                 .Select(declaration => new SearchResult(declaration, _cache[declaration]));
 
             return results;
@@ -83,9 +82,6 @@ namespace Rubberduck.UI.FindSymbol
             get => _searchString;
             set
             {
-                SearchResult firstResult = GetSearchResultCollectionOfString(value).FirstOrDefault();
-                SelectedItem = firstResult;
-
                 if (_searchString != value)
                 {
                     _searchString = value;
@@ -103,7 +99,12 @@ namespace Rubberduck.UI.FindSymbol
                 if (_selectedItem != value)
                 {
                     _selectedItem = value;
+                    _searchString = value?.IdentifierName;
                     OnPropertyChanged();
+                }
+                if (_selectedItem != null)
+                {
+                    Execute();
                 }
             }
         }
@@ -114,24 +115,7 @@ namespace Rubberduck.UI.FindSymbol
             get => _matchResults;
             set
             {
-                var oldSelectedItem = SelectedItem;
-
                 _matchResults = value;
-
-                // save the selection when the user clicks on one of the drop-down items and the search results are updated
-                if (oldSelectedItem != null)
-                {
-                    var newSelectedItem = value.FirstOrDefault(s => s.Declaration == oldSelectedItem.Declaration);
-
-                    if (newSelectedItem != null)
-                    {
-                        _selectedItem = newSelectedItem;
-                        _searchString = newSelectedItem.IdentifierName;
-                        
-                        OnPropertyChanged("SelectedItem");
-                    }
-                }
-
                 OnPropertyChanged();
             }
         }
