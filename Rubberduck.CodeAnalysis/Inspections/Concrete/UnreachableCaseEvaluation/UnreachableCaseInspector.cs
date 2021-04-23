@@ -98,23 +98,26 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
 
         private UnreachableCaseInspection.CaseInspectionResultType? InvalidRangeExpressionsType(ICollection<IRangeClauseExpression> rangeClauseExpressions)
         {
-            if (rangeClauseExpressions.Any(expr => expr.IsMismatch))
+            if (rangeClauseExpressions.Any(expr => expr?.IsMismatch ?? false))
             {
                 return UnreachableCaseInspection.CaseInspectionResultType.MismatchType;
             }
 
-            if (rangeClauseExpressions.Any(expr => expr.IsOverflow))
+            if (rangeClauseExpressions.Any(expr => expr?.IsOverflow ?? false))
             {
                 return UnreachableCaseInspection.CaseInspectionResultType.Overflow;
             }
 
-            if (rangeClauseExpressions.All(expr => expr.IsInherentlyUnreachable))
+            if (rangeClauseExpressions.All(expr => expr?.IsInherentlyUnreachable ?? false))
             {
                 return UnreachableCaseInspection.CaseInspectionResultType.InherentlyUnreachable;
             }
 
             if (rangeClauseExpressions.All(expr =>
-                expr.IsUnreachable || expr.IsMismatch || expr.IsOverflow || expr.IsInherentlyUnreachable))
+                (expr?.IsUnreachable ?? false) 
+                || (expr?.IsMismatch ?? false)
+                || (expr?.IsOverflow ?? false)
+                || (expr?.IsInherentlyUnreachable ?? false)))
             {
                 return UnreachableCaseInspection.CaseInspectionResultType.Unreachable;
             }
