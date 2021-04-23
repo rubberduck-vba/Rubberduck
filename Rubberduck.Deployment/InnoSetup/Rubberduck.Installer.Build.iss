@@ -104,6 +104,9 @@ Source: "{#GraphicsDir}Ducky.ico"; DestDir: "{group}"; Attribs: hidden system; F
 Source: "{#IncludesDir}Rubberduck.RegisterAddIn.bat"; DestDir: "{app}"; Flags: ignoreversion replacesameversion;
 Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: ignoreversion replacesameversion;
 
+; 'LegacyWorkload' initial configuration (disables autocompletion and inspections that could spawn too many results in legacy code)
+Source: "\WorkloadConfigs\Legacy\rubberduck.config"; DestDir: "{userappdata}\{#AppName}"; Check: UseLegacyWorkloadConfig;
+
 [Registry]
 ; DO NOT attempt to register VBE Add-In with this section. It doesn't work
 ; Use [Code] section (RegisterAddIn procedure) to register the entries instead.
@@ -190,6 +193,13 @@ var
   RegisterAddInOptionPage: TInputOptionWizardPage;
 
   ///<remarks>
+  ///Custom page to indicate whether the installer should copy the 'legacy workload'
+  ///initial configuration file to disable certain features and inspections.
+  ///<see cref="RegisterAddIn" />
+  ///</remakrs>
+  WorkloadOptionPage: TInputOptionWizardPage;
+
+  ///<remarks>
   ///Set by the <see cref="RegisterAddInOptionPage" />; should be
   ///read-only normally. When set to true, it is used to check if
   ///elevation is needed for the installer.
@@ -214,6 +224,11 @@ var
   ///function and should be read-only in all other contexts.
   ///</remarks>
   PerUserOnly : Boolean;
+
+  ///<remarks>
+  ///Indicates that the installer should copy the 'legacy workload' initial configuration file.
+  ///</remarks>
+  UseLegacyWorkloadConfig : Boolean;
 
 // External functions section
 
@@ -547,10 +562,9 @@ begin
 end;
 
 ///<remarks>
-///Called after successfully installing, including via the elevated installer
-///to register the VBE addin.
+///Called after successfully installing, including via the elevated installer to register the VBE addin.
 ///</remarks>
-procedure RegisterAddin();
+procedure RegisterAddIn();
 begin
     if IsWin64() then
     begin
@@ -566,7 +580,7 @@ begin
 end;
 
 ///<remarks>
-///Delete registry keys created by <see cref="RegisterAddin" />
+///Delete registry keys created by <see cref="RegisterAddIn" />
 ///</remarks>
 procedure UnregisterAddin();
 begin
@@ -837,10 +851,9 @@ end;
 ///The second event of installer allow us to customize the wizard by
 ///assessing whether we were launched in elevated context from an
 ///non-elevated installer; <see cref="HasElevateSwitch" />. We then
-///set up the <see cref="InstallForWhoOptionPage" /> and
-///<see cref="RegisterAddInOptionPage" /> pages. In both cases, their
-///behavior differs depending on whether we are elevated, and need to be
-///configured accordingly.
+///set up the custom installer pages. In the case of <see cref="InstallForWhoOptionPage" /> and
+///<see cref="RegisterAddInOptionPage" />, their behavior differs depending on whether we are elevated, 
+///and need to be configured accordingly.
 ///</remarks>
 procedure InitializeWizard();
 begin
@@ -888,6 +901,20 @@ begin
 
   RegisterAddInOptionPage.Add(ExpandConstant('{cm:RegisterAddInButtonCaption}'));
   RegisterAddInOptionPage.Values[0] := true;
+
+  WorkloadOptionPage :=
+    CreateInputOptionPage(
+        wpInstalling,
+        ExpandConstant('{cm:UseLegacyWorkloadCaption}'),
+        ExpandConstant('{cm:UseLegacyWorkloadMessage}'),
+        ExpandConstant('{cm:UseLegacyWorkloadDescription}'),
+        false, false);
+
+  WorkloadOptionPage.Add(ExpandConstant('{cm:UseLegacyWorkloadButtonCaption}'))    
+  WorkloadOptionPage.Values[0] := false;
+
+
+
 end;
 
 ///<remarks>
@@ -983,6 +1010,7 @@ begin
     Log(Format('AppSuffix: %s', [GetAppSuffix()]));
     Log(Format('ShouldCreateUninstaller: %d', [ShouldCreateUninstaller()]));
     Log(Format('ShouldInstallAllUsers variable: %d', [ShouldInstallAllUsers]));
+    Log(Format('UseLegacyWorkloadConfig variable: %d', [UseLegacyWorkloadConfig]));
 
     if not IsElevated() and ShouldInstallAllUsers then
     begin
@@ -1066,7 +1094,16 @@ begin
     begin
       Log('Addin registration was declined because the user unchecked the checkbox');
     end;
+  end
+    else if CurPageID = WorkloadOptionPage.ID then
+  begin
+    Log('Legacy workload initial config was requested and will be copied to the destination folder.');
+  end
+    else
+  begin
+    Log('Skipping legacy workload config because the option was left unchecked.');
   end;
+  ;
 
   // Re-enable the button disabled at start of procedure
   Wizardform.NextButton.Enabled := True;

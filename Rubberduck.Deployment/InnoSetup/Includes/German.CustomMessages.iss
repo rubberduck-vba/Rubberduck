@@ -23,3 +23,7 @@ German.UninstallOldVersionPrompt=Es scheint eine vorige Version von Rubberduck, 
 German.UninstallOldVersionFail=Konnte vorige Version nicht deinstallieren. Versuchen Sie, diese über die Systemsteuerung zu deinstallieren und starten Sie den Installer erneut.
 German.WarnInstallPerUserOverEveryone=Es scheint eine für alle Benutzer installierte Version von Rubberduck vorzuliegen. Eine installation nur für diesen Benutzer wird Vorrang vor der originalen Installation haben. Trotzdem fortfahren?
 German.ElevationRequestFailMessage=Konnte vorige Version von Rubberduck nicht deinstallieren. Es kann sein, dass Sie diese manuell deinstallieren müssen, bevor Sie die neue Version installieren können.
+German.UseLegacyWorkloadCaption=Initial Configuration
+German.UseLegacyWorkloadMessage=Planning to use Rubberduck with a large existing project?
+German.UseLegacyWorkloadDescription=Using 'legacy workload' default initial configuration disables autocompletion features and a number of specific inspections to help performance and reduce memory pressure. Disabled features can be re-enabled any time from the Settings menu.
+German.UseLegacyWorkloadButtonCaption=Use legacy workload configuration
