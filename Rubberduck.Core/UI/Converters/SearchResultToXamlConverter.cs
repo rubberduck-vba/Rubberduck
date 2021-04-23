@@ -47,7 +47,7 @@ namespace Rubberduck.UI.Converters
                     {
                         Background = Brushes.Yellow,
                         Foreground = Brushes.Black,
-                        FontWeight = FontWeights.Bold
+                        FontWeight = FontWeights.SemiBold
                     };
                     textBlock.Inlines.Add(highlightRun);
 
