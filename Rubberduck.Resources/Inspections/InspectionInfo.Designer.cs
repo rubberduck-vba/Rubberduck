@@ -61,7 +61,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An annotation was specified in a module type that isn&apos;t compatible with that annotation. Some annotations can only be used in a specific module type; others cannot be used in certain module types..
+        ///   Looks up a localized string similar to An annotation was specified in a module of a type that isn&apos;t compatible with that annotation. Some annotations can only be used in a module of a specific type; others cannot be used in modules of certain types..
         /// </summary>
         public static string AnnotationInIncompatibleComponentTypeInspection {
             get {
@@ -358,7 +358,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit references to workbook members inside a workbook document module can be mistaken for implicit references to the active workbook, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved. If the intent was to refer to the active workbook, qualify with &apos;ActiveWorkbook&apos; to prevent a bug..
+        ///   Looks up a localized string similar to Implicit references to workbook members inside a workbook document module can be mistaken for implicit references to the active workbook, which is the behavior in all other modules. By explicitly qualifying these member calls with &apos;Me&apos;, the ambiguity can be resolved. If the intent was to refer to the active workbook, qualify with &apos;ActiveWorkbook&apos; to prevent a bug..
         /// </summary>
         public static string ImplicitContainingWorkbookReferenceInspection {
             get {
@@ -367,7 +367,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit references to worksheet members inside a worksheet document module can be mistaken for implicit references to the active worksheet, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved. If the intent is to refer to the active worksheet, qualify with &apos;ActiveSheet&apos; to prevent a bug..
+        ///   Looks up a localized string similar to Implicit references to worksheet members inside a worksheet document module can be mistaken for implicit references to the active worksheet, which is the behavior in all other modules. By explicitly qualifying these member calls with &apos;Me&apos;, the ambiguity can be resolved. If the intent is to refer to the active worksheet, qualify with &apos;ActiveSheet&apos; to prevent a bug..
         /// </summary>
         public static string ImplicitContainingWorksheetReferenceInspection {
             get {
