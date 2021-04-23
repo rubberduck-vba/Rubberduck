@@ -1,11 +1,25 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
 
 namespace Rubberduck.Resources
 {
+    /// <summary>
+    /// Identifies a static <see cref="Tokens"/> string that isn't a legal identifier name for user code, e.g. keyword or reserved identifier.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field)]
+    public class ForbiddenAttribute : Attribute { }
+
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public static class Tokens
     {
+        public static IEnumerable<string> IllegalIdentifierNames =>
+            typeof(Tokens).GetFields().Where(item => item.GetCustomAttributes<ForbiddenAttribute>().Any())
+                .Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
+
         [Forbidden]
         public static readonly string Abs = "Abs";
         [Forbidden]
@@ -373,12 +387,5 @@ namespace Rubberduck.Resources
         [Forbidden]
         public static readonly string XOr = "Xor";
         public static readonly string Year = "Year";
-    }
-
-    /// <summary>
-    /// Identifies a static <see cref="Tokens"/> string that isn't a legal identifier name for user code, e.g. keyword or reserved identifier.
-    /// </summary>
-    public class ForbiddenAttribute : Attribute
-    {
     }
 }

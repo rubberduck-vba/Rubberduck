@@ -195,13 +195,9 @@ namespace Rubberduck.UI.Refactorings
 
         private void ValidateName()
         {
-            var tokenValues = typeof(Tokens).GetFields()
-                .Where(item => !item.GetCustomAttributes<NotReservedAttribute>().Any())
-                .Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
-
             OkButton.Enabled = MethodName != OldMethodName
                                && char.IsLetter(MethodName.FirstOrDefault())
-                               && !tokenValues.Contains(MethodName, StringComparer.InvariantCultureIgnoreCase)
+                               && !Tokens.IllegalIdentifierNames.Contains(MethodName, StringComparer.InvariantCultureIgnoreCase)
                                && !MethodName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
 
             InvalidNameValidationIcon.Visible = !OkButton.Enabled;
