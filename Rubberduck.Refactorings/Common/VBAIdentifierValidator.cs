@@ -5,13 +5,19 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
+using Tokens = Rubberduck.Resources.Tokens;
 
 namespace Rubberduck.Refactorings.Common
 {
     public static class VBAIdentifierValidator
     {
-        private static IEnumerable<string> ReservedIdentifiers =
-            typeof(Tokens).GetFields().Select(item => item.GetValue(null).ToString()).ToArray();
+        // NOTE: ForbiddenAttribute marks the tokens that don't compile as identifier names. Includes "bad but legal" names.
+        // TODO: Compare with the unfiltered tokens if a client needs to tell "bad but legal" from "bad and illegal" names.
+        private static readonly IEnumerable<string> ReservedIdentifiers =
+            typeof(Tokens).GetFields()
+                .Where(item => item.GetType().GetCustomAttributes<ForbiddenAttribute>().Any())
+                .Select(item => item.GetValue(null).ToString()).ToArray();
 
         /// <summary>
         /// Predicate function determining if an identifier string's content will trigger a result for the UseMeaningfulNames inspection.

@@ -42,7 +42,13 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         public string Format(Declaration declaration, bool multipleControls)
         {
-            return declaration == null ? string.Empty : FormatDeclaration(declaration, multipleControls);
+            if (declaration == null)
+            {
+                return string.Empty;
+            }
+
+            // designer, there is no code pane selection
+            return FormatDeclaration(declaration, multipleControls);
         }
 
         private string FormatDeclaration(Declaration declaration, bool multipleControls = false)
@@ -72,18 +78,18 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 if (declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
                 {
                     // fields
-                    var withEvents = declaration.IsWithEvents ? "(WithEvents) " : string.Empty;
+                    var withEvents = declaration.IsWithEvents ? $"({Tokens.WithEvents}) " : string.Empty;
                     return $"{withEvents}{moduleName}.{declaration.IdentifierName} {typeName}";
                 }
             } 
 
             if (declaration.DeclarationType.HasFlag(DeclarationType.Member))
             {
-                var formattedDeclaration = declaration.QualifiedName.ToString();
+                var formattedDeclaration = $"{declaration.QualifiedName}";
                 if (declaration.DeclarationType == DeclarationType.Function
                     || declaration.DeclarationType == DeclarationType.PropertyGet)
                 {
-                    formattedDeclaration += typeName;
+                    formattedDeclaration += $" {typeName}";
                 }
 
                 return formattedDeclaration;
@@ -103,16 +109,16 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 case DeclarationType.Enumeration:
                 case DeclarationType.UserDefinedType:
                     return !declaration.IsUserDefined
-                        // built-in enums & UDT's don't have a module
-                        ? $"{Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.IdentifierName}"
+                        // built-in enums & UDTs don't have a module
+                        ? $"{Path.GetFileName(moduleName.ProjectPath)};{declaration.IdentifierName}"
                         : moduleName.ToString();
                 case DeclarationType.EnumerationMember:
                 case DeclarationType.UserDefinedTypeMember:
                     return declaration.IsUserDefined
                         ? $"{moduleName}.{declaration.ParentDeclaration.IdentifierName}.{declaration.IdentifierName} {typeName}"
-                        : $"{Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.ParentDeclaration.IdentifierName}.{declaration.IdentifierName} {typeName}";
+                        : $"{Path.GetFileName(moduleName.ProjectPath)};{declaration.ParentDeclaration.IdentifierName}.{declaration.IdentifierName} {typeName}";
                 case DeclarationType.ComAlias:
-                    return $"{Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.IdentifierName} (alias:{declaration.AsTypeName})";
+                    return $"{Path.GetFileName(moduleName.ProjectPath)};{declaration.IdentifierName} (alias:{declaration.AsTypeName})";
             }
 
             return string.Empty;
@@ -125,22 +131,20 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 return RubberduckUI.ContextMultipleControlsSelection;
             }
 
-            var friendlyTypeName = "IDispatch".Equals(declaration.AsTypeName, System.StringComparison.InvariantCultureIgnoreCase)
-                ? "Object"
+            var typeName = Tokens.IDispatch.Equals(declaration.AsTypeName, System.StringComparison.InvariantCultureIgnoreCase)
+                ? Tokens.Object
                 : declaration.AsTypeName ?? string.Empty;
 
-            var typeName = declaration.IsArray
-                ? $"{friendlyTypeName}()"
-                : friendlyTypeName;
+            var friendlyTypeName = declaration.IsArray ? $"{typeName}()" : typeName;
 
             switch (declaration)
             {
                 case ValuedDeclaration valued:
-                    return $"({declarationType}{(string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName)}{(string.IsNullOrEmpty(valued.Expression) ? string.Empty : $" = {valued.Expression}")})";
+                    return $"({declarationType}{(string.IsNullOrEmpty(friendlyTypeName) ? string.Empty : ":" + friendlyTypeName)}{(string.IsNullOrEmpty(valued.Expression) ? string.Empty : $" = {valued.Expression}")})";
                 case ParameterDeclaration parameter:
-                    return $"({declarationType}{(string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName)}{(string.IsNullOrEmpty(parameter.DefaultValue) ? string.Empty : $" = {parameter.DefaultValue}")})";
+                    return $"({declarationType}{(string.IsNullOrEmpty(friendlyTypeName) ? string.Empty : ":" + friendlyTypeName)}{(string.IsNullOrEmpty(parameter.DefaultValue) ? string.Empty : $" = {parameter.DefaultValue}")})";
                 default:
-                    return $"({declarationType}{(string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName)})";
+                    return $"({declarationType}{(string.IsNullOrEmpty(friendlyTypeName) ? string.Empty : ":" + friendlyTypeName)})";
             }
         }
     }
