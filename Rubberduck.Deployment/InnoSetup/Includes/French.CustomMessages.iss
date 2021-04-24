@@ -27,3 +27,4 @@ French.UseLegacyWorkloadCaption=Configuration Initiale
 French.UseLegacyWorkloadMessage=Vous planifiez utiliser Rubberduck avec un projet existant?
 French.UseLegacyWorkloadDescription=La configuration initiale 'legacy workload' désactive auto-complétion et certaines inspections spécifiques pour réduire la pression sur la mémoire et améliorer la performance. Les fonctionnalités désactivées peuvent être réactivées manuellement à tout moment.
 French.UseLegacyWorkloadButtonCaption=Utiliser la configuration initiale 'legacy workload'
+French.OverwriteWithLegacyWorkloadButtonCaption=écraser la configuration actuelle

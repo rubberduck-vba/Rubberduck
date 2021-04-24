@@ -27,3 +27,4 @@ Czech.UseLegacyWorkloadCaption=Initial Configuration
 Czech.UseLegacyWorkloadMessage=Planning to use Rubberduck with a large existing project?
 Czech.UseLegacyWorkloadDescription=Using 'legacy workload' default initial configuration disables autocompletion features and a number of specific inspections to help performance and reduce memory pressure. Disabled features can be re-enabled any time from the Settings menu.
 Czech.UseLegacyWorkloadButtonCaption=Use legacy workload configuration
+Czech.OverwriteWithLegacyWorkloadButtonCaption=Overwrite Rubberduck settings with legacy workload configuration

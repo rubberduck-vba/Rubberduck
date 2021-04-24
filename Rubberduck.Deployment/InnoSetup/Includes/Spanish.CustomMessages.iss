@@ -27,3 +27,4 @@ Spanish.UseLegacyWorkloadCaption=Initial Configuration
 Spanish.UseLegacyWorkloadMessage=Planning to use Rubberduck with a large existing project?
 Spanish.UseLegacyWorkloadDescription=Using 'legacy workload' default initial configuration disables autocompletion features and a number of specific inspections to help performance and reduce memory pressure. Disabled features can be re-enabled any time from the Settings menu.
 Spanish.UseLegacyWorkloadButtonCaption=Use legacy workload configuration
+Spanish.OverwriteWithLegacyWorkloadButtonCaption=Overwrite Rubberduck settings with legacy workload configuration

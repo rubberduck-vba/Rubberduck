@@ -918,9 +918,16 @@ begin
         ExpandConstant('{cm:UseLegacyWorkloadDescription}'),
         false, false);
 
-  WorkloadOptionPage.Add(ExpandConstant('{cm:UseLegacyWorkloadButtonCaption}'))    
+  if IsUpgradeApp() = NoneIsInstalled then
+  begin
+      WorkloadOptionPage.Add(ExpandConstant('{cm:UseLegacyWorkloadButtonCaption}'))    
+  end
+    else
+  begin
+      WorkloadOptionPage.Add(ExpandConstant('{cm:OverwriteWithLegacyWorkloadButtonCaption}'))    
+  end;
+  
   WorkloadOptionPage.Values[0] := false;
-
 
 
 end;
