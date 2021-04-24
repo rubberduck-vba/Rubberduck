@@ -475,7 +475,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Suivant</value>
   </data>
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>La méthode '{0}' implémente '{1}.{2}'. Modifier l'interface? (cette modification serait propagée à toutes les implémentations)</value>
+    <value>La méthode '{0}' implémente '{1}.{2}'. Modifier l'interface (cette modification serait propagée à toutes les implémentations)?</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
   <data name="OK_AllCaps" xml:space="preserve">
@@ -1346,13 +1346,13 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
     <value>La sélection ne semble pas contenir de déclaration utilisable.</value>
   </data>
   <data name="RefactoringFailure_TargetNull" xml:space="preserve">
-    <value>La déclaration ciblée est 'null', ...poof?</value>
+    <value>La déclaration ciblée est 'null'.</value>
   </data>
   <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
-    <value>Le module ciblé '{0}' n'est plus trouvable!</value>
+    <value>Le module ciblé '{0}' n'est plus trouvable.</value>
   </data>
   <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
-    <value>La cible '{0}' est une procédure gestionnaire d'événements, impossible de renommer cette pocédure sans briser quelque chose!</value>
+    <value>La cible '{0}' est une procédure gestionnaire d'événements, impossible de renommer cette pocédure sans briser quelque chose.</value>
   </data>
   <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
     <value>La cible n'est pas définie par l'utilisateur.</value>
@@ -1624,5 +1624,89 @@ Procéder?</value>
   </data>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Renommer le dossier</value>
+  </data>
+  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
+    <value>Attribut</value>
+  </data>
+  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
+    <value>Valeur Booléenne</value>
+  </data>
+  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
+    <value>Nom d'inspection</value>
+  </data>
+  <data name="AnnotationArgumentType_Number" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="AnnotationArgumentType_Text" xml:space="preserve">
+    <value>Texte</value>
+  </data>
+  <data name="ComponentType_StandardModule" xml:space="preserve">
+    <value>Module standard</value>
+  </data>
+  <data name="ComponentType_ClassModule" xml:space="preserve">
+    <value>Module de classe</value>
+  </data>
+  <data name="ComponentType_ComComponent" xml:space="preserve">
+    <value>Componsant COM</value>
+  </data>
+  <data name="ComponentType_Document" xml:space="preserve">
+    <value>Module document</value>
+  </data>
+  <data name="ComponentType_DocObject" xml:space="preserve">
+    <value>Objet document</value>
+  </data>
+  <data name="ComponentType_MDIForm" xml:space="preserve">
+    <value>Formulaire MDI</value>
+  </data>
+  <data name="ComponentType_PropPage" xml:space="preserve">
+    <value>Page de propriétés</value>
+  </data>
+  <data name="ComponentType_RelatedDocument" xml:space="preserve">
+    <value>Document associé</value>
+  </data>
+  <data name="ComponentType_ResFile" xml:space="preserve">
+    <value>Fichier de resources</value>
+  </data>
+  <data name="ComponentType_Undefined" xml:space="preserve">
+    <value>Non défini</value>
+  </data>
+  <data name="ComponentType_UserControl" xml:space="preserve">
+    <value>Contrôle utilisateur</value>
+  </data>
+  <data name="ComponentType_UserForm" xml:space="preserve">
+    <value>Formulaire</value>
+  </data>
+  <data name="ComponentType_VBForm" xml:space="preserve">
+    <value>Formulaire VB</value>
+  </data>
+  <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
+    <value>Concepteur ActiveX</value>
+  </data>
+  <data name="DeclarationType_Document" xml:space="preserve">
+    <value>le document</value>
+  </data>
+  <data name="EncapsulateField_PrivateUDTPropertyText" xml:space="preserve">
+    <value>Crée une propriété pour chaque membre du type UDT</value>
+  </data>
+  <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
+    <value>Options d'implémentation:</value>
+  </data>
+  <data name="ExtractInterface_OptionAddEmptyImplementation" xml:space="preserve">
+    <value>Ajouter implémentation vide</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToInterfaceMembers" xml:space="preserve">
+    <value>Les membres appellent l'implémentation</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
+    <value>L'implémentation appelle les membres</value>
+  </data>
+  <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
+    <value>Remplacer les membres par l'implémentation</value>
+  </data>
+  <data name="IndenterSettings_GroupRelatedProperties" xml:space="preserve">
+    <value>Supprime l'espacement vertical entre les membres d'une même propriété</value>
+  </data>
+  <data name="TestOutcome_Ignored" xml:space="preserve">
+    <value>Ignoré</value>
   </data>
 </root>

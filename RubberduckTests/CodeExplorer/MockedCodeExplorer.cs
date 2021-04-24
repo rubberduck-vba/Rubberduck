@@ -119,11 +119,11 @@ namespace RubberduckTests.CodeExplorer
                 var item = componentTypes[index];
                 if (item == ComponentType.UserForm)
                 {
-                    project.MockUserFormBuilder($"{item.ToString()}{index}", code is null ? string.Empty : code[index]).AddFormToProjectBuilder();
+                    project.MockUserFormBuilder($"{item}{index}", code is null ? string.Empty : code[index]).AddFormToProjectBuilder();
                 }
                 else
                 {
-                    project.AddComponent($"{item.ToString()}{index}", item, code is null ? string.Empty : code[index]);
+                    project.AddComponent($"{item}{index}", item, code is null ? string.Empty : code[index]);
                 }
             }
 

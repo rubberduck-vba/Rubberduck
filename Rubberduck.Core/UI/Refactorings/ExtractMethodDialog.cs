@@ -17,6 +17,7 @@ namespace Rubberduck.UI.Refactorings
     {
         public ExtractMethodDialog()
         {
+            _returnValue = null;
             _parameters = new BindingList<ExtractedParameter>();
 
             InitializeComponent();
@@ -154,7 +155,7 @@ namespace Rubberduck.UI.Refactorings
         private BindingList<ExtractedParameter> _parameters;
         public IEnumerable<ExtractedParameter> Parameters
         {
-            get { return _parameters.Where(p => p.Name != _returnValue.Name); }
+            get { return _parameters.Where(p => p.Name != _returnValue?.Name); }
             set
             {
                 _parameters = new BindingList<ExtractedParameter>(value.ToList());
@@ -170,11 +171,11 @@ namespace Rubberduck.UI.Refactorings
             set
             {
                 _returnValues = new BindingList<ExtractedParameter>(value.ToList());
-                var items = _returnValues.ToArray();
+                //var items = _returnValues.ToArray();
             }
         }
 
-        private ExtractedParameter _returnValue;
+        private readonly ExtractedParameter _returnValue;
 
         public IEnumerable<ExtractedParameter> Inputs { get; set; }
         public IEnumerable<ExtractedParameter> Outputs { get; set; }

@@ -358,7 +358,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit references to workbook members inside a workbook document module can be mistakes for implicit references to the active workbook, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved..
+        ///   Looks up a localized string similar to Implicit references to workbook members inside a workbook document module can be mistaken for implicit references to the active workbook, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved. If the intent was to refer to the active workbook, qualify with &apos;ActiveWorkbook&apos; to prevent a bug..
         /// </summary>
         public static string ImplicitContainingWorkbookReferenceInspection {
             get {
@@ -367,7 +367,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit references to worksheet members inside a worksheet document module can be mistakes for implicit references to the active worksheet, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved..
+        ///   Looks up a localized string similar to Implicit references to worksheet members inside a worksheet document module can be mistaken for implicit references to the active worksheet, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved. If the intent is to refer to the active worksheet, qualify with &apos;ActiveSheet&apos; to prevent a bug..
         /// </summary>
         public static string ImplicitContainingWorksheetReferenceInspection {
             get {
@@ -466,7 +466,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The annotation could not be bound to a target. An annotation meant to be specified at module level cannot be used to annotate members; conversely, annotations meant to be annotate members cannot be used at module level..
+        ///   Looks up a localized string similar to The annotation could not be bound to a target. Is the annotation misplaced? An annotation meant to be specified at module level cannot be used to annotate members; conversely, annotations meant to be annotate members cannot be used at module level..
         /// </summary>
         public static string InvalidAnnotationInspection {
             get {
@@ -529,7 +529,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The last parameter (the &apos;Value&apos; parameter) of property mutators are always passed ByVal. This is true regardless of the presence or absence of a ByRef or ByVal modifier. Exception: A UserDefinedType must always be passed ByRef even when it is the last parameter of a property mutator..
+        ///   Looks up a localized string similar to The last parameter (the &apos;Value&apos; parameter) of property mutators (Let/Set) are always passed ByVal. This is true regardless of the presence or absence of a ByRef or ByVal modifier. Exception: A UserDefinedType must always be passed ByRef even when it is the last parameter of a property mutator..
         /// </summary>
         public static string MisleadingByRefParameterInspection {
             get {
