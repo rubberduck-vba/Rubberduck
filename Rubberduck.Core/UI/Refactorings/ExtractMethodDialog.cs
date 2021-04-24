@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Resources;
+using Tokens = Rubberduck.Resources.Tokens;
 
 namespace Rubberduck.UI.Refactorings
 {
@@ -194,11 +196,9 @@ namespace Rubberduck.UI.Refactorings
 
         private void ValidateName()
         {
-            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
-
             OkButton.Enabled = MethodName != OldMethodName
                                && char.IsLetter(MethodName.FirstOrDefault())
-                               && !tokenValues.Contains(MethodName, StringComparer.InvariantCultureIgnoreCase)
+                               && !Tokens.IllegalIdentifierNames.Contains(MethodName, StringComparer.InvariantCultureIgnoreCase)
                                && !MethodName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
 
             InvalidNameValidationIcon.Visible = !OkButton.Enabled;

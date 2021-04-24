@@ -12,7 +12,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Controls
 {
-    public class FindAllReferencesService : IDisposable
+    public class FindAllReferencesAction : IDisposable
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly INavigateCommand _navigateCommand;
@@ -22,7 +22,7 @@ namespace Rubberduck.UI.Controls
         private readonly SearchResultPresenterInstanceManager _presenterService;
         private readonly IUiDispatcher _uiDispatcher;
 
-        public FindAllReferencesService(
+        public FindAllReferencesAction(
             INavigateCommand navigateCommand, 
             IMessageBox messageBox,
             RubberduckParserState state, 
@@ -92,7 +92,21 @@ namespace Rubberduck.UI.Controls
                 return;
             }
 
-            var usages = _state.DeclarationFinder.FindAllReferenceUsesInProject(project, reference, out var referenceProject);
+            var usages = _state.DeclarationFinder.FindAllReferenceUsesInProject(project, reference, out var referenceProject)
+                .Select(usage =>
+                new SearchResultItem(usage.ParentNonScoping,
+                    new NavigateCodeEventArgs(usage.QualifiedModuleName, usage.Selection),
+                    GetModuleLine(usage.QualifiedModuleName, usage.Selection.StartLine)))
+                .ToList();
+
+            if (declaration is ParameterDeclaration parameter)
+            {
+                usages.AddRange(parameter.ArgumentReferences.Select(usage =>
+                new SearchResultItem(usage.ParentNonScoping,
+                    new NavigateCodeEventArgs(usage.QualifiedModuleName, usage.Selection),
+                    GetModuleLine(usage.QualifiedModuleName, usage.Selection.StartLine))));
+            }
+
             if (!usages.Any())
             {
                 _messageBox.NotifyWarn(string.Format(RubberduckUI.AllReferences_NoneFoundReference, referenceProject.IdentifierName), RubberduckUI.Rubberduck);
@@ -130,13 +144,8 @@ namespace Rubberduck.UI.Controls
             }
         }
 
-        private SearchResultsViewModel CreateViewModel(ProjectDeclaration project, ProjectDeclaration reference, IEnumerable<IdentifierReference> usages)
+        private SearchResultsViewModel CreateViewModel(ProjectDeclaration project, ProjectDeclaration reference, IEnumerable<SearchResultItem> results)
         {
-            var results = usages.Select(usage =>
-                new SearchResultItem(usage.ParentNonScoping,
-                    new NavigateCodeEventArgs(usage.QualifiedModuleName, usage.Selection),
-                    GetModuleLine(usage.QualifiedModuleName, usage.Selection.StartLine)));
-
             var viewModel = new SearchResultsViewModel(_navigateCommand,
                 string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, reference.IdentifierName), project, results);
 
@@ -152,7 +161,14 @@ namespace Rubberduck.UI.Controls
                     new SearchResultItem(
                         reference.ParentNonScoping,
                         new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection),
-                        GetModuleLine(reference.QualifiedModuleName, reference.Selection.StartLine)));
+                        GetModuleLine(reference.QualifiedModuleName, reference.Selection.StartLine)))
+                .Concat((declaration is ParameterDeclaration parameter) 
+                    ? parameter.ArgumentReferences.Select(argument =>
+                    new SearchResultItem(
+                        argument.ParentNonScoping,
+                        new NavigateCodeEventArgs(argument.QualifiedModuleName, argument.Selection),
+                        GetModuleLine(argument.QualifiedModuleName, argument.Selection.StartLine)))
+                    : Enumerable.Empty<SearchResultItem>());
 
             var accessor = declaration.DeclarationType.HasFlag(DeclarationType.PropertyGet) ? "(get)"
                 : declaration.DeclarationType.HasFlag(DeclarationType.PropertyLet) ? "(let)"

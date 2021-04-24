@@ -46,6 +46,11 @@ namespace Rubberduck.VBEditor
             return Contains(new Selection(selection.StartLine, selection.StartColumn, selection.StartLine, selection.StartColumn));
         }
 
+        public Selection ExtendLeft(int positions = 1)
+        {
+            return new Selection(StartLine, Math.Max(StartColumn - positions, 1), EndLine, EndColumn);
+        }
+
         public bool Contains(Selection selection)
         {
             // single line comparison
