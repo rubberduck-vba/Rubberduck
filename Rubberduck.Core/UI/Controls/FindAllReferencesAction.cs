@@ -100,15 +100,6 @@ namespace Rubberduck.UI.Controls
                     new Selection(1, usage.Selection.StartColumn - indent, 1, usage.Selection.EndColumn - indent - 1).ToZeroBased()))
                 .ToList();
 
-            if (declaration is ParameterDeclaration parameter)
-            {
-                usages.AddRange(parameter.ArgumentReferences.Select(usage =>
-                new SearchResultItem(usage.ParentNonScoping,
-                    new NavigateCodeEventArgs(usage.QualifiedModuleName, usage.Selection),
-                    GetTrimmedModuleLine(usage.QualifiedModuleName, usage.Selection.StartLine, out var indent),
-                    new Selection(1, usage.Selection.StartColumn - indent, 1, usage.Selection.EndColumn - indent - 1).ToZeroBased())));
-            }
-
             if (!usages.Any())
             {
                 _messageBox.NotifyWarn(string.Format(RubberduckUI.AllReferences_NoneFoundReference, referenceProject.IdentifierName), RubberduckUI.Rubberduck);
@@ -166,7 +157,15 @@ namespace Rubberduck.UI.Controls
                         reference.ParentNonScoping,
                         new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection),
                         GetTrimmedModuleLine(reference.QualifiedModuleName, reference.Selection.StartLine, out var indent),
-                        new Selection(1, reference.Selection.StartColumn - indent, 1, reference.Selection.EndColumn - indent - 1).ToZeroBased()));
+                        new Selection(1, reference.Selection.StartColumn - indent, 1, reference.Selection.EndColumn - indent - 1).ToZeroBased()))
+                .Concat((declaration is ParameterDeclaration parameter)
+                    ? parameter.ArgumentReferences.Select(argument =>
+                        new SearchResultItem(
+                            argument.ParentNonScoping,
+                            new NavigateCodeEventArgs(argument.QualifiedModuleName, argument.Selection),
+                            GetTrimmedModuleLine(argument.QualifiedModuleName, argument.Selection.StartLine, out var indent),
+                            new Selection(1, argument.Selection.StartColumn - indent, 1, argument.Selection.EndColumn - indent - 1).ToZeroBased()))
+                    : Enumerable.Empty<SearchResultItem>());
 
             var accessor = declaration.DeclarationType.HasFlag(DeclarationType.PropertyGet) ? "(get)"
                 : declaration.DeclarationType.HasFlag(DeclarationType.PropertyLet) ? "(let)"
