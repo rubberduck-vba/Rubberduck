@@ -539,7 +539,7 @@ end;
 
 function CheckUseLegacyWorkloadConfig():boolean;
 begin
-  if UseLegacyWorkloadConfig then
+  if WorkloadOptionPage.Values[0] then
     result := true
   else
     result := false;
