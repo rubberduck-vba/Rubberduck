@@ -96,7 +96,8 @@ namespace Rubberduck.UI.Controls
                 .Select(usage =>
                 new SearchResultItem(usage.ParentNonScoping,
                     new NavigateCodeEventArgs(usage.QualifiedModuleName, usage.Selection),
-                    GetModuleLine(usage.QualifiedModuleName, usage.Selection.StartLine)))
+                    GetTrimmedModuleLine(usage.QualifiedModuleName, usage.Selection.StartLine, out var indent),
+                    new Selection(1, usage.Selection.StartColumn - indent, 1, usage.Selection.EndColumn - indent - 1).ToZeroBased()))
                 .ToList();
 
             if (declaration is ParameterDeclaration parameter)
@@ -104,7 +105,8 @@ namespace Rubberduck.UI.Controls
                 usages.AddRange(parameter.ArgumentReferences.Select(usage =>
                 new SearchResultItem(usage.ParentNonScoping,
                     new NavigateCodeEventArgs(usage.QualifiedModuleName, usage.Selection),
-                    GetModuleLine(usage.QualifiedModuleName, usage.Selection.StartLine))));
+                    GetTrimmedModuleLine(usage.QualifiedModuleName, usage.Selection.StartLine, out var indent),
+                    new Selection(1, usage.Selection.StartColumn - indent, 1, usage.Selection.EndColumn - indent - 1).ToZeroBased())));
             }
 
             if (!usages.Any())
@@ -148,12 +150,6 @@ namespace Rubberduck.UI.Controls
 
         private SearchResultsViewModel CreateViewModel(ProjectDeclaration project, ProjectDeclaration reference, IEnumerable<SearchResultItem> results)
         {
-            var results = usages.Select(usage =>
-                new SearchResultItem(usage.ParentNonScoping,
-                    new NavigateCodeEventArgs(usage.QualifiedModuleName, usage.Selection),
-                    GetTrimmedModuleLine(usage.QualifiedModuleName, usage.Selection.StartLine, out var indent),
-                    new Selection(1, reference.Selection.StartColumn - indent, 1, reference.Selection.EndColumn - indent - 1).ToZeroBased()));
-
             var viewModel = new SearchResultsViewModel(_navigateCommand,
                 string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, reference.IdentifierName), project, results);
 
