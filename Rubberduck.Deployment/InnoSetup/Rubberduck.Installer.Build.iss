@@ -540,7 +540,7 @@ end;
 function CheckUseLegacyWorkloadConfig():boolean;
 begin
   if UseLegacyWorkloadConfig then
-    result := true;
+    result := true
   else
     result := false;
 end;
