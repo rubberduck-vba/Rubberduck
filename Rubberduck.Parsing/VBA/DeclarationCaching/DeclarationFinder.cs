@@ -655,7 +655,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 }
                 parameter = parameters
                     .Select((param, index) => (param, index))
-                    .Single(item => item.index == indexedArg.index).param;
+                    .SingleOrDefault(item => item.index == indexedArg.index).param;
             }
 
             return parameter;
