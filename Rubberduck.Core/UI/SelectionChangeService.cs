@@ -40,6 +40,7 @@ namespace Rubberduck.UI
         {
             Task.Run(() =>
             {
+                
                 var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration();
                 var eventArgs = new DeclarationChangedEventArgs(_vbe, selectedDeclaration);
                 DispatchSelectedDeclaration(eventArgs);

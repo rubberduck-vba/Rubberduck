@@ -32,7 +32,7 @@ namespace Rubberduck.UI.FindSymbol
 
         private void FindSymbolControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            searchComboBox.Focus();
+            SearchComboBox.Focus();
         }
 
         // doing this navigates on arrow-up/down, which isn't expected 
