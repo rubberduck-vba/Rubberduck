@@ -539,7 +539,7 @@ end;
 
 function CheckUseLegacyWorkloadConfig():boolean;
 begin
-  if WorkloadOptionPage.Values[0] then
+  if UseLegacyWorkloadConfig then
     result := true
   else
     result := false;
@@ -1112,12 +1112,14 @@ begin
   end
     else if CurPageID = WorkloadOptionPage.ID then
   begin
-    Log('Legacy workload initial config was requested and will be copied to the destination folder.');
-  end
-    else
-  begin
-    Log('Skipping legacy workload config because the option was left unchecked.');
-  end;
+    if WorkloadOptionPage.Values[0] then
+    begin
+      Log('Legacy workload initial config was requested and will be copied to the destination folder.');
+    end
+      else
+    begin
+      Log('Skipping legacy workload config because the option was left unchecked.');
+    end;
   ;
 
   // Re-enable the button disabled at start of procedure
