@@ -444,4 +444,10 @@
   <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
     <value>Implizite Referenz zum umgebenden Workbook-Modul</value>
   </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>Irreführender ByRef Parametermodifizierer</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>On Error GoTo -1</value>
+  </data>
 </root>

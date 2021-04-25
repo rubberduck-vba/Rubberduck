@@ -45,7 +45,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.csproj" />
     <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj" />
-    <ProjectReference Include="..\Rubberduck.JunkDrawer\Rubberduck.JunkDrawer.csproj" />
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
     <ProjectReference Include="..\Rubberduck.Refactorings\Rubberduck.Refactorings.csproj" />
     <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj" />
@@ -116,6 +115,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Update="UI\AddRemoveReferences\AddRemoveReferencesUI.Designer.cs">
       <DesignTime>True</DesignTime>

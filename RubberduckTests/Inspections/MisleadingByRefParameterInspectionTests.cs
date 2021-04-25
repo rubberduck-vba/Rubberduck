@@ -54,6 +54,31 @@ End Property
             Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
+        //https://github.com/rubberduck-vba/Rubberduck/issues/5628
+        [TestCase("ArrayToStore")]
+        [TestCase("ByRef ArrayToStore")]
+        [Category("QuickFixes")]
+        [Category(nameof(MisleadingByRefParameterInspection))]
+        public void ArrayEdgeCase(string parameterMechanismAndParam)
+        {
+            var inputCode =
+$@"
+Option Explicit
+
+Private InternalArray() As Variant
+
+Public Property Get StoredArray() As Variant()
+    StoredArray = InternalArray
+End Property
+
+Public Property Let StoredArray({parameterMechanismAndParam}() As Variant)
+    InternalArray = ArrayToStore
+End Property
+";
+
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
         [Test]
         [Category("QuickFixes")]
         [Category(nameof(MisleadingByRefParameterInspection))]

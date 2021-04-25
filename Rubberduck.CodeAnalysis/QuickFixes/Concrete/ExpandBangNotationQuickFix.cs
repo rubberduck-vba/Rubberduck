@@ -132,8 +132,8 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
         public override bool CanFixInProject => true;
         public override bool CanFixAll => true;
 
-        private string NonIdentifierCharacters = "[](){}\r\n\t.,'\"\\ |!@#$%^&*-+:=; ";
-        private string AdditionalNonFirstIdentifierCharacters = "0123456789_";
+        private readonly string NonIdentifierCharacters = "[](){}\r\n\t.,'\"\\ |!@#$%^&*-+:=; ";
+        private readonly string AdditionalNonFirstIdentifierCharacters = "0123456789_";
 
         private static readonly Dictionary<string, string> DefaultMemberOverrides = new Dictionary<string, string>
         {

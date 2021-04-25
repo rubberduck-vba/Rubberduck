@@ -1,27 +1,21 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Common;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember;
 using RubberduckTests.Mocks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackingUDTMember
 {
     [TestFixture]
-    public class EncapsulateFieldUseBackingUDTMemberTests : RefactoringActionTestBase<EncapsulateFieldUseBackingUDTMemberModel>
+    public class EncapsulateFieldUseBackingUDTMemberTests
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
-
-        [SetUp]
-        public void ExecutesBeforeAllTests()
-        {
-            Support.ResetResolver();
-        }
 
         [TestCase(false, "Name")]
         [TestCase(true, "Name")]
@@ -30,17 +24,17 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         [Category(nameof(EncapsulateFieldUseBackingUDTMemberRefactoringAction))]
-        public void EncapsulatePublicField(bool isReadOnly, string propertyIdentifier)
+        public void EncapsulatePublicFields(bool isReadOnly, string propertyIdentifier)
         {
             var target = "fizz";
             var inputCode = $"Public {target} As Integer";
 
-            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state)
+            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
             {
-                var modelFactory = Support.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>(state);
-
                 var field = state.DeclarationFinder.MatchName(target).Single();
                 var fieldModel = new FieldEncapsulationModel(field as VariableDeclaration, isReadOnly);
+
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>();
                 return modelFactory.Create(new List<FieldEncapsulationModel>() { fieldModel });
             }
 
@@ -89,15 +83,15 @@ Public thirdValue As Integer
 
 Public bazz As String";
 
-            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state)
+            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
             {
-                var modelFactory = Support.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>(state);
-
                 var firstValueField = state.DeclarationFinder.MatchName("thirdValue").Single(d => d.DeclarationType.HasFlag(DeclarationType.Variable));
                 var bazzField = state.DeclarationFinder.MatchName("bazz").Single();
                 var fieldModelfirstValueField = new FieldEncapsulationModel(firstValueField as VariableDeclaration);
                 var fieldModelfirstbazzField = new FieldEncapsulationModel(bazzField as VariableDeclaration);
                 var inputList = new List<FieldEncapsulationModel>() { fieldModelfirstValueField, fieldModelfirstbazzField };
+
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>();
                 return modelFactory.Create(inputList);
             }
 
@@ -139,10 +133,8 @@ Public thirdValue As Integer
 
 Public bazz As String";
 
-            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state)
+            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
             {
-                var modelFactory = Support.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>(state);
-
                 var thirdValueField = state.DeclarationFinder.MatchName("thirdValue").Single(d => d.DeclarationType.HasFlag(DeclarationType.Variable));
                 var bazzField = state.DeclarationFinder.MatchName("bazz").Single();
                 var fieldModelThirdValueField = new FieldEncapsulationModel(thirdValueField as VariableDeclaration);
@@ -152,6 +144,7 @@ Public bazz As String";
 
                 var targetUDT = state.DeclarationFinder.MatchName("this").Single(d => d.DeclarationType.HasFlag(DeclarationType.Variable));
 
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>();
                 return modelFactory.Create(inputList, targetUDT);
             }
 
@@ -191,15 +184,14 @@ End Type
 Private mVehicle As TVehicle
 ";
 
-            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state)
+            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
             {
-                var modelFactory = Support.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>(state);
-
                 var mVehicleField = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(d => d.IdentifierName.Equals("mVehicle"));
                 var fieldModelMVehicleField = new FieldEncapsulationModel(mVehicleField as VariableDeclaration, false, "Vehicle");
 
                 var inputList = new List<FieldEncapsulationModel>() { fieldModelMVehicleField };
 
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>();
                 return modelFactory.Create(inputList);
             }
 
@@ -241,15 +233,14 @@ End Type
 Private mTest As ThirdType
 ";
 
-            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state)
+            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
             {
-                var modelFactory = Support.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>(state);
-
                 var mTestField = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(d => d.IdentifierName.Equals("mTest"));
                 var fieldModelMTest = new FieldEncapsulationModel(mTestField as VariableDeclaration, false);
 
                 var inputList = new List<FieldEncapsulationModel>() { fieldModelMTest };
 
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>();
                 return modelFactory.Create(inputList);
             }
 
@@ -273,9 +264,9 @@ Private mTest As ThirdType
         {
             var inputCode = $"Public fizz As Integer";
 
-            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state)
+            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
             {
-                var modelFactory = Support.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>(state);
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>();
                 return modelFactory.Create(Enumerable.Empty<FieldEncapsulationModel>());
             }
 
@@ -309,21 +300,21 @@ Public notAnOption As CannotUseThis
 
 Public notAUserDefinedTypeField As String";
 
-            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state)
+            EncapsulateFieldUseBackingUDTMemberModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
             {
                 var invalidTarget = state.DeclarationFinder.MatchName(objectStateTargetIdentifier).Single(d => d.DeclarationType.HasFlag(DeclarationType.Variable));
-                var modelFactory = Support.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>(state);
                 var fieldModel = new FieldEncapsulationModel(invalidTarget as VariableDeclaration);
 
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingUDTMemberModelFactory>();
                 return modelFactory.Create(new List<FieldEncapsulationModel>() { fieldModel }, invalidTarget);
             }
 
-            Assert.Throws<System.ArgumentException>(() => RefactoredCode(inputCode, modelBuilder));
+            Assert.Throws<ArgumentException>(() => RefactoredCode(inputCode, modelBuilder));
         }
 
-        protected override IRefactoringAction<EncapsulateFieldUseBackingUDTMemberModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
+        private string RefactoredCode(string inputCode, Func<RubberduckParserState, EncapsulateFieldTestsResolver, EncapsulateFieldUseBackingUDTMemberModel> modelBuilder)
         {
-            return Support.Resolve<EncapsulateFieldUseBackingUDTMemberRefactoringAction>(state, rewritingManager);
+            return Support.RefactoredCode<EncapsulateFieldUseBackingUDTMemberRefactoringAction, EncapsulateFieldUseBackingUDTMemberModel>(inputCode, modelBuilder);
         }
     }
 }

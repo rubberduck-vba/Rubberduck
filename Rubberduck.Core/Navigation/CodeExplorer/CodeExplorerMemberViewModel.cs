@@ -51,7 +51,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         public override bool IsObsolete =>
-            Declaration.Annotations.Any(annotation => annotation is ObsoleteAnnotation);
+            Declaration.Annotations.Any(pta => pta.Annotation is ObsoleteAnnotation);
 
         public static readonly DeclarationType[] SubMemberTypes =
         {

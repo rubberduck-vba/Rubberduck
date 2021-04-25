@@ -14,9 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            var excel = finder.Projects
-                .SingleOrDefault(item => !item.IsUserDefined
-                                         && item.IdentifierName == "Excel");
+            var excel = finder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
             if (excel == null)
             {
                 return Enumerable.Empty<Declaration>();
@@ -33,12 +31,13 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
                                       && declaration.AsTypeName == "Range");
         }
 
-        private static readonly string[] GlobalObjectClassNames =
+        protected virtual string[] GlobalObjectClassNames => new[]
         {
-            "Global", "_Global"
+            "Global", "_Global", 
+            "Worksheet", "_Worksheet"
         };
 
-        private static readonly string[] TargetMemberNames =
+        protected virtual string[] TargetMemberNames => new[]
         {
             "Cells", "Range", "Columns", "Rows"
         };

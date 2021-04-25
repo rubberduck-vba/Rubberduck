@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using Path = System.IO.Path;
 using System.Runtime.ExceptionServices;
 using System.Windows.Forms;
 using Rubberduck.Interaction;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -17,6 +17,7 @@ using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
+using System.IO.Abstractions;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -36,7 +37,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IProjectsProvider _projectsProvider;
         private readonly IModuleNameFromFileExtractor _moduleNameFromFileExtractor;
         private readonly IDictionary<ComponentType, List<IRequiredBinaryFilesFromFileNameExtractor>> _binaryFileExtractors;
-        private readonly IFileExistenceChecker _fileExistenceChecker;
+        private readonly IFileSystem _fileSystem;
 
         protected readonly IDeclarationFinderProvider DeclarationFinderProvider;
         protected readonly IMessageBox MessageBox;
@@ -50,7 +51,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             IProjectsProvider projectsProvider,
             IModuleNameFromFileExtractor moduleNameFromFileExtractor,
             IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileExtractors,
-            IFileExistenceChecker fileExistenceChecker,
+            IFileSystem fileSystem,
             IMessageBox messageBox)
             : base(vbeEvents)
         {
@@ -59,7 +60,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _parseManager = parseManager;
             _projectsProvider = projectsProvider;
             _moduleNameFromFileExtractor = moduleNameFromFileExtractor;
-            _fileExistenceChecker = fileExistenceChecker;
+            _fileSystem = fileSystem;
 
             _binaryFileExtractors = BinaryFileExtractors(binaryFileExtractors);
 
@@ -412,7 +413,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 var path = Path.GetDirectoryName(fileName);
                 var missingBinaries = requiredBinariesForFile
-                    .Where(binaryFileName => !_fileExistenceChecker.FileExists(Path.Combine(path, binaryFileName)))
+                    .Where(binaryFileName => !_fileSystem.File.Exists(Path.Combine(path, binaryFileName)))
                     .ToList();
 
                 if (missingBinaries.Any())

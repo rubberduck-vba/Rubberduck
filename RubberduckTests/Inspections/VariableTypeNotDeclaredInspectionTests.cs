@@ -119,6 +119,32 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        [TestCase("Variant")]
+        [TestCase("Long")]
+        public void VariableTypeNotDeclared_TypedArray_Dim_DoesNotReturnResult(string variableType)
+        {
+            var inputCode =
+                $@"Sub Foo()
+    Dim bar(0 To 1) As {variableType}
+End Sub";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("Variant")]
+        [TestCase("Long")]
+        public void VariableTypeNotDeclared_TypedArray_ReDim_DoesNotReturnResult(string variableType)
+        {
+            var inputCode =
+                $@"Sub Foo()
+    ReDim bar(0 To 1) As {variableType}
+End Sub";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             var inspection = new VariableTypeNotDeclaredInspection(null);

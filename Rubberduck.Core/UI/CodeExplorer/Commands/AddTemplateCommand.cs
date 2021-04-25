@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
+using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Templates;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -32,17 +31,20 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly ITemplateProvider _provider;
         private readonly ICodeExplorerAddComponentService _addComponentService;
         private readonly IProjectsProvider _projectsProvider;
+        private readonly IMessageBox _messageBox;
 
         public AddTemplateCommand(
                 ICodeExplorerAddComponentService addComponentService, 
                 ITemplateProvider provider, 
                 IVbeEvents vbeEvents,
-                IProjectsProvider projectsProvider) 
+                IProjectsProvider projectsProvider,
+                IMessageBox messageBox) 
                 : base(vbeEvents)
         {
             _provider = provider;
             _addComponentService = addComponentService;
             _projectsProvider = projectsProvider;
+            _messageBox = messageBox;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
@@ -62,7 +64,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
-            if(parameter is System.ValueTuple<string, ICodeExplorerNode> data)
+            if(parameter is ValueTuple<string, ICodeExplorerNode> data)
             {
                 return EvaluateCanExecute(data.Item2);
             }
@@ -72,9 +74,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool EvaluateCanExecute(ICodeExplorerNode node)
         {
-            if (!ApplicableNodes.Contains(node.GetType())
-                || !(node is CodeExplorerItemViewModel)
-                || node.Declaration == null)
+            if (node?.Declaration == null 
+                || !ApplicableNodes.Contains(node.GetType())
+                || !(node is CodeExplorerItemViewModel))
             {
                 return false;
             }
@@ -91,7 +93,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            if (!(parameter is System.ValueTuple<string, ICodeExplorerNode> data))
+            if (!(parameter is ValueTuple<string, ICodeExplorerNode> data))
             {
                 return;
             }
@@ -103,13 +105,21 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            var moduleText = GetTemplate(templateName);
+            var template = GetTemplate(templateName);
+            var moduleText = template.Read();
+
+            if (string.IsNullOrWhiteSpace(moduleText))
+            {
+                _messageBox.NotifyWarn(string.Format(Resources.Templates.Menu_Warning_CannotFindTemplate_Message, template.Caption, template.Name + Template.TemplateExtension), Resources.Templates.Menu_Warning_CannotFindTemplate_Caption);
+                return;
+            }
+
             _addComponentService.AddComponentWithAttributes(model, ComponentType, moduleText);
         }
 
-        private string GetTemplate(string name)
+        private ITemplate GetTemplate(string name)
         {
-            return _provider.Load(name).Read();
+            return _provider.Load(name);
         }
     }
 }

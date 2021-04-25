@@ -9,11 +9,11 @@ using Rubberduck.Resources.Inspections;
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
-    /// Locates unqualified Worksheet.Range/Cells/Columns/Rows member calls inside worksheet modules.
+    /// Locates unqualified Worksheet.Range/Cells/Columns/Rows member calls implicitly referring to ActiveSheet.
     /// </summary>
     /// <reference name="Excel" />
     /// <why>
-    /// Implicit references to the active worksheet rarely mean to be working with *whatever worksheet is currently active*. 
+    /// Implicit references to the active worksheet (ActiveSheet) rarely mean to be working with *whatever worksheet is currently active*. 
     /// By explicitly qualifying these member calls with a specific Worksheet object, the assumptions are removed, the code
     /// is more robust, and will be less likely to throw run-time error 1004 or produce unexpected results
     /// when the active sheet isn't the expected one.
@@ -46,6 +46,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         public ImplicitActiveSheetReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {}
+
+        protected override string[] GlobalObjectClassNames => new[] { "Global", "_Global", };
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {

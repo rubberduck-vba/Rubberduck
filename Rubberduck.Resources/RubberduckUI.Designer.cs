@@ -1211,6 +1211,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to document.
+        /// </summary>
+        public static string DeclarationType_Document {
+            get {
+                return ResourceManager.GetString("DeclarationType_Document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to enum.
         /// </summary>
         public static string DeclarationType_Enumeration {
@@ -1628,6 +1637,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Implementation Options:.
+        /// </summary>
+        public static string ExtractInterface_ImplementationOptionsGroupBox {
+            get {
+                return ResourceManager.GetString("ExtractInterface_ImplementationOptionsGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instancing.
         /// </summary>
         public static string ExtractInterface_InstancingGroupBox {
@@ -1651,6 +1669,42 @@ namespace Rubberduck.Resources {
         public static string ExtractInterface_MembersGroupBox {
             get {
                 return ResourceManager.GetString("ExtractInterface_MembersGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Empty Implementation.
+        /// </summary>
+        public static string ExtractInterface_OptionAddEmptyImplementation {
+            get {
+                return ResourceManager.GetString("ExtractInterface_OptionAddEmptyImplementation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forward Object Member Calls to Interface Members.
+        /// </summary>
+        public static string ExtractInterface_OptionForwardToInterfaceMembers {
+            get {
+                return ResourceManager.GetString("ExtractInterface_OptionForwardToInterfaceMembers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forward Interface Member Calls to Object Members.
+        /// </summary>
+        public static string ExtractInterface_OptionForwardToObjectMembers {
+            get {
+                return ResourceManager.GetString("ExtractInterface_OptionForwardToObjectMembers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace Members with Interface Members.
+        /// </summary>
+        public static string ExtractInterface_OptionReplaceMembersWithInterfaceMembers {
+            get {
+                return ResourceManager.GetString("ExtractInterface_OptionReplaceMembersWithInterfaceMembers", resourceCulture);
             }
         }
         
@@ -1846,15 +1900,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to By location.
-        /// </summary>
-        public static string GroupingStyle_ByLocation {
-            get {
-                return ResourceManager.GetString("GroupingStyle_ByLocation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
         public static string Home {
@@ -1991,6 +2036,168 @@ namespace Rubberduck.Resources {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Align comments with code.
+        /// </summary>
+        public static string IndenterSettings_AlignCommentsWithCode {
+            get {
+                return ResourceManager.GetString("IndenterSettings_AlignCommentsWithCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Align continuations.
+        /// </summary>
+        public static string IndenterSettings_AlignContinuations {
+            get {
+                return ResourceManager.GetString("IndenterSettings_AlignContinuations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Align dims.
+        /// </summary>
+        public static string IndenterSettings_AlignDims {
+            get {
+                return ResourceManager.GetString("IndenterSettings_AlignDims", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alignment Options.
+        /// </summary>
+        public static string IndenterSettings_AlignmentOptionsLabel {
+            get {
+                return ResourceManager.GetString("IndenterSettings_AlignmentOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indented Code Sample.
+        /// </summary>
+        public static string IndenterSettings_CodeSampleHeader {
+            get {
+                return ResourceManager.GetString("IndenterSettings_CodeSampleHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty line handling:.
+        /// </summary>
+        public static string IndenterSettings_EmptyLineHeading {
+            get {
+                return ResourceManager.GetString("IndenterSettings_EmptyLineHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Options.
+        /// </summary>
+        public static string IndenterSettings_EnableOptionsLabel {
+            get {
+                return ResourceManager.GetString("IndenterSettings_EnableOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable undo.
+        /// </summary>
+        public static string IndenterSettings_EnableUndo {
+            get {
+                return ResourceManager.GetString("IndenterSettings_EnableUndo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End-of-line comment style:.
+        /// </summary>
+        public static string IndenterSettings_EndOfLineCommentStyle {
+            get {
+                return ResourceManager.GetString("IndenterSettings_EndOfLineCommentStyle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force compiler directives to column 1.
+        /// </summary>
+        public static string IndenterSettings_ForceCompilerDirectivesToColumn1 {
+            get {
+                return ResourceManager.GetString("IndenterSettings_ForceCompilerDirectivesToColumn1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force debug directives to column 1.
+        /// </summary>
+        public static string IndenterSettings_ForceDebugDirectivesToColumn1 {
+            get {
+                return ResourceManager.GetString("IndenterSettings_ForceDebugDirectivesToColumn1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove vertical space between related property members.
+        /// </summary>
+        public static string IndenterSettings_GroupRelatedProperties {
+            get {
+                return ResourceManager.GetString("IndenterSettings_GroupRelatedProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore empty lines when locating first comment and declaration blocks.
+        /// </summary>
+        public static string IndenterSettings_IgnoreEmptyLinesInFirstBlocks {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IgnoreEmptyLinesInFirstBlocks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore operators.
+        /// </summary>
+        public static string IndenterSettings_IgnoreOperators {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IgnoreOperators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent case.
+        /// </summary>
+        public static string IndenterSettings_IndentCase {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentCase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent compiler directives.
+        /// </summary>
+        public static string IndenterSettings_IndentCompilerDirectives {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentCompilerDirectives", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent entire procedure body.
+        /// </summary>
+        public static string IndenterSettings_IndentEntireProcedureBody {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentEntireProcedureBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent comments in Enum and Type blocks like in procedures.
+        /// </summary>
+        public static string GroupingStyle_ByLocation {
+            get {
+                return ResourceManager.GetString("GroupingStyle_ByLocation", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Inspect.
         /// </summary>
@@ -3097,258 +3304,6 @@ namespace Rubberduck.Resources {
         public static string Refresh {
             get {
                 return ResourceManager.GetString("Refresh", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rubberduck - Regex Analyzer.
-        /// </summary>
-        public static string RegexAssistant_Caption {
-            get {
-                return ResourceManager.GetString("RegexAssistant_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Description.
-        /// </summary>
-        public static string RegexAssistant_DescriptionResultsLabel {
-            get {
-                return ResourceManager.GetString("RegexAssistant_DescriptionResultsLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt;.
-        /// </summary>
-        public static string RegexAssistant_EncloseWhitespace_EnclosingFormat {
-            get {
-                return ResourceManager.GetString("RegexAssistant_EncloseWhitespace_EnclosingFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Spell out whitespace in the description.
-        /// </summary>
-        public static string RegexAssistant_EncloseWhitespaceFlag {
-            get {
-                return ResourceManager.GetString("RegexAssistant_EncloseWhitespaceFlag", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Global.
-        /// </summary>
-        public static string RegexAssistant_GlobalFlag {
-            get {
-                return ResourceManager.GetString("RegexAssistant_GlobalFlag", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ignore case.
-        /// </summary>
-        public static string RegexAssistant_IgnoreCaseFlag {
-            get {
-                return ResourceManager.GetString("RegexAssistant_IgnoreCaseFlag", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter a regular expression to analyze in the box below..
-        /// </summary>
-        public static string RegexAssistant_Instructions {
-            get {
-                return ResourceManager.GetString("RegexAssistant_Instructions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to (no pattern).
-        /// </summary>
-        public static string RegexAssistant_NoPatternError {
-            get {
-                return ResourceManager.GetString("RegexAssistant_NoPatternError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pattern.
-        /// </summary>
-        public static string RegexAssistant_RegexPatternLabel {
-            get {
-                return ResourceManager.GetString("RegexAssistant_RegexPatternLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to carriage-return.
-        /// </summary>
-        public static string RegexAssistant_SpelledOut_CarriageReturn {
-            get {
-                return ResourceManager.GetString("RegexAssistant_SpelledOut_CarriageReturn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to carriage-return-new-line.
-        /// </summary>
-        public static string RegexAssistant_SpelledOut_CarriageReturnNewLine {
-            get {
-                return ResourceManager.GetString("RegexAssistant_SpelledOut_CarriageReturnNewLine", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to new-line.
-        /// </summary>
-        public static string RegexAssistant_SpelledOut_NewLine {
-            get {
-                return ResourceManager.GetString("RegexAssistant_SpelledOut_NewLine", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to space.
-        /// </summary>
-        public static string RegexAssistant_SpelledOut_Space {
-            get {
-                return ResourceManager.GetString("RegexAssistant_SpelledOut_Space", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to tab.
-        /// </summary>
-        public static string RegexAssistant_SpelledOut_Tab {
-            get {
-                return ResourceManager.GetString("RegexAssistant_SpelledOut_Tab", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to unidentified-whitespace.
-        /// </summary>
-        public static string RegexAssistant_SpelledOut_UnidentifiedWhitespace {
-            get {
-                return ResourceManager.GetString("RegexAssistant_SpelledOut_UnidentifiedWhitespace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Regular Expression Analyzer.
-        /// </summary>
-        public static string RegexAssistant_Title {
-            get {
-                return ResourceManager.GetString("RegexAssistant_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Regex Search &amp; Replace.
-        /// </summary>
-        public static string RegexSearchReplace_Caption {
-            get {
-                return ResourceManager.GetString("RegexSearchReplace_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Replace All.
-        /// </summary>
-        public static string RegexSearchReplace_ReplaceAllButtonLabel {
-            get {
-                return ResourceManager.GetString("RegexSearchReplace_ReplaceAllButtonLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Replace.
-        /// </summary>
-        public static string RegexSearchReplace_ReplaceButtonLabel {
-            get {
-                return ResourceManager.GetString("RegexSearchReplace_ReplaceButtonLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Replace:.
-        /// </summary>
-        public static string RegexSearchReplace_ReplaceLabel {
-            get {
-                return ResourceManager.GetString("RegexSearchReplace_ReplaceLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Scope:.
-        /// </summary>
-        public static string RegexSearchReplace_ScopeLabel {
-            get {
-                return ResourceManager.GetString("RegexSearchReplace_ScopeLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Search:.
-        /// </summary>
-        public static string RegexSearchReplace_SearchLabel {
-            get {
-                return ResourceManager.GetString("RegexSearchReplace_SearchLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All Opened Files.
-        /// </summary>
-        public static string RegexSearchReplaceScope_AllOpenedFiles {
-            get {
-                return ResourceManager.GetString("RegexSearchReplaceScope_AllOpenedFiles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All Open Projects.
-        /// </summary>
-        public static string RegexSearchReplaceScope_AllOpenProjects {
-            get {
-                return ResourceManager.GetString("RegexSearchReplaceScope_AllOpenProjects", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Current Block.
-        /// </summary>
-        public static string RegexSearchReplaceScope_CurrentBlock {
-            get {
-                return ResourceManager.GetString("RegexSearchReplaceScope_CurrentBlock", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Current File.
-        /// </summary>
-        public static string RegexSearchReplaceScope_CurrentFile {
-            get {
-                return ResourceManager.GetString("RegexSearchReplaceScope_CurrentFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Current Project.
-        /// </summary>
-        public static string RegexSearchReplaceScope_CurrentProject {
-            get {
-                return ResourceManager.GetString("RegexSearchReplaceScope_CurrentProject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Selection.
-        /// </summary>
-        public static string RegexSearchReplaceScope_Selection {
-            get {
-                return ResourceManager.GetString("RegexSearchReplaceScope_Selection", resourceCulture);
             }
         }
         

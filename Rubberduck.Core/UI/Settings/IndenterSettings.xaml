@@ -304,6 +304,19 @@
                                          IsEnabled="{Binding ElementName=SpaceProcedures,Path=IsChecked}"
                                          NumValue="{Binding LinesBetweenProcedures,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                         </WrapPanel>
+                        <WrapPanel Orientation="Horizontal">
+                            <CheckBox Name="PropertyGrouping"
+                                      Margin="50,0,0,5"
+                                      HorizontalAlignment="Left"
+                                      IsChecked="{Binding GroupRelatedProperties,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                                <AccessText TextWrapping="WrapWithOverflow">
+                                    <AccessText.Text>
+                                        <Resx ResxName="Rubberduck.Resources.RubberduckUI"
+                                              Key="IndenterSettings_GroupRelatedProperties" />
+                                    </AccessText.Text>
+                                </AccessText>
+                            </CheckBox>
+                        </WrapPanel>
                     </StackPanel>
                 </Expander>
                 <Expander Grid.Row="4"
