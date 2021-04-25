@@ -66,48 +66,46 @@ namespace Rubberduck.UI.Converters
             {
                 if (declaration is ClassModuleDeclaration classModule)
                 {
+                    if (classModule.QualifiedModuleName.ComponentType ==
+                        VBEditor.SafeComWrappers.ComponentType.Document)
+                    {
+                        return DeclarationIcons[DeclarationType.Document];
+                    }
+                    
                     if (classModule.QualifiedModuleName.ComponentType == VBEditor.SafeComWrappers.ComponentType.UserForm)
                     {
                         // a form has a predeclared ID, but we want it to have a UserForm icon:
                         return DeclarationIcons[DeclarationType.UserForm];
                     }
-                    else
-                    {
-                        if (classModule.IsInterface || classModule.Annotations.Any(annotation => annotation.Annotation is InterfaceAnnotation))
-                        {
-                            return InterfaceIcon;
-                        }
-                        if (classModule.HasPredeclaredId)
-                        {
-                            return PredeclaredIcon;
-                        }
-                        return DeclarationIcons.ContainsKey(classModule.DeclarationType)
-                            ? DeclarationIcons[classModule.DeclarationType]
-                            : NullIcon;
 
-                    }
-                }
-                else
-                {
-                    if (DeclarationIcons.ContainsKey(declaration.DeclarationType))
+                    if (classModule.IsInterface || classModule.Annotations.Any(annotation => annotation.Annotation is InterfaceAnnotation))
                     {
-                        if (declaration.Annotations.Any(a => a.Annotation is TestMethodAnnotation))
-                        {
-                            return TestMethodIcon;
-                        }
-                        else
-                        {
-                            return DeclarationIcons[declaration.DeclarationType];
-                        }
+                        return InterfaceIcon;
                     }
-                    return NullIcon;
+
+                    if (classModule.HasPredeclaredId)
+                    {
+                        return PredeclaredIcon;
+                    }
+                    
+                    return DeclarationIcons.ContainsKey(classModule.DeclarationType)
+                        ? DeclarationIcons[classModule.DeclarationType]
+                        : NullIcon;
                 }
+
+                if (DeclarationIcons.ContainsKey(declaration.DeclarationType))
+                {
+                    if (declaration.Annotations.Any(a => a.Annotation is TestMethodAnnotation))
+                    {
+                        return TestMethodIcon;
+                    }
+
+                    return DeclarationIcons[declaration.DeclarationType];
+                }
+                return NullIcon;
             }
-            else
-            {
-                return null;
-                //throw new InvalidCastException($"Expected 'Declaration' value, but the type was '{value.GetType().Name}'");
-            }
+
+            return null;
         }
     }
 
