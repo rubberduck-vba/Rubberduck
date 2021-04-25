@@ -98,31 +98,26 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
 
         private UnreachableCaseInspection.CaseInspectionResultType? InvalidRangeExpressionsType(ICollection<IRangeClauseExpression> rangeClauseExpressions)
         {
-            if (rangeClauseExpressions.Any(expr => expr?.IsMismatch ?? false))
+            if (rangeClauseExpressions.Any(expr => expr?.IsMismatch == true))
             {
                 return UnreachableCaseInspection.CaseInspectionResultType.MismatchType;
             }
 
-            if (rangeClauseExpressions.Any(expr => expr?.IsOverflow ?? false))
+            if (rangeClauseExpressions.Any(expr => expr?.IsOverflow == true))
             {
                 return UnreachableCaseInspection.CaseInspectionResultType.Overflow;
             }
 
-            if (rangeClauseExpressions.All(expr => expr?.IsInherentlyUnreachable ?? false))
+            if (rangeClauseExpressions.All(expr => expr?.IsInherentlyUnreachable == true))
             {
                 return UnreachableCaseInspection.CaseInspectionResultType.InherentlyUnreachable;
             }
 
             if (rangeClauseExpressions.All(expr =>
-                (expr?.IsUnreachable ?? false) 
-                || (expr?.IsMismatch ?? false)
-                || (expr?.IsOverflow ?? false)
-                || (expr?.IsInherentlyUnreachable ?? false)))
+                expr != null && (expr.IsUnreachable || expr.IsMismatch|| expr.IsOverflow || expr.IsInherentlyUnreachable))))
             {
                 return UnreachableCaseInspection.CaseInspectionResultType.Unreachable;
             }
-
-            return null;
         }
 
         private (UnreachableCaseInspection.CaseInspectionResultType? invalidValueType, VBAParser.CaseClauseContext caseClause) WithInvalidValueType(VBAParser.CaseClauseContext caseClause, IParseTreeVisitorResults parseTreeValues)
