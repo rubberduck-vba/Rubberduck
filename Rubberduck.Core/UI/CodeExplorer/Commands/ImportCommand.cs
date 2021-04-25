@@ -9,7 +9,6 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
-using Rubberduck.Resources;
 using Rubberduck.Resources.CodeExplorer;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;

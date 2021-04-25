@@ -407,7 +407,7 @@ namespace Rubberduck.UI.Inspections
         /// A boolean indicating that a local refresh was triggered.
         /// When this is set to true, InspectionResults are refreshed, even when inspecting after successful parsing is disabled.
         /// </summary>
-        private bool _forceRefreshResults = false;
+        private bool _forceRefreshResults;
 
         private bool _unparsed = true;
         public bool Unparsed
