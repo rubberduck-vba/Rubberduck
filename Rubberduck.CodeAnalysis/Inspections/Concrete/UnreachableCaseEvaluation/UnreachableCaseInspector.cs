@@ -114,10 +114,12 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
             }
 
             if (rangeClauseExpressions.All(expr =>
-                expr != null && (expr.IsUnreachable || expr.IsMismatch|| expr.IsOverflow || expr.IsInherentlyUnreachable))))
+                expr != null && (expr.IsUnreachable || expr.IsMismatch|| expr.IsOverflow || expr.IsInherentlyUnreachable)))
             {
                 return UnreachableCaseInspection.CaseInspectionResultType.Unreachable;
             }
+
+            return null;
         }
 
         private (UnreachableCaseInspection.CaseInspectionResultType? invalidValueType, VBAParser.CaseClauseContext caseClause) WithInvalidValueType(VBAParser.CaseClauseContext caseClause, IParseTreeVisitorResults parseTreeValues)
