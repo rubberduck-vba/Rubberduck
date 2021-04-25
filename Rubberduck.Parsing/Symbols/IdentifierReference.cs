@@ -135,11 +135,24 @@ namespace Rubberduck.Parsing.Symbols
 
         public virtual (string context, Selection highlight) HighligthSelection(ICodeModule module)
         {
+            const int maxLength = 255;
+
             var lines = module.GetLines(Selection.StartLine, Selection.LineCount).Split('\n');
 
-            var line = lines[0]; // TODO think of something that makes sense for multiline
+            var line = lines[0];
             var indent = line.TakeWhile(c => c.Equals(' ')).Count();
-            return (line.Trim(), new Selection(1, Math.Max(Selection.StartColumn - indent,1), 1, Math.Max(Selection.EndColumn - indent,1)).ToZeroBased());
+
+            var highlight = new Selection(
+                1, Math.Max(Selection.StartColumn - indent, 1), 
+                1, Math.Max(Selection.EndColumn - indent, 1))
+            .ToZeroBased();
+
+            var trimmed = line.Trim();
+            if (trimmed.Length > maxLength || lines.Length > 1)
+            {
+                trimmed = trimmed.Substring(0, maxLength) + "...";
+            }
+            return (trimmed, highlight);
         }
 
         public bool Equals(IdentifierReference other)
