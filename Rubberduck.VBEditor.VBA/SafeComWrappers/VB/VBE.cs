@@ -207,7 +207,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {"SLDWORKS.EXE", typeof(SolidWorksApp)},
         };
 
-        private static IHostApplication _host;
+        private static IHostApplication _host = null;
 
         /// <summary> Returns the type of Office Application that is hosting the VBE. </summary>
         public IHostApplication HostApplication()
@@ -222,21 +222,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
             if (HostAppMap.ContainsKey(host))
             {
-                return (IHostApplication)Activator.CreateInstance(HostAppMap[host], this);
+                _host = (IHostApplication)Activator.CreateInstance(HostAppMap[host], this);
+                return _host;
             }
 
             //Guessing the above will work like 99.9999% of the time for supported applications.
             using (var project = ActiveVBProject)
             {
+                IHostApplication result = null;
                 if (project.IsWrappingNullReference)
                 {
                     const int ctlViewHost = 106;
-
                     using (var commandBars = CommandBars)
                     {
                         var hostAppControl = commandBars.FindControl(ControlType.Button, ctlViewHost);
                         {
-                            IHostApplication result;
                             if (hostAppControl.IsWrappingNullReference)
                             {
                                 result = null;
@@ -286,6 +286,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                         }
                     }
                 }
+                if (result != null)
+                {
+                    _host = result;
+                    return result;
+                }
 
                 var references = project.References;
                 {
@@ -294,33 +299,48 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                         switch (reference.Name)
                         {
                             case "Excel":
-                                return new ExcelApp(this);
+                                result = new ExcelApp(this);
+                                break;
                             case "Access":
-                                return new AccessApp(this);
+                                result = new AccessApp(this);
+                                break;
                             case "Word":
-                                return new WordApp(this);
+                                result = new WordApp(this);
+                                break;
                             case "PowerPoint":
-                                return new PowerPointApp(this);
+                                result = new PowerPointApp(this);
+                                break;
                             case "Outlook":
-                                return new OutlookApp(this);
+                                result = new OutlookApp(this);
+                                break;
                             case "MSProject":
-                                return new ProjectApp(this);
+                                result = new ProjectApp(this);
+                                break;
                             case "Publisher":
-                                return new PublisherApp(this);
+                                result = new PublisherApp(this);
+                                break;
                             case "Visio":
-                                return new VisioApp(this);
+                                result = new VisioApp(this);
+                                break;
                             case "AutoCAD":
-                                return new AutoCADApp(this);
+                                result = new AutoCADApp(this);
+                                break;
                             case "CorelDRAW":
-                                return new CorelDRAWApp(this);
+                                result = new CorelDRAWApp(this);
+                                break;
                             case "SolidWorks":
-                                return new SolidWorksApp(this);
+                                result = new SolidWorksApp(this);
+                                break;
+                            default:
+                                result = null;
+                                break;
                         }
                     }
                 }
-            }
 
-            return null;
+                _host = result;
+                return result;
+            }
         }
 
         /// <summary> Returns the topmost MDI child window. </summary>

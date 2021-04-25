@@ -333,7 +333,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             var withEventsDeclarations = FindWithEventFields(eventDeclaration);
             return withEventsDeclarations
-                .Select(withEventsField => FindHandlersForWithEventsField(withEventsField).Single(handler => 
+                .Select(withEventsField => FindHandlersForWithEventsField(withEventsField).SingleOrDefault(handler => 
                     handler.IdentifierName.Equals($"{withEventsField.IdentifierName}_{eventDeclaration.IdentifierName}", StringComparison.InvariantCultureIgnoreCase)));
         }
 
@@ -356,6 +356,18 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public IEnumerable<Declaration> Classes => _classes.Value;
         public IEnumerable<Declaration> Projects => _projects.Value;
+
+        /// <summary>
+        /// Gets the <see cref="ProjectDeclaration"/> object for specified referenced project/library.
+        /// </summary>
+        /// <param name="name">The identifier name of the project declaration to find.</param>
+        /// <param name="result">The <see cref="ProjectDeclaration"/> result, if found; null otherwise.</param>
+        /// <param name="includeUserDefined">True to include user-defined projects in the search; false by default.</param>
+        public bool TryFindProjectDeclaration(string name, out Declaration result, bool includeUserDefined = false)
+        {
+            result = _projects.Value.FirstOrDefault(project => project.IdentifierName.Equals(name, StringComparison.InvariantCultureIgnoreCase) && project.IsUserDefined == includeUserDefined);
+            return result != null;
+        }
 
         public IEnumerable<Declaration> UserDeclarations(DeclarationType type)
         {
@@ -590,24 +602,25 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 : Enumerable.Empty<Declaration>();
         }
 
-        public ParameterDeclaration FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(VBAParser.ArgumentExpressionContext argumentExpression, Declaration enclosingProcedure)
+        public ParameterDeclaration FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(VBAParser.ArgumentContext argument, Declaration enclosingProcedure)
         {
-            return FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argumentExpression, enclosingProcedure.QualifiedModuleName);
+            return FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argument, enclosingProcedure.QualifiedModuleName);
         }
 
-        public ParameterDeclaration FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(VBAParser.ArgumentExpressionContext argumentExpression, QualifiedModuleName module)
+        public ParameterDeclaration FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(VBAParser.ArgumentContext argument, QualifiedModuleName module)
         {
             //todo: Rename after making it work for more general cases.
-
-            if (argumentExpression  == null 
-                || argumentExpression.GetDescendent<VBAParser.ParenthesizedExprContext>() != null 
-                || argumentExpression.BYVAL() != null)
+            var missingArgument = argument.missingArgument();
+            var argumentExpression = argument.GetDescendent<VBAParser.ArgumentExpressionContext>();
+            if ((missingArgument == null && argumentExpression  == null)
+                || argumentExpression?.GetDescendent<VBAParser.ParenthesizedExprContext>() != null 
+                || argumentExpression?.BYVAL() != null)
             {
                 // not a simple argument, or argument is parenthesized and thus passed ByVal
                 return null;
             }
 
-            var callingNonDefaultMember = CallingNonDefaultMember(argumentExpression, module);
+            var callingNonDefaultMember = CallingNonDefaultMember((ParserRuleContext)argumentExpression ?? missingArgument, module);
             if (callingNonDefaultMember == null)
             {
                 // Either we could not resolve the call or there is a default member call involved. 
@@ -615,6 +628,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
 
             var parameters = Parameters(callingNonDefaultMember);
+            var hasNamedArgs = argumentExpression?.GetAncestor<VBAParser.ArgListContext>()?.TryGetChildContext<VBAParser.NamedArgumentContext>(out _) ?? false;
 
             ParameterDeclaration parameter;
             var namedArg = argumentExpression.GetAncestor<VBAParser.NamedArgumentContext>();
@@ -627,31 +641,44 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             else
             {
                 // argument is positional: work out its index
-                var argumentList = argumentExpression.GetAncestor<VBAParser.ArgumentListContext>();
-                var arguments = argumentList.GetDescendents<VBAParser.PositionalArgumentContext>().ToArray();
-
-                var parameterIndex = arguments
-                    .Select((arg, index) => arg.GetDescendent<VBAParser.ArgumentExpressionContext>() == argumentExpression ? (arg, index) : (null, -1))
-                    .SingleOrDefault(item => item.arg != null).index;
-
+                var argumentList = ((ParserRuleContext)argumentExpression ?? missingArgument).GetAncestor<VBAParser.ArgumentListContext>();
+                var arguments = argumentList.children.Where(t => t is VBAParser.ArgumentContext).ToArray();
+                var selection = argumentExpression?.GetSelection() ?? missingArgument.GetSelection();
+                
+                var indexedArgs = arguments.Select((arg, index) => (arg: arg as ParserRuleContext, index))
+                    .Select(e => (arg: e.arg, e.index, selection:e.arg.GetSelection()))
+                    .ToList();
+                var indexedArg = indexedArgs.SingleOrDefault(item => item.selection.Contains(selection));
+                if (indexedArg.arg == null)
+                {
+                    return null;
+                }
                 parameter = parameters
-                    .OrderBy(p => p.Selection)
                     .Select((param, index) => (param, index))
-                    .SingleOrDefault(item => item.index == parameterIndex).param;
+                    .SingleOrDefault(item => item.index == indexedArg.index).param;
             }
 
             return parameter;
         }
 
-        private ModuleBodyElementDeclaration CallingNonDefaultMember(VBAParser.ArgumentExpressionContext argumentExpression, QualifiedModuleName module)
+        public ModuleBodyElementDeclaration FindInvokedMemberFromArgumentContext(VBAParser.ArgumentContext argument, QualifiedModuleName module)
+        {
+            var expression = (ParserRuleContext)argument.GetDescendent<VBAParser.ArgumentExpressionContext>() 
+                ?? argument.GetDescendent<VBAParser.MissingArgumentContext>();
+            return expression != null
+                ? CallingNonDefaultMember(expression, module)
+                : null;
+        }
+
+        private ModuleBodyElementDeclaration CallingNonDefaultMember(ParserRuleContext argumentExpressionOrMissingArgument, QualifiedModuleName module)
         {
             //todo: Make this work for default member calls.
 
-            var argumentList = argumentExpression.GetAncestor<VBAParser.ArgumentListContext>();
+            var argumentList = argumentExpressionOrMissingArgument.GetAncestor<VBAParser.ArgumentListContext>();
             var cannotHaveDefaultMemberCall = false;
 
             ParserRuleContext callingExpression;
-            switch (argumentList.Parent)
+            switch (argumentList?.Parent)
             {
                 case VBAParser.CallStmtContext callStmt:
                     cannotHaveDefaultMemberCall = true;
@@ -664,7 +691,6 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                     callingExpression = indexExpr.lExpression();
                     break;
                 default:
-                    //This should never happen.
                     return null;
             }
 
@@ -898,9 +924,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             string memberName, DeclarationType memberType)
         {
             var allMatches = MatchName(memberName);
+            var parentClass = parent as ClassModuleDeclaration;
             var memberMatches = allMatches
                 .Where(m => m.DeclarationType.HasFlag(memberType)
-                            && parent.Equals(m.ParentDeclaration))
+                            && (parent.Equals(m.ParentDeclaration) || (parentClass?.Supertypes.Any(t => t.Equals(m.ParentDeclaration)) ?? false)))
                 .ToList();
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
@@ -934,21 +961,23 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
             // Classes such as Worksheet have properties such as Range that can be access in a user defined class such as Sheet1,
             // that's why we have to walk the type hierarchy and find these implementations.
-            foreach (var supertype in ClassModuleDeclaration.GetSupertypes(callingModule))
+            if (callingModule is ClassModuleDeclaration callingClass)
             {
-                // Only built-in classes such as Worksheet can be considered "real base classes".
-                // User created interfaces work differently and don't allow accessing accessing implementations.
-                if (supertype.IsUserDefined)
+                foreach (var supertype in callingClass.Supertypes)
                 {
-                    continue;
-                }
-                var supertypeMatch = FindMemberEnclosingModule(supertype, callingParent, memberName, memberType);
-                if (supertypeMatch != null)
-                {
-                    return supertypeMatch;
+                    // Only built-in classes such as Worksheet can be considered "real base classes".
+                    // User created interfaces work differently and don't allow accessing accessing implementations.
+                    if (supertype.IsUserDefined)
+                    {
+                        continue;
+                    }
+                    var supertypeMatch = FindMemberEnclosingModule(supertype, callingParent, memberName, memberType);
+                    if (supertypeMatch != null)
+                    {
+                        return supertypeMatch;
+                    }
                 }
             }
-
             return null;
         }
 
@@ -1562,12 +1591,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
 
             referenceProject = GetProjectDeclarationForReference(reference);
-
             if (!_referencesByProjectId.TryGetValue(referenceProject.ProjectId, out var directReferences))
             {
                 return output;
             }
-
             output.AddRange(directReferences);
 
             var projectId = referenceProject.ProjectId;

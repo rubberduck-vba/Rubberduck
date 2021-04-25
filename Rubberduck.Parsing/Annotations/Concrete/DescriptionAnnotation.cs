@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.Annotations.Concrete
 {
@@ -44,5 +45,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
         public DescriptionAnnotation()
             : base("Description", AnnotationTarget.Member, "VB_Description")
         {}
+
+        // override incompatibility for Document module to allow RD docstrings without the corresponding VB_Attribute.
+        public override IReadOnlyList<ComponentType> IncompatibleComponentTypes { get; } = new ComponentType[] { };
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Rubberduck.Parsing.UIContext;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public class SmartIndenterParentMenu : ParentMenuItemBase
     {
-        public SmartIndenterParentMenu(IEnumerable<IMenuItem> items)
-            : base("SmartIndenterMenu", items)
+        public SmartIndenterParentMenu(IEnumerable<IMenuItem> items, IUiDispatcher dispatcher)
+            : base(dispatcher, "SmartIndenterMenu", items)
         {
         }
 

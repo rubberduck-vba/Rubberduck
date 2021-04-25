@@ -804,7 +804,7 @@ End Sub
                 var expected = declarations.FirstOrDefault(decl => decl.IdentifierName.Equals("expected"));
 
                 var enclosing = declarations.FirstOrDefault(decl => decl.IdentifierName.Equals("Bar"));
-                var context = enclosing?.Context.GetDescendent<VBAParser.ArgumentExpressionContext>();
+                var context = enclosing?.Context.GetDescendent<VBAParser.ArgumentContext>();
                 var actual = state.DeclarationFinder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(context, enclosing);
 
                 Assert.AreEqual(expected, actual);
