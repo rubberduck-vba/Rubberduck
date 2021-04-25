@@ -1,7 +1,6 @@
 ﻿using Rubberduck.Interaction;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
-using Rubberduck.Resources;
 using Rubberduck.Refactorings.RemoveParameters;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters

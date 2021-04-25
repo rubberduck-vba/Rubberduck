@@ -39,7 +39,7 @@ namespace Rubberduck.UI.Refactorings
 
         public string NewName
         {
-            get { return NewNameBox.Text; }
+            get => NewNameBox.Text;
             set
             {
                 NewNameBox.Text = value;

@@ -99,7 +99,7 @@ namespace Rubberduck.UI.Refactorings
 
         public bool SetReturnValue
         {
-            get { return _setReturnValue; }
+            get => _setReturnValue;
             set
             {
                 _setReturnValue = value;
@@ -112,7 +112,7 @@ namespace Rubberduck.UI.Refactorings
         private Accessibility _accessibility;
         public Accessibility Accessibility
         {
-            get { return _accessibility; }
+            get => _accessibility;
             set
             {
                 _accessibility = value; 
@@ -134,18 +134,14 @@ namespace Rubberduck.UI.Refactorings
         private void OnViewEvent(EventHandler target, EventArgs args = null)
         {
             var handler = target;
-            if (handler == null)
-            {
-                return;
-            }
 
-            handler(this, args ?? EventArgs.Empty);
+            handler?.Invoke(this, args ?? EventArgs.Empty);
         }
 
         private string _preview;
         public string Preview
         {
-            get { return _preview; }
+            get => _preview;
             set
             {
                 _preview = value;
@@ -168,12 +164,8 @@ namespace Rubberduck.UI.Refactorings
         private BindingList<ExtractedParameter> _returnValues; 
         public IEnumerable<ExtractedParameter> ReturnValues
         {
-            get { return _returnValues; }
-            set
-            {
-                _returnValues = new BindingList<ExtractedParameter>(value.ToList());
-                var items = _returnValues.ToArray();
-            }
+            get => _returnValues;
+            set => _returnValues = new BindingList<ExtractedParameter>(value.ToList());
         }
 
         private readonly ExtractedParameter _returnValue;
@@ -186,7 +178,7 @@ namespace Rubberduck.UI.Refactorings
 
         public string MethodName
         {
-            get { return MethodNameBox.Text; }
+            get => MethodNameBox.Text;
             set
             {
                 MethodNameBox.Text = value;

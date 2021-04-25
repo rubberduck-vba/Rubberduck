@@ -47,9 +47,6 @@
             <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Boolean}" CollapseSpecialValue="False" x:Key="BooleanArgumentVisibilityConverter"/>
             <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Inspection}" CollapseSpecialValue="False" x:Key="InspectionArgumentVisibilityConverter"/>
             <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentValueTemplate">
-                <DataTemplate.Resources>
-                    <CollectionViewSource Source="{Binding InspectionNames}" x:Key="InspectionNamesView" />
-                </DataTemplate.Resources>
                 <StackPanel VerticalAlignment="Center">
                     <TextBox Text="{Binding ArgumentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                              Style="{StaticResource TextBoxErrorStyle}"

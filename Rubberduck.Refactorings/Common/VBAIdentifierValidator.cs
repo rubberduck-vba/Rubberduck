@@ -26,8 +26,8 @@ namespace Rubberduck.Refactorings.Common
         public static bool TryMatchMeaninglessIdentifierCriteria(string name, out string criteriaMatchMessage)
         {
             criteriaMatchMessage = string.Empty;
-            string Vowels = "aeiouyàâäéèêëïîöôùûü";
-            int MinimumNameLength = 3;
+            const string Vowels = "aeiouyàâäéèêëïîöôùûü";
+            const int MinimumNameLength = 3;
 
             bool HasVowel()
                 => name.Any(character => Vowels.Any(vowel =>
