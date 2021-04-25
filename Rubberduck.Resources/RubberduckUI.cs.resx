@@ -636,7 +636,7 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
     <value>Zarovnat 'dimy'</value>
   </data>
   <data name="IndenterSettings_AlignmentOptionsLabel" xml:space="preserve">
-    <value>Nastavení Zarovnání</value>
+    <value>Nastavení zarovnání</value>
   </data>
   <data name="IndenterSettings_EnableOptionsLabel" xml:space="preserve">
     <value>Povolit Nastavení</value>
@@ -873,7 +873,7 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
     <value>Specifikujte Název Kopie Lokální Proměnné</value>
   </data>
   <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
-    <value>Příklad Odsazeného Kódu</value>
+    <value>Příklad odsazeného kódu</value>
   </data>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
     <value>Momentálně používáte Rubberduck verzi {0}.
@@ -1640,5 +1640,32 @@ Chcete pokračovat?</value>
   </data>
   <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
     <value>Obalit Pole Privátním Typem</value>
+  </data>
+  <data name="DeclarationType_Document" xml:space="preserve">
+    <value>dokument</value>
+  </data>
+  <data name="TestOutcome_Ignored" xml:space="preserve">
+    <value>Ignorováno</value>
+  </data>
+  <data name="IndenterSettings_GroupRelatedProperties" xml:space="preserve">
+    <value>Odeberte vertikální mezeru mezi souvisejícími property členy</value>
+  </data>
+  <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
+    <value>Nahradit Členy za Členy Rozhraní</value>
+  </data>
+  <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
+    <value>Možnosti Implementace:</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToInterfaceMembers" xml:space="preserve">
+    <value>Přeposlat volání členů objektů na členy rozhraní</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
+    <value>Přeposlat volání členů rozhraní na členy objektů</value>
+  </data>
+  <data name="ExtractInterface_OptionAddEmptyImplementation" xml:space="preserve">
+    <value>Přidat Prázdnou Implementaci</value>
+  </data>
+  <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
+    <value>{0} {1} {2} {3} {4} {5}</value>
   </data>
 </root>

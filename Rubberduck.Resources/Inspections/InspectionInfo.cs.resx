@@ -443,4 +443,22 @@ když by toto mohlo být úmyslné, v mnoha situacích to jen maskuje chybně za
   <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
     <value>Pokud není definována klausule typu 'As' pro deklaraci 'Const', použije se implicitní typ. Explicitně definujte ' As &lt;Type&gt;', kde '&lt;Type&gt;' je korektní data typ hodnoty konstanty.</value>
   </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>Komentář byl parsován jako syntakticky platná anotace, ale nebyl rozpoznán jako podporovaný typ anotace.</value>
+  </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>Poslední parametr (parametr 'Value') mutátorů vlastností (Let/Set) je vždy předán jako ByVal. To platí bez ohledu na přítomnost nebo absenci ByRef/ByVal modifikátorů. Výjimka: UserDefinedType musí být vždy předán jako ByRef, i když se jedná o poslední parametr mutátoru vlastní.</value>
+  </data>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Anotaci nelze navázat na požadovaný cíl. Má zde anotace být? Anotaci, kterou je třeba specifikovat na úrovni modulu, nelze použít k anotaci členů; naopak, anotaci, kterou jsou specifikovány členy, nelze použít na úrovni modulu.</value>
+  </data>
+  <data name="AnnotationInIncompatibleComponentTypeInspection" xml:space="preserve">
+    <value>V typu modulu, ve kterém není možno specifikovat anotaci, byla specifikována anotace. Některé anotace lze použít pouze u specifických typech modulů. U jiných toto nelze.</value>
+  </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>Implicitní odkazy na členy sešitu uvnitř modulu dokumentu sešitu lze chybně zaměnit za implicitní odkazy na aktivní sešit, což je normální chování ve všech ostatních modulech. Tím, že explicitně kvalifikujete tato volání členů s 'Me', lze vyřešit tuto dvojznačnost. Pokud byl záměr odkazovat na aktivní sešit, abyste předešli chybám, kvalifikujte volání na 'ActiveWorkbook'.</value>
+  </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>Implicitní odkazy na členy listu uvnitř modulu dokumentu listu lze chybně zaměnit za implicitní odkazy na aktivní list, což je normální chování ve všech ostatních modulech. Tím, že explicitně kvalifikujete tato volání členů s 'Me', lze vyřešit tuto dvojznačnost. Pokud byl záměr odkazovat na aktivní list, abyste předešli chybám, kvalifikujte volání na 'ActiveSheet'.</value>
+  </data>
 </root>
