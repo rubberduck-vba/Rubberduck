@@ -26,40 +26,51 @@ namespace Rubberduck.UI.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            const char nonBreakingSpace = '\u00A0';
             if (value is SearchResultItem item)
             {
                 var textBlock = new TextBlock();
                 textBlock.TextWrapping = TextWrapping.Wrap;
 
-                var input = item.ResultText;
-                string escapedXml = input;// SecurityElement.Escape(input);
-
+                var input = item.ResultText.Replace(' ', nonBreakingSpace);
                 if (item.HighlightIndex.HasValue)
                 {
                     var highlight = item.HighlightIndex.Value;
                     if (highlight.StartColumn > 0)
                     {
-                        var preRun = new Run(escapedXml.Substring(0, highlight.StartColumn));
+                        var preRun = new Run(input.Substring(0, highlight.StartColumn))
+                        {
+                            Foreground = Brushes.DimGray,
+                            FontFamily = new FontFamily("Consolas")
+                        };
                         textBlock.Inlines.Add(preRun);
                     }
 
-                    var highlightRun = new Run(escapedXml.Substring(highlight.StartColumn, highlight.EndColumn - highlight.StartColumn + 1))
+                    var highlightRun = new Run(input.Substring(highlight.StartColumn, 
+                        highlight.EndLine == highlight.StartLine 
+                                ? highlight.EndColumn - highlight.StartColumn
+                                : highlight.StartColumn + highlight.EndColumn - 1))
                     {
                         Background = Brushes.Yellow,
-                        Foreground = Brushes.Black,
-                        FontWeight = FontWeights.SemiBold
+                        Foreground = Brushes.DimGray,
+                        FontWeight = FontWeights.Bold,
+                        FontFamily = new FontFamily("Consolas")
                     };
                     textBlock.Inlines.Add(highlightRun);
 
                     if (highlight.EndColumn < item.ResultText.Length - 1)
                     {
-                        var postRun = new Run(escapedXml.Substring(highlight.EndColumn + 1));
+                        var postRun = new Run(input.Substring(highlight.EndColumn))
+                        {
+                            Foreground = Brushes.DimGray,
+                            FontFamily = new FontFamily("Consolas")
+                        };
                         textBlock.Inlines.Add(postRun);
                     }
                 }
                 else
                 {
-                    textBlock.Inlines.Add(new Run(escapedXml));
+                    textBlock.Inlines.Add(new Run(input));
                 }
 
                 return textBlock;

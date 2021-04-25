@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -130,6 +131,15 @@ namespace Rubberduck.Parsing.Symbols
         {
             return QualifiedModuleName == selection.QualifiedName &&
                    Selection.ContainsFirstCharacter(selection.Selection);
+        }
+
+        public virtual (string context, Selection highlight) HighligthSelection(ICodeModule module)
+        {
+            var lines = module.GetLines(Selection.StartLine, Selection.LineCount).Split('\n');
+
+            var line = lines[0]; // TODO think of something that makes sense for multiline
+            var indent = line.TakeWhile(c => c.Equals(' ')).Count();
+            return (line.Trim(), new Selection(1, Math.Max(Selection.StartColumn - indent,1), 1, Math.Max(Selection.EndColumn - indent,1)).ToZeroBased());
         }
 
         public bool Equals(IdentifierReference other)

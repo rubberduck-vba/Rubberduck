@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Rubberduck.AddRemoveReferences;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor.Events;
@@ -56,7 +57,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 {
                     return;
                 }
-                _finder.FindAllReferences(node.Parent.Declaration, model.ToReferenceInfo());
+                _finder.FindAllReferences((ProjectDeclaration)node.Parent.Declaration, model.ToReferenceInfo());
                 return;
             }
 

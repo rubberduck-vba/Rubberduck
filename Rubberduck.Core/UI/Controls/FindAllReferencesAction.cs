@@ -50,31 +50,58 @@ namespace Rubberduck.UI.Controls
             _uiDispatcher.InvokeAsync(UpdateTab);
         }
 
-        public void FindAllReferences(Declaration declaration)
+        public void FindAllReferences(Declaration target)
         {
             if (_state.Status != ParserState.Ready)
             {
+                _logger.Info($"ParserState is {_state.Status}. This action requires a Ready state.");
                 return;
             }
 
-            var viewModel = CreateViewModel(declaration);
-            if (!viewModel.SearchResults.Any())
+            var viewModel = CreateViewModel(target);
+            if (!Confirm(target.IdentifierName, viewModel.SearchResults.Count))
             {
-                _messageBox.NotifyWarn(string.Format(RubberduckUI.AllReferences_NoneFound, declaration.IdentifierName), RubberduckUI.Rubberduck);
                 return;
             }
 
+            ShowResults(viewModel);
+        }
+
+        public void FindAllReferences(ProjectDeclaration project, ReferenceInfo reference)
+        {
+            if (_state.Status != ParserState.Ready)
+            {
+                _logger.Info($"ParserState is {_state.Status}. This action requires a Ready state.");
+                return;
+            }
+
+            var usages = _state.DeclarationFinder.FindAllReferenceUsesInProject(project, reference, out var referenceProject).ToList();
+            if (referenceProject == null)
+            {
+                return;
+            }
+            if (!Confirm(referenceProject.IdentifierName, usages.Count))
+            {
+                return;
+            }
+
+            var viewModel = CreateViewModel(project, referenceProject.IdentifierName, usages);
+            ShowResults(viewModel);
+        }
+
+        private void ShowResults(SearchResultsViewModel viewModel)
+        {
             if (viewModel.SearchResults.Count == 1)
             {
-                _navigateCommand.Execute(viewModel.SearchResults.Single().GetNavigationArgs());
+                viewModel.NavigateCommand.Execute(viewModel.SearchResults[0].GetNavigationArgs());
                 return;
             }
 
-            _viewModel.AddTab(viewModel);
-            _viewModel.SelectedTab = viewModel;
-
             try
             {
+                _viewModel.AddTab(viewModel);
+                _viewModel.SelectedTab = viewModel;
+
                 var presenter = _presenterService.Presenter(_viewModel);
                 presenter.Show();
             }
@@ -84,99 +111,90 @@ namespace Rubberduck.UI.Controls
             }
         }
 
-        public void FindAllReferences(Declaration declaration, ReferenceInfo reference)
+        private bool Confirm(string identifier, int referencesFound)
         {
-            if (_state.Status != ParserState.Ready ||
-                !(declaration is ProjectDeclaration project))
+            const int threshold = 1000;
+            if (referencesFound == 0)
             {
-                return;
+                _messageBox.NotifyWarn(
+                    string.Format(RubberduckUI.AllReferences_NoneFoundReference, identifier), 
+                    RubberduckUI.Rubberduck);
+                return false;
             }
 
-            var usages = _state.DeclarationFinder.FindAllReferenceUsesInProject(project, reference, out var referenceProject)
-                .Select(usage =>
-                new SearchResultItem(usage.ParentNonScoping,
-                    new NavigateCodeEventArgs(usage.QualifiedModuleName, usage.Selection),
-                    GetTrimmedModuleLine(usage.QualifiedModuleName, usage.Selection.StartLine, out var indent),
-                    new Selection(1, usage.Selection.StartColumn - indent, 1, usage.Selection.EndColumn - indent - 1).ToZeroBased()))
-                .ToList();
-
-            if (!usages.Any())
+            if (referencesFound > threshold)
             {
-                _messageBox.NotifyWarn(string.Format(RubberduckUI.AllReferences_NoneFoundReference, referenceProject.IdentifierName), RubberduckUI.Rubberduck);
-                return;
+                return _messageBox.ConfirmYesNo(
+                    string.Format(RubberduckUI.AllReferences_PerformanceWarning, identifier, referencesFound),
+                    RubberduckUI.PerformanceWarningCaption);
             }
 
-            if (usages.Count > 1000 &&
-                !_messageBox.ConfirmYesNo(string.Format(RubberduckUI.AllReferences_PerformanceWarning, referenceProject.IdentifierName, usages.Count),
-                    RubberduckUI.PerformanceWarningCaption))
-            {
-                return;
-            }
-
-            var viewModel = CreateViewModel(project, referenceProject, usages);
-            _viewModel.AddTab(viewModel);
-            _viewModel.SelectedTab = viewModel;
-
-            try
-            {
-                var presenter = _presenterService.Presenter(_viewModel);
-                presenter.Show();
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
+            return true;
         }
 
-        private string GetTrimmedModuleLine(QualifiedModuleName module, int line, out int indent)
-        {
-            var component = _state.ProjectsProvider.Component(module);
-            using (var codeModule = component.CodeModule)
-            {
-                var code = codeModule.GetLines(line, 1);
-                indent = code.TakeWhile(c => c.Equals(' ')).Count();
-                return code.Trim();
-            }
-        }
 
-        private SearchResultsViewModel CreateViewModel(ProjectDeclaration project, ProjectDeclaration reference, IEnumerable<SearchResultItem> results)
+        private SearchResultsViewModel CreateViewModel(Declaration declaration, string identifier = null, IEnumerable<IdentifierReference> references = null)
         {
-            var viewModel = new SearchResultsViewModel(_navigateCommand,
-                string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, reference.IdentifierName), project, results);
-
-            return viewModel;
-        }
-
-        private SearchResultsViewModel CreateViewModel(Declaration declaration)
-        {
-            var results = declaration.References
+            var nameRefs = (references ?? declaration.References)
                 .Where(reference => !reference.IsArrayAccess)
                 .Distinct()
-                .Select(reference =>
-                    new SearchResultItem(
-                        reference.ParentNonScoping,
-                        new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection),
-                        GetTrimmedModuleLine(reference.QualifiedModuleName, reference.Selection.StartLine, out var indent),
-                        new Selection(1, reference.Selection.StartColumn - indent, 1, reference.Selection.EndColumn - indent - 1).ToZeroBased()))
-                .Concat((declaration is ParameterDeclaration parameter)
-                    ? parameter.ArgumentReferences.Select(argument =>
-                        new SearchResultItem(
-                            argument.ParentNonScoping,
-                            new NavigateCodeEventArgs(argument.QualifiedModuleName, argument.Selection),
-                            GetTrimmedModuleLine(argument.QualifiedModuleName, argument.Selection.StartLine, out var indent),
-                            new Selection(1, argument.Selection.StartColumn - indent, 1, argument.Selection.EndColumn - indent - 1).ToZeroBased()))
-                    : Enumerable.Empty<SearchResultItem>());
+                .GroupBy(reference => reference.QualifiedModuleName)
+                .ToDictionary(group => group.Key);
+
+            var argRefs = (declaration is ParameterDeclaration parameter
+                    ? parameter.ArgumentReferences
+                    : Enumerable.Empty<ArgumentReference>())
+                .Distinct()
+                .GroupBy(argRef => argRef.QualifiedModuleName)
+                .ToDictionary(group => group.Key);
+
+            var results = new List<SearchResultItem>();
+            var modules = nameRefs.Keys.Concat(argRefs.Keys).Distinct();
+            foreach (var qualifiedModuleName in modules)
+            {
+                var component = _state.ProjectsProvider.Component(qualifiedModuleName);
+                var module = component.CodeModule;
+
+                if (nameRefs.TryGetValue(qualifiedModuleName, out var identifierReferences))
+                {
+                    foreach (var identifierReference in identifierReferences)
+                    {
+                        var (context, selection) = identifierReference.HighligthSelection(module);
+                        var result = new SearchResultItem(
+                            identifierReference.ParentNonScoping,
+                            new NavigateCodeEventArgs(qualifiedModuleName, identifierReference.Selection),
+                            context, selection);
+                        results.Add(result);
+                    }
+                }
+
+                if (argRefs.TryGetValue(qualifiedModuleName, out var argReferences))
+                {
+                    foreach (var argumentReference in argReferences)
+                    {
+                        var (context, selection) = argumentReference.HighligthSelection(module);
+                        var result = new SearchResultItem(
+                            argumentReference.ParentNonScoping,
+                            new NavigateCodeEventArgs(qualifiedModuleName, argumentReference.Selection),
+                            context, selection);
+                        results.Add(result);
+                    }
+                }
+            }
 
             var accessor = declaration.DeclarationType.HasFlag(DeclarationType.PropertyGet) ? "(get)"
                 : declaration.DeclarationType.HasFlag(DeclarationType.PropertyLet) ? "(let)"
                 : declaration.DeclarationType.HasFlag(DeclarationType.PropertySet) ? "(set)"
                 : string.Empty;
 
-            var tabCaption = $"{declaration.IdentifierName} {accessor}".Trim();
+            var tabCaption = $"{identifier ?? declaration.IdentifierName} {accessor}".Trim();
 
 
             var viewModel = new SearchResultsViewModel(_navigateCommand,
-                string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, tabCaption), declaration, results);
+                string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, tabCaption), declaration, 
+                results.OrderBy(item => item.ParentScope.QualifiedModuleName.ToString())
+                       .ThenBy(item => item.Selection)
+                       .ToList());
 
             return viewModel;
         }
