@@ -5,7 +5,7 @@ using System.Linq;
 namespace Rubberduck.Parsing
 {
     /// <summary>
-    /// Provide extensions on selections & contexts/tokens
+    /// Provide extensions on selections and contexts/tokens
     /// to assist in validating whether a selection contains
     /// a given context or a token. 
     /// </summary>

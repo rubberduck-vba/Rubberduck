@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
+using Path = System.IO.Path;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop.VB6;
@@ -103,13 +103,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             get
             {
-                if (IsWrappingNullReference)
+                try
+                {
+                    if (IsWrappingNullReference)
+                    {
+                        return false;
+                    }
+                    using (var designer = new UserForm(Target.Designer as VB.VBForm))
+                    {
+                        return !designer.IsWrappingNullReference;
+                    }
+                }
+                catch
                 {
                     return false;
-                }
-                using (var designer = new UserForm(Target.Designer as VB.VBForm))
-                {
-                    return !designer.IsWrappingNullReference;
                 }
             }
         }

@@ -19,6 +19,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// a parameter that is passed by reference (implicitly, or explicitly ByRef) makes it ambiguous from the calling code's standpoint, whether the 
     /// procedure might re-assign these ByRef values and introduce a bug.
     /// </why>
+    /// <remarks>For performance reasons, this inspection will not flag a parameter that is passed as an argument to a procedure that also accepts it ByRef.</remarks>
     /// <example hasResult="true">
     /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
@@ -35,6 +36,21 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Public Sub DoSomething(ByVal foo As long, ByRef bar As Long)
     ///     bar = foo * 2 ' ByRef parameter assignment: passing it ByVal could introduce a bug.
     ///     Debug.Print foo, bar
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// Public Sub DoSomething(ByVal foo As long, ByRef bar As Long)
+    ///     DoSomethingElse bar ' ByRef argument will not be flagged
+    ///     Debug.Print foo, bar
+    /// End Sub
+    ///
+    /// Private Sub DoSomethingElse(ByRef wouldNeedRecursiveLogic As Long)
+    ///    Debug.Print wouldNeedRecursiveLogic
     /// End Sub
     /// ]]>
     /// </module>
@@ -126,7 +142,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 return false;
             }
 
-            var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, module);
+            var argument = argExpression.GetAncestor<VBAParser.ArgumentContext>();
+            var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argument, module);
 
             if (parameter == null)
             {

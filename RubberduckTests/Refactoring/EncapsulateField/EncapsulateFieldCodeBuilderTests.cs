@@ -9,14 +9,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     [TestFixture]
     public class EncapsulateFieldCodeBuilderTests
     {
-        private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
-
-        [SetUp]
-        public void ExecutesBeforeAllTests()
-        {
-            Support.ResetResolver();
-        }
-
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
@@ -103,8 +95,9 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 var encapsulateTarget = state.AllUserDeclarations.Single(d => d.IdentifierName.Equals(prototypeIdentifier));
 
                 attrSet.Declaration = encapsulateTarget;
+                var resolver = EncapsulateFieldTestSupport.GetResolver(state);
 
-                return Support.Resolve<IEncapsulateFieldCodeBuilder>(state)
+                return resolver.Resolve<IEncapsulateFieldCodeBuilder>()
                     .BuildPropertyBlocks(attrSet);
             }
         }

@@ -6,12 +6,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class ExcelApp : HostApplicationBase<Microsoft.Office.Interop.Excel.Application>
     {
-        private IEnumerable<(ComponentType componentType, string moduleName, string procedureName)>
-            _autoMacroIdentifiers;
-
-        public ExcelApp(IVBE vbe) : base(vbe, "Excel", true)
-        {
-        }
+        public ExcelApp(IVBE vbe) : base(vbe, "Excel", true) { }
 
         public override IEnumerable<HostAutoMacro> AutoMacroIdentifiers => new HostAutoMacro[]
         {

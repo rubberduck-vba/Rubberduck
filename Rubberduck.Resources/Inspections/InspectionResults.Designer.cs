@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Inspections {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InspectionResults {
@@ -322,15 +322,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Annotation &apos;{0}&apos; is illegal in this context..
-        /// </summary>
-        public static string IllegalAnnotationInspection {
-            get {
-                return ResourceManager.GetString("IllegalAnnotationInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Interface class module &apos;{2}&apos; contains a concrete implementation for {0} &apos;{1}&apos;..
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
@@ -480,6 +471,33 @@ namespace Rubberduck.Resources.Inspections {
         public static string IntegerDataTypeInspection {
             get {
                 return ResourceManager.GetString("IntegerDataTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation &apos;{0}&apos; is invalid in this context..
+        /// </summary>
+        public static string InvalidAnnotationInspection {
+            get {
+                return ResourceManager.GetString("InvalidAnnotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation &apos;{0}&apos; cannot be used in a &apos;{1}&apos;..
+        /// </summary>
+        public static string InvalidAnnotationInspection_IncompatibleComponentType {
+            get {
+                return ResourceManager.GetString("InvalidAnnotationInspection_IncompatibleComponentType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation &apos;{0}&apos; is used in a &apos;{1}&apos;, but is only valid in a &apos;{2}&apos;..
+        /// </summary>
+        public static string InvalidAnnotationInspection_NotInRequiredComponentType {
+            get {
+                return ResourceManager.GetString("InvalidAnnotationInspection_NotInRequiredComponentType", resourceCulture);
             }
         }
         
@@ -1050,6 +1068,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UnreachableCaseInspection_Unreachable {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection_Unreachable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a recognized Rubberduck annotation (yet?).
+        /// </summary>
+        public static string UnrecognizedAnnotationInspection {
+            get {
+                return ResourceManager.GetString("UnrecognizedAnnotationInspection", resourceCulture);
             }
         }
         

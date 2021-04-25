@@ -36,9 +36,9 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
 
         public static bool operator !=(Limit<T> LHS, Limit<T> RHS) => !(LHS == RHS);
 
-        public static bool operator >(Limit<T> LHS, T RHS) => LHS.HasValue ? LHS.Value.CompareTo(RHS) > 0 : false;
+        public static bool operator >(Limit<T> LHS, T RHS) => LHS.HasValue && LHS.Value.CompareTo(RHS) > 0;
 
-        public static bool operator <(Limit<T> LHS, T RHS) => LHS.HasValue? LHS.Value.CompareTo(RHS) < 0 : false;
+        public static bool operator <(Limit<T> LHS, T RHS) => LHS.HasValue && LHS.Value.CompareTo(RHS) < 0;
 
         public static bool operator >=(Limit<T> LHS, Limit<T> RHS) => LHS == RHS || LHS > RHS;
 
@@ -106,7 +106,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
 
         public bool SetMinimum(T min)
         {
-            var setNewValue = false;
+            bool setNewValue;
             if (_min.HasValue)
             {
                 setNewValue = min.CompareTo(_min.Value) > 0;
@@ -123,7 +123,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
 
         public bool SetMaximum(T max)
         {
-            var setNewValue = false;
+            bool setNewValue;
             if (_max.HasValue)
             {
                 setNewValue = max.CompareTo(_max.Value) < 0;
@@ -195,6 +195,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
             return true;
         }
 
+        public override int GetHashCode() => VBEditor.HashCode.Compute(Minimum, Maximum);
+
         public override string ToString()
         {
             var minString = string.Empty;
@@ -202,13 +204,13 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
             if (_min.HasValue)
             {
                 minString = MinimumExtent.HasValue && _min == MinimumExtent
-                    ? $"Min(typeMin)" : $"Min({_min.ToString()})";
+                    ? $"Min(typeMin)" : $"Min({_min})";
             }
 
             if (_max.HasValue)
             {
                 maxString = MaximumExtent.HasValue && _max == MaximumExtent
-                    ? $"Max(typeMax)" : $"Max({_max.ToString()})";
+                    ? $"Max(typeMax)" : $"Max({_max})";
             }
             return $"{minString}{maxString}";
         }

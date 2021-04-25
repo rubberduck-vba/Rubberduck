@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.Annotations
 {
@@ -9,13 +10,15 @@ namespace Rubberduck.Parsing.Annotations
         private readonly string _attribute;
         private readonly IReadOnlyList<string> _attributeValues;
 
-        protected FixedAttributeValueAnnotationBase(string name, AnnotationTarget target, string attribute, IEnumerable<string> attributeValues, bool allowMultiple = false)
+        protected FixedAttributeValueAnnotationBase(string name, AnnotationTarget target, string attribute, IEnumerable<string> attributeValues, bool allowMultiple = false, IReadOnlyList<ComponentType> incompatibleComponentTypes = null)
             : base(name, target, allowMultiple: allowMultiple)
         {
             // IEnumerable makes specifying the compile-time constant list easier on us
             _attributeValues = attributeValues.ToList();
             _attribute = attribute;
         }
+
+        public override IReadOnlyList<ComponentType> IncompatibleComponentTypes { get; } = new[] { ComponentType.Document };
 
         public IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues)
         {

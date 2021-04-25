@@ -16,7 +16,7 @@ namespace RubberduckTests.Refactoring.ExtractMethod
     {
 
         #region variableInternalAndOnlyUsedInternally
-        string internalVariable = @"
+        private readonly string internalVariable = @"
 Option explicit
 Public Sub CodeWithDeclaration()
     Dim x as long
@@ -39,33 +39,24 @@ End Sub
                                                '21:
 
 ";
-        string selectedCode = @"
+        private readonly string selectedCode = @"
 y = x + 1 
 x = 2
 Debug.Print y";
-
-        string outputCode = @"
-Public Sub NewVal( byval x as long, byval y as long)
-    DebugPrint ""something""
-    y = x + 1
-    x = 2
-    DebugPrint y
-End Sub";
         #endregion
 
-        List<IExtractMethodRule> emRules = new List<IExtractMethodRule>(){
-            new ExtractMethodRuleInSelection(),
-            new ExtractMethodRuleIsAssignedInSelection(),
-            new ExtractMethodRuleUsedBefore(),
-            new ExtractMethodRuleUsedAfter(),
-            new ExtractMethodRuleExternalReference()};
+        //private readonly List<IExtractMethodRule> emRules = new List<IExtractMethodRule>(){
+        //    new ExtractMethodRuleInSelection(),
+        //    new ExtractMethodRuleIsAssignedInSelection(),
+        //    new ExtractMethodRuleUsedBefore(),
+        //    new ExtractMethodRuleUsedAfter(),
+        //    new ExtractMethodRuleExternalReference()};
 
         [Test]
         [Category("ExtractMethodModelTests")]
-        public void shouldClassifyDeclarations()
+        public void ShouldClassifyDeclarations()
         {
-            QualifiedModuleName qualifiedModuleName;
-            using (var state = MockParser.ParseString(internalVariable, out qualifiedModuleName))
+            using (var state = MockParser.ParseString(internalVariable, out QualifiedModuleName qualifiedModuleName))
             {
                 var declarations = state.AllDeclarations;
 
@@ -88,9 +79,7 @@ End Sub";
         [TestFixture]
         public class WhenExtractingFromASelection : ExtractedMethodTests
         {
-
-            #region hard coded data
-            string inputCode = @"
+            private readonly string inputCode = @"
 Option explicit
 Public Sub CodeWithDeclaration()
     Dim x as long
@@ -112,35 +101,25 @@ End Sub
 
 
 ";
-            string selectedCode = @"
+            private readonly string selectedCode = @"
 y = x + 1 
 x = 2
 Debug.Print y";
-
-            string outputCode = @"
-Public Sub NewVal( byval x as long)
-    Dim y as long
-    y = x + 1
-    x = 2
-    DebugPrint y
-End Sub";
-            #endregion
 
             [TestFixture]
             public class WhenTheSelectionIsNotWithinAMethod : WhenExtractingFromASelection
             {
                 [Test]
                 [Category("ExtractMethodModelTests")]
-                public void shouldThrowAnException()
+                public void ShouldThrowAnException()
                 {
-                    QualifiedModuleName qualifiedModuleName;
-                    using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                    using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
                     {
                         var declarations = state.AllDeclarations;
 
                         var selection = new Selection(21, 1, 22, 17);
                         QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-                        
+
                         var extractedMethod = new Mock<IExtractedMethod>();
                         var paramClassify = new Mock<IExtractMethodParameterClassification>();
                         var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
@@ -154,10 +133,9 @@ End Sub";
 
             [Test]
             [Category("ExtractMethodModelTests")]
-            public void shouldProvideAListOfDimsNoLongerNeededInTheContainingMethod()
+            public void ShouldProvideAListOfDimsNoLongerNeededInTheContainingMethod()
             {
-                QualifiedModuleName qualifiedModuleName;
-                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
                 {
                     var declarations = state.AllDeclarations;
 
@@ -180,10 +158,9 @@ End Sub";
 
             [Test]
             [Category("ExtractMethodModelTests")]
-            public void shouldProvideTheSelectionOfLinesOfToRemove()
+            public void ShouldProvideTheSelectionOfLinesOfToRemove()
             {
-                QualifiedModuleName qualifiedModuleName;
-                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
                 {
                     var declarations = state.AllDeclarations;
 
@@ -218,10 +195,9 @@ End Sub";
 
             [Test]
             [Category("ExtractMethodModelTests")]
-            public void shouldProvideTheExtractMethodCaller()
+            public void ShouldProvideTheExtractMethodCaller()
             {
-                QualifiedModuleName qualifiedModuleName;
-                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
                 {
                     var declarations = state.AllDeclarations;
 
@@ -244,10 +220,9 @@ End Sub";
 
             [Test]
             [Category("ExtractMethodModelTests")]
-            public void shouldProvideThePositionForTheMethodCall()
+            public void ShouldProvideThePositionForTheMethodCall()
             {
-                QualifiedModuleName qualifiedModuleName;
-                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
                 {
                     var declarations = state.AllDeclarations;
 
@@ -269,10 +244,9 @@ End Sub";
 
             [Test]
             [Category("ExtractMethodModelTests")]
-            public void shouldProvideThePositionForTheNewMethod()
+            public void ShouldProvideThePositionForTheNewMethod()
             {
-                QualifiedModuleName qualifiedModuleName;
-                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
                 {
                     var declarations = state.AllDeclarations;
 
@@ -304,7 +278,7 @@ End Sub";
 
             [Test]
             [Category("ExtractMethodModelTests")]
-            public void shouldExcludeVariableInSignature()
+            public void ShouldExcludeVariableInSignature()
             {
 
                 #region inputCode
@@ -335,10 +309,10 @@ End Sub
 y = x + 1 
 x = 2
 Debug.Print y";
+
                 #endregion
 
-                QualifiedModuleName qualifiedModuleName;
-                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
                 {
                     var declarations = state.AllDeclarations;
 
@@ -370,7 +344,7 @@ Debug.Print y";
 
             [Test]
             [Category("ExtractMethodModelTests")]
-            public void shouldSplitTheCodeAroundTheDefinition()
+            public void ShouldSplitTheCodeAroundTheDefinition()
             {
 
                 #region inputCode
@@ -397,12 +371,6 @@ End Sub
 
 ";
 
-                var selectedCode = @"
-    DebugPrint x                      '8
-    y = x + 1
-    Dim z as long                     '10
-    z = x
-    DebugPrint z                      '12";
                 #endregion
 
                 #region whatItShouldLookLike
@@ -417,8 +385,7 @@ end sub
 */
                 #endregion
 
-                QualifiedModuleName qualifiedModuleName;
-                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
                 {
                     var declarations = state.AllDeclarations;
                     var selection = new Selection(8, 1, 12, 50);
@@ -428,7 +395,7 @@ end sub
                     var yDecl = declarations.Where(decl => decl.IdentifierName.Equals("z"));
                     var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
                     //Act
-                    var actual = SUT.splitSelection(selection, declarations);
+                    var actual = SUT.SplitSelection(selection, declarations);
                     //Assert
                     var selection1 = new Selection(8, 1, 9, 1);
                     var selection2 = new Selection(11, 1, 12, 1);
@@ -448,7 +415,7 @@ end sub
 
             [Test]
             [Category("ExtractMethodModelTests")]
-            public void testSelection()
+            public void TestSelection()
             {
                 IEnumerable<int> list = new List<int> { 2, 3, 4, 6, 8, 9, 10, 12, 13, 15 };
                 var grouped = list.GroupByMissing(x => (x + 1), (x, y) => new Selection(x, 1, y, 1), (x, y) => y - x);
@@ -456,7 +423,7 @@ end sub
 
             [Test]
             [Category("ExtractMethodModelTests")]
-            public void isUnordered()
+            public void IsUnordered()
             {
                 IEnumerable<int> list = new List<int> { 2, 3, 4, 6, 7, 9, 8, 12, 13, 15 };
 
@@ -466,7 +433,7 @@ end sub
 
             [Test]
             [Category("ExtractMethodModelTests")]
-            public void emptyList()
+            public void EmptyList()
             {
                 IEnumerable<int> list = new List<int> { };
                 var grouped = list.GroupByMissing(x => (x + 1), (x, y) => Tuple.Create(x, y), (x, y) => y - x).ToList();
@@ -475,7 +442,7 @@ end sub
 
             [Test]
             [Category("ExtractMethodModelTests")]
-            public void listOfSingleItem()
+            public void ListOfSingleItem()
             {
                 IEnumerable<int> list = new List<int> { 2 };
                 var grouped = list.GroupByMissing(x => (x + 1), (x, y) => Tuple.Create(x, y), (x, y) => y - x).ToList();
@@ -490,7 +457,7 @@ end sub
 
             [Test]
             [Category("ExtractMethodModelTests")]
-            public void testingUsefulList()
+            public void TestingUsefulList()
             {
                 IEnumerable<int> list = new List<int> { 2, 3, 4, 6, 8, 9, 10, 12, 13, 15 };
                 var grouped = list.GroupByMissing(x => (x + 1), (x, y) => Tuple.Create(x, y), (x, y) => y - x).ToList();

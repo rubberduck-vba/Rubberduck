@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
@@ -13,6 +14,12 @@ namespace RubberduckTests.Inspections
     [TestFixture]
     public class ImplicitActiveSheetReferenceInspectionTests : InspectionTestsBase
     {
+        private static readonly IDictionary<string, IEnumerable<string>> DefaultDocumentModuleSupertypeNames = new Dictionary<string, IEnumerable<string>>
+        {
+            ["ThisWorkbook"] = new[] { "Workbook", "_Workbook" },
+            ["Sheet1"] = new[] { "Worksheet", "_Worksheet" }
+        };
+
         [Test]
         [Category("Inspections")]
         public void ImplicitActiveSheetReference_ReportsRange()
@@ -23,8 +30,13 @@ namespace RubberduckTests.Inspections
     arr1 = Range(""A1:B2"")
 End Sub
 ";
-            var modules = new(string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
-            Assert.AreEqual(1, InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count());
+            var modules = new(string, string, ComponentType)[] 
+            {
+                ("ThisWorkbook", string.Empty, ComponentType.Document),
+                ("Sheet1", string.Empty, ComponentType.Document),
+                ("Class1", inputCode, ComponentType.ClassModule)
+            };
+            Assert.AreEqual(1, InspectionResultsForModules(modules, ReferenceLibrary.Excel, DefaultDocumentModuleSupertypeNames).Count());
         }
 
         [Test]
@@ -37,8 +49,13 @@ End Sub
     arr1 = Cells(1,2)
 End Sub
 ";
-            var modules = new (string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
-            Assert.AreEqual(1, InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count());
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("ThisWorkbook", string.Empty, ComponentType.Document),
+                ("Sheet1", string.Empty, ComponentType.Document),
+                ("Class1", inputCode, ComponentType.ClassModule)
+            };
+            Assert.AreEqual(1, InspectionResultsForModules(modules, ReferenceLibrary.Excel, DefaultDocumentModuleSupertypeNames).Count());
         }
 
         [Test]
@@ -51,8 +68,13 @@ End Sub
     arr1 = Columns(3)
 End Sub
 ";
-            var modules = new (string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
-            Assert.AreEqual(1, InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count());
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("ThisWorkbook", string.Empty, ComponentType.Document),
+                ("Sheet1", string.Empty, ComponentType.Document),
+                ("Class1", inputCode, ComponentType.ClassModule)
+            };
+            Assert.AreEqual(1, InspectionResultsForModules(modules, ReferenceLibrary.Excel, DefaultDocumentModuleSupertypeNames).Count());
         }
 
         [Test]
@@ -65,8 +87,13 @@ End Sub
     arr1 = Rows(3)
 End Sub
 ";
-            var modules = new (string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
-            Assert.AreEqual(1, InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count());
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("ThisWorkbook", string.Empty, ComponentType.Document),
+                ("Sheet1", string.Empty, ComponentType.Document),
+                ("Class1", inputCode, ComponentType.ClassModule)
+            };
+            Assert.AreEqual(1, InspectionResultsForModules(modules, ReferenceLibrary.Excel, DefaultDocumentModuleSupertypeNames).Count());
         }
 
         [Test]
@@ -79,21 +106,13 @@ End Sub
     arr1 = Cells(1,2)
 End Sub
 ";
-            var module = ("Sheet1", inputCode, ComponentType.Document);
-            var vbe = MockVbeBuilder.BuildFromModules(module, ReferenceLibrary.Excel).Object;
-
-            using (var state = MockParser.CreateAndParse(vbe))
+            var modules = new (string, string, ComponentType)[]
             {
-                var documentModule = state.DeclarationFinder.UserDeclarations(DeclarationType.Document)
-                    .OfType<DocumentModuleDeclaration>()
-                    .Single();
-                documentModule.AddSupertypeName("Worksheet");
-
-                var inspection = InspectionUnderTest(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+                ("ThisWorkbook", string.Empty, ComponentType.Document),
+                ("Sheet1", inputCode, ComponentType.Document),
+                ("Class1", string.Empty, ComponentType.ClassModule)
+            };
+            Assert.AreEqual(0, InspectionResultsForModules(modules, ReferenceLibrary.Excel, DefaultDocumentModuleSupertypeNames).Count());
         }
 
         [Test]
@@ -106,21 +125,75 @@ End Sub
     arr1 = Cells(1,2)
 End Sub
 ";
-            var module = ("Sheet1", inputCode, ComponentType.Document);
-            var vbe = MockVbeBuilder.BuildFromModules(module, ReferenceLibrary.Excel).Object;
-
-            using (var state = MockParser.CreateAndParse(vbe))
+            var modules = new (string, string, ComponentType)[]
             {
-                var documentModule = state.DeclarationFinder.UserDeclarations(DeclarationType.Document)
-                    .OfType<DocumentModuleDeclaration>()
-                    .Single();
-                documentModule.AddSupertypeName("Workbook");
+                ("ThisWorkbook", inputCode, ComponentType.Document),
+                ("Sheet1", string.Empty, ComponentType.Document),
+                ("Class1", string.Empty, ComponentType.ClassModule)
+            };
+            Assert.AreEqual(1, InspectionResultsForModules(modules, ReferenceLibrary.Excel, DefaultDocumentModuleSupertypeNames).Count());
+        }
 
-                var inspection = InspectionUnderTest(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveSheetReference_NoResultForWorksheetVariable()
+        {
+            const string inputCode =
+                @"Sub foo()
+    Dim sh As Worksheet
+    Set sh = Sheet1
+    Debug.Print sh.Cells(1, 1)
+End Sub
+";
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("ThisWorkbook", string.Empty, ComponentType.Document),
+                ("Sheet1", string.Empty, ComponentType.Document),
+                ("Module1", inputCode, ComponentType.StandardModule)
+            };
+            Assert.AreEqual(0, InspectionResultsForModules(modules, ReferenceLibrary.Excel, DefaultDocumentModuleSupertypeNames).Count());
+        }
 
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveSheetReference_NoResultForWorksheetFunction()
+        {
+            const string inputCode =
+                @"Sub foo()
+    Debug.Print GetSheet.Cells(1, 1)
+End Sub
+
+Private Function GetSheet() As Worksheet
+End Function
+";
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("ThisWorkbook", string.Empty, ComponentType.Document),
+                ("Sheet1", string.Empty, ComponentType.Document),
+                ("Module1", inputCode, ComponentType.StandardModule)
+            };
+            Assert.AreEqual(0, InspectionResultsForModules(modules, ReferenceLibrary.Excel, DefaultDocumentModuleSupertypeNames).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveSheetReference_NoResultForWorksheetProperty()
+        {
+            const string inputCode =
+                @"Sub foo()
+    Debug.Print GetSheet.Cells(1, 1)
+End Sub
+
+Private Property Get GetSheet() As Worksheet
+End Property
+";
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("ThisWorkbook", string.Empty, ComponentType.Document),
+                ("Sheet1", string.Empty, ComponentType.Document),
+                ("Module1", inputCode, ComponentType.StandardModule)
+            };
+            Assert.AreEqual(0, InspectionResultsForModules(modules, ReferenceLibrary.Excel, DefaultDocumentModuleSupertypeNames).Count());
         }
 
         [Test]
@@ -135,9 +208,14 @@ End Sub
     arr1 = Range(""A1:B2"")
 End Sub
 ";
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("ThisWorkbook", string.Empty, ComponentType.Document),
+                ("Sheet1", string.Empty, ComponentType.Document),
+                ("Class1", inputCode, ComponentType.ClassModule)
+            };
 
-            var modules = new(string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
-            Assert.AreEqual(0, InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count());
+            Assert.AreEqual(0, InspectionResultsForModules(modules, ReferenceLibrary.Excel, DefaultDocumentModuleSupertypeNames).Count());
         }
 
         [Test]

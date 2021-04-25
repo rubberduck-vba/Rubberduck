@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -155,7 +155,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 return false;
             }
 
-            var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, enclosingProcedure);
+            var argument = argExpression.GetAncestor<VBAParser.ArgumentContext>();
+            var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argument, enclosingProcedure);
 
             // note: not recursive, by design.
             return parameter != null

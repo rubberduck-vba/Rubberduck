@@ -422,10 +422,10 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Zugriffe auf Standardelemente verstecken, welches Element aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt. Dies kann dazu führen, dass Fehler durch vergessene Elementaufrufe nicht erkannt werden.</value>
   </data>
   <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Zugriffe auf Standardelement verstecken, welches Element aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt, und zudem das Standardelement nicht auf dem Interface des Objekts selber zu finden ist. Dies kann dazu führen, dass Fehler durch vergessene Elementaufrufe nicht erkannt werden..</value>
+    <value>Zugriffe auf das Standardelement verstecken, welches Element aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt, und zudem das Standardelement nicht auf dem Interface des Objekts selber zu finden ist. Dies kann dazu führen, dass Fehler durch vergessene Elementaufrufe nicht erkannt werden.</value>
   </data>
   <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Zugriffe auf Standardelemente verstecken, welches Element aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt, und zudem das Standarelement erst zur Laufzeit ermittelt werden kann. Dies kann dazu führen, dass Fehler durch vergessene Elementaufrufe nicht erkannt werden. Sollte weiterhin zur Laufzeit kein Standardelement auf dem Objekt existsieren, so kommt es zu einem Fehler 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht'.</value>
+    <value>Zugriffe auf das Standardelemente verstecken, welches Element aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt, und zudem das Standardelement erst zur Laufzeit ermittelt werden kann. Dies kann dazu führen, dass Fehler durch vergessene Elementaufrufe nicht erkannt werden. Sollte weiterhin zur Laufzeit kein Standardelement auf dem Objekt existsieren, so kommt es zu einem Fehler 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht'.</value>
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Wenn beide Seiten einer Zuweisung ohne Set Objekte sind, kommt es zu einer Zuweisung vom Standardelement der rechten Seite zu dem der linken. Auch wenn dies manchmal beabsichtigt sein kann, verschleiert es meistens, dass Set fehlerhafter Weise vergessen wurde.</value>
@@ -447,5 +447,8 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   </data>
   <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
     <value>Implizite Referenzen zu Elementen eines Worksheets in einem Worksheet-Modul können mit Referenzen zum aktiven Worksheet verwechselt werden, da dies das Verhalten für solche Referenzen ist überall außerhalb von Worksheet-Modulen. Die Uneindeutigkeit kann aufgelöst werden, indem die Referenzen mit 'Me' qualifiziert werden.</value>
+  </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>Der letzte Parameter (der 'Wert'-Parameter) der Eigenschaftsmutation wird immer als ByVal übergeben. Dies gilt unabhänig der An- oder Abwesenheit eines ByRef oder ByVal Modifizieres. Ausnahme: Ein nutzerdefinierter Type (UserDefinedType) muss immer als ByRef übergeben werden, auch wenn er der letzte Parameter einer Eigenschaftmutation ist.</value>
   </data>
 </root>

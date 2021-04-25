@@ -34,7 +34,6 @@ namespace RubberduckTests.Mocks
     /// <summary>
     /// Builds a mock <see cref="IVBE"/>.
     /// </summary>
-    [SuppressMessage("Microsoft.Design", "CA1001")] //CA1001 is complaining about RubberduckTests.Mocks.Windows, which doesn't need to be disposed in this context.
     public class MockVbeBuilder
     {
         public const string TestProjectName = "TestProject1";
