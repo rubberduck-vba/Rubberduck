@@ -1120,7 +1120,7 @@ begin
     begin
       Log('Skipping legacy workload config because the option was left unchecked.');
     end;
-  ;
+  end;
 
   // Re-enable the button disabled at start of procedure
   Wizardform.NextButton.Enabled := True;
