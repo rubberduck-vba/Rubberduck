@@ -9,7 +9,7 @@ using Rubberduck.Resources.Inspections;
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
-    /// Locates unqualified Worksheet.Range/Cells/Columns/Rows member calls inside worksheet modules.
+    /// Locates unqualified Worksheet.Range/Cells/Columns/Rows member calls outside worksheet modules.
     /// </summary>
     /// <reference name="Excel" />
     /// <why>
