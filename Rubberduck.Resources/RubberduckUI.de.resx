@@ -1703,4 +1703,10 @@ Eine private Klasse kann eine private Schnittstelle implementieren.</value>
   <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
     <value>Weiterreichen der Interface Elemente Aufrufe an die Object Elemente</value>
   </data>
+  <data name="DeclarationType_Document" xml:space="preserve">
+    <value>Dokument</value>
+  </data>
+  <data name="IndenterSettings_GroupRelatedProperties" xml:space="preserve">
+    <value>Entferne vertikalen Zwischenraum zwischen verwandten Eigenschaften</value>
+  </data>
 </root>
