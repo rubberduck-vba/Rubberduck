@@ -825,15 +825,6 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
   <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
     <value>Exportovat Aktivní Projekt</value>
   </data>
-  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
-    <value>Všechny Soubory</value>
-  </data>
-  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
-    <value>VB Soubory</value>
-  </data>
-  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
-    <value>Importovat Zdrojové Soubory</value>
-  </data>
   <data name="EmptyUIRefreshMessage" xml:space="preserve">
     <value>pro parsování a zpracování projektů ve VBE.</value>
   </data>
@@ -1216,6 +1207,12 @@ End Enum</value>
   <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
     <value>Nelze přerušit Parser k provedení operace refaktoringu.</value>
   </data>
+  <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
+    <value>carriage-return (CR)</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_CarriageReturnNewLine" xml:space="preserve">
+    <value>carriage-return-new-line</value>
+  </data>
   <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
     <value>Přípona souboru '{0}' není podporována.
 
@@ -1230,28 +1227,8 @@ Import přerušen.</value>
   <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Update Komponentů ze Souborů</value>
   </data>
-  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
-    <value>Kód pro komponentu '{0}' obsahuje více souborů.
-
-Import přerušen.</value>
-  </data>
   <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
     <value>Typ komponenty z existující komponenty '{0}' nesouhlasí s typem označeným příponou souboru '{1}'.
-
-Import přerušen.</value>
-  </data>
-  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
-    <value>Neexistuje žádný modul dokumentu s názvem '{0}'; soubor '{1}' nelze importovat.
-
-Import přerušen.</value>
-  </data>
-  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
-    <value>Pro soubor '{0}' chybí požadované binární soubor(y) '{1}' a cílová komponenta '{2}' ještě neexistuje.
-
-Import přerušen.</value>
-  </data>
-  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
-    <value>U souboru '{0}' chybí požadované binární soubory '{1}'.
 
 Import přerušen.</value>
   </data>

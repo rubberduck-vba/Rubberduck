@@ -920,15 +920,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
     <value>Export Active Project</value>
   </data>
-  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
-    <value>All Files</value>
-  </data>
-  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
-    <value>VB Files</value>
-  </data>
-  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
-    <value>Import Source Files</value>
-  </data>
   <data name="EmptyUIRefreshMessage" xml:space="preserve">
     <value>to parse and process the projects in the VBE.</value>
     <comment>Follows the text for "Refresh"</comment>
@@ -1416,12 +1407,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="VersionCheck_BuildType_Release" xml:space="preserve">
     <value>release</value>
   </data>
-  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
-    <value>The extension of the file '{0}' is not supported.
-
-Import aborted.</value>
-    <comment>{0} filename of unsupported file</comment>
-  </data>
   <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Replace Project Content from Files</value>
   </data>
@@ -1432,35 +1417,11 @@ Import aborted.</value>
   <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Update Components from Files</value>
   </data>
-  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
-    <value>Multiple files contain code for the component '{0}'.
-
-Import aborted.</value>
-    <comment>{0} module name</comment>
-  </data>
   <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
     <value>The component type of the existing component '{0}' does not agree with that indicated by the extension of file '{1}'.
 
 Import aborted.</value>
     <comment>{0} module name, {1} filename</comment>
-  </data>
-  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
-    <value>There is no existing document module with name '{0}'; file '{1}' cannot be imported.
-
-Import aborted.</value>
-    <comment>{0} module name, {1} filename</comment>
-  </data>
-  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
-    <value>For file '{0}', the required binary file(s) '{1}' are missing and the target component '{2}' does not already exists.
-
-Import aborted.</value>
-    <comment>{0} filename, {1} binaries, {2} module name</comment>
-  </data>
-  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
-    <value>For file '{0}', the requires binary file(s) '{1}' are missing.
-
-Import aborted.</value>
-    <comment>{0} filename, {1} binaries</comment>
   </data>
   <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
     <value>ActiveX Designer</value>

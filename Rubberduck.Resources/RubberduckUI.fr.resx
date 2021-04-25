@@ -840,20 +840,11 @@ Vous pouvez désactiver cette fonctionnalité dans le menu Rubberduck &gt; Param
     <value>pour analyser et traiter
 les projets dans le VBE.</value>
   </data>
-  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
-    <value>Fichiers VB</value>
-  </data>
   <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
     <value>{0}{1} ne peut être renommé.</value>
   </data>
   <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
     <value>La méthode {0} répond aux événements du contrôle '{1}'. Renommer '{1}'?</value>
-  </data>
-  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
-    <value>Tous les fichiers</value>
-  </data>
-  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
-    <value>Importer fichiers source</value>
   </data>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck ne voit rien pour l'instant.</value>
@@ -1246,11 +1237,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
     <value>Impossible de suspendre l'analyse en cours pour effectuer le refactoring.</value>
   </data>
-  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
-    <value>L'extension du fichier '{0}' n'est pas prise en charge.
-
-Importation annulée.</value>
-  </data>
   <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Remplacer le contenu du projet</value>
   </data>
@@ -1261,20 +1247,10 @@ Confirmer?</value>
   <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Mettre à jour les modules...</value>
   </data>
-  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
-    <value>Plus d'un fichier contient du code pour le componsant '{0}'.
-
-Échec de l'importation.</value>
-  </data>
   <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
     <value>Le type de composant de '{0}' ne correspond pas au type indiqué par l'extension du fichier '{1}'.
 
 Mise à jour annulée.</value>
-  </data>
-  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
-    <value>Aucun module document existant avec le nom '{0}'; le fichier '{1}' ne pourra pas être importé.
-
-Échec de l'importation.</value>
   </data>
   <data name="AnnotateDeclarationDialog_AddArgumentButtonLabel" xml:space="preserve">
     <value>Ajouter</value>

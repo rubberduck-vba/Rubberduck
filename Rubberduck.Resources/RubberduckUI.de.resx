@@ -842,20 +842,11 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   <data name="EmptyUIRefreshMessage" xml:space="preserve">
     <value>Um die Projekte in der VBE zu parsen und zu analysieren.</value>
   </data>
-  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
-    <value>VB Dateien</value>
-  </data>
   <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
     <value>{0} {1} kann nicht geändert werden.</value>
   </data>
   <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
     <value>Methode '{0}' ist ein EventHandler für die Schaltfläche '{1}'. Nur die Schaltfläche kann umbenannt werden. Stattdessen '{1}' umbennen?</value>
-  </data>
-  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
-    <value>Alle Dateien</value>
-  </data>
-  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
-    <value>Quellcode aus Datei importieren</value>
   </data>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck sieht noch nichts.</value>
@@ -1245,11 +1236,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="VersionCheck_BuildType_Release" xml:space="preserve">
     <value>Release</value>
   </data>
-  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
-    <value>Die Dateierweiterung der Datei '{0}' wird nicht unterstützt.
-
-Import abgebrochen.</value>
-  </data>
   <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Projektinhalt durch Inhalt von Dateien ersetzen</value>
   </data>
@@ -1259,28 +1245,8 @@ Import abgebrochen.</value>
   <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Komponenten aus Dateien aktualisieren</value>
   </data>
-  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
-    <value>Mehrere Dateien enthalten Code für die Komponente '{0}'.
-
-Import abgebrochen.</value>
-  </data>
   <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
     <value>Der Komponententyp der existierenden Komponente '{0}' stimmt nicht mit dem dem zur Dateierweiterung der Datei '{1}' gehörenden überein.
-
-Import abgebrochen.</value>
-  </data>
-  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
-    <value>Es existiert kein Dokumentenmodul namens '{0}', weshalb die Datei '{1}' nicht importiert werden kann.
-
-Import abgebrochen.</value>
-  </data>
-  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
-    <value>Für die Datei '{0}' fehlen die benötigte(n) Binärdatei(en) '{1}' und die Zielkomponente '{2}' existiert noch nicht.
-
-Import abgebrochen.</value>
-  </data>
-  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
-    <value>Für die Datei '{0}' fehlen die benötigte(n) Binärdatei(en) '{1}'.
 
 Import abgebrochen.</value>
   </data>
