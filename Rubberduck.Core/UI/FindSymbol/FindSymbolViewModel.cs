@@ -4,10 +4,13 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.FindSymbol
 {
@@ -19,24 +22,23 @@ namespace Rubberduck.UI.FindSymbol
             DeclarationType.Project
         };
 
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+
         public FindSymbolViewModel(IEnumerable<Declaration> declarations)
         {
             _declarations = declarations.Where(declaration => !ExcludedTypes.Contains(declaration.DeclarationType)).ToList();
-            
+            GoCommand = new DelegateCommand(Logger, ExecuteGoCommand, CanExecuteGoCommand);
             Search(string.Empty);
         }
 
         public event EventHandler<NavigateCodeEventArgs> Navigate;
 
-        public bool CanExecute()
-        {
-            return _searchString?.Equals(_selectedItem?.IdentifierName, StringComparison.InvariantCultureIgnoreCase) ?? false;
-        }
+        public ICommand GoCommand { get; }
 
-        public void Execute()
-        {
-            OnNavigate();
-        }
+        private bool CanExecuteGoCommand(object param) => _searchString?.Equals(_selectedItem?.IdentifierName, StringComparison.InvariantCultureIgnoreCase) ?? false;
+
+        private void ExecuteGoCommand(object param) => OnNavigate();
+
 
         public void OnNavigate()
         {

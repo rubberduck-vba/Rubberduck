@@ -9,12 +9,6 @@
              d:DesignHeight="24" d:DesignWidth="270"
              d:DataContext="{d:DesignInstance {x:Type local:FindSymbolViewModel}, IsDesignTimeCreatable=False}">
 
-    <UserControl.CommandBindings>
-        <CommandBinding Command="local:FindSymbolControl.GoCommand" 
-                        Executed="CommandBinding_OnExecuted"
-                        CanExecute="CommandBinding_OnCanExecute"/>
-    </UserControl.CommandBindings>
-
     <UserControl.Resources>
         <BitmapImage x:Key="ArrowImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow.png" />
         <local:SearchBoxMultiBindingConverter x:Key="SearchBoxTextConverter" />
@@ -35,9 +29,9 @@
                   IsTextSearchCaseSensitive="False"
                   IsTextSearchEnabled="True"
                   TextSearch.TextPath="IdentifierName">
-            <ComboBox.Resources>
-                <KeyBinding x:Key="EnterGo" Key="Return" Command="{Binding GoCommand}" />
-            </ComboBox.Resources>
+            <ComboBox.InputBindings>
+                <KeyBinding Command="{Binding GoCommand}" Key="Return" />
+            </ComboBox.InputBindings>
             <ComboBox.Text>
                 <MultiBinding Converter="{StaticResource SearchBoxTextConverter}">
                     <Binding Path="SearchString" Mode="OneWayToSource" UpdateSourceTrigger="PropertyChanged" />
@@ -62,7 +56,7 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
         
-        <Button Grid.Column="1" Command="local:FindSymbolControl.GoCommand">
+        <Button Grid.Column="1" Command="{Binding GoCommand}">
             <Image Height="16" Width="16" Source="{StaticResource ArrowImage}" />
         </Button>
         
