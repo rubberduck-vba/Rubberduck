@@ -1,3 +1,7 @@
+using Rubberduck.VBEditor.SafeComWrappers;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
@@ -37,6 +41,9 @@ namespace Rubberduck.Parsing.Annotations
     {
         public PredeclaredIdAnnotation()
             : base("PredeclaredId", AnnotationTarget.Module, "VB_PredeclaredId", new[] { "True" })
-        {}
+        { }
+
+        public override IReadOnlyList<ComponentType> IncompatibleComponentTypes =>
+            base.IncompatibleComponentTypes.Concat(new[] { ComponentType.StandardModule }).Distinct().ToList();
     }
 }

@@ -1373,7 +1373,7 @@ End Enum</value>
   </data>
   <data name="RegexAssistant_SpelledOut_CarriageReturnNewLine" xml:space="preserve">
     <value>carriage-return-new-line</value>
-  </date>
+  </data>
   <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
     <value>Přípona souboru '{0}' není podporována.
 
@@ -1428,9 +1428,6 @@ Import přerušen.</value>
   </data>
   <data name="ComponentType_UserControl" xml:space="preserve">
     <value>Uživatelský Control</value>
-  </data>
-  <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
-    <value>{0} {1} {2} {3} {4} {5}</value>
   </data>
   <data name="EncapsulateField_PreviewMarker" xml:space="preserve">
     <value>'&lt;===== Změny v deklaraci a vlastnostech nad tímto řádkem =====&gt;</value>

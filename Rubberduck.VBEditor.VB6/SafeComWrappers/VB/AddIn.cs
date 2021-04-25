@@ -8,12 +8,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class AddIn : SafeComWrapper<VB.AddIn>, IAddIn
     {
-
+        // this one is an index, not an ID:
         private const int MenuBar = 1;
-        private const int CodeWindow = 15;
-        private const int ProjectExplorer = 22;
-        private const int MsForm = 20;
-        private const int MsFormControl = 21;
 
         private const int WindowMenu = 30009;
         private const int ListProperties = 2529;
@@ -28,10 +24,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             CommandBarLocations = new ReadOnlyDictionary<CommandBarSite, CommandBarLocation>(new Dictionary<CommandBarSite, CommandBarLocation>
             {
                 {CommandBarSite.MenuBar, new CommandBarLocation(MenuBar, WindowMenu)},
-                {CommandBarSite.CodeWindow, new CommandBarLocation(CodeWindow, ListProperties)},
-                {CommandBarSite.ProjectExplorer, new CommandBarLocation(ProjectExplorer, ProjectProperties)},
-                // {CommandBarSite.MsForm, new CommandBarLocation(MsForm, UpdateUserControls)}, // FIXME - quick hack for #4280
-                {CommandBarSite.MsFormControl, new CommandBarLocation(MsFormControl, ViewCode)}
+                {CommandBarSite.CodePaneContextMenu, new CommandBarLocation(VbeCommandBarMenuNames.CodePaneContext, ListProperties)},
+                {CommandBarSite.ProjectExplorerContextMenu, new CommandBarLocation(VbeCommandBarMenuNames.ProjectExplorerContext, ProjectProperties)},
+                //{CommandBarSite.FormDesignerContextMenu, new CommandBarLocation(VbeCommandBarMenuNames.FormDesignerContext, ViewCode)}, // FIXME - see #4280
+                {CommandBarSite.FormDesignerControlContextMenu, new CommandBarLocation(VbeCommandBarMenuNames.FormDesignerControlContext, ViewCode)},
             });
         }
 

@@ -97,9 +97,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public bool CanExecuteForNode(ICodeExplorerNode node)
         {
-            if (!ApplicableNodes.Contains(node.GetType())
-                || !(node is CodeExplorerItemViewModel)
-                || node.Declaration == null)
+            if (node?.Declaration == null
+                || !ApplicableNodes.Contains(node.GetType())
+                || !(node is CodeExplorerItemViewModel))
             {
                 return false;
             }

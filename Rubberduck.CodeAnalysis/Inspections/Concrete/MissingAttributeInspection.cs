@@ -56,14 +56,12 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             }
 
             return declaration.Annotations
-                .Where(pta => pta.Annotation is IAttributeAnnotation
-                              && MissesCorrespondingAttribute(declaration, pta));
+                .Where(pta => pta.Annotation is IAttributeAnnotation && MissesCorrespondingAttribute(declaration, pta));
         }
 
-        protected override string ResultDescription(Declaration declaration, IParseTreeAnnotation pta)
-        {
-            return string.Format(InspectionResults.MissingAttributeInspection, declaration.IdentifierName, pta.Annotation.Name);
-        }
+        protected override string ResultDescription(Declaration declaration, IParseTreeAnnotation pta) =>
+            string.Format(InspectionResults.MissingAttributeInspection, declaration.IdentifierName, pta.Annotation.Name);
+        
 
         private static bool MissesCorrespondingAttribute(Declaration declaration, IParseTreeAnnotation annotationInstance)
         {

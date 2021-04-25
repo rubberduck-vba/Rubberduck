@@ -8,6 +8,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract
         string Name { get; }
         int MemberID { get; }
         VARFLAGS MemberFlags { get; }
-        void Dispose();
+        //void Dispose();
     }
 }

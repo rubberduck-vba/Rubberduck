@@ -328,6 +328,9 @@ Continuer?</value>
   <data name="CodeExplorer_MoveToFolder" xml:space="preserve">
     <value>Déplacer vers le dossier...</value>
   </data>
+  <data name="CodeExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck: Déclarations - {0}</value>
+  </data>
   <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
     <value>Aucun module document existant avec le nom '{0}'; le fichier '{1}' ne pourra pas être importé.
 

@@ -89,23 +89,24 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             try
             {
-                // Prevent a potential access violation by first calling the Placeholder3(). 
-                // Under certain conditions where the VBA project is fully compiled, clicking parse
-                // as soon as Rubberduck has loaded into VBIDE can cause an access violation when 
-                // accessing CompileProject(). We've tried using ComMessagePumper and 
-                // UiDispatcher.FlushMessageQueue but neither helped in preventing the 
-                // access violation. We at least know that Placeholder3() does not save the unsaved
-                // change so hopefully there should be no permanent side effects from invoking the
-                // Placeholder3(). 
-                try
-                {
-                    _target_IVBEProject.Placeholder3();
-                }
-                catch(Exception ex)
-                {
-                    Logger.Info(ex, $"Cannot compile the VBA project '{_name}' because there may be a potential access violation.");
-                    return false;
-                }
+                // FIXME: Prevent an access violation when calling CompileProject(). A easy way to reproduce
+                // this AV is to parse an Access project, then do a Compact & Repair, then try to shut down
+                // Access. There was an attempt to avoid the AV by calling PlaceHolder3 which did seem to prevent
+                // the AV but somehow alters the VBA project in such way that _sometimes_ the user is shown a message
+                // that the project has changed and whether the user wants to proceeds. That is a slightly worse fix
+                // than the AV prevention, so we had to remove the fix. Reference:
+                // https://github.com/rubberduck-vba/Rubberduck/issues/5722
+                // https://github.com/rubberduck-vba/Rubberduck/pull/5675
+
+                //try
+                //{
+                //    _target_IVBEProject.Placeholder3();
+                //}
+                //catch(Exception ex)
+                //{
+                //    Logger.Info(ex, $"Cannot compile the VBA project '{_name}' because there may be a potential access violation.");
+                //    return false;
+                //}
 
                 _target_IVBEProject.CompileProject();
                 return true;

@@ -88,7 +88,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 return false;
             }
 
-            var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, reference.QualifiedModuleName);
+            var argument = argExpression.GetAncestor<VBAParser.ArgumentContext>();
+            var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argument, reference.QualifiedModuleName);
 
             if (parameter == null)
             {
