@@ -233,7 +233,7 @@
                     <Image Source="{StaticResource OutcomeSucceeded}" />
                 </ToggleButton>
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Ignored}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Ignored}"
                               IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Ignored}}">
                     <Image Source="{StaticResource OutcomeIgnored}" />
                 </ToggleButton>

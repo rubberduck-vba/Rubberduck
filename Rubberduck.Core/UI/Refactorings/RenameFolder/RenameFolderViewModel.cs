@@ -4,6 +4,7 @@ using Rubberduck.Interaction;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RenameFolder;
 using Rubberduck.Resources;
 
@@ -33,8 +34,8 @@ namespace Rubberduck.UI.Refactorings.RenameFolder
                 var folderToRename = Model.OriginalFolder;
 
                 return string.Format(
-                    RubberduckUI.RenameDialog_InstructionsLabelText,
-                    RubberduckUI.RenameDialog_Folder,
+                    RefactoringsUI.RenameDialog_InstructionsLabelText,
+                    RefactoringsUI.RenameDialog_Folder,
                     folderToRename);
             }
         }
@@ -63,18 +64,18 @@ namespace Rubberduck.UI.Refactorings.RenameFolder
             if (string.IsNullOrEmpty(NewFolderName))
             {
                 //We generally already rename a subfolder, here.
-                errors.Add(RubberduckUI.MoveFolders_EmptySubfolderName);
+                errors.Add(RefactoringsUI.MoveFolders_EmptySubfolderName);
             }
             else
             {
                 if (NewFolderName.Any(char.IsControl))
                 {
-                    errors.Add(RubberduckUI.MoveFolders_ControlCharacter);
+                    errors.Add(RefactoringsUI.MoveFolders_ControlCharacter);
                 }
 
                 if (NewFolderName.Split(FolderExtensions.FolderDelimiter).Any(string.IsNullOrEmpty))
                 {
-                    errors.Add(RubberduckUI.MoveFolders_EmptySubfolderName);
+                    errors.Add(RefactoringsUI.MoveFolders_EmptySubfolderName);
                 }
             }
 
@@ -121,11 +122,11 @@ namespace Rubberduck.UI.Refactorings.RenameFolder
         private bool UserConfirmsToProceedWithFolderMerge(string fullTargetFolder, string partToRename, string newFolderPart)
         {
             var message = string.Format(
-                RubberduckUI.RenameDialog_FolderAlreadyExists,
+                RefactoringsUI.RenameDialog_FolderAlreadyExists,
                 fullTargetFolder,
                 partToRename,
                 newFolderPart);
-            return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_Caption) ?? false;
+            return _messageBox?.ConfirmYesNo(message, RefactoringsUI.RenameDialog_Caption) ?? false;
         }
     }
 }

@@ -17,7 +17,6 @@ using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor;
-using Rubberduck.CodeAnalysis;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Logistics
 {

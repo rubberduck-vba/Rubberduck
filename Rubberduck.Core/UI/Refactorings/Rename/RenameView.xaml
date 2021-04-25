@@ -20,7 +20,7 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <StackPanel Background="{StaticResource BackgroundLightBrush}">
-            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RenameDialog_TitleText}" FontWeight="Bold" />
+            <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=RenameDialog_TitleText}" FontWeight="Bold" />
             <TextBlock Text="{Binding Instructions}" Margin="5,0" />
         </StackPanel>
         <Grid Grid.Row="1" Margin="5,10,10,5">
