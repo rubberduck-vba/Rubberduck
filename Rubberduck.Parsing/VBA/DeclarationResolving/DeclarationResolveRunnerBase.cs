@@ -6,7 +6,7 @@ using System.Threading;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using NLog;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;

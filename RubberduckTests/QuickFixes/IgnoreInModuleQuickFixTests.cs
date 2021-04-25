@@ -5,6 +5,8 @@ using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -123,6 +125,73 @@ End Sub";
 
             var actualCode = ApplyQuickFixToAllInspectionResults(inputCode, state => new VariableNotUsedInspection(state));
             Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void IgnoreModuleMultiple_IdentifierInspection_DeclarationInOtherModule_AnnotationInReferenceModule()
+        {
+            var classCode =
+                @"
+'@Obsolete(""no longer use this"")
+Public Sub Foo()
+End Sub"; 
+            
+            var moduleCode =
+                 @"Public Bar As Class1";
+
+            var inputCode =
+                @"
+Public Sub DoSomething()
+    Module1.Bar.Foo
+End Sub";
+
+            var expectedCode =
+                @"'@IgnoreModule ObsoleteMemberUsage
+
+Public Sub DoSomething()
+    Module1.Bar.Foo
+End Sub";
+
+            var vbe = new MockVbeBuilder().ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, classCode)
+                .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
+                .AddComponent("TestModule", ComponentType.StandardModule, inputCode)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+            var actualCode = ApplyQuickFixToFirstInspectionResult(vbe, "TestModule", state => new ObsoleteMemberUsageInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void IgnoreMcoduleMultiple_IdentifierInspection_DeclarationInOtherModule_LeavesDeclarationModuleAsIs()
+        {
+            var classCode =
+                @"
+'@Obsolete(""no longer use this"")
+Public Sub Foo()
+End Sub";
+
+            var moduleCode =
+                 @"Public Bar As Class1";
+
+            var inputCode =
+                @"
+Public Sub DoSomething()
+    Module1.Bar.Foo
+End Sub";
+
+            var vbe = new MockVbeBuilder().ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, classCode)
+                .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
+                .AddComponent("TestModule", ComponentType.StandardModule, inputCode)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+            var actualCode = ApplyQuickFixToFirstInspectionResult(vbe, "Class1", state => new ObsoleteMemberUsageInspection(state));
+            Assert.AreEqual(classCode, actualCode);
         }
 
         protected override IQuickFix QuickFix(RubberduckParserState state)

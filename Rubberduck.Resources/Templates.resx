@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Menu_Warning_CannotFindTemplate_Message" xml:space="preserve">
+    <value>Cannot find the template for '{0}'. The file may have been renamed or deleted. Expected file name: '{1}'.</value>
+  </data>
+  <data name="Menu_Warning_CannotFindTemplate_Caption" xml:space="preserve">
+    <value>Missing Template File</value>
+  </data>
   <data name="PredeclaredClassModule_Caption" xml:space="preserve">
     <value>Predeclared Class module (.cls)</value>
   </data>
@@ -130,9 +136,8 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Attribute VB_Ext_KEY = "Rubberduck", "Predeclared Class Module"
-
-Option Explicit
-'@PredeclaredId</value>
+'@PredeclaredId
+Option Explicit</value>
     <comment>do not translate</comment>
   </data>
   <data name="PredeclaredClassModule_Description" xml:space="preserve">

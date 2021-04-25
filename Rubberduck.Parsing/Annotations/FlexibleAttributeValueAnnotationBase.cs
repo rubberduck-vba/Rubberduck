@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.Annotations
 {
@@ -15,6 +16,8 @@ namespace Rubberduck.Parsing.Annotations
             _attribute = attribute;
             _numberOfValues = numberOfValues;
         }
+
+        public override IReadOnlyList<ComponentType> IncompatibleComponentTypes { get; } = new[] { ComponentType.Document };
 
         public bool MatchesAttributeDefinition(string attributeName, IReadOnlyList<string> attributeValues)
         {

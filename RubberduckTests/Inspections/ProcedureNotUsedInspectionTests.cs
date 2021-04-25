@@ -182,6 +182,30 @@ End Sub";
             Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void ProcedureNotUsed_ExcelHotkeyAnnotation_DoesNotReturnResult()
+        {
+            const string inputCode =
+                @"'@ExcelHotkey X
+Private Sub Foo()
+End Sub";
+
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ProcedureNotUsed_EntryPointAnnotation_DoesNotReturnResult()
+        {
+            const string inputCode =
+                @"'@EntryPoint
+Private Sub Foo()
+End Sub";
+
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
         //https://github.com/rubberduck-vba/Rubberduck/issues/5490
         [TestCase(@"Name = ""Bizz""", 0)]
         [TestCase(@"mName = ""Bizz""", 1)]

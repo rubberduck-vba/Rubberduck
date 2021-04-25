@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using NLog;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 
@@ -66,6 +67,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     {
         private readonly string _name;
         private readonly IVBEProject _target_IVBEProject;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public ITypeLibReferenceCollection VBEReferences { get; }
 
@@ -87,6 +89,25 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             try
             {
+                // FIXME: Prevent an access violation when calling CompileProject(). A easy way to reproduce
+                // this AV is to parse an Access project, then do a Compact & Repair, then try to shut down
+                // Access. There was an attempt to avoid the AV by calling PlaceHolder3 which did seem to prevent
+                // the AV but somehow alters the VBA project in such way that _sometimes_ the user is shown a message
+                // that the project has changed and whether the user wants to proceeds. That is a slightly worse fix
+                // than the AV prevention, so we had to remove the fix. Reference:
+                // https://github.com/rubberduck-vba/Rubberduck/issues/5722
+                // https://github.com/rubberduck-vba/Rubberduck/pull/5675
+
+                //try
+                //{
+                //    _target_IVBEProject.Placeholder3();
+                //}
+                //catch(Exception ex)
+                //{
+                //    Logger.Info(ex, $"Cannot compile the VBA project '{_name}' because there may be a potential access violation.");
+                //    return false;
+                //}
+
                 _target_IVBEProject.CompileProject();
                 return true;
             }

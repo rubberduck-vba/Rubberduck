@@ -60,14 +60,15 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
     public class ExtractMethodModel : IExtractMethodModel
     {
-        private List<Declaration> _extractDeclarations;
-        private IExtractMethodParameterClassification _paramClassify;
-        private IExtractedMethod _extractedMethod;
+        private readonly List<Declaration> _extractDeclarations = new List<Declaration>();
+        private readonly IExtractMethodParameterClassification _paramClassify;
+        private readonly IExtractedMethod _extractedMethod;
 
         public ExtractMethodModel(IExtractedMethod extractedMethod, IExtractMethodParameterClassification paramClassify)
         {
             _extractedMethod = extractedMethod;
             _paramClassify = paramClassify;
+            _sourceMember = null;
         }
 
         public void extract(IEnumerable<Declaration> declarations, QualifiedSelection selection, string selectedCode)
@@ -101,7 +102,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
             _declarationsToMove = _paramClassify.DeclarationsToMove.ToList();
 
-            _rowsToRemove = splitSelection(selection.Selection, _declarationsToMove).ToList();
+            _rowsToRemove = SplitSelection(selection.Selection, _declarationsToMove).ToList();
 
             var methodCallPositionStartLine = selectionStartLine - _declarationsToMove.Count(d => d.Selection.StartLine < selectionStartLine);
             _positionForMethodCall = new Selection(methodCallPositionStartLine, 1, methodCallPositionStartLine, 1);
@@ -136,7 +137,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             return declaration;
         }
 
-        public IEnumerable<Selection> splitSelection(Selection selection, IEnumerable<Declaration> declarations)
+        public IEnumerable<Selection> SplitSelection(Selection selection, IEnumerable<Declaration> declarations)
         {
             var tupleList = new List<Tuple<int, int>>();
             var declarationRows = declarations
@@ -152,7 +153,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             return returnList;
         }
 
-        private Declaration _sourceMember;
+        private readonly Declaration _sourceMember;
         public Declaration SourceMember { get { return _sourceMember; } }
 
         private QualifiedSelection _selection;
@@ -161,15 +162,15 @@ namespace Rubberduck.Refactorings.ExtractMethod
         private string _selectedCode;
         public string SelectedCode { get { return _selectedCode; } }
 
-        private List<Declaration> _locals;
+        private readonly List<Declaration> _locals = new List<Declaration>();
         public IEnumerable<Declaration> Locals { get { return _locals; } }
 
-        private IEnumerable<ExtractedParameter> _input;
+        private readonly IEnumerable<ExtractedParameter> _input = new List<ExtractedParameter>();
         public IEnumerable<ExtractedParameter> Inputs { get { return _input; } }
-        private IEnumerable<ExtractedParameter> _output;
+        private readonly IEnumerable<ExtractedParameter> _output = new List<ExtractedParameter>();
         public IEnumerable<ExtractedParameter> Outputs { get { return _output; } }
 
-        private List<Declaration> _declarationsToMove;
+        private List<Declaration> _declarationsToMove = new List<Declaration>();
         public IEnumerable<Declaration> DeclarationsToMove { get { return _declarationsToMove; } }
 
         public IExtractedMethod Method { get { return _extractedMethod; } }
@@ -181,7 +182,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         private Selection _positionForNewMethod;
         public Selection PositionForNewMethod { get { return _positionForNewMethod; } }
-        IList<Selection> _rowsToRemove;
+        
+        private IList<Selection> _rowsToRemove;
         public IEnumerable<Selection> RowsToRemove
         {
             // we need to split selectionToRemove around any declarations that

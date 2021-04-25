@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Rubberduck.Parsing.VBA;
 using NLog;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Resources.Menus;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -16,12 +20,14 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         private readonly int? _beforeIndex;
         private readonly IDictionary<IMenuItem, ICommandBarControl> _items;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        protected readonly IUiDispatcher _uiDispatcher;
 
-        protected ParentMenuItemBase(string key, IEnumerable<IMenuItem> items, int? beforeIndex = null)
+        protected ParentMenuItemBase(IUiDispatcher dispatcher, string key, IEnumerable<IMenuItem> items, int? beforeIndex = null)
         {
             _key = key;
             _beforeIndex = beforeIndex;
             _items = items.ToDictionary(item => item, item => null as ICommandBarControl);
+            _uiDispatcher = dispatcher;
         }
 
         private ICommandBarControls _parent;
@@ -102,7 +108,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                             ?? InitializeChildControl(item as IParentMenuItem);
             }
 
-            EvaluateCanExecute(null);
+            EvaluateCanExecuteAsync(null, CancellationToken.None).Wait();
         }
 
         public void RemoveMenu()
@@ -130,28 +136,29 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             }
         }
 
-        public void EvaluateCanExecute(RubberduckParserState state)
+        public async Task EvaluateCanExecuteAsync(RubberduckParserState state, CancellationToken token)
         {
-            foreach (var kvp in _items)
+            foreach (var (key, value) in _items)
             {
-                if (kvp.Key is IParentMenuItem parentItem)
+                switch (key)
                 {
-                    parentItem.EvaluateCanExecute(state);
-                    continue;
-                }
-
-                if (kvp.Key is ICommandMenuItem commandItem && kvp.Value != null)
-                {
-                    try
-                    {
-                        kvp.Value.IsEnabled = commandItem.EvaluateCanExecute(state);
-                    }
-                    catch (Exception exception)
-                    {
-                        kvp.Value.IsEnabled = false;
-                        Logger.Error(exception, "Could not evaluate availability of commmand menu item {0}.", kvp.Value.Tag ?? "{Unknown}");
-                    }
-                     
+                    case IParentMenuItem parentItem:
+                        await parentItem.EvaluateCanExecuteAsync(state, token);
+                        continue;
+                    case ICommandMenuItem commandItem when value != null:
+                        _uiDispatcher.InvokeAsync(() =>
+                        {
+                            try
+                            {
+                                value.IsEnabled = commandItem.EvaluateCanExecute(state);
+                            }
+                            catch (Exception exception)
+                            {
+                                value.IsEnabled = false;
+                                Logger.Error(exception, "Could not evaluate availability of commmand menu item {0}.", value.Tag ?? "{Unknown}");
+                            }
+                        });
+                        break;
                 }
             }
         }

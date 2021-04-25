@@ -90,7 +90,8 @@ namespace RubberduckTests.Inspections
                 typeof(VariableNotUsedInspection).Name,
                 typeof(LineLabelNotUsedInspection).Name,
                 typeof(UseMeaningfulNameInspection).Name,
-                typeof(HungarianNotationInspection).Name
+                typeof(HungarianNotationInspection).Name,
+                typeof(AnnotationInIncompatibleComponentTypeInspection).Name
             };
 
             var inspections = typeof(InspectionBase).Assembly.GetTypes()

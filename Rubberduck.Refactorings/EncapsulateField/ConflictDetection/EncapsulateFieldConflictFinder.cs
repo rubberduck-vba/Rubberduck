@@ -276,9 +276,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         .Select(f => f.Declaration));
             }
 
+            bool IsQualifedReference(IdentifierReference identifierReference)
+                => identifierReference.Context.Parent is VBAParser.MemberAccessExprContext 
+                    || identifierReference.Context.Parent is VBAParser.WithMemberAccessExprContext;
+
             //Only check IdentifierReferences in the declaring module because encapsulated field 
             //references in other modules will be module-qualified.
-            var candidateLocalReferences = candidate.Declaration.References.Where(rf => rf.QualifiedModuleName == candidate.QualifiedModuleName);
+            var candidateLocalReferences = candidate.Declaration.References.Where(rf => rf.QualifiedModuleName == candidate.QualifiedModuleName
+                && !IsQualifedReference(rf));
 
             var localDeclarationConflictCandidates = membersToEvaluate.Where(localDec => candidateLocalReferences
                .Any(cr => cr.ParentScoping == localDec.ParentScopeDeclaration));

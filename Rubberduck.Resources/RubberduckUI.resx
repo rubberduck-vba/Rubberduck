@@ -495,44 +495,8 @@ Do you want to proceed with this rename?</value>
   <data name="Language_DE" xml:space="preserve">
     <value>German</value>
   </data>
-  <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
-    <value>All Opened Files</value>
-  </data>
-  <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
-    <value>All Open Projects</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
-    <value>Current Block</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
-    <value>Current File</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
-    <value>Current Project</value>
-  </data>
-  <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
-    <value>Selection</value>
-  </data>
-  <data name="RegexSearchReplace_Caption" xml:space="preserve">
-    <value>Regex Search &amp; Replace</value>
-  </data>
   <data name="Find" xml:space="preserve">
     <value>Find</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
-    <value>Replace All</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
-    <value>Replace</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
-    <value>Replace:</value>
-  </data>
-  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
-    <value>Scope:</value>
-  </data>
-  <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
-    <value>Search:</value>
   </data>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Details</value>
@@ -897,30 +861,6 @@ Do you want to proceed with this rename?</value>
   </data>
   <data name="RubberduckFatalError" xml:space="preserve">
     <value>Rubberduck encountered an error. Please save your work and restart the host program; if logging is enabled, you can upload your log file located at '%AppData%Roaming\Rubberduck\Logs\RubberduckLog.txt' to a GitHub issue at 'https://github.com/rubberduck-vba/Rubberduck/issues/new' and report the bug.</value>
-  </data>
-  <data name="RegexAssistant_Caption" xml:space="preserve">
-    <value>Rubberduck - Regex Analyzer</value>
-  </data>
-  <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
-    <value>Global</value>
-  </data>
-  <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
-    <value>Ignore case</value>
-  </data>
-  <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
-    <value>Pattern</value>
-  </data>
-  <data name="RegexAssistant_NoPatternError" xml:space="preserve">
-    <value>(no pattern)</value>
-  </data>
-  <data name="RegexAssistant_Instructions" xml:space="preserve">
-    <value>Enter a regular expression to analyze in the box below.</value>
-  </data>
-  <data name="RegexAssistant_Title" xml:space="preserve">
-    <value>Regular Expression Analyzer</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
     <value>Allowed Identifiers</value>
@@ -1535,31 +1475,6 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>Declaration type of target '{0}' is '{1}' instead of one of the expected '{2}'.</value>
     <comment>{0}: name of target; {1}: actual declaration type; {2}: expected declaration types</comment>
   </data>
-  <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
-    <value>Spell out whitespace in the description</value>
-  </data>
-  <data name="RegexAssistant_EncloseWhitespace_EnclosingFormat" xml:space="preserve">
-    <value>&lt;{0}&gt;</value>
-    <comment>no need to translate</comment>
-  </data>
-  <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
-    <value>carriage-return</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_CarriageReturnNewLine" xml:space="preserve">
-    <value>carriage-return-new-line</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_NewLine" xml:space="preserve">
-    <value>new-line</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_Space" xml:space="preserve">
-    <value>space</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_Tab" xml:space="preserve">
-    <value>tab</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
-    <value>unidentified-whitespace</value>
-  </data>
   <data name="TestOutcome_Fail" xml:space="preserve">
     <value>Fail</value>
   </data>
@@ -1907,7 +1822,28 @@ Do you want to proceed?</value>
   <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
     <value>Add/Adjust attribute</value>
   </data>
+  <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
+    <value>Implementation Options:</value>
+  </data>
+  <data name="ExtractInterface_OptionAddEmptyImplementation" xml:space="preserve">
+    <value>Add Empty Implementation</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToInterfaceMembers" xml:space="preserve">
+    <value>Forward Object Member Calls to Interface Members</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
+    <value>Forward Interface Member Calls to Object Members</value>
+  </data>
+  <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
+    <value>Replace Members with Interface Members</value>
+  </data>
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ignored</value>
+  </data>
+  <data name="IndenterSettings_GroupRelatedProperties" xml:space="preserve">
+    <value>Remove vertical space between related property members</value>
+  </data>
+  <data name="DeclarationType_Document" xml:space="preserve">
+    <value>document</value>
   </data>
 </root>

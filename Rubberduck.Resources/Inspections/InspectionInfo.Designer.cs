@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Inspections {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InspectionInfo {
@@ -57,6 +57,15 @@ namespace Rubberduck.Resources.Inspections {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An annotation was specified in a module type that isn&apos;t compatible with that annotation. Some annotations can only be used in a specific module type; others cannot be used in certain module types..
+        /// </summary>
+        public static string AnnotationInIncompatibleComponentTypeInspection {
+            get {
+                return ResourceManager.GetString("AnnotationInIncompatibleComponentTypeInspection", resourceCulture);
             }
         }
         
@@ -313,15 +322,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level..
-        /// </summary>
-        public static string IllegalAnnotationInspection {
-            get {
-                return ResourceManager.GetString("IllegalAnnotationInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A class module that is meant to be used as interface for concrete classes should generally be abstracted of any implementations. If it is your intention to use this class module as a concrete type, you can safely ignore this inspection result..
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
@@ -358,7 +358,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit references to workbook members inside a workbook document module can be mistakes for implicit references to the active workbook, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved..
+        ///   Looks up a localized string similar to Implicit references to workbook members inside a workbook document module can be mistaken for implicit references to the active workbook, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved. If the intent was to refer to the active workbook, qualify with &apos;ActiveWorkbook&apos; to prevent a bug..
         /// </summary>
         public static string ImplicitContainingWorkbookReferenceInspection {
             get {
@@ -367,7 +367,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit references to worksheet members inside a worksheet document module can be mistakes for implicit references to the active worksheet, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved..
+        ///   Looks up a localized string similar to Implicit references to worksheet members inside a worksheet document module can be mistaken for implicit references to the active worksheet, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved. If the intent is to refer to the active worksheet, qualify with &apos;ActiveSheet&apos; to prevent a bug..
         /// </summary>
         public static string ImplicitContainingWorksheetReferenceInspection {
             get {
@@ -466,6 +466,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The annotation could not be bound to a target. Is the annotation misplaced? An annotation meant to be specified at module level cannot be used to annotate members; conversely, annotations meant to be annotate members cannot be used at module level..
+        /// </summary>
+        public static string InvalidAnnotationInspection {
+            get {
+                return ResourceManager.GetString("InvalidAnnotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to IsMissing is only intended to be called on optional arguments, and will only return correct results if the type of the argument is &apos;Variant&apos; with no explicit default value. All other uses will return &apos;False&apos;..
         /// </summary>
         public static string IsMissingOnInappropriateArgumentInspection {
@@ -520,7 +529,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The last parameter (the &apos;Value&apos; parameter) of property mutators are always passed ByVal. This is true regardless of the presence or absence of a ByRef or ByVal modifier. Exception: A UserDefinedType must always be passed ByRef even when it is the last parameter of a property mutator..
+        ///   Looks up a localized string similar to The last parameter (the &apos;Value&apos; parameter) of property mutators (Let/Set) are always passed ByVal. This is true regardless of the presence or absence of a ByRef or ByVal modifier. Exception: A UserDefinedType must always be passed ByRef even when it is the last parameter of a property mutator..
         /// </summary>
         public static string MisleadingByRefParameterInspection {
             get {
@@ -966,6 +975,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UnreachableCaseInspection {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A comment was parsed as a syntactically valid annotation, but not recognized as a supported annotation type..
+        /// </summary>
+        public static string UnrecognizedAnnotationInspection {
+            get {
+                return ResourceManager.GetString("UnrecognizedAnnotationInspection", resourceCulture);
             }
         }
         

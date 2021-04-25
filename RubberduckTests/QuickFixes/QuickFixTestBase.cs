@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Antlr4.Runtime.Tree;
+using Moq;
 using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.Parsing.Rewriter;
@@ -18,11 +19,51 @@ namespace RubberduckTests.QuickFixes
 {
     public abstract class QuickFixTestBase
     {
+        private static readonly IDictionary<string, IEnumerable<string>> DefaultDocumentModuleSupertypeNames = new Dictionary<string, IEnumerable<string>>
+        {
+            ["ThisWorkbook"] = new[] { "Workbook", "_Workbook" },
+            ["Sheet1"] = new[] { "Worksheet", "_Worksheet" },
+            ["CodeName"] = new[] { "Worksheet", "_Worksheet" },
+        };
+
         protected abstract IQuickFix QuickFix(RubberduckParserState state);
 
         protected virtual IVBE TestVbe(string code, out IVBComponent component)
         {
-            return MockVbeBuilder.BuildFromSingleStandardModule(code, out component).Object;
+            var builder = new MockVbeBuilder();
+            var projectBuilder = builder
+                .ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("ThisWorkbook", ComponentType.Document, string.Empty,
+                    properties: new[] {
+                        CreateVBComponentPropertyMock("Name", "ThisWorkbook").Object,
+                    })
+                .AddComponent("Sheet1", ComponentType.Document, string.Empty,
+                    properties: new[] {
+                        CreateVBComponentPropertyMock("Name", "Sheet1").Object,
+                        CreateVBComponentPropertyMock("CodeName", "Sheet1").Object
+                    })
+                .AddComponent("CodeName", ComponentType.Document, string.Empty,
+                    properties: new[] {
+                        CreateVBComponentPropertyMock("Name", "Sheet2").Object,
+                        CreateVBComponentPropertyMock("CodeName", "CodeName").Object
+                    })
+                .AddReference(ReferenceLibrary.Excel)
+                .AddComponent("Module1", ComponentType.StandardModule, code);
+
+            var mockProject = projectBuilder.Build().Object;
+            component = mockProject.VBComponents["Module1"];
+            var project = projectBuilder.Build();
+            var vbe = builder.AddProject(project).Build();
+            return vbe.Object;
+        }
+
+        private static Mock<IProperty> CreateVBComponentPropertyMock(string propertyName, string propertyValue)
+        {
+            var propertyMock = new Mock<IProperty>();
+            propertyMock.SetupGet(m => m.Name).Returns(propertyName);
+            propertyMock.SetupGet(m => m.Value).Returns(propertyValue);
+
+            return propertyMock;
         }
 
         protected string ApplyQuickFixToFirstInspectionResult(string inputCode,
@@ -71,7 +112,7 @@ namespace RubberduckTests.QuickFixes
             Action<IQuickFix, IEnumerable<IInspectionResult>, IRewriteSession> applyQuickFix,
             CodeKind codeKind)
         {
-            var (state, rewriteManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            var (state, rewriteManager) = MockParser.CreateAndParseWithRewritingManager(vbe, documentModuleSupertypeNames: DefaultDocumentModuleSupertypeNames);
             using (state)
             {
                 var inspection = inspectionFactory(state);

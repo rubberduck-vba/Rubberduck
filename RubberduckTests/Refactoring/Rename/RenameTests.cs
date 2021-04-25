@@ -2195,6 +2195,31 @@ End Sub";
             }
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameProject_RenamesQualifiers()
+        {
+            const string newName = "Renamed";
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input = @"
+Public Foo As Long
+Public Sub Test()
+    TestProject.Module1.Foo = 42
+End Sub",
+                Expected = $@"
+Public Foo As Long
+Public Sub Test()
+    Renamed.Module1.Foo = 42
+End Sub",
+            };
+            var tdo = new RenameTestsDataObject("TestProject", DeclarationType.Project, newName);
+            tdo.RefactorParamType = RefactorParams.Declaration;
+            tdo.ProjectName = "TestProject";
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
         #endregion
         #region Rename Enumeration Tests
 

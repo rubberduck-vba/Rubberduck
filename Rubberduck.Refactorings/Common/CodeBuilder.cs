@@ -1,10 +1,12 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Resources;
 using Rubberduck.SmartIndenter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tokens = Rubberduck.Resources.Tokens;
 
 namespace Rubberduck.Refactorings
 {
@@ -114,7 +116,7 @@ namespace Rubberduck.Refactorings
                 EndStatement(declaration.DeclarationType),
                 Environment.NewLine,
             };
-            return string.Concat(elements);
+            return string.Join(Environment.NewLine, Indenter.Indent(string.Concat(elements)));
         }
 
         public bool TryBuildPropertyGetCodeBlock(Declaration prototype, string propertyIdentifier, out string codeBlock, Accessibility accessibility = Accessibility.Public, string content = null)
