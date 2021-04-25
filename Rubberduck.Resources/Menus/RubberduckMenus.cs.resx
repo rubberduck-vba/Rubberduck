@@ -264,4 +264,10 @@
   <data name="AnnotateMenu_SelectedModule" xml:space="preserve">
     <value>Vybraný Modul</value>
   </data>
+  <data name="ProjectExplorer_IgnoreProject" xml:space="preserve">
+    <value>Ignorovat Projekt</value>
+  </data>
+  <data name="ProjectExplorer_UnignoreProject" xml:space="preserve">
+    <value>Odignorovat Projekt</value>
+  </data>
 </root>
