@@ -159,7 +159,7 @@ End Sub";
             return settings;
         }
 
-        private IEnumerable<IInspectionResult> InspectionResultsForModules(params (string name, string content, ComponentType componentType)[] modules)
+        private new IEnumerable<IInspectionResult> InspectionResultsForModules(params (string name, string content, ComponentType componentType)[] modules)
         {
             var vbe = MockVbeBuilder.BuildFromModules("TestProject", modules, Enumerable.Empty<ReferenceLibrary>());
             return InspectionResults(vbe.Object);

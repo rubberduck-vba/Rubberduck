@@ -222,7 +222,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         {
             return GetUnboundAnnotations(annotations, userDeclarations, identifierReferences)
                 .Where(pta => !pta.Annotation.Target.HasFlag(AnnotationTarget.General) || pta.AnnotatedLine == null)
-                .Concat(AttributeAnnotationsOnDeclarationsNotAllowingAttributes(annotations, userDeclarations, identifierReferences))
+                .Concat(AttributeAnnotationsOnDeclarationsNotAllowingAttributes(userDeclarations))
                 .ToList();
         }
 
@@ -241,10 +241,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 .Where(pta => pta.Annotation.GetType() != typeof(NotRecognizedAnnotation) && !boundAnnotationsSelections.Contains(pta.QualifiedSelection));
         }
 
-        private IEnumerable<IParseTreeAnnotation> AttributeAnnotationsOnDeclarationsNotAllowingAttributes(
-            IEnumerable<IParseTreeAnnotation> annotations,
-            IEnumerable<Declaration> userDeclarations,
-            IEnumerable<IdentifierReference> identifierReferences)
+        private IEnumerable<IParseTreeAnnotation> AttributeAnnotationsOnDeclarationsNotAllowingAttributes(IEnumerable<Declaration> userDeclarations)
         {
             return userDeclarations
                 .Where(declaration => declaration.AttributesPassContext == null

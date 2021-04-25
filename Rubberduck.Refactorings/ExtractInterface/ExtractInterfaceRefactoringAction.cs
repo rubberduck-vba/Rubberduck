@@ -15,6 +15,7 @@ using Rubberduck.Resources;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
+using Tokens = Rubberduck.Resources.Tokens;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {

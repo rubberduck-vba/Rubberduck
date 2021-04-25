@@ -35,6 +35,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     value = otherVar * value
     /// End Sub
     /// ]]>
+    /// </module>
+    /// </example>
     /// <example hasResult="true">
     /// <module name="Module1" type="Standard Module">
     /// <![CDATA[
@@ -204,7 +206,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         private static bool IsPotentiallyUsedAssignment<T>(T jumpContext, IdentifierReference resultCandidate, Dictionary<string, int> labelIdLineNumberPairs) where T : ParserRuleContext
         {
-            int? executionBranchLine = null;
+            int? executionBranchLine;
 
             switch (jumpContext)
             {
@@ -219,9 +221,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                     break;
             }
 
-            return executionBranchLine.HasValue
-                ?   AssignmentIsUsedPriorToExitStmts(resultCandidate, executionBranchLine.Value)
-                :   false;
+            return executionBranchLine.HasValue && AssignmentIsUsedPriorToExitStmts(resultCandidate, executionBranchLine.Value);
         }
 
         private static bool AssignmentIsUsedPriorToExitStmts(IdentifierReference resultCandidate, int executionBranchLine)

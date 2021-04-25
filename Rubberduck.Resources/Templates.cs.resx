@@ -130,4 +130,10 @@
     <value></value>
     <comment>Do not translate</comment>
   </data>
+  <data name="Menu_Warning_CannotFindTemplate_Caption" xml:space="preserve">
+    <value>Chybějící Soubor Šablony</value>
+  </data>
+  <data name="Menu_Warning_CannotFindTemplate_Message" xml:space="preserve">
+    <value>Nelze najít šablonu pro '{0}'. Soubor mohl být přejmenován nebo odstraněn. Očekávaný název souboru: '{1}'.</value>
+  </data>
 </root>

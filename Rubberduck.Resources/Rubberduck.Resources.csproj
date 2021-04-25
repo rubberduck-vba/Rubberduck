@@ -27,6 +27,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="CodeExplorer\CodeExplorerUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="Inspections\InspectionInfo.Designer.cs">
       <DesignTime>True</DesignTime>
     </Compile>
@@ -39,7 +42,28 @@
     <Compile Update="Inspections\QuickFixes.Designer.cs">
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Update="Menus\RubberduckMenus.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Refactorings\Refactorings.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="RubberduckUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Settings\AutoCompletesPage.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Settings\SettingsUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Settings\UnitTestingPage.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Templates.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="UnitTesting\TestExplorer.Designer.cs">
       <DesignTime>True</DesignTime>
     </Compile>
   </ItemGroup>
