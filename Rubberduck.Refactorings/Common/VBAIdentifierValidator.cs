@@ -5,13 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
+using Tokens = Rubberduck.Resources.Tokens;
 
 namespace Rubberduck.Refactorings.Common
 {
     public static class VBAIdentifierValidator
     {
-        private static IEnumerable<string> ReservedIdentifiers =
-            typeof(Tokens).GetFields().Select(item => item.GetValue(null).ToString()).ToArray();
 
         /// <summary>
         /// Predicate function determining if an identifier string's content will trigger a result for the UseMeaningfulNames inspection.
@@ -105,7 +105,7 @@ namespace Rubberduck.Refactorings.Common
             //Is a reserved identifier
             if (!declarationType.HasFlag(DeclarationType.UserDefinedTypeMember))
             {
-                if (ReservedIdentifiers.Contains(name, StringComparer.InvariantCultureIgnoreCase))
+                if (Tokens.IllegalIdentifierNames.Contains(name, StringComparer.InvariantCultureIgnoreCase))
                 {
                     criteriaMatchMessage = string.Format(RefactoringsUI.InvalidNameCriteria_IsReservedKeywordFormat, name);
                     return true;
@@ -118,7 +118,7 @@ namespace Rubberduck.Refactorings.Common
 
                 //Name is not a reserved identifier, but when used as a UDTMember array declaration
                 //it collides with the 'Name' Statement (Renames a disk file, directory, or folder)
-                var invalidUDTArrayIdentifiers = ReservedIdentifiers.Concat(new List<string>() { "Name" });
+                var invalidUDTArrayIdentifiers = Tokens.IllegalIdentifierNames.Concat(new List<string>() { "Name" });
 
                 if (invalidUDTArrayIdentifiers.Contains(name, StringComparer.InvariantCultureIgnoreCase))
                 {
@@ -176,7 +176,7 @@ namespace Rubberduck.Refactorings.Common
             //Is a reserved identifier
             if (!declarationType.HasFlag(DeclarationType.UserDefinedTypeMember))
             {
-                if (ReservedIdentifiers.Contains(name, StringComparer.InvariantCultureIgnoreCase))
+                if (Tokens.IllegalIdentifierNames.Contains(name, StringComparer.InvariantCultureIgnoreCase))
                 {
                     criteriaMatchMessages.Add(string.Format(RefactoringsUI.InvalidNameCriteria_IsReservedKeywordFormat, name));
                 }
@@ -188,7 +188,7 @@ namespace Rubberduck.Refactorings.Common
 
                 //Name is not a reserved identifier, but when used as a UDTMember array declaration
                 //it collides with the 'Name' Statement (Renames a disk file, directory, or folder)
-                var invalidUDTArrayIdentifiers = ReservedIdentifiers.Concat(new List<string>() { "Name" });
+                var invalidUDTArrayIdentifiers = Tokens.IllegalIdentifierNames.Concat(new List<string>() { "Name" });
 
                 if (invalidUDTArrayIdentifiers.Contains(name, StringComparer.InvariantCultureIgnoreCase))
                 {

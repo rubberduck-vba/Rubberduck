@@ -34,30 +34,32 @@ namespace Rubberduck.Parsing.ComReflection
 
         // YGNI...
         // ReSharper disable once NotAccessedField.Local
+#pragma warning disable IDE0052 // Remove unread private members
         private readonly TypeLibTypeFlags _flags;
+#pragma warning restore IDE0052 // Remove unread private members
 
         [DataMember(IsRequired = true)]
-        private List<ComAlias> _aliases = new List<ComAlias>();
+        private readonly List<ComAlias> _aliases = new List<ComAlias>();
         public IEnumerable<ComAlias> Aliases => _aliases;
 
         [DataMember(IsRequired = true)]
-        private List<ComInterface> _interfaces = new List<ComInterface>();
+        private readonly List<ComInterface> _interfaces = new List<ComInterface>();
         public IEnumerable<ComInterface> Interfaces => _interfaces;
 
         [DataMember(IsRequired = true)]
-        private List<ComEnumeration> _enumerations = new List<ComEnumeration>();
+        private readonly List<ComEnumeration> _enumerations = new List<ComEnumeration>();
         public IEnumerable<ComEnumeration> Enumerations => _enumerations;
 
         [DataMember(IsRequired = true)]
-        private List<ComCoClass> _classes = new List<ComCoClass>();
+        private readonly List<ComCoClass> _classes = new List<ComCoClass>();
         public IEnumerable<ComCoClass> CoClasses => _classes;
 
         [DataMember(IsRequired = true)]
-        private List<ComModule> _modules = new List<ComModule>();
+        private readonly List<ComModule> _modules = new List<ComModule>();
         public IEnumerable<ComModule> Modules => _modules;
 
         [DataMember(IsRequired = true)]
-        private List<ComStruct> _structs = new List<ComStruct>();
+        private readonly List<ComStruct> _structs = new List<ComStruct>();
         public IEnumerable<ComStruct> Structs => _structs;
 
         //Note - Enums and Types should enumerate *last*. That will prevent a duplicate module in the unlikely(?)

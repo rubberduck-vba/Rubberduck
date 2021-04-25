@@ -1,5 +1,6 @@
-﻿using System.IO;
+﻿using System.IO.Abstractions;
 using System.Text;
+using Rubberduck.InternalApi.Common;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
@@ -8,22 +9,24 @@ namespace Rubberduck.VBEditor.VBA
 {
     public class TempSourceFileHandler : ITempSourceFileHandler
     {
+        private IFileSystem _fileSystem = FileSystemProvider.FileSystem;
+
         public string Export(IVBComponent component)
         {
-            if (!Directory.Exists(ApplicationConstants.RUBBERDUCK_TEMP_PATH))
+            if (!_fileSystem.Directory.Exists(ApplicationConstants.RUBBERDUCK_TEMP_PATH))
             {
-                Directory.CreateDirectory(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
+                _fileSystem.Directory.CreateDirectory(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
             }
             var fileName = component.ExportAsSourceFile(ApplicationConstants.RUBBERDUCK_TEMP_PATH, true, false);
 
-            return File.Exists(fileName) 
+            return _fileSystem.File.Exists(fileName) 
                 ? fileName 
                 : null;         
         }
 
         public IVBComponent ImportAndCleanUp(IVBComponent component, string fileName)
         {
-            if (fileName == null || !File.Exists(fileName))
+            if (fileName == null || !_fileSystem.File.Exists(fileName))
             {
                 return component;
             }
@@ -37,7 +40,7 @@ namespace Rubberduck.VBEditor.VBA
 
             try
             {
-                File.Delete(fileName);
+                _fileSystem.File.Delete(fileName);
             }
             catch
             {
@@ -50,15 +53,15 @@ namespace Rubberduck.VBEditor.VBA
         public string Read(IVBComponent component)
         {
             var fileName = Export(component);
-            if (fileName == null || !File.Exists(fileName))
+            if (fileName == null || !_fileSystem.File.Exists(fileName))
             {
                 return null;
             }
 
-            var code = File.ReadAllText(fileName, Encoding.Default);
+            var code = _fileSystem.File.ReadAllText(fileName, Encoding.Default);
             try
             {
-                File.Delete(fileName);
+                _fileSystem.File.Delete(fileName);
             }
             catch
             {

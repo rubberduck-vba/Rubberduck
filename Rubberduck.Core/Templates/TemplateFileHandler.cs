@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using Rubberduck.SettingsProvider;
 
@@ -15,30 +15,34 @@ namespace Rubberduck.Templates
     public class TemplateFileHandlerProvider : ITemplateFileHandlerProvider
     {
         private readonly string _rootPath;
+        private readonly IFileSystem _filesystem;
 
-        public TemplateFileHandlerProvider(IPersistencePathProvider pathProvider)
+        public TemplateFileHandlerProvider(
+            IPersistencePathProvider pathProvider,
+            IFileSystem fileSystem)
         {
             _rootPath = pathProvider.DataFolderPath("Templates");
+            _filesystem = fileSystem;
         }
 
         public ITemplateFileHandler CreateTemplateFileHandler(string templateName)
         {
-            if (!Directory.Exists(_rootPath))
+            if (!_filesystem.Directory.Exists(_rootPath))
             {
-                Directory.CreateDirectory(_rootPath);
+                _filesystem.Directory.CreateDirectory(_rootPath);
             }
 
-            var fullPath = Path.Combine(_rootPath, templateName);
-            if (!Directory.Exists(Path.GetDirectoryName(fullPath)))
+            var fullPath = _filesystem.Path.Combine(_rootPath, templateName);
+            if (!_filesystem.Directory.Exists(_filesystem.Path.GetDirectoryName(fullPath)))
             {
                 throw new InvalidOperationException("Cannot provide a path for where the parent directory do not exist");
             }
-            return  new TemplateFileHandler(fullPath);
+            return  new TemplateFileHandler(fullPath, _filesystem);
         }
 
         public IEnumerable<string> GetTemplateNames()
         {
-            var info = new DirectoryInfo(_rootPath);
+            var info = _filesystem.DirectoryInfo.FromDirectoryName(_rootPath);
             return info.GetFiles().Select(file => file.Name).ToList();
         }
     }
@@ -53,22 +57,26 @@ namespace Rubberduck.Templates
     public class TemplateFileHandler : ITemplateFileHandler
     {
         private readonly string _fullPath;
+        private readonly IFileSystem _filesystem;
 
-        public TemplateFileHandler(string fullPath)
+        public TemplateFileHandler(
+            string fullPath,
+            IFileSystem fileSystem)
         {
-            _fullPath = fullPath + (fullPath.EndsWith(".rdt") ? string.Empty : ".rdt");
+            _fullPath = fullPath + (fullPath.EndsWith(Template.TemplateExtension) ? string.Empty : Template.TemplateExtension);
+            _filesystem = fileSystem;
         }
 
-        public bool Exists => File.Exists(_fullPath);
+        public bool Exists => _filesystem.File.Exists(_fullPath);
 
         public string Read()
         {
-            return Exists ? File.ReadAllText(_fullPath) : null;
+            return Exists ? _filesystem.File.ReadAllText(_fullPath) : null;
         }
 
         public void Write(string content)
         {
-            File.WriteAllText(_fullPath, content);
+            _filesystem.File.WriteAllText(_fullPath, content);
         }
     }
 }

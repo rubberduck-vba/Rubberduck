@@ -1,3 +1,5 @@
+using System.Threading;
+using System.Threading.Tasks;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.UI.Command.MenuItems
@@ -6,6 +8,6 @@ namespace Rubberduck.UI.Command.MenuItems
     {
         void Localize();
         void Initialize();
-        void EvaluateCanExecute(RubberduckParserState state);
+        Task EvaluateCanExecuteAsync(RubberduckParserState state, CancellationToken token);
     }
 }

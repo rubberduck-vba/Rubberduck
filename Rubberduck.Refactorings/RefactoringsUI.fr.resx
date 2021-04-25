@@ -236,6 +236,9 @@ Une classe privée peut toujours implémenter une interface publique.</value>
   <data name="ExtractInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Extraire une interface</value>
   </data>
+  <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
+    <value>Options d'implémentation:</value>
+  </data>
   <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
     <value>Instanciation</value>
   </data>
@@ -244,6 +247,18 @@ Une classe privée peut toujours implémenter une interface publique.</value>
   </data>
   <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
     <value>Membres</value>
+  </data>
+  <data name="ExtractInterface_OptionAddEmptyImplementation" xml:space="preserve">
+    <value>Ajouter implémentation vide</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToInterfaceMembers" xml:space="preserve">
+    <value>Les membres appellent l'implémentation</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
+    <value>L'implémentation appelle les membres</value>
+  </data>
+  <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
+    <value>Remplacer les membres par l'implémentation</value>
   </data>
   <data name="ExtractInterface_TitleLabel" xml:space="preserve">
     <value>Extraire une interface</value>

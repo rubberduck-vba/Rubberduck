@@ -1,4 +1,6 @@
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Resources;
+using Tokens = Rubberduck.Resources.Tokens;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {

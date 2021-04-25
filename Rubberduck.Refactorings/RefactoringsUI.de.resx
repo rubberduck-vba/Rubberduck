@@ -260,6 +260,21 @@ Eine private Klasse kann eine private Schnittstelle implementieren.</value>
   <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
     <value>Bitte spezifizieren Sie den Interfacenamen und die Elemente.</value>
   </data>
+  <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
+    <value>Implementierungsoptionen:</value>
+  </data>
+  <data name="ExtractInterface_OptionAddEmptyImplementation" xml:space="preserve">
+    <value>Füge leere Implementierung hinzu</value>
+  </data>
+  <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
+    <value>Ersetze Elemente durch Interface-Elemente</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToInterfaceMembers" xml:space="preserve">
+    <value>Weiterreichen des Object Element Aufrufe an das Interface Element</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
+    <value>Weiterreichen der Interface Elemente Aufrufe an die Object Elemente</value>
+  </data>
   <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
     <value>Elemente</value>
   </data>

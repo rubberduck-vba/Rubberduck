@@ -24,26 +24,26 @@ namespace Rubberduck.RegexAssistant
             switch (whiteSpace)
             {
                 case "\t":
-                    spelledOutWhitespace = RubberduckUI.RegexAssistant_SpelledOut_Tab;
+                    spelledOutWhitespace = RegexAssistantUI.SpelledOut_Tab;
                     break;
                 case " ":
-                    spelledOutWhitespace = RubberduckUI.RegexAssistant_SpelledOut_Space;
+                    spelledOutWhitespace = RegexAssistantUI.SpelledOut_Space;
                     break;
                 case "\n":
-                    spelledOutWhitespace = RubberduckUI.RegexAssistant_SpelledOut_NewLine;
+                    spelledOutWhitespace = RegexAssistantUI.SpelledOut_NewLine;
                     break;
                 case "\r":
-                    spelledOutWhitespace = RubberduckUI.RegexAssistant_SpelledOut_CarriageReturn;
+                    spelledOutWhitespace = RegexAssistantUI.SpelledOut_CarriageReturn;
                     break;
                 case "\r\n":
-                    spelledOutWhitespace = RubberduckUI.RegexAssistant_SpelledOut_CarriageReturnNewLine;
+                    spelledOutWhitespace = RegexAssistantUI.SpelledOut_CarriageReturnNewLine;
                     break;
                 default:
-                    spelledOutWhitespace = RubberduckUI.RegexAssistant_SpelledOut_UnidentifiedWhitespace;
+                    spelledOutWhitespace = RegexAssistantUI.SpelledOut_UnidentifiedWhitespace;
                     break;  
             }
 
-            return string.Format(RubberduckUI.RegexAssistant_EncloseWhitespace_EnclosingFormat, spelledOutWhitespace);
+            return string.Format(RegexAssistantUI.EncloseWhitespace_EnclosingFormat, spelledOutWhitespace);
         }
     }
 }

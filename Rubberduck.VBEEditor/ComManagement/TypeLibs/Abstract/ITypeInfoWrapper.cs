@@ -23,7 +23,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract
         System.Runtime.InteropServices.ComTypes.TYPEFLAGS Flags { get; }
         string ContainerName { get; }
         ITypeInfoVBEExtensions VBEExtensions { get; }
-        void Dispose();
+        //void Dispose();
         int GetSafeRefTypeInfo(int hRef, out ITypeInfoWrapper outTI);
         IntPtr GetCOMReferencePtr();
         int GetContainingTypeLib(IntPtr ppTLB, IntPtr pIndex);
@@ -37,14 +37,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract
         int GetIDsOfNames(IntPtr rgszNames, int cNames, IntPtr pMemId);
         int Invoke(IntPtr pvInstance, int memid, short wFlags, IntPtr pDispParams, IntPtr pVarResult, IntPtr pExcepInfo, IntPtr puArgErr);
         int GetDocumentation(int memid, IntPtr strName, IntPtr strDocString, IntPtr dwHelpContext, IntPtr strHelpFile);
-        int GetDllEntry(int memid, System.Runtime.InteropServices.ComTypes.INVOKEKIND invKind, IntPtr pBstrDllName, IntPtr pBstrName, IntPtr pwOrdinal);
+        new int GetDllEntry(int memid, System.Runtime.InteropServices.ComTypes.INVOKEKIND invKind, IntPtr pBstrDllName, IntPtr pBstrName, IntPtr pwOrdinal);
         int GetRefTypeInfo(int hRef, IntPtr ppTI);
         int AddressOfMember(int memid, System.Runtime.InteropServices.ComTypes.INVOKEKIND invKind, IntPtr ppv);
         int CreateInstance(IntPtr pUnkOuter, ref Guid riid, IntPtr ppvObj);
         int GetMops(int memid, IntPtr pBstrMops);
-        void ReleaseTypeAttr(IntPtr pTypeAttr);
-        void ReleaseFuncDesc(IntPtr pFuncDesc);
-        void ReleaseVarDesc(IntPtr pVarDesc);
+        new void ReleaseTypeAttr(IntPtr pTypeAttr);
+        new void ReleaseFuncDesc(IntPtr pFuncDesc);
+        new void ReleaseVarDesc(IntPtr pVarDesc);
         ITypeInfoFunctionCollection Funcs { get; }
         ITypeInfoVariablesCollection Vars { get; }
         ITypeInfoImplementedInterfacesCollection ImplementedInterfaces { get; }

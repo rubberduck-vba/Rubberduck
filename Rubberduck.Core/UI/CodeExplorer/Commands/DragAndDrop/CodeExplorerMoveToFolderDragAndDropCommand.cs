@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Interaction;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;

@@ -35,8 +35,7 @@ namespace RubberduckTests.Mocks
     {
         public static RubberduckParserState ParseString(string inputCode, out QualifiedModuleName qualifiedModuleName)
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component);
             qualifiedModuleName = new QualifiedModuleName(component);
             var parser = Create(vbe.Object);
 
@@ -48,25 +47,26 @@ namespace RubberduckTests.Mocks
             return parser.State;
         }
 
-        public static (SynchronousParseCoordinator parser, IRewritingManager rewritingManager) CreateWithRewriteManager(IVBE vbe, string serializedComProjectsPath = null, Mock<IVbeEvents> vbeEvents = null)
+        public static (SynchronousParseCoordinator parser, IRewritingManager rewritingManager) CreateWithRewriteManager(IVBE vbe, string serializedComProjectsPath = null, Mock<IVbeEvents> vbeEvents = null, IDictionary<string, IEnumerable<string>> documentModuleSupertypeNames = null)
         {
             var declarationFinderFactory = new DeclarationFinderFactory();
             var projectRepository = new ProjectsRepository(vbe);
             var state = new RubberduckParserState(vbe, projectRepository, declarationFinderFactory, vbeEvents?.Object ?? MockVbeEvents.CreateMockVbeEvents(new Mock<IVBE>()).Object);
-            return CreateWithRewriteManager(vbe, state, projectRepository, serializedComProjectsPath);
+            return CreateWithRewriteManager(vbe, state, projectRepository, serializedComProjectsPath, documentModuleSupertypeNames);
         }
 
-        public static SynchronousParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null, Mock<IVbeEvents> vbeEvents = null)
+        public static SynchronousParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null, Mock<IVbeEvents> vbeEvents = null, IDictionary<string, IEnumerable<string>> documentModuleSupertypeNames = null)
         {
-            return CreateWithRewriteManager(vbe, serializedDeclarationsPath, vbeEvents).parser;
+            return CreateWithRewriteManager(vbe, serializedDeclarationsPath, vbeEvents, documentModuleSupertypeNames).parser;
         }
 
-        public static (SynchronousParseCoordinator parser, IRewritingManager rewritingManager) CreateWithRewriteManager(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedComProjectsPath = null)
+        public static (SynchronousParseCoordinator parser, IRewritingManager rewritingManager) CreateWithRewriteManager(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedComProjectsPath = null, IDictionary<string, IEnumerable<string>> documentModuleSupertypeNames = null)
         {
             var vbeVersion = double.Parse(vbe.Version, CultureInfo.InvariantCulture);
             var compilationArgumentsProvider = MockCompilationArgumentsProvider(vbeVersion);
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
             var userComProjectsRepository = MockUserComProjectRepository();
+            var documentSuperTypesProvider = MockDocumentSuperTypeNamesProvider(documentModuleSupertypeNames);
             var ignoredProjectsSettingsProvider = MockIgnoredProjectsSettingsProviderMock();
             var projectsToBeLoadedFromComSelector = new ProjectsToResolveFromComProjectsSelector(projectRepository, ignoredProjectsSettingsProvider);
 
@@ -85,7 +85,7 @@ namespace RubberduckTests.Mocks
             var supertypeClearer = new SynchronousSupertypeClearer(state); 
             var parserStateManager = new SynchronousParserStateManager(state);
             var referenceRemover = new SynchronousReferenceRemover(state, moduleToModuleReferenceManager);
-            var baseComDeserializer = new XmlComProjectSerializer(path);
+            var baseComDeserializer = new XmlComProjectSerializer(new MockFileSystem(), path);
             var comDeserializer = new StaticCachingComDeserializerDecorator(baseComDeserializer);
             var declarationsFromComProjectLoader = new DeclarationsFromComProjectLoader();
             var referencedDeclarationsCollector = new SerializedReferencedDeclarationsCollector(declarationsFromComProjectLoader, comDeserializer);
@@ -126,7 +126,7 @@ namespace RubberduckTests.Mocks
                 parserStateManager,
                 moduleToModuleReferenceManager,
                 referenceRemover,
-                userComProjectsRepository);
+                documentSuperTypesProvider);
             var parsingStageService = new ParsingStageService(
                 comSynchronizer,
                 builtInDeclarationLoader,
@@ -180,6 +180,30 @@ namespace RubberduckTests.Mocks
             return CreateWithRewriteManager(vbe, state, projectRepository, serializedComProjectsPath).parser;
         }
 
+        private static IDocumentModuleSuperTypeNamesProvider MockDocumentSuperTypeNamesProvider(IDictionary<string, IEnumerable<string>> documentModuleSupertypeNames = null)
+        {
+            var mock = new Mock<IDocumentModuleSuperTypeNamesProvider>();
+            if (documentModuleSupertypeNames == null)
+            {
+                return mock.Object;
+            }
+
+            mock.Setup(m => m.GetSuperTypeNamesFor(It.IsAny<DocumentModuleDeclaration>()))
+                .Returns<DocumentModuleDeclaration>(declaration =>
+                {
+                    if (documentModuleSupertypeNames.TryGetValue(declaration.IdentifierName, out var superTypeNames))
+                    {
+                        return superTypeNames;
+                    }
+                    else
+                    {
+                        return Enumerable.Empty<string>();
+                    }
+                });
+
+            return mock.Object;
+        }
+
         private static IUserComProjectRepository MockUserComProjectRepository()
         {
             var userComProjectsRepository = new Mock<IUserComProjectRepository>();
@@ -210,9 +234,9 @@ namespace RubberduckTests.Mocks
             return compilationArgumentsProvider;
         }
 
-        public static (RubberduckParserState state, IRewritingManager rewritingManager) CreateAndParseWithRewritingManager(IVBE vbe, string serializedComProjectsPath = null)
+        public static (RubberduckParserState state, IRewritingManager rewritingManager) CreateAndParseWithRewritingManager(IVBE vbe, string serializedComProjectsPath = null, IDictionary<string, IEnumerable<string>> documentModuleSupertypeNames = null)
         {
-            var (parser, rewritingManager) = CreateWithRewriteManager(vbe, serializedComProjectsPath);
+            var (parser, rewritingManager) = CreateWithRewriteManager(vbe, serializedComProjectsPath, documentModuleSupertypeNames:documentModuleSupertypeNames);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error)
             {
@@ -222,16 +246,8 @@ namespace RubberduckTests.Mocks
             return (parser.State, rewritingManager);
         }
 
-        public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedComProjectsPath = null)
-        {
-            return CreateAndParseWithRewritingManager(vbe, serializedComProjectsPath).state;
-        }
-
-        private static readonly HashSet<DeclarationType> ProceduralTypes =
-            new HashSet<DeclarationType>(new[]
-            {
-                DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet,
-                DeclarationType.PropertyLet, DeclarationType.PropertySet
-            });
+        public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedComProjectsPath = null, IDictionary<string, IEnumerable<string>> documentModuleSupertypeNames = null) => 
+            CreateAndParseWithRewritingManager(vbe, serializedComProjectsPath, documentModuleSupertypeNames:documentModuleSupertypeNames).state;
+        
     }
 }

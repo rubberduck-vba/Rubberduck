@@ -417,32 +417,8 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="SelectAll_Button" xml:space="preserve">
     <value>Sélectionner tout</value>
   </data>
-  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
-    <value>Portée:</value>
-  </data>
-  <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
-    <value>Sélection</value>
-  </data>
   <data name="DeselectAll_Button" xml:space="preserve">
     <value>Désélectionner tout</value>
-  </data>
-  <data name="RegexSearchReplace_Caption" xml:space="preserve">
-    <value>Rechercher/remplacer avec une RegEx</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
-    <value>Projet courant</value>
-  </data>
-  <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
-    <value>Rechercher:</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
-    <value>Remplacement:</value>
-  </data>
-  <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
-    <value>Tous les fichiers ouverts</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
-    <value>Fichier courant</value>
   </data>
   <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
     <value>Référer explicitement à la feuille active</value>
@@ -450,23 +426,11 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Détails</value>
   </data>
-  <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
-    <value>Bloc courant</value>
-  </data>
-  <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
-    <value>Tous les projets ouverts</value>
-  </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>La sélection n'est pas une variable.</value>
   </data>
-  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
-    <value>Remplacer</value>
-  </data>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
     <value>Rechercher un symbole</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
-    <value>Remplacer tout</value>
   </data>
   <data name="ParserState_ResolverError" xml:space="preserve">
     <value>Erreur de résolution</value>
@@ -761,29 +725,11 @@ End If      'Plus d'outils? Suggestions http://github.com/rubberduck-vba/Rubberd
 
 End Sub</value>
   </data>
-  <data name="RegexAssistant_NoPatternError" xml:space="preserve">
-    <value>(pas d'expression)</value>
-  </data>
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck ne redémarre pas</value>
   </data>
-  <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
-    <value>Global</value>
-  </data>
-  <data name="RegexAssistant_Caption" xml:space="preserve">
-    <value>Rubberduck - Analyseur Regex</value>
-  </data>
-  <data name="RegexAssistant_Title" xml:space="preserve">
-    <value>Analyseur d'expressions Regex</value>
-  </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
     <value>Identifiants permis</value>
-  </data>
-  <data name="RegexAssistant_Instructions" xml:space="preserve">
-    <value>Entrer une expression Regex à analyser dans l'espace ci-dessous.</value>
-  </data>
-  <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
-    <value>Ignorer la casse</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Les fenêtres ancrables n'ont probablement pas été correctement détruites, et/ou n'ont pas pu être recréées. l'environnement peut ne pas être dans un état stable. Rubberduck démerrera normalement à la prochaine initialisation du VBE.</value>
@@ -796,12 +742,6 @@ End Sub</value>
   </data>
   <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
     <value>Niveau de sévérité</value>
-  </data>
-  <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
-    <value>Expression</value>
   </data>
   <data name="ParserState_ResolvingDeclarations" xml:space="preserve">
     <value>Résolution des déclarations...</value>
@@ -1201,27 +1141,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="VersionCheck_BuildType_Release" xml:space="preserve">
     <value>officielle</value>
   </data>
-  <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
-    <value>Indiquer les espaces dans la description</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
-    <value>retour</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_CarriageReturnNewLine" xml:space="preserve">
-    <value>retour-nouvelle-ligne</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_NewLine" xml:space="preserve">
-    <value>nouvelle-ligne</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_Space" xml:space="preserve">
-    <value>espace</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_Tab" xml:space="preserve">
-    <value>tab.</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
-    <value>espace-non-identifié</value>
-  </data>
   <data name="TestOutcome_Fail" xml:space="preserve">
     <value>Échec</value>
   </data>
@@ -1282,5 +1201,53 @@ Mise à jour annulée.</value>
     <value>Le fichier '{0}' requiert le fichier binaire '{1}', qui est manquant.
 
 Échec de l'importation.</value>
+  </data>
+  <data name="ComponentType_StandardModule" xml:space="preserve">
+    <value>Module standard</value>
+  </data>
+  <data name="ComponentType_ClassModule" xml:space="preserve">
+    <value>Module de classe</value>
+  </data>
+  <data name="ComponentType_ComComponent" xml:space="preserve">
+    <value>Componsant COM</value>
+  </data>
+  <data name="ComponentType_Document" xml:space="preserve">
+    <value>Module document</value>
+  </data>
+  <data name="ComponentType_DocObject" xml:space="preserve">
+    <value>Objet document</value>
+  </data>
+  <data name="ComponentType_MDIForm" xml:space="preserve">
+    <value>Formulaire MDI</value>
+  </data>
+  <data name="ComponentType_PropPage" xml:space="preserve">
+    <value>Page de propriétés</value>
+  </data>
+  <data name="ComponentType_RelatedDocument" xml:space="preserve">
+    <value>Document associé</value>
+  </data>
+  <data name="ComponentType_ResFile" xml:space="preserve">
+    <value>Fichier de resources</value>
+  </data>
+  <data name="ComponentType_Undefined" xml:space="preserve">
+    <value>Non défini</value>
+  </data>
+  <data name="ComponentType_UserControl" xml:space="preserve">
+    <value>Contrôle utilisateur</value>
+  </data>
+  <data name="ComponentType_UserForm" xml:space="preserve">
+    <value>Formulaire</value>
+  </data>
+  <data name="ComponentType_VBForm" xml:space="preserve">
+    <value>Formulaire VB</value>
+  </data>
+  <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
+    <value>Concepteur ActiveX</value>
+  </data>
+  <data name="DeclarationType_Document" xml:space="preserve">
+    <value>le document</value>
+  </data>
+  <data name="IndenterSettings_GroupRelatedProperties" xml:space="preserve">
+    <value>Supprime l'espacement vertical entre les membres d'une même propriété</value>
   </data>
 </root>

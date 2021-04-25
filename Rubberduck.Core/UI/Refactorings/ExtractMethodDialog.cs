@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Resources;
+using Tokens = Rubberduck.Resources.Tokens;
 
 namespace Rubberduck.UI.Refactorings
 {
@@ -16,6 +18,7 @@ namespace Rubberduck.UI.Refactorings
     {
         public ExtractMethodDialog()
         {
+            _returnValue = null;
             _parameters = new BindingList<ExtractedParameter>();
 
             InitializeComponent();
@@ -153,7 +156,7 @@ namespace Rubberduck.UI.Refactorings
         private BindingList<ExtractedParameter> _parameters;
         public IEnumerable<ExtractedParameter> Parameters
         {
-            get { return _parameters.Where(p => p.Name != _returnValue.Name); }
+            get { return _parameters.Where(p => p.Name != _returnValue?.Name); }
             set
             {
                 _parameters = new BindingList<ExtractedParameter>(value.ToList());
@@ -169,10 +172,11 @@ namespace Rubberduck.UI.Refactorings
             set
             {
                 _returnValues = new BindingList<ExtractedParameter>(value.ToList());
+                var items = _returnValues.ToArray();
             }
         }
 
-        private ExtractedParameter _returnValue; //never assigned and will always be null
+        private readonly ExtractedParameter _returnValue;
 
         public IEnumerable<ExtractedParameter> Inputs { get; set; }
         public IEnumerable<ExtractedParameter> Outputs { get; set; }
@@ -193,11 +197,9 @@ namespace Rubberduck.UI.Refactorings
 
         private void ValidateName()
         {
-            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
-
             OkButton.Enabled = MethodName != OldMethodName
                                && char.IsLetter(MethodName.FirstOrDefault())
-                               && !tokenValues.Contains(MethodName, StringComparer.InvariantCultureIgnoreCase)
+                               && !Tokens.IllegalIdentifierNames.Contains(MethodName, StringComparer.InvariantCultureIgnoreCase)
                                && !MethodName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
 
             InvalidNameValidationIcon.Visible = !OkButton.Enabled;

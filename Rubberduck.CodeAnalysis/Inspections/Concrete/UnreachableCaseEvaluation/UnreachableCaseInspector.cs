@@ -6,6 +6,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Refactorings;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
@@ -224,7 +225,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
             VBAParser.SelectCaseStmtContext selectStmt,
             IParseTreeVisitorResults parseTreeValues)
         {
-            var (typeName, value) = SelectExpressionTypeNameAndValue(selectStmt, parseTreeValues);
+            var (typeName, _) = SelectExpressionTypeNameAndValue(selectStmt, parseTreeValues);
             return typeName;
         }
 

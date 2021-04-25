@@ -214,7 +214,7 @@
     <value>Der erwartete Fehler wurde nicht gefunden</value>
   </data>
   <data name="TestOutcome_Ignored" xml:space="preserve">
-    <value>Ingoriert</value>
+    <value>Ignoriert</value>
   </data>
   <data name="TestExplorer_TotalDuration" xml:space="preserve">
     <value>Gesamtdauer</value>

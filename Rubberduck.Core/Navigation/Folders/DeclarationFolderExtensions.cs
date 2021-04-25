@@ -1,6 +1,6 @@
 ﻿using System;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck.Navigation.Folders
 {

@@ -16,12 +16,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 
-        [SetUp]
-        public void ExecutesBeforeAllTests()
-        {
-            Support.ResetResolver();
-        }
-
         [TestCase("fizz", "_Fizz", false)]
         [TestCase("fizz", "FizzProp", true)]
         [Category("Refactorings")]
@@ -620,14 +614,14 @@ Private myType As MyType
                 var mFirstTarget = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
                     .First(d => d.IdentifierName == fieldUT);
 
-                Support.SetupResolver(state);
+                var resolver = Support.SetupResolver(state);
 
-                var candidateSetsProviderFactory = Support.Resolve<IEncapsulateFieldCandidateSetsProviderFactory>();
-                var candidateSets = candidateSetsProviderFactory.Create(state, Support.Resolve<IEncapsulateFieldCandidateFactory>(), mFirstTarget.QualifiedModuleName);
+                var candidateSetsProviderFactory = resolver.Resolve<IEncapsulateFieldCandidateSetsProviderFactory>();
+                var candidateSets = candidateSetsProviderFactory.Create(state, resolver.Resolve<IEncapsulateFieldCandidateFactory>(), mFirstTarget.QualifiedModuleName);
 
                 var encapsulateFieldCandidates = candidateSets.EncapsulateFieldUseBackingFieldCandidates;
 
-                var finderFactory = Support.Resolve<IEncapsulateFieldConflictFinderFactory>();
+                var finderFactory = resolver.Resolve<IEncapsulateFieldConflictFinderFactory>();
 
                 var conflictFinder = finderFactory.Create(state, candidateSets.EncapsulateFieldUseBackingFieldCandidates, candidateSets.ObjectStateFieldCandidates);
 
@@ -669,7 +663,8 @@ Private {fieldUT} As Double
                 var mFirstTarget = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
                     .First(d => d.IdentifierName == fieldUT) as VariableDeclaration;
 
-                var modelFactory = Support.Resolve<IEncapsulateFieldModelFactory>(state);
+                var resolver = Support.SetupResolver(state);
+                var modelFactory = resolver.Resolve<IEncapsulateFieldModelFactory>();
                 var model = modelFactory.Create(mFirstTarget);
                 var mFirstCandidate = model[mFirstTarget.IdentifierName];
 

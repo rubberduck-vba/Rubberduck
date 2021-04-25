@@ -407,44 +407,8 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="Language_DE" xml:space="preserve">
     <value>Alemán</value>
   </data>
-  <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
-    <value>Todos los archivos abiertos</value>
-  </data>
-  <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
-    <value>Todos los proyectos abiertos</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
-    <value>Bloque actual</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
-    <value>Archivo actual</value>
-  </data>
-  <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
-    <value>Proyecto actual</value>
-  </data>
-  <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
-    <value>Selección</value>
-  </data>
-  <data name="RegexSearchReplace_Caption" xml:space="preserve">
-    <value>Buscar y reemplazar Regex</value>
-  </data>
   <data name="Find" xml:space="preserve">
     <value>Encontrar</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
-    <value>Reemplaza todo</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
-    <value>Reemplazar</value>
-  </data>
-  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
-    <value>Reemplazar:</value>
-  </data>
-  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
-    <value>Ámbito:</value>
-  </data>
-  <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
-    <value>Buscar:</value>
   </data>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Detalles</value>
@@ -746,30 +710,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   </data>
   <data name="RubberduckFatalError" xml:space="preserve">
     <value>Rubberduck encontró un error. Por favor guarde su trabajo y reinicie el programa host; si el registro está habilitado, puede cargar su archivo de registro ubicado en '%AppData%Roaming\Rubberduck\Logs\RubberduckLog.txt' en un problema de GitHub en 'https://github.com/rubberduck-vba/Rubberduck/issues/new ' y reportar el error.</value>
-  </data>
-  <data name="RegexAssistant_Caption" xml:space="preserve">
-    <value>Rubberduck - Analizador Regex</value>
-  </data>
-  <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
-    <value>Descripción</value>
-  </data>
-  <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
-    <value>Global</value>
-  </data>
-  <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
-    <value>Ignorar mayúsculas</value>
-  </data>
-  <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
-    <value>Patrón</value>
-  </data>
-  <data name="RegexAssistant_NoPatternError" xml:space="preserve">
-    <value>(sin patrón)</value>
-  </data>
-  <data name="RegexAssistant_Instructions" xml:space="preserve">
-    <value>Ingrese una expresión regular para analizar en el cuadro de abajo.</value>
-  </data>
-  <data name="RegexAssistant_Title" xml:space="preserve">
-    <value>Analizador de expresiones regulares</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
     <value>Identificadores en lista blanca</value>
@@ -1223,24 +1163,6 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
 
 Importación cancelada.</value>
   </data>
-  <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
-    <value>retorno-carro</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_Tab" xml:space="preserve">
-    <value>tab</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_Space" xml:space="preserve">
-    <value>espacio</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_NewLine" xml:space="preserve">
-    <value>salto-linea</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_CarriageReturnNewLine" xml:space="preserve">
-    <value>retorno-carro-salto-linea</value>
-  </data>
-  <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
-    <value>espacio-sin-identificar</value>
-  </data>
   <data name="TestOutcome_Fail" xml:space="preserve">
     <value>Fallo</value>
   </data>
@@ -1252,9 +1174,6 @@ Importación cancelada.</value>
   </data>
   <data name="TestOutcome_Unknown" xml:space="preserve">
     <value>Desconocido</value>
-  </data>
-  <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
-    <value>La descripción contiene espacios en blanco</value>
   </data>
   <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
     <value>El identificador '{0}' disparará un resultado de inspección 'Usar nombres significativos'.</value>
