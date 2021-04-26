@@ -208,9 +208,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Type" xml:space="preserve">
     <value>Type</value>
   </data>
-  <data name="TodoExplorer_Caption" xml:space="preserve">
-    <value>Todo Explorer</value>
-  </data>
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
@@ -276,12 +273,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Remove</value>
-  </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Token Text:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Token List:</value>
   </data>
   <data name="Navigation" xml:space="preserve">
     <value>Navigation</value>
@@ -504,33 +495,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Select a folder to export the source of {0} to:</value>
-    <comment>{0} VBProject.Name</comment>
-  </data>
-  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
-    <value>Export Active Project</value>
-  </data>
-  <data name="EmptyUIRefreshMessage" xml:space="preserve">
-    <value>to parse and process the projects in the VBE.</value>
-    <comment>Follows the text for "Refresh"</comment>
-  </data>
-  <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
-    <value>Rubberduck doesn't see anything yet.</value>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck TODO Items - {0}
-{1} items found.</value>
-    <comment>{0}=timestamp; {1}=number</comment>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck TODO Items - {0}
-{1} items found.</value>
-    <comment>{0}=timestamp; {1}=number</comment>
-  </data>
-  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
-    <value>{0}: {1} - {2}.{3} line {4}.</value>
-  </data>
-  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
-    <value>Copy to clipboard</value>
   </data>
   <data name="ParserState_Started" xml:space="preserve">
     <value>Started</value>
@@ -616,36 +580,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="lock_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Fugue\lock-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="plus_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\plus-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="plus_circle_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\plus-circle-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="tick_circle_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\tick-circle-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="TodoMarkerBug" xml:space="preserve">
-    <value>BUG</value>
-  </data>
-  <data name="TodoMarkerNote" xml:space="preserve">
-    <value>NOTE</value>
-  </data>
-  <data name="TodoMarkerTodo" xml:space="preserve">
-    <value>TODO</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Text:</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Text</value>
-  </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>TODO Explorer</value>
   </data>
   <data name="ReferenceSettings_FixBroken" xml:space="preserve">
     <value>Attempt to fix broken references</value>
@@ -824,5 +758,17 @@ Import aborted.</value>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>Selection is not a variable.</value>
     <comment>Used in both Introduce Parameter and Introduce Field</comment>
+  </data>
+  <data name="pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="plus_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\plus-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="plus_circle_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\plus-circle-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="tick_circle_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\tick-circle-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

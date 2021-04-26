@@ -168,15 +168,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Rubberduck_AboutBuild" xml:space="preserve">
     <value>Version {0}</value>
   </data>
-  <data name="TodoMarkerBug" xml:space="preserve">
-    <value>BUG </value>
-  </data>
-  <data name="TodoMarkerNote" xml:space="preserve">
-    <value>NOTE </value>
-  </data>
-  <data name="TodoMarkerTodo" xml:space="preserve">
-    <value>TODO </value>
-  </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implémentations de '{0}'</value>
   </data>
@@ -203,9 +194,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
-  </data>
-  <data name="TodoExplorer_Caption" xml:space="preserve">
-    <value>Explorateur de marqueurs "TODO"</value>
   </data>
   <data name="Warning" xml:space="preserve">
     <value>Avertissement</value>
@@ -263,18 +251,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="Run" xml:space="preserve">
     <value>Exécuter</value>
-  </data>
-  <data name="TodoExplorer_Description" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="TodoExplorer_LineNumber" xml:space="preserve">
-    <value>Ligne</value>
-  </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Texte:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Liste:</value>
   </data>
   <data name="Component" xml:space="preserve">
     <value>Componsant</value>
@@ -472,20 +448,6 @@ les projets dans le VBE.</value>
   <data name="Preview" xml:space="preserve">
     <value>Aperçu</value>
   </data>
-  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
-    <value>Copier dans le presse-papier</value>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck - {0}
-{1} marqueurs TODO trouvés.</value>
-  </data>
-  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
-    <value>{0}: {1} - {2}.{3} ligne {4}.</value>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck marqueurs TODO - {0}
-{1} marqueurs trouvés.</value>
-  </data>
   <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
     <value>Indenter le module</value>
   </data>
@@ -572,15 +534,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
     <value>Inclure les références qui n'ont pas été ajoutées par Rubberduck</value>
-  </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>Explorateur de tâches</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Texte</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Texte:</value>
   </data>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>

@@ -156,15 +156,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="Rubberduck_AboutBuild" xml:space="preserve">
     <value>Verze {0}</value>
   </data>
-  <data name="TodoMarkerBug" xml:space="preserve">
-    <value>BUG</value>
-  </data>
-  <data name="TodoMarkerNote" xml:space="preserve">
-    <value>NOTE</value>
-  </data>
-  <data name="TodoMarkerTodo" xml:space="preserve">
-    <value>TODO</value>
-  </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementace '{0}'</value>
   </data>
@@ -222,12 +213,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="ProjectName" xml:space="preserve">
     <value>Jméno projektu</value>
   </data>
-  <data name="TodoExplorer_LineNumber" xml:space="preserve">
-    <value>Číslo řádku</value>
-  </data>
-  <data name="TodoExplorer_Description" xml:space="preserve">
-    <value>Popisek</value>
-  </data>
   <data name="AllReferences_NoneFound" xml:space="preserve">
     <value>V ukazateli '{0}' nebyly nalezeny žádné reference.</value>
   </data>
@@ -242,9 +227,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="Passed" xml:space="preserve">
     <value>V pořádku</value>
-  </data>
-  <data name="TodoExplorer_Caption" xml:space="preserve">
-    <value>Todo Explorer</value>
   </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Nastavení modulu by měla být specifikována jako první</value>
@@ -290,12 +272,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="New" xml:space="preserve">
     <value>Nový</value>
-  </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Text tokenu:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Seznam tokenu:</value>
   </data>
   <data name="SelectAll_Button" xml:space="preserve">
     <value>Označit vše</value>
@@ -500,20 +476,6 @@ Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí.
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck prozatím nic nevidí.</value>
   </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck TODO položky - {0}
-{1} položek nalezeno.</value>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck TODO položky - {0}
-{1} položka nalezena.</value>
-  </data>
-  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
-    <value>{0}: {1} - {2}.{3} řádek {4}.</value>
-  </data>
-  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
-    <value>Zkopírovat do schránky</value>
-  </data>
   <data name="ParserState_Started" xml:space="preserve">
     <value>Zahájeno</value>
   </data>
@@ -547,15 +509,6 @@ Přejete si toto nastavení importovat do Rubberducku?</value>
   </data>
   <data name="ApplyButtonText" xml:space="preserve">
     <value>Použít</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Text:</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Text</value>
-  </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>TODO Průzkumník</value>
   </data>
   <data name="ReferenceSettings_FixBroken" xml:space="preserve">
     <value>Pokusit se opravit rozbité reference</value>

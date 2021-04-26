@@ -325,15 +325,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export Active Project.
-        /// </summary>
-        public static string CommandDescription_ExportAllCommand {
-            get {
-                return ResourceManager.GetString("CommandDescription_ExportAllCommand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Find symbol.
         /// </summary>
         public static string CommandDescription_FindSymbolCommand {
@@ -657,24 +648,6 @@ namespace Rubberduck.Resources {
             get {
                 object obj = ResourceManager.GetObject("edit_size", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to to parse and process the projects in the VBE..
-        /// </summary>
-        public static string EmptyUIRefreshMessage {
-            get {
-                return ResourceManager.GetString("EmptyUIRefreshMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rubberduck doesn&apos;t see anything yet..
-        /// </summary>
-        public static string EmptyUIRefreshMessage_Title {
-            get {
-                return ResourceManager.GetString("EmptyUIRefreshMessage_Title", resourceCulture);
             }
         }
         
@@ -1902,24 +1875,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Todo Explorer.
-        /// </summary>
-        public static string TodoExplorer_Caption {
-            get {
-                return ResourceManager.GetString("TodoExplorer_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Copy to clipboard.
-        /// </summary>
-        public static string ToDoExplorer_CopyToolTip {
-            get {
-                return ResourceManager.GetString("ToDoExplorer_CopyToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Description.
         /// </summary>
         public static string TodoExplorer_Description {
@@ -1934,107 +1889,6 @@ namespace Rubberduck.Resources {
         public static string TodoExplorer_LineNumber {
             get {
                 return ResourceManager.GetString("TodoExplorer_LineNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rubberduck TODO Items - {0}
-        ///{1} items found..
-        /// </summary>
-        public static string ToDoExplorer_NumberOfIssuesFound_Plural {
-            get {
-                return ResourceManager.GetString("ToDoExplorer_NumberOfIssuesFound_Plural", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rubberduck TODO Items - {0}
-        ///{1} items found..
-        /// </summary>
-        public static string ToDoExplorer_NumberOfIssuesFound_Singular {
-            get {
-                return ResourceManager.GetString("ToDoExplorer_NumberOfIssuesFound_Singular", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0}: {1} - {2}.{3} line {4}..
-        /// </summary>
-        public static string ToDoExplorerToDoItemFormat {
-            get {
-                return ResourceManager.GetString("ToDoExplorerToDoItemFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to BUG.
-        /// </summary>
-        public static string TodoMarkerBug {
-            get {
-                return ResourceManager.GetString("TodoMarkerBug", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NOTE.
-        /// </summary>
-        public static string TodoMarkerNote {
-            get {
-                return ResourceManager.GetString("TodoMarkerNote", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to TODO.
-        /// </summary>
-        public static string TodoMarkerTodo {
-            get {
-                return ResourceManager.GetString("TodoMarkerTodo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to TODO Explorer.
-        /// </summary>
-        public static string TodoSettings_Caption {
-            get {
-                return ResourceManager.GetString("TodoSettings_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Text.
-        /// </summary>
-        public static string TodoSettings_Text {
-            get {
-                return ResourceManager.GetString("TodoSettings_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Text:.
-        /// </summary>
-        public static string TodoSettings_TextLabel {
-            get {
-                return ResourceManager.GetString("TodoSettings_TextLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Token Text:.
-        /// </summary>
-        public static string TodoSettings_TokenLabel {
-            get {
-                return ResourceManager.GetString("TodoSettings_TokenLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Token List:.
-        /// </summary>
-        public static string TodoSettings_TokenListLabel {
-            get {
-                return ResourceManager.GetString("TodoSettings_TokenListLabel", resourceCulture);
             }
         }
         

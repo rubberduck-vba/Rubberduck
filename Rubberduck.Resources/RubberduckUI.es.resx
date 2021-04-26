@@ -205,9 +205,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="Type" xml:space="preserve">
     <value>Tipo</value>
   </data>
-  <data name="TodoExplorer_Caption" xml:space="preserve">
-    <value>TODO Explorer</value>
-  </data>
   <data name="Warning" xml:space="preserve">
     <value>Advertencia</value>
   </data>
@@ -247,12 +244,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="Go" xml:space="preserve">
     <value>Ir</value>
   </data>
-  <data name="TodoExplorer_Description" xml:space="preserve">
-    <value>Descripción</value>
-  </data>
-  <data name="TodoExplorer_LineNumber" xml:space="preserve">
-    <value>Número de línea</value>
-  </data>
   <data name="ProjectName" xml:space="preserve">
     <value>Nombre del proyecto</value>
   </data>
@@ -273,12 +264,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Eliminar</value>
-  </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Etiqueta:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Lista de Etiquetas:</value>
   </data>
   <data name="Navigation" xml:space="preserve">
     <value>Navegación</value>
@@ -509,22 +494,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck no ve nada todavía.</value>
   </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Ítems de TODO de Rubberduck - {0}
-{1} ítems encontrados.</value>
-    <comment>{0} = marca de tiempo; {1} = número</comment>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Ítem de TODO de Rubberduck - {0}
-{1} ítem encontrado.</value>
-    <comment>{0} = marca de tiempo; {1} = número</comment>
-  </data>
-  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
-    <value>{0}: {1} - {2}. {3} línea {4}.</value>
-  </data>
-  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
-    <value>Copiar al portapapeles</value>
-  </data>
   <data name="ParserState_Started" xml:space="preserve">
     <value>Empezado</value>
   </data>
@@ -551,24 +520,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   </data>
   <data name="ApplyButtonText" xml:space="preserve">
     <value>Aplicar</value>
-  </data>
-  <data name="TodoMarkerBug" xml:space="preserve">
-    <value>BUG</value>
-  </data>
-  <data name="TodoMarkerNote" xml:space="preserve">
-    <value>NOTA</value>
-  </data>
-  <data name="TodoMarkerTodo" xml:space="preserve">
-    <value>TODO</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Texto:</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Texto</value>
-  </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>Explorador TODO</value>
   </data>
   <data name="ReferenceSettings_FixBroken" xml:space="preserve">
     <value>Intentar arreglar las referencias rotas</value>

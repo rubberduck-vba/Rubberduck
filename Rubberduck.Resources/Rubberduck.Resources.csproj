@@ -57,6 +57,9 @@
     <Compile Update="Templates.Designer.cs">
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Update="ToDoExplorer\ToDoExplorerUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="UnitTesting\TestExplorer.Designer.cs">
       <DesignTime>True</DesignTime>
     </Compile>
