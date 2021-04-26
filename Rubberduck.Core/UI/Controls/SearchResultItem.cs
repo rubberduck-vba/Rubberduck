@@ -9,11 +9,12 @@ namespace Rubberduck.UI.Controls
         private readonly NavigateCodeEventArgs _navigateArgs;
         private string _resultText;
 
-        public SearchResultItem(Declaration parentScopeDeclaration, NavigateCodeEventArgs navigationInfo, string resultText)
+        public SearchResultItem(Declaration parentScopeDeclaration, NavigateCodeEventArgs navigationInfo, string resultText, Selection? highlight = null)
         {
             _navigateArgs = navigationInfo;
             ParentScope = parentScopeDeclaration;
             _resultText = resultText;
+            HighlightIndex = highlight;
         }
 
         public Declaration ParentScope { get; }
@@ -35,6 +36,8 @@ namespace Rubberduck.UI.Controls
             }
         }
         
+        public Selection? HighlightIndex { get; }
+
         public NavigateCodeEventArgs GetNavigationArgs()
         {
             return _navigateArgs;
