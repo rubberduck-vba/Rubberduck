@@ -85,8 +85,8 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                         token.ThrowIfCancellationRequested();
 
                         var argRefCount = e.Declaration is ParameterDeclaration parameter ? parameter.ArgumentReferences.Count() : 0;
-                        var refCount = e.Declaration?.References.Count() ?? 0 + argRefCount;
-                        var description = e.Declaration?.DescriptionString ?? string.Empty;
+                        var refCount = (e.Declaration?.References.Count() ?? 0) + argRefCount;
+                        var description = e.Declaration?.DescriptionString.Trim() ?? string.Empty;
                         token.ThrowIfCancellationRequested();
 
                         //& renders the next character as if it was an accelerator.

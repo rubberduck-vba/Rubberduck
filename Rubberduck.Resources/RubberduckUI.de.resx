@@ -641,4 +641,10 @@ Import abgebrochen.</value>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Nach Markierung</value>
   </data>
+  <data name="DeclarationType_Document" xml:space="preserve">
+    <value>Dokument</value>
+  </data>
+  <data name="IndenterSettings_GroupRelatedProperties" xml:space="preserve">
+    <value>Entferne vertikalen Zwischenraum zwischen verwandten Eigenschaften</value>
+  </data>
 </root>

@@ -255,9 +255,6 @@
   <data name="ImplicitByRefModifierInspection" xml:space="preserve">
     <value>Impliziter ByRef Parameter</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Illegale Annotation</value>
-  </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Fehlendes Attribut</value>
   </data>
@@ -449,5 +446,14 @@
   </data>
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>On Error GoTo -1</value>
+  </data>
+  <data name="AnnotationInIncompatibleComponentTypeInspection" xml:space="preserve">
+    <value>Annotation in Komponente mit inkompatiblem  Typ</value>
+  </data>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Unzulässige Annotation</value>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>Unbekannte Annotation</value>
   </data>
 </root>

@@ -82,7 +82,8 @@ namespace Rubberduck.VBEditor
             return false;
         }
 
-        public bool IsSingleCharacter => StartLine == EndLine && StartColumn == EndColumn;
+        public bool IsSingleLine => StartLine == EndLine;
+        public bool IsSingleCharacter => IsSingleLine && StartColumn == EndColumn;
 
         public Selection PreviousLine => StartLine == 1 ? Home : new Selection(StartLine - 1, 1);
         public Selection NextLine => new Selection(StartLine + 1, 1);
