@@ -731,24 +731,9 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
   </data>
-  <data name="TestOutcome_Fail" xml:space="preserve">
-    <value>Fail</value>
-  </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Inconclusive</value>
-  </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Succeeded</value>
-  </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Unknown</value>
-  </data>
   <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
     <value>The identifier '{0}' will trigger a 'Use Meaningful Name' inspection result.</value>
     <comment>{0} = code element name</comment>
-  </data>
-  <data name="TestExplorer_AppendHeader" xml:space="preserve">
-    <value>Rubberduck Test Results - {0}</value>
   </data>
   <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
     <value>{0} {1} {2} {3} {4} {5}</value>

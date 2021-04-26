@@ -608,18 +608,6 @@ Přejete si toto nastavení importovat do Rubberducku?</value>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Uložit a Zavřít</value>
   </data>
-  <data name="TestOutcome_Fail" xml:space="preserve">
-    <value>Selhání</value>
-  </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Úspěch</value>
-  </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Neznámý</value>
-  </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Bezvýsledný</value>
-  </data>
   <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
     <value>Identifikátor '{0}' zobrazí inspekci 'Použij Smysluplnější Slovo'.</value>
   </data>
@@ -634,9 +622,6 @@ Přejete si toto nastavení importovat do Rubberducku?</value>
   </data>
   <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
     <value>ActiveX Designer</value>
-  </data>
-  <data name="TestExplorer_AppendHeader" xml:space="preserve">
-    <value>Rubberduck: Výsledky Testů - {0}</value>
   </data>
   <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Nahrazení obsahu projektu ze souborů</value>

@@ -624,23 +624,8 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   <data name="SaveAndClose" xml:space="preserve">
     <value>Guardar y Cerrar</value>
   </data>
-  <data name="TestOutcome_Fail" xml:space="preserve">
-    <value>Fallo</value>
-  </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Indefinido</value>
-  </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Exitoso</value>
-  </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Desconocido</value>
-  </data>
   <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
     <value>El identificador '{0}' disparará un resultado de inspección 'Usar nombres significativos'.</value>
-  </data>
-  <data name="TestExplorer_AppendHeader" xml:space="preserve">
-    <value>Rubberduck Resultados de pruebas - {0}</value>
   </data>
   <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
     <value>pre-release</value>

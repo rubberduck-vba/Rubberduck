@@ -611,18 +611,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   <data name="SaveAndClose" xml:space="preserve">
     <value>Speichern &amp; Schließen</value>
   </data>
-  <data name="TestOutcome_Fail" xml:space="preserve">
-    <value>Fehlgeschlagen</value>
-  </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Erfolgreich</value>
-  </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Unbekannt</value>
-  </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Uneindeutig</value>
-  </data>
   <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
     <value>Der Name '{0}' wird die "Sinnige Namen verwenden"-Inspektion auslösen.</value>
   </data>
@@ -645,9 +633,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
     <value>Der Komponententyp der existierenden Komponente '{0}' stimmt nicht mit dem dem zur Dateierweiterung der Datei '{1}' gehörenden überein.
 
 Import abgebrochen.</value>
-  </data>
-  <data name="TestExplorer_AppendHeader" xml:space="preserve">
-    <value>Rubberduck: Testergebnisse - {0}</value>
   </data>
   <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
     <value>ActiveX-Designer</value>

@@ -615,23 +615,8 @@ les projets dans le VBE.</value>
   <data name="VersionCheck_BuildType_Release" xml:space="preserve">
     <value>officielle</value>
   </data>
-  <data name="TestOutcome_Fail" xml:space="preserve">
-    <value>Échec</value>
-  </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Inconcluant</value>
-  </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Succès</value>
-  </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Inconnu</value>
-  </data>
   <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
     <value>L'identifiant '{0}' chatouillera l'inspection suggérant d'utiliser un nom conférant signification et importance.</value>
-  </data>
-  <data name="TestExplorer_AppendHeader" xml:space="preserve">
-    <value>Rubberduck - Résultats des tests : {0}</value>
   </data>
   <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Remplacer le contenu du projet</value>

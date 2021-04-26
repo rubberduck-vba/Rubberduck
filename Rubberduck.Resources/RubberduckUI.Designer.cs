@@ -1882,51 +1882,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck Test Results - {0}.
-        /// </summary>
-        public static string TestExplorer_AppendHeader {
-            get {
-                return ResourceManager.GetString("TestExplorer_AppendHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Fail.
-        /// </summary>
-        public static string TestOutcome_Fail {
-            get {
-                return ResourceManager.GetString("TestOutcome_Fail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Inconclusive.
-        /// </summary>
-        public static string TestOutcome_Inconclusive {
-            get {
-                return ResourceManager.GetString("TestOutcome_Inconclusive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Succeeded.
-        /// </summary>
-        public static string TestOutcome_Succeeded {
-            get {
-                return ResourceManager.GetString("TestOutcome_Succeeded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unknown.
-        /// </summary>
-        public static string TestOutcome_Unknown {
-            get {
-                return ResourceManager.GetString("TestOutcome_Unknown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap tick_circle {
