@@ -628,9 +628,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
 
             var parameters = Parameters(callingNonDefaultMember);
-            var hasNamedArgs = argumentExpression?.GetAncestor<VBAParser.ArgListContext>()?.TryGetChildContext<VBAParser.NamedArgumentContext>(out _) ?? false;
-
             ParameterDeclaration parameter;
+
             var namedArg = argumentExpression.GetAncestor<VBAParser.NamedArgumentContext>();
             if (namedArg != null)
             {
@@ -1591,6 +1590,11 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
 
             referenceProject = GetProjectDeclarationForReference(reference);
+            if (referenceProject == null)
+            {
+                Logger.Warn($"Could not get the project declaration for reference '{reference.Name}'.");
+                return output;
+            }
             if (!_referencesByProjectId.TryGetValue(referenceProject.ProjectId, out var directReferences))
             {
                 return output;
