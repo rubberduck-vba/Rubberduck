@@ -58,6 +58,7 @@
             <converters:AnnotationToCodeStringConverter x:Key="AnnotationToCodeString" />
             <converters:AnnotateDeclarationCommandParameterToTupleConverter x:Key="AnnotateDeclarationCommandParameterToTuple" />
             <converters:AnnotateDeclarationCommandCEVisibilityConverter x:Key="AnnotateDeclarationCommandVisibility" />
+            <converters:DeclarationToDeclarationTypeStringConverter x:Key="DeclarationTypeNameConverter" />
 
             <CompositeCollection x:Key="AddModuleCommands" x:Shared="False">
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddExistingFileText}"
@@ -604,7 +605,8 @@
                     </HierarchicalDataTemplate.Resources>
                     <StackPanel Orientation="Horizontal">
                         <Grid>
-                            <Image Style="{StaticResource ToolbarIconStyle}">
+                            <Image Style="{StaticResource ToolbarIconStyle}" 
+                                   ToolTip="{Binding Converter={StaticResource DeclarationTypeNameConverter}}">
                                 <Image.Source>
                                     <MultiBinding Converter="{StaticResource NodeToIcon}">
                                         <MultiBinding.Bindings>
@@ -616,7 +618,8 @@
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>
-                            <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}" />
+                            <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}"
+                                   ToolTip="{Binding Converter={StaticResource DeclarationTypeNameConverter}}"/>
                         </Grid>
                         <TextBlock Style="{StaticResource TreeViewItemStyleModified}" />
                     </StackPanel>
