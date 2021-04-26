@@ -44,10 +44,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready ||
-                !(parameter is ICodeExplorerNode node) ||
-                node.Declaration == null)
+            if (_state.Status != ParserState.Ready 
+                || !(parameter is ICodeExplorerNode node) 
+                || node.Declaration == null)
             {
+                return;
+            }
+
+            if (!(node.Parent.Declaration is ProjectDeclaration projectDeclaration))
+            {
+                Logger.Error($"The specified ICodeExplorerNode expected to be a direct child of a node whose declaration is a ProjectDeclaration.");
                 return;
             }
 
@@ -57,7 +63,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 {
                     return;
                 }
-                _finder.FindAllReferences((ProjectDeclaration)node.Parent.Declaration, model.ToReferenceInfo());
+                _finder.FindAllReferences(projectDeclaration, model.ToReferenceInfo());
                 return;
             }
 

@@ -54,7 +54,7 @@ namespace Rubberduck.UI.Controls
         {
             if (_state.Status != ParserState.Ready)
             {
-                _logger.Info($"ParserState is {_state.Status}. This action requires a Ready state.");
+                _logger.Debug($"ParserState is {_state.Status}. This action requires a Ready state.");
                 return;
             }
 
@@ -71,7 +71,7 @@ namespace Rubberduck.UI.Controls
         {
             if (_state.Status != ParserState.Ready)
             {
-                _logger.Info($"ParserState is {_state.Status}. This action requires a Ready state.");
+                _logger.Debug($"ParserState is {_state.Status}. This action requires a Ready state.");
                 return;
             }
 
@@ -153,13 +153,18 @@ namespace Rubberduck.UI.Controls
             foreach (var qualifiedModuleName in modules)
             {
                 var component = _state.ProjectsProvider.Component(qualifiedModuleName);
+                if (component == null)
+                {
+                    _logger.Warn($"Could not retrieve the IVBComponent for module '{qualifiedModuleName}'.");
+                    continue;
+                }
                 var module = component.CodeModule;
 
                 if (nameRefs.TryGetValue(qualifiedModuleName, out var identifierReferences))
                 {
                     foreach (var identifierReference in identifierReferences)
                     {
-                        var (context, selection) = identifierReference.HighligthSelection(module);
+                        var (context, selection) = identifierReference.HighlightSelection(module);
                         var result = new SearchResultItem(
                             identifierReference.ParentNonScoping,
                             new NavigateCodeEventArgs(qualifiedModuleName, identifierReference.Selection),
@@ -172,7 +177,7 @@ namespace Rubberduck.UI.Controls
                 {
                     foreach (var argumentReference in argReferences)
                     {
-                        var (context, selection) = argumentReference.HighligthSelection(module);
+                        var (context, selection) = argumentReference.HighlightSelection(module);
                         var result = new SearchResultItem(
                             argumentReference.ParentNonScoping,
                             new NavigateCodeEventArgs(qualifiedModuleName, argumentReference.Selection),
