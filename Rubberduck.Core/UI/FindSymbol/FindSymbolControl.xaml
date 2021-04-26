@@ -25,7 +25,7 @@
             <ColumnDefinition Width="32" />
         </Grid.ColumnDefinitions>
 
-        <ComboBox x:Name="SearchComboBox"
+        <ComboBox x:Name="searchComboBox"
                   IsEditable="True"
                   ItemsSource="{Binding MatchResults}"
                   SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
