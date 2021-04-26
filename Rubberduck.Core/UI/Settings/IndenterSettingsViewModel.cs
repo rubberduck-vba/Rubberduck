@@ -418,7 +418,7 @@ namespace Rubberduck.UI.Settings
             {
                 var indenter = new Indenter(null, GetCurrentSettings);
 
-                var lines = RubberduckUI.IndenterSettings_PreviewCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                var lines = IndenterSettingsUI.PreviewCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
                 lines = indenter.Indent(lines).ToArray();
                 return string.Join(Environment.NewLine, lines);
             }

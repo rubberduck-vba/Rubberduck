@@ -223,9 +223,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Result" xml:space="preserve">
     <value>Result</value>
   </data>
-  <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
-    <value>Display language:</value>
-  </data>
   <data name="Language_EN" xml:space="preserve">
     <value>English</value>
   </data>
@@ -316,10 +313,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="IndentCurrentProject" xml:space="preserve">
     <value>Current Project</value>
   </data>
-  <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
-    <value>Selection is not a variable.</value>
-    <comment>Used in both Introduce Parameter and Introduce Field</comment>
-  </data>
   <data name="SelectAll_Button" xml:space="preserve">
     <value>Select All</value>
   </data>
@@ -344,86 +337,14 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
     <value>Standard Gap</value>
   </data>
-  <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
-    <value>Enabled</value>
-  </data>
-  <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
-    <value>Key1</value>
-  </data>
-  <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
-    <value>Align comments with code</value>
-  </data>
-  <data name="IndenterSettings_AlignContinuations" xml:space="preserve">
-    <value>Align continuations</value>
-  </data>
-  <data name="IndenterSettings_AlignDims" xml:space="preserve">
-    <value>Align dims</value>
-  </data>
-  <data name="IndenterSettings_AlignmentOptionsLabel" xml:space="preserve">
-    <value>Alignment Options</value>
-  </data>
-  <data name="IndenterSettings_EnableOptionsLabel" xml:space="preserve">
-    <value>Enable Options</value>
-  </data>
-  <data name="IndenterSettings_EnableUndo" xml:space="preserve">
-    <value>Enable undo</value>
-  </data>
-  <data name="IndenterSettings_EndOfLineCommentStyle" xml:space="preserve">
-    <value>End-of-line comment style:</value>
-  </data>
-  <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
-    <value>Force compiler directives to column 1</value>
-  </data>
-  <data name="IndenterSettings_ForceDebugDirectivesToColumn1" xml:space="preserve">
-    <value>Force debug directives to column 1</value>
-  </data>
-  <data name="IndenterSettings_IgnoreOperators" xml:space="preserve">
-    <value>Ignore operators</value>
-  </data>
-  <data name="IndenterSettings_IndentCase" xml:space="preserve">
-    <value>Indent case</value>
-  </data>
-  <data name="IndenterSettings_IndentCompilerDirectives" xml:space="preserve">
-    <value>Indent compiler directives</value>
-  </data>
-  <data name="IndenterSettings_IndentEntireProcedureBody" xml:space="preserve">
-    <value>Indent entire procedure body</value>
-  </data>
-  <data name="IndenterSettings_IndentFirstCommentBlock" xml:space="preserve">
-    <value>Indent first comment block</value>
-  </data>
-  <data name="IndenterSettings_IndentFirstDeclarationBlock" xml:space="preserve">
-    <value>Indent first declaration block</value>
-  </data>
-  <data name="IndenterSettings_IndentOptionsLabel" xml:space="preserve">
-    <value>Indent Options</value>
-  </data>
-  <data name="IndenterSettings_IndentSpaces" xml:space="preserve">
-    <value>Indent spaces:</value>
-  </data>
-  <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
-    <value>Special Options</value>
-  </data>
   <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
     <value>Indent Module</value>
   </data>
   <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
     <value>Indent Procedure</value>
   </data>
-  <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
-    <value>By inspection type</value>
-  </data>
   <data name="GroupingStyle_ByLocation" xml:space="preserve">
     <value>By location</value>
-  </data>
-  <data name="GroupingStyle_ByOutcome" xml:space="preserve">
-    <value>By outcome</value>
-  </data>
-  <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
-    <value>Hotkeys:</value>
   </data>
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Search Results</value>
@@ -485,18 +406,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Parse all opened projects</value>
   </data>
-  <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
-    <value>Alt</value>
-  </data>
-  <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
-    <value>Ctrl</value>
-  </data>
-  <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
-    <value>Key2</value>
-  </data>
-  <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
-    <value>Shift</value>
-  </data>
   <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
     <value>Code Explorer</value>
   </data>
@@ -533,77 +442,14 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="CommandDescription_ReparseCommand" xml:space="preserve">
     <value>Refresh parser state</value>
   </data>
-  <data name="GroupingStyle_ByMarker" xml:space="preserve">
-    <value>By marker</value>
-  </data>
-  <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
-    <value>Folder Delimiter:</value>
-  </data>
-  <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
-    <value>Period (.)</value>
-  </data>
-  <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
-    <value>Slash (/)</value>
-  </data>
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Parser Errors</value>
-  </data>
-  <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
-    <value>Minimum Log Level:</value>
-  </data>
-  <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
-    <value>Debug</value>
-  </data>
-  <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
-    <value>Fatal</value>
-  </data>
-  <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
-    <value>Info</value>
-  </data>
-  <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
-    <value>No Logging</value>
-  </data>
-  <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
-    <value>Trace</value>
-  </data>
-  <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
-    <value>Warn</value>
-  </data>
-  <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
-    <value>Show Log Folder</value>
   </data>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Resolving references...</value>
   </data>
   <data name="RubberduckFatalError" xml:space="preserve">
     <value>Rubberduck encountered an error. Please save your work and restart the host program; if logging is enabled, you can upload your log file located at '%AppData%Roaming\Rubberduck\Logs\RubberduckLog.txt' to a GitHub issue at 'https://github.com/rubberduck-vba/Rubberduck/issues/new' and report the bug.</value>
-  </data>
-  <data name="RegexAssistant_Caption" xml:space="preserve">
-    <value>Rubberduck - Regex Analyzer</value>
-  </data>
-  <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
-    <value>Global</value>
-  </data>
-  <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
-    <value>Ignore case</value>
-  </data>
-  <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
-    <value>Pattern</value>
-  </data>
-  <data name="RegexAssistant_NoPatternError" xml:space="preserve">
-    <value>(no pattern)</value>
-  </data>
-  <data name="RegexAssistant_Instructions" xml:space="preserve">
-    <value>Enter a regular expression to analyze in the box below.</value>
-  </data>
-  <data name="RegexAssistant_Title" xml:space="preserve">
-    <value>Regular Expression Analyzer</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
     <value>Allowed Identifiers</value>
@@ -613,9 +459,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refactor / Encapsulate Field</value>
-  </data>
-  <data name="GeneralSettings_ShowSplash" xml:space="preserve">
-    <value>Show splash screen at startup</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Toolwindows were not correctly destroyed and/or could not be recreated; the VBE may not be in a stable state. Rubberduck will load normally next time the VBE is initialized.</value>
@@ -629,50 +472,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="ReparseToolTipText" xml:space="preserve">
     <value>{0}. Click to refresh.</value>
   </data>
-  <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
-    <value>Indent comments in Enum and Type blocks like in procedures</value>
-  </data>
-  <data name="IndenterSettings_PreviewCode" xml:space="preserve">
-    <value>Public Enum ExampleEnum
-' Enum comment.
-Foo
-Bar ' Member comment.
-End Enum
-
-' Example Procedure
-Sub ExampleProc()
-
-' SMART INDENTER
-' Original VB6 code graciously offered to Rubberduck by Stephen Bullen &amp; Rob Bovey
-' © 2016 by Rubberduck VBA.
-
-Dim count As Integer
-Static name As String
-
-If YouLikeRubberduck Then
-' Star us on GitHub http://github.com/rubberduck-vba/Rubberduck
-' Follow us on Twitter @rubberduckvba
-' Visit http://rubberduckvba.com for news and updates
-
-Select Case X
-Case "A"
-' If you have any comments or suggestions, _
-or find valid VBA code that isn't indented correctly,
-
-#If VBA6 Then
-MsgBox "Contact contact@rubberduck-vba.com"
-#End If
-
-Case "Continued strings and parameters can be" _
-&amp; "lined up for easier reading, optionally ignoring" _
-&amp; "any operators (&amp;+, etc) at the start of the line."
-
-Debug.Print "X&lt;&gt;1"
-End Select      'Case X
-End If      'More Tools? Suggestions http://github.com/rubberduck-vba/Rubberduck/Issues/New
-
-End Sub</value>
-  </data>
   <data name="ContextReferences" xml:space="preserve">
     <value>references</value>
     <comment>Used to display number of references in commandbar's context selection</comment>
@@ -685,15 +484,6 @@ End Sub</value>
     <value>Smart Indenter settings were found in your registry.
 Would you like to import them to Rubberduck?</value>
   </data>
-  <data name="IndenterSettings_VerticalSpacing" xml:space="preserve">
-    <value>Maintain vertical spacing</value>
-  </data>
-  <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
-    <value>Vertical Spacing</value>
-  </data>
-  <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
-    <value>Indented Code Sample</value>
-  </data>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
     <value>You are currently running Rubberduck version {0}.
 Good news! Version {1} ({2}) is now available.
@@ -703,9 +493,6 @@ To review the change log and manually upgrade Rubberduck, click 'Yes'.
 This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &gt; Settings.</value>
     <comment>{0}=local; {1}=latest; {2}=buildtype (release/pre-release)</comment>
   </data>
-  <data name="GeneralSettings_CheckVersion" xml:space="preserve">
-    <value>Check if a newer version is available at startup.</value>
-  </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>Variable '{0}' is assigned. Remove assignment instruction(s)?</value>
   </data>
@@ -714,12 +501,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
     <value>Inspection Severities</value>
-  </data>
-  <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
-    <value>Only enable these if you know what you're doing. Enabling and/or using features from this section may result in things breaking unexpectedly and irrevocable data loss.</value>
-  </data>
-  <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
-    <value>Experimental Features (Requires a restart to take effect):</value>
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Select a folder to export the source of {0} to:</value>
@@ -751,31 +532,11 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>Copy to clipboard</value>
   </data>
-  <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
-    <value>Hotkeys should include either Alt and/or Ctrl.</value>
-  </data>
-  <data name="GeneralSettings_HotkeyRestrictionToolTip" xml:space="preserve">
-    <value>This hotkey configuration may cause undesirable side effects.</value>
-  </data>
-  <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
-    <value>Modifier Warning</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
-    <value>Compile code before parsing</value>
-  </data>
   <data name="ParserState_Started" xml:space="preserve">
     <value>Started</value>
   </data>
   <data name="ParserState_UnexpectedError" xml:space="preserve">
     <value>Unexpected Error</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
-    <value>The VBE setting "Compile On Demand" is currently enabled. It is strongly recommended that you disable the setting via the VBE Options dialog under General tab in order to use the Compile Before Parse feature. Do you want to disable it now?
-
-NOTE: Restart is required for the setting to take effect.</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
-    <value>Compile On Demand currently enabled</value>
   </data>
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Busy</value>
@@ -823,29 +584,11 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
-  <data name="InspectionResults_FilterByError" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="InspectionResults_FilterByHint" xml:space="preserve">
-    <value>Hint</value>
-  </data>
-  <data name="InspectionResults_FilterBySuggestion" xml:space="preserve">
-    <value>Suggestion</value>
-  </data>
-  <data name="InspectionResults_FilterByWarning" xml:space="preserve">
-    <value>Warning</value>
-  </data>
   <data name="GroupingStyle_ByCategory" xml:space="preserve">
     <value>By category</value>
   </data>
-  <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
-    <value>Ignore empty lines when locating first comment and declaration blocks</value>
-  </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Czech</value>
-  </data>
-  <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
-    <value>Empty line handling:</value>
   </data>
   <data name="References" xml:space="preserve">
     <value>References</value>
@@ -886,55 +629,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="tick_circle_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Fugue\tick-circle-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="References_AddFailedCaption" xml:space="preserve">
-    <value>Could not add reference</value>
-  </data>
-  <data name="References_BrowseCaption" xml:space="preserve">
-    <value>Browse for reference</value>
-  </data>
-  <data name="References_BrowseFilterActiveX" xml:space="preserve">
-    <value>ActiveX Controls (*.ocx)|*.ocx</value>
-  </data>
-  <data name="References_BrowseFilterAllFiles" xml:space="preserve">
-    <value>All files (*.*)|*.*</value>
-  </data>
-  <data name="References_BrowseFilterExcel" xml:space="preserve">
-    <value>Microsoft Excel Files ({0})|{0}</value>
-    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
-  </data>
-  <data name="References_BrowseFilterExecutable" xml:space="preserve">
-    <value>Executable Files (*.exe;*.dll)|*.exe;*.dll</value>
-  </data>
-  <data name="References_BrowseFilterTypes" xml:space="preserve">
-    <value>Type Libraries (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll</value>
-  </data>
-  <data name="References_Caption" xml:space="preserve">
-    <value>Add/Remove References...</value>
-  </data>
-  <data name="References_Locale" xml:space="preserve">
-    <value>Locale:</value>
-  </data>
-  <data name="References_Pinned" xml:space="preserve">
-    <value>Pinned</value>
-  </data>
-  <data name="References_Projects" xml:space="preserve">
-    <value>Projects</value>
-  </data>
-  <data name="References_Recent" xml:space="preserve">
-    <value>Recent</value>
-  </data>
-  <data name="References_SearchPlaceholder" xml:space="preserve">
-    <value>Search for reference...</value>
-  </data>
-  <data name="References_SubCaption" xml:space="preserve">
-    <value>Select type libraries and VB projects to add or remove.</value>
-  </data>
-  <data name="References_TypeLibs" xml:space="preserve">
-    <value>Type Libraries</value>
-  </data>
-  <data name="References_Version" xml:space="preserve">
-    <value>Version:</value>
-  </data>
   <data name="TodoMarkerBug" xml:space="preserve">
     <value>BUG</value>
   </data>
@@ -953,21 +647,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="TodoSettings_Caption" xml:space="preserve">
     <value>TODO Explorer</value>
   </data>
-  <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
-    <value>Correction for high-resolution display scalings</value>
-  </data>
-  <data name="References_BrowseFilterAccess" xml:space="preserve">
-    <value>Microsoft Access Databases({0})|{0}</value>
-    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
-  </data>
-  <data name="References_BrowseFilterPowerPoint" xml:space="preserve">
-    <value>PowerPoint Addin Files({0})|{0}</value>
-    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
-  </data>
-  <data name="References_BrowseFilterWord" xml:space="preserve">
-    <value>Word Documents ({0})|{0}</value>
-    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
-  </data>
   <data name="ReferenceSettings_FixBroken" xml:space="preserve">
     <value>Attempt to fix broken references</value>
   </data>
@@ -983,31 +662,11 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
     <value>Track references not added by Rubberduck</value>
   </data>
-  <data name="References_BrowseFilterOutlook" xml:space="preserve">
-    <value>Outlook VBA Files ({0})|{0}</value>
-    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
-  </data>
-  <data name="References_BrowseFilterPublisher" xml:space="preserve">
-    <value>Publisher Files ({0}|{0}</value>
-    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
-  </data>
-  <data name="References_BrowseFilterVisio" xml:space="preserve">
-    <value>All Visio Files ({0})|{0}</value>
-    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
-  </data>
-  <data name="References_DefaultLocale" xml:space="preserve">
-    <value>Standard</value>
-    <comment>Displayed as LCID description when locale is not specified.</comment>
-  </data>
   <data name="cross_script" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Fugue\cross-script.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="magnifier_medium" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Fugue\magnifier-medium.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="References_CaptionTemplate" xml:space="preserve">
-    <value>Add/Remove References - {0}</value>
-    <comment>{0} = Project name</comment>
   </data>
   <data name="edit_size" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Fugue\edit-size.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1026,21 +685,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="arrow_270_dimmed" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Fugue\arrow-270-dimmed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="References_AddToolTip" xml:space="preserve">
-    <value>Add to project</value>
-  </data>
-  <data name="References_MoveDownToolTip" xml:space="preserve">
-    <value>Move down</value>
-  </data>
-  <data name="References_MoveUpToolTip" xml:space="preserve">
-    <value>Move up</value>
-  </data>
-  <data name="References_PinToolTip" xml:space="preserve">
-    <value>Pin reference</value>
-  </data>
-  <data name="References_RemoveToolTip" xml:space="preserve">
-    <value>Remove from project</value>
   </data>
   <data name="MemberAttributeRecoveryRewriteFailedMessage" xml:space="preserve">
     <value>Failed to recover member attributes.</value>
@@ -1087,9 +731,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
   </data>
-  <data name="References_BrowseButtonText" xml:space="preserve">
-    <value>Browse...</value>
-  </data>
   <data name="TestOutcome_Fail" xml:space="preserve">
     <value>Fail</value>
   </data>
@@ -1112,9 +753,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
     <value>{0} {1} {2} {3} {4} {5}</value>
     <comment>{0}=Project; {1}=Folder; {2}=Component; {3}=DeclarationType; {4}=Scope; {5}=Name</comment>
-  </data>
-  <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
-    <value>Tell me if a newer pre-release build is available.</value>
   </data>
   <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
     <value>pre-release</value>
@@ -1180,16 +818,26 @@ Import aborted.</value>
   <data name="ComponentType_VBForm" xml:space="preserve">
     <value>VB Form</value>
   </data>
-  <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
-    <value>Enable drag and drop in Code Explorer</value>
-  </data>
-  <data name="TestOutcome_Ignored" xml:space="preserve">
-    <value>Ignored</value>
-  </data>
   <data name="IndenterSettings_GroupRelatedProperties" xml:space="preserve">
     <value>Remove vertical space between related property members</value>
   </data>
   <data name="DeclarationType_Document" xml:space="preserve">
     <value>document</value>
+  </data>
+  <data name="GroupingStyle_ByOutcome" xml:space="preserve">
+    <value>By outcome</value>
+  </data>
+  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
+    <value>Grouping</value>
+  </data>
+  <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
+    <value>By inspection type</value>
+  </data>
+  <data name="GroupingStyle_ByMarker" xml:space="preserve">
+    <value>By marker</value>
+  </data>
+  <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
+    <value>Selection is not a variable.</value>
+    <comment>Used in both Introduce Parameter and Introduce Field</comment>
   </data>
 </root>

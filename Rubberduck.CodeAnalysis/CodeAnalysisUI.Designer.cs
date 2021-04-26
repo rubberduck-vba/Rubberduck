@@ -493,14 +493,5 @@ namespace Rubberduck.CodeAnalysis {
                 return ResourceManager.GetString("GroupingGrid_Filter", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Grouping.
-        /// </summary>
-        public static string GroupingGrid_GroupingStyle {
-            get {
-                return ResourceManager.GetString("GroupingGrid_GroupingStyle", resourceCulture);
-            }
-        }
     }
 }

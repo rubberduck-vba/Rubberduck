@@ -117,150 +117,97 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CodeInspectionResults_Type" xml:space="preserve">
-    <value>Tipo</value>
+  <data name="References" xml:space="preserve">
+    <value>Références</value>
   </data>
-  <data name="CodeInspectionResults_Issue" xml:space="preserve">
-    <value>Problema</value>
+  <data name="AddFailedCaption" xml:space="preserve">
+    <value>La référence n'a pu être ajoutée</value>
   </data>
-  <data name="CodeInspectionResults_Location" xml:space="preserve">
-    <value>Ubicación</value>
+  <data name="AddToolTip" xml:space="preserve">
+    <value>Ajouter au projet</value>
   </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Inspecciones del código de Rubberduck - {0}
-{1} problema encontrado.</value>
+  <data name="BrowseButtonText" xml:space="preserve">
+    <value>Parcourir...</value>
   </data>
-  <data name="CodeInspections_Inspecting" xml:space="preserve">
-    <value>Inspeccionando...</value>
+  <data name="BrowseCaption" xml:space="preserve">
+    <value>Parcourir...</value>
   </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Inspecciones del código de Rubberduck - {0}
-{1} problemas encontrados.</value>
+  <data name="BrowseFilterAccess" xml:space="preserve">
+    <value>Base de données Microsoft Access ({0})|{0}</value>
   </data>
-  <data name="CodeInspectionSettingsPage_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Severidad de la inspección</value>
+  <data name="BrowseFilterActiveX" xml:space="preserve">
+    <value>Contrôles ActiveX (*.ocx)|*.ocx</value>
   </data>
-  <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Identificadores en lista blanca</value>
+  <data name="BrowseFilterAllFiles" xml:space="preserve">
+    <value>Tous (*.*)|*.*</value>
   </data>
-  <data name="CodeInspectionSettingsPage_Misc" xml:space="preserve">
-    <value>Misceláneas</value>
+  <data name="BrowseFilterExcel" xml:space="preserve">
+    <value>Fichiers Microsoft Excel ({0})|{0}</value>
   </data>
-  <data name="CodeInspectionSettingsPage_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
-    <value>Ejecutar inspecciones automáticamente en el análisis exitoso</value>
+  <data name="BrowseFilterExecutable" xml:space="preserve">
+    <value>Exécutables (*.exe,*.dll)|*.exe;*.dll</value>
   </data>
-  <data name="CodeInspectionSettingsPage_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>Estos identificadores serán ignorados por la inspección 'Usar nombres significativos'.</value>
+  <data name="BrowseFilterOutlook" xml:space="preserve">
+    <value>Fichiers VBA Outlook ({0})|{0}</value>
   </data>
-  <data name="CodeMetrics_Lines" xml:space="preserve">
-    <value>Líneas</value>
+  <data name="BrowseFilterPowerPoint" xml:space="preserve">
+    <value>Fichiers complément PowerPoint ({0})|{0}</value>
   </data>
-  <data name="CodeMetrics_Complexity" xml:space="preserve">
-    <value>Complejidad ciclomática</value>
+  <data name="BrowseFilterPublisher" xml:space="preserve">
+    <value>Fichiers Publisher ({0})|{0}</value>
   </data>
-  <data name="CodeMetrics_Nesting" xml:space="preserve">
-    <value>Anidamiento maximo</value>
+  <data name="BrowseFilterTypes" xml:space="preserve">
+    <value>Bibliothêques (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll</value>
   </data>
-  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
-    <value>Métricas de Código</value>
+  <data name="BrowseFilterVisio" xml:space="preserve">
+    <value>Tous les fichiers Visio ({0})|{0}</value>
   </data>
-  <data name="CodeInspections" xml:space="preserve">
-    <value>Inspecciones de código</value>
+  <data name="BrowseFilterWord" xml:space="preserve">
+    <value>Documents Word ({0})|{0}</value>
   </data>
-  <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
-    <value>El VBEsetting "Compile On Demand" está habilitado actualmente. No se recomienda, ya que puede ocultar errores de compilación y causar problemas con el análisis. ¿Quieres analizar de todos modos?</value>
+  <data name="Caption" xml:space="preserve">
+    <value>Ajouter/Supprimer Références...</value>
   </data>
-  <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
-    <value>Ajuste "Compilar A Demanda"</value>
+  <data name="CaptionTemplate" xml:space="preserve">
+    <value>Ajouter/Supprimer Références - {0}</value>
   </data>
-  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
-    <value>No se puede compilar para analizar.</value>
+  <data name="DefaultLocale" xml:space="preserve">
+    <value>Standard</value>
   </data>
-  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
-    <value>Los siguientes proyectos no pueden compilarse, lo que probablemente resultará en errores del analizador. ¿Continua de todas maneras? {0}</value>
+  <data name="Locale" xml:space="preserve">
+    <value>Langue:</value>
   </data>
-  <data name="DeclarationType_BracketedExpression" xml:space="preserve">
-    <value>expresión en tiempo de ejecución</value>
+  <data name="MoveDownToolTip" xml:space="preserve">
+    <value>Déplacer vers le haut</value>
   </data>
-  <data name="DeclarationType_ClassModule" xml:space="preserve">
-    <value>clase</value>
+  <data name="MoveUpToolTip" xml:space="preserve">
+    <value>Déplacer vers le bas</value>
   </data>
-  <data name="DeclarationType_Constant" xml:space="preserve">
-    <value>constante</value>
+  <data name="Pinned" xml:space="preserve">
+    <value>Épingles</value>
   </data>
-  <data name="DeclarationType_Control" xml:space="preserve">
-    <value>control</value>
+  <data name="PinToolTip" xml:space="preserve">
+    <value>Épingler la référence</value>
   </data>
-  <data name="DeclarationType_Enumeration" xml:space="preserve">
-    <value>enumerar</value>
+  <data name="Projects" xml:space="preserve">
+    <value>Projets</value>
   </data>
-  <data name="DeclarationType_EnumerationMember" xml:space="preserve">
-    <value>enumerar miembro</value>
+  <data name="Recent" xml:space="preserve">
+    <value>Récents</value>
   </data>
-  <data name="DeclarationType_Event" xml:space="preserve">
-    <value>evento</value>
+  <data name="RemoveToolTip" xml:space="preserve">
+    <value>Supprimer du projet</value>
   </data>
-  <data name="DeclarationType_Function" xml:space="preserve">
-    <value>función</value>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Rechercher une référence...</value>
   </data>
-  <data name="DeclarationType_LibraryFunction" xml:space="preserve">
-    <value>biblioteca de funciones</value>
+  <data name="SubCaption" xml:space="preserve">
+    <value>Sélectionner les librairies et projets à ajouter ou supprimer aux références du projet.</value>
   </data>
-  <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
-    <value>biblioteca de procedimientos</value>
+  <data name="TypeLibs" xml:space="preserve">
+    <value>Bibliothèques</value>
   </data>
-  <data name="DeclarationType_LineLabel" xml:space="preserve">
-    <value>etiqueta de línea</value>
-  </data>
-  <data name="DeclarationType_Parameter" xml:space="preserve">
-    <value>parámetro</value>
-  </data>
-  <data name="DeclarationType_ProceduralModule" xml:space="preserve">
-    <value>módulo</value>
-  </data>
-  <data name="DeclarationType_Procedure" xml:space="preserve">
-    <value>procedimiento</value>
-  </data>
-  <data name="DeclarationType_Project" xml:space="preserve">
-    <value>proyecto</value>
-  </data>
-  <data name="DeclarationType_PropertyGet" xml:space="preserve">
-    <value>propiedad Get</value>
-  </data>
-  <data name="DeclarationType_PropertyLet" xml:space="preserve">
-    <value>propiedad Let</value>
-  </data>
-  <data name="DeclarationType_PropertySet" xml:space="preserve">
-    <value>propiedad Set</value>
-  </data>
-  <data name="DeclarationType_UserDefinedType" xml:space="preserve">
-    <value>tipo definido por el usuario</value>
-  </data>
-  <data name="DeclarationType_UserDefinedTypeMember" xml:space="preserve">
-    <value>miembro de tipo definido por el usuario</value>
-  </data>
-  <data name="DeclarationType_Variable" xml:space="preserve">
-    <value>variable</value>
-  </data>
-  <data name="EasterEgg_Continuator" xml:space="preserve">
-    <value>¡Has ganado la insignia de "Continuador"!</value>
-  </data>
-  <data name="EmptyLineHandling_Indent" xml:space="preserve">
-    <value>Indentar</value>
-  </data>
-  <data name="EmptyLineHandling_Remove" xml:space="preserve">
-    <value>Eliminar</value>
-  </data>
-  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
-    <value>Ignorar</value>
-  </data>
-  <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>Filtro</value>
-  </data>
-  <data name="CodeInspectionSettingsPage_FilterByDescription" xml:space="preserve">
-    <value>Descripción:</value>
-  </data>
-  <data name="CodeInspectionSettingsPage_FilterBySeverity" xml:space="preserve">
-    <value>Severidad:</value>
+  <data name="Version" xml:space="preserve">
+    <value>Version:</value>
   </data>
 </root>

@@ -77,12 +77,12 @@
                 <Separator />
 
                 <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}"
-                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_CollapseAll}">
+                        ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=CollapseAll}">
                     <Image Source="{StaticResource CollapseAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Button Name="ExpandAll" Command="{Binding ExpandAllCommand}"
-                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_ExpandAll}">
+                        ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=ExpandAll}">
                     <Image Source="{StaticResource ExpandAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
                 </Button>
 

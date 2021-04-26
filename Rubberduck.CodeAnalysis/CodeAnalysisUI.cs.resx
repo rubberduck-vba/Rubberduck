@@ -254,9 +254,6 @@ Nalezeno {1} problémů.</value>
   <data name="EmptyLineHandling_Ignore" xml:space="preserve">
     <value>Ignorovat</value>
   </data>
-  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
-    <value>Seskupení</value>
-  </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filtr</value>
   </data>
