@@ -334,4 +334,7 @@ Pokračovat?</value>
   <data name="CodeExplorer_Annotate" xml:space="preserve">
     <value>Okomentovat</value>
   </data>
+  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+    <value>Navigova</value>
+  </data>
 </root>

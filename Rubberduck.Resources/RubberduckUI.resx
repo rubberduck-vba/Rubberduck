@@ -1895,4 +1895,10 @@ Do you want to proceed?</value>
   <data name="DeclarationType_Document" xml:space="preserve">
     <value>document</value>
   </data>
+  <data name="CloseButtonText" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="PeekDefinitionCommandText" xml:space="preserve">
+    <value>Peek definition</value>
+  </data>
 </root>

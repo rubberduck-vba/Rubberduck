@@ -59,6 +59,7 @@
             <converters:AnnotateDeclarationCommandParameterToTupleConverter x:Key="AnnotateDeclarationCommandParameterToTuple" />
             <converters:AnnotateDeclarationCommandCEVisibilityConverter x:Key="AnnotateDeclarationCommandVisibility" />
             <converters:DeclarationToDeclarationTypeStringConverter x:Key="DeclarationTypeNameConverter" />
+            <converters:PopupIsOpenConverter x:Key="IsOpenConverter" />
 
             <CompositeCollection x:Key="AddModuleCommands" x:Shared="False">
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddExistingFileText}"
@@ -243,6 +244,7 @@
                     </Style>
                 </Style.Resources>
             </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -563,6 +565,9 @@
                                   Command="{Binding FindAllImplementationsCommand}"
                                   CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                     </MenuItem>
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=PeekDefinitionCommandText}"
+                              Command="{Binding PeekDefinitionCommand}"
+                              CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Indent}"
                               Command="{Binding IndenterCommand}"
                               CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
@@ -625,6 +630,7 @@
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
+
             <i:Interaction.Behaviors>
                 <controls:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
@@ -677,5 +683,13 @@
                 </WrapPanel>
             </ScrollViewer>
         </Border>
+
+        <Popup x:Name="PeekDefPopup" 
+               Placement="MousePoint" 
+               PlacementTarget="{Binding ElementName=ProjectTree}" 
+               IsOpen="{Binding ShowPeekDefinitionPopup, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+               StaysOpen="True">
+            <controls:PeekControl DataContext="{Binding PeekDefinitionViewModel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+        </Popup>
     </Grid>
 </UserControl>

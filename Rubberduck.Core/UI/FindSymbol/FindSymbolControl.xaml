@@ -30,7 +30,7 @@
             <ColumnDefinition Width="32" />
         </Grid.ColumnDefinitions>
 
-        <ComboBox x:Name="searchComboBox"
+        <ComboBox x:Name="SearchComboBox"
                   IsEditable="True"
                   ItemsSource="{Binding MatchResults}"
                   SelectedItem="{Binding SelectedItem}"

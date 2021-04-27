@@ -331,4 +331,7 @@ Continuer?</value>
   <data name="CodeExplorer_AppendHeader" xml:space="preserve">
     <value>Rubberduck: Déclarations - {0}</value>
   </data>
+  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+    <value>Naviguer</value>
+  </data>
 </root>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -19,6 +20,7 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.Templates;
 using Rubberduck.UI.CodeExplorer.Commands.DragAndDrop;
 using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.UI.Controls;
 using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -86,6 +88,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                 RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, _externalRemoveCommand.CanExecute);
             }
 
+            PeekDefinitionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecutePeekDefinitionCommand, CanExecutePeekDefinitionCommand);
+            ClosePeekDefinitionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteClosePeekDefinitionCommand);
 
             OnPropertyChanged(nameof(Projects));
 
@@ -444,6 +448,55 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CommandBase CollapseAllCommand { get; }
         public CommandBase ExpandAllCommand { get; }
+        public CommandBase PeekDefinitionCommand { get; }
+        public CommandBase ClosePeekDefinitionCommand { get; }
+
+        private bool _showPeekDefinitionPopup;
+        public bool ShowPeekDefinitionPopup
+        {
+            get => _showPeekDefinitionPopup;
+            set
+            {
+                if (value != _showPeekDefinitionPopup)
+                {
+                    _showPeekDefinitionPopup = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private PeekDefinitionViewModel _peekDefinitionViewModel;
+        public PeekDefinitionViewModel PeekDefinitionViewModel
+        {
+            get => _peekDefinitionViewModel;
+            private set
+            {
+                if (_peekDefinitionViewModel != value)
+                {
+                    _peekDefinitionViewModel = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private void ExecutePeekDefinitionCommand(object param)
+        {
+            if (param is ICodeExplorerNode node)
+            {
+                PeekDefinitionViewModel = new PeekDefinitionViewModel(node, this.FindAllReferencesCommand, this.OpenCommand, this.ClosePeekDefinitionCommand);
+            }
+            else
+            {
+                PeekDefinitionViewModel = null;
+            }
+
+
+            ShowPeekDefinitionPopup = PeekDefinitionViewModel != null;
+        }
+
+        private void ExecuteClosePeekDefinitionCommand(object param) => ShowPeekDefinitionPopup = false;
+
+        private bool CanExecutePeekDefinitionCommand(object param) => SelectedItem is CodeExplorerMemberViewModel;
 
         public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
         {
