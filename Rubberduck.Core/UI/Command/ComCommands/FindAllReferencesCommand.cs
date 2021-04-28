@@ -8,6 +8,41 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.ComCommands
 {
+    [ComVisible(false)]
+    public class ProjectExplorerFindAllReferencesCommand : FindAllReferencesCommand
+    {
+        private readonly IParserStatusProvider _parserStatusProvider;
+        private readonly ISelectedDeclarationProvider _finder;
+
+        public ProjectExplorerFindAllReferencesCommand(
+            IParserStatusProvider parserStatusProvider,
+            IDeclarationFinderProvider declarationFinderProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider,
+            IVBE vbe,
+            FindAllReferencesAction finder,
+            IVbeEvents vbeEvents)
+            : base(parserStatusProvider, declarationFinderProvider, selectedDeclarationProvider, vbe, finder, vbeEvents)
+        {
+
+        }
+
+        protected override void OnExecute(object parameter)
+        {
+            if (_parserStatusProvider.Status != ParserState.Ready)
+            {
+                return;
+            }
+
+            var declaration = _finder.SelectedProjectExplorerModule();
+            if (declaration == null)
+            {
+                return;
+            }
+
+            Service.FindAllReferences(declaration);
+        }
+    }
+
     /// <summary>
     /// A command that locates all references to a specified identifier, or of the active code module.
     /// </summary>
@@ -18,14 +53,12 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IVBE _vbe;
-        private readonly FindAllReferencesAction _service;
 
         public FindAllReferencesCommand(
             IParserStatusProvider parserStatusProvider,
             IDeclarationFinderProvider declarationFinderProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider,
-            IVBE vbe, 
-            ISearchResultsWindowViewModel viewModel, 
+            IVBE vbe,
             FindAllReferencesAction finder, 
             IVbeEvents vbeEvents)
             : base(vbeEvents)
@@ -34,10 +67,12 @@ namespace Rubberduck.UI.Command.ComCommands
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _vbe = vbe;
-            _service = finder;
+            Service = finder;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
+
+        protected FindAllReferencesAction Service { get; }
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
@@ -77,7 +112,7 @@ namespace Rubberduck.UI.Command.ComCommands
                 return;
             }
 
-            _service.FindAllReferences(declaration);
+            Service.FindAllReferences(declaration);
         }
 
         private Declaration FindTarget(object parameter)
@@ -89,33 +124,30 @@ namespace Rubberduck.UI.Command.ComCommands
 
             Declaration target = null;
             using (var activePane = _vbe.ActiveCodePane)
+            using (var selectedComponent = _vbe.SelectedVBComponent)
             {
-                using (var selectedComponent = _vbe.SelectedVBComponent)
+                if (activePane != null
+                    && !activePane.IsWrappingNullReference
+                    && (selectedComponent?.HasDesigner ?? false))
                 {
-                    if (activePane != null
-                        && !activePane.IsWrappingNullReference
-                        && (selectedComponent?.HasDesigner ?? false))
+                    using (var activeWindow = activePane.Window)
+                    using (var designer = selectedComponent.DesignerWindow())
                     {
-                        using (var activeWindow = activePane.Window)
-                        using (var designer = selectedComponent.DesignerWindow())
+                        // Handle() is 0 for both windows, and IsVisible is true whenever the window is merely opened (active or not, regardless of state).
+                        // Caption will be "UserForm1 (Code)" vs "UserForm1 (UserForm)"
+                        if (designer.IsVisible && designer.Caption == activeWindow.Caption)
                         {
-                            // Handle() is 0 for both windows, and IsVisible is true whenever the window is merely opened (active or not, regardless of state).
-                            // Caption will be "UserForm1 (Code)" vs "UserForm1 (UserForm)"
-                            if (designer.IsVisible && designer.Caption == activeWindow.Caption)
-                            {
-                                target = FindFormDesignerTarget(selectedComponent);
-                            }
+                            target = FindFormDesignerTarget(selectedComponent);
                         }
                     }
                 }
             }
+
             return target ?? FindCodePaneTarget();
         }
 
-        private Declaration FindCodePaneTarget()
-        {
-            return _selectedDeclarationProvider.SelectedDeclaration();
-        }
+        private Declaration FindCodePaneTarget() => _selectedDeclarationProvider.SelectedDeclaration();
+        
 
         private Declaration FindFormDesignerTarget(IVBComponent component)
         {
@@ -153,6 +185,7 @@ namespace Rubberduck.UI.Command.ComCommands
         private static (DeclarationType, string Name) GetSelectedName(IVBComponent component, IControls selectedControls, int selectedCount)
         {
             // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
+            // TODO determine if the above comment is still true.
             if (selectedCount == 0)
             {
                 return (DeclarationType.ClassModule, component.Name);

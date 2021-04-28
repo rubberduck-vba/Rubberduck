@@ -45,7 +45,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override IEnumerable<Type> ApplicableNodeTypes => new[] { typeof(System.ValueTuple<IAnnotation, ICodeExplorerNode>) };
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        protected override bool SpecialEvaluateCanExecute(object parameter)
         {
             if (parameter is System.ValueTuple<IAnnotation, ICodeExplorerNode> data)
             {

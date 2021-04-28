@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.ComCommands
 {
@@ -13,16 +14,16 @@ namespace Rubberduck.UI.Command.ComCommands
     [ComVisible(false)]
     public class PeekDefinitionCommand : ComCommandBase
     {
-        private readonly IPeekDefinitionPopupProvider _provider;
-        private readonly ISelectedDeclarationProvider _selection;
-
         public PeekDefinitionCommand(CodeExplorerDockablePresenter codeExplorer, IVbeEvents vbeEvents, ISelectedDeclarationProvider selection)
             : base(vbeEvents)
         {
-            _provider = (codeExplorer.UserControl as CodeExplorerWindow)?.ViewModel;
-            _selection = selection;
+            PopupProvider = (codeExplorer.UserControl as CodeExplorerWindow)?.ViewModel;
+            SelectedDeclarationProvider = selection;
             AddToCanExecuteEvaluation(CanExecuteInternal);
         }
+
+        protected ISelectedDeclarationProvider SelectedDeclarationProvider { get; }
+        protected IPeekDefinitionPopupProvider PopupProvider { get; }
 
         private bool CanExecuteInternal(object parameter)
         {
@@ -31,23 +32,36 @@ namespace Rubberduck.UI.Command.ComCommands
                 return true;
             }
 
-            return _selection.SelectedDeclaration() != null;
+            return SelectedDeclarationProvider.SelectedDeclaration() != null;
         }
 
         protected override void OnExecute(object parameter)
         {
             if (parameter is Declaration target)
             {
-                _provider.PeekDefinition(target);
+                PopupProvider.PeekDefinition(target);
             }
             else
             {
-                var selection = _selection.SelectedDeclaration();
+                var selection = SelectedDeclarationProvider.SelectedDeclaration();
                 if (selection != null)
                 {
-                    _provider.PeekDefinition(selection);
+                    PopupProvider.PeekDefinition(selection);
                 }
             }
+        }
+    }
+
+    public class ProjectExplorerPeekDefinitionCommand : PeekDefinitionCommand
+    {
+        public ProjectExplorerPeekDefinitionCommand(CodeExplorerDockablePresenter codeExplorer, IVbeEvents vbeEvents, ISelectedDeclarationProvider selection)
+            : base(codeExplorer, vbeEvents, selection)
+        {}
+
+        protected override void OnExecute(object parameter)
+        {
+            var module = SelectedDeclarationProvider.SelectedProjectExplorerModule();
+            base.OnExecute(module);
         }
     }
 }

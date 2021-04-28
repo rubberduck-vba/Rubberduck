@@ -31,9 +31,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        protected override bool SpecialEvaluateCanExecute(object parameter)
         {
-            return parameter is Declaration || ((CodeExplorerItemViewModel)parameter).QualifiedSelection.HasValue;
+            return parameter is Declaration || ((parameter as CodeExplorerItemViewModel)?.QualifiedSelection.HasValue ?? false);
         }
 
         protected override void OnExecute(object parameter)

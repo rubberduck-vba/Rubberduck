@@ -644,6 +644,7 @@ namespace Rubberduck.Root
             return new[]
             {
                 typeof(ProjectExplorerRefactorRenameCommandMenuItem),
+                typeof(ProjectExplorerPeekDefinitionCommandMenuItem),
                 typeof(ProjectExplorerFindSymbolCommandMenuItem),
                 typeof(ProjectExplorerFindAllReferencesCommandMenuItem),
                 typeof(ProjectExplorerFindAllImplementationsCommandMenuItem),

@@ -36,7 +36,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override IEnumerable<Type> ApplicableNodeTypes => ApplicableBaseNodes;
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        protected override bool SpecialEvaluateCanExecute(object parameter)
         {
             return parameter is CodeExplorerCustomFolderViewModel
                     || parameter is CodeExplorerComponentViewModel componentViewModel

@@ -36,7 +36,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override IEnumerable<Type> ApplicableNodeTypes { get; } = new List<Type> { typeof(CodeExplorerComponentViewModel)};
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        protected override bool SpecialEvaluateCanExecute(object parameter)
         {
             return _exportCommand.CanExecute(parameter) &&
                    parameter is CodeExplorerComponentViewModel viewModel &&

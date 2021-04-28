@@ -30,7 +30,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override ComponentType ComponentType => ComponentType.MDIForm;
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        protected override bool SpecialEvaluateCanExecute(object parameter)
         {
             if (!(parameter is CodeExplorerItemViewModel node))
             {

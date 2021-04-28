@@ -36,7 +36,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        protected override bool SpecialEvaluateCanExecute(object parameter)
         {
             return _state.Status == ParserState.Ready 
                    && parameter is CodeExplorerComponentViewModel node 

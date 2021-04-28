@@ -62,7 +62,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return EvaluateCanExecute(model);
         }
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        protected override bool SpecialEvaluateCanExecute(object parameter)
         {
             if(parameter is ValueTuple<string, ICodeExplorerNode> data)
             {
