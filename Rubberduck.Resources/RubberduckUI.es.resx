@@ -652,4 +652,7 @@ Importación cancelada.</value>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Por marcador</value>
   </data>
+  <data name="CodeInspectionsWindowSettings_AccessKey" xml:space="preserve">
+    <value>_Inspecciones de código</value>
+  </data>
 </root>

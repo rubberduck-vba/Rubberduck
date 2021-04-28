@@ -140,4 +140,7 @@
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>Copiar al portapapeles</value>
   </data>
+  <data name="ToDoExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>T_ODO Explorer</value>
+  </data>
 </root>

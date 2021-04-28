@@ -365,4 +365,7 @@ Continuer?</value>
 
 Importation annulée.</value>
   </data>
+  <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>_Explorateur</value>
+  </data>
 </root>

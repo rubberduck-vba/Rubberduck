@@ -365,4 +365,7 @@ Importación cancelada.</value>
 
 Importación cancelada.</value>
   </data>
+  <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>_Explorador de código</value>
+  </data>
 </root>

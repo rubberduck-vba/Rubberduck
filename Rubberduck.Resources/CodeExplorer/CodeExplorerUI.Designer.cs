@@ -642,6 +642,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code _Explorer.
+        /// </summary>
+        public static string CodeExplorerWindowSettings_AccessKey {
+            get {
+                return ResourceManager.GetString("CodeExplorerWindowSettings_AccessKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm Delete.
         /// </summary>
         public static string ConfirmBeforeDelete_Caption {

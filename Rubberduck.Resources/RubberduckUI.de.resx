@@ -647,4 +647,7 @@ Import abgebrochen.</value>
   <data name="IndenterSettings_GroupRelatedProperties" xml:space="preserve">
     <value>Entferne vertikalen Zwischenraum zwischen verwandten Eigenschaften</value>
   </data>
+  <data name="CodeInspectionsWindowSettings_AccessKey" xml:space="preserve">
+    <value>Code _Untersuchung</value>
+  </data>
 </root>

@@ -270,7 +270,7 @@ namespace Rubberduck.UI.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display language:.
+        ///   Looks up a localized string similar to Display l_anguage:.
         /// </summary>
         public static string LanguageLabel {
             get {

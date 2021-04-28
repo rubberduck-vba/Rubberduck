@@ -61,7 +61,7 @@ namespace Rubberduck.Resources.ToDoExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Todo Explorer.
+        ///   Looks up a localized string similar to T_odo Explorer.
         /// </summary>
         public static string TodoExplorer_Caption {
             get {
@@ -122,6 +122,15 @@ namespace Rubberduck.Resources.ToDoExplorer {
         public static string ToDoExplorerToDoItemFormat {
             get {
                 return ResourceManager.GetString("ToDoExplorerToDoItemFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to T_odo Explorer.
+        /// </summary>
+        public static string ToDoExplorerWindowSettings_AccessKey {
+            get {
+                return ResourceManager.GetString("ToDoExplorerWindowSettings_AccessKey", resourceCulture);
             }
         }
     }

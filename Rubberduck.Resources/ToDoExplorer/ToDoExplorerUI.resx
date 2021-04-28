@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="TodoExplorer_Caption" xml:space="preserve">
-    <value>Todo Explorer</value>
+    <value>T_odo Explorer</value>
   </data>
   <data name="TodoExplorer_Description" xml:space="preserve">
     <value>Description</value>
@@ -141,5 +141,8 @@
   </data>
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>Copy to clipboard</value>
+  </data>
+  <data name="ToDoExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>T_odo Explorer</value>
   </data>
 </root>

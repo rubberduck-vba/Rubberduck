@@ -500,4 +500,7 @@ Import aborted.</value>
 Import aborted.</value>
     <comment>{0} filename of unsupported file</comment>
   </data>
+  <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>Code _Explorer</value>
+  </data>
 </root>

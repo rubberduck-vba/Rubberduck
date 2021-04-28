@@ -307,6 +307,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code _Inspections.
+        /// </summary>
+        public static string CodeInspectionsWindowSettings_AccessKey {
+            get {
+                return ResourceManager.GetString("CodeInspectionsWindowSettings_AccessKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Code Explorer.
         /// </summary>
         public static string CommandDescription_CodeExplorerCommand {
@@ -321,6 +330,15 @@ namespace Rubberduck.Resources {
         public static string CommandDescription_CodePaneRefactorRenameCommand {
             get {
                 return ResourceManager.GetString("CommandDescription_CodePaneRefactorRenameCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export active project.
+        /// </summary>
+        public static string CommandDescription_ExportAllCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_ExportAllCommand", resourceCulture);
             }
         }
         
@@ -1871,24 +1889,6 @@ namespace Rubberduck.Resources {
             get {
                 object obj = ResourceManager.GetObject("tick_circle_pinned", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Description.
-        /// </summary>
-        public static string TodoExplorer_Description {
-            get {
-                return ResourceManager.GetString("TodoExplorer_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Line Number.
-        /// </summary>
-        public static string TodoExplorer_LineNumber {
-            get {
-                return ResourceManager.GetString("TodoExplorer_LineNumber", resourceCulture);
             }
         }
         

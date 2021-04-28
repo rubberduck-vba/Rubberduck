@@ -140,4 +140,7 @@
     <value>Rubberduck TODO Markierungen - {0}
 {1} Markierungen gefunden.</value>
   </data>
+  <data name="ToDoExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>T_oDo Liste</value>
+  </data>
 </root>

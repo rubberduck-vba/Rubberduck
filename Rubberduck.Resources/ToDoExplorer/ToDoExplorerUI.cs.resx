@@ -142,4 +142,7 @@
 {1} položek nalezeno.</value>
     <comment>{0}=timestamp; {1}=number</comment>
   </data>
+  <data name="ToDoExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>T_ODO Explorer</value>
+  </data>
 </root>

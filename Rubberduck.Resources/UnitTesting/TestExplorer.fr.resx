@@ -294,4 +294,7 @@
   <data name="TestOutcome_Fail" xml:space="preserve">
     <value>Échec</value>
   </data>
+  <data name="TestExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>Explorateur de _tests</value>
+  </data>
 </root>

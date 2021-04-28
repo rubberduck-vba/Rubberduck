@@ -72,8 +72,10 @@
                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right"/>
                         </DockPanel>
                     </Label>
-                    <Label Content="{Resx ResxName=Rubberduck.UI.Settings.GeneralSettingsUI, Key=LanguageLabel}" FontWeight="SemiBold" />
-                    <ComboBox Width="210"
+                    <Label Target="{Binding ElementName=DisplayLanguage}"
+                           Content="{Resx ResxName=Rubberduck.UI.Settings.GeneralSettingsUI, Key=LanguageLabel}" FontWeight="SemiBold" />
+                    <ComboBox x:Name="DisplayLanguage"
+                              Width="210"
                               HorizontalAlignment="Left"
                               Margin="5"
                               SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
@@ -98,9 +100,10 @@
                               IsChecked="{Binding EnableFolderDragAndDrop}" />
                     <StackPanel Orientation="Horizontal"/>
 
-                    <Label Content="{Resx ResxName=Rubberduck.UI.Settings.GeneralSettingsUI, Key=MinimumLogLevelLabel}" FontWeight="SemiBold" />
-                    <StackPanel Orientation="Horizontal">
-                        <ComboBox Width="210"
+                    <Label Target="{Binding ElementName=minimumLogLevel}"
+                           Content="{Resx ResxName=Rubberduck.UI.Settings.GeneralSettingsUI, Key=MinimumLogLevelLabel}" FontWeight="SemiBold" Margin="1,0,-1,0" />
+                        <ComboBox x:Name="minimumLogLevel"
+                                  Width="210"
                                   HorizontalAlignment="Left"
                                   Margin="5"
                                   SelectedItem="{Binding SelectedLogLevel, Mode=TwoWay}"
@@ -221,7 +224,6 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                </StackPanel>
             </Grid>
         </ScrollViewer>
     </Grid>

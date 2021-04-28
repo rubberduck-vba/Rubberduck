@@ -368,4 +368,7 @@ Import přerušen.</value>
 
 Import přerušen.</value>
   </data>
+  <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>Code _Explorer</value>
+  </data>
 </root>

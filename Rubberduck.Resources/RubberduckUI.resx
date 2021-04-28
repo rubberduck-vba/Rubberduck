@@ -247,12 +247,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Go" xml:space="preserve">
     <value>Go</value>
   </data>
-  <data name="TodoExplorer_Description" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="TodoExplorer_LineNumber" xml:space="preserve">
-    <value>Line Number</value>
-  </data>
   <data name="ProjectName" xml:space="preserve">
     <value>Project Name</value>
   </data>
@@ -770,5 +764,11 @@ Import aborted.</value>
   </data>
   <data name="tick_circle_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Fugue\tick-circle-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CodeInspectionsWindowSettings_AccessKey" xml:space="preserve">
+    <value>Code _Inspections</value>
+  </data>
+  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
+    <value>Export active project</value>
   </data>
 </root>

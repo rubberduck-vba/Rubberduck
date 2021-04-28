@@ -646,4 +646,7 @@ Mise à jour annulée.</value>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Par marqueur</value>
   </data>
+  <data name="CodeInspectionsWindowSettings_AccessKey" xml:space="preserve">
+    <value>_Inspections</value>
+  </data>
 </root>
