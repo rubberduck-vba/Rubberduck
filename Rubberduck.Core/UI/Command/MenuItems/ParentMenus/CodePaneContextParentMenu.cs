@@ -19,6 +19,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         Annotate,
         Indenter,
         RegexSearchReplace,
+        PeekDefinition,
         FindSymbol,
         FindAllReferences,
         FindAllImplementations,

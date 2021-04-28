@@ -60,7 +60,7 @@
                 <TextBlock Text="{Binding Target.DeclarationType}"
                            FontSize="10"
                            Margin="2"/>
-                <TextBlock Text="{Binding Target.DescriptionString}" 
+                <TextBlock Text="{Binding DescriptionString}" 
                            TextWrapping="Wrap"
                            FontStyle="Italic"
                            Margin="2,0,2,4"/>
@@ -74,7 +74,8 @@
             </local:LinkButton>
             <local:LinkButton Grid.Row="3" Grid.Column="2" Margin="4" HorizontalAlignment="Right"
                               Click="LinkButton_OnClick"
-                              Command="{Binding FindReferencesCommand}">
+                              Command="{Binding FindReferencesCommand}"
+                              CommandParameter="{Binding NavigateCommandParameter}">
                 <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_FindAllReferencesText}" />
             </local:LinkButton>
 

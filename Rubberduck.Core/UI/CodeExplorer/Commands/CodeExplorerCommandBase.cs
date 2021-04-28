@@ -16,7 +16,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public abstract IEnumerable<Type> ApplicableNodeTypes { get; }
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        protected virtual bool SpecialEvaluateCanExecute(object parameter)
         {
             return parameter != null && ApplicableNodeTypes.Contains(parameter.GetType());
         }

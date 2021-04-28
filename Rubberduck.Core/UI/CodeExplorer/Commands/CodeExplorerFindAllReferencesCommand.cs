@@ -31,38 +31,61 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _state = state;
             _finder = finder;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute, true);
         }
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        protected override bool SpecialEvaluateCanExecute(object parameter)
         {
-            return _state.Status == ParserState.Ready
-                       && ((ICodeExplorerNode)parameter).Declaration != null 
-                       && !(parameter is CodeExplorerReferenceViewModel reference 
-                            && reference.IsDimmed);
+            if (_state.Status != ParserState.Ready)
+            {
+                return false;
+            }
+
+            switch (parameter)
+            {
+                case CodeExplorerReferenceViewModel refNode:
+                    return refNode.IsDimmed;
+                case ICodeExplorerNode node:
+                    return !(node is CodeExplorerCustomFolderViewModel)
+                        && !(node is CodeExplorerReferenceFolderViewModel);
+                case Declaration declaration:
+                    return !(declaration is ProjectDeclaration);
+                default:
+                    return false;
+            }
         }
 
         protected override void OnExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready 
-                || !(parameter is ICodeExplorerNode node) 
-                || node.Declaration == null)
+            var node = parameter as ICodeExplorerNode;
+            var declaration = parameter as Declaration;
+
+            if (_state.Status != ParserState.Ready || node == null && declaration == null)
             {
                 return;
             }
 
-            if (!(node.Parent.Declaration is ProjectDeclaration projectDeclaration))
+            if (declaration != null)
+            {
+                // command was invoked from PeekReferences code explorer popup
+                _finder.FindAllReferences(declaration);
+                return;
+            }
+
+            if (!(node.Parent.Declaration is ProjectDeclaration))
             {
                 Logger.Error($"The specified ICodeExplorerNode expected to be a direct child of a node whose declaration is a ProjectDeclaration.");
                 return;
             }
 
-            if (parameter is CodeExplorerReferenceViewModel reference)
+            if (node.Parent?.Declaration is ProjectDeclaration projectDeclaration && node is CodeExplorerReferenceViewModel reference)
             {
                 if (!(reference.Reference is ReferenceModel model))
                 {
+                    Logger.Warn($"Project reference '{reference.Name}' does not have an explorable reference model ({nameof(CodeExplorerReferenceViewModel)}.{nameof(CodeExplorerReferenceViewModel.Reference)} is null.");
                     return;
                 }
+
                 _finder.FindAllReferences(projectDeclaration, model.ToReferenceInfo());
                 return;
             }

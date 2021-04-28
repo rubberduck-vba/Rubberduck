@@ -3555,6 +3555,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (no description annotation or attribute).
+        /// </summary>
+        public static string PeekDefinition_DefaultDescription {
+            get {
+                return ResourceManager.GetString("PeekDefinition_DefaultDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Peek definition.
         /// </summary>
         public static string PeekDefinitionCommandText {

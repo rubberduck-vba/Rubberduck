@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -32,13 +33,20 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
-            return ((CodeExplorerItemViewModel)parameter).QualifiedSelection.HasValue;
+            return parameter is Declaration || ((CodeExplorerItemViewModel)parameter).QualifiedSelection.HasValue;
         }
 
         protected override void OnExecute(object parameter)
         {
             if (!CanExecute(parameter))
             {
+                return;
+            }
+
+            if (parameter is Declaration declaration)
+            {
+                // command was invoked from PeekDefinition popup
+                _openCommand.Execute(declaration.QualifiedSelection.GetNavitationArgs());
                 return;
             }
 

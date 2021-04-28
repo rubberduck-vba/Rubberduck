@@ -1,6 +1,8 @@
 using System.Runtime.InteropServices;
+using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.ComCommands
 {
@@ -17,6 +19,8 @@ namespace Rubberduck.UI.Command.ComCommands
         {
             _presenter = presenter;
         }
+
+        public CodeExplorerViewModel ViewModel => (_presenter.UserControl as CodeExplorerWindow)?.ViewModel;
 
         protected override void OnExecute(object parameter)
         {

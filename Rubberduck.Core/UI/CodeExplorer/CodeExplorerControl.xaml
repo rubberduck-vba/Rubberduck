@@ -59,8 +59,7 @@
             <converters:AnnotateDeclarationCommandParameterToTupleConverter x:Key="AnnotateDeclarationCommandParameterToTuple" />
             <converters:AnnotateDeclarationCommandCEVisibilityConverter x:Key="AnnotateDeclarationCommandVisibility" />
             <converters:DeclarationToDeclarationTypeStringConverter x:Key="DeclarationTypeNameConverter" />
-            <converters:PopupIsOpenConverter x:Key="IsOpenConverter" />
-
+            
             <CompositeCollection x:Key="AddModuleCommands" x:Shared="False">
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddExistingFileText}"
                           Command="{Binding ImportCommand}"
@@ -686,7 +685,6 @@
 
         <Popup x:Name="PeekDefPopup" 
                Placement="MousePoint" 
-               PlacementTarget="{Binding ElementName=ProjectTree}" 
                IsOpen="{Binding ShowPeekDefinitionPopup, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                StaysOpen="True">
             <controls:PeekControl DataContext="{Binding PeekDefinitionViewModel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />

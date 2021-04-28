@@ -37,8 +37,13 @@ namespace Rubberduck.Navigation.CodeExplorer
         DeclarationTypeThenCodeLine = DeclarationType | CodeLine
     }
 
+    public interface IPeekDefinitionPopupProvider
+    {
+        void PeekDefinition(Declaration target);
+    }
+
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public sealed class CodeExplorerViewModel : ViewModelBase
+    public sealed class CodeExplorerViewModel : ViewModelBase, IPeekDefinitionPopupProvider
     {
         // ReSharper disable NotAccessedField.Local - The settings providers aren't used, but several enhancement requests will need them.
 #pragma warning disable IDE0052 // Remove unread private members
@@ -483,13 +488,16 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             if (param is ICodeExplorerNode node)
             {
-                PeekDefinitionViewModel = new PeekDefinitionViewModel(node, this.FindAllReferencesCommand, this.OpenCommand, this.ClosePeekDefinitionCommand);
+                PeekDefinitionViewModel = new PeekDefinitionViewModel(node, this.FindAllReferencesCommand, this.OpenCommand, this.ClosePeekDefinitionCommand, _state);
+            }
+            else if (param is Declaration declaration)
+            {
+                PeekDefinitionViewModel = new PeekDefinitionViewModel(declaration, this.FindAllReferencesCommand, this.OpenCommand, this.ClosePeekDefinitionCommand, _state);
             }
             else
             {
                 PeekDefinitionViewModel = null;
             }
-
 
             ShowPeekDefinitionPopup = PeekDefinitionViewModel != null;
         }
@@ -594,5 +602,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 _generalSettingsProvider.SettingsChanged -= GeneralSettingsChanged;
             }
         }
+
+        void IPeekDefinitionPopupProvider.PeekDefinition(Declaration target) => ExecutePeekDefinitionCommand(target);
     }
 }

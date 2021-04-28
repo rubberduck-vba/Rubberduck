@@ -62,6 +62,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.UI.Refactorings.AnnotateDeclaration;
 using Rubberduck.Refactoring.ParseTreeValue;
 using System.IO.Abstractions;
+using Rubberduck.Navigation.CodeExplorer;
 
 namespace Rubberduck.Root
 {
@@ -145,6 +146,9 @@ namespace Rubberduck.Root
                 .ImplementedBy<AddComponentService>()
                 .DependsOn(Dependency.OnComponent("codePaneComponentSourceCodeProvider", typeof(CodeModuleComponentSourceCodeHandler)),
                     Dependency.OnComponent("attributesComponentSourceCodeProvider", typeof(SourceFileHandlerComponentSourceCodeHandlerAdapter)))
+                .LifestyleSingleton());
+
+            container.Register(Component.For<CodeExplorerViewModel>()
                 .LifestyleSingleton());
 
             container.Register(Component.For<TestExplorerModel>()
@@ -572,6 +576,7 @@ namespace Rubberduck.Root
                 typeof(CodePaneRefactoringsParentMenu),
                 typeof(AnnotateParentMenu),
                 typeof(SmartIndenterParentMenu),
+                typeof(PeekDefinitionCommandMenuItem),
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
                 typeof(FindAllImplementationsCommandMenuItem),
@@ -735,6 +740,7 @@ namespace Rubberduck.Root
             {
                 typeof(CodeExplorerCommandMenuItem),
                 typeof(RegexSearchReplaceCommandMenuItem),               
+                //typeof(PeekDefinitionCommandMenuItem),
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
                 typeof(FindAllImplementationsCommandMenuItem)

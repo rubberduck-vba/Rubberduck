@@ -1,15 +1,21 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 using System.Windows.Input;
 using Antlr4.Runtime;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Controls
 {
     public class PeekDefinitionViewModel : ViewModelBase
     {
+        private readonly IParseTreeProvider _parseTrees;
+
         internal PeekDefinitionViewModel()
         {
             // default constructor for xaml designer
@@ -18,8 +24,9 @@ namespace Rubberduck.UI.Controls
         public PeekDefinitionViewModel(ICodeExplorerNode node,
             ICommand findReferencesCommand,
             ICommand navigateCommand,
-            ICommand closeCommand)
-        :this(node.Declaration, findReferencesCommand, navigateCommand, closeCommand)
+            ICommand closeCommand,
+            IParseTreeProvider parseTrees)
+        :this(node.Declaration, findReferencesCommand, navigateCommand, closeCommand, parseTrees)
         {
             NavigateCommandParameter = node;
         }
@@ -27,12 +34,15 @@ namespace Rubberduck.UI.Controls
         public PeekDefinitionViewModel(Declaration target,
             ICommand findReferencesCommand, 
             ICommand navigateCommand,
-            ICommand closeCommand)
+            ICommand closeCommand,
+            IParseTreeProvider parseTrees)
         {
-            Target = target;
+            _parseTrees = parseTrees;
             FindReferencesCommand = findReferencesCommand;
             NavigateCommand = navigateCommand;
+            NavigateCommandParameter = target;
             CloseCommand = closeCommand;
+            Target = target;
         }
 
         public int MaxLines => 1000; // todo make this configurable?
@@ -52,6 +62,10 @@ namespace Rubberduck.UI.Controls
             }
         }
 
+        public string DescriptionString => string.IsNullOrWhiteSpace(_target.DescriptionString)
+            ? RubberduckUI.ResourceManager.GetString("PeekDefinition_DefaultDescription", CultureInfo.CurrentUICulture)
+            : _target.DescriptionString;
+
         private void SetPeekBody()
         {
             if (Target == null)
@@ -61,26 +75,35 @@ namespace Rubberduck.UI.Controls
             }
 
             ParserRuleContext context;
-            if (Target.Context.Parent is VBAParser.ModuleBodyElementContext member)
+            if (Target?.Context?.Parent is VBAParser.ModuleBodyElementContext member)
             {
                 context = member;
             }
-            else if(Target.Context.TryGetAncestor<VBAParser.ModuleDeclarationsElementContext>(out var declaration))
+            else if(Target?.Context != null)
             {
-                context = declaration;
+                context = Target.Context.TryGetAncestor<VBAParser.ModuleDeclarationsElementContext>(out var declaration) ? (ParserRuleContext)declaration :
+                          Target.Context.TryGetAncestor<VBAParser.BlockStmtContext>(out var statement) ? statement : null;
+            }
+            else if (Target is ModuleDeclaration module)
+            {
+                context = _parseTrees.GetParseTree(module.QualifiedModuleName, CodeKind.CodePaneCode) as ParserRuleContext;
             }
             else
             {
-                context = Target.Context;
+                context = null;
             }
 
             var body = (context?.GetText() ?? string.Empty).Split('\n');
-            var ellipsis = body?.Length > MaxLines ? "\n…" : string.Empty;
-
+            if (Target is ModuleDeclaration)
+            {
+                // body ends with an <EOF> token; strip it.
+                body = body.Take(body.Length - 1).ToArray();
+            }
+            var ellipsis = body.Length > MaxLines ? "\n…" : string.Empty;
             Body = string.Join("\n", body.Take(MaxLines)) + ellipsis;
         }
 
-        private string _body;
+        private string _body;   
         public string Body
         {
             get => _body;
@@ -95,7 +118,9 @@ namespace Rubberduck.UI.Controls
         }
 
         public ICommand CloseCommand { get; }
+
         public ICommand FindReferencesCommand { get; }
+
         public ICommand NavigateCommand { get; }
 
         private object _navigateCommandParameter;
