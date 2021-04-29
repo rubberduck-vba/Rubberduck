@@ -20,8 +20,6 @@ namespace Rubberduck.UI.Command.ComCommands
             _presenter = presenter;
         }
 
-        public CodeExplorerViewModel ViewModel => (_presenter.UserControl as CodeExplorerWindow)?.ViewModel;
-
         protected override void OnExecute(object parameter)
         {
             _presenter.Show();

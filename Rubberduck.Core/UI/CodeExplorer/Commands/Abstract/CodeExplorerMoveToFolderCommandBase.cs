@@ -46,10 +46,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands.Abstract
             _state = state;
             _failureNotifier = failureNotifier;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
-        protected override bool SpecialEvaluateCanExecute(object parameter) => 
+        private bool EvaluateCanExecute(object parameter) => 
             _parserStatusProvider.Status == ParserState.Ready;
 
         protected abstract ICodeExplorerNode NodeFromParameter(object parameter);

@@ -19,13 +19,13 @@ namespace Rubberduck.UI.Command.ComCommands
         {
             PopupProvider = (codeExplorer.UserControl as CodeExplorerWindow)?.ViewModel;
             SelectedDeclarationProvider = selection;
-            AddToCanExecuteEvaluation(CanExecuteInternal);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         protected ISelectedDeclarationProvider SelectedDeclarationProvider { get; }
         protected IPeekDefinitionPopupProvider PopupProvider { get; }
 
-        private bool CanExecuteInternal(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             if (parameter is ModuleDeclaration || parameter is ModuleBodyElementDeclaration || parameter is VariableDeclaration || parameter is ValuedDeclaration)
             {

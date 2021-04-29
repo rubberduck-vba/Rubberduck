@@ -67,17 +67,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             MessageBox = messageBox;
             DeclarationFinderProvider = declarationFinderProvider;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
 
             ComponentTypesForExtension = ComponentTypeExtensions.ComponentTypesForExtension(_vbe.Kind);
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
-            AddToOnExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
+            AddToOnExecuteEvaluation(EvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        protected override bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             return _vbe.ProjectsCount == 1 || ThereIsAValidActiveProject();
         }

@@ -26,12 +26,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             _openCommand = openCommand;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        protected override bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             return parameter is Declaration || ((parameter as CodeExplorerItemViewModel)?.QualifiedSelection.HasValue ?? false);
         }

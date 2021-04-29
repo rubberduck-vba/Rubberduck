@@ -31,10 +31,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _state = state;
             _finder = finder;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute, true);
+            AddToCanExecuteEvaluation(EvaluateCanExecute, true);
         }
 
-        protected override bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             if (_state.Status != ParserState.Ready)
             {
