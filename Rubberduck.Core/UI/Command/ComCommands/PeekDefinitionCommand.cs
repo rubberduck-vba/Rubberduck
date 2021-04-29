@@ -11,7 +11,6 @@ namespace Rubberduck.UI.Command.ComCommands
     /// <summary>
     /// A command that displays a popup near the cursor, owned by the Code Explorer WPF UserControl.
     /// </summary>
-    [ComVisible(false)]
     public class PeekDefinitionCommand : ComCommandBase
     {
         public PeekDefinitionCommand(CodeExplorerDockablePresenter codeExplorer, IVbeEvents vbeEvents, ISelectedDeclarationProvider selection)
