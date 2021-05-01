@@ -315,7 +315,7 @@
     <value>Esegui le ispezioni del codice</value>
   </data>
   <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Profondità dell'ispezione</value>
+    <value>Gravità dell'ispezione</value>
   </data>
   <data name="CodeInspectionSettings_Misc" xml:space="preserve">
     <value>Varie</value>
@@ -366,10 +366,10 @@
     <value>Trova simbolo</value>
   </data>
   <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
-    <value>Modulo con Rientri</value>
+    <value>Indenta Modulo</value>
   </data>
   <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
-    <value>Procedura con Rientri</value>
+    <value>Indenta Procedura</value>
   </data>
   <data name="CommandDescription_InspectionResultsCommand" xml:space="preserve">
     <value>Ispezioni del Codice</value>
@@ -771,7 +771,7 @@ NOTA: è necessario un riavvio perché l'impostazione abbia effetto.</value>
     <value>Barra (/)</value>
   </data>
   <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
-    <value>Trace</value>
+    <value>Traccia</value>
   </data>
   <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
     <value>Avvertimento</value>
@@ -945,14 +945,14 @@ Dim count As Integer
 Static name As String
 
 If YouLikeRubberduck Then
-' Star us on GitHub http://github.com/rubberduck-vba/Rubberduck
+' Mettici una Stella su GitHub http://github.com/rubberduck-vba/Rubberduck
 ' Seguici su Twitter @rubberduckvba
 ' Visita http://rubberduckvba.com per novità ed aggiornamenti
 
 Select Case X
 Case "A"
 ' Se hai qualche commento o suggerimento, _
-o trovi codice VBA valido con rientri non corretti,
+o trovi codice VBA valido con indentazione non corretta,
 
 #If VBA6 Then
 MsgBox "Contatta contact@rubberduck-vba.com"
@@ -1456,7 +1456,7 @@ Attenzione: tutte le impostazioni personalizzate saranno perse. Il tuo vecchio f
     <value>Riferimenti recenti tracciati:</value>
   </data>
   <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
-    <value>Traccia dei riferimenti non aggiunte da Rubberduck</value>
+    <value>Traccia i riferimenti non aggiunti da Rubberduck</value>
   </data>
   <data name="Refresh" xml:space="preserve">
     <value>Aggiorna</value>
@@ -1615,7 +1615,7 @@ Continuare?</value>
     <value>Rubberduck ha riscontrato un errore. Salvare il lavoro e riavviare il programma host; se la registrazione è abilitata, è possibile caricare il file log che si trova in '%AppData%Roaming\Rubberduck\Logs\RubberduckLog.txt' come problema su GitHub all'indirizzo 'https://github.com/rubberduck-vba/Rubberduck/issues/new' e riportare il difetto.</value>
   </data>
   <data name="RubberduckLoadFailure" xml:space="preserve">
-    <value>Non è stato possibile caricare Rubberduck Add-In</value>
+    <value>Non è stato possibile caricare l'Add-in Rubberduck</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Le finestre degli Strumenti non sono state correttamente distrutte e/o non è stato possibile ricrearle; VBE potrebbe non essere in una condizione stabile. Rubberduck sarà caricato normalmente la prossima volta che VBE sarà inizializzato.</value>

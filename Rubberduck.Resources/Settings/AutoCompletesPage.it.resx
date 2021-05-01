@@ -124,7 +124,7 @@
     <value>Completamento automatico dei blocchi all'INVIO</value>
   </data>
   <data name="PageHeader" xml:space="preserve">
-    <value>Impostazioni di autocompletamento</value>
+    <value>Impostazioni di completamento automatico</value>
   </data>
   <data name="BlockCompletion" xml:space="preserve">
     <value>Completamento dei Blocchi</value>
@@ -136,7 +136,7 @@
     <value>Concatena 'vbNewLine' al Ctrl + Invio.</value>
   </data>
   <data name="EnableAutocompleteLabel" xml:space="preserve">
-    <value>Abilita le funzionalità di autocompletamento</value>
+    <value>Abilita le funzionalità di completamento automatico</value>
   </data>
   <data name="EnableBlockCompletion" xml:space="preserve">
     <value>Abilita il completamento dei blocchi</value>

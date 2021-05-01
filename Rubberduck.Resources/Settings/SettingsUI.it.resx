@@ -145,7 +145,7 @@
     <value>Carica Impostazioni Generali</value>
   </data>
   <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
-    <value>Carica Impostazioni di Rientro</value>
+    <value>Carica Impostazioni di Indentazione</value>
   </data>
   <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
     <value>Carica Impostazioni di Ispezione</value>
@@ -166,7 +166,7 @@
     <value>Salva Impostazioni Generali</value>
   </data>
   <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
-    <value>Salva Impostazioni di Rientro</value>
+    <value>Salva Impostazioni di Indentazione</value>
   </data>
   <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
     <value>Salva Impostazioni di Ispezione</value>
@@ -196,7 +196,7 @@
     <value>Impostazioni Generali</value>
   </data>
   <data name="PageHeader_IndenterSettings" xml:space="preserve">
-    <value>Impostazioni di Rietro</value>
+    <value>Impostazioni di Indentazione</value>
   </data>
   <data name="PageHeader_InspectionSettings" xml:space="preserve">
     <value>Impostazioni di Ispezione del Codice</value>
@@ -217,10 +217,11 @@
     <value>Configura quali Completamenti Automatici sono abilitati.</value>
   </data>
   <data name="PageInstructions_GeneralSettings" xml:space="preserve">
-    <value>Click [{0}] per chiudere la finestra e applicare le modifiche, o [{1}] per annullarle.</value>
+    <value>Clicca [{0}] per chiudere la finestra e applicare le modifiche, o [{1}] per annullarle.</value>
+    <comment>{0} è Salva &amp; Chiudi, {1} è Annulla</comment>
   </data>
   <data name="PageInstructions_IndenterSettings" xml:space="preserve">
-    <value>Configura le impostazioni di rientro.</value>
+    <value>Configura le impostazioni di indentazione.</value>
   </data>
   <data name="PageInstructions_ReferenceSettings" xml:space="preserve">
     <value>Configura le impostazioni per l'aggiunta e la rimozione dei riferimenti.</value>
@@ -235,6 +236,6 @@
     <value>Configura le impostazioni di visibilità della finestra.</value>
   </data>
   <data name="PageInstructions_InspectionSettings" xml:space="preserve">
-    <value>Configura la profondità di ispezione. Usare "DoNotShow" per disabilitare un'ispezione.</value>
+    <value>Configura la gravità di ispezione. Usare "Non mostarare" per disabilitare un'ispezione.</value>
   </data>
 </root>

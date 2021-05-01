@@ -121,13 +121,13 @@
     <value>Argomento con tipo di oggetto incompatibile</value>
   </data>
   <data name="AssignedByValParameterInspection" xml:space="preserve">
-    <value>Il parametro ByVal è assegnato</value>
+    <value>Assegnazione ad un parametro ByVal</value>
   </data>
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>L'assegnazione non è utilizzata</value>
   </data>
   <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
-    <value>Il valore non corrispondente tra attributo e annotazione</value>
+    <value>Valore non corrispondente tra attributo e annotazione</value>
   </data>
   <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
     <value>Assegnazione letterale booleana in condizionale</value>
@@ -136,7 +136,7 @@
     <value>La costante non è utilizzata</value>
   </data>
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
-    <value>Accesso membro predefinito indicizzato senza membro predefinito</value>
+    <value>Accesso indicizzato al membro predefinito senza un membro predefinito</value>
   </data>
   <data name="DefaultProjectNameInspection" xml:space="preserve">
     <value>Il nome del progetto non è specificato</value>
@@ -181,7 +181,7 @@
     <value>Il campo pubblico rompe l'incapsulamento</value>
   </data>
   <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
-    <value>il membro di accesso può restituire 'Nothing'</value>
+    <value>Il membro di accesso può restituire 'Nothing'</value>
   </data>
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>La funzione è nascosta dal riferimento di cella di Excel</value>
@@ -199,7 +199,7 @@
     <value>La variabile utilizza la notazione ungherese.</value>
   </data>
   <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
-    <value>Implemented member of interface class</value>
+    <value>Membro implementato in una classe interfaccia</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspection" xml:space="preserve">
     <value>Riferimento implicito ad ActiveSheet</value>
@@ -229,19 +229,19 @@
     <value>Accesso ricorsivo implicito al membro predefinito</value>
   </data>
   <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Accesso implicito al membro predefinito non associato</value>
+    <value>Accesso implicito non associato al membro predefinito</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspection" xml:space="preserve">
     <value>Il membro ritorna un tipo implicitamente 'Variant'</value>
   </data>
   <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Accesso al membro predefinito indicizzato</value>
+    <value>Accesso indicizzato al membro predefinito</value>
   </data>
   <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Accesso ricorsivo al membro predefinito indicizzato</value>
+    <value>Accesso ricorsivo indicizzato al membro predefinito</value>
   </data>
   <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Accesso implicito al membro predefinito non associato indicizzato</value>
+    <value>Accesso implicito indicizzato non associato al membro predefinito</value>
   </data>
   <data name="IntegerDataTypeInspection" xml:space="preserve">
     <value>Uso di un tipo intero a 16-bit</value>

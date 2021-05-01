@@ -139,7 +139,7 @@
     <value>Inizializzazione/pulizia del metodo di test</value>
   </data>
   <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt" xml:space="preserve">
-    <value>Inserire un abbozzo di metodo di test</value>
+    <value>Inserire una bozza di metodo di test</value>
   </data>
   <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
     <value>Inizializzazione/pulizia del modulo di test</value>

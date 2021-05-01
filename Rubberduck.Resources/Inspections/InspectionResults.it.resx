@@ -244,7 +244,7 @@
     
   </data>
   <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Nell'espressione '{0}' è presente un accesso membro predefinito implicito a '{1}'.</value>
+    <value>Nell'espressione '{0}' è presente un accesso implicito al membro predefinito a '{1}'.</value>
     <comment>{0} espressione; {1} membro predefinito</comment>
   </data>
   <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
@@ -254,11 +254,11 @@
     <value>Il membro '{0}' è implicitamente pubblico.</value>
   </data>
   <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Nell'espressione '{0}' è presente un accesso membro predefinito ricorsivo implicito a '{1}'.</value>
+    <value>Nell'espressione '{0}' è presente un accesso ricorsivo implicito al membro predefinito a '{1}'.</value>
     <comment>{0} espressione; {1} membro predefinito</comment>
   </data>
   <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Nell'espressione '{0}' è presente un accesso membro predefinito non associato implicito.</value>
+    <value>Nell'espressione '{0}' è presente un accesso implicito non associato al membro predefinito.</value>
     <comment>{0} espressione</comment>
   </data>
   <data name="ImplicitVariantDeclarationInspection" xml:space="preserve">
@@ -268,15 +268,15 @@
     <value>Il tipo restituito del membro '{0}' è implicitamente "Variant".</value>
   </data>
   <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
-    <value>L'espressione '{0}' contiene un accesso membro predefinito indicizzato a '{1}'.</value>
+    <value>L'espressione '{0}' contiene un accesso indicizzato al membro predefinito a '{1}'.</value>
     <comment>{0} espressione; {1} membro predefinito</comment>
   </data>
   <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
-    <value>L'espressione '{0}' contiene un accesso membro predefinito ricorsivo indicizzato a '{1}'.</value>
+    <value>L'espressione '{0}' contiene un accesso ricorsivo indicizzato al membro predefinito a '{1}'.</value>
     <comment>{0} espressione; {1} membro predefinito</comment>
   </data>
   <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
-    <value>L'espressione '{0}' contiene un accesso membro predefinito non associato indicizzato.</value>
+    <value>L'espressione '{0}' contiene un accesso indicizzato non associato al membro predefinito.</value>
     <comment>{0} espressione</comment>
   </data>
   <data name="IntegerDataTypeInspection" xml:space="preserve">

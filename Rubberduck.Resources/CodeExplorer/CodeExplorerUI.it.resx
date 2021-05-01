@@ -211,7 +211,7 @@
     <value>Importa...</value>
   </data>
   <data name="CodeExplorer_Indent" xml:space="preserve">
-    <value>Rientra</value>
+    <value>Indentazione</value>
   </data>
   <data name="CodeExplorer_LibraryReferences" xml:space="preserve">
     <value>Riferimenti di Libreria</value>

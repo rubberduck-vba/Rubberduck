@@ -175,7 +175,7 @@
     <value>Incapsula il campo '{0}' con una proprietà</value>
   </data>
   <data name="ExpandBangNotationQuickFix" xml:space="preserve">
-    <value>Sostituisci la bang notazione con l'accesso esplicito</value>
+    <value>Sostituisci la notazione il punto esclamativo con l'accesso esplicito</value>
   </data>
   <data name="ExpandDefaultMemberQuickFix" xml:space="preserve">
     <value>Rendi esplicito l'accesso al membro predefinito</value>
