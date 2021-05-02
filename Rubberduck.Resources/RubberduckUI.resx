@@ -1956,4 +1956,7 @@ Do you want to proceed?</value>
   <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
     <value>Add/Adjust attribute</value>
   </data>
+  <data name="Language_IT" xml:space="preserve">
+    <value>Italian</value>
+  </data>
 </root>
