@@ -4,22 +4,8 @@ using System.Globalization;
 using Path = System.IO.Path;
 using System.Runtime.InteropServices.ComTypes;
 
-namespace Rubberduck.AddRemoveReferences
+namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
 {
-    public struct RegisteredLibraryKey
-    {
-        public Guid Guid { get; }
-        public int Major { get; }
-        public int Minor { get; }
-
-        public RegisteredLibraryKey(Guid guid, int major, int minor)
-        {
-            Guid = guid;
-            Major = major;
-            Minor = minor;
-        }
-    }
-
     public class RegisteredLibraryInfo
     {
         private static readonly Dictionary<int, string> NativeLocaleNames = new Dictionary<int, string>

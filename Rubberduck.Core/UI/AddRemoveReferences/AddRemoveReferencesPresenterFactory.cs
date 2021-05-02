@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.AddRemoveReferences;
+using Rubberduck.Parsing.ComReflection.TypeLibReflection;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;

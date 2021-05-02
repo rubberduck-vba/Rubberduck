@@ -2,6 +2,9 @@
 {
     public static class RubberduckGuid
     {
+        public const string IID_IUnknown = "00000000-0000-0000-C000-000000000046";
+        public const string IID_IDispatch = "00020400-0000-0000-C000-000000000046";
+
         // Guid Suffix
         private const string GuidSuffix = "-43F0-3B33-B105-9B8188A6F040";
 
@@ -26,6 +29,20 @@
         public const string IFakeGuid = UnitTestingGuidspace + "DF" + GuidSuffix;
         public const string IVerifyGuid = UnitTestingGuidspace + "E0" + GuidSuffix;
         public const string IStubGuid = UnitTestingGuidspace + "E1" + GuidSuffix;
+        public const string IMockProviderGuid = UnitTestingGuidspace + "E2" + GuidSuffix;
+        public const string MockProviderGuid = UnitTestingGuidspace + "E3" + GuidSuffix;
+        public const string IComMockGuid = UnitTestingGuidspace + "E4" + GuidSuffix;
+        public const string ComMockGuid = UnitTestingGuidspace + "E5" + GuidSuffix;
+        public const string ISetupArgumentDefinitionGuid = UnitTestingGuidspace + "E6" + GuidSuffix;
+        public const string SetupArgumentDefinitionGuid = UnitTestingGuidspace + "E7" + GuidSuffix;
+        public const string ISetupArgumentDefinitionsGuid = UnitTestingGuidspace + "E8" + GuidSuffix;
+        public const string SetupArgumentDefinitionsGuid = UnitTestingGuidspace + "E9" + GuidSuffix;
+        public const string ISetupArgumentCreatorGuid = UnitTestingGuidspace + "EA" + GuidSuffix;
+        public const string SetupArgumentCreatorGuid = UnitTestingGuidspace + "EB" + GuidSuffix;
+        public const string IComMockedGuid = UnitTestingGuidspace + "EC" + GuidSuffix;
+        public const string ComMockedGuid = UnitTestingGuidspace + "ED" + GuidSuffix;
+        public const string ITimesGuid = UnitTestingGuidspace + "EE" + GuidSuffix;
+        public const string TimesGuid = UnitTestingGuidspace + "EF" + GuidSuffix;
 
         // Rubberduck API Guids:
         private const string ApiGuidspace = "69E0F7";
@@ -48,6 +65,8 @@
         public const string DeclarationTypeGuid = RecordGuidspace + "23" + GuidSuffix;
         public const string AccessibilityGuid = RecordGuidspace + "24" + GuidSuffix;
         public const string ParserStateGuid = RecordGuidspace + "25" + GuidSuffix;
+        public const string SetupArgumentRangeGuid = RecordGuidspace + "26" + GuidSuffix;
+        public const string SetupArgumentTypeGuid = RecordGuidspace + "27" + GuidSuffix;
 
         // Debug Guids:
         private const string DebugGuidspace = "69E101";

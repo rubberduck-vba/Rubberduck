@@ -234,7 +234,7 @@ namespace Rubberduck
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
                 _container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings, _vbeNativeApi, _beepInterceptor));
-                
+                _container.Resolve<InstanceProvider>();
                 _app = _container.Resolve<App>();
                 _app.Startup();
 

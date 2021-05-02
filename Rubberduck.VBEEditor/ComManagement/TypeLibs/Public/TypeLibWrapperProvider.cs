@@ -5,7 +5,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 // ReSharper disable once CheckNamespace
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
-    public class TypeLibWrapperProvider : ITypeLibWrapperProvider
+    public class TypeLibWrapperProvider : TypeLibWrapperProviderLite, ITypeLibWrapperProvider
     {
         private readonly IProjectsProvider _projectsProvider;
 
@@ -27,7 +27,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             var project = _projectsProvider.Project(projectId);
             return TypeLibWrapperFromProject(project);
         }
+    }
 
+    public class TypeLibWrapperProviderLite : ITypeLibWrapperProviderLite
+    {
         public ITypeLibWrapper TypeLibWrapperFromProject(IVBProject project)
         {
             return project != null ? TypeLibWrapper.FromVBProject(project) : null;

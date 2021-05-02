@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.ComReflection.TypeLibReflection;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
 using Rubberduck.Settings;
@@ -30,6 +31,7 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly IMessageBox _messageBox;
         private readonly RubberduckParserState _state;
         private readonly GeneralSettings _settings;
+        private static readonly ICachedTypeService TypeCacheService = CachedTypeService.Instance;
 
         public ReparseCommand(
             IVBE vbe, 
@@ -92,6 +94,10 @@ namespace Rubberduck.UI.Command.ComCommands
                         return;
                     }
                 }
+            }
+            foreach (var project in _state.Projects)
+            {
+                TypeCacheService.TryInvalidate(project.Name);
             }
             _state.OnParseRequested(this);
         }
