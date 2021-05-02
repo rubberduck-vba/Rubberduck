@@ -16,6 +16,7 @@ namespace Rubberduck.Settings
         public UnitTestSettings UnitTestSettings { get; set; }
         public IndenterSettings IndenterSettings { get; set; }
         public WindowSettings WindowSettings { get; set; }
+        public ProjectSettings ProjectSettings { get; set; }
 
         public UserSettings(GeneralSettings generalSettings,
                             HotkeySettings hotkeySettings,
@@ -24,7 +25,8 @@ namespace Rubberduck.Settings
                             CodeInspectionSettings codeInspectionSettings,
                             UnitTestSettings unitTestSettings,
                             IndenterSettings indenterSettings,
-                            WindowSettings windowSettings)
+                            WindowSettings windowSettings,
+                            ProjectSettings projectSettings)
         {
             GeneralSettings = generalSettings;
             HotkeySettings = hotkeySettings;
@@ -34,6 +36,7 @@ namespace Rubberduck.Settings
             UnitTestSettings = unitTestSettings;
             IndenterSettings = indenterSettings;
             WindowSettings = windowSettings;
+            ProjectSettings = projectSettings;
         }
     }
 }

@@ -461,4 +461,19 @@ Continue?</value>
   <data name="CodeExplorer_Annotate" xml:space="preserve">
     <value>Annotate</value>
   </data>
+  <data name="ImportCommand_OpenDialog_Filter_ClassModules" xml:space="preserve">
+    <value>Class modules</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_DocumentModules" xml:space="preserve">
+    <value>Document modules</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_FormModules" xml:space="preserve">
+    <value>Form modules</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_NonDocumentModules" xml:space="preserve">
+    <value>Non-document modules</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_StandardModules" xml:space="preserve">
+    <value>Standard modules</value>
+  </data>
 </root>

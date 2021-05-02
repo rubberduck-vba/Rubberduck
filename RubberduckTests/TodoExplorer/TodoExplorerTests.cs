@@ -210,7 +210,7 @@ namespace RubberduckTests.TodoExplorer
                 ToDoMarkers = markers.Select(m => new ToDoMarker(m)).ToArray()
             };
 
-            var userSettings = new UserSettings(null, null, null, todoSettings, null, null, null, null);
+            var userSettings = new UserSettings(null, null, null, todoSettings, null, null, null, null, null);
             return new Configuration(userSettings);
         }
 

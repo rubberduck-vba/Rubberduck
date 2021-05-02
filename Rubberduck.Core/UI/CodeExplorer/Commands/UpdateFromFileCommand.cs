@@ -3,6 +3,8 @@ using System.Linq;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
+using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.ComManagement;
@@ -25,8 +27,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             IModuleNameFromFileExtractor moduleNameFromFileExtractor,
             IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileExtractors,
             IFileSystem fileSystem,
-            IMessageBox messageBox)
-            : base(vbe, dialogFactory, vbeEvents, parseManager, declarationFinderProvider, projectsProvider, moduleNameFromFileExtractor, binaryFileExtractors, fileSystem, messageBox)
+            IMessageBox messageBox,
+            IConfigurationService<ProjectSettings> projectSettingsProvider)
+            : base(vbe, dialogFactory, vbeEvents, parseManager, declarationFinderProvider, projectsProvider, moduleNameFromFileExtractor, binaryFileExtractors, fileSystem, messageBox, projectSettingsProvider)
         {}
 
         protected override string DialogsTitle => RubberduckUI.UpdateFromFilesCommand_DialogCaption;

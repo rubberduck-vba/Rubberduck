@@ -44,6 +44,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly RemoveCommand _externalRemoveCommand;
         private readonly IConfigurationService<GeneralSettings> _generalSettingsProvider;
         private readonly IConfigurationService<WindowSettings> _windowSettingsProvider;
+        private readonly IConfigurationService<ProjectSettings> _projectSettingsProvider;
         private readonly IUiDispatcher _uiDispatcher;
         private readonly IVBE _vbe;
         private readonly ITemplateProvider _templateProvider;
@@ -54,7 +55,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             RubberduckParserState state,
             RemoveCommand removeCommand,
             IConfigurationService<GeneralSettings> generalSettingsProvider, 
-            IConfigurationService<WindowSettings> windowSettingsProvider, 
+            IConfigurationService<WindowSettings> windowSettingsProvider,
+            IConfigurationService<ProjectSettings> projectSettingsProvider,
             IUiDispatcher uiDispatcher,
             IVBE vbe,
             ITemplateProvider templateProvider,
@@ -68,8 +70,10 @@ namespace Rubberduck.Navigation.CodeExplorer
             _generalSettingsProvider = generalSettingsProvider;
             _generalSettingsProvider.SettingsChanged += GeneralSettingsChanged;
             RefreshDragAndDropSetting();
+            
+            _projectSettingsProvider = projectSettingsProvider;
 
-            _windowSettingsProvider = windowSettingsProvider;
+            _windowSettingsProvider = windowSettingsProvider;            
             _uiDispatcher = uiDispatcher;
             _vbe = vbe;
             _templateProvider = templateProvider;

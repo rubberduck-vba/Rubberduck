@@ -18,6 +18,7 @@ namespace Rubberduck.Settings
         private readonly IConfigurationService<UnitTestSettings> _unitTestProvider;
         private readonly IConfigurationService<IndenterSettings> _indenterProvider;
         private readonly IConfigurationService<WindowSettings> _windowProvider;
+        private readonly IConfigurationService<ProjectSettings> _projectSettingsProvider;
 
         public ConfigurationLoader(IConfigurationService<GeneralSettings> generalProvider, 
             IConfigurationService<HotkeySettings> hotkeyProvider, 
@@ -26,7 +27,8 @@ namespace Rubberduck.Settings
             IConfigurationService<CodeInspectionSettings> inspectionProvider, 
             IConfigurationService<UnitTestSettings> unitTestProvider, 
             IConfigurationService<IndenterSettings> indenterProvider, 
-            IConfigurationService<WindowSettings> windowProvider)
+            IConfigurationService<WindowSettings> windowProvider,
+            IConfigurationService<ProjectSettings> projectSettingsProvider)
         {
             _generalProvider = generalProvider;
             _hotkeyProvider = hotkeyProvider;
@@ -36,6 +38,7 @@ namespace Rubberduck.Settings
             _unitTestProvider = unitTestProvider;
             _indenterProvider = indenterProvider;
             _windowProvider = windowProvider;
+            _projectSettingsProvider = projectSettingsProvider;
         }
 
         /// <summary>
@@ -55,7 +58,8 @@ namespace Rubberduck.Settings
                     _inspectionProvider.Read(),
                     _unitTestProvider.Read(),
                     _indenterProvider.Read(),
-                    _windowProvider.Read()
+                    _windowProvider.Read(),
+                    _projectSettingsProvider.Read()                    
                 )
             };            
             return config;
@@ -74,7 +78,8 @@ namespace Rubberduck.Settings
                     _inspectionProvider.ReadDefaults(),
                     _unitTestProvider.ReadDefaults(),
                     _indenterProvider.ReadDefaults(),
-                    _windowProvider.ReadDefaults()
+                    _windowProvider.ReadDefaults(),
+                    _projectSettingsProvider.ReadDefaults()
                 )
             };
         }
@@ -91,6 +96,10 @@ namespace Rubberduck.Settings
             var newAutoCompleteSettings = toSerialize.UserSettings.AutoCompleteSettings;
             var autoCompletesChanged = oldAutoCompleteSettings.Equals(newAutoCompleteSettings);
 
+            var oldProjectSettings = _projectSettingsProvider.Read();
+            var newProjectSettings = toSerialize.UserSettings.ProjectSettings;
+            var openFileDialogFilterIndexChanged = oldProjectSettings.OpenFileDialogFilterIndex != newProjectSettings.OpenFileDialogFilterIndex;
+
             _generalProvider.Save(toSerialize.UserSettings.GeneralSettings);
             _hotkeyProvider.Save(toSerialize.UserSettings.HotkeySettings);
             _autoCompleteProvider.Save(toSerialize.UserSettings.AutoCompleteSettings);
@@ -99,8 +108,9 @@ namespace Rubberduck.Settings
             _unitTestProvider.Save(toSerialize.UserSettings.UnitTestSettings);
             _indenterProvider.Save(toSerialize.UserSettings.IndenterSettings);
             _windowProvider.Save(toSerialize.UserSettings.WindowSettings);
+            _projectSettingsProvider.Save(toSerialize.UserSettings.ProjectSettings);
 
-            OnSettingsChanged(new ConfigurationChangedEventArgs(inspectOnReparse, langChanged, inspectionsChanged, autoCompletesChanged));
+            OnSettingsChanged(new ConfigurationChangedEventArgs(inspectOnReparse, langChanged, inspectionsChanged, autoCompletesChanged, openFileDialogFilterIndexChanged));
         }
 
         public event EventHandler<ConfigurationChangedEventArgs> SettingsChanged;
@@ -122,7 +132,8 @@ namespace Rubberduck.Settings
                     _inspectionProvider.Import(fileName),
                     _unitTestProvider.Import(fileName),
                     _indenterProvider.Import(fileName),
-                    _windowProvider.Import(fileName)
+                    _windowProvider.Import(fileName),
+                    _projectSettingsProvider.Import(fileName)
                 )
             };
         }

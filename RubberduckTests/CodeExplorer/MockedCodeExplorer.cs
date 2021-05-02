@@ -45,6 +45,7 @@ namespace RubberduckTests.CodeExplorer
         private readonly Mock<IUiDispatcher> _uiDispatcher = new Mock<IUiDispatcher>();
         private readonly Mock<IConfigurationService<GeneralSettings>> _generalSettingsProvider = new Mock<IConfigurationService<GeneralSettings>>();
         private readonly Mock<IConfigurationService<WindowSettings>> _windowSettingsProvider = new Mock<IConfigurationService<WindowSettings>>();
+        private readonly Mock<IConfigurationService<ProjectSettings>> _projectSettingsProvider = new Mock<IConfigurationService<ProjectSettings>>();
         private readonly Mock<IConfigurationService<UnitTestSettings>> _unitTestSettingsProvider = new Mock<IConfigurationService<UnitTestSettings>>();
         private readonly Mock<ConfigurationLoader> _configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
         private readonly Mock<IVBEInteraction> _interaction = new Mock<IVBEInteraction>();
@@ -186,6 +187,7 @@ namespace RubberduckTests.CodeExplorer
             ViewModel = new CodeExplorerViewModel(State, removeCommand,
                 _generalSettingsProvider.Object,
                 _windowSettingsProvider.Object,
+                _projectSettingsProvider.Object,
                 _uiDispatcher.Object, Vbe.Object,
                 null,
                 new CodeExplorerSyncProvider(Vbe.Object, State, VbeEvents.Object), 
@@ -378,11 +380,12 @@ namespace RubberduckTests.CodeExplorer
 
         public void ExecuteImportCommand(
             Func<string, string> fileNameToModuleNameConverter = null,
-            Mock<IMessageBox> mockMessageBock = null,
+            Mock<IMessageBox> mockMessageBox = null,
             IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileNameExtractors = null,
-            Mock<IFileSystem> fileSystem = null)
+            Mock<IFileSystem> fileSystem = null,
+            Mock<IConfigurationService<ProjectSettings>> projectSettingsProvider = null)
         {
-            var messageBox = mockMessageBock?.Object ?? new Mock<IMessageBox>().Object;
+            var messageBox = mockMessageBox?.Object ?? new Mock<IMessageBox>().Object;
             var mockModuleNameExtractor = new Mock<IModuleNameFromFileExtractor>();
             var fileNameConverter = fileNameToModuleNameConverter ?? ((fileName) => fileName);
             mockModuleNameExtractor.Setup(m => m.ModuleName(It.IsAny<string>())).Returns((string filename) => fileNameConverter(filename));
@@ -393,7 +396,15 @@ namespace RubberduckTests.CodeExplorer
                 mockFileSystem = new Mock<IFileSystem>();
                 mockFileSystem.Setup(m => m.File.Exists(It.IsAny<string>())).Returns(true);
             }
-            ViewModel.ImportCommand = new ImportCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileSystem.Object, messageBox);
+            var mockProjectSettingsProvider = projectSettingsProvider;
+            if (mockProjectSettingsProvider == null)
+            {
+                var projectSettings = new ProjectSettings();
+                mockProjectSettingsProvider = new Mock<IConfigurationService<ProjectSettings>>();
+                mockProjectSettingsProvider.Setup(ps => ps.Read())
+                    .Returns(projectSettings);
+            }
+            ViewModel.ImportCommand = new ImportCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileSystem.Object, messageBox, mockProjectSettingsProvider.Object);
             ViewModel.ImportCommand.Execute(ViewModel.SelectedItem);
         }
 
@@ -401,7 +412,8 @@ namespace RubberduckTests.CodeExplorer
             Func<string, string> fileNameToModuleNameConverter, 
             Mock<IMessageBox> mockMessageBox = null, 
             IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileNameExtractors = null, 
-            Mock<IFileSystem> fileSystem = null)
+            Mock<IFileSystem> fileSystem = null,
+            Mock<IConfigurationService<ProjectSettings>> projectSettingsProvider = null)
         {
             var messageBox = mockMessageBox?.Object ?? new Mock<IMessageBox>().Object;
             var mockModuleNameExtractor = new Mock<IModuleNameFromFileExtractor>();
@@ -413,7 +425,15 @@ namespace RubberduckTests.CodeExplorer
                 mockFileSystem = new Mock<IFileSystem>();
                 mockFileSystem.Setup(m => m.File.Exists(It.IsAny<string>())).Returns(true);
             }
-            ViewModel.UpdateFromFilesCommand = new UpdateFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileSystem.Object, messageBox);
+            var mockProjectSettingsProvider = projectSettingsProvider;
+            if (mockProjectSettingsProvider == null)
+            {
+                var projectSettings = new ProjectSettings();
+                mockProjectSettingsProvider = new Mock<IConfigurationService<ProjectSettings>>();
+                mockProjectSettingsProvider.Setup(ps => ps.Read())
+                    .Returns(projectSettings);
+            }            
+            ViewModel.UpdateFromFilesCommand = new UpdateFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileSystem.Object, messageBox, mockProjectSettingsProvider.Object);
             ViewModel.UpdateFromFilesCommand.Execute(ViewModel.SelectedItem);
         }
 
@@ -421,7 +441,8 @@ namespace RubberduckTests.CodeExplorer
             Func<string, string> fileNameToModuleNameConverter = null,
             Mock<IMessageBox> mockMessageBock = null,
             IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileNameExtractors = null,
-            Mock<IFileSystem> fileSystem = null)
+            Mock<IFileSystem> fileSystem = null,
+            Mock<IConfigurationService<ProjectSettings>> projectSettingsProvider = null)
         {
             var messageBoxMock = mockMessageBock;
             if (messageBoxMock == null)
@@ -441,7 +462,15 @@ namespace RubberduckTests.CodeExplorer
                 mockFileSystem = new Mock<IFileSystem>();
                 mockFileSystem.Setup(m => m.File.Exists(It.IsAny<string>())).Returns(true);
             }
-            ViewModel.ReplaceProjectContentsFromFilesCommand = new ReplaceProjectContentsFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileSystem.Object, messageBoxMock.Object);
+            var mockProjectSettingsProvider = projectSettingsProvider;
+            if (mockProjectSettingsProvider == null)
+            {
+                var projectSettings = new ProjectSettings();
+                mockProjectSettingsProvider = new Mock<IConfigurationService<ProjectSettings>>();
+                mockProjectSettingsProvider.Setup(ps => ps.Read())
+                    .Returns(projectSettings);
+            }
+            ViewModel.ReplaceProjectContentsFromFilesCommand = new ReplaceProjectContentsFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileSystem.Object, messageBoxMock.Object, mockProjectSettingsProvider.Object);
             ViewModel.ReplaceProjectContentsFromFilesCommand.Execute(ViewModel.SelectedItem);
         }
 
@@ -545,6 +574,15 @@ namespace RubberduckTests.CodeExplorer
         {
             OpenDialog.Setup(o => o.FileNames).Returns(paths);
             OpenDialog.Setup(o => o.ShowDialog()).Returns(result);
+            OpenDialog.Setup(o => o.FilterIndex).Returns(1); //one based index
+            return this;
+        }
+
+        public MockedCodeExplorer ConfigureOpenDialog(IOpenFileDialog configuredDialog)
+        {
+            OpenDialog.Setup(o => o.FileNames).Returns(configuredDialog.FileNames);
+            OpenDialog.Setup(o => o.ShowDialog()).Returns(configuredDialog.ShowDialog());
+            OpenDialog.Setup(o => o.FilterIndex).Returns(configuredDialog.FilterIndex);
             return this;
         }
 
@@ -597,7 +635,7 @@ namespace RubberduckTests.CodeExplorer
                     }
             };
 
-            var userSettings = new UserSettings(generalSettings, null, null, null, null, unitTestSettings, null, null);
+            var userSettings = new UserSettings(generalSettings, null, null, null, null, unitTestSettings, null, null, null);
             return new Configuration(userSettings);
         }
 

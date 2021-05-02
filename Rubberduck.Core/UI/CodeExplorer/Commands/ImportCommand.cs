@@ -10,6 +10,8 @@ using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources;
+using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
@@ -38,6 +40,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IModuleNameFromFileExtractor _moduleNameFromFileExtractor;
         private readonly IDictionary<ComponentType, List<IRequiredBinaryFilesFromFileNameExtractor>> _binaryFileExtractors;
         private readonly IFileSystem _fileSystem;
+        private readonly IConfigurationService<ProjectSettings> _projectSettingsProvider;
 
         protected readonly IDeclarationFinderProvider DeclarationFinderProvider;
         protected readonly IMessageBox MessageBox;
@@ -52,7 +55,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             IModuleNameFromFileExtractor moduleNameFromFileExtractor,
             IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileExtractors,
             IFileSystem fileSystem,
-            IMessageBox messageBox)
+            IMessageBox messageBox,
+            IConfigurationService<ProjectSettings> projectSettingsProvider)
             : base(vbeEvents)
         {
             _vbe = vbe;
@@ -66,6 +70,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             MessageBox = messageBox;
             DeclarationFinderProvider = declarationFinderProvider;
+
+            _projectSettingsProvider = projectSettingsProvider;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
 
@@ -146,8 +152,21 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return dict;
         }
 
+
+        private ProjectSettings _cachedProjectSettings;
+        internal void UpdateFilterIndex(int index)
+        {
+            _cachedProjectSettings.OpenFileDialogFilterIndex = index;
+            _projectSettingsProvider.Save(_cachedProjectSettings);
+        }
+
         protected virtual ICollection<string> FilesToImport(object parameter)
         {
+            if (_cachedProjectSettings == null)
+            {
+                _cachedProjectSettings = _projectSettingsProvider.Read();
+            }
+
             using (var dialog = _dialogFactory.CreateOpenFileDialog())
             {
                 dialog.AddExtension = true;
@@ -157,13 +176,31 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 dialog.Multiselect = true;
                 dialog.ShowHelp = false;
                 dialog.Title = DialogsTitle;
-                dialog.Filter =
-                    $"{RubberduckUI.ImportCommand_OpenDialog_Filter_VBFiles} ({FilterExtension})|{FilterExtension}|" +
-                    $"{RubberduckUI.ImportCommand_OpenDialog_Filter_AllFiles}, (*.*)|*.*";
+                dialog.FilterIndex = _cachedProjectSettings.OpenFileDialogFilterIndex;
+                var vbFilesFilter = IndividualFilter(RubberduckUI.ImportCommand_OpenDialog_Filter_VBFiles, FilterExtension);
+                var nonDocumentModulesFilter = IndividualFilter(Resources.CodeExplorer.CodeExplorerUI.ImportCommand_OpenDialog_Filter_NonDocumentModules, AllNonDocumentModulesExtension);
+                var standardModulesFilter = IndividualFilter(Resources.CodeExplorer.CodeExplorerUI.ImportCommand_OpenDialog_Filter_StandardModules, StandardModuleExtension);
+                var classModulesFilter = IndividualFilter(Resources.CodeExplorer.CodeExplorerUI.ImportCommand_OpenDialog_Filter_ClassModules, ClassModuleExtension);
+                var formModulesFilter = IndividualFilter(Resources.CodeExplorer.CodeExplorerUI.ImportCommand_OpenDialog_Filter_FormModules, FormModuleExtension);
+                var documentModulesFilter = IndividualFilter(Resources.CodeExplorer.CodeExplorerUI.ImportCommand_OpenDialog_Filter_DocumentModules, DocumentModuleExtension);
+                var allFilesFilter = IndividualFilter(RubberduckUI.ImportCommand_OpenDialog_Filter_AllFiles, "*.*");
+                dialog.Filter = CompositeFilter("|",
+                    vbFilesFilter,
+                    nonDocumentModulesFilter,
+                    standardModulesFilter,
+                    classModulesFilter,
+                    formModulesFilter,
+                    documentModulesFilter,
+                    allFilesFilter);
 
                 if (dialog.ShowDialog() != DialogResult.OK)
                 {
                     return new List<string>();
+                }
+
+                if (_cachedProjectSettings.OpenFileDialogFilterIndex != dialog.FilterIndex)
+                {
+                    UpdateFilterIndex(dialog.FilterIndex);
                 }
 
                 var fileNames = dialog.FileNames;
@@ -175,6 +212,18 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
 
                 return fileNames;
+            }
+
+            string IndividualFilter(string filterDescription, string fileExtension)
+            {
+                return fileExtension != null
+                    ? $"{filterDescription} ({fileExtension})|{fileExtension}"
+                    : null;
+            }
+
+            string CompositeFilter(string separator, params string[] filters)
+            {
+                return string.Join(separator, filters.Where(filter => !string.IsNullOrEmpty(filter)));
             }
         }
 
@@ -561,6 +610,18 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             .ToList();
 
         private string FilterExtension => string.Join("; ", ImportableExtensions.Select(ext => $"*{ext}"));
+
+        private string AllNonDocumentModulesExtension => string.Join("; ",
+            ImportableExtensions.Where(ext => !ext.EndsWith("doccls"))
+                                .Select(ext => $"*{ext}"));
+
+        private string StandardModuleExtension => "*" + ImportableExtensions.Where(ext => ext.EndsWith("bas")).FirstOrDefault();
+
+        private string ClassModuleExtension => "*" + ImportableExtensions.Where(ext => ext.EndsWith(".cls")).FirstOrDefault();
+
+        private string FormModuleExtension => "*" + ImportableExtensions.Where(ext => ext.EndsWith("frm")).FirstOrDefault();
+
+        private string DocumentModuleExtension => "*" + ImportableExtensions.Where(ext => ext.EndsWith("doccls")).FirstOrDefault();
 
         protected IDictionary<string, ICollection<ComponentType>> ComponentTypesForExtension { get; }
     }
