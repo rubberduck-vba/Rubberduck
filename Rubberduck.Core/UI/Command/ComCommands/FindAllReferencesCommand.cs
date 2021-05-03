@@ -8,7 +8,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.ComCommands
 {
-    [ComVisible(false)]
     public class ProjectExplorerFindAllReferencesCommand : FindAllReferencesCommand
     {
         private readonly IParserStatusProvider _parserStatusProvider;
@@ -23,7 +22,8 @@ namespace Rubberduck.UI.Command.ComCommands
             IVbeEvents vbeEvents)
             : base(parserStatusProvider, declarationFinderProvider, selectedDeclarationProvider, vbe, finder, vbeEvents)
         {
-
+            _parserStatusProvider = parserStatusProvider;
+            _finder = selectedDeclarationProvider;
         }
 
         protected override void OnExecute(object parameter)
@@ -46,7 +46,6 @@ namespace Rubberduck.UI.Command.ComCommands
     /// <summary>
     /// A command that locates all references to a specified identifier, or of the active code module.
     /// </summary>
-    [ComVisible(false)]
     public class FindAllReferencesCommand : ComCommandBase
     {
         private readonly IParserStatusProvider _parserStatusProvider;

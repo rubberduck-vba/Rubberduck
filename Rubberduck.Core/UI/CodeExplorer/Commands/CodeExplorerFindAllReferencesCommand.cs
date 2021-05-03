@@ -36,11 +36,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool EvaluateCanExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready)
-            {
-                return false;
-            }
-
             switch (parameter)
             {
                 case CodeExplorerReferenceViewModel refNode:

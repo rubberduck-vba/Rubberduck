@@ -29,7 +29,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands.Abstract
             AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
-        protected bool EvaluateCanExecute(object parameter) => _parserStatusProvider.Status == ParserState.Ready;
+        private bool EvaluateCanExecute(object parameter) => _parserStatusProvider.Status == ParserState.Ready;
 
         protected abstract TModel ModelFromParameter(object parameter);
         protected abstract void ValidateModel(TModel model);

@@ -45,7 +45,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             AddComponent(parameter as CodeExplorerItemViewModel);
         }
 
-        protected bool EvaluateCanExecuteBase(object parameter)
+        private bool EvaluateCanExecuteBase(object parameter)
         {
             if (!(parameter is CodeExplorerItemViewModel node) 
                 || node.Declaration == null)
