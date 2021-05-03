@@ -1895,6 +1895,9 @@ Do you want to proceed?</value>
   <data name="DeclarationType_Document" xml:space="preserve">
     <value>document</value>
   </data>
+  <data name="Language_IT" xml:space="preserve">
+    <value>Italian</value>
+  </data>
   <data name="CloseButtonText" xml:space="preserve">
     <value>Close</value>
   </data>
