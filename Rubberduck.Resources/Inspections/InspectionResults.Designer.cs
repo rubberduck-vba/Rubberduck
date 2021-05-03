@@ -322,15 +322,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Annotation &apos;{0}&apos; is illegal in this context..
-        /// </summary>
-        public static string IllegalAnnotationInspection {
-            get {
-                return ResourceManager.GetString("IllegalAnnotationInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Interface class module &apos;{2}&apos; contains a concrete implementation for {0} &apos;{1}&apos;..
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
@@ -363,6 +354,24 @@ namespace Rubberduck.Resources.Inspections {
         public static string ImplicitByRefModifierInspection {
             get {
                 return ResourceManager.GetString("ImplicitByRefModifierInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; implicitly references the containing workbook document module..
+        /// </summary>
+        public static string ImplicitContainingWorkbookReferenceInspection {
+            get {
+                return ResourceManager.GetString("ImplicitContainingWorkbookReferenceInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; implicitly references the containing worksheet document module..
+        /// </summary>
+        public static string ImplicitContainingWorksheetReferenceInspection {
+            get {
+                return ResourceManager.GetString("ImplicitContainingWorksheetReferenceInspection", resourceCulture);
             }
         }
         
@@ -466,6 +475,33 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Annotation &apos;{0}&apos; is invalid in this context..
+        /// </summary>
+        public static string InvalidAnnotationInspection {
+            get {
+                return ResourceManager.GetString("InvalidAnnotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation &apos;{0}&apos; cannot be used in a &apos;{1}&apos;..
+        /// </summary>
+        public static string InvalidAnnotationInspection_IncompatibleComponentType {
+            get {
+                return ResourceManager.GetString("InvalidAnnotationInspection_IncompatibleComponentType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation &apos;{0}&apos; is used in a &apos;{1}&apos;, but is only valid in a &apos;{2}&apos;..
+        /// </summary>
+        public static string InvalidAnnotationInspection_NotInRequiredComponentType {
+            get {
+                return ResourceManager.GetString("InvalidAnnotationInspection_NotInRequiredComponentType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;IsMissing&apos; will always return false with the passed argument..
         /// </summary>
         public static string IsMissingOnInappropriateArgumentInspection {
@@ -516,6 +552,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string MemberNotOnInterfaceInspection {
             get {
                 return ResourceManager.GetString("MemberNotOnInterfaceInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Misleading ByRef modifier used for parameter &apos;{0}&apos; ({1})..
+        /// </summary>
+        public static string MisleadingByRefParameterInspection {
+            get {
+                return ResourceManager.GetString("MisleadingByRefParameterInspection", resourceCulture);
             }
         }
         
@@ -1023,6 +1068,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UnreachableCaseInspection_Unreachable {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection_Unreachable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a recognized Rubberduck annotation (yet?).
+        /// </summary>
+        public static string UnrecognizedAnnotationInspection {
+            get {
+                return ResourceManager.GetString("UnrecognizedAnnotationInspection", resourceCulture);
             }
         }
         

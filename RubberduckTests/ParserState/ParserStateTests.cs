@@ -14,7 +14,7 @@ namespace RubberduckTests.ParserStateTests
     [TestFixture]
     public class ParserStateTests
     {
-        private static IEnumerable<ParserState> AllowedRunStates = new [] {ParserState.Ready};
+        private static readonly IEnumerable<ParserState> AllowedRunStates = new [] {ParserState.Ready};
 
         [SetUp]
         public void SetUp()
@@ -158,7 +158,6 @@ namespace RubberduckTests.ParserStateTests
         public void Test_RPS_SuspendParser_IncompatibleState()
         {
             var result = SuspensionOutcome.Pending;
-            var wasRun = false;
             var wasSuspended = false;
 
             var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);

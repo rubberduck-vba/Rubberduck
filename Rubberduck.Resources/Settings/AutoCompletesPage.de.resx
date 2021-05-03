@@ -121,7 +121,7 @@
     <value>Einstellungen der automatischen Vervollständigung</value>
   </data>
   <data name="PageInstructions" xml:space="preserve">
-    <value>Konfigurieren Sie, welche Rubberduck-Autokomplettierungen aktiviert sind.</value>
+    <value>Konfigurieren Sie, welche Rubberduck-Autovervollständigungen aktiviert sind.</value>
   </data>
   <data name="EnableSmartConcat" xml:space="preserve">
     <value>Aktiviere intelligente Verkettung</value>
@@ -136,7 +136,7 @@
     <value>Blockvervollständigung</value>
   </data>
   <data name="ConcatVbNewLine" xml:space="preserve">
-    <value>Durch Ctrl+RETURN mit 'vbNewLine' konkatenieren.</value>
+    <value>Durch Ctrl+RETURN mit 'vbNewLine' verketten.</value>
   </data>
   <data name="EnableAutocompleteLabel" xml:space="preserve">
     <value>Autovervollständigung aktivieren</value>

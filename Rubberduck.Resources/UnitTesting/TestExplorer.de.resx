@@ -172,7 +172,7 @@
     <value>Nicht ausgeführte Tests</value>
   </data>
   <data name="TestExplorer_RunMenuPassedTests" xml:space="preserve">
-    <value>Bestanden Tests</value>
+    <value>Bestandene Tests</value>
   </data>
   <data name="TestExplorer_RunMenuSelectedTests" xml:space="preserve">
     <value>Ausgewählte Tests</value>
@@ -214,7 +214,7 @@
     <value>Der erwartete Fehler wurde nicht gefunden</value>
   </data>
   <data name="TestOutcome_Ignored" xml:space="preserve">
-    <value>Ingoriert</value>
+    <value>Ignoriert</value>
   </data>
   <data name="TestExplorer_TotalDuration" xml:space="preserve">
     <value>Gesamtdauer</value>
@@ -226,7 +226,7 @@
     <value>Ergebnis</value>
   </data>
   <data name="Command_AddTestModule_Error" xml:space="preserve">
-    <value>Konnte Testmodul nicht erzeugen. Die Hostanwendung könnte die Erzeugung nicht unterstützen oder das Projekt könnte versiegelt sein. Bitte prüfen Sie die Logdatei für weitere Informationen.</value>
+    <value>Konnte Testmodul nicht erzeugen. Die Hostanwendung könnte die Erzeugung nicht unterstützen oder das Projekt könnte gesperrt sein. Bitte prüfen Sie die Logdatei für weitere Informationen.</value>
   </data>
   <data name="TestExplorer_CategoryName" xml:space="preserve">
     <value>Kategorie</value>

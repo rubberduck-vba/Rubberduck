@@ -39,13 +39,15 @@ namespace Rubberduck.Navigation.CodeExplorer
     public sealed class CodeExplorerViewModel : ViewModelBase
     {
         // ReSharper disable NotAccessedField.Local - The settings providers aren't used, but several enhancement requests will need them.
+#pragma warning disable IDE0052 // Remove unread private members
         private readonly RubberduckParserState _state;
         private readonly RemoveCommand _externalRemoveCommand;
-        private readonly IConfigurationService<GeneralSettings> _generalSettingsProvider;      
+        private readonly IConfigurationService<GeneralSettings> _generalSettingsProvider;
         private readonly IConfigurationService<WindowSettings> _windowSettingsProvider;
         private readonly IUiDispatcher _uiDispatcher;
         private readonly IVBE _vbe;
         private readonly ITemplateProvider _templateProvider;
+#pragma warning restore IDE0052 // Remove unread private members
         // ReSharper restore NotAccessedField.Local
 
         public CodeExplorerViewModel(
@@ -77,6 +79,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             CollapseAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseNodes, EvaluateCanSwitchNodeState);
             ExpandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes, EvaluateCanSwitchNodeState);
             ClearSearchCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteClearSearchCommand);
+            CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAllCommand);
+            ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAllCommand);
             if (_externalRemoveCommand != null)
             {
                 RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, _externalRemoveCommand.CanExecute);
@@ -92,12 +96,16 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public ObservableCollection<ICodeExplorerNode> Projects { get; } = new ObservableCollection<ICodeExplorerNode>();
 
+#pragma warning disable IDE1006 // Naming Styles
+        private ObservableCollection<Template> templates => _templateProvider.GetTemplates();
+#pragma warning restore IDE1006 // Naming Styles
+
         public ObservableCollection<Template> BuiltInTemplates =>
-            new ObservableCollection<Template>(_templateProvider.GetTemplates().Where(t => !t.IsUserDefined)
+            new ObservableCollection<Template>(templates.Where(t => !t.IsUserDefined)
                 .OrderBy(t => t.Name));
 
         public ObservableCollection<Template> UserDefinedTemplates =>
-            new ObservableCollection<Template>(_templateProvider.GetTemplates().Where(t => t.IsUserDefined)
+            new ObservableCollection<Template>(templates.Where(t => t.IsUserDefined)
                 .OrderBy(t => t.Name));
 
         public IEnumerable<IAnnotation> Annotations { get; }
@@ -343,6 +351,22 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        private void ExecuteCollapseAllCommand(object parameter)
+        {
+            foreach (var project in Projects)
+            {
+                ExecuteCollapseNodes(project);
+            }
+        }
+
+        private void ExecuteExpandAllCommand(object parameter)
+        {
+            foreach (var project in Projects)
+            {
+                ExecuteExpandNodes(project);
+            }
+        }
+
         private bool EvaluateCanSwitchNodeState(object parameter)
         {
             return SelectedItem?.Children?.Any() ?? false;
@@ -418,7 +442,10 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CodeExplorerMoveToFolderDragAndDropCommand MoveToFolderDragAndDropCommand { get; set; }
 
-    public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
+        public CommandBase CollapseAllCommand { get; }
+        public CommandBase ExpandAllCommand { get; }
+
+        public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
         {
             if (declaration == null)
             {

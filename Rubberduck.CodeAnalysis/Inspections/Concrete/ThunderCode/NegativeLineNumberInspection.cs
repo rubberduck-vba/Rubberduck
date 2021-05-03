@@ -1,9 +1,12 @@
-﻿using Antlr4.Runtime;
+﻿using System.Linq;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete.ThunderCode
@@ -29,6 +32,27 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.ThunderCode
         protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
             return InspectionResults.NegativeLineNumberInspection.ThunderCodeFormat();
+        }
+
+        protected override bool IsResultContext(QualifiedContext<ParserRuleContext> context, DeclarationFinder finder)
+        {
+            return !IsOnErrorGotoMinusOne(context.Context) 
+                || ProcedureHasMinusOneLabel(finder, context);
+        }
+
+        private static bool IsOnErrorGotoMinusOne(ParserRuleContext context)
+        {
+            return context is VBAParser.OnErrorStmtContext onErrorStatement
+                   && "-1".Equals(onErrorStatement.expression()?.GetText().Trim());
+        }
+
+        private static bool ProcedureHasMinusOneLabel(DeclarationFinder finder, QualifiedContext<ParserRuleContext> context)
+        {
+            return finder.Members(context.ModuleName, DeclarationType.LineLabel)
+                .Any(label => label.IdentifierName.Equals("-1")
+                    && (label.ParentScopeDeclaration
+                        .Context?.GetSelection()
+                        .Contains(context.Context.GetSelection()) ?? false));
         }
 
         private class NegativeLineNumberKeywordsListener : InspectionListenerBase<ParserRuleContext>

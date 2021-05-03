@@ -7,11 +7,13 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers;
+using System.Linq;
+using Rubberduck.Resources;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
     [TestFixture]
-    public class EncapsulateFieldValidatorTests : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
+    public class EncapsulateFieldValidatorTests : EncapsulateFieldInteractiveRefactoringTest
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 
@@ -21,7 +23,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         [Category("Encapsulate Field")]
         public void VBAIdentifier_Property(string originalFieldName, string newPropertyName, bool expectedResult)
         {
-            string inputCode =
+            var inputCode =
 $@"Public {originalFieldName} As String";
 
             var encapsulatedField = Support.RetrieveEncapsulateFieldCandidate(inputCode, originalFieldName);
@@ -36,7 +38,7 @@ $@"Public {originalFieldName} As String";
         [Category("Encapsulate Field")]
         public void EncapsulatePrivateField_ReadOnlyRequiresSet()
         {
-            const string inputCode =
+            var inputCode =
                 @"|Private fizz As Collection";
 
             const string expectedCode =
@@ -56,7 +58,7 @@ End Property
         [Category("Encapsulate Field")]
         public void PropertyNameNotDuplicated()
         {
-            const string inputCode =
+            var inputCode =
                 @"Public var|iable As Integer, variable1 As Long, variable2 As Integer";
 
             var userInput = new UserInputDataObject()
@@ -67,11 +69,11 @@ End Property
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Public Property Get Variable() As Integer", actualCode);
-            StringAssert.Contains("Variable = variable_1", actualCode);
+            StringAssert.Contains("Variable = variable3", actualCode);
             StringAssert.Contains("Public Property Get Variable1() As Long", actualCode);
-            StringAssert.Contains("Variable1 = variable1_1", actualCode);
+            StringAssert.Contains("Variable1 = variable4", actualCode);
             StringAssert.Contains("Public Property Get Variable2() As Integer", actualCode);
-            StringAssert.Contains("Variable2 = variable2_1", actualCode);
+            StringAssert.Contains("Variable2 = variable5", actualCode);
             StringAssert.DoesNotContain("Public Property Get Variable3() As Integer", actualCode);
         }
 
@@ -80,7 +82,7 @@ End Property
         [Category("Encapsulate Field")]
         public void UDTMemberPropertyConflictsWithExistingFunction()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private Type TBar
     First As String
@@ -94,7 +96,7 @@ Private Function First() As String
 End Function";
 
             var candidate = Support.RetrieveEncapsulateFieldCandidate(inputCode, "myBar", DeclarationType.Variable);
-            var result = candidate.ConflictFinder.IsConflictingProposedIdentifier("First", candidate, DeclarationType.Property);
+            var result = candidate.ConflictFinder.IsConflictingIdentifier(candidate, "First", out _);
             Assert.AreEqual(true, result);
         }
 
@@ -103,17 +105,17 @@ End Function";
         [Category("Encapsulate Field")]
         public void FieldNameDefaultsToNonConflictName()
         {
-            string inputCode =
+            var inputCode =
 $@"Public fizz As String
 
             Private fizzle As String
 
             'fizz1 is the initial default name for encapsulating 'fizz'            
-            Public Property Get Fizz_1() As String
-                Fizz_1 = fizzle
+            Public Property Get Fizz1() As String
+                Fizz1 = fizzle
             End Property
 
-            Public Property Let Fizz_1(ByVal value As String)
+            Public Property Let Fizz1(ByVal value As String)
                 fizzle = value
             End Property
             ";
@@ -127,7 +129,7 @@ $@"Public fizz As String
         [Category("Encapsulate Field")]
         public void UserEntersConflictingName(string userModifiedPropertyName)
         {
-            string inputCode =
+            var inputCode =
 $@"Public fizz As String
 
             Private mName As String
@@ -152,7 +154,6 @@ $@"Public fizz As String
             Assert.IsFalse(model["fizz"].TryValidateEncapsulationAttributes(out _));
         }
 
-
         [TestCase("Number", "Bazzle", true, true)]
         [TestCase("Number", "Number", false, false)]
         [TestCase("Test", "Number", false, true)]
@@ -160,7 +161,7 @@ $@"Public fizz As String
         [Category("Encapsulate Field")]
         public void UserModificationIsExistingPropertyNameConflicts(string fizz_modifiedPropertyName, string bazz_modifiedPropertyName, bool fizz_expectedResult, bool bazz_expectedResult)
         {
-            string inputCode =
+            var inputCode =
 $@"Public fizz As Integer
 Public bazz As Integer
 Public buzz As Integer
@@ -175,7 +176,6 @@ End Property";
             var userInput = new UserInputDataObject()
                 .UserSelectsField(fieldUT, fizz_modifiedPropertyName, true)
                 .UserSelectsField("bazz", bazz_modifiedPropertyName, true);
-
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -193,7 +193,7 @@ End Property";
         [Category("Encapsulate Field")]
         public void EncapsulateMultipleUDTFields_DefaultsAreNotInConflict(string udtAccessibility, string fieldAccessibility)
         {
-            string inputCode =
+            var inputCode =
 $@"
 {udtAccessibility} Type TBar
     First As Long
@@ -221,7 +221,7 @@ End Type
         [Category("Encapsulate Field")]
         public void PropertyNameConflictsWithModuleVariable()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Public longValue As Long
 
@@ -244,13 +244,13 @@ Public wholeNumber As String
         public void EncapsulatePrivateField_EnumMemberConflict()
         {
             //5.2.3.4: An enum member name may not be the same as any variable name, or constant name that is defined within the same module
-            const string inputCode =
+            var inputCode =
                 @"
 
 Public Enum NumberTypes 
      Whole = -1 
      Integral = 0 
-     Rational_1 = 1 
+     Rational1 = 1 
 End Enum
 
 Private rati|onal As NumberTypes
@@ -259,7 +259,7 @@ Private rati|onal As NumberTypes
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Public Property Get Rational() As NumberTypes", actualCode);
-            StringAssert.Contains("Rational = rational_2", actualCode);
+            StringAssert.Contains("Rational = rational2", actualCode);
         }
 
         [Test]
@@ -267,7 +267,7 @@ Private rati|onal As NumberTypes
         [Category("Encapsulate Field")]
         public void EncapsulatePrivateField_UDTMemberConflict()
         {
-            const string inputCode =
+            var inputCode =
                 @"
 
 Private Type TVehicle
@@ -281,7 +281,7 @@ Private whe|els As Integer
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Public Property Get Wheels()", actualCode);
-            StringAssert.Contains("Wheels = wheels_1", actualCode);
+            StringAssert.Contains("Wheels = wheels1", actualCode);
         }
 
         [Test]
@@ -290,7 +290,7 @@ Private whe|els As Integer
         public void DefaultPropertyNameConflictsResolved()
         {
             //Both fields default to "Test" as the property name
-            const string inputCode =
+            var inputCode =
                 @"Private mTest As Integer
 Private strTest As String";
 
@@ -310,7 +310,7 @@ Private strTest As String";
         [Category("Encapsulate Field")]
         public void TargetNameUsedForLimitedScopeDeclarations(string localDeclaration, string parameter)
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private te|st As Long
 
@@ -323,8 +323,8 @@ End Function
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Test", actualCode);
-            StringAssert.Contains("test_1", actualCode);
-            StringAssert.DoesNotContain("Test_1", actualCode);
+            StringAssert.Contains("test1", actualCode);
+            StringAssert.DoesNotContain("Test1", actualCode);
         }
 
         [TestCase("Dim test As String", "arg")] //Local variable
@@ -334,7 +334,7 @@ End Function
         [Category("Encapsulate Field")]
         public void TargetReferenceScopeUsesPropertyName(string localDeclaration, string parameter)
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private aName As String
 
@@ -360,20 +360,20 @@ End Function
         [Category("Encapsulate Field")]
         public void TargetDefaultFieldIDConflict()
         {
-            string inputCode =
+            var inputCode =
 $@"
 Private tes|t As String
-Private test_1 As String
+Private test1 As String
 
 Public Sub Foo(arg As String)
-    test = arg & test_1
+    test = arg & test1
 End Sub
 ";
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Test", actualCode);
-            StringAssert.Contains("Private test_2 As String", actualCode);
-            StringAssert.DoesNotContain("test_1 = arg & test_1", actualCode);
+            StringAssert.Contains("Private test2 As String", actualCode);
+            StringAssert.DoesNotContain("test1 = arg & test1", actualCode);
         }
 
         [TestCase(MockVbeBuilder.TestModuleName)]
@@ -403,10 +403,10 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void MultipleUserDefinedTypesOfSameNameOtherModule()
+        public void ExistingPublicUDTConflictWithDefaultObjectStateType()
         {
-            var moduleOneName = "ModuleOne";
-            string inputCode =
+            string moduleOneName = "ModuleOne";
+            var inputCode =
 $@"
 Option Explicit
 
@@ -429,29 +429,21 @@ End Type
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var codeString = inputCode.ToCodeString();
-            var actualModuleCode = RefactoredCode(
-                moduleOneName,
-                codeString.CaretPosition.ToOneBased(),
-                presenterAction,
-                null,
-                false,
-                ("Module2", module2Content, ComponentType.StandardModule),
-                (moduleOneName, codeString.Code, ComponentType.StandardModule));
+            var actualModuleCode = Support.RefactoredCode(presenterAction, 
+                (moduleOneName, inputCode.ToCodeString(), ComponentType.StandardModule),
+                ("Module2", module2Content, ComponentType.StandardModule));
 
-            var actualCode = actualModuleCode[moduleOneName];
-
-            StringAssert.Contains($"Private Type TModuleOne", actualCode);
+            StringAssert.Contains($"Private Type TModuleOne", actualModuleCode[moduleOneName]);
         }
 
         [TestCase("Public")]
         [TestCase("Private")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void MultipleUserDefinedTypesOfSameNameSameModule(string accessibility)
+        public void ExistingUDTConflictWithDefaultObjectStateType(string accessibility)
         {
             var moduleOneName = "ModuleOne";
-            string inputCode =
+            var inputCode =
 $@"
 Option Explicit
 
@@ -463,7 +455,6 @@ End Type
 Public mF|oo As Long
 ";
 
-
             var fieldUT = "mFoo";
             var userInput = new UserInputDataObject()
                 .UserSelectsField(fieldUT);
@@ -472,18 +463,10 @@ Public mF|oo As Long
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var codeString = inputCode.ToCodeString();
-            var actualModuleCode = RefactoredCode(
-                moduleOneName,
-                codeString.CaretPosition.ToOneBased(),
-                presenterAction,
-                null,
-                false,
-                (moduleOneName, codeString.Code, ComponentType.StandardModule));
+            var actualModuleCode = Support.RefactoredCode(presenterAction, 
+                (moduleOneName, inputCode.ToCodeString(), ComponentType.StandardModule));
 
-            var actualCode = actualModuleCode[moduleOneName];
-
-            StringAssert.Contains($"Private Type TModuleOne_1", actualCode);
+            StringAssert.Contains($"Private Type TModuleOne1", actualModuleCode[moduleOneName]);
         }
 
         [Test]
@@ -504,7 +487,10 @@ Public mF|oo As Long
 
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldName, DeclarationType.Variable, presenterAction);
 
-            Assert.AreEqual(false, model[fieldName].TryValidateEncapsulationAttributes(out var message), message);
+            Assert.AreEqual(false, model[fieldName].TryValidateEncapsulationAttributes(out var errorMessage), errorMessage);
+
+            var expectedMessage = string.Format(RubberduckUI.InvalidNameCriteria_IsReservedKeywordFormat, fieldName);
+            Assert.AreEqual(expectedMessage, errorMessage);
         }
 
         [Test]
@@ -512,7 +498,7 @@ Public mF|oo As Long
         [Category("Encapsulate Field")]
         public void UserEntersUDTMemberPropertyNameInConflictWithExistingField()
         {
-            const string inputCode =
+            var inputCode =
                 @"
 
 Private Type TVehicle
@@ -543,7 +529,7 @@ Private foo As String
         [Category("Encapsulate Field")]
         public void UserClearsConflictingNameByEncapsulatingConflictingVariable()
         {
-            const string inputCode =
+            var inputCode =
                 @"
 
 Private Type TVehicle
@@ -578,7 +564,7 @@ Private foo As String
         public void AddedUDTMemberConflictsWithExistingName()
         {
             var fieldUT = "mFirstValue";
-            string inputCode =
+            var inputCode =
                 $@"
 
 Private Type MyType
@@ -599,6 +585,100 @@ Private myType As MyType
 
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, fieldUT, DeclarationType.Variable, presenterAction);
             Assert.AreEqual(false, model[fieldUT].TryValidateEncapsulationAttributes(out var errorMessage), errorMessage);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void AddedFieldConflictsWithExistingUDTMemberName()
+        {
+            var fieldUT = "mFirstValue";
+            var inputCode =
+                $@"
+
+Private Type MyType
+    FirstValue As Integer
+    SecondValue As Integer
+End Type
+
+Private {fieldUT} As Double
+
+Private myType As MyType
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var mTypeTarget = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
+                    .First(d => d.IdentifierName == "myType");
+
+                var mFirstTarget = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
+                    .First(d => d.IdentifierName == fieldUT);
+
+                var resolver = Support.SetupResolver(state);
+
+                var candidateSetsProviderFactory = resolver.Resolve<IEncapsulateFieldCandidateSetsProviderFactory>();
+                var candidateSets = candidateSetsProviderFactory.Create(state, resolver.Resolve<IEncapsulateFieldCandidateFactory>(), mFirstTarget.QualifiedModuleName);
+
+                var encapsulateFieldCandidates = candidateSets.EncapsulateFieldUseBackingFieldCandidates;
+
+                var finderFactory = resolver.Resolve<IEncapsulateFieldConflictFinderFactory>();
+
+                var conflictFinder = finderFactory.Create(state, candidateSets.EncapsulateFieldUseBackingFieldCandidates, candidateSets.ObjectStateFieldCandidates);
+
+                foreach (var candidate in encapsulateFieldCandidates)
+                {
+                    candidate.ConflictFinder = conflictFinder;
+                }
+
+                var mTypeCandidate = encapsulateFieldCandidates.Single(c => c.Declaration == mTypeTarget);
+                mTypeCandidate.EncapsulateFlag = true;
+
+                var mFirstCandidate = encapsulateFieldCandidates.Single(c => c.Declaration == mFirstTarget);
+
+                foreach (var candidate in encapsulateFieldCandidates)
+                {
+                    candidate.EncapsulateFlag = true;
+                }
+
+                var result = mFirstCandidate.TryValidateEncapsulationAttributes(out var errorMessage);
+                Assert.IsTrue(result, errorMessage);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void ObjectStateUDTFieldConflictsWithAssignedProperty()
+        {
+            var fieldUT = "mFirstValue";
+            var inputCode =
+                $@"
+
+Private {fieldUT} As Double
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var mFirstTarget = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
+                    .First(d => d.IdentifierName == fieldUT) as VariableDeclaration;
+
+                var resolver = Support.SetupResolver(state);
+                var modelFactory = resolver.Resolve<IEncapsulateFieldModelFactory>();
+                var model = modelFactory.Create(mFirstTarget);
+                var mFirstCandidate = model[mFirstTarget.IdentifierName];
+
+                mFirstCandidate.EncapsulateFlag = true;
+                mFirstCandidate.PropertyIdentifier = "This";
+
+                model.EncapsulateFieldStrategy = EncapsulateFieldStrategy.ConvertFieldsToUDTMembers;
+                var objectStateUDT = model.ObjectStateUDTField;
+
+                model.ConflictFinder.AssignNoConflictIdentifiers(objectStateUDT);
+
+                StringAssert.AreEqualIgnoringCase("this1", objectStateUDT.IdentifierName);
+            }
         }
 
         protected override IRefactoring TestRefactoring(

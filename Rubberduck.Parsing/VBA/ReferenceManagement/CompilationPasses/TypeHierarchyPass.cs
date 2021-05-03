@@ -31,12 +31,12 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses
 
         public void Execute(IReadOnlyCollection<QualifiedModuleName> modules)
         {
-            var toRelsolveSupertypesFor = _declarationFinder.UserDeclarations(DeclarationType.ClassModule)
+            var toResolveSupertypesFor = _declarationFinder.UserDeclarations(DeclarationType.ClassModule)
                                             .Concat(_declarationFinder.UserDeclarations(DeclarationType.Document))
                                             .Concat(_declarationFinder.UserDeclarations(DeclarationType.UserForm))
                                             .Where(decl => modules.Contains(decl.QualifiedName.QualifiedModuleName))
                                             .Concat(_declarationFinder.BuiltInDeclarations(DeclarationType.ClassModule));
-            foreach (var declaration in toRelsolveSupertypesFor)
+            foreach (var declaration in toResolveSupertypesFor)
             {
                 AddImplementedInterface(declaration);
             }

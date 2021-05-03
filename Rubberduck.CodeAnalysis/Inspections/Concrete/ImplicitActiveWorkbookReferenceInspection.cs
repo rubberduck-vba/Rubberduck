@@ -40,41 +40,51 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
-    internal sealed class ImplicitActiveWorkbookReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase
+    internal sealed class ImplicitActiveWorkbookReferenceInspection : ImplicitWorkbookReferenceInspectionBase
     {
         public ImplicitActiveWorkbookReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
-            : base(declarationFinderProvider)
-        {}
+            : base(declarationFinderProvider) { }
 
-        private static readonly string[] InterestingMembers =
-        {
-            "Worksheets", "Sheets", "Names"
-        };
+        private IReadOnlyList<Declaration> _applicationCandidates;
 
-        private static readonly string[] InterestingClasses =
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            "_Global", "_Application", "Global", "Application"
-        };
+            var qualifiers = base.GetQualifierCandidates(reference, finder);
+            var isQualified = qualifiers.Any();
+            var document = Declaration.GetModuleParent(reference.ParentNonScoping) as DocumentModuleDeclaration;
 
-        protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
-        {
-            var excel = finder.Projects
-                .SingleOrDefault(project => project.IdentifierName == "Excel" && !project.IsUserDefined);
-            if (excel == null)
+            var isHostWorkbook = (document?.SupertypeNames.Contains("Workbook") ?? false)
+                && (document?.ProjectId?.Equals(reference.QualifiedModuleName.ProjectId) ?? false);
+
+            if (!isQualified)
             {
-                return Enumerable.Empty<Declaration>();
+                // unqualified calls aren't referring to ActiveWorkbook only inside a Workbook module:
+                return !isHostWorkbook;
             }
+            else
+            {
+                if (_applicationCandidates == null)
+                {
+                    var applicationClass = finder.FindClassModule("Application", base.Excel, includeBuiltIn: true);
+                    // note: underscored declarations would be for unqualified calls
+                    var workbookClass = finder.FindClassModule("Workbook", base.Excel, includeBuiltIn: true);
+                    var worksheetClass = finder.FindClassModule("Worksheet", base.Excel, includeBuiltIn: true);
+                    var hostBook = finder.UserDeclarations(DeclarationType.Document)
+                        .Cast<DocumentModuleDeclaration>()
+                        .SingleOrDefault(doc => doc.ProjectId.Equals(reference.QualifiedModuleName.ProjectId)
+                            && doc.SupertypeNames.Contains("Workbook"));
 
-            var relevantClasses = InterestingClasses
-                .Select(className => finder.FindClassModule(className, excel, true))
-                .OfType<ModuleDeclaration>();
+                    _applicationCandidates = finder.MatchName("Application")
+                        .Where(m => m.Equals(applicationClass) 
+                        || (m.ParentDeclaration.Equals(workbookClass) && m.DeclarationType.HasFlag(DeclarationType.PropertyGet))
+                        || (m.ParentDeclaration.Equals(worksheetClass) && m.DeclarationType.HasFlag(DeclarationType.PropertyGet))
+                        || (m.ParentDeclaration.Equals(hostBook) && m.DeclarationType.HasFlag(DeclarationType.PropertyGet)))
+                        .ToList();
+                }
 
-            var relevantProperties = relevantClasses
-                .SelectMany(classDeclaration => classDeclaration.Members)
-                .OfType<PropertyGetDeclaration>()
-                .Where(member => InterestingMembers.Contains(member.IdentifierName));
-
-            return relevantProperties;
+                // qualified calls are referring to ActiveWorkbook if qualifier is the Application object:
+                return _applicationCandidates.Any(candidate => qualifiers.Any(q => q.Equals(candidate)));
+            }
         }
 
         protected override string ResultDescription(IdentifierReference reference)

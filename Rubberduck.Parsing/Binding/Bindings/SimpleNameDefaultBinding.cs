@@ -187,7 +187,7 @@ namespace Rubberduck.Parsing.Binding
             var defaultInstanceVariableClass = _declarationFinder.FindDefaultInstanceVariableClassEnclosingProject(_project, _module, _name);
             if (defaultInstanceVariableClass != null)
             {
-                return new SimpleNameExpression(defaultInstanceVariableClass, ExpressionClassification.Type, _context);
+                return new SimpleNameExpression(defaultInstanceVariableClass, ExpressionClassification.Variable, _context);
             }
             return null;
         }

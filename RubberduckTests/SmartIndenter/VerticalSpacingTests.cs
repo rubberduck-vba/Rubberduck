@@ -244,6 +244,103 @@ namespace RubberduckTests.SmartIndenter
 
         [Test]
         [Category("Indenter")]
+        public void VerticalSpacing_GroupSingleProperty()
+        {
+            var code = new[]
+            {
+                "Function TestFunction() As Long",
+                "End Function",
+                "Public Property Get TestProperty() As Long",
+                "End Property",
+                "Public Property Let TestProperty(ByVal foo As Long)",
+                "End Property",
+                "Sub TestSub()",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Function TestFunction() As Long",
+                "End Function",
+                "",
+                "Public Property Get TestProperty() As Long",
+                "End Property",
+                "Public Property Let TestProperty(ByVal foo As Long)",
+                "End Property",
+                "",
+                "Sub TestSub()",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.VerticallySpaceProcedures = true;
+                s.LinesBetweenProcedures = 1;
+                s.GroupRelatedProperties = true;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void VerticalSpacing_GroupMultipleProperties()
+        {
+            var code = new[]
+            {
+                "Function TestFunction() As Long",
+                "End Function",
+                "Public Property Get TestProperty() As Long",
+                "End Property",
+                "Public Property Let TestProperty(ByVal foo As Long)",
+                "End Property",
+                "Public Property Get TestProperty2() As Variant",
+                "End Property",
+                "Public Property Let TestProperty2(ByVal foo As Variant)",
+                "End Property",
+                "Public Property Set TestProperty2(ByVal foo As Variant)",
+                "End Property",
+                "Sub TestSub()",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Function TestFunction() As Long",
+                "End Function",
+                "",
+                "Public Property Get TestProperty() As Long",
+                "End Property",
+                "Public Property Let TestProperty(ByVal foo As Long)",
+                "End Property",
+                "",
+                "Public Property Get TestProperty2() As Variant",
+                "End Property",
+                "Public Property Let TestProperty2(ByVal foo As Variant)",
+                "End Property",
+                "Public Property Set TestProperty2(ByVal foo As Variant)",
+                "End Property",
+                "",
+                "Sub TestSub()",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.VerticallySpaceProcedures = true;
+                s.LinesBetweenProcedures = 1;
+                s.GroupRelatedProperties = true;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
         public void VerticalSpacing_InsertBlankLinesWorksWithTypes()
         {
             var code = new[]

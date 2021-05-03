@@ -8,7 +8,7 @@ using Rubberduck.VBEditor;
 using System.Diagnostics;
 using System.Linq;
 using NLog;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -307,7 +307,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             //We need to refresh the DeclarationFinder before the handlers for ResolvedDeclarations run no matter 
-            //whether we parsed or resolved something because modules not referenced by any remeining module might
+            //whether we parsed or resolved something because modules not referenced by any remaining module might
             //have been removed. E.g. the CodeExplorer needs this update. 
             RefreshDeclarationFinder();
             token.ThrowIfCancellationRequested();
@@ -340,9 +340,6 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
         }
 
-        //TODO: Remove the conditional compilation after loading from typelibs actually works.
-        //TODO: Improve the handling to avoid host crashing. See https://github.com/rubberduck-vba/Rubberduck/issues/5217
-        [Conditional("LOAD_USER_COM_PROJECTS")]
         private void ProcessUserComProjects(ref CancellationToken token, ref IReadOnlyCollection<QualifiedModuleName> toParse, ref HashSet<QualifiedModuleName> toReresolveReferences, ref IReadOnlyCollection<string> newProjectIds)
         {
             RefreshUserComProjects(toParse, newProjectIds);

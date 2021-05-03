@@ -525,11 +525,11 @@ End Sub
             return new SearchResultsWindowViewModel();
         }
 
-        private static FindAllReferencesService ArrangeFindAllReferencesService(RubberduckParserState state,
+        private static FindAllReferencesAction ArrangeFindAllReferencesService(RubberduckParserState state,
             ISearchResultsWindowViewModel viewModel, INavigateCommand navigateCommand = null, IMessageBox messageBox = null,
             SearchResultPresenterInstanceManager presenterService = null, IUiDispatcher uiDispatcher = null)
         {
-            return new FindAllReferencesService(
+            return new FindAllReferencesAction(
                 navigateCommand ?? new Mock<INavigateCommand>().Object, 
                 messageBox ?? new Mock<IMessageBox>().Object, 
                 state, 
@@ -547,13 +547,13 @@ End Sub
         }
 
         private static FindAllReferencesCommand ArrangeFindAllReferencesCommand(RubberduckParserState state,
-            Mock<IVBE> vbe, ISearchResultsWindowViewModel viewModel, FindAllReferencesService finder)
+            Mock<IVBE> vbe, ISearchResultsWindowViewModel viewModel, FindAllReferencesAction finder)
         {
             return ArrangeFindAllReferencesCommand(state, vbe, viewModel, finder, MockVbeEvents.CreateMockVbeEvents(vbe));
         }
 
         private static FindAllReferencesCommand ArrangeFindAllReferencesCommand(RubberduckParserState state,
-            Mock<IVBE> vbe, ISearchResultsWindowViewModel viewModel, FindAllReferencesService finder,
+            Mock<IVBE> vbe, ISearchResultsWindowViewModel viewModel, FindAllReferencesAction finder,
             Mock<IVbeEvents> vbeEvents)
         {
             var selectionService = new SelectionService(vbe.Object, state.ProjectsProvider);

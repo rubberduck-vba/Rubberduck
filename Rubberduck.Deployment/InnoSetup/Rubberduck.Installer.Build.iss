@@ -6,6 +6,8 @@
 #define BuildDir ExtractFileDir(ExtractFileDir(SourcePath)) + "\bin\"
 #define IncludesDir SourcePath + "Includes\"
 #define GraphicsDir SourcePath + "Graphics\"
+#define WizardImageFilesDir GraphicsDir + "WizardImageFiles\"
+#define WizardSmallImageFilesDir GraphicsDir + "WizardSmallImageFiles\"
 #define AppName "Rubberduck"
 #define AddinDLL "Rubberduck.dll"
 #define Tlb32bit "Rubberduck.x32.tlb"
@@ -15,8 +17,8 @@
 #define Tlb64bitFullPath BuildDir + Tlb64bit
 #define AppVersion GetFileVersion(BuildDir + "Rubberduck.dll")
 #define AppPublisher "Rubberduck"
-#define AppURL "http://rubberduckvba.com"
-#define License IncludesDir + "License.rtf"
+#define AppURL "https://rubberduckvba.com"
+#define License IncludesDir + "eula.rtf"
 #define OutputDirectory SourcePath + "Installers\"
 #define AddinProgId "Rubberduck.Extension"
 #define AddinCLSID "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66"
@@ -26,6 +28,8 @@
 #pragma message "SourcePath: " + SourcePath
 #pragma message "BuildDir: " + BuildDir
 #pragma message "GraphicsDir: " + GraphicsDir
+#pragma message "WizardImageFilesDir: " + WizardImageFilesDir
+#pragma message "WizardSmallImageFilesDir: " + WizardSmallImageFilesDir
 #pragma message "AppName: " + AppName
 #pragma message "AddinDLL: " + AddinDLL
 #pragma message "DllFullPath: " + DllFullPath
@@ -71,21 +75,10 @@ Uninstallable=ShouldCreateUninstaller()
 CreateUninstallRegKey=ShouldCreateUninstaller()
 
 ; should be at least a 55 x 55 bitmap
-WizardSmallImageFile={#GraphicsDir}Rubberduck.Duck.Small.55x55.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.64x68.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.83x80.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.92x97.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.110x106.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.119x123.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.138x140.bmp
+WizardSmallImageFile={#WizardSmallImageFilesDir}Rubberduck.Duck.Small.*.bmp
 
 ; should be at least a 164 x 314 bitmap
-WizardImageFile={#GraphicsDir}Rubberduck.Duck.164x314.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.192x386.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.246x459.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.273x556.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.328x604.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.355x700.bmp
+WizardImageFile={#WizardImageFilesDir}Rubberduck.Duck.*.bmp
 
 [Languages]
 Name: "English"; MessagesFile: "compiler:Default.isl"
@@ -93,6 +86,8 @@ Name: "French"; MessagesFile: "compiler:Languages\French.isl"
 Name: "German"; MessagesFile: "compiler:Languages\German.isl"
 Name: "Czech"; MessagesFile: "compiler:Languages\Czech.isl"
 Name: "Spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
+Name: "Italian"; MessagesFile: "compiler:Languages\Italian.isl"
+
 
 [Dirs]
 ; Make folder "readonly" to support icons (it does not actually make folder readonly. A weird Windows quirk)
@@ -131,6 +126,7 @@ Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: i
 #include <German.CustomMessages.iss>
 #include <Czech.CustomMessages.iss>
 #include <Spanish.CustomMessages.iss>
+#include <Italian.CustomMessages.iss>
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#AppName}}"; Filename: "{#AppURL}"
@@ -673,8 +669,13 @@ begin
   sUnInstPath := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\' + sAppId + '_is1';
   Log('Looking in registry: ' + sUnInstPath);
   sUnInstallString := '';
-  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
-    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  if RegValueExists(HKLM, sUnInstPath, 'UninstallString') then
+    RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString)
+  else if RegValueExists(HKCU, sUnInstPath, 'UninstallString') then
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString)
+  else
+    sUnInstallString := '';
+
   Log('Result of registry query: ' + sUnInstallString);
   Result := sUnInstallString;
 end;
@@ -742,10 +743,15 @@ begin
   sUnInstallString := GetUninstallString(AppId);
   if sUnInstallString <> '' then begin
     sUnInstallString := RemoveQuotes(sUnInstallString);
-    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
-      Result := 3
+    if FileExists(sUnInstallString) then
+    begin
+      if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+        Result := 3
+      else
+        Result := 2;
+    end
     else
-      Result := 2;
+      Result := 1;
   end else
     Result := 1;
 end;
@@ -776,9 +782,22 @@ begin
     ErrorCode := UnInstallOldVersion(GetAppId(AppMode));
     Log(Format('The result of UninstallOldVersion for %s was %d.', [AppMode, ErrorCode]));
 
-    if ErrorCode <> 3 then
-      MsgBox(ExpandConstant('{cm:UninstallOldVersionFail}'), mbError, MB_OK);
-    result := (ErrorCode = 3);
+    case (ErrorCode) of
+      1:
+        if(IDNO = MsgBox(ExpandConstant('{cm:UninstallOldVersionNotFound}'), mbError, MB_YESNO)) then
+          result := false
+        else
+          result := true;
+      3:
+        result := true;
+      else
+      begin
+        if(IDNO = MsgBox(ExpandConstant('{cm:UninstallOldVersionFail}'), mbError, MB_YESNO)) then
+          result := false
+        else
+          result := true;
+      end
+    end;
   end
     else
   begin

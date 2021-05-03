@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.IO.Abstractions;
 using System.Linq;
 using Rubberduck.Interaction;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
@@ -24,9 +25,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             IProjectsProvider projectsProvider,
             IModuleNameFromFileExtractor moduleNameFromFileExtractor,
             IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileExtractors,
-            IFileExistenceChecker fileExistenceChecker,
+            IFileSystem fileSystem,
             IMessageBox messageBox) 
-            :base(vbe, dialogFactory, vbeEvents, parseManager, declarationFinderProvider, projectsProvider, moduleNameFromFileExtractor, binaryFileExtractors, fileExistenceChecker, messageBox)
+            :base(vbe, dialogFactory, vbeEvents, parseManager, declarationFinderProvider, projectsProvider, moduleNameFromFileExtractor, binaryFileExtractors, fileSystem, messageBox)
         {}
 
         protected override string DialogsTitle => RubberduckUI.ReplaceProjectContentsFromFilesCommand_DialogCaption;

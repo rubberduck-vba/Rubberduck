@@ -115,6 +115,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add @EntryPoint annotation.
+        /// </summary>
+        public static string AnnotateEntryPointQuickFix {
+            get {
+                return ResourceManager.GetString("AnnotateEntryPointQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use early-bound Application.WorksheetFunction method..
         /// </summary>
         public static string ApplicationWorksheetFunctionQuickFix {
@@ -165,6 +174,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ConvertFunctionToProcedureQuickFix {
             get {
                 return ResourceManager.GetString("ConvertFunctionToProcedureQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Declare as Explicit Type.
+        /// </summary>
+        public static string DeclareAsExplicitTypeQuickFix {
+            get {
+                return ResourceManager.GetString("DeclareAsExplicitTypeQuickFix", resourceCulture);
             }
         }
         
@@ -336,6 +354,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ProcedureShouldBeFunctionInspectionQuickFix {
             get {
                 return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Qualify reference with &apos;Me&apos;..
+        /// </summary>
+        public static string QualifyWithMeQuickFix {
+            get {
+                return ResourceManager.GetString("QualifyWithMeQuickFix", resourceCulture);
             }
         }
         

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
@@ -12,13 +13,15 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         public SynchronousReferenceResolveRunner(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
-            IModuleToModuleReferenceManager moduletToModuleReferenceManager,
-            IReferenceRemover referenceRemover)
+            IModuleToModuleReferenceManager moduleToModuleReferenceManager,
+            IReferenceRemover referenceRemover,
+            IDocumentModuleSuperTypeNamesProvider documentModuleSuperTypeNamesProvider)
         : base(state,
             parserStateManager,
-            moduletToModuleReferenceManager,
-            referenceRemover)
-        { }
+            moduleToModuleReferenceManager,
+            referenceRemover,
+            documentModuleSuperTypeNamesProvider)
+        {}
 
 
         protected override void ResolveReferences(ICollection<KeyValuePair<QualifiedModuleName, IParseTree>> toResolve, CancellationToken token)

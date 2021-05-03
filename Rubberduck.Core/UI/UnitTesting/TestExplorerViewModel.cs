@@ -41,7 +41,8 @@ namespace Rubberduck.UI.UnitTesting
         Fail = 1 << 1,
         Inconclusive = 1 << 2,
         Succeeded = 1 << 3,
-        All = Unknown | Fail | Inconclusive | Succeeded
+        Ignored = 1 << 4,
+        All = Unknown | Fail | Inconclusive | Succeeded | Ignored
     }
 
     internal sealed class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
@@ -53,7 +54,9 @@ namespace Rubberduck.UI.UnitTesting
             TestExplorerModel model,
             IClipboardWriter clipboard,
             // ReSharper disable once UnusedParameter.Local - left in place because it will likely be needed for app wide font settings, etc.
+#pragma warning disable IDE0060 // Remove unused parameter
             IConfigurationService<Configuration> configService,
+#pragma warning restore IDE0060 // Remove unused parameter
             ISettingsFormFactory settingsFormFactory,
             IRewritingManager rewritingManager,
             IAnnotationUpdater annotationUpdater)

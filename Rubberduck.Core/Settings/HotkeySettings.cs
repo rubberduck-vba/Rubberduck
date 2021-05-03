@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common.Hotkeys;
-using Rubberduck.JunkDrawer.Extensions;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Extensions;
+using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck.Settings
 {

@@ -127,7 +127,7 @@
     <value>© Copyright 2014-{0} Rubberduck project contributors</value>
   </data>
   <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
-    <value>Spezieller Dank</value>
+    <value>Besonderen Dank</value>
   </data>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Parsing ermöglicht durch ANTLR
@@ -138,9 +138,9 @@ IDE Icons von SharpDevelop
 WPF Lokalisierungsunterstützung von Grant Frisken</value>
   </data>
   <data name="AboutWindow_GeneralThanks" xml:space="preserve">
-    <value>Allen, die zu unserem GitHub Repositoty beigetragen haben
+    <value>Allen, die zu unserem GitHub Repository beigetragen haben
 Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
-… und jedem der dies liest.</value>
+… und jedem der dies liest!</value>
   </data>
   <data name="AboutWindow_BlogsHeader" xml:space="preserve">
     <value>Blogs:</value>

@@ -14,22 +14,18 @@ namespace Rubberduck.UI.FindSymbol
             viewModel.Navigate += viewModel_Navigate;
         }
 
-        public event EventHandler<NavigateCodeEventArgs> Navigate;
-        private void viewModel_Navigate(object sender, NavigateCodeEventArgs e)
-        {
-            var handler = Navigate;
-            if (handler != null)
-            {
-                handler(this, e);
-                Hide();
-            }
-        }
-
         public FindSymbolDialog()
         {
             InitializeComponent();
-            
-            Text = string.Format("Rubberduck - {0}", RubberduckUI.FindSymbolDialog_Caption);
+            Text = $"Rubberduck - {RubberduckUI.FindSymbolDialog_Caption}";
+        }
+
+
+        public event EventHandler<NavigateCodeEventArgs> Navigate;
+        private void viewModel_Navigate(object sender, NavigateCodeEventArgs e)
+        {
+            Navigate?.Invoke(this, e);
+            Hide();
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

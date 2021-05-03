@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -24,6 +23,7 @@ using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VbeRuntime;
+using System.IO.Abstractions;
 
 namespace Rubberduck
 {
@@ -45,6 +45,7 @@ namespace Rubberduck
         private IAddIn _addin;
         private IVbeNativeApi _vbeNativeApi;
         private IBeepInterceptor _beepInterceptor;
+        private IFileSystem _fileSystem;
         private bool _isInitialized;
         private bool _isBeginShutdownExecuted;
 
@@ -67,6 +68,7 @@ namespace Rubberduck
 
                 _vbeNativeApi = new VbeNativeApiAccessor();
                 _beepInterceptor = new BeepInterceptor(_vbeNativeApi);
+                _fileSystem = new FileSystem();
                 VbeProvider.Initialize(_vbe, _vbeNativeApi, _beepInterceptor);
                 VbeNativeServices.HookEvents(_vbe);
 
@@ -98,9 +100,9 @@ namespace Rubberduck
 
         private Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
         {
-            var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
-            var assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
-            if (!File.Exists(assemblyPath))
+            var folderPath = _fileSystem.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+            var assemblyPath = _fileSystem.Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
+            if (!_fileSystem.File.Exists(assemblyPath))
             {
                 return null;
             }
@@ -145,7 +147,7 @@ namespace Rubberduck
 
         private void InitializeAddIn()
         {
-            Splash splash = null;
+            Splash2021 splash = null;
             try
             {
                 if (_isInitialized)
@@ -157,7 +159,7 @@ namespace Rubberduck
                 }
 
                 var pathProvider = PersistencePathProvider.Instance;
-                var configLoader = new XmlPersistenceService<GeneralSettings>(pathProvider);
+                var configLoader = new XmlPersistenceService<GeneralSettings>(pathProvider, _fileSystem);
                 var configProvider = new GeneralConfigProvider(configLoader);
 
                 _initialSettings = configProvider.Read();
@@ -191,11 +193,7 @@ namespace Rubberduck
 
                 if (_initialSettings?.CanShowSplash ?? false)
                 {
-                    splash = new Splash
-                    {
-                        // note: IVersionCheck.CurrentVersion could return this string.
-                        Version = $"version {Assembly.GetExecutingAssembly().GetName().Version}"
-                    };
+                    splash = new Splash2021();
                     splash.Show();
                     splash.Refresh();
                 }

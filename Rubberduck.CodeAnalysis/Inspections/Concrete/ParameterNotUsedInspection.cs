@@ -114,7 +114,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         private static bool ParameterAtIndexIsNotUsed(IParameterizedDeclaration declaration, int parameterIndex)
         {
-            var parameter = declaration.Parameters.ElementAtOrDefault(parameterIndex);
+            var parameter = declaration?.Parameters.ElementAtOrDefault(parameterIndex);
             return parameter != null
                    && !parameter.References.Any();
         }

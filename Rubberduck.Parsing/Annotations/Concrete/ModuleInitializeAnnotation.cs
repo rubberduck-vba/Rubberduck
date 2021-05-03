@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.Annotations;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.Annotations.Concrete
 {
@@ -25,5 +26,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete
         public ModuleInitializeAnnotation()
             : base("ModuleInitialize", AnnotationTarget.Member)
         {}
+
+        public override ComponentType? RequiredComponentType => ComponentType.StandardModule;
     }
 }

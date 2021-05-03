@@ -1,16 +1,30 @@
-﻿using System;
+﻿using Rubberduck.VBEditor.SafeComWrappers;
+using System;
 using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Annotations
 {
     public interface IAnnotation
     {
+        /// <summary>
+        /// The name of the annotation (without the @ prefix).
+        /// </summary>
         string Name { get; }
 
         /// <summary>
-        /// The kind of object this annotation can be applied to 
+        /// The kind of object this annotation can be applied to.
         /// </summary>
         AnnotationTarget Target { get; }
+
+        /// <summary>
+        /// The types of component that are incompatible with this annotation, if any.
+        /// </summary>
+        IReadOnlyList<ComponentType> IncompatibleComponentTypes { get; }
+
+        /// <summary>
+        /// If supplied, annotation is only valid for this component type.
+        /// </summary>
+        ComponentType? RequiredComponentType { get; }
 
         /// <summary>
         /// Specifies whether there can be multiple instances of the annotation on the same target.

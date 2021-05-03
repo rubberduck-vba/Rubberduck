@@ -238,7 +238,7 @@
     <value>Variable verwendet 'Ungarische Notation'.</value>
   </data>
   <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
-    <value>Member existiert auf dem Interface nicht</value>
+    <value>Element existiert auf dem Interface nicht</value>
   </data>
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>'Option Base 0' ist redundant</value>
@@ -254,9 +254,6 @@
   </data>
   <data name="ImplicitByRefModifierInspection" xml:space="preserve">
     <value>Impliziter ByRef Parameter</value>
-  </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Illegale Annotation</value>
   </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Fehlendes Attribut</value>
@@ -343,10 +340,10 @@
     <value>Zuweisung wird nie gelesen</value>
   </data>
   <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
-    <value>Unterstrich im Namen eines öffentlichen Members</value>
+    <value>Unterstrich im Namen eines öffentlichen Elements</value>
   </data>
   <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
-    <value>Memberaufruf kann 'Nothing' zurückgeben</value>
+    <value>Elementraufruf kann 'Nothing' zurückgeben</value>
   </data>
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>Funktion wird von EXCEL-Zellreferenz verdeckt</value>
@@ -370,7 +367,7 @@
     <value>Argument mit nicht kompatiblem Objekttyp</value>
   </data>
   <data name="EmptyMethodInspection" xml:space="preserve">
-    <value>Lehre Methode</value>
+    <value>Leere Methode</value>
   </data>
   <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
     <value>Implementierte Methode einer Interface-Klasse</value>
@@ -379,10 +376,10 @@
     <value>Objekt statt Wert verwendet</value>
   </data>
   <data name="ProcedureRequiredInspection" xml:space="preserve">
-    <value>Objekt ohne Standardmember statt Prozedur verwendet</value>
+    <value>Objekt ohne Standardelement statt Prozedur verwendet</value>
   </data>
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
-    <value>Standardmemberzugriff ohne Standardmember</value>
+    <value>Standardelementzugriff ohne Standardelement</value>
   </data>
   <data name="UseOfBangNotationInspection" xml:space="preserve">
     <value>Verwendung der Ausrufezeichennotation</value>
@@ -397,22 +394,22 @@
     <value>Objekt an Stell einer Prozedur verwendet</value>
   </data>
   <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Parametrisierter Zugriff auf einen Standardmember</value>
+    <value>Parametrisierter Zugriff auf einen Standardelement</value>
   </data>
   <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Parametrisierter rekursiver Zugriff auf einen Standardmember</value>
+    <value>Parametrisierter rekursiver Zugriff auf einen Standardelement</value>
   </data>
   <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Parametrisierter nicht gebundener Zugriff auf einen Standardmember</value>
+    <value>Parametrisierter nicht gebundener Zugriff auf einen Standardelement</value>
   </data>
   <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Impliziter Zugriff auf einen Standardmember</value>
+    <value>Impliziter Zugriff auf ein Standardelement</value>
   </data>
   <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Impliziter rekursiver Zugriff auf einen Standardmember</value>
+    <value>Impliziter rekursiver Zugriff auf einen Standardelement</value>
   </data>
   <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Impliziter nicht gebundener Zugriff auf einen Standardmember</value>
+    <value>Impliziter nicht gebundener Zugriff auf einen Standardelement</value>
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Verdächtige Let-Zuweisung</value>
@@ -437,5 +434,26 @@
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
     <value>Name, der ein geschütztes Leerzeichen enthält</value>
+  </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>Implizite Referenz zum umgebenden Worksheet-Modul</value>
+  </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>Implizite Referenz zum umgebenden Workbook-Modul</value>
+  </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>Irreführender ByRef Parametermodifizierer</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>On Error GoTo -1</value>
+  </data>
+  <data name="AnnotationInIncompatibleComponentTypeInspection" xml:space="preserve">
+    <value>Annotation in Komponente mit inkompatiblem  Typ</value>
+  </data>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Unzulässige Annotation</value>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>Unbekannte Annotation</value>
   </data>
 </root>

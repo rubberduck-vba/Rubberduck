@@ -61,6 +61,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Annotation in component with incompatible type.
+        /// </summary>
+        public static string AnnotationInIncompatibleComponentTypeInspection {
+            get {
+                return ResourceManager.GetString("AnnotationInIncompatibleComponentTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Late bound WorksheetFunction call..
         /// </summary>
         public static string ApplicationWorksheetFunctionInspection {
@@ -313,15 +322,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Illegal annotation.
-        /// </summary>
-        public static string IllegalAnnotationInspection {
-            get {
-                return ResourceManager.GetString("IllegalAnnotationInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Implemented member of interface class.
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
@@ -354,6 +354,24 @@ namespace Rubberduck.Resources.Inspections {
         public static string ImplicitByRefModifierInspection {
             get {
                 return ResourceManager.GetString("ImplicitByRefModifierInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit reference to the containing Workbook module.
+        /// </summary>
+        public static string ImplicitContainingWorkbookReferenceInspection {
+            get {
+                return ResourceManager.GetString("ImplicitContainingWorkbookReferenceInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit reference to containing Worksheet module.
+        /// </summary>
+        public static string ImplicitContainingWorksheetReferenceInspection {
+            get {
+                return ResourceManager.GetString("ImplicitContainingWorksheetReferenceInspection", resourceCulture);
             }
         }
         
@@ -448,6 +466,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid annotation.
+        /// </summary>
+        public static string InvalidAnnotationInspection {
+            get {
+                return ResourceManager.GetString("InvalidAnnotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inappropriate use of &apos;IsMissing&apos; - Parameter is not &apos;Variant&apos;.
         /// </summary>
         public static string IsMissingOnInappropriateArgumentInspection {
@@ -498,6 +525,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string MemberNotOnInterfaceInspection {
             get {
                 return ResourceManager.GetString("MemberNotOnInterfaceInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Misleading ByRef parameter modifier.
+        /// </summary>
+        public static string MisleadingByRefParameterInspection {
+            get {
+                return ResourceManager.GetString("MisleadingByRefParameterInspection", resourceCulture);
             }
         }
         
@@ -939,6 +975,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UnreachableCaseInspection {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unrecognized annotation.
+        /// </summary>
+        public static string UnrecognizedAnnotationInspection {
+            get {
+                return ResourceManager.GetString("UnrecognizedAnnotationInspection", resourceCulture);
             }
         }
         

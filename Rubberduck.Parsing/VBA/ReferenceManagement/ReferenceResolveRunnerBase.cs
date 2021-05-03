@@ -6,6 +6,7 @@ using System.Threading;
 using Antlr4.Runtime.Tree;
 using NLog;
 using Rubberduck.Parsing.Common;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Extensions;
@@ -13,7 +14,6 @@ using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.VBA.ReferenceManagement
 {
@@ -29,12 +29,14 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         protected readonly IParserStateManager _parserStateManager;
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
         private readonly IReferenceRemover _referenceRemover;
+        private readonly IDocumentModuleSuperTypeNamesProvider _superTypeNamesProvider;
 
         public ReferenceResolveRunnerBase(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
-            IModuleToModuleReferenceManager moduletToModuleReferenceManager,
-            IReferenceRemover referenceRemover)
+            IModuleToModuleReferenceManager moduleToModuleReferenceManager,
+            IReferenceRemover referenceRemover, 
+            IDocumentModuleSuperTypeNamesProvider superTypeNamesProvider)
         {
             if (state == null)
             {
@@ -44,19 +46,24 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             {
                 throw new ArgumentNullException(nameof(parserStateManager));
             }
-            if (moduletToModuleReferenceManager == null)
+            if (moduleToModuleReferenceManager == null)
             {
-                throw new ArgumentNullException(nameof(moduletToModuleReferenceManager));
+                throw new ArgumentNullException(nameof(moduleToModuleReferenceManager));
             }
             if (referenceRemover == null)
             {
                 throw new ArgumentNullException(nameof(referenceRemover));
             }
+            if (superTypeNamesProvider == null)
+            {
+                throw new ArgumentNullException(nameof(superTypeNamesProvider));
+            }
 
             _state = state;
             _parserStateManager = parserStateManager;
-            _moduleToModuleReferenceManager = moduletToModuleReferenceManager;
+            _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
             _referenceRemover = referenceRemover;
+            _superTypeNamesProvider = superTypeNamesProvider;
         }
 
 
@@ -81,18 +88,18 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
             var parsingStageTimer = ParsingStageTimer.StartNew();
 
+            AddSuperTypeNamesForDocumentModules(_toResolve.AsReadOnly(), _state);
+            token.ThrowIfCancellationRequested();
+
+            parsingStageTimer.Stop();
+            parsingStageTimer.Log("Added supertypes for document modules in {0}ms.");
+
             ExecuteCompilationPasses(_toResolve.AsReadOnly(), token);
             token.ThrowIfCancellationRequested();
 
             parsingStageTimer.Stop();
             parsingStageTimer.Log("Executed compilation passes in {0}ms.");
             parsingStageTimer.Restart();
-
-            AddSupertypesForDocumentModules(_toResolve.AsReadOnly(), _state);
-            token.ThrowIfCancellationRequested();
-
-            parsingStageTimer.Stop();
-            parsingStageTimer.Log("Added supertypes for document modules in {0}ms.");
 
             var parseTreesToResolve = _state.ParseTrees.Where(kvp => _toResolve.Contains(kvp.Key)).ToList();
             token.ThrowIfCancellationRequested();
@@ -151,90 +158,24 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             }
         }
 
-        private void AddSupertypesForDocumentModules(IReadOnlyCollection<QualifiedModuleName> modules, RubberduckParserState state)
+        private void AddSuperTypeNamesForDocumentModules(IReadOnlyCollection<QualifiedModuleName> modules, RubberduckParserState state)
         {
-            var documentModuleDeclarations = state.DeclarationFinder.UserDeclarations(DeclarationType.Document)
+            var documentModuleDeclarationsByProject = state.DeclarationFinder.UserDeclarations(DeclarationType.Document)
                 .OfType<DocumentModuleDeclaration>()
-                .Where(declaration => modules.Contains(declaration.QualifiedName.QualifiedModuleName));
+                .Where(declaration => modules.Contains(declaration.QualifiedName.QualifiedModuleName))
+                .GroupBy(declaration => declaration.ProjectId);
 
-            foreach (var documentDeclaration in documentModuleDeclarations)
+            foreach (var projectGroup in documentModuleDeclarationsByProject)
             {
-                var documentSupertype = SupertypeForDocument(documentDeclaration.QualifiedName.QualifiedModuleName, state);
-                if (documentSupertype != null)
+                foreach (var document in projectGroup.AsEnumerable())
                 {
-                    documentDeclaration.AddSupertype(documentSupertype);
-                }
-            }
-        }
-
-        private Declaration SupertypeForDocument(QualifiedModuleName module, RubberduckParserState state)
-        {
-            if(module.ComponentType != ComponentType.Document)
-            {
-                return null;
-            }
-
-            var component = _state.ProjectsProvider.Component(module);
-            if (component == null || component.IsWrappingNullReference)
-            {
-                return null;
-            }
-
-            Declaration superType = null;
-            // TODO: Replace with TypeLibAPI call, require a solution regarding thread synchronization or caching
-            /*
-            using (var properties = component.Properties)
-            {
-                int documentPropertyCount = 0;
-                try
-                {
-                    if (properties == null || properties.IsWrappingNullReference)
+                    var superTypeNames = _superTypeNamesProvider.GetSuperTypeNamesFor(document);
+                    foreach (var superTypeName in superTypeNames)
                     {
-                        return null;
-                    }
-                    documentPropertyCount = properties.Count;
-                }
-                catch(COMException)
-                {
-                    return null;
-                }
-                
-                foreach (var coclass in state.CoClasses)
-                {
-                    try
-                    {
-                        if (coclass.Key.Count != documentPropertyCount)
-                        {
-                            continue;
-                        }
-
-                        var allNamesMatch = true;
-                        for (var i = 0; i < coclass.Key.Count; i++)
-                        {
-                            using (var property = properties[i+1])
-                            {
-                                if (coclass.Key[i] != property?.Name)
-                                {
-                                    allNamesMatch = false;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (allNamesMatch)
-                        {
-                            superType = coclass.Value;
-                            break;
-                        }
-                    }
-                    catch (COMException)
-                    {
+                        document.AddSupertypeName(superTypeName);
                     }
                 }
             }
-            */
-
-            return superType;
         }
 
         protected void ResolveReferences(DeclarationFinder finder, QualifiedModuleName module, IParseTree tree, CancellationToken token)
@@ -257,7 +198,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     Logger.Debug("Binding resolution done for component '{0}' in {1}ms (thread {2})", module.Name,
                         watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
 
-                    //Evaluation of the overall status has to be defered to allow processing of undeclared variables before setting the ready state.
+                    //Evaluation of the overall status has to be deferred to allow processing of undeclared variables before setting the ready state.
                     _parserStateManager.SetModuleState(module, ParserState.Ready, token, false);
                 }
                 catch (OperationCanceledException)

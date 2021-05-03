@@ -46,6 +46,11 @@ namespace Rubberduck.VBEditor
             return Contains(new Selection(selection.StartLine, selection.StartColumn, selection.StartLine, selection.StartColumn));
         }
 
+        public Selection ExtendLeft(int positions = 1)
+        {
+            return new Selection(StartLine, Math.Max(StartColumn - positions, 1), EndLine, EndColumn);
+        }
+
         public bool Contains(Selection selection)
         {
             // single line comparison
@@ -77,7 +82,8 @@ namespace Rubberduck.VBEditor
             return false;
         }
 
-        public bool IsSingleCharacter => StartLine == EndLine && StartColumn == EndColumn;
+        public bool IsSingleLine => StartLine == EndLine;
+        public bool IsSingleCharacter => IsSingleLine && StartColumn == EndColumn;
 
         public Selection PreviousLine => StartLine == 1 ? Home : new Selection(StartLine - 1, 1);
         public Selection NextLine => new Selection(StartLine + 1, 1);

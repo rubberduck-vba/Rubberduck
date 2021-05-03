@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -16,16 +16,19 @@ namespace Rubberduck.UI.Settings
         private readonly IConfigurationService<ReferenceSettings> _provider;
         private readonly IFileSystemBrowserFactory _browserFactory;
         private readonly ReferenceSettings _clean;
+        private readonly IFileSystem _fileSystem;
 
         public AddRemoveReferencesUserSettingsViewModel(
             IConfigurationService<ReferenceSettings> provider, 
             IFileSystemBrowserFactory browserFactory,
-            IConfigurationService<ReferenceSettings> service)
+            IConfigurationService<ReferenceSettings> service,
+            IFileSystem fileSystem)
             : base(service)
         {
             _provider = provider;
             _browserFactory = browserFactory;
             _clean = _provider.Read();
+            _fileSystem = fileSystem;
 
             TransferSettingsToView(_clean);
 
@@ -71,7 +74,7 @@ namespace Rubberduck.UI.Settings
                 var path = browser.SelectedPath;
                 if (result == DialogResult.OK && 
                     !ProjectPaths.Any(existing => existing.Equals(path, StringComparison.OrdinalIgnoreCase)) &&
-                    Directory.Exists(path))
+                    _fileSystem.Directory.Exists(path))
                 {
                     ProjectPaths.Add(path);
                 }
@@ -106,8 +109,7 @@ namespace Rubberduck.UI.Settings
             target.FixBrokenReferences = FixBrokenReferences;
             target.AddToRecentOnReferenceEvents = AddToRecentOnReferenceEvents;
             target.ProjectPaths = new List<string>(ProjectPaths);
-            // ReSharper disable once ExplicitCallerInfoArgument
-            OnPropertyChanged("ProjectPaths");
+            OnPropertyChanged(nameof(ProjectPaths));
         }
 
         public void UpdateConfig(Configuration config)

@@ -10,35 +10,13 @@ namespace Rubberduck.Refactorings.EncapsulateField.Extensions
 
         public static string IncrementEncapsulationIdentifier(this string identifier)
         {
-            var fragments = identifier.Split('_');
-            if (fragments.Length == 1) { return $"{identifier}_1"; }
-
-            var lastFragment = fragments[fragments.Length - 1];
-            if (long.TryParse(lastFragment, out var number))
+            var numeric = string.Concat(identifier.Reverse().TakeWhile(c => char.IsDigit(c)).Reverse());
+            if (!int.TryParse(numeric, out var currentNum))
             {
-                fragments[fragments.Length - 1] = (number + 1).ToString();
-
-                return string.Join("_", fragments);
+                currentNum = 0;
             }
-            return $"{identifier}_1"; ;
-        }
-
-        public static string LimitNewlines(this string content, int maxConsecutiveNewlines = 2)
-        {
-            var target = string.Concat(Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewlines + 1).ToList());
-            var replacement = string.Concat(Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewlines).ToList());
-            var guard = 0;
-            var maxAttempts = 100;
-            while (++guard < maxAttempts && content.Contains(target))
-            {
-                content = content.Replace(target, replacement);
-            }
-
-            if (guard >= maxAttempts)
-            {
-                throw new FormatException($"Unable to limit consecutive '{Environment.NewLine}' strings to {maxConsecutiveNewlines}");
-            }
-            return content;
+            var identifierSansNumericSuffix = identifier.Substring(0, identifier.Length - numeric.Length);
+            return $"{identifierSansNumericSuffix}{++currentNum}";
         }
     }
 }

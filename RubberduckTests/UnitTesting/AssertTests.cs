@@ -4,11 +4,6 @@ using Rubberduck.UnitTesting;
 
 namespace RubberduckTests.UnitTesting
 {
-    //NOTE: The tests for reference equity are ignored pending some way of figuring out how to test the correct behavior.
-    //These methods have to check to see if the parameters are COM objects (see https://github.com/rubberduck-vba/Rubberduck/issues/2848)
-    //to make the result match the VBA interpretations of reference and value types.  Similarly, the SequenceEqual and NotSequenceEqual
-    //methods remain untested because they make several of the same Type tests that are AFAIK impossible to mock.
-
     [TestFixture]
     public class AssertTests
     {
@@ -25,6 +20,11 @@ namespace RubberduckTests.UnitTesting
         {
             _args = null;
             AssertHandler.OnAssertCompleted -= AssertHandler_OnAssertCompleted;
+        }
+
+        private void AssertHandler_OnAssertCompleted(object sender, AssertCompletedEventArgs e)
+        {
+            _args = e;
         }
 
         [Category("Unit Testing")]
@@ -276,11 +276,6 @@ namespace RubberduckTests.UnitTesting
             assert.Inconclusive();
 
             Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
-        }
-
-        private void AssertHandler_OnAssertCompleted(object sender, AssertCompletedEventArgs e)
-        {
-            _args = e;
         }
 
         [Category("Unit Testing")]

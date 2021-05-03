@@ -244,7 +244,7 @@
     <value>Step entfernen</value>
   </data>
   <data name="AddStepOneQuickFix" xml:space="preserve">
-    <value>Step hinzufügen</value>
+    <value>Explizite 'Step'-Klausel hinzufügen</value>
   </data>
   <data name="UseTypedFunctionQuickFix" xml:space="preserve">
     <value>'{0}' zu '{1}' ändern</value>
@@ -295,9 +295,18 @@
     <value>Ersetze die Ausrufezeichennotation durch einen expliziten Aufruf</value>
   </data>
   <data name="ExpandDefaultMemberQuickFix" xml:space="preserve">
-    <value>Füge einen expliziten Zugriff auf den Standardmember ein</value>
+    <value>Füge einen expliziten Zugriff auf das Standardelement ein</value>
   </data>
   <data name="IgnoreInModuleQuickFix" xml:space="preserve">
     <value>In Modul ignorieren</value>
+  </data>
+  <data name="QualifyWithMeQuickFix" xml:space="preserve">
+    <value>Qualifiziere die Referenz mit 'Me'.</value>
+  </data>
+  <data name="DeclareAsExplicitTypeQuickFix" xml:space="preserve">
+    <value>Als expliziten Typ deklarieren</value>
+  </data>
+  <data name="AnnotateEntryPointQuickFix" xml:space="preserve">
+    <value>@EntryPoint-Annotation hinzufügen</value>
   </data>
 </root>

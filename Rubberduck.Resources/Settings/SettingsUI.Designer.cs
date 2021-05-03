@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Settings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class SettingsUI {
@@ -214,6 +214,15 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignored Files.
+        /// </summary>
+        public static string FilesHeader_IgnoredProjectsSettings {
+            get {
+                return ResourceManager.GetString("FilesHeader_IgnoredProjectsSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Warning! No Modifier!.
         /// </summary>
         public static string HotKeys_Exclamation {
@@ -246,6 +255,15 @@ namespace Rubberduck.Resources.Settings {
         public static string PageHeader_GeneralSettings {
             get {
                 return ResourceManager.GetString("PageHeader_GeneralSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignored Projects.
+        /// </summary>
+        public static string PageHeader_IgnoredProjectsSettings {
+            get {
+                return ResourceManager.GetString("PageHeader_IgnoredProjectsSettings", resourceCulture);
             }
         }
         

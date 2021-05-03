@@ -6,6 +6,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.AddInterfaceImplementations;
 using Rubberduck.Refactorings.ImplementInterface;
+using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
@@ -14,6 +15,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
+using RubberduckTests.Settings;
 
 namespace RubberduckTests.Commands.RefactorCommands
 {
@@ -58,7 +60,7 @@ Dim b As Variant";
         protected override CommandBase TestCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
             var msgBox = new Mock<IMessageBox>().Object;
-            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager, new CodeBuilder());
+            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager, CreateCodeBuilder());
             var baseRefactoring = new ImplementInterfaceRefactoringAction(addImplementationsBaseRefactoring, rewritingManager);
             var refactoring = new ImplementInterfaceRefactoring(baseRefactoring, state, selectionService);
             var notifier = new ImplementInterfaceFailedNotifier(msgBox);
@@ -77,6 +79,17 @@ Dim b As Variant";
                 .Build();
 
             return builder.AddProject(project).Build().Object;
+        }
+
+        private static ICodeBuilder CreateCodeBuilder()
+            => new CodeBuilder(new Indenter(null, CreateIndenterSettings));
+
+        private static IndenterSettings CreateIndenterSettings()
+        {
+            var s = IndenterSettingsTests.GetMockIndenterSettings();
+            s.VerticallySpaceProcedures = true;
+            s.LinesBetweenProcedures = 1;
+            return s;
         }
     }
 }

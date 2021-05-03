@@ -4,19 +4,37 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-    public class FindAllReferencesCommandMenuItem : CommandMenuItemBase
+    public abstract class FindAllReferencesCommandMenuItemBase : CommandMenuItemBase
     {
-        public FindAllReferencesCommandMenuItem(FindAllReferencesCommand command)
+        protected FindAllReferencesCommandMenuItemBase(FindAllReferencesCommand command)
             : base(command)
-        {
-        }
+        {}
 
         public override string Key => "ContextMenu_FindAllReferences";
-        public override int DisplayOrder => (int) CodePaneContextMenuItemDisplayOrder.FindAllReferences;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {
             return state != null && Command.CanExecute(null);
         }
+    }
+
+
+    public class FindAllReferencesCommandMenuItem : FindAllReferencesCommandMenuItemBase
+    {
+        public FindAllReferencesCommandMenuItem(FindAllReferencesCommand command)
+            : base(command)
+        {}
+        
+        public override int DisplayOrder => (int)CodePaneContextMenuItemDisplayOrder.FindAllReferences;
+    }
+
+
+    public class ProjectExplorerFindAllReferencesCommandMenuItem : FindAllReferencesCommandMenuItemBase
+    {
+        public ProjectExplorerFindAllReferencesCommandMenuItem(FindAllReferencesCommand command)
+            : base(command)
+        {}
+
+        public override int DisplayOrder => (int)ProjectExplorerContextMenuItemDisplayOrder.FindAllReferences;
     }
 }

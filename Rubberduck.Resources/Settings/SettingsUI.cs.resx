@@ -231,4 +231,10 @@
   <data name="HotKeys_Exclamation" xml:space="preserve">
     <value>Pozor! Chybí modifikátor!</value>
   </data>
+  <data name="FilesHeader_IgnoredProjectsSettings" xml:space="preserve">
+    <value>Ignorované Soubory</value>
+  </data>
+  <data name="PageHeader_IgnoredProjectsSettings" xml:space="preserve">
+    <value>Ignorované Projekty</value>
+  </data>
 </root>

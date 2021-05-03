@@ -141,7 +141,7 @@
     <value>Der Rückgabewert der Funktion '{0}' wird immer verworfen.</value>
   </data>
   <data name="AssignedByValParameterInspection" xml:space="preserve">
-    <value>Der Parameter '{0}' wird als byVal übergeben und bekommt ienen Wert zugesiesen.</value>
+    <value>Der Parameter '{0}' wird als byVal übergeben und bekommt einen Wert zugewiesen.</value>
   </data>
   <data name="IdentifierNotUsedInspection" xml:space="preserve">
     <value>{0} '{1}' wird nicht genutzt.</value>
@@ -240,7 +240,7 @@
     <value>Ausdruck '{0}' kann zur Kompilierzeit nicht validiert werden.</value>
   </data>
   <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
-    <value>Member '{0}' ist auf dem Interface für '{1}' nicht deklariert.</value>
+    <value>Element'{0}' ist auf dem Interface für '{1}' nicht deklariert.</value>
   </data>
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>Komponente '{0}' verwendet 'Option Base 0'.</value>
@@ -256,9 +256,6 @@
   </data>
   <data name="EmptyIfBlockInspection" xml:space="preserve">
     <value>'If'-Block enthält keine ausführbaren Anweisungen.</value>
-  </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Die Annotation '{0}' ist in diesem Kontext nicht erlaubt.</value>
   </data>
   <data name="RedundantOptionInspection" xml:space="preserve">
     <value>'{0}' hat keine Auswirkung.</value>
@@ -366,7 +363,7 @@
     <value>Zeilenfortsetzungszeichen an unerwarteten Orten.</value>
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
-    <value>Der Bezeichner '{0}' enthält eine geschütztes Leerzeichen.</value>
+    <value>Der Bezeichner '{0}' enthält ein geschütztes Leerzeichen.</value>
   </data>
   <data name="ThunderCode_Base" xml:space="preserve">
     <value>{0}
@@ -396,13 +393,13 @@ In Memoriam, 1972-2018</value>
     <value>Die Interface-Klasse '{2}' enthält eine Implementierung für die  {0} '{1}'.</value>
   </data>
   <data name="ValueRequiredInspection" xml:space="preserve">
-    <value>An einer Stelle, die einen Wert verlangt, wird der Ausdruck '{0}' vom Objekttyp '{1}'  verwendet, der keinen passendes Standardmember hat.</value>
+    <value>An einer Stelle, die einen Wert verlangt, wird der Ausdruck '{0}' vom Objekttyp '{1}'  verwendet, der keinen passendes Standardelement hat.</value>
   </data>
   <data name="ProcedureRequiredInspection" xml:space="preserve">
-    <value>An einer Stelle, die eine Prozedur erfordert, wird der Ausdruck '{0}' vom Objekttyp '{1}'  verwendet, der keinen passendes Standardmember hat.</value>
+    <value>An einer Stelle, die eine Prozedur erfordert, wird der Ausdruck '{0}' vom Objekttyp '{1}'  verwendet, der keinen passendes Standardelement hat.</value>
   </data>
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
-    <value>Der Ausdruck '{0}' erfordert einen Standardmemberzugriff, aber der Typ '{1}' hat keinen passenden Standardmember.</value>
+    <value>Der Ausdruck '{0}' erfordert einen Standardelementzugriff, aber der Typ '{1}' hat kein passendes Standardelement.</value>
   </data>
   <data name="UseOfBangNotationInspection" xml:space="preserve">
     <value>Der Ausdruck '{0}' verwendet Ausrufezeichennotation.</value>
@@ -414,28 +411,28 @@ In Memoriam, 1972-2018</value>
     <value>Der Ausdruck '{0}' verwendet nicht gebundene Ausrufezeichennotation.</value>
   </data>
   <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
-    <value>Der Ausdruck '{0}' wird an einer Stelle verwendet, die nach einer Prozedur verlangt, was zu einem Aufruf des Standardmembers '{1}' führt.</value>
+    <value>Der Ausdruck '{0}' wird an einer Stelle verwendet, die nach einer Prozedur verlangt, was zu einem Aufruf des Standardelements '{1}' führt.</value>
   </data>
   <data name="ObjectWhereProcedureIsRequiredInspection_Unbound" xml:space="preserve">
-    <value>Der Ausdruck '{0}' wird an einer Stelle verwendet, die nach einer Prozedur verlangt, was zu einem Aufruf eines Standardmembers führt, welcher erst zur Laufzeit bestimmt werden kann.</value>
+    <value>Der Ausdruck '{0}' wird an einer Stelle verwendet, die nach einer Prozedur verlangt, was zu einem Aufruf eines Standardelements führt, welcher erst zur Laufzeit bestimmt werden kann.</value>
   </data>
   <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Der Ausdruck '{0}' enthält einen parametrisierten Zugriff auf den Standardmember '{1}'.</value>
+    <value>Der Ausdruck '{0}' enthält einen parametrisierten Zugriff auf das Standardelement '{1}'.</value>
   </data>
   <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Der Ausdruck '{0}' enthält einen parametrisierten rekursiven Standardmemberzugriff auf '{1}'.</value>
+    <value>Der Ausdruck '{0}' enthält einen parametrisierten rekursiven Standardelementzugriff auf '{1}'.</value>
   </data>
   <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Der Ausdruck '{0}' enthält einen parametrisierten nicht gebundenen Standardmemberzugriff.</value>
+    <value>Der Ausdruck '{0}' enthält einen parametrisierten nicht gebundenen Standardelementzugriff.</value>
   </data>
   <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Für den Ausdruck '{0}' kommt es zu einem impliziten Zugriff auf den Standardmember '{1}'.</value>
+    <value>Für den Ausdruck '{0}' kommt es zu einem impliziten Zugriff auf das Standardelement '{1}'.</value>
   </data>
   <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Für den Ausdruck '{0}' kommt es zu einem impliziten rekursiven Standardmemberzugriff auf '{1}'.</value>
+    <value>Für den Ausdruck '{0}' kommt es zu einem impliziten rekursiven Standardelementzugriff auf '{1}'.</value>
   </data>
   <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Für den Ausdruck '{0}' kommt es zu einem impliziten nicht gebundenen Standardmemberzugriff.</value>
+    <value>Für den Ausdruck '{0}' kommt es zu einem impliziten nicht gebundenen Standardelementzugriff.</value>
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Es wird vom Standardmember des Resultats des Ausdrucks '{1}' dem des Resultats des Ausdrucks '{0}' zugewiesen.</value>
@@ -466,5 +463,26 @@ In Memoriam, 1972-2018</value>
   </data>
   <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
     <value>Die Annotation '{0}' erwartet weniger Argumente.</value>
+  </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>Element '{0}' referenziert implizit auf das umgebende Workbook-Modul.</value>
+  </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>Element '{0}' referenziert implizit auf das umgebende Worksheet-Modul.</value>
+  </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>Irreführender ByRef Modifizierer für den Parameter '{0}' ({1}) benutzt.</value>
+  </data>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Die Annotation '{0}' ist in diesem Kontext nicht zulässig.</value>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>'{0}' ist keine von Rubberduck unterstützte Annotation</value>
+  </data>
+  <data name="InvalidAnnotationInspection_NotInRequiredComponentType" xml:space="preserve">
+    <value>Die Annotation '{0}' wurde in einer Komponente des Typs '{1}' verwendet, kann aber nur in Komponenten des Typs '{2}' verwendet werden.</value>
+  </data>
+  <data name="InvalidAnnotationInspection_IncompatibleComponentType" xml:space="preserve">
+    <value>Die Annotation '{0}' kann nicht in einer Komponente des Typs '{1}' verwendet werden.</value>
   </data>
 </root>

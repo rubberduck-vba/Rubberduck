@@ -17,13 +17,26 @@ namespace RubberduckTests.Inspections
         [TestCase("Sub Foo(arg1 As Integer, ByRef arg2 As Date)\r\nEnd Sub", 1)]
         [TestCase("Sub Foo(ParamArray arg1 As Integer)\r\nEnd Sub", 0)]
         [Category("QuickFixes")]
+        [Category(nameof(ImplicitByRefModifierInspection))]
         public void ImplicitByRefModifier_SimpleScenarios(string inputCode, int expectedCount)
+        {
+            Assert.AreEqual(expectedCount, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [TestCase("Property Let Fizz(RHS As Integer)\r\nEnd Property", 0)]
+        [TestCase("Property Set Fizz(RHS As Object)\r\nEnd Property", 0)]
+        [TestCase("Property Let Fizz(index As Integer, RHS As Integer)\r\nEnd Property", 1)]
+        [TestCase("Property Set Fizz(index As Integer, RHS As Object)\r\nEnd Property", 1)]
+        [Category("QuickFixes")]
+        [Category(nameof(ImplicitByRefModifierInspection))]
+        public void ImplicitByRefModifier_PropertyMutatorRHSParameter(string inputCode, int expectedCount)
         {
             Assert.AreEqual(expectedCount, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
         [Category("QuickFixes")]
+        [Category(nameof(ImplicitByRefModifierInspection))]
         public void ImplicitByRefModifier_ReturnsResult_InterfaceImplementation()
         {
             const string inputCode1 =
@@ -47,6 +60,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        [Category(nameof(ImplicitByRefModifierInspection))]
         public void ImplicitByRefModifier_ReturnsResult_MultipleInterfaceImplementations()
         {
             const string inputCode1 =
@@ -77,6 +91,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        [Category(nameof(ImplicitByRefModifierInspection))]
         public void ImplicitByRefModifier_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -86,8 +101,30 @@ End Sub";
             Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
+        [TestCase(@"Public Declare PtrSafe Sub LibProcedure Lib ""MyLib""(arg As Long)", "LibProcedure 2000")]
+        [TestCase(@"Public Declare PtrSafe Function LibProcedure Lib ""MyLib""(arg As Long) As Long", "test = LibProcedure(2000)")]
+        [Category("QuickFixes")]
+        [Category(nameof(ImplicitByRefModifierInspection))]
+        public void ImplicitByRefModifier_IgnoresDeclareStatement(string declareStatement, string libraryCall)
+        {
+            var inputCode =
+$@"
+Option Explicit
+
+Private test As Long
+
+{declareStatement}
+
+Public Sub CallTheLib()
+    {libraryCall}
+End Sub";
+
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
         [Test]
         [Category("QuickFixes")]
+        [Category(nameof(ImplicitByRefModifierInspection))]
         public void InspectionName()
         {
             var inspection = new ImplicitByRefModifierInspection(null);

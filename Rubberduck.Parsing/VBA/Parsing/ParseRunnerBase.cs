@@ -41,14 +41,14 @@ namespace Rubberduck.Parsing.VBA.Parsing
         {
             var parsingStageTimer = ParsingStageTimer.StartNew();
 
-            var parseResults = ModulePareResults(modules, token);
+            var parseResults = ModuleParseResults(modules, token);
             SaveModuleParseResultsOnState(parseResults, token);
 
             parsingStageTimer.Stop();
             parsingStageTimer.Log("Parsed user modules in {0}ms.");
         }
 
-        protected abstract IReadOnlyCollection<(QualifiedModuleName module, ModuleParseResults results)> ModulePareResults(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token);
+        protected abstract IReadOnlyCollection<(QualifiedModuleName module, ModuleParseResults results)> ModuleParseResults(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token);
 
         protected ModuleParseResults ModuleParseResults(QualifiedModuleName module, CancellationToken token)
         {
@@ -102,7 +102,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
             _state.SetAttributesTokenStream(module, results.AttributesTokenStream);
 
             // This really needs to go last
-            //It does not reevaluate the overall parer state to avoid concurrent evaluation of all module states and for performance reasons.
+            //It does not reevaluate the overall parser state to avoid concurrent evaluation of all module states and for performance reasons.
             //The evaluation has to be triggered manually in the calling procedure.
             StateManager.SetModuleState(module, ParserState.Parsed, token,false); //Note that this is ok because locks allow re-entrancy.
         }
