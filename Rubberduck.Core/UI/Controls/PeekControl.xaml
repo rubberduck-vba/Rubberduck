@@ -10,9 +10,6 @@
        mc:Ignorable="d"
        MinWidth="350" MaxWidth="550"
        MinHeight="140" MaxHeight="450">
-    <UserControl.InputBindings>
-        <KeyBinding Key="Escape" Command="{Binding CloseCommand}" />
-    </UserControl.InputBindings>
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
