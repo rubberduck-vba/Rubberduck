@@ -54,6 +54,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             var node = parameter as ICodeExplorerNode;
             var declaration = parameter as Declaration;
+            var reference = parameter as CodeExplorerReferenceViewModel;
 
             if (_state.Status != ParserState.Ready || node == null && declaration == null)
             {
@@ -67,13 +68,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            if (!(node.Parent.Declaration is ProjectDeclaration))
+            if (reference != null && !(node.Parent.Declaration is ProjectDeclaration))
             {
                 Logger.Error($"The specified ICodeExplorerNode expected to be a direct child of a node whose declaration is a ProjectDeclaration.");
                 return;
             }
 
-            if (node.Parent?.Declaration is ProjectDeclaration projectDeclaration && node is CodeExplorerReferenceViewModel reference)
+            if (node.Parent?.Declaration is ProjectDeclaration projectDeclaration && reference != null)
             {
                 if (!(reference.Reference is ReferenceModel model))
                 {
