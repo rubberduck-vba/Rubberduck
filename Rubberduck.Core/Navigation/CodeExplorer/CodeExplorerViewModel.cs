@@ -60,6 +60,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CodeExplorerViewModel(
             RubberduckParserState state,
             RemoveCommand removeCommand,
+            PeekDefinitionNavigateCommand peekNavigateCommand,
             IConfigurationService<GeneralSettings> generalSettingsProvider, 
             IConfigurationService<WindowSettings> windowSettingsProvider, 
             IUiDispatcher uiDispatcher,
@@ -453,8 +454,11 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CommandBase CollapseAllCommand { get; }
         public CommandBase ExpandAllCommand { get; }
+
         public CommandBase PeekDefinitionCommand { get; }
         public CommandBase ClosePeekDefinitionCommand { get; }
+        public PeekDefinitionFindAllReferencesCommand PeekFindReferencesCommand { get; set; }
+        public PeekDefinitionNavigateCommand PeekNavigateCommand { get; set; }
 
         private bool _showPeekDefinitionPopup;
         public bool ShowPeekDefinitionPopup
@@ -488,11 +492,11 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             if (param is ICodeExplorerNode node)
             {
-                PeekDefinitionViewModel = new PeekDefinitionViewModel(node, this.FindAllReferencesCommand, this.OpenCommand, this.ClosePeekDefinitionCommand, _state);
+                PeekDefinitionViewModel = new PeekDefinitionViewModel(node, PeekFindReferencesCommand, PeekNavigateCommand, ClosePeekDefinitionCommand, _state);
             }
             else if (param is Declaration declaration)
             {
-                PeekDefinitionViewModel = new PeekDefinitionViewModel(declaration, this.FindAllReferencesCommand, this.OpenCommand, this.ClosePeekDefinitionCommand, _state);
+                PeekDefinitionViewModel = new PeekDefinitionViewModel(declaration, PeekFindReferencesCommand, PeekNavigateCommand, ClosePeekDefinitionCommand, _state);
             }
             else
             {
@@ -504,7 +508,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ExecuteClosePeekDefinitionCommand(object param) => ShowPeekDefinitionPopup = false;
 
-        private bool CanExecutePeekDefinitionCommand(object param) => SelectedItem is CodeExplorerMemberViewModel;
+        private bool CanExecutePeekDefinitionCommand(object param) => SelectedItem is CodeExplorerMemberViewModel || SelectedItem is CodeExplorerComponentViewModel;
 
         public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
         {

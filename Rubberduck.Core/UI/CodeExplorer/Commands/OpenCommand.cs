@@ -33,25 +33,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool EvaluateCanExecute(object parameter)
         {
-            return parameter is Declaration || ((parameter as CodeExplorerItemViewModel)?.QualifiedSelection.HasValue ?? false);
+            return (parameter as CodeExplorerItemViewModel)?.QualifiedSelection.HasValue ?? false;
         }
 
         protected override void OnExecute(object parameter)
         {
-            if (!CanExecute(parameter))
+            if (parameter is CodeExplorerItemViewModel item && item.QualifiedSelection.HasValue)
             {
-                return;
+                _openCommand.Execute(item.QualifiedSelection.Value.GetNavitationArgs());
             }
-
-            if (parameter is Declaration declaration)
-            {
-                // command was invoked from PeekDefinition popup
-                _openCommand.Execute(declaration.QualifiedSelection.GetNavitationArgs());
-                return;
-            }
-
-            // ReSharper disable once PossibleInvalidOperationException - tested above.
-            _openCommand.Execute(((CodeExplorerItemViewModel)parameter).QualifiedSelection.Value.GetNavitationArgs());
         }
     }
 }

@@ -4,7 +4,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.ComCommands
 {
@@ -13,10 +12,10 @@ namespace Rubberduck.UI.Command.ComCommands
     /// </summary>
     public class PeekDefinitionCommand : ComCommandBase
     {
-        public PeekDefinitionCommand(CodeExplorerDockablePresenter codeExplorer, IVbeEvents vbeEvents, ISelectedDeclarationProvider selection)
+        public PeekDefinitionCommand(IPeekDefinitionPopupProvider provider, IVbeEvents vbeEvents, ISelectedDeclarationProvider selection)
             : base(vbeEvents)
         {
-            PopupProvider = (codeExplorer.UserControl as CodeExplorerWindow)?.ViewModel;
+            PopupProvider = provider;
             SelectedDeclarationProvider = selection;
             AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
@@ -53,8 +52,8 @@ namespace Rubberduck.UI.Command.ComCommands
 
     public class ProjectExplorerPeekDefinitionCommand : PeekDefinitionCommand
     {
-        public ProjectExplorerPeekDefinitionCommand(CodeExplorerDockablePresenter codeExplorer, IVbeEvents vbeEvents, ISelectedDeclarationProvider selection)
-            : base(codeExplorer, vbeEvents, selection)
+        public ProjectExplorerPeekDefinitionCommand(IPeekDefinitionPopupProvider provider, IVbeEvents vbeEvents, ISelectedDeclarationProvider selection)
+            : base(provider, vbeEvents, selection)
         {}
 
         protected override void OnExecute(object parameter)

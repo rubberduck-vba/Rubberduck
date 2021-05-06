@@ -63,6 +63,7 @@ using Rubberduck.UI.Refactorings.AnnotateDeclaration;
 using Rubberduck.Refactoring.ParseTreeValue;
 using System.IO.Abstractions;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.UI.Command.ComCommands;
 
 namespace Rubberduck.Root
 {
@@ -151,11 +152,18 @@ namespace Rubberduck.Root
             container.Register(Component.For<CodeExplorerViewModel>()
                 .LifestyleSingleton());
 
+            container.Register(Component.For<IPeekDefinitionPopupProvider>()
+                .Forward(typeof(CodeExplorerViewModel))
+                .Named("PeekDefinitionPopupProvider")
+            );
+
+
             container.Register(Component.For<TestExplorerModel>()
                 .LifestyleSingleton());
             container.Register(Component.For<IVBEInteraction>()
                 .ImplementedBy<VBEInteraction>()
                 .LifestyleSingleton());
+
 
             RegisterSettingsViewModel(container);
             RegisterRefactoringPreviewProviders(container);

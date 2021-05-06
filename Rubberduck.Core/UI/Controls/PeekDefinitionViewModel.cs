@@ -27,9 +27,7 @@ namespace Rubberduck.UI.Controls
             ICommand closeCommand,
             IParseTreeProvider parseTrees)
         :this(node.Declaration, findReferencesCommand, navigateCommand, closeCommand, parseTrees)
-        {
-            NavigateCommandParameter = node;
-        }
+        {}
 
         public PeekDefinitionViewModel(Declaration target,
             ICommand findReferencesCommand, 
@@ -40,7 +38,6 @@ namespace Rubberduck.UI.Controls
             _parseTrees = parseTrees;
             FindReferencesCommand = findReferencesCommand;
             NavigateCommand = navigateCommand;
-            NavigateCommandParameter = target;
             CloseCommand = closeCommand;
             Target = target;
         }
@@ -122,19 +119,5 @@ namespace Rubberduck.UI.Controls
         public ICommand FindReferencesCommand { get; }
 
         public ICommand NavigateCommand { get; }
-
-        private object _navigateCommandParameter;
-        public object NavigateCommandParameter
-        {
-            get => _navigateCommandParameter;
-            set
-            {
-                if (_navigateCommandParameter != value)
-                {
-                    _navigateCommandParameter = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
     }
 }
