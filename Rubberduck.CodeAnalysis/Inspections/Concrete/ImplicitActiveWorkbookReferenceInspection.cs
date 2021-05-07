@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.CodeAnalysis.Inspections.Attributes;
@@ -45,46 +44,37 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         public ImplicitActiveWorkbookReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider) { }
 
-        private IReadOnlyList<Declaration> _applicationCandidates;
-
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            var qualifiers = base.GetQualifierCandidates(reference, finder);
-            var isQualified = qualifiers.Any();
-            var document = Declaration.GetModuleParent(reference.ParentNonScoping) as DocumentModuleDeclaration;
-
-            var isHostWorkbook = (document?.SupertypeNames.Contains("Workbook") ?? false)
-                && (document?.ProjectId?.Equals(reference.QualifiedModuleName.ProjectId) ?? false);
-
+            var isQualified = reference.QualifyingReference != null;
             if (!isQualified)
             {
+                var document = Declaration.GetModuleParent(reference.ParentNonScoping) as DocumentModuleDeclaration;
+
+                var isHostWorkbook = (document?.SupertypeNames.Contains("Workbook") ?? false)
+                                     && (document?.ProjectId?.Equals(reference.QualifiedModuleName.ProjectId) ?? false);
+
                 // unqualified calls aren't referring to ActiveWorkbook only inside a Workbook module:
                 return !isHostWorkbook;
             }
-            else
+
+            if (reference.QualifyingReference.Declaration == null)
             {
-                if (_applicationCandidates == null)
-                {
-                    var applicationClass = finder.FindClassModule("Application", base.Excel, includeBuiltIn: true);
-                    // note: underscored declarations would be for unqualified calls
-                    var workbookClass = finder.FindClassModule("Workbook", base.Excel, includeBuiltIn: true);
-                    var worksheetClass = finder.FindClassModule("Worksheet", base.Excel, includeBuiltIn: true);
-                    var hostBook = finder.UserDeclarations(DeclarationType.Document)
-                        .Cast<DocumentModuleDeclaration>()
-                        .SingleOrDefault(doc => doc.ProjectId.Equals(reference.QualifiedModuleName.ProjectId)
-                            && doc.SupertypeNames.Contains("Workbook"));
-
-                    _applicationCandidates = finder.MatchName("Application")
-                        .Where(m => m.Equals(applicationClass) 
-                        || (m.ParentDeclaration.Equals(workbookClass) && m.DeclarationType.HasFlag(DeclarationType.PropertyGet))
-                        || (m.ParentDeclaration.Equals(worksheetClass) && m.DeclarationType.HasFlag(DeclarationType.PropertyGet))
-                        || (m.ParentDeclaration.Equals(hostBook) && m.DeclarationType.HasFlag(DeclarationType.PropertyGet)))
-                        .ToList();
-                }
-
-                // qualified calls are referring to ActiveWorkbook if qualifier is the Application object:
-                return _applicationCandidates.Any(candidate => qualifiers.Any(q => q.Equals(candidate)));
+                //This should really only happen on unbound member calls and then the current reference would also be unbound.
+                //So, if we end up here, we have no idea and bail out.
+                return false;
             }
+
+            var excelProjectId = Excel(finder).ProjectId;
+            var applicationCandidates = finder.MatchName("Application")
+                .Where(m =>  m.ProjectId.Equals(excelProjectId) 
+                             && ( m.DeclarationType == DeclarationType.PropertyGet 
+                                || m.DeclarationType == DeclarationType.ClassModule));
+
+            var qualifyingDeclaration = reference.QualifyingReference.Declaration;
+
+            // qualified calls are referring to ActiveWorkbook if qualifier is the Application object:
+            return applicationCandidates.Any(candidate => qualifyingDeclaration.Equals(candidate));
         }
 
         protected override string ResultDescription(IdentifierReference reference)

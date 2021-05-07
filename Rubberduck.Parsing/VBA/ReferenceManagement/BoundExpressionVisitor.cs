@@ -29,7 +29,20 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             Visit(boundExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
         }
 
-        private void Visit(
+        /// <summary>
+        /// Traverses the tree of expressions and adds identifier references to the referenced declarations.
+        /// It returns the reference that another directly depended reference would relate to, e.g. if that reference is a member access. 
+        /// </summary>
+        /// <param name="boundExpression"></param>
+        /// <param name="module"></param>
+        /// <param name="scope"></param>
+        /// <param name="parent"></param>
+        /// <param name="isAssignmentTarget"></param>
+        /// <param name="hasExplicitLetStatement"></param>
+        /// <param name="isSetAssignment"></param>
+        /// <param name="hasArrayAccess"></param>
+        /// <returns>The reference in an expression a member or array access on it would refer to.</returns>
+        private IdentifierReference Visit(
             IBoundExpression boundExpression,
             QualifiedModuleName module,
             Declaration scope,
@@ -42,65 +55,49 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             switch (boundExpression)
             {
                 case SimpleNameExpression simpleNameExpression:
-                    Visit(simpleNameExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
-                    break;
+                    return Visit(simpleNameExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
                 case MemberAccessExpression memberAccessExpression:
-                    Visit(memberAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
-                    break;
+                    return Visit(memberAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
                 case IndexExpression indexExpression:
-                    Visit(indexExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
-                    break;
+                    return Visit(indexExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
                 case ParenthesizedExpression parenthesizedExpression:
-                    Visit(parenthesizedExpression, module, scope, parent);
-                    break;
+                    return Visit(parenthesizedExpression, module, scope, parent);
                 case LiteralExpression literalExpression:
-                    break;
+                    return null;
                 case BinaryOpExpression binaryOpExpression:
-                    Visit(binaryOpExpression, module, scope, parent);
-                    break;
+                    return Visit(binaryOpExpression, module, scope, parent);
                 case UnaryOpExpression unaryOpExpression:
-                    Visit(unaryOpExpression, module, scope, parent);
-                    break;
+                    return Visit(unaryOpExpression, module, scope, parent);
                 case NewExpression newExpression:
-                    Visit(newExpression, module, scope, parent);
-                    break;
+                    return Visit(newExpression, module, scope, parent);
                 case InstanceExpression instanceExpression:
-                    Visit(instanceExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
-                    break;
+                    return Visit(instanceExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
                 case DictionaryAccessExpression dictionaryAccessExpression:
-                    Visit(dictionaryAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
-                    break;
+                    return Visit(dictionaryAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
                 case TypeOfIsExpression typeOfIsExpression:
-                    Visit(typeOfIsExpression, module, scope, parent);
-                    break;
+                    return Visit(typeOfIsExpression, module, scope, parent);
                 case ResolutionFailedExpression resolutionFailedExpression:
-                    Visit(resolutionFailedExpression, module, scope, parent);
-                    break;
+                    return Visit(resolutionFailedExpression, module, scope, parent);
                 case BuiltInTypeExpression builtInTypeExpression:
-                    break;
+                    return null;
                 case RecursiveDefaultMemberAccessExpression recursiveDefaultMemberAccessExpression:
-                    Visit(recursiveDefaultMemberAccessExpression, module, scope, parent, hasExplicitLetStatement, hasArrayAccess);
-                    break;
+                    return Visit(recursiveDefaultMemberAccessExpression, module, scope, parent, hasExplicitLetStatement, hasArrayAccess);
                 case LetCoercionDefaultMemberAccessExpression letCoercionDefaultMemberAccessExpression:
-                    Visit(letCoercionDefaultMemberAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
-                    break;
+                    return Visit(letCoercionDefaultMemberAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
                 case ProcedureCoercionExpression procedureCoercionExpression:
-                    Visit(procedureCoercionExpression, module, scope, parent);
-                    break;
+                    return Visit(procedureCoercionExpression, module, scope, parent);
                 case MissingArgumentExpression missingArgumentExpression:
-                    break;
+                    return null;
                 case OutputListExpression outputListExpression:
-                    Visit(outputListExpression, module, scope, parent);
-                    break;
+                    return Visit(outputListExpression, module, scope, parent);
                 case ObjectPrintExpression objectPrintExpression:
-                    Visit(objectPrintExpression, module, scope, parent);
-                    break;
+                    return Visit(objectPrintExpression, module, scope, parent);
                 default:
                     throw new NotSupportedException($"Unexpected bound expression type {boundExpression.GetType()}");
             }
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             ResolutionFailedExpression expression,
             QualifiedModuleName module,
             Declaration scope,
@@ -111,9 +108,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             {
                 Visit(successfullyResolvedExpression, module, scope, parent);
             }
+
+            return null;
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             SimpleNameExpression expression,
             QualifiedModuleName module,
             Declaration scope,
@@ -126,7 +125,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             var callee = expression.ReferencedDeclaration;
             var identifier = WithEnclosingBracketsRemoved(callSiteContext.GetText());
             var selection = callSiteContext.GetSelection();
-            expression.ReferencedDeclaration.AddReference(
+            return expression.ReferencedDeclaration.AddReference(
                 module,
                 scope,
                 parent,
@@ -145,7 +144,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             return _declarationFinder.FindAnnotations(module, line, AnnotationTarget.Identifier);
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             MemberAccessExpression expression,
             QualifiedModuleName module,
             Declaration scope,
@@ -154,19 +153,19 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool hasExplicitLetStatement,
             bool isSetAssignment)
         {
-            Visit(expression.LExpression, module, scope, parent);
+            var qualifyingReference = Visit(expression.LExpression, module, scope, parent);
             
             // Expressions could be unbound thus not have a referenced declaration. The lexpression might still be bindable though.
             if (expression.Classification == ExpressionClassification.Unbound)
             {
-                return;
+                return null;
             }
 
             var callSiteContext = expression.UnrestrictedNameContext;
             var callee = expression.ReferencedDeclaration;
             var identifier = WithEnclosingBracketsRemoved(callSiteContext.GetText());
             var selection = callSiteContext.GetSelection();
-            expression.ReferencedDeclaration.AddReference(
+            return expression.ReferencedDeclaration.AddReference(
                 module,
                 scope,
                 parent,
@@ -177,7 +176,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 FindIdentifierAnnotations(module, selection.StartLine),
                 isAssignmentTarget,
                 hasExplicitLetStatement,
-                isSetAssignment);
+                isSetAssignment,
+                qualifyingReference: qualifyingReference);
         }
 
         private static string WithEnclosingBracketsRemoved(string identifierName)
@@ -190,7 +190,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             return identifierName;
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             ObjectPrintExpression expression,
             QualifiedModuleName module,
             Declaration scope,
@@ -203,9 +203,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             }
 
             Visit(expression.PrintMethodExpressions, module, scope, parent);
+
+            return null;
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             OutputListExpression expression,
             QualifiedModuleName module,
             Declaration scope,
@@ -215,9 +217,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             {
                 Visit(itemExpression, module, scope, parent);
             }
+
+            return null;
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             IndexExpression expression,
             QualifiedModuleName module,
             Declaration scope,
@@ -226,52 +230,6 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool hasExplicitLetStatement,
             bool isSetAssignment)
         {
-            var containedExpression = expression.ContainedDefaultMemberRecursionExpression;
-            if (containedExpression != null)
-            {
-                Visit(containedExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement, hasArrayAccess: expression.IsArrayAccess);
-            }
-
-            if (expression.IsDefaultMemberAccess)
-            {
-                Visit(expression.LExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
-
-                switch (expression.Classification)
-                {
-                    case ExpressionClassification.ResolutionFailed:
-                        AddFailedIndexedDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, expression.ArgumentList.HasArguments);
-                        break;
-                    case ExpressionClassification.Unbound:
-                        AddUnboundDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
-                        break;
-                    default:
-                        if (expression.ReferencedDeclaration != null)
-                        {
-                            AddDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
-                        }
-
-                        break;
-                }
-            }
-            else if (expression.Classification != ExpressionClassification.Unbound
-                && expression.IsArrayAccess
-                && expression.ReferencedDeclaration != null)
-            {
-                Visit(expression.LExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
-                AddArrayAccessReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
-            }
-            else if (expression.Classification == ExpressionClassification.Unbound
-                     && expression.ReferencedDeclaration == null)
-            {
-                Visit(expression.LExpression, module, scope, parent);
-            }
-            else
-            {
-                // Index expressions are a bit special in that they can refer to parameterized properties and functions.
-                // In that case, the reference goes to the property or function. So, we pass on the assignment flags.
-                Visit(expression.LExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
-            }
-
             // Argument lists are not affected by the resolution of the target of the index expression.
             foreach (var argument in expression.ArgumentList.Arguments)
             {
@@ -289,6 +247,56 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     Visit(argument.NamedArgumentExpression, module, scope, parent);
                 }
             }
+
+            if (expression.IsDefaultMemberAccess)
+            {
+                var qualifyingReference = Visit(expression.LExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
+
+                var containedExpression = expression.ContainedDefaultMemberRecursionExpression;
+                if (containedExpression != null)
+                {
+                    qualifyingReference = Visit(containedExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement, hasArrayAccess: expression.IsArrayAccess, initialQualifyingReference: qualifyingReference);
+                }
+
+                switch (expression.Classification)
+                {
+                    case ExpressionClassification.ResolutionFailed:
+                        return AddFailedIndexedDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, expression.ArgumentList.HasArguments, qualifyingReference);
+                    case ExpressionClassification.Unbound:
+                        return AddUnboundDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment, qualifyingReference);
+                    default:
+                        return expression.ReferencedDeclaration != null 
+                            ? AddDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment, qualifyingReference) 
+                            : null;
+                }
+            }
+            
+            if (expression.Classification != ExpressionClassification.Unbound
+                && expression.IsArrayAccess
+                && expression.ReferencedDeclaration != null)
+            {
+                var qualifyingReference = Visit(expression.LExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
+                
+                //The final default member might not have parameters and return an array.
+                var containedExpression = expression.ContainedDefaultMemberRecursionExpression;
+                if (containedExpression != null)
+                {
+                    qualifyingReference = Visit(containedExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement, hasArrayAccess: expression.IsArrayAccess, initialQualifyingReference: qualifyingReference);
+                }
+
+                return AddArrayAccessReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment, qualifyingReference);
+            }
+            
+            if (expression.Classification == ExpressionClassification.Unbound
+                     && expression.ReferencedDeclaration == null)
+            {
+                Visit(expression.LExpression, module, scope, parent);
+                return null;
+            }
+
+            // Index expressions are a bit special in that they can refer to parameterized properties and functions.
+            // In that case, the reference goes to the property or function. So, we pass on the assignment flags.
+            return Visit(expression.LExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
         }
 
         private void AddArgumentReference(
@@ -314,20 +322,21 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 FindIdentifierAnnotations(module, argumentSelection.StartLine));
         }
 
-        private void AddArrayAccessReference(
+        private IdentifierReference AddArrayAccessReference(
             IndexExpression expression, 
             QualifiedModuleName module, 
             Declaration scope,
             Declaration parent, 
             bool isAssignmentTarget, 
             bool hasExplicitLetStatement, 
-            bool isSetAssignment)
+            bool isSetAssignment,
+            IdentifierReference qualifyingReference)
         {
             var callSiteContext = expression.Context;
             var identifier = callSiteContext.GetText();
             var selection = callSiteContext.GetSelection();
             var callee = expression.ReferencedDeclaration;
-            expression.ReferencedDeclaration.AddReference(
+            return expression.ReferencedDeclaration.AddReference(
                 module,
                 scope,
                 parent,
@@ -339,23 +348,25 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isSetAssignment,
-                isArrayAccess: true);
+                isArrayAccess: true,
+                qualifyingReference: qualifyingReference);
         }
 
-        private void AddDefaultMemberReference(
+        private IdentifierReference AddDefaultMemberReference(
             IndexExpression expression, 
             QualifiedModuleName module, 
             Declaration scope,
             Declaration parent, 
             bool isAssignmentTarget,
             bool hasExplicitLetStatement,
-            bool isSetAssignment)
+            bool isSetAssignment,
+            IdentifierReference qualifyingReference)
         {
             var callSiteContext = expression.LExpression.Context;
             var identifier = expression.Context.GetText();
             var selection = callSiteContext.GetSelection();
             var callee = expression.ReferencedDeclaration;
-            expression.ReferencedDeclaration.AddReference(
+            return expression.ReferencedDeclaration.AddReference(
                 module,
                 scope,
                 parent,
@@ -368,17 +379,19 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 hasExplicitLetStatement,
                 isSetAssignment,
                 isIndexedDefaultMemberAccess: true,
-                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
+                qualifyingReference: qualifyingReference);
         }
 
-        private void AddUnboundDefaultMemberReference(
+        private IdentifierReference AddUnboundDefaultMemberReference(
             IndexExpression expression,
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent,
             bool isAssignmentTarget,
             bool hasExplicitLetStatement,
-            bool isSetAssignment)
+            bool isSetAssignment,
+            IdentifierReference qualifyingReference)
         {
             var callSiteContext = expression.LExpression.Context;
             var identifier = expression.Context.GetText();
@@ -397,18 +410,21 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 FindIdentifierAnnotations(module, selection.StartLine),
                 isSetAssignment,
                 isIndexedDefaultMemberAccess: true,
-                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
+                qualifyingReference: qualifyingReference);
             _declarationFinder.AddUnboundDefaultMemberAccess(reference);
+            return reference;
         }
 
-        private void AddFailedIndexedDefaultMemberReference(
+        private IdentifierReference AddFailedIndexedDefaultMemberReference(
             IndexExpression expression,
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent,
             bool isAssignmentTarget,
             bool hasExplicitLetStatement,
-            bool hasArguments)
+            bool hasArguments,
+            IdentifierReference qualifyIdentifierReference)
         {
             var callSiteContext = expression.Context;
             var identifier = callSiteContext.GetText();
@@ -428,11 +444,13 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 false,
                 isIndexedDefaultMemberAccess: hasArguments,
                 isNonIndexedDefaultMemberAccess: !hasArguments,
-                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
+                qualifyingReference: qualifyIdentifierReference);
             _declarationFinder.AddFailedIndexedDefaultMemberResolution(reference);
+            return reference;
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             DictionaryAccessExpression expression,
             QualifiedModuleName module,
             Declaration scope,
@@ -441,32 +459,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool hasExplicitLetStatement,
             bool isSetAssignment)
         {
-            Visit(expression.LExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
-
-            var containedExpression = expression.ContainedDefaultMemberRecursionExpression;
-            if (containedExpression != null)
-            {
-                Visit(containedExpression, module, scope, parent, hasExplicitLetStatement);
-            }
-
-            switch (expression.Classification)
-            {
-                case ExpressionClassification.ResolutionFailed:
-                    AddFailedIndexedDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
-                    break;
-                case ExpressionClassification.Unbound:
-                    AddUnboundDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
-                    break;
-                default:
-                    if (expression.ReferencedDeclaration != null)
-                    {
-                        AddDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
-                    }
-
-                    break;
-            }
-
-            // Argument List not affected by being unbound.
+            // Argument List not affected by the resolution of the dictionary access.
             foreach (var argument in expression.ArgumentList.Arguments)
             {
                 if (argument.ReferencedParameter != null)
@@ -483,19 +476,40 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     Visit(argument.NamedArgumentExpression, module, scope, parent);
                 }
             }
+
+            var qualifyingReference = Visit(expression.LExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
+
+            var containedExpression = expression.ContainedDefaultMemberRecursionExpression;
+            if (containedExpression != null)
+            {
+                qualifyingReference = Visit(containedExpression, module, scope, parent, hasExplicitLetStatement, false, qualifyingReference);
+            }
+
+            switch (expression.Classification)
+            {
+                case ExpressionClassification.ResolutionFailed:
+                    return AddFailedIndexedDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, qualifyingReference);
+                case ExpressionClassification.Unbound:
+                    return AddUnboundDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+                default:
+                    return expression.ReferencedDeclaration != null 
+                        ? AddDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment, qualifyingReference) 
+                        : null;
+            }
         }
 
-        private void AddDefaultMemberReference(
+        private IdentifierReference AddDefaultMemberReference(
             ProcedureCoercionExpression expression,
             QualifiedModuleName module,
             Declaration scope,
-            Declaration parent)
+            Declaration parent,
+            IdentifierReference qualifyingReference)
         {
             var callSiteContext = expression.Context;
             var identifier = callSiteContext.GetText();
             var selection = callSiteContext.GetSelection();
             var callee = expression.ReferencedDeclaration;
-            expression.ReferencedDeclaration.AddReference(
+            return expression.ReferencedDeclaration.AddReference(
                 module,
                 scope,
                 parent,
@@ -506,14 +520,16 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 FindIdentifierAnnotations(module, selection.StartLine),
                 isNonIndexedDefaultMemberAccess: true,
                 defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
-                isProcedureCoercion: true);
+                isProcedureCoercion: true,
+                qualifyingReference: qualifyingReference);
         }
 
-        private void AddUnboundDefaultMemberReference(
+        private IdentifierReference AddUnboundDefaultMemberReference(
             ProcedureCoercionExpression expression,
             QualifiedModuleName module,
             Declaration scope,
-            Declaration parent)
+            Declaration parent,
+            IdentifierReference qualifyingReference)
         {
             var callSiteContext = expression.Context;
             var identifier = callSiteContext.GetText();
@@ -533,44 +549,56 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 false,
                 isNonIndexedDefaultMemberAccess: true,
                 defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
-                isProcedureCoercion: true);
+                isProcedureCoercion: true,
+                qualifyingReference: qualifyingReference);
             _declarationFinder.AddUnboundDefaultMemberAccess(reference);
+            return reference;
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             RecursiveDefaultMemberAccessExpression expression,
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent,
             bool hasExplicitLetStatement,
-            bool hasArrayAccess)
+            bool hasArrayAccess,
+            IdentifierReference initialQualifyingReference)
         {
             var containedExpression = expression.ContainedDefaultMemberRecursionExpression;
-            if (containedExpression != null)
-            {
-                Visit(containedExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
-            }
+            var qualifyingReference = containedExpression == null
+                ? initialQualifyingReference
+                : Visit(
+                    containedExpression, 
+                    module, 
+                    scope, 
+                    parent, 
+                    hasExplicitLetStatement,
+                    false, 
+                    initialQualifyingReference);
 
             if (expression.Classification != ExpressionClassification.Unbound
                 && expression.ReferencedDeclaration != null)
             {
-                AddDefaultMemberReference(expression, module, parent, scope, hasExplicitLetStatement, !hasArrayAccess);
+                return AddDefaultMemberReference(expression, module, parent, scope, hasExplicitLetStatement, !hasArrayAccess, qualifyingReference);
             }
+
+            return null;
         }
 
-        private void AddDefaultMemberReference(
+        private IdentifierReference AddDefaultMemberReference(
             RecursiveDefaultMemberAccessExpression expression,
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent,
             bool hasExplicitLetStatement,
-            bool isInnerRecursiveDefaultMemberAccess)
+            bool isInnerRecursiveDefaultMemberAccess,
+            IdentifierReference qualifyingReference)
         {
             var callSiteContext = expression.Context;
             var identifier = callSiteContext.GetText();
             var selection = callSiteContext.GetSelection();
             var callee = expression.ReferencedDeclaration;
-            expression.ReferencedDeclaration.AddReference(
+            return expression.ReferencedDeclaration.AddReference(
                 module,
                 scope,
                 parent,
@@ -582,16 +610,18 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 hasExplicitLetStatement: hasExplicitLetStatement,
                 isNonIndexedDefaultMemberAccess: true,
                 defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
-                isInnerRecursiveDefaultMemberAccess: isInnerRecursiveDefaultMemberAccess);
+                isInnerRecursiveDefaultMemberAccess: isInnerRecursiveDefaultMemberAccess,
+                qualifyingReference: qualifyingReference);
         }
 
-        private void AddFailedIndexedDefaultMemberReference(
+        private IdentifierReference AddFailedIndexedDefaultMemberReference(
             DictionaryAccessExpression expression,
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent,
             bool isAssignmentTarget,
-            bool hasExplicitLetStatement)
+            bool hasExplicitLetStatement,
+            IdentifierReference qualifyingReference)
         {
             var callSiteContext = expression.Context;
             var identifier = callSiteContext.GetText();
@@ -610,11 +640,13 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 FindIdentifierAnnotations(module, selection.StartLine),
                 false,
                 isIndexedDefaultMemberAccess: true,
-                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
+                qualifyingReference: qualifyingReference);
             _declarationFinder.AddFailedIndexedDefaultMemberResolution(reference);
+            return reference;
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             LetCoercionDefaultMemberAccessExpression expression,
             QualifiedModuleName module,
             Declaration scope,
@@ -622,45 +654,41 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false)
         {
+            var qualifyingReference = Visit(expression.WrappedExpression, module, scope, parent);
+
             var containedExpression = expression.ContainedDefaultMemberRecursionExpression;
             if (containedExpression != null)
             {
-                Visit(containedExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
+                qualifyingReference = Visit(containedExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement, false, qualifyingReference);
             }
-
-            Visit(expression.WrappedExpression, module, scope, parent);
 
             switch (expression.Classification)
             {
                 case ExpressionClassification.ResolutionFailed:
-                    AddFailedLetCoercionReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
-                    break;
+                    return AddFailedLetCoercionReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, qualifyingReference);
                 case ExpressionClassification.Unbound:
-                    AddUnboundDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
-                    break;
+                    return AddUnboundDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, qualifyingReference);
                 default:
-                    if (expression.ReferencedDeclaration != null)
-                    {
-                        AddDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
-                    }
-
-                    break;
+                    return expression.ReferencedDeclaration != null
+                        ? AddDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, qualifyingReference)
+                        : null;
             }
         }
 
-        private void AddDefaultMemberReference(
+        private IdentifierReference AddDefaultMemberReference(
             LetCoercionDefaultMemberAccessExpression expression,
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent,
             bool isAssignmentTarget,
-            bool hasExplicitLetStatement)
+            bool hasExplicitLetStatement,
+            IdentifierReference qualifyingReference)
         {
             var callSiteContext = expression.Context;
             var identifier = callSiteContext.GetText();
             var selection = callSiteContext.GetSelection();
             var callee = expression.ReferencedDeclaration;
-            expression.ReferencedDeclaration.AddReference(
+            return expression.ReferencedDeclaration.AddReference(
                 module,
                 scope,
                 parent,
@@ -672,16 +700,18 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isNonIndexedDefaultMemberAccess: true,
-                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
+                qualifyingReference: qualifyingReference);
         }
 
-        private void AddUnboundDefaultMemberReference(
+        private IdentifierReference AddUnboundDefaultMemberReference(
             LetCoercionDefaultMemberAccessExpression expression,
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent,
             bool isAssignmentTarget,
-            bool hasExplicitLetStatement)
+            bool hasExplicitLetStatement,
+            IdentifierReference qualifyingReference)
         {
             var callSiteContext = expression.Context;
             var identifier = callSiteContext.GetText();
@@ -700,17 +730,20 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 FindIdentifierAnnotations(module, selection.StartLine),
                 false,
                 isNonIndexedDefaultMemberAccess: true,
-                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
+                qualifyingReference: qualifyingReference);
             _declarationFinder.AddUnboundDefaultMemberAccess(reference);
+            return reference; 
         }
 
-        private void AddFailedLetCoercionReference(
+        private IdentifierReference AddFailedLetCoercionReference(
             LetCoercionDefaultMemberAccessExpression expression,
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent,
             bool isAssignmentTarget,
-            bool hasExplicitLetStatement)
+            bool hasExplicitLetStatement,
+            IdentifierReference qualifyingReference)
         {
             var callSiteContext = expression.Context;
             var identifier = callSiteContext.GetText();
@@ -729,50 +762,52 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 FindIdentifierAnnotations(module, selection.StartLine),
                 false,
                 isNonIndexedDefaultMemberAccess: true,
-                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
+                qualifyingReference: qualifyingReference);
             _declarationFinder.AddFailedLetCoercionReference(reference);
+            return reference;
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             ProcedureCoercionExpression expression,
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent)
         {
-            Visit(expression.WrappedExpression, module, scope, parent);
+            var qualifyingReference = Visit(expression.WrappedExpression, module, scope, parent);
 
+            //Although a procedure reference should never qualify anything, it does not hurt to return the reference here.
             switch (expression.Classification)
             {
                 case ExpressionClassification.ResolutionFailed:
-                    AddFailedProcedureCoercionReference(expression, module, scope, parent);
-                    break;
+                    return AddFailedProcedureCoercionReference(expression, module, scope, parent, qualifyingReference);
                 case ExpressionClassification.Unbound:
-                    AddUnboundDefaultMemberReference(expression, module, scope, parent);
-                    break;
+                    return AddUnboundDefaultMemberReference(expression, module, scope, parent, qualifyingReference);
                 default:
                     if (expression.ReferencedDeclaration != null)
                     {
-                        AddDefaultMemberReference(expression, module, scope, parent);
+                        return AddDefaultMemberReference(expression, module, scope, parent, qualifyingReference);
                     }
 
-                    break;
+                    return null;
             }
         }
 
-        private void AddDefaultMemberReference(
+        private IdentifierReference AddDefaultMemberReference(
             DictionaryAccessExpression expression,
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent,
             bool isAssignmentTarget,
             bool hasExplicitLetStatement,
-            bool isSetAssignment)
+            bool isSetAssignment,
+            IdentifierReference qualifyingReference)
         {
             var callSiteContext = expression.DefaultMemberContext;
             var identifier = expression.Context.GetText();
             var callee = expression.ReferencedDeclaration;
             var selection = callSiteContext.GetSelection();
-            expression.ReferencedDeclaration.AddReference(
+            return expression.ReferencedDeclaration.AddReference(
                 module,
                 scope,
                 parent,
@@ -785,10 +820,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 hasExplicitLetStatement,
                 isSetAssignment,
                 isIndexedDefaultMemberAccess: true,
-                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
+                qualifyingReference: qualifyingReference);
         }
 
-        private void AddUnboundDefaultMemberReference(
+        private IdentifierReference AddUnboundDefaultMemberReference(
             DictionaryAccessExpression expression,
             QualifiedModuleName module,
             Declaration scope,
@@ -816,13 +852,15 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 isIndexedDefaultMemberAccess: true,
                 defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
             _declarationFinder.AddUnboundDefaultMemberAccess(reference);
+            return reference;
         }
 
-        private void AddFailedProcedureCoercionReference(
+        private IdentifierReference AddFailedProcedureCoercionReference(
             ProcedureCoercionExpression expression,
             QualifiedModuleName module,
             Declaration scope,
-            Declaration parent)
+            Declaration parent,
+            IdentifierReference qualifyingReference)
         {
             var callSiteContext = expression.Context;
             var identifier = callSiteContext.GetText();
@@ -841,11 +879,13 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 FindIdentifierAnnotations(module, selection.StartLine),
                 false,
                 isNonIndexedDefaultMemberAccess: true,
-                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
+                qualifyingReference: qualifyingReference);
             _declarationFinder.AddFailedProcedureCoercionReference(reference);
+            return reference;
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             NewExpression expression,
             QualifiedModuleName module,
             Declaration scope,
@@ -854,18 +894,19 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             // We don't need to add a reference to the NewExpression's referenced declaration since that's covered
             // with its TypeExpression.
             Visit(expression.TypeExpression, module, scope, parent);
+            return null;
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             ParenthesizedExpression expression,
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent)
         {
-            Visit(expression.Expression, module, scope, parent);
+            return Visit(expression.Expression, module, scope, parent);
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             TypeOfIsExpression expression,
             QualifiedModuleName module,
             Declaration scope,
@@ -873,9 +914,10 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         {
             Visit(expression.Expression, module, scope, parent);
             Visit(expression.TypeExpression, module, scope, parent);
+            return null;
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             BinaryOpExpression expression,
             QualifiedModuleName module,
             Declaration scope,
@@ -883,18 +925,20 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         {
             Visit(expression.Left, module, scope, parent);
             Visit(expression.Right, module, scope, parent);
+            return null;
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             UnaryOpExpression expression,
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent)
         {
             Visit(expression.Expr, module, scope, parent);
+            return null;
         }
 
-        private void Visit(
+        private IdentifierReference Visit(
             InstanceExpression expression,
             QualifiedModuleName module,
             Declaration scope,
@@ -907,7 +951,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             var identifier = expression.Context.GetText();
             var selection = callSiteContext.GetSelection();
             var callee = expression.ReferencedDeclaration;
-            expression.ReferencedDeclaration.AddReference(
+            return expression.ReferencedDeclaration.AddReference(
                 module,
                 scope,
                 parent,

@@ -7374,5 +7374,720 @@ End Property
                 Assert.AreEqual(4, undeclared.Count);
             }
         }
+
+        [Category("Resolver")]
+        [Test]
+        public void SavesQualifyingReferenceForWithMemberAccess()
+        {
+            var classCode = @"
+Public Function Bar() As Variant
+End Function
+";
+
+            var moduleCode = @"
+Private Sub Baz()
+    Dim foo As Class1
+    Dim fooBar As Variant
+    Set foo = New Class1
+    With foo
+        fooBar = .Bar()
+    End With
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule),
+                ("Class1", classCode, ComponentType.ClassModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+                
+                var classModule = finder.UserDeclarations(DeclarationType.ClassModule).Single();
+                var barDeclaration = finder.Members(classModule.QualifiedModuleName, DeclarationType.Function).Single();
+                var barReference = barDeclaration.References.Single();
+
+                var module = finder.UserDeclarations(DeclarationType.ProceduralModule).Single();
+                var fooDeclaration = finder.Members(module.QualifiedModuleName, DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("foo"));
+                var fooReference = fooDeclaration.References.Single(reference => !reference.IsAssignment);
+
+                var barReferenceQualifyingReferenceSelectionSelection = barReference.QualifyingReference.Selection;
+                var fooReferenceSelection = fooReference.Selection;
+
+                Assert.AreEqual(fooReferenceSelection, barReferenceQualifyingReferenceSelectionSelection);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void SavesQualifyingReferenceForMemberAccess()
+        {
+            var classCode = @"
+Public Function Bar() As Variant
+End Function
+";
+
+            var moduleCode = @"
+Private Sub Baz()
+    Dim foo As Class1
+    Dim fooBar As Variant
+    Set foo = New Class1
+    fooBar = foo.Bar()
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule),
+                ("Class1", classCode, ComponentType.ClassModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var classModule = finder.UserDeclarations(DeclarationType.ClassModule).Single();
+                var barDeclaration = finder.Members(classModule.QualifiedModuleName, DeclarationType.Function).Single();
+                var barReference = barDeclaration.References.Single();
+
+                var module = finder.UserDeclarations(DeclarationType.ProceduralModule).Single();
+                var fooDeclaration = finder.Members(module.QualifiedModuleName, DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("foo"));
+                var fooReference = fooDeclaration.References.Single(reference => !reference.IsAssignment);
+
+                var barReferenceQualifyingReferenceSelectionSelection = barReference.QualifyingReference.Selection;
+                var fooReferenceSelection = fooReference.Selection;
+
+                Assert.AreEqual(fooReferenceSelection, barReferenceQualifyingReferenceSelectionSelection);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void MemberAccessQualifiesSubsequentMemberAccess()
+        {
+            var classCode = @"
+Public Function Bar() As Variant
+End Function
+
+Public Property Get Foo() As Class1
+End Property
+";
+
+            var moduleCode = @"
+Private Sub Baz()
+    Dim cls As Class1
+    Dim fooBar As Variant
+    Set cls = New Class1
+    fooBar = cls.Foo.Bar()
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule),
+                ("Class1", classCode, ComponentType.ClassModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var classModule = finder.UserDeclarations(DeclarationType.ClassModule).Single();
+                var barDeclaration = finder.Members(classModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("Bar"));
+                var barReference = barDeclaration.References.Single();
+
+                var fooDeclaration = finder.Members(classModule.QualifiedModuleName, DeclarationType.PropertyGet).Single();
+                var fooReference = fooDeclaration.References.Single();
+
+                var barReferenceQualifyingReferenceSelectionSelection = barReference.QualifyingReference.Selection;
+                var fooReferenceSelection = fooReference.Selection;
+
+                Assert.AreEqual(fooReferenceSelection, barReferenceQualifyingReferenceSelectionSelection);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void MemberAccessesOnFunctionReturnValuesAreQualifiedByTheFunction()
+        {
+            var classCode = @"
+Public Function Bar() As Variant
+End Function
+
+Public Function Foo(ByVal arg As Long) As Class1
+End Function
+";
+
+            var moduleCode = @"
+Private Sub Baz()
+    Dim cls As Class1
+    Dim fooBar As Variant
+    Set cls = New Class1
+    fooBar = cls.Foo(42).Bar()
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule),
+                ("Class1", classCode, ComponentType.ClassModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var classModule = finder.UserDeclarations(DeclarationType.ClassModule).Single();
+                var barDeclaration = finder.Members(classModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("Bar"));
+                var barReference = barDeclaration.References.Single();
+
+                var fooDeclaration = finder.Members(classModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("Foo"));
+                var fooReference = fooDeclaration.References.Single();
+
+                var barReferenceQualifyingReferenceSelectionSelection = barReference.QualifyingReference.Selection;
+                var fooReferenceSelection = fooReference.Selection;
+
+                Assert.AreEqual(fooReferenceSelection, barReferenceQualifyingReferenceSelectionSelection);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void MemberAccessesOnArrayElementsAreQualifiedByTheArrayAccessReference()
+        {
+            var classCode = @"
+Public Function Bar() As Variant
+End Function
+";
+
+            var moduleCode = @"
+Private Sub Baz()
+    Dim foo(0 To 1) As Class1
+    Dim fooBar As Variant
+    Set foo(0) = New Class1
+    fooBar = foo(0).Bar()
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule),
+                ("Class1", classCode, ComponentType.ClassModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var classModule = finder.UserDeclarations(DeclarationType.ClassModule).Single();
+                var barDeclaration = finder.Members(classModule.QualifiedModuleName, DeclarationType.Function).Single();
+                var barReference = barDeclaration.References.Single();
+
+                var module = finder.UserDeclarations(DeclarationType.ProceduralModule).Single();
+                var fooDeclaration = finder.Members(module.QualifiedModuleName, DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("foo"));
+                var fooReference = fooDeclaration.References.Single(reference => !reference.IsAssignment && reference.IsArrayAccess);
+
+                var barReferenceQualifyingReferenceSelectionSelection = barReference.QualifyingReference.Selection;
+                var fooReferenceSelection = fooReference.Selection;
+
+                Assert.AreEqual(fooReferenceSelection, barReferenceQualifyingReferenceSelectionSelection);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void ArrayAccessesAreQualifiedByTheArrayReference()
+        {
+            var classCode = @"
+Public Function Bar() As Variant
+End Function
+";
+
+            var moduleCode = @"
+Private Sub Baz
+    Dim foo(0 To 1) As Class1
+    Dim fooBar As Variant
+    Set foo(0) = New Class1
+    fooBar = foo(0).Bar()
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule),
+                ("Class1", classCode, ComponentType.ClassModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var module = finder.UserDeclarations(DeclarationType.ProceduralModule).Single();
+                var fooDeclaration = finder.Members(module.QualifiedModuleName, DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("foo"));
+                var fooReference = fooDeclaration.References.Single(reference => !reference.IsArrayAccess && reference.Selection.StartLine == 6);
+                var fooAccessReference = fooDeclaration.References.Single(reference => !reference.IsAssignment && reference.IsArrayAccess);
+
+                var barReferenceQualifyingReferenceSelectionSelection = fooAccessReference.QualifyingReference.Selection;
+                var fooReferenceSelection = fooReference.Selection;
+
+                Assert.AreEqual(fooReferenceSelection, barReferenceQualifyingReferenceSelectionSelection);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void MemberAccessesOnDefaultMemberReturnValuesAreQualifiedByTheDefaultMemberCallReference()
+        {
+            var classCode = @"
+Public Function Bar() As Variant
+End Function
+";
+            var defaultMemberClassCode = @"
+Public Function DefaultMember(ByVal arg As Long) As Class1
+Attribute DefaultMember.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = @"
+Private Sub Baz()
+    Dim foo As DefaultMemberClass
+    Dim fooBar As Variant
+    Set foo = New DefaultMemberClass
+    fooBar = foo(0).Bar()
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule),
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("DefaultMemberClass", defaultMemberClassCode, ComponentType.ClassModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var classModule = finder.UserDeclarations(DeclarationType.ClassModule).Single(declaration => declaration.IdentifierName.Equals("Class1"));
+                var barDeclaration = finder.Members(classModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("Bar"));
+                var barReference = barDeclaration.References.Single();
+
+                var defaultMemberClassModule = finder.UserDeclarations(DeclarationType.ClassModule).Single(declaration => declaration.IdentifierName.Equals("DefaultMemberClass"));
+                var defaultMemberDeclaration = finder.Members(defaultMemberClassModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("DefaultMember"));
+                var defaultMemberReference = defaultMemberDeclaration.References.Single();
+
+                var barReferenceQualifyingReferenceSelectionSelection = barReference.QualifyingReference.Selection;
+                var defaultMemberReferenceSelection = defaultMemberReference.Selection;
+
+                Assert.AreEqual(defaultMemberReferenceSelection, barReferenceQualifyingReferenceSelectionSelection);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void MemberAccessesOnRecursiveDefaultMemberReturnValuesAreQualifiedByTheFinalDefaultMemberCallReference()
+        {
+            var classCode = @"
+Public Function Bar() As Variant
+End Function
+";
+            var defaultMemberClassCode = @"
+Public Function DefaultMember(ByVal arg As Long) As Class1
+Attribute DefaultMember.VB_UserMemId = 0
+End Function
+";
+            var innerDefaultMemberClassCode = @"
+Public Function DefaultMember() As DefaultMemberClass
+Attribute DefaultMember.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = @"
+Private Sub Baz()
+    Dim foo As InnerDefaultMemberClass
+    Dim fooBar As Variant
+    Set foo = New InnerDefaultMemberClass
+    fooBar = foo(0).Bar()
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule),
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("DefaultMemberClass", defaultMemberClassCode, ComponentType.ClassModule),
+                ("InnerDefaultMemberClass", innerDefaultMemberClassCode, ComponentType.ClassModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var classModule = finder.UserDeclarations(DeclarationType.ClassModule).Single(declaration => declaration.IdentifierName.Equals("Class1"));
+                var barDeclaration = finder.Members(classModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("Bar"));
+                var barReference = barDeclaration.References.Single();
+
+                var defaultMemberClassModule = finder.UserDeclarations(DeclarationType.ClassModule).Single(declaration => declaration.IdentifierName.Equals("DefaultMemberClass"));
+                var defaultMemberDeclaration = finder.Members(defaultMemberClassModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("DefaultMember"));
+                var defaultMemberReference = defaultMemberDeclaration.References.Single();
+
+                var barReferenceQualifyingReferenceSelectionSelection = barReference.QualifyingReference.Selection;
+                var defaultMemberReferenceSelection = defaultMemberReference.Selection;
+
+                Assert.AreEqual(defaultMemberReferenceSelection, barReferenceQualifyingReferenceSelectionSelection);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void RecursiveDefaultMemberAccessesAreQualifiedByThePreviousDefaultMemberCallReference()
+        {
+            var classCode = @"
+Public Function Bar() As Variant
+End Function
+";
+            var defaultMemberClassCode = @"
+Public Function DefaultMember(ByVal arg As Long) As Class1
+Attribute DefaultMember.VB_UserMemId = 0
+End Function
+";
+            var innerDefaultMemberClassCode = @"
+Public Function DefaultMember() As DefaultMemberClass
+Attribute DefaultMember.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = @"
+Private Sub Baz()
+    Dim foo As InnerDefaultMemberClass
+    Dim fooBar As Variant
+    Set foo = New InnerDefaultMemberClass
+    fooBar = foo(0).Bar()
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule),
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("DefaultMemberClass", defaultMemberClassCode, ComponentType.ClassModule),
+                ("InnerDefaultMemberClass", innerDefaultMemberClassCode, ComponentType.ClassModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var innerDefaultMemberClassModule = finder.UserDeclarations(DeclarationType.ClassModule).Single(declaration => declaration.IdentifierName.Equals("InnerDefaultMemberClass"));
+                var innerDefaultMemberDeclaration = finder.Members(innerDefaultMemberClassModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("DefaultMember"));
+                var innerDefaultMemberReference = innerDefaultMemberDeclaration.References.Single();
+
+                var defaultMemberClassModule = finder.UserDeclarations(DeclarationType.ClassModule).Single(declaration => declaration.IdentifierName.Equals("DefaultMemberClass"));
+                var defaultMemberDeclaration = finder.Members(defaultMemberClassModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("DefaultMember"));
+                var defaultMemberReference = defaultMemberDeclaration.References.Single();
+
+                var defaultMemberQualifyingReference = defaultMemberReference.QualifyingReference;
+
+                Assert.AreEqual(innerDefaultMemberReference, defaultMemberQualifyingReference);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void FirstRecursiveDefaultMemberAccessesAreQualifiedByTheVariableHavingTheFirstDefaultMember()
+        {
+            var classCode = @"
+Public Function Bar() As Variant
+End Function
+";
+            var defaultMemberClassCode = @"
+Public Function DefaultMember(ByVal arg As Long) As Class1
+Attribute DefaultMember.VB_UserMemId = 0
+End Function
+";
+            var innerDefaultMemberClassCode = @"
+Public Function DefaultMember() As DefaultMemberClass
+Attribute DefaultMember.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = @"
+Private Sub Baz
+    Dim foo As InnerDefaultMemberClass
+    Dim fooBar As Variant
+    Set foo = New InnerDefaultMemberClass
+    fooBar = foo(0).Bar()
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule),
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("DefaultMemberClass", defaultMemberClassCode, ComponentType.ClassModule),
+                ("InnerDefaultMemberClass", innerDefaultMemberClassCode, ComponentType.ClassModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var innerDefaultMemberClassModule = finder.UserDeclarations(DeclarationType.ClassModule).Single(declaration => declaration.IdentifierName.Equals("InnerDefaultMemberClass"));
+                var innerDefaultMemberDeclaration = finder.Members(innerDefaultMemberClassModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("DefaultMember"));
+                var innerDefaultMemberReference = innerDefaultMemberDeclaration.References.Single();
+
+                var module = finder.UserDeclarations(DeclarationType.ProceduralModule).Single();
+                var fooDeclaration = finder.Members(module.QualifiedModuleName, DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("foo"));
+                var fooReference = fooDeclaration.References.Single(reference => !reference.IsAssignment);
+
+                var innerDefaultMemberReferenceQualifyingReferenceSelectionSelection = innerDefaultMemberReference.QualifyingReference.Selection;
+                var fooReferenceSelection = fooReference.Selection;
+
+                Assert.AreEqual(fooReferenceSelection, innerDefaultMemberReferenceQualifyingReferenceSelectionSelection);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void MemberAccessesOnDictionaryAccessReturnValuesAreQualifiedByTheDefaultMemberCallReference()
+        {
+            var classCode = @"
+Public Function Bar() As Variant
+End Function
+";
+            var defaultMemberClassCode = @"
+Public Function DefaultMember(ByVal arg As String) As Class1
+Attribute DefaultMember.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = @"
+Private Sub Baz()
+    Dim foo As DefaultMemberClass
+    Dim fooBar As Variant
+    Set foo = New DefaultMemberClass
+    fooBar = foo!something.Bar()
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule),
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("DefaultMemberClass", defaultMemberClassCode, ComponentType.ClassModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var classModule = finder.UserDeclarations(DeclarationType.ClassModule).Single(declaration => declaration.IdentifierName.Equals("Class1"));
+                var barDeclaration = finder.Members(classModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("Bar"));
+                var barReference = barDeclaration.References.Single();
+
+                var defaultMemberClassModule = finder.UserDeclarations(DeclarationType.ClassModule).Single(declaration => declaration.IdentifierName.Equals("DefaultMemberClass"));
+                var defaultMemberDeclaration = finder.Members(defaultMemberClassModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("DefaultMember"));
+                var defaultMemberReference = defaultMemberDeclaration.References.Single();
+
+                var barReferenceQualifyingReferenceSelectionSelection = barReference.QualifyingReference.Selection;
+                var defaultMemberReferenceSelection = defaultMemberReference.Selection;
+
+                Assert.AreEqual(defaultMemberReferenceSelection, barReferenceQualifyingReferenceSelectionSelection);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void MemberAccessesOnRecursiveDictionaryAccessReturnValuesAreQualifiedByTheFinalDefaultMemberCallReference()
+        {
+            var classCode = @"
+Public Function Bar() As Variant
+End Function
+";
+            var defaultMemberClassCode = @"
+Public Function DefaultMember(ByVal arg As String) As Class1
+Attribute DefaultMember.VB_UserMemId = 0
+End Function
+";
+            var innerDefaultMemberClassCode = @"
+Public Function DefaultMember() As DefaultMemberClass
+Attribute DefaultMember.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = @"
+Private Sub Baz()
+    Dim foo As InnerDefaultMemberClass
+    Dim fooBar As Variant
+    Set foo = New InnerDefaultMemberClass
+    fooBar = foo!something.Bar()
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule),
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("DefaultMemberClass", defaultMemberClassCode, ComponentType.ClassModule),
+                ("InnerDefaultMemberClass", innerDefaultMemberClassCode, ComponentType.ClassModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var classModule = finder.UserDeclarations(DeclarationType.ClassModule).Single(declaration => declaration.IdentifierName.Equals("Class1"));
+                var barDeclaration = finder.Members(classModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("Bar"));
+                var barReference = barDeclaration.References.Single();
+
+                var defaultMemberClassModule = finder.UserDeclarations(DeclarationType.ClassModule).Single(declaration => declaration.IdentifierName.Equals("DefaultMemberClass"));
+                var defaultMemberDeclaration = finder.Members(defaultMemberClassModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("DefaultMember"));
+                var defaultMemberReference = defaultMemberDeclaration.References.Single();
+
+                var barReferenceQualifyingReferenceSelectionSelection = barReference.QualifyingReference.Selection;
+                var defaultMemberReferenceSelection = defaultMemberReference.Selection;
+
+                Assert.AreEqual(defaultMemberReferenceSelection, barReferenceQualifyingReferenceSelectionSelection);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void RecursiveDictionaryAccessesAreQualifiedByThePreviousDefaultMemberCallReference()
+        {
+            var classCode = @"
+Public Function Bar() As Variant
+End Function
+";
+            var defaultMemberClassCode = @"
+Public Function DefaultMember(ByVal arg As String) As Class1
+Attribute DefaultMember.VB_UserMemId = 0
+End Function
+";
+            var innerDefaultMemberClassCode = @"
+Public Function DefaultMember() As DefaultMemberClass
+Attribute DefaultMember.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = @"
+Private Sub Baz()
+    Dim foo As InnerDefaultMemberClass
+    Dim fooBar As Variant
+    Set foo = New InnerDefaultMemberClass
+    fooBar = foo!something.Bar()
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule),
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("DefaultMemberClass", defaultMemberClassCode, ComponentType.ClassModule),
+                ("InnerDefaultMemberClass", innerDefaultMemberClassCode, ComponentType.ClassModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var innerDefaultMemberClassModule = finder.UserDeclarations(DeclarationType.ClassModule).Single(declaration => declaration.IdentifierName.Equals("InnerDefaultMemberClass"));
+                var innerDefaultMemberDeclaration = finder.Members(innerDefaultMemberClassModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("DefaultMember"));
+                var innerDefaultMemberReference = innerDefaultMemberDeclaration.References.Single();
+
+                var defaultMemberClassModule = finder.UserDeclarations(DeclarationType.ClassModule).Single(declaration => declaration.IdentifierName.Equals("DefaultMemberClass"));
+                var defaultMemberDeclaration = finder.Members(defaultMemberClassModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("DefaultMember"));
+                var defaultMemberReference = defaultMemberDeclaration.References.Single();
+
+                var defaultMemberQualifyingReference = defaultMemberReference.QualifyingReference;
+
+                Assert.AreEqual(innerDefaultMemberReference, defaultMemberQualifyingReference);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void FirstRecursiveDictionaryAccessesAreQualifiedByTheVariableHavingTheFirstDefaultMember()
+        {
+            var classCode = @"
+Public Function Bar() As Variant
+End Function
+";
+            var defaultMemberClassCode = @"
+Public Function DefaultMember(ByVal arg As String) As Class1
+Attribute DefaultMember.VB_UserMemId = 0
+End Function
+";
+            var innerDefaultMemberClassCode = @"
+Public Function DefaultMember() As DefaultMemberClass
+Attribute DefaultMember.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = @"
+Private Sub Baz()
+    Dim foo As InnerDefaultMemberClass
+    Dim fooBar As Variant
+    Set foo = New InnerDefaultMemberClass
+    fooBar = foo!something.Bar()
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule),
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("DefaultMemberClass", defaultMemberClassCode, ComponentType.ClassModule),
+                ("InnerDefaultMemberClass", innerDefaultMemberClassCode, ComponentType.ClassModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var innerDefaultMemberClassModule = finder.UserDeclarations(DeclarationType.ClassModule).Single(declaration => declaration.IdentifierName.Equals("InnerDefaultMemberClass"));
+                var innerDefaultMemberDeclaration = finder.Members(innerDefaultMemberClassModule.QualifiedModuleName, DeclarationType.Function).Single(declaration => declaration.IdentifierName.Equals("DefaultMember"));
+                var innerDefaultMemberReference = innerDefaultMemberDeclaration.References.Single();
+
+                var module = finder.UserDeclarations(DeclarationType.ProceduralModule).Single();
+                var fooDeclaration = finder.Members(module.QualifiedModuleName, DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("foo"));
+                var fooReference = fooDeclaration.References.Single(reference => !reference.IsAssignment);
+
+                var innerDefaultMemberReferenceQualifyingReferenceSelectionSelection = innerDefaultMemberReference.QualifyingReference.Selection;
+                var fooReferenceSelection = fooReference.Selection;
+
+                Assert.AreEqual(fooReferenceSelection, innerDefaultMemberReferenceQualifyingReferenceSelectionSelection);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void SimpleVariableReferencesHaveNoQualifyingReference()
+        {
+            var moduleCode = @"
+Private Sub Baz()
+    Dim foo As Variant
+    foo = 2
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var module = finder.UserDeclarations(DeclarationType.ProceduralModule).Single();
+                var fooDeclaration = finder.Members(module.QualifiedModuleName, DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("foo"));
+                var fooReference = fooDeclaration.References.Single();
+
+                Assert.IsNull(fooReference.QualifyingReference);
+            }
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void TopLefelReferencesInArgumentsHaveNoQualifyingReference()
+        {
+            var moduleCode = @"
+Private Sub Baz()
+    Dim foo As Variant
+    foo = 2
+    Bar foo
+End Sub
+
+Private Sub Bar(ByVal arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+
+                var module = finder.UserDeclarations(DeclarationType.ProceduralModule).Single();
+                var fooDeclaration = finder.Members(module.QualifiedModuleName, DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("foo"));
+                var fooReference = fooDeclaration.References.Single(reference => !reference.IsAssignment);
+
+                Assert.IsNull(fooReference.QualifyingReference);
+            }
+        }
     }
 }
