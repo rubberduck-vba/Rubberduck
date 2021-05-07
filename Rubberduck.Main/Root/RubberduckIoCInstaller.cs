@@ -153,12 +153,6 @@ namespace Rubberduck.Root
                 .Forward<IPeekDefinitionPopupProvider>()
                 .LifestyleSingleton());
 
-            //container.Register(Component.For<IPeekDefinitionPopupProvider>()
-            //    .Forward<CodeExplorerViewModel>()
-            //    .Named("PeekDefinitionPopupProvider")
-            //    .LifestyleSingleton());
-
-
             container.Register(Component.For<TestExplorerModel>()
                 .LifestyleSingleton());
             container.Register(Component.For<IVBEInteraction>()

@@ -66,13 +66,13 @@
             <local:LinkButton Grid.Row="3" Grid.Column="1" Margin="4" HorizontalAlignment="Right"
                               Click="LinkButton_OnClick"
                               Command="{Binding  NavigateCommand}"
-                              CommandParameter="{Binding NavigateCommandParameter}">
+                              CommandParameter="{Binding Target}">
                 <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_NavigateText}" />
             </local:LinkButton>
             <local:LinkButton Grid.Row="3" Grid.Column="2" Margin="4" HorizontalAlignment="Right"
                               Click="LinkButton_OnClick"
                               Command="{Binding FindReferencesCommand}"
-                              CommandParameter="{Binding NavigateCommandParameter}">
+                              CommandParameter="{Binding Target}">
                 <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_FindAllReferencesText}" />
             </local:LinkButton>
 
