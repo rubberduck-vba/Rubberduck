@@ -1179,19 +1179,8 @@ End Sub";
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var baseRefactoring = new MoveCloserToUsageRefactoringAction(new DeleteDeclarationsRefactoringAction(state, rewritingManager, CreateIndenter()), rewritingManager);
+            var baseRefactoring = new MoveCloserToUsageRefactoringAction(new DeleteDeclarationsRefactoringAction(state, rewritingManager), rewritingManager);
             return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
-        }
-
-        private static IIndenter CreateIndenter()
-        {
-            return new Indenter(null, () =>
-            {
-                var s = IndenterSettingsTests.GetMockIndenterSettings();
-                s.VerticallySpaceProcedures = true;
-                s.LinesBetweenProcedures = 1;
-                return s;
-            });
         }
     }
 }

@@ -5,6 +5,7 @@ using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.DeleteDeclarations;
 using Rubberduck.SmartIndenter;
 using RubberduckTests.Mocks;
@@ -347,7 +348,7 @@ Public notUsed1 As Long, notUsed2 As Long, notUsed3 As Long
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var resultToFix = inspectionResults.First();
 
-                var refactoringAction = new DeleteDeclarationsRefactoringAction(state, rewritingManager, CreateIndenter());
+                var refactoringAction = new DeleteDeclarationsRefactoringAction(state, rewritingManager);
                 var quickFix = new RemoveUnusedDeclarationQuickFix(refactoringAction);
 
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
@@ -367,7 +368,7 @@ Public notUsed1 As Long, notUsed2 As Long, notUsed3 As Long
                 var inspection = inspectionFactory(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-                var refactoringAction = new DeleteDeclarationsRefactoringAction(state, rewritingManager, CreateIndenter());
+                var refactoringAction = new DeleteDeclarationsRefactoringAction(state, rewritingManager);
                 var quickFix = new RemoveUnusedDeclarationQuickFix(refactoringAction);
 
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
@@ -376,17 +377,6 @@ Public notUsed1 As Long, notUsed2 As Long, notUsed3 As Long
 
                 return component.CodeModule.Content();
             }
-        }
-
-        private static IIndenter CreateIndenter(IIndenter indenter = null)
-        {
-            return indenter ?? new Indenter(null, () =>
-            {
-                var s = IndenterSettingsTests.GetMockIndenterSettings();
-                s.VerticallySpaceProcedures = true;
-                s.LinesBetweenProcedures = 1;
-                return s;
-            });
         }
     }
 }
