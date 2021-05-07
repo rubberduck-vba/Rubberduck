@@ -508,7 +508,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ExecuteClosePeekDefinitionCommand(object param) => ShowPeekDefinitionPopup = false;
 
-        private bool CanExecutePeekDefinitionCommand(object param) => SelectedItem is CodeExplorerMemberViewModel || SelectedItem is CodeExplorerComponentViewModel;
+        private bool CanExecutePeekDefinitionCommand(object param) => param is Declaration || SelectedItem is CodeExplorerMemberViewModel || SelectedItem is CodeExplorerComponentViewModel;
 
         public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
         {
@@ -607,6 +607,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        void IPeekDefinitionPopupProvider.PeekDefinition(Declaration target) => ExecutePeekDefinitionCommand(target);
+        // IPeekDefinitionPopupProvider.PeekDefinition
+        public void PeekDefinition(Declaration target) => ExecutePeekDefinitionCommand(target);
     }
 }
