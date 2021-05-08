@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
     public class ProjectExplorerFindAllReferencesCommandMenuItem : FindAllReferencesCommandMenuItemBase
     {
-        public ProjectExplorerFindAllReferencesCommandMenuItem(FindAllReferencesCommand command)
+        public ProjectExplorerFindAllReferencesCommandMenuItem(ProjectExplorerFindAllReferencesCommand command)
             : base(command)
         {}
 

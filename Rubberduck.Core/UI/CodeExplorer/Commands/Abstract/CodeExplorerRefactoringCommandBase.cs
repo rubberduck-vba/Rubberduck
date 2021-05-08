@@ -26,13 +26,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands.Abstract
 
             _parserStatusProvider = parserStatusProvider;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
-        private bool SpecialEvaluateCanExecute(object parameter)
-        {
-            return _parserStatusProvider.Status == ParserState.Ready;
-        }
+        private bool EvaluateCanExecute(object parameter) => _parserStatusProvider.Status == ParserState.Ready;
 
         protected abstract TModel ModelFromParameter(object parameter);
         protected abstract void ValidateModel(TModel model);

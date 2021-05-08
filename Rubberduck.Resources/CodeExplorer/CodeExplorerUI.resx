@@ -461,4 +461,7 @@ Continue?</value>
   <data name="CodeExplorer_Annotate" xml:space="preserve">
     <value>Annotate</value>
   </data>
+  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+    <value>Navigate</value>
+  </data>
 </root>

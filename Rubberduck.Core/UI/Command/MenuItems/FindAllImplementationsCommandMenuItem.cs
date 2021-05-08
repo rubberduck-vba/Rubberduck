@@ -29,7 +29,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
     public class ProjectExplorerFindAllImplementationsCommandMenuItem : FindAllImplementationsCommandMenuItemBase
     {
-        public ProjectExplorerFindAllImplementationsCommandMenuItem(FindAllImplementationsCommand command)
+        public ProjectExplorerFindAllImplementationsCommandMenuItem(ProjectExplorerFindAllImplementationsCommand command)
             : base(command)
         {}
 

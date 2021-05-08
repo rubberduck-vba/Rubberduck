@@ -1709,4 +1709,10 @@ Procéder?</value>
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ignoré</value>
   </data>
+  <data name="CloseButtonText" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="PeekDefinitionCommandText" xml:space="preserve">
+    <value>Aperçu de la définition</value>
+  </data>
 </root>

@@ -30,12 +30,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _vbe = vbe;
             _projectsProvider = projectsProvider;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             if (!(parameter is CodeExplorerItemViewModel node))
             {

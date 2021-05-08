@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.CodeExplorer;
 
 namespace Rubberduck.UI.Converters
@@ -23,6 +24,12 @@ namespace Rubberduck.UI.Converters
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is Declaration)
+            {
+                // invoked from code pane peek references command (no CE node)
+                return base.Convert(value, targetType, parameter, culture);
+            }
+
             if ((value as ICodeExplorerNode)?.Declaration is null)
             {
                 return NullIconSource;

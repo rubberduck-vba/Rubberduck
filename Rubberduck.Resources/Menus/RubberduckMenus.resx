@@ -271,4 +271,7 @@
   <data name="ProjectExplorer_UnignoreProject" xml:space="preserve">
     <value>Unignore Project</value>
   </data>
+  <data name="ContextMenu_PeekDefinition" xml:space="preserve">
+    <value>Peek definition</value>
+  </data>
 </root>

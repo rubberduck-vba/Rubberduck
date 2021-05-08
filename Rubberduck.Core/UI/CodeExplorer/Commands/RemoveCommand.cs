@@ -31,12 +31,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _messageBox = messageBox;
             _vbe = vbe;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         public override IEnumerable<Type> ApplicableNodeTypes { get; } = new List<Type> { typeof(CodeExplorerComponentViewModel)};
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             return _exportCommand.CanExecute(parameter) &&
                    parameter is CodeExplorerComponentViewModel viewModel &&
