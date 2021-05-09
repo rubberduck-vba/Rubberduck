@@ -212,7 +212,7 @@
     <value>&amp;A proposito di...</value>
   </data>
   <data name="RubberduckMenu_CodeExplorer" xml:space="preserve">
-    <value>&amp;Code Explorer</value>
+    <value>Explorer del &amp;Codice</value>
   </data>
   <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
     <value>&amp;Ispezioni del Codice</value>
@@ -239,7 +239,7 @@
     <value>&amp;Impostazioni</value>
   </data>
   <data name="SmartIndenterMenu" xml:space="preserve">
-    <value>Ri&amp;entra</value>
+    <value>In&amp;denta</value>
   </data>
   <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
     <value>Metodo di Test (&amp;Errore Atteso)</value>
@@ -254,7 +254,7 @@
     <value>&amp;Esegui tutti i test</value>
   </data>
   <data name="TestMenu_TextExplorer" xml:space="preserve">
-    <value>&amp;Test Explorer</value>
+    <value>Explorer dei &amp;Test</value>
   </data>
   <data name="ToolsMenu" xml:space="preserve">
     <value>&amp;Strumenti</value>
@@ -270,5 +270,8 @@
   </data>
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
     <value>Unit &amp;Tests</value>
+  </data>
+  <data name="ContextMenu_PeekDefinition" xml:space="preserve">
+    <value>Guarda la definizione</value>
   </data>
 </root>
