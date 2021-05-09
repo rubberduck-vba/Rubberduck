@@ -235,7 +235,7 @@
     <value>Due o più progetti che contengono metodi di test hanno lo stesso nome e nomi di test identici. Rinominarne uno per continuare.</value>
   </data>
   <data name="TestExplorerWindow_Caption" xml:space="preserve">
-    <value>Esplora test</value>
+    <value>Explorer dei Test</value>
   </data>
   <data name="TestOutcome_DurationHour" xml:space="preserve">
     <value>hr</value>

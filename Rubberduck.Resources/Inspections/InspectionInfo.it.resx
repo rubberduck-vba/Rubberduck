@@ -286,7 +286,7 @@
     <value>La parola chiave 'Public' può essere utilizzata solo a livello di modulo; anche la sua controparte 'Private' può essere utilizzata solo a livello di modulo. Tuttavia, 'Dim' può essere utilizzato per dichiarare le variabili a livello sia della procedura sia del modulo. Per coerenza, sarebbe preferibile riservare 'Dim' per le variabili locali e quindi utilizzare 'Private' invece di 'Dim' a livello di modulo.</value>
   </data>
   <data name="ModuleWithoutFolderInspection" xml:space="preserve">
-    <value>I moduli senza l'annotazione '@Folder' non possono ricevere raggruppamenti personalizzati in Code Explorer.</value>
+    <value>I moduli senza l'annotazione '@Folder' non possono ricevere raggruppamenti personalizzati in Explorer del Codice.</value>
   </data>
   <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
     <value>Una variabile a livello di modulo utilizzata solo in una procedura dovrebbe essere dichiarata in quella procedura.</value>

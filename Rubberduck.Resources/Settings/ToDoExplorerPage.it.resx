@@ -121,7 +121,7 @@
     <value>Testo:</value>
   </data>
   <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>Esplora TODO</value>
+    <value>Explorer dei TODO</value>
   </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
     <value>Testo del Token:</value>

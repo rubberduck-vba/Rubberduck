@@ -354,7 +354,7 @@
     <value>Impostazione Compila su Richiesta</value>
   </data>
   <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
-    <value>Esplora Codice</value>
+    <value>Explorer del Codice</value>
   </data>
   <data name="CommandDescription_CodePaneRefactorRenameCommand" xml:space="preserve">
     <value>Refactor / Rinomina</value>
@@ -387,7 +387,7 @@
     <value>Aggiorna lo stato dell'analizzatore</value>
   </data>
   <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
-    <value>Esplora Test</value>
+    <value>Explorer dei Test</value>
   </data>
   <data name="CommonHotkey_HookAttached" xml:space="preserve">
     <value>Hook è già collegato.</value>
@@ -690,7 +690,7 @@ NOTA: è necessario un riavvio perché l'impostazione abbia effetto.</value>
     <value>Debug</value>
   </data>
   <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
-    <value>Abilità drag and drop in Esplora Codice</value>
+    <value>Abilità drag and drop in Explorer del Codice</value>
   </data>
   <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
     <value>Errore</value>
@@ -1694,7 +1694,7 @@ Importarle in Rubberduck?</value>
     <value>Sconosciuto</value>
   </data>
   <data name="TodoExplorer_Caption" xml:space="preserve">
-    <value>Todo Explorer</value>
+    <value>Explorer dei Todo</value>
   </data>
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>Copia negli appunti</value>
@@ -1728,7 +1728,7 @@ Importarle in Rubberduck?</value>
     <value>TODO</value>
   </data>
   <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>TODO Explorer</value>
+    <value>Explorer dei TODO</value>
   </data>
   <data name="TodoSettings_Text" xml:space="preserve">
     <value>Testo</value>
@@ -1781,5 +1781,11 @@ La finestra è stata visualizzata perché è abilitata la verifica di versione. 
   </data>
   <data name="Language_IT" xml:space="preserve">
     <value>Italiano</value>
+  </data>
+  <data name="CloseButtonText" xml:space="preserve">
+    <value>Chiudi</value>
+  </data>
+  <data name="PeekDefinitionCommandText" xml:space="preserve">
+    <value>Guarda la definizione</value>
   </data>
 </root>

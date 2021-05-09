@@ -331,4 +331,7 @@ Continuare?</value>
   <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
     <value>Mostra / nascondi cartelle</value>
   </data>
+  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+    <value>Naviga</value>
+  </data>
 </root>
