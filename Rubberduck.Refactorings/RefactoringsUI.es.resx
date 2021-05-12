@@ -544,4 +544,7 @@ Una clase privada puede asimismo implementar una interfaz pública.</value>
   <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
     <value>Los argumentos de anotaciones del tipo 'Número' deben ser un numero válido entero o en formato de punto flotante.</value>
   </data>
+  <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
+    <value>Los parámetros opcionales deben especificarse al final de la lista de parámetros.</value>
+  </data>
 </root>

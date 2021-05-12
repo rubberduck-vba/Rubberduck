@@ -301,9 +301,6 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Anotace Rubberducku je specifikována pro modul nebo člen, ale příslušný atribut není přítomen. Atributy modulu a anotace je třeba synchronizovat.</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Anotace, která má být specifikována na úrovni modulu, nemůže být použita k anotaci členů; anotace, které mají být členy anotací, nemohou být použity na úrovni modulu; anotace modulu a členů mohou být specifikovány pouze jednou.</value>
-  </data>
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>Toto je výchozí nastavení, není třeba jej specifikovat.</value>
   </data>

@@ -646,4 +646,44 @@ Importación cancelada.</value>
   <data name="CodeInspectionsWindowSettings_AccessKey" xml:space="preserve">
     <value>_Inspecciones de código</value>
   </data>
+  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
+    <value>Navegar al problema anterior</value>
+  </data>
+  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
+    <value>Arreglar el problema</value>
+  </data>
+  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
+    <value>Ejecutar inspecciones de código</value>
+  </data>
+  <data name="CodeInspections_Run" xml:space="preserve">
+    <value>Ejecutar inspecciones de código</value>
+  </data>
+  <data name="CodeInspections_GoToolTip" xml:space="preserve">
+    <value>Navegar al problema seleccionado</value>
+  </data>
+  <data name="CodeInspections_NextToolTip" xml:space="preserve">
+    <value>Navegar al problema siguiente</value>
+  </data>
+  <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
+    <value>{0} {1} {2} {3} {4} {5}</value>
+  </data>
+  <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
+    <value>El parámetro ParamArray debe especificarse al final.</value>
+  </data>
+  <data name="TestExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck Resultados de pruebas - {0}</value>
+  </data>
+  <data name="TodoMarkerBug" xml:space="preserve">
+    <value>BUG</value>
+  </data>
+  <data name="TodoMarkerNote" xml:space="preserve">
+    <value>NOTA</value>
+  </data>
+  <data name="TodoMarkerTodo" xml:space="preserve">
+    <value>TODO</value>
+  </data>
+  <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
+    <value>La selección no es una variable.</value>
+    <comment>Utilizado tanto en Introducir parámetro como en Introducir campo</comment>
+  </data>
 </root>

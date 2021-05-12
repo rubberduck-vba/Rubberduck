@@ -120,4 +120,13 @@
   <data name="TodoSettings_TextLabel" xml:space="preserve">
     <value>Texto:</value>
   </data>
+  <data name="TodoSettings_TokenLabel" xml:space="preserve">
+    <value>Etiqueta:</value>
+  </data>
+  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
+    <value>Lista de Etiquetas:</value>
+  </data>
+  <data name="TodoSettings_Caption" xml:space="preserve">
+    <value>Explorador TODO</value>
+  </data>
 </root>

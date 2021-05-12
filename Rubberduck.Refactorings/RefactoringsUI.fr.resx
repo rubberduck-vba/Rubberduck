@@ -541,4 +541,22 @@ Procéder?</value>
   <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
     <value>La valeur des arguments de type 'Number' doit être un nombre entier ou décimal valide.</value>
   </data>
+  <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
+    <value>Les paramètres optionels doivent être spéficiés à la fin de la liste.</value>
+  </data>
+  <data name="AnnotationArgumentType_Text" xml:space="preserve">
+    <value>Texte</value>
+  </data>
+  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
+    <value>Attribut</value>
+  </data>
+  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
+    <value>Valeur Booléenne</value>
+  </data>
+  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
+    <value>AnnotationArgumentType_Inspection</value>
+  </data>
+  <data name="AnnotationArgumentType_Number" xml:space="preserve">
+    <value>AnnotationArgumentType_Number</value>
+  </data>
 </root>

@@ -635,4 +635,40 @@ Import abgebrochen.</value>
   <data name="CodeInspectionsWindowSettings_AccessKey" xml:space="preserve">
     <value>Code _Untersuchung</value>
   </data>
+  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
+    <value>Zum vorigen Problem navigieren</value>
+  </data>
+  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
+    <value>Das Problem beheben</value>
+  </data>
+  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
+    <value>Code-Untersuchung ausführen</value>
+  </data>
+  <data name="CodeInspections_Run" xml:space="preserve">
+    <value>Code-Untersuchung ausführen</value>
+  </data>
+  <data name="CodeInspections_GoToolTip" xml:space="preserve">
+    <value>Zum ausgewählten Problem navigieren</value>
+  </data>
+  <data name="CodeInspections_NextToolTip" xml:space="preserve">
+    <value>Zum nächsten Problem navigieren</value>
+  </data>
+  <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
+    <value>{0} {1} {2} {3} {4} {5}</value>
+  </data>
+  <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
+    <value>ParamArray-Parameter muss als letztes spezifiziert werden.</value>
+  </data>
+  <data name="TodoMarkerBug" xml:space="preserve">
+    <value>BUG</value>
+  </data>
+  <data name="TodoMarkerNote" xml:space="preserve">
+    <value>NOTE</value>
+  </data>
+  <data name="TodoMarkerTodo" xml:space="preserve">
+    <value>TODO</value>
+  </data>
+  <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
+    <value>Die Auswahl ist keine Variable.</value>
+  </data>
 </root>

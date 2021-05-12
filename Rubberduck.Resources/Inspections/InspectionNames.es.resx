@@ -243,9 +243,6 @@
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>'Option Base 0' es redundante</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Anotación ilegal</value>
-  </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Falta atributo</value>
   </data>

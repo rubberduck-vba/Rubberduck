@@ -638,4 +638,40 @@ Import přerušen.</value>
   <data name="CodeInspectionsWindowSettings_AccessKey" xml:space="preserve">
     <value>_Inspekce kódu</value>
   </data>
+  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
+    <value>Navigovat na předchozí problém</value>
+  </data>
+  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
+    <value>Řešit problém</value>
+  </data>
+  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
+    <value>Spustit inspekci kódu</value>
+  </data>
+  <data name="CodeInspections_Run" xml:space="preserve">
+    <value>Spustit inspekce kódu</value>
+  </data>
+  <data name="CodeInspections_GoToolTip" xml:space="preserve">
+    <value>Navigovat na vybraný problém</value>
+  </data>
+  <data name="CodeInspections_NextToolTip" xml:space="preserve">
+    <value>Navigovat na následující problém</value>
+  </data>
+  <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
+    <value>Parametr ParamArray musí být specifikován naposled.</value>
+  </data>
+  <data name="TestExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck: Výsledky Testů - {0}</value>
+  </data>
+  <data name="TodoMarkerBug" xml:space="preserve">
+    <value>BUG</value>
+  </data>
+  <data name="TodoMarkerNote" xml:space="preserve">
+    <value>NOTE</value>
+  </data>
+  <data name="TodoMarkerTodo" xml:space="preserve">
+    <value>TODO</value>
+  </data>
+  <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
+    <value>Výběr není proměnná.</value>
+  </data>
 </root>

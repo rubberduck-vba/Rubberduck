@@ -289,6 +289,60 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Navigate to selected issue.
+        /// </summary>
+        public static string CodeInspections_GoToolTip {
+            get {
+                return ResourceManager.GetString("CodeInspections_GoToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigate to next issue.
+        /// </summary>
+        public static string CodeInspections_NextToolTip {
+            get {
+                return ResourceManager.GetString("CodeInspections_NextToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigate to previous issue.
+        /// </summary>
+        public static string CodeInspections_PreviousToolTip {
+            get {
+                return ResourceManager.GetString("CodeInspections_PreviousToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Address the issue.
+        /// </summary>
+        public static string CodeInspections_QuickFixToolTip {
+            get {
+                return ResourceManager.GetString("CodeInspections_QuickFixToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run code inspections.
+        /// </summary>
+        public static string CodeInspections_RefreshToolTip {
+            get {
+                return ResourceManager.GetString("CodeInspections_RefreshToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run code inspections.
+        /// </summary>
+        public static string CodeInspections_Run {
+            get {
+                return ResourceManager.GetString("CodeInspections_Run", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Code _Inspections.
         /// </summary>
         public static string CodeInspectionsWindowSettings_AccessKey {
@@ -648,6 +702,24 @@ namespace Rubberduck.Resources {
             get {
                 object obj = ResourceManager.GetObject("edit_size", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to parse and process the projects in the VBE..
+        /// </summary>
+        public static string EmptyUIRefreshMessage {
+            get {
+                return ResourceManager.GetString("EmptyUIRefreshMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck doesn&apos;t see anything yet..
+        /// </summary>
+        public static string EmptyUIRefreshMessage_Title {
+            get {
+                return ResourceManager.GetString("EmptyUIRefreshMessage_Title", resourceCulture);
             }
         }
         
@@ -1581,6 +1653,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ParamArray parameter must be specified last..
+        /// </summary>
+        public static string ReorderPresenter_ParamArrayError {
+            get {
+                return ResourceManager.GetString("ReorderPresenter_ParamArrayError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}. Click to refresh..
         /// </summary>
         public static string ReparseToolTipText {
@@ -1864,6 +1945,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck Test Results - {0}.
+        /// </summary>
+        public static string TestExplorer_AppendHeader {
+            get {
+                return ResourceManager.GetString("TestExplorer_AppendHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap tick_circle {
@@ -1880,6 +1970,33 @@ namespace Rubberduck.Resources {
             get {
                 object obj = ResourceManager.GetObject("tick_circle_pinned", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BUG.
+        /// </summary>
+        public static string TodoMarkerBug {
+            get {
+                return ResourceManager.GetString("TodoMarkerBug", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NOTE.
+        /// </summary>
+        public static string TodoMarkerNote {
+            get {
+                return ResourceManager.GetString("TodoMarkerNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TODO.
+        /// </summary>
+        public static string TodoMarkerTodo {
+            get {
+                return ResourceManager.GetString("TodoMarkerTodo", resourceCulture);
             }
         }
         

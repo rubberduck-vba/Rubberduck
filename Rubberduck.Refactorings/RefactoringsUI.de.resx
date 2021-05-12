@@ -565,4 +565,7 @@ Wollen Sie fortfahren?</value>
   <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
     <value>Annotationsargumente vom Typ 'Zahl' müssen eine ganze Zahl oder eine Gleitkommazahl sein.</value>
   </data>
+  <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
+    <value>Optionale Parameter müssen am Ende der Parameterliste deklariert werden.</value>
+  </data>
 </root>

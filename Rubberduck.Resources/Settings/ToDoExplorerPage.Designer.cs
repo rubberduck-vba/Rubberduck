@@ -61,11 +61,38 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to TODO Explorer.
+        /// </summary>
+        public static string TodoSettings_Caption {
+            get {
+                return ResourceManager.GetString("TodoSettings_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Text:.
         /// </summary>
         public static string TodoSettings_TextLabel {
             get {
                 return ResourceManager.GetString("TodoSettings_TextLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token Text:.
+        /// </summary>
+        public static string TodoSettings_TokenLabel {
+            get {
+                return ResourceManager.GetString("TodoSettings_TokenLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token List:.
+        /// </summary>
+        public static string TodoSettings_TokenListLabel {
+            get {
+                return ResourceManager.GetString("TodoSettings_TokenListLabel", resourceCulture);
             }
         }
     }

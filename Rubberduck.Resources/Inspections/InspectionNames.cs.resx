@@ -243,9 +243,6 @@
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>'Option Base 0' je nadbytečná</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Ilegální anotace</value>
-  </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Chybějící atribut</value>
   </data>

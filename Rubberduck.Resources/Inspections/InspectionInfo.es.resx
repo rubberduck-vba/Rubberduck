@@ -244,9 +244,6 @@ Si el parámetro puede ser nulo, ignore el resultado de esta inspección; pasar 
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>Esta es la configuración predeterminada, no es necesario especificarla.</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Una anotación que debe especificarse a nivel de módulo no se puede utilizar para anotar miembros; las anotaciones destinadas a ser miembros de anotaciones no se pueden utilizar a nivel de módulo.</value>
-  </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Se especifica una anotación de Rubberduck para un módulo o miembro, pero el atributo correspondiente no está presente. Los atributos del módulo y las anotaciones deben estar sincronizados.</value>
   </data>

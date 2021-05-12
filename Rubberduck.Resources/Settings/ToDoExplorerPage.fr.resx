@@ -120,4 +120,13 @@
   <data name="TodoSettings_TextLabel" xml:space="preserve">
     <value>Texte:</value>
   </data>
+  <data name="TodoSettings_Caption" xml:space="preserve">
+    <value>Explorateur de tâches</value>
+  </data>
+  <data name="TodoSettings_TokenLabel" xml:space="preserve">
+    <value>Texte du jeton:</value>
+  </data>
+  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
+    <value>Liste:</value>
+  </data>
 </root>

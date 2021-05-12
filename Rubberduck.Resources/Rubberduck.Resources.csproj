@@ -57,6 +57,9 @@
     <Compile Update="Settings\SettingsUI.Designer.cs">
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Update="Settings\ToDoExplorerPage.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="Settings\UnitTestingPage.Designer.cs">
       <DesignTime>True</DesignTime>
     </Compile>
