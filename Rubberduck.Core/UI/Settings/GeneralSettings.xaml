@@ -102,18 +102,18 @@
 
                     <Label Target="{Binding ElementName=minimumLogLevel}"
                            Content="{Resx ResxName=Rubberduck.UI.Settings.GeneralSettingsUI, Key=MinimumLogLevelLabel}" FontWeight="SemiBold" Margin="1,0,-1,0" />
-                        <ComboBox x:Name="minimumLogLevel"
+                    <ComboBox x:Name="minimumLogLevel"
                                   Width="210"
                                   HorizontalAlignment="Left"
                                   Margin="5"
                                   SelectedItem="{Binding SelectedLogLevel, Mode=TwoWay}"
                                   ItemsSource="{Binding LogLevels, UpdateSourceTrigger=PropertyChanged}"
                                   DisplayMemberPath="Name"/>
-                        <Button 
+                    <Button 
                             Content="{Resx ResxName=Rubberduck.UI.Settings.GeneralSettingsUI, Key=ShowLogFolder}"
                             Padding="5"
                             Command="{Binding ShowLogFolderCommand}"/>
-                    </StackPanel>
+
 
                     <DockPanel>
                         <Label DockPanel.Dock="Left" Content="{Resx ResxName=Rubberduck.UI.Settings.GeneralSettingsUI, Key=HotkeysLabel}" FontWeight="SemiBold" />
@@ -224,6 +224,7 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                </StackPanel>
             </Grid>
         </ScrollViewer>
     </Grid>
