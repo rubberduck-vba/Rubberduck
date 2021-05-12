@@ -368,4 +368,7 @@ Importation annulée.</value>
   <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
     <value>_Explorateur</value>
   </data>
+  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+    <value>Naviguer</value>
+  </data>
 </root>

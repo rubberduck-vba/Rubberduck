@@ -368,4 +368,7 @@ Import abgebrochen.</value>
   <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
     <value>Code _Explorer</value>
   </data>
+  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+    <value>Navigieren</value>
+  </data>
 </root>

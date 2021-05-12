@@ -13,10 +13,10 @@ namespace Rubberduck.Parsing.VBA
         private readonly ISelectionProvider _selectionProvider;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public SelectedDeclarationProvider(ISelectionProvider selectionProvider, IDeclarationFinderProvider declarationFinderProvider)
+        public SelectedDeclarationProvider(ISelectionProvider selectionProvider, IDeclarationFinderProvider finderProvider)
         {
             _selectionProvider = selectionProvider;
-            _declarationFinderProvider = declarationFinderProvider;
+            _declarationFinderProvider = finderProvider;
         }
 
         public Declaration SelectedDeclaration()
@@ -58,7 +58,7 @@ namespace Rubberduck.Parsing.VBA
 
         public Declaration SelectedDeclaration(QualifiedSelection qualifiedSelection)
         {
-            var finder = _declarationFinderProvider.DeclarationFinder;
+            var finder = _declarationFinderProvider?.DeclarationFinder;
 
             var candidateViaReference = SelectedDeclarationViaReference(qualifiedSelection, finder);
             if (candidateViaReference != null)
@@ -277,6 +277,13 @@ namespace Rubberduck.Parsing.VBA
                 .UserDeclarations(DeclarationType.Module)
                 .OfType<ModuleDeclaration>()
                 .FirstOrDefault(module => module.QualifiedModuleName.Equals(qualifiedSelection.QualifiedName));
+        }
+
+        public ModuleDeclaration SelectedProjectExplorerModule()
+        {
+            var moduleName = _selectionProvider.ProjectExplorerSelection();
+            return _declarationFinderProvider.DeclarationFinder?
+                .ModuleDeclaration(moduleName) as ModuleDeclaration;
         }
 
         public ProjectDeclaration SelectedProject()

@@ -649,4 +649,10 @@ Mise à jour annulée.</value>
   <data name="CodeInspectionsWindowSettings_AccessKey" xml:space="preserve">
     <value>_Inspections</value>
   </data>
+  <data name="CloseButtonText" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="PeekDefinitionCommandText" xml:space="preserve">
+    <value>Aperçu de la définition</value>
+  </data>
 </root>

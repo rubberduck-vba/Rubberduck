@@ -15,5 +15,7 @@ namespace Rubberduck.Parsing.VBA
         ProjectDeclaration SelectedProject(QualifiedSelection qualifiedSelection);
         ModuleDeclaration SelectedModule();
         ModuleDeclaration SelectedModule(QualifiedSelection qualifiedSelection);
+
+        ModuleDeclaration SelectedProjectExplorerModule();
     }
 }

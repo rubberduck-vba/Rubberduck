@@ -133,6 +133,15 @@ namespace Rubberduck.Resources.Menus {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Peek definition.
+        /// </summary>
+        public static string ContextMenu_PeekDefinition {
+            get {
+                return ResourceManager.GetString("ContextMenu_PeekDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run selected test.
         /// </summary>
         public static string ContextMenu_RunSelectedTest {

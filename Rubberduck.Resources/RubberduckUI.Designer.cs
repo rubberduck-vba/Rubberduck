@@ -271,6 +271,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string CloseButtonText {
+            get {
+                return ResourceManager.GetString("CloseButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} {1} {2} {3} {4} {5}.
         /// </summary>
         public static string CodeExplorer_IExportable_DeclarationFormat {
@@ -1386,6 +1395,24 @@ namespace Rubberduck.Resources {
         public static string Passed {
             get {
                 return ResourceManager.GetString("Passed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (no description annotation or attribute).
+        /// </summary>
+        public static string PeekDefinition_DefaultDescription {
+            get {
+                return ResourceManager.GetString("PeekDefinition_DefaultDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Peek definition.
+        /// </summary>
+        public static string PeekDefinitionCommandText {
+            get {
+                return ResourceManager.GetString("PeekDefinitionCommandText", resourceCulture);
             }
         }
         

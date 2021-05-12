@@ -771,4 +771,16 @@ Import aborted.</value>
   <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
     <value>Export active project</value>
   </data>
+  <data name="Language_IT" xml:space="preserve">
+    <value>Italian</value>
+  </data>
+  <data name="CloseButtonText" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="PeekDefinitionCommandText" xml:space="preserve">
+    <value>Peek definition</value>
+  </data>
+  <data name="PeekDefinition_DefaultDescription" xml:space="preserve">
+    <value>(no description annotation or attribute)</value>
+  </data>
 </root>

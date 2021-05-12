@@ -36,13 +36,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands.DragAndDrop
             _declarationFinderProvider = declarationFinderProvider;
             _messageBox = messageBox;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         //We need to use the version with the interface since the type parameters always have to match exactly in the check in the base class.
         public override IEnumerable<Type> ApplicableNodeTypes => new []{typeof(ValueTuple<string, ICodeExplorerNode>)};
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             var (targetFolder, node) = (ValueTuple<string, ICodeExplorerNode>)parameter;
             return !string.IsNullOrEmpty(targetFolder)

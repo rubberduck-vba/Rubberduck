@@ -1,6 +1,8 @@
 using System.Runtime.InteropServices;
+using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.ComCommands
 {

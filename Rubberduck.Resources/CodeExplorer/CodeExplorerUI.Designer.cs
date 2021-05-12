@@ -426,6 +426,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Navigate.
+        /// </summary>
+        public static string CodeExplorer_NavigateText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_NavigateText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;New.
         /// </summary>
         public static string CodeExplorer_New {
