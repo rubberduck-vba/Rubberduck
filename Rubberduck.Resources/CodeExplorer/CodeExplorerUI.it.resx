@@ -169,7 +169,7 @@
     <value>Raggruppa tutto</value>
   </data>
   <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
-    <value>Copia negli appunti</value>
+    <value>Copia i risultati dell'ispezione negli appunti</value>
   </data>
   <data name="CodeExplorer_Delete" xml:space="preserve">
     <value>Cancella</value>

@@ -538,4 +538,7 @@ Procéder?</value>
   <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
     <value>La méthode '{0}' compte moins de deux paramètres.</value>
   </data>
+  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
+    <value>La valeur des arguments de type 'Number' doit être un nombre entier ou décimal valide.</value>
+  </data>
 </root>

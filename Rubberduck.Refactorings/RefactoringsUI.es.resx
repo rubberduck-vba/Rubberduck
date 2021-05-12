@@ -541,4 +541,7 @@ Una clase privada puede asimismo implementar una interfaz pública.</value>
   <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
     <value>Menos de dos parámetros en el método '{0}'.</value>
   </data>
+  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
+    <value>Los argumentos de anotaciones del tipo 'Número' deben ser un numero válido entero o en formato de punto flotante.</value>
+  </data>
 </root>

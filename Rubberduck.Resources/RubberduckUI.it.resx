@@ -153,35 +153,11 @@
     <value>{0} {1} {2} {3} {4} {5}</value>
     <comment>{0}=Progetto; {1}=Cartella; {2}=Componente; {3}=TipoDichiarazione; {4}=Scope; {5}=Nome</comment>
   </data>
-  <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
-    <value>Da modulo</value>
-  </data>
-  <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
-    <value>Da tipo ispezione</value>
-  </data>
-  <data name="CodeInspections_CopyToolTip" xml:space="preserve">
-    <value>Copia i risultati dell'ispezione negli appunti</value>
-  </data>
   <data name="CodeInspections_GoToolTip" xml:space="preserve">
     <value>Vai al problema selezionato</value>
   </data>
-  <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
-    <value>{0} ({1} problemi)</value>
-    <comment>{0}=stato; {1}=numero</comment>
-  </data>
-  <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
-    <value>{0} ({1} problema)</value>
-  </data>
   <data name="CodeInspections_NextToolTip" xml:space="preserve">
     <value>Vai al prossimo problema</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
-    <value>{0} problemi</value>
-    <comment>{0}=numero</comment>
-  </data>
-  <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
-    <value>{0} problema</value>
-    <comment>{0}=numero</comment>
   </data>
   <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
     <value>Vai al precedente problema</value>

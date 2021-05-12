@@ -559,4 +559,7 @@ Chcete pokračovat?</value>
   <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
     <value>Možnosti Implementace:</value>
   </data>
+  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
+    <value>Argumenty anotace typu 'Number' musejí být validní číslo ve formátu integer nebo float.</value>
+  </data>
 </root>

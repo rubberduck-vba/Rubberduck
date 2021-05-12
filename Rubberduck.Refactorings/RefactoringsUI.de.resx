@@ -562,4 +562,7 @@ Wollen Sie fortfahren?</value>
   <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
     <value>Weniger als zwei Parameter für die Methode '{0}'.</value>
   </data>
+  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
+    <value>Annotationsargumente vom Typ 'Zahl' müssen eine ganze Zahl oder eine Gleitkommazahl sein.</value>
+  </data>
 </root>
