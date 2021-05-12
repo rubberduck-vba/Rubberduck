@@ -130,13 +130,13 @@
     <value>Slash (/)</value>
   </data>
   <data name="ShowSplash" xml:space="preserve">
-    <value>Show splash screen at startup</value>
+    <value>Show _splash screen at startup</value>
   </data>
   <data name="ShowLogFolder" xml:space="preserve">
     <value>Show Log Folder</value>
   </data>
   <data name="SetDpiUnaware" xml:space="preserve">
-    <value>Correction for high-resolution display scalings</value>
+    <value>Correction for high-_resolution display scalings</value>
   </data>
   <data name="PeriodDelimiter" xml:space="preserve">
     <value>Period (.)</value>
@@ -148,7 +148,7 @@
     <value>Modifier Warning</value>
   </data>
   <data name="MinimumLogLevelLabel" xml:space="preserve">
-    <value>Minimum Log Level:</value>
+    <value>Minimum _Log Level:</value>
   </data>
   <data name="LanguageLabel" xml:space="preserve">
     <value>Display l_anguage:</value>
@@ -157,7 +157,7 @@
     <value>Info</value>
   </data>
   <data name="IncludePreRelease" xml:space="preserve">
-    <value>Tell me if a newer pre-release build is available.</value>
+    <value>Tell me if a newer _pre-release build is available.</value>
   </data>
   <data name="HotkeysLabel" xml:space="preserve">
     <value>Hotkeys:</value>
@@ -202,7 +202,7 @@
     <value>Error</value>
   </data>
   <data name="EnableDragAndDrop" xml:space="preserve">
-    <value>Enable drag and drop in Code Explorer</value>
+    <value>Enable _drag and drop in Code Explorer</value>
   </data>
   <data name="DebugLogLevel" xml:space="preserve">
     <value>Debug</value>
@@ -216,9 +216,9 @@
 NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="CompileBeforeParse" xml:space="preserve">
-    <value>Compile code before parsing</value>
+    <value>_Compile code before parsing</value>
   </data>
   <data name="CheckVersion" xml:space="preserve">
-    <value>Check if a newer version is available at startup.</value>
+    <value>Check if a newer _version is available at startup.</value>
   </data>
 </root>
