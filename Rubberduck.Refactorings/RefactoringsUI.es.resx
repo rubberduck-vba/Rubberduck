@@ -165,9 +165,6 @@
   <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
     <value>Los argumentos de anotaciones del tipo 'Booleano' deben ser 'True' o 'False'.</value>
   </data>
-  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
-    <value>Los argumentos de anotaciones del tipo 'Número' deben ser un numero válido entero o en formato de punto flotante.</value>
-  </data>
   <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
     <value>Los argumentos de anotaciones no pueden contener caracteres de control.</value>
   </data>

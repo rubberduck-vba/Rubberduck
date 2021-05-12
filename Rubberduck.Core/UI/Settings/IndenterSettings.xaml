@@ -311,8 +311,8 @@
                                       IsChecked="{Binding GroupRelatedProperties,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                                 <AccessText TextWrapping="WrapWithOverflow">
                                     <AccessText.Text>
-                                        <Resx ResxName="Rubberduck.Resources.RubberduckUI"
-                                              Key="IndenterSettings_GroupRelatedProperties" />
+                                        <Resx ResxName="Rubberduck.UI.Settings.IndenterSettingsUI"
+                                              Key="GroupRelatedProperties" />
                                     </AccessText.Text>
                                 </AccessText>
                             </CheckBox>

@@ -429,12 +429,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Řeším reference...</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Dovolené Identifikátory</value>
-  </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>Tyto identifikátory budou ignorovány inspekcí 'Použij smysluplné názvy'.</value>
-  </data>
   <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refaktorovat / Zapouzdřit Pole</value>
   </data>
@@ -503,9 +497,6 @@ Přejete si toto nastavení importovat do Rubberducku?</value>
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Čeština</value>
-  </data>
-  <data name="References" xml:space="preserve">
-    <value>Reference</value>
   </data>
   <data name="ApplyButtonText" xml:space="preserve">
     <value>Použít</value>
@@ -643,27 +634,6 @@ Import přerušen.</value>
   </data>
   <data name="DeclarationType_Document" xml:space="preserve">
     <value>dokument</value>
-  </data>
-  <data name="TestOutcome_Ignored" xml:space="preserve">
-    <value>Ignorováno</value>
-  </data>
-  <data name="IndenterSettings_GroupRelatedProperties" xml:space="preserve">
-    <value>Odeberte vertikální mezeru mezi souvisejícími property členy</value>
-  </data>
-  <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
-    <value>Nahradit Členy za Členy Rozhraní</value>
-  </data>
-  <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
-    <value>Možnosti Implementace:</value>
-  </data>
-  <data name="ExtractInterface_OptionForwardToInterfaceMembers" xml:space="preserve">
-    <value>Přeposlat volání členů objektů na členy rozhraní</value>
-  </data>
-  <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
-    <value>Přeposlat volání členů rozhraní na členy objektů</value>
-  </data>
-  <data name="ExtractInterface_OptionAddEmptyImplementation" xml:space="preserve">
-    <value>Přidat Prázdnou Implementaci</value>
   </data>
   <data name="CodeInspectionsWindowSettings_AccessKey" xml:space="preserve">
     <value>_Inspekce kódu</value>

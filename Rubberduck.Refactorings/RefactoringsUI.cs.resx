@@ -165,9 +165,6 @@
   <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
     <value>Argumenty anotace typu 'Boolean' musejí být buď 'True' nebo 'False'.</value>
   </data>
-  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
-    <value>Argumenty anotace typu 'Number' musejí být validní číslo ve formátu integer nebo float.</value>
-  </data>
   <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
     <value>Argumenty anotace nesmějí obsahovat 'control' charaktery.</value>
   </data>
@@ -546,5 +543,20 @@ Chcete pokračovat?</value>
   </data>
   <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
     <value>Volitelné parametry musejí být specifikovány na konci seznamu parametrů.</value>
+  </data>
+  <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
+    <value>Nahradit Členy za Členy Rozhraní</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
+    <value>Přeposlat volání členů rozhraní na členy objektů</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToInterfaceMembers" xml:space="preserve">
+    <value>Přeposlat volání členů objektů na členy rozhraní</value>
+  </data>
+  <data name="ExtractInterface_OptionAddEmptyImplementation" xml:space="preserve">
+    <value>Přidat Prázdnou Implementaci</value>
+  </data>
+  <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
+    <value>Možnosti Implementace:</value>
   </data>
 </root>

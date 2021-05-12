@@ -289,33 +289,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Inspection Severities.
-        /// </summary>
-        public static string CodeInspectionSettings_InspectionSeveritySettingsLabel {
-            get {
-                return ResourceManager.GetString("CodeInspectionSettings_InspectionSeveritySettingsLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to These identifiers will be ignored by the &apos;Use meaningful names&apos; inspection..
-        /// </summary>
-        public static string CodeInspectionSettings_WhitelistedIdentifiersDescription {
-            get {
-                return ResourceManager.GetString("CodeInspectionSettings_WhitelistedIdentifiersDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Allowed Identifiers.
-        /// </summary>
-        public static string CodeInspectionSettings_WhitelistedIdentifiersLabel {
-            get {
-                return ResourceManager.GetString("CodeInspectionSettings_WhitelistedIdentifiersLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Code _Inspections.
         /// </summary>
         public static string CodeInspectionsWindowSettings_AccessKey {
@@ -880,15 +853,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove vertical space between related property members.
-        /// </summary>
-        public static string IndenterSettings_GroupRelatedProperties {
-            get {
-                return ResourceManager.GetString("IndenterSettings_GroupRelatedProperties", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Inspect.
         /// </summary>
         public static string Inspect {
@@ -966,6 +930,15 @@ namespace Rubberduck.Resources {
         public static string Language_FR {
             get {
                 return ResourceManager.GetString("Language_FR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Italian.
+        /// </summary>
+        public static string Language_IT {
+            get {
+                return ResourceManager.GetString("Language_IT", resourceCulture);
             }
         }
         
@@ -1532,15 +1505,6 @@ namespace Rubberduck.Resources {
             get {
                 object obj = ResourceManager.GetObject("question_white", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to References.
-        /// </summary>
-        public static string References {
-            get {
-                return ResourceManager.GetString("References", resourceCulture);
             }
         }
         

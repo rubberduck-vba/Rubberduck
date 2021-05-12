@@ -393,15 +393,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="RubberduckFatalError" xml:space="preserve">
     <value>In Rubberduck ist ein Fehler aufgetreten. Bitte speichern Sie Ihre Arbeit und starten Sie das Hostprogramm neu. Laden Sie dann Ihre Logdatei zu unserer GitHub-Seite hoch.</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Explizit erlaubte Namen</value>
-  </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>Diese Namen werden von der Inspektion "Nutze aussagekräftige Namen" ignoriert.</value>
-  </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Inspektionsschwere</value>
-  </data>
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck wird nicht neu geladen</value>
   </data>
@@ -522,9 +513,6 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
     <value>Verfolge nicht von Rubberduck hinzugefügte Referenzen</value>
   </data>
-  <data name="References" xml:space="preserve">
-    <value>Referenzen</value>
-  </data>
   <data name="ReferenceSettings_RecentTracked" xml:space="preserve">
     <value>Zuletzt verfolgte Referenzen:</value>
   </data>
@@ -643,9 +631,6 @@ Import abgebrochen.</value>
   </data>
   <data name="DeclarationType_Document" xml:space="preserve">
     <value>Dokument</value>
-  </data>
-  <data name="IndenterSettings_GroupRelatedProperties" xml:space="preserve">
-    <value>Entferne vertikalen Zwischenraum zwischen verwandten Eigenschaften</value>
   </data>
   <data name="CodeInspectionsWindowSettings_AccessKey" xml:space="preserve">
     <value>Code _Untersuchung</value>

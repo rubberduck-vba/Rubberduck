@@ -117,120 +117,120 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="IgnoreOperators" xml:space="preserve">
-    <value>Ignoriere Operatoren</value>
-  </data>
   <data name="AlignCommentsWithCode" xml:space="preserve">
-    <value>Richte Kommentare am Code aus</value>
+    <value>Allinea i commenti con il codice</value>
   </data>
   <data name="AlignContinuations" xml:space="preserve">
-    <value>Richte Fortsetzung aus</value>
+    <value>Allinea le continuazioni</value>
   </data>
   <data name="AlignDims" xml:space="preserve">
-    <value>Ausrichtung der Deklarationen</value>
+    <value>Allinea i dimensionamenti (Dim)</value>
   </data>
   <data name="AlignmentOptionsLabel" xml:space="preserve">
-    <value>Ausrichtungsoptionen</value>
+    <value>Opzioni di allineamento</value>
   </data>
   <data name="CodeSampleHeader" xml:space="preserve">
-    <value>Eingerücktes Codebeispiel</value>
+    <value>Esempio di Codice indentato</value>
   </data>
   <data name="EmptyLineHeading" xml:space="preserve">
-    <value>Leerzeilenbehandlung:</value>
+    <value>Trattamento delle righe vuote:</value>
   </data>
   <data name="EnableOptionsLabel" xml:space="preserve">
-    <value>Optionen freigeben</value>
+    <value>Opzioni di Abilitazione</value>
   </data>
   <data name="EnableUndo" xml:space="preserve">
-    <value>Rückgängig freigeben</value>
+    <value>Abilita annullamenti</value>
   </data>
   <data name="EndOfLineCommentStyle" xml:space="preserve">
-    <value>Zeilenende Kommentarstil:</value>
+    <value>Stile dei commenti di fine riga:</value>
   </data>
   <data name="ForceCompilerDirectivesToColumn1" xml:space="preserve">
-    <value>Erzwinge Kompilerdirektiven in Spalte 1</value>
+    <value>Forza le direttive di compilazione nella colonna 1</value>
   </data>
   <data name="ForceDebugDirectivesToColumn1" xml:space="preserve">
-    <value>Erzwinge Debugdirektiven in Spalte 1</value>
+    <value>Forza le direttive di debug nella colonna 1</value>
   </data>
   <data name="IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
-    <value>Leerzeilen bei der Suche nach dem ersten Kommentar und nach Deklarationsblöcken ignorieren</value>
+    <value>Ignorare le righe vuote per individuare il primo commento e i blocchi di dichiarazione</value>
+  </data>
+  <data name="IgnoreOperators" xml:space="preserve">
+    <value>Ignorare gli operatori</value>
   </data>
   <data name="IndentCase" xml:space="preserve">
-    <value>Rücke 'Case' ein</value>
+    <value>Indenta Case</value>
   </data>
   <data name="IndentCompilerDirectives" xml:space="preserve">
-    <value>Rücke Kompilerdirektiven ein</value>
+    <value>Indenta le direttive di compilazione</value>
   </data>
   <data name="IndentEntireProcedureBody" xml:space="preserve">
-    <value>Rücke gesamten Prozedurblock ein</value>
+    <value>Indenta l'intero corpo della procedura</value>
   </data>
   <data name="IndentEnumTypeAsProcedure" xml:space="preserve">
-    <value>Kommentare in Enums und Typen wie in Prozeduren einrücken</value>
+    <value>Indenta i commenti nei blocchi Enum e Type come nelle procedure</value>
   </data>
   <data name="IndentFirstCommentBlock" xml:space="preserve">
-    <value>Rücke ersten Kommentarblock ein</value>
+    <value>Indenta il primo blocco dei commenti</value>
   </data>
   <data name="IndentFirstDeclarationBlock" xml:space="preserve">
-    <value>Rücke ersten Deklarationsblock ein</value>
+    <value>Indenta il primo blocco di dichiarazione</value>
   </data>
   <data name="IndentOptionsLabel" xml:space="preserve">
-    <value>Rücke Optionen ein</value>
+    <value>Opzioni di indentazione</value>
   </data>
   <data name="IndentSpaces" xml:space="preserve">
-    <value>Einrückungsleerzeichen:</value>
+    <value>Spazi di indentazione:</value>
   </data>
   <data name="PreviewCode" xml:space="preserve">
-    <value>Public Enum BeispielEnum
-' Enum Kommentar.
+    <value>Public Enum EsempioEnum
+' Commento di Enum
 Foo
-Bar ' Element-Kommentar.
+Bar ' commento del Membro.
 End Enum
 
-' Beispielprozedur
-Sub BeispielProc()
+' Esempio di Procedura
+Sub EsempioProc()
 
 ' SMART INDENTER
-' Der originale VB6-Code wurde Rubberduck gnädigerweise von Stephen Bullen &amp; Rob Bovey angeboten
+' Original VB6 code graciously offered to Rubberduck by Stephen Bullen &amp; Rob Bovey
 ' © 2016 by Rubberduck VBA.
 
-Dim zaehler As Integer
+Dim count As Integer
 Static name As String
 
-If SieMoegenRubberduck Then
-' Einen Stern auf GitHub geben: http://github.com/rubberduck-vba/Rubberduck
-' Auf Twitter folgen @rubberduckvba
-' http://rubberduckvba.com für Neuigkeiten und Aktualisierungen
+If YouLikeRubberduck Then
+' Mettici una Stella su GitHub http://github.com/rubberduck-vba/Rubberduck
+' Seguici su Twitter @rubberduckvba
+' Visita http://rubberduckvba.com per novità ed aggiornamenti
 
 Select Case X
 Case "A"
-' Falls sie Kommentare oder Vorschläge haben, _
-oder validen VBA code gefunden haben, der nicht korrekt eingerückt wird,
+' Se hai qualche commento o suggerimento, _
+o trovi codice VBA valido con indentazione non corretta,
 
 #If VBA6 Then
-MsgBox "Kontaktieren Sie contact@rubberduck-vba.com"
+MsgBox "Contatta contact@rubberduck-vba.com"
 #End If
 
-Case "Fortgeführte Strings und Parameter können" _
-&amp; "zur Lesbarkeit aufgereiht werden. Optional können" _
-&amp; "beliebige Operatoren (&amp;+, usw.) am Zeilenbeginn ignoriert werden."
+Case "Stringhe e parametri continuati possono essere" _
+&amp; "allineati in verticale per una più facile lettura, ignorando eventualmente" _
+&amp; "qualsiasi operatore (&amp;+, ecc) all'inizio della riga."
 
 Debug.Print "X&lt;&gt;1"
 End Select      'Case X
-End If      'Mehr Werkzeuge? Vorschläge an http://github.com/rubberduck-vba/Rubberduck/Issues/New
+End If      'Più Strumenti? Suggerimenti http://github.com/rubberduck-vba/Rubberduck/Issues/New
 
 End Sub</value>
   </data>
   <data name="SpecialOptionsLabel" xml:space="preserve">
-    <value>Spezielle Optionen</value>
+    <value>Opzioni Speciali</value>
   </data>
   <data name="VerticalSpacing" xml:space="preserve">
-    <value>Vertikalen Abstand aufrecht erhalten</value>
+    <value>Preserva la spaziatura verticale</value>
   </data>
   <data name="VerticalSpacingLabel" xml:space="preserve">
-    <value>Vertikalen Abstand</value>
+    <value>Spaziatura Verticale</value>
   </data>
   <data name="GroupRelatedProperties" xml:space="preserve">
-    <value>Entferne vertikalen Zwischenraum zwischen verwandten Eigenschaften</value>
+    <value>Rimuovi gli spazi verticali tra membri proprietà collegati</value>
   </data>
 </root>

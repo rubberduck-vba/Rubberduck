@@ -117,120 +117,97 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="IgnoreOperators" xml:space="preserve">
-    <value>Ignoriere Operatoren</value>
+  <data name="AddFailedCaption" xml:space="preserve">
+    <value>Impossibile aggiungere riferimenti</value>
   </data>
-  <data name="AlignCommentsWithCode" xml:space="preserve">
-    <value>Richte Kommentare am Code aus</value>
+  <data name="AddToolTip" xml:space="preserve">
+    <value>Aggiugni al progetto</value>
   </data>
-  <data name="AlignContinuations" xml:space="preserve">
-    <value>Richte Fortsetzung aus</value>
+  <data name="BrowseButtonText" xml:space="preserve">
+    <value>Sfoglia...</value>
   </data>
-  <data name="AlignDims" xml:space="preserve">
-    <value>Ausrichtung der Deklarationen</value>
+  <data name="BrowseCaption" xml:space="preserve">
+    <value>Sfoglia riferimenti</value>
   </data>
-  <data name="AlignmentOptionsLabel" xml:space="preserve">
-    <value>Ausrichtungsoptionen</value>
+  <data name="BrowseFilterAccess" xml:space="preserve">
+    <value>Database di Microsoft Access({0})|{0}</value>
   </data>
-  <data name="CodeSampleHeader" xml:space="preserve">
-    <value>Eingerücktes Codebeispiel</value>
+  <data name="BrowseFilterActiveX" xml:space="preserve">
+    <value>Controlli ActiveX (*.ocx)|*.ocx</value>
   </data>
-  <data name="EmptyLineHeading" xml:space="preserve">
-    <value>Leerzeilenbehandlung:</value>
+  <data name="BrowseFilterAllFiles" xml:space="preserve">
+    <value>Tutti i file (*.*)|*.*</value>
   </data>
-  <data name="EnableOptionsLabel" xml:space="preserve">
-    <value>Optionen freigeben</value>
+  <data name="BrowseFilterExcel" xml:space="preserve">
+    <value>File di Microsoft Excel ({0})|{0}</value>
   </data>
-  <data name="EnableUndo" xml:space="preserve">
-    <value>Rückgängig freigeben</value>
+  <data name="BrowseFilterExecutable" xml:space="preserve">
+    <value>File eseguibili (*.exe;*.dll)|*.exe;*.dll</value>
   </data>
-  <data name="EndOfLineCommentStyle" xml:space="preserve">
-    <value>Zeilenende Kommentarstil:</value>
+  <data name="BrowseFilterOutlook" xml:space="preserve">
+    <value>File VBA di Outlook ({0})|{0}</value>
   </data>
-  <data name="ForceCompilerDirectivesToColumn1" xml:space="preserve">
-    <value>Erzwinge Kompilerdirektiven in Spalte 1</value>
+  <data name="BrowseFilterPowerPoint" xml:space="preserve">
+    <value>File Addin di PowerPoint({0})|{0}</value>
   </data>
-  <data name="ForceDebugDirectivesToColumn1" xml:space="preserve">
-    <value>Erzwinge Debugdirektiven in Spalte 1</value>
+  <data name="BrowseFilterPublisher" xml:space="preserve">
+    <value>File di Publisher ({0}|{0}</value>
   </data>
-  <data name="IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
-    <value>Leerzeilen bei der Suche nach dem ersten Kommentar und nach Deklarationsblöcken ignorieren</value>
+  <data name="BrowseFilterTypes" xml:space="preserve">
+    <value>Tipi Libreria (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll</value>
   </data>
-  <data name="IndentCase" xml:space="preserve">
-    <value>Rücke 'Case' ein</value>
+  <data name="BrowseFilterVisio" xml:space="preserve">
+    <value>Tutti i file di Visio ({0})|{0}</value>
   </data>
-  <data name="IndentCompilerDirectives" xml:space="preserve">
-    <value>Rücke Kompilerdirektiven ein</value>
+  <data name="BrowseFilterWord" xml:space="preserve">
+    <value>Documenti di Word ({0})|{0}</value>
   </data>
-  <data name="IndentEntireProcedureBody" xml:space="preserve">
-    <value>Rücke gesamten Prozedurblock ein</value>
+  <data name="Caption" xml:space="preserve">
+    <value>Aggiungi/Rimuovi Riferimento...</value>
   </data>
-  <data name="IndentEnumTypeAsProcedure" xml:space="preserve">
-    <value>Kommentare in Enums und Typen wie in Prozeduren einrücken</value>
+  <data name="CaptionTemplate" xml:space="preserve">
+    <value>Aggiungi/Rimuovi Riferimenti - {0}</value>
   </data>
-  <data name="IndentFirstCommentBlock" xml:space="preserve">
-    <value>Rücke ersten Kommentarblock ein</value>
+  <data name="DefaultLocale" xml:space="preserve">
+    <value>Standard</value>
   </data>
-  <data name="IndentFirstDeclarationBlock" xml:space="preserve">
-    <value>Rücke ersten Deklarationsblock ein</value>
+  <data name="Locale" xml:space="preserve">
+    <value>Lingua:</value>
   </data>
-  <data name="IndentOptionsLabel" xml:space="preserve">
-    <value>Rücke Optionen ein</value>
+  <data name="MoveDownToolTip" xml:space="preserve">
+    <value>Sposta sotto</value>
   </data>
-  <data name="IndentSpaces" xml:space="preserve">
-    <value>Einrückungsleerzeichen:</value>
+  <data name="MoveUpToolTip" xml:space="preserve">
+    <value>Sposta sopra</value>
   </data>
-  <data name="PreviewCode" xml:space="preserve">
-    <value>Public Enum BeispielEnum
-' Enum Kommentar.
-Foo
-Bar ' Element-Kommentar.
-End Enum
-
-' Beispielprozedur
-Sub BeispielProc()
-
-' SMART INDENTER
-' Der originale VB6-Code wurde Rubberduck gnädigerweise von Stephen Bullen &amp; Rob Bovey angeboten
-' © 2016 by Rubberduck VBA.
-
-Dim zaehler As Integer
-Static name As String
-
-If SieMoegenRubberduck Then
-' Einen Stern auf GitHub geben: http://github.com/rubberduck-vba/Rubberduck
-' Auf Twitter folgen @rubberduckvba
-' http://rubberduckvba.com für Neuigkeiten und Aktualisierungen
-
-Select Case X
-Case "A"
-' Falls sie Kommentare oder Vorschläge haben, _
-oder validen VBA code gefunden haben, der nicht korrekt eingerückt wird,
-
-#If VBA6 Then
-MsgBox "Kontaktieren Sie contact@rubberduck-vba.com"
-#End If
-
-Case "Fortgeführte Strings und Parameter können" _
-&amp; "zur Lesbarkeit aufgereiht werden. Optional können" _
-&amp; "beliebige Operatoren (&amp;+, usw.) am Zeilenbeginn ignoriert werden."
-
-Debug.Print "X&lt;&gt;1"
-End Select      'Case X
-End If      'Mehr Werkzeuge? Vorschläge an http://github.com/rubberduck-vba/Rubberduck/Issues/New
-
-End Sub</value>
+  <data name="Pinned" xml:space="preserve">
+    <value>Bloccati</value>
   </data>
-  <data name="SpecialOptionsLabel" xml:space="preserve">
-    <value>Spezielle Optionen</value>
+  <data name="PinToolTip" xml:space="preserve">
+    <value>Blocca riferimento</value>
   </data>
-  <data name="VerticalSpacing" xml:space="preserve">
-    <value>Vertikalen Abstand aufrecht erhalten</value>
+  <data name="Projects" xml:space="preserve">
+    <value>Progetti</value>
   </data>
-  <data name="VerticalSpacingLabel" xml:space="preserve">
-    <value>Vertikalen Abstand</value>
+  <data name="Recent" xml:space="preserve">
+    <value>Recenti</value>
   </data>
-  <data name="GroupRelatedProperties" xml:space="preserve">
-    <value>Entferne vertikalen Zwischenraum zwischen verwandten Eigenschaften</value>
+  <data name="RemoveToolTip" xml:space="preserve">
+    <value>Rimuovi dal progetto</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Cerca riferimenti...</value>
+  </data>
+  <data name="SubCaption" xml:space="preserve">
+    <value>Selezionare i tipi libreria e progetti VB da aggiungere o rimuovere.</value>
+  </data>
+  <data name="TypeLibs" xml:space="preserve">
+    <value>Tipi Libreria</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Versione:</value>
+  </data>
+  <data name="References" xml:space="preserve">
+    <value>Riferimenti</value>
   </data>
 </root>

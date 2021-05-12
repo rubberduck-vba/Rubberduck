@@ -230,4 +230,7 @@ End Sub</value>
   <data name="VerticalSpacingLabel" xml:space="preserve">
     <value>Espacement vertical</value>
   </data>
+  <data name="GroupRelatedProperties" xml:space="preserve">
+    <value>Supprime l'espacement vertical entre les membres d'une même propriété</value>
+  </data>
 </root>

@@ -433,12 +433,6 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="RubberduckFatalError" xml:space="preserve">
     <value>Rubberduck encontró un error. Por favor guarde su trabajo y reinicie el programa host; si el registro está habilitado, puede cargar su archivo de registro ubicado en '%AppData%Roaming\Rubberduck\Logs\RubberduckLog.txt' en un problema de GitHub en 'https://github.com/rubberduck-vba/Rubberduck/issues/new ' y reportar el error.</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Identificadores en lista blanca</value>
-  </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>Estos identificadores serán ignorados por la inspección 'Usar nombres significativos'.</value>
-  </data>
   <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refactorizar / Encapsular Campo</value>
   </data>
@@ -514,9 +508,6 @@ Este diálogo se muestra porque el chequeo de versiones está Activo. Puede desa
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Checo</value>
-  </data>
-  <data name="References" xml:space="preserve">
-    <value>Referencias</value>
   </data>
   <data name="ApplyButtonText" xml:space="preserve">
     <value>Aplicar</value>

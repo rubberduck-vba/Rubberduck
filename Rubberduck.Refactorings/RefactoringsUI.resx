@@ -165,9 +165,6 @@
   <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
     <value>Annotation arguments of type 'Boolean' have to either be 'True' or 'False'.</value>
   </data>
-  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
-    <value>Annotation arguments of type 'Number' have to be a valid number in integer of floating point format.</value>
-  </data>
   <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
     <value>Annotation arguments must not contain control characters.</value>
   </data>

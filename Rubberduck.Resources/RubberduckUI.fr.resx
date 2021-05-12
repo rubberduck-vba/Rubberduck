@@ -393,17 +393,11 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck ne redémarre pas</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Identifiants permis</value>
-  </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Les fenêtres ancrables n'ont probablement pas été correctement détruites, et/ou n'ont pas pu être recréées. l'environnement peut ne pas être dans un état stable. Rubberduck démerrera normalement à la prochaine initialisation du VBE.</value>
   </data>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Résolution des références...</value>
-  </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Niveau de sévérité</value>
   </data>
   <data name="ParserState_ResolvingDeclarations" xml:space="preserve">
     <value>Résolution des déclarations...</value>
@@ -504,9 +498,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Tchèque</value>
-  </data>
-  <data name="References" xml:space="preserve">
-    <value>Références</value>
   </data>
   <data name="ApplyButtonText" xml:space="preserve">
     <value>Appliquer</value>
@@ -630,9 +621,6 @@ Mise à jour annulée.</value>
   </data>
   <data name="DeclarationType_Document" xml:space="preserve">
     <value>le document</value>
-  </data>
-  <data name="IndenterSettings_GroupRelatedProperties" xml:space="preserve">
-    <value>Supprime l'espacement vertical entre les membres d'une même propriété</value>
   </data>
   <data name="GroupingStyle_ByOutcome" xml:space="preserve">
     <value>Par résultat</value>

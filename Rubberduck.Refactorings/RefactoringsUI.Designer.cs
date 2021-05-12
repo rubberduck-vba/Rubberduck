@@ -205,15 +205,6 @@ namespace Rubberduck.Refactorings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Annotation arguments of type &apos;Number&apos; have to be a valid number in integer of floating point format..
-        /// </summary>
-        public static string AnnotationArgument_ValidationError_NotANumber {
-            get {
-                return ResourceManager.GetString("AnnotationArgument_ValidationError_NotANumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Annotation arguments must not contain control characters..
         /// </summary>
         public static string AnnotationArgument_ValidationError_SpecialCharacters {

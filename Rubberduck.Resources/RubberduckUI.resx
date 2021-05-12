@@ -436,12 +436,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="RubberduckFatalError" xml:space="preserve">
     <value>Rubberduck encountered an error. Please save your work and restart the host program; if logging is enabled, you can upload your log file located at '%AppData%Roaming\Rubberduck\Logs\RubberduckLog.txt' to a GitHub issue at 'https://github.com/rubberduck-vba/Rubberduck/issues/new' and report the bug.</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Allowed Identifiers</value>
-  </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>These identifiers will be ignored by the 'Use meaningful names' inspection.</value>
-  </data>
   <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refactor / Encapsulate Field</value>
   </data>
@@ -483,9 +477,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="Preview" xml:space="preserve">
     <value>Preview</value>
-  </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Inspection Severities</value>
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Select a folder to export the source of {0} to:</value>
@@ -547,9 +538,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Czech</value>
-  </data>
-  <data name="References" xml:space="preserve">
-    <value>References</value>
   </data>
   <data name="padlock" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Fugue\lock.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -730,9 +718,6 @@ Import aborted.</value>
   </data>
   <data name="ComponentType_VBForm" xml:space="preserve">
     <value>VB Form</value>
-  </data>
-  <data name="IndenterSettings_GroupRelatedProperties" xml:space="preserve">
-    <value>Remove vertical space between related property members</value>
   </data>
   <data name="DeclarationType_Document" xml:space="preserve">
     <value>document</value>

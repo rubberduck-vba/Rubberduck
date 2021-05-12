@@ -165,9 +165,6 @@
   <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
     <value>Annotationsargumente vom Typ 'Wahrheitswert' müssen entweder 'True' oder 'False' sein.</value>
   </data>
-  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
-    <value>Annotationsargumente vom Typ 'Zahl' müssen eine ganze Zahl oder eine Gleitkommazahl sein.</value>
-  </data>
   <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
     <value>Annotationsargumente dürfen keine Kontrollzeichen enthalten.</value>
   </data>

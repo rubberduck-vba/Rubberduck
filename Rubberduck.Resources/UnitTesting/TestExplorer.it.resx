@@ -264,7 +264,7 @@
     <comment>{0} è il numero di test nell'esecuzione del test, {1} è il totale dei test, {2} è la durata totale</comment>
   </data>
   <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Inconcludente</value>
+    <value>Non concludente</value>
   </data>
   <data name="TestOutcome_SummaryCaption" xml:space="preserve">
     <value>Sommario:</value>
@@ -273,7 +273,7 @@
     <value>Sconosciuto</value>
   </data>
   <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Superato</value>
+    <value>Concluso con successo</value>
   </data>
   <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
     <value>Modifica con il numero dell'errore atteso</value>
@@ -369,5 +369,8 @@
   <data name="UnitTest_NewModule_LateBindDirective" xml:space="preserve">
     <value>TestAssociazioneTardiva</value>
     <comment>Direttiva del precompilatore, come in "#Const LateBind = LateBindTests". Localizza come identificatore.</comment>
+  </data>
+  <data name="TestOutcome_Fail" xml:space="preserve">
+    <value>Errore</value>
   </data>
 </root>
