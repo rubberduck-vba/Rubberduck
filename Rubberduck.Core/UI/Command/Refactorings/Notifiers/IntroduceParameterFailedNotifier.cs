@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.IntroduceParameter;
 using Rubberduck.CodeAnalysis.Inspections.Extensions;
@@ -12,7 +13,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             : base(messageBox)
         { }
 
-        protected override string Caption => Resources.RubberduckUI.IntroduceParameter_Caption;
+        protected override string Caption => RefactoringsUI.IntroduceParameter_Caption;
 
         protected override string Message(RefactoringException exception)
         {
@@ -20,11 +21,11 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             {
                 case TargetDeclarationIsNotContainedInAMethodException targetNotInMethod:
                     Logger.Warn(targetNotInMethod);
-                    return string.Format(Resources.RubberduckUI.IntroduceParameterFailed_TargetNotContainedInMethod,
+                    return string.Format(RefactoringsUI.IntroduceParameterFailed_TargetNotContainedInMethod,
                         targetNotInMethod.TargetDeclaration.QualifiedName);
                 case InvalidDeclarationTypeException invalidDeclarationType:
                     Logger.Warn(invalidDeclarationType);
-                    return string.Format(Resources.RubberduckUI.RefactoringFailure_InvalidDeclarationType,
+                    return string.Format(RefactoringsUI.RefactoringFailure_InvalidDeclarationType,
                         invalidDeclarationType.TargetDeclaration.QualifiedModuleName,
                         invalidDeclarationType.TargetDeclaration.DeclarationType.ToLocalizedString(),
                         DeclarationType.Variable.ToLocalizedString());

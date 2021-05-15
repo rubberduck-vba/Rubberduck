@@ -363,4 +363,10 @@
   <data name="TestExplorer_ContextMenuIgnoreSelectedTests" xml:space="preserve">
     <value>Ignore selected tests</value>
   </data>
+  <data name="TestOutcome_Fail" xml:space="preserve">
+    <value>Fail</value>
+  </data>
+  <data name="TestExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>_Test Explorer</value>
+  </data>
 </root>

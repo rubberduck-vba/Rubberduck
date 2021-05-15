@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.MoveToFolder;
 
@@ -11,7 +12,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             : base(messageBox)
         {}
 
-        protected override string Caption => Resources.RubberduckUI.MoveFoldersDialog_Caption;
+        protected override string Caption => RefactoringsUI.MoveFoldersDialog_Caption;
 
         protected override string Message(RefactoringException exception)
         {
@@ -20,12 +21,12 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
                 case InvalidDeclarationTypeException invalidDeclarationType:
                     Logger.Warn(invalidDeclarationType);
                     return string.Format(
-                        Resources.RubberduckUI.RefactoringFailure_InvalidDeclarationType,
+                        RefactoringsUI.RefactoringFailure_InvalidDeclarationType,
                         invalidDeclarationType.TargetDeclaration.QualifiedName,
                         invalidDeclarationType.TargetDeclaration.DeclarationType,
                         DeclarationType.Module);
                 case NoTargetFolderException noTargetFolder:
-                    return Resources.RubberduckUI.RefactoringFailure_NoTargetFolder;
+                    return RefactoringsUI.RefactoringFailure_NoTargetFolder;
                 default:
                     return base.Message(exception);
             }

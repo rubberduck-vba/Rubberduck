@@ -98,86 +98,61 @@
                          BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
-                        <Label FontWeight="SemiBold">
-                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentOptionsLabel"/>
-                        </Label>
+                        <Label FontWeight="SemiBold"
+                               Content="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=IndentOptionsLabel}"/>
                     </Expander.Header>
                     <StackPanel Margin="75,5,0,5">
                         <CheckBox Name="IndentProcedureCheckBox"
                                      Margin="5,0,0,5"
                                      HorizontalAlignment="Left"
                                      IsChecked="{Binding IndentEntireProcedureBody,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <AccessText TextWrapping="WrapWithOverflow">
-                                <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentEntireProcedureBody"/>
-                                </AccessText.Text>
-                            </AccessText>
+                            <AccessText TextWrapping="WrapWithOverflow"
+                                        Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=IndentEntireProcedureBody}" />
                         </CheckBox>
                         <CheckBox Margin="25,0,0,5"
                                      HorizontalAlignment="Left"
                                      IsEnabled="{Binding ElementName=IndentProcedureCheckBox,Path=IsChecked}"
                                      IsChecked="{Binding IndentFirstCommentBlock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <AccessText TextWrapping="WrapWithOverflow">
-                                <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentFirstCommentBlock"/>
-                                </AccessText.Text>
-                            </AccessText>
+                            <AccessText TextWrapping="WrapWithOverflow"
+                                        Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=IndentFirstCommentBlock}" />
                         </CheckBox>
                         <CheckBox Margin="25,0,0,5"
                                      HorizontalAlignment="Left"
                                      IsEnabled="{Binding ElementName=IndentProcedureCheckBox,Path=IsChecked}"
                                      IsChecked="{Binding IndentFirstDeclarationBlock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <AccessText TextWrapping="WrapWithOverflow">
-                                <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentFirstDeclarationBlock"/>
-                                </AccessText.Text>
-                            </AccessText>
+                            <AccessText TextWrapping="WrapWithOverflow"
+                                        Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=IndentFirstDeclarationBlock}" />
                         </CheckBox>
                         <CheckBox Margin="25,0,0,5"
                                   HorizontalAlignment="Left"
                                   IsEnabled="{Binding ElementName=IndentProcedureCheckBox,Path=IsChecked}"
                                   IsChecked="{Binding IgnoreEmptyLinesInFirstBlocks,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <AccessText TextWrapping="WrapWithOverflow">
-                                <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IgnoreEmptyLinesInFirstBlocks"/>
-                                </AccessText.Text>
-                            </AccessText>
+                            <AccessText TextWrapping="WrapWithOverflow"
+                                        Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=IgnoreEmptyLinesInFirstBlocks}" />
                         </CheckBox>
                         <CheckBox Margin="5,0,0,5"
                                      HorizontalAlignment="Left"
                                      IsChecked="{Binding IndentEnumTypeAsProcedure,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <AccessText TextWrapping="WrapWithOverflow">
-                                <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentEnumTypeAsProcedure"/>
-                                </AccessText.Text>
-                            </AccessText>
+                            <AccessText TextWrapping="WrapWithOverflow"
+                                        Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=IndentEnumTypeAsProcedure}" />
                         </CheckBox>
                         <CheckBox Margin="5,0,0,5"
                                      HorizontalAlignment="Left"
                                      IsChecked="{Binding IndentCase,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <AccessText TextWrapping="WrapWithOverflow">
-                                <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentCase"/>
-                                </AccessText.Text>
-                            </AccessText>
+                            <AccessText TextWrapping="WrapWithOverflow"
+                                        Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=IndentCase}" />
                         </CheckBox>
                         <CheckBox Margin="5,0,0,5"
                                      HorizontalAlignment="Left"
                                      IsChecked="{Binding IndentCompilerDirectives,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <AccessText TextWrapping="WrapWithOverflow">
-                                <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentCompilerDirectives"/>
-                                </AccessText.Text>
-                            </AccessText>
+                            <AccessText TextWrapping="WrapWithOverflow"
+                                        Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=IndentCompilerDirectives}" />
                         </CheckBox>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Margin="5,0,0,5"
-                                         HorizontalAlignment="Left"
-                                         TextWrapping="WrapWithOverflow">
-                                <TextBlock.Text>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentSpaces"/>
-                                </TextBlock.Text>
-                            </TextBlock>
+                                       HorizontalAlignment="Left"
+                                       TextWrapping="WrapWithOverflow"
+                                       Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=IndentSpaces}" />
                             <controls:NumberPicker Margin="0,-6,0,0"
                                          MinNumber="0"
                                          MaxNumber="{x:Static smartIndenter:IndenterSettings.MaximumIndentSpaces}"
@@ -191,41 +166,31 @@
                          BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
-                        <Label FontWeight="SemiBold">
-                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_AlignmentOptionsLabel"/>
-                        </Label>
+                        <Label FontWeight="SemiBold"
+                               Content="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=AlignmentOptionsLabel}" />
                     </Expander.Header>
                     <StackPanel Margin="75,5,0,5">
                         <CheckBox Name="AlignContinuationsCheckBox"
                                      Margin="5,0,0,5"
                                      HorizontalAlignment="Left"
                                      IsChecked="{Binding AlignContinuations,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <AccessText TextWrapping="WrapWithOverflow">
-                                <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_AlignContinuations"/>
-                                </AccessText.Text>
-                            </AccessText>
+                            <AccessText TextWrapping="WrapWithOverflow"
+                                        Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=AlignContinuations}" />
                         </CheckBox>
                         <CheckBox Margin="25,0,0,5"
                                      HorizontalAlignment="Left"
                                      IsEnabled="{Binding ElementName=AlignContinuationsCheckBox,Path=IsChecked}"
                                      IsChecked="{Binding IgnoreOperatorsInContinuations,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <AccessText TextWrapping="WrapWithOverflow">
-                                <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IgnoreOperators"/>
-                                </AccessText.Text>
-                            </AccessText>
+                            <AccessText TextWrapping="WrapWithOverflow"
+                                        Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=IgnoreOperators}" />
                         </CheckBox>
                         <WrapPanel Orientation="Horizontal">
                             <CheckBox Name="AlignDimColumn"
                                          Margin="5,0,0,5"
                                          HorizontalAlignment="Left"
                                          IsChecked="{Binding AlignDims,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                                <AccessText TextWrapping="WrapWithOverflow">
-                                    <AccessText.Text>
-                                        <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_AlignDims"/>
-                                    </AccessText.Text>
-                                </AccessText>
+                                <AccessText TextWrapping="WrapWithOverflow"
+                                            Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=AlignDims}" />
                             </CheckBox>
                             <controls:NumberPicker Margin="0,-6,0,0"
                                          HorizontalAlignment="Left"
@@ -237,16 +202,12 @@
                         <CheckBox Margin="5,0,0,5"
                                      HorizontalAlignment="Left"
                                      IsChecked="{Binding AlignCommentsWithCode,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <AccessText TextWrapping="WrapWithOverflow">
-                                <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_AlignCommentsWithCode"/>
-                                </AccessText.Text>
-                            </AccessText>
+                            <AccessText TextWrapping="WrapWithOverflow"
+                                        Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=AlignCommentsWithCode}" />
                         </CheckBox>
                         <StackPanel Margin="0,0,0,22">
-                            <Label FontWeight="SemiBold" HorizontalAlignment="Left">
-                                <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_EndOfLineCommentStyle"/>
-                            </Label>
+                            <Label FontWeight="SemiBold" HorizontalAlignment="Left"
+                                   Content="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=EndOfLineCommentStyle}" />
                             <StackPanel Orientation="Horizontal">
                                 <ComboBox Margin="5,0,0,5"
                                              Width="210"
@@ -269,20 +230,16 @@
                          BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
-                        <Label FontWeight="SemiBold">
-                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_SpecialOptionsLabel"/>
-                        </Label>
+                        <Label FontWeight="SemiBold"
+                               Content="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=SpecialOptionsLabel}" />
                     </Expander.Header>
                     <StackPanel Margin="75,5,0,5">
                         <CheckBox Margin="5,0,0,5"
                                      Name="ForceDebugStatementsInColumn1"
                                      HorizontalAlignment="Left"
                                      IsChecked="{Binding ForceDebugStatementsInColumn1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <AccessText TextWrapping="WrapWithOverflow">
-                                <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_ForceDebugDirectivesToColumn1"/>
-                                </AccessText.Text>
-                            </AccessText>
+                            <AccessText TextWrapping="WrapWithOverflow"
+                                        Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=ForceDebugDirectivesToColumn1}" />
                         </CheckBox>
                         <CheckBox Margin="25,0,0,5"
                                   HorizontalAlignment="Left"
@@ -311,15 +268,11 @@
                         <CheckBox Margin="5,0,0,5"
                                      HorizontalAlignment="Left"
                                      IsChecked="{Binding ForceCompilerDirectivesInColumn1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <AccessText TextWrapping="WrapWithOverflow">
-                                <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_ForceCompilerDirectivesToColumn1"/>
-                                </AccessText.Text>
-                            </AccessText>
+                            <AccessText TextWrapping="WrapWithOverflow"
+                                        Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=ForceCompilerDirectivesToColumn1}" />
                         </CheckBox>
-                        <Label FontWeight="SemiBold" HorizontalAlignment="Left">
-                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_EmptyLineHeading"/>
-                        </Label>
+                        <Label FontWeight="SemiBold" HorizontalAlignment="Left"
+                               Content="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=EmptyLineHeading}" />
                         <ComboBox Margin="5,0,0,5"
                                   HorizontalAlignment="Left"
                                   ItemsSource="{Binding Source={StaticResource EmptyLineOptions},Converter={StaticResource LocalizedEmptyLineHandlers},UpdateSourceTrigger=PropertyChanged}"
@@ -332,9 +285,8 @@
                          BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
-                        <Label FontWeight="SemiBold">
-                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_VerticalSpacingLabel"/>
-                        </Label>
+                        <Label FontWeight="SemiBold"
+                               Content="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=VerticalSpacingLabel}" />
                     </Expander.Header>
                     <StackPanel Margin="75,5,0,5">
                         <WrapPanel Orientation="Horizontal">
@@ -342,11 +294,8 @@
                                          Margin="5,0,0,5"
                                          HorizontalAlignment="Left"
                                          IsChecked="{Binding VerticallySpaceProcedures,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                                <AccessText TextWrapping="WrapWithOverflow">
-                                    <AccessText.Text>
-                                        <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_VerticalSpacing"/>
-                                    </AccessText.Text>
-                                </AccessText>
+                                <AccessText TextWrapping="WrapWithOverflow"
+                                            Text="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=VerticalSpacing}" />
                             </CheckBox>
                             <controls:NumberPicker Margin="0,-6,0,0"
                                          HorizontalAlignment="Left"
@@ -362,8 +311,8 @@
                                       IsChecked="{Binding GroupRelatedProperties,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                                 <AccessText TextWrapping="WrapWithOverflow">
                                     <AccessText.Text>
-                                        <Resx ResxName="Rubberduck.Resources.RubberduckUI"
-                                              Key="IndenterSettings_GroupRelatedProperties" />
+                                        <Resx ResxName="Rubberduck.UI.Settings.IndenterSettingsUI"
+                                              Key="GroupRelatedProperties" />
                                     </AccessText.Text>
                                 </AccessText>
                             </CheckBox>
@@ -376,9 +325,8 @@
                          BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
-                        <Label FontWeight="SemiBold">
-                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_CodeSampleHeader"/>
-                        </Label>
+                        <Label FontWeight="SemiBold"
+                               Content="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=CodeSampleHeader}" />
                     </Expander.Header>
                     <controls:BindableTextEditor
                                Margin="10,10,10,10"

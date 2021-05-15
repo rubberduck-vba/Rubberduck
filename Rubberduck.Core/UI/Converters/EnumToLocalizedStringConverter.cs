@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using Rubberduck.Resources;
+using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Converters
 {
@@ -18,17 +18,17 @@ namespace Rubberduck.UI.Converters
             }
 
             //TODO: Make this independent of the resource used.
-            return RubberduckUI.ResourceManager.GetString(ResourcePrefix + value.ToString(), culture);
+            return RefactoringsUI.ResourceManager.GetString(ResourcePrefix + value.ToString(), culture);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var str = (string)value;
 
             foreach (var enumValue in Enum.GetValues(targetType))
             {
                 //TODO: Make this independent of the resource used.
-                if (str == RubberduckUI.ResourceManager.GetString(ResourcePrefix + enumValue.ToString(), culture))
+                if (str == RefactoringsUI.ResourceManager.GetString(ResourcePrefix + enumValue.ToString(), culture))
                 {
                     return enumValue;
                 }

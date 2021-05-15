@@ -6,6 +6,7 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveFolder;
 using Rubberduck.Refactorings.MoveToFolder;
@@ -109,7 +110,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands.DragAndDrop
         private bool UserConfirmsToProceedWithFolderMerge(string targetFolder, List<string> mergedTargetFolders)
         {
             var message = FolderMergeUserConfirmationMessage(targetFolder, mergedTargetFolders);
-            return _messageBox?.ConfirmYesNo(message, RubberduckUI.MoveFoldersDialog_Caption) ?? false;
+            return _messageBox?.ConfirmYesNo(message, RefactoringsUI.MoveFoldersDialog_Caption) ?? false;
         }
 
         private string FolderMergeUserConfirmationMessage(string targetFolder, List<string> mergedTargetFolders)
@@ -117,14 +118,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands.DragAndDrop
             if (mergedTargetFolders.Count == 1)
             {
                 return string.Format(
-                    RubberduckUI.MoveFolders_SameNameSubfolder,
+                    RefactoringsUI.MoveFolders_SameNameSubfolder,
                     targetFolder,
                     mergedTargetFolders.Single());
             }
 
             var subfolders = $"'{string.Join("', '", mergedTargetFolders)}'";
             return string.Format(
-                RubberduckUI.MoveFolders_SameNameSubfolders,
+                RefactoringsUI.MoveFolders_SameNameSubfolders,
                 targetFolder,
                 subfolders);
         }

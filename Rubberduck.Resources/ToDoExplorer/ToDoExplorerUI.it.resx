@@ -124,10 +124,7 @@
     <value>Descrizione</value>
   </data>
   <data name="TodoExplorer_LineNumber" xml:space="preserve">
-    <value>Numero riga</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Testo</value>
+    <value>Numero di riga</value>
   </data>
   <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck Elementi TODO - {0}
@@ -144,11 +141,5 @@
   </data>
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>Copia negli appunti</value>
-  </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Testo del Token:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Lista del Token:</value>
   </data>
 </root>

@@ -189,9 +189,6 @@
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
     <value>Dva nebo více projektů obsahující testovací metody, mají stejné jména nebo stejně pojmenované testy. Pokud chcete pokračovat, jedno z nich prosím přejmenujte.</value>
   </data>
-  <data name="TestOutcome_Failed" xml:space="preserve">
-    <value>Selhalo</value>
-  </data>
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ignorováno</value>
   </data>
@@ -347,5 +344,14 @@
   </data>
   <data name="TestExplorer_ContextMenuUnignoreSelectedTests" xml:space="preserve">
     <value>Zrušit ignorování označených testů</value>
+  </data>
+  <data name="TestOutcome_Failed" xml:space="preserve">
+    <value>Selhalo</value>
+  </data>
+  <data name="TestOutcome_Fail" xml:space="preserve">
+    <value>Selhání</value>
+  </data>
+  <data name="TestExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>_Test Explorer</value>
   </data>
 </root>
