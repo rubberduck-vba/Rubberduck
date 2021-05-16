@@ -373,4 +373,7 @@
   <data name="TestOutcome_Fail" xml:space="preserve">
     <value>Errore</value>
   </data>
+  <data name="TestExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>Explorer dei _Test</value>
+  </data>
 </root>
