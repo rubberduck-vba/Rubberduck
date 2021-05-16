@@ -610,6 +610,6 @@ Do you want to proceed?</value>
     <value>Optional parameters must be specified at the end of the parameter list.</value>
   </data>
   <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
-    <value>Annotation arguments of type 'Number' have to be a valid number in integer of floating point format.</value>
+    <value>Annotation arguments of type 'Number' have to be a valid number in integer or floating point format.</value>
   </data>
 </root>
