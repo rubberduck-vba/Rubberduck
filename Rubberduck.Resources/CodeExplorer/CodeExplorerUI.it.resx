@@ -368,4 +368,7 @@ Importazione annullata.</value>
 
 Importazione annullata.</value>
   </data>
+  <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>_Explorer del Codice</value>
+  </data>
 </root>

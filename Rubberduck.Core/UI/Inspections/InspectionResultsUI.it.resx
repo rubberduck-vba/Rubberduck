@@ -129,4 +129,10 @@
   <data name="FilterByWarning" xml:space="preserve">
     <value>Avvertimento</value>
   </data>
+  <data name="CollapseAll" xml:space="preserve">
+    <value>Raggruppa tutto</value>
+  </data>
+  <data name="ExpandAll" xml:space="preserve">
+    <value>Espandi tutto</value>
+  </data>
 </root>

@@ -142,4 +142,7 @@
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>Copia negli appunti</value>
   </data>
+  <data name="ToDoExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>Explorer dei T_odo</value>
+  </data>
 </root>

@@ -556,4 +556,10 @@ Una classe privata riesce ad implementare un'interfaccia pubblica.</value>
   <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
     <value>Impossibile incapsulare '{0}'. Istruzione/i ReDim({0}) presente/i in altri moduli.</value>
   </data>
+  <data name="AnnotationArgumentType_Text" xml:space="preserve">
+    <value>Testo</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
+    <value>Gli argomenti dell'annotazione di tipo 'Numero' devono essere un numero valido in formato intero o a virgola mobile.</value>
+  </data>
 </root>

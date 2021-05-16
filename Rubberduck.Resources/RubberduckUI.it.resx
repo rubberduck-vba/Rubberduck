@@ -698,4 +698,10 @@ La finestra è stata visualizzata perché è abilitata la verifica di versione. 
   <data name="PeekDefinitionCommandText" xml:space="preserve">
     <value>Guarda la definizione</value>
   </data>
+  <data name="CodeInspectionsWindowSettings_AccessKey" xml:space="preserve">
+    <value>_Ispezioni del codice</value>
+  </data>
+  <data name="PeekDefinition_DefaultDescription" xml:space="preserve">
+    <value>(nessuna annotazione o attributo di descrizione)</value>
+  </data>
 </root>
