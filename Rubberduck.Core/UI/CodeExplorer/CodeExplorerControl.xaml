@@ -489,7 +489,7 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Caption}"
+                    <MenuItem Header="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=Caption}"
                           Command="{Binding AddRemoveReferencesCommand}"
                           CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                         <MenuItem.Icon>
