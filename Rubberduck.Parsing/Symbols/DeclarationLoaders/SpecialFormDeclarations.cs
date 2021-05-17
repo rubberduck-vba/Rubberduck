@@ -34,7 +34,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             if (informationModule == null)
             {
                 //This should not happen under normal circumstances.
-                //Most probably, we are in a test that only addded parts of the VBA project.
+                //Most probably, we are in a test that only added parts of the VBA project.
                 return new List<Declaration>();
             }
 
