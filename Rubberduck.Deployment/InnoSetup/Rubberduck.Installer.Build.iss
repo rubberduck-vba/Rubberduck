@@ -899,20 +899,9 @@ begin
     InstallForWhoOptionPage.Values[1] := true;
   end;
 
-  RegisterAddInOptionPage :=
+    WorkloadOptionPage :=
     CreateInputOptionPage(
-      wpInstalling,
-      ExpandConstant('{cm:RegisterAddInCaption}'),
-      ExpandConstant('{cm:RegisterAddInMessage}'),
-      ExpandConstant('{cm:RegisterAddInDescription}'),
-      false, false);
-
-  RegisterAddInOptionPage.Add(ExpandConstant('{cm:RegisterAddInButtonCaption}'));
-  RegisterAddInOptionPage.Values[0] := true;
-
-  WorkloadOptionPage :=
-    CreateInputOptionPage(
-        wpInstalling,
+        wpLicense,
         ExpandConstant('{cm:UseLegacyWorkloadCaption}'),
         ExpandConstant('{cm:UseLegacyWorkloadMessage}'),
         ExpandConstant('{cm:UseLegacyWorkloadDescription}'),
@@ -929,6 +918,16 @@ begin
   
   WorkloadOptionPage.Values[0] := false;
 
+  RegisterAddInOptionPage :=
+    CreateInputOptionPage(
+      wpInstalling,
+      ExpandConstant('{cm:RegisterAddInCaption}'),
+      ExpandConstant('{cm:RegisterAddInMessage}'),
+      ExpandConstant('{cm:RegisterAddInDescription}'),
+      false, false);
+
+  RegisterAddInOptionPage.Add(ExpandConstant('{cm:RegisterAddInButtonCaption}'));
+  RegisterAddInOptionPage.Values[0] := true;
 
 end;
 
@@ -1115,11 +1114,14 @@ begin
     if WorkloadOptionPage.Values[0] then
     begin
       Log('Legacy workload initial config was requested and will be copied to the destination folder.');
+      //UseLegacyWorkloadConfig := True;
     end
       else
     begin
       Log('Skipping legacy workload config because the option was left unchecked.');
+      //UseLegacyWorkloadConfig := False;
     end;
+	UseLegacyWorkloadConfig := WorkloadOptionPage.Values[0];
   end;
 
   // Re-enable the button disabled at start of procedure
