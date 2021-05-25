@@ -257,9 +257,6 @@
   <data name="EmptyIfBlockInspection" xml:space="preserve">
     <value>'If'-Block enthält keine ausführbaren Anweisungen.</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Die Annotation '{0}' ist in diesem Kontext nicht erlaubt.</value>
-  </data>
   <data name="RedundantOptionInspection" xml:space="preserve">
     <value>'{0}' hat keine Auswirkung.</value>
   </data>
@@ -475,5 +472,17 @@ In Memoriam, 1972-2018</value>
   </data>
   <data name="MisleadingByRefParameterInspection" xml:space="preserve">
     <value>Irreführender ByRef Modifizierer für den Parameter '{0}' ({1}) benutzt.</value>
+  </data>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Die Annotation '{0}' ist in diesem Kontext nicht zulässig.</value>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>'{0}' ist keine von Rubberduck unterstützte Annotation</value>
+  </data>
+  <data name="InvalidAnnotationInspection_NotInRequiredComponentType" xml:space="preserve">
+    <value>Die Annotation '{0}' wurde in einer Komponente des Typs '{1}' verwendet, kann aber nur in Komponenten des Typs '{2}' verwendet werden.</value>
+  </data>
+  <data name="InvalidAnnotationInspection_IncompatibleComponentType" xml:space="preserve">
+    <value>Die Annotation '{0}' kann nicht in einer Komponente des Typs '{1}' verwendet werden.</value>
   </data>
 </root>

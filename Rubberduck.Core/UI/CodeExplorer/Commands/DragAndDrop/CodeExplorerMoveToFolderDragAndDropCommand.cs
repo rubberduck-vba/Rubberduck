@@ -6,6 +6,7 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveFolder;
 using Rubberduck.Refactorings.MoveToFolder;
@@ -35,13 +36,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands.DragAndDrop
             _declarationFinderProvider = declarationFinderProvider;
             _messageBox = messageBox;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         //We need to use the version with the interface since the type parameters always have to match exactly in the check in the base class.
         public override IEnumerable<Type> ApplicableNodeTypes => new []{typeof(ValueTuple<string, ICodeExplorerNode>)};
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             var (targetFolder, node) = (ValueTuple<string, ICodeExplorerNode>)parameter;
             return !string.IsNullOrEmpty(targetFolder)
@@ -109,7 +110,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands.DragAndDrop
         private bool UserConfirmsToProceedWithFolderMerge(string targetFolder, List<string> mergedTargetFolders)
         {
             var message = FolderMergeUserConfirmationMessage(targetFolder, mergedTargetFolders);
-            return _messageBox?.ConfirmYesNo(message, RubberduckUI.MoveFoldersDialog_Caption) ?? false;
+            return _messageBox?.ConfirmYesNo(message, RefactoringsUI.MoveFoldersDialog_Caption) ?? false;
         }
 
         private string FolderMergeUserConfirmationMessage(string targetFolder, List<string> mergedTargetFolders)
@@ -117,14 +118,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands.DragAndDrop
             if (mergedTargetFolders.Count == 1)
             {
                 return string.Format(
-                    RubberduckUI.MoveFolders_SameNameSubfolder,
+                    RefactoringsUI.MoveFolders_SameNameSubfolder,
                     targetFolder,
                     mergedTargetFolders.Single());
             }
 
             var subfolders = $"'{string.Join("', '", mergedTargetFolders)}'";
             return string.Format(
-                RubberduckUI.MoveFolders_SameNameSubfolders,
+                RefactoringsUI.MoveFolders_SameNameSubfolders,
                 targetFolder,
                 subfolders);
         }

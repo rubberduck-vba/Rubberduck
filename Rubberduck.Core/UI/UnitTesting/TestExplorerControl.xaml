@@ -213,27 +213,27 @@
 
                 <Label Content="{Resx Key=TestExplorer_Outcome, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Unknown}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Unknown}"
                               IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Unknown}}" >
                     <Image Source="{StaticResource OutcomeUnknown}" />
                 </ToggleButton>
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Fail}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Fail}"
                               IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Fail}}" >
                     <Image Source="{StaticResource OutcomeFail}" />
                 </ToggleButton>
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Inconclusive}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Inconclusive}"
                               IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Inconclusive}}" >
                     <Image Source="{StaticResource OutcomeInconclusive}" />
                 </ToggleButton>
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Succeeded}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Succeeded}"
                               IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Succeeded}}" >
                     <Image Source="{StaticResource OutcomeSucceeded}" />
                 </ToggleButton>
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Ignored}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Ignored}"
                               IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Ignored}}">
                     <Image Source="{StaticResource OutcomeIgnored}" />
                 </ToggleButton>
@@ -241,12 +241,12 @@
                 <Separator />
 
                 <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}" Margin="2"
-                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_CollapseAll}">
+                        ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=CollapseAll}">
                     <Image Source="{StaticResource CollapseAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Button Name="ExpandAll" Command="{Binding ExpandAllCommand}" Margin="2"
-                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_ExpandAll}">
+                        ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=ExpandAll}">
                     <Image Source="{StaticResource ExpandAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
                 </Button>
 

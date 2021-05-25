@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Assert_DimensionMismatchFormat" xml:space="preserve">
+    <value>atteso ha dimensioni {0}; reale ha dimensioni {1}. {2}</value>
+    <comment>{0} e {1} sono numeri dimensione (1, 2, etc.), {2} = parametro di messaggio.  Dovrebbe sempre essere alla fine.</comment>
+  </data>
+  <data name="Assert_EasterEggAssertClassPassed" xml:space="preserve">
+    <value>OK, Rubberduck ha asserito.  E adesso?</value>
+    <comment>Restituito quando una AssertClass è passata come parametro ad una funzione fittizia.</comment>
+  </data>
+  <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
+    <value>Atteso: Stack overflow?; Reale: Guard clause.</value>
+    <comment>Restituito quando un'interfaccia IFake è passata come parametro ad una funzione fittizia.</comment>
+  </data>
+  <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
+    <value>IVerify too.</value>
+    <comment>Restituito quando un'interfaccia IVerify è passata come parametro ad una funzione fittizia.</comment>
+  </data>
+  <data name="Assert_FailedMessageFormat" xml:space="preserve">
+    <value>{0} asserzione fallita. {1}</value>
+    <comment>{0} = segnaposto per metodo (es. AreEqual), {1} = parametro di messaggio.  Dovrebbe sempre essere alla fine.</comment>
+  </data>
+  <data name="Assert_InvalidFakePassThrough" xml:space="preserve">
+    <value>Installazione non valida di IFake {0}. La proprietà PassThrough deve essere False.</value>
+    <comment>{0} = nome della funzione fittizia.</comment>
+  </data>
+  <data name="Assert_LBoundMismatchFormat" xml:space="preserve">
+    <value>Dimensione {0}: atteso ha un LBound di {1}; reale ha un LBound di {2}. {3}</value>
+    <comment>{0} = numero dimensione, {1} e {2} = numeri LBound, {3} = parametro di messaggio.  Dovrebbe sempre essere alla fine.</comment>
+  </data>
+  <data name="Assert_NotImplemented" xml:space="preserve">
+    <value>Non implementato.</value>
+    <comment>Testo segnaposto per funzionalità pianificata.</comment>
+  </data>
+  <data name="Assert_ParameterIsNotArrayFormat" xml:space="preserve">
+    <value>{0} non è un array.</value>
+    <comment>{0} è sia [atteso] sia [reale]</comment>
+  </data>
+  <data name="Assert_ParameterResultFormat" xml:space="preserve">
+    <value>Atteso: {0}; Reale: {1}.{2}</value>
+    <comment>{0} = valore atteso, {1} = valore reale, {2} = messaggio facoltativo fornito dall'utente (sempre ultimo)</comment>
+  </data>
+  <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
+    <value>Dimensione {0}: atteso ha un UBound di {1}; reale ha un UBound di {2}. {3}</value>
+    <comment>{0} = numero dimensione, {1} e {2} = numeri UBound, {3} = parametro di messaggio.  Dovrebbe sempre essere alla fine.</comment>
+  </data>
+  <data name="Assert_UnexpectedArrayFormat" xml:space="preserve">
+    <value>[atteso] e [reale] sono array. Considerare l'uso di {0}.</value>
+    <comment>{0} è Assert.SequenceEquals o Assert.NotSequenceEquals.</comment>
+  </data>
+  <data name="Assert_UnexpectedNullArraysFormat" xml:space="preserve">
+    <value>[atteso] e [reale] sono Nothing. Considerare l'uso di {0}.</value>
+    <comment>{0} è Assert.AreSame o Assert.AreNotSame.</comment>
+  </data>
+  <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
+    <value>[atteso] e [reale] sono tipo riferimento. Considerare l'uso di {0}.</value>
+    <comment>{0} è Assert.AreSame o Assert.AreNotSame.</comment>
+  </data>
+  <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
+    <value>[atteso] e [reale] sono tipo valore. Considerare l'uso di {0}.</value>
+    <comment>{0} è Assert.AreEqual o Assert.AreNotEqual.</comment>
+  </data>
+  <data name="Assert_VerifyNoInvocationFormat" xml:space="preserve">
+    <value>Nessuna invocazione corrispondente per il parametro {0}; Solo {1} invocazioni. {2}</value>
+    <comment>{0} = nome del parametro, {1} = numero di chiamate, {2} = messaggio opzionale fornito dall'utente (sempre per ultimo)</comment>
+  </data>
+  <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
+    <value>Il parametro {0} non era un valore numerico nell'invocazione {1}.{2}</value>
+    <comment>{0} = nome del parametro, {1} = chiamata sotto test, {2} = messaggio opzionale fornito dall'utente (sempre per ultimo)</comment>
+  </data>
+  <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
+    <value>Il parametro {0} non è stato passato all'invocazione {1}.{2}</value>
+    <comment>{0} = nome del parametro, {1} = chiamata sotto test, {2} = messaggio opzionale fornito dall'utente (sempre per ultimo)</comment>
+  </data>
+  <data name="Prerequisite_EarlyBindingReferenceMissing" xml:space="preserve">
+    <value>Il riferimento a Rubberduck necessario per i test in associazione preventiva non è stato risolto. Può essere corrotto.</value>
+    <comment>Restituito quandi si vuole accertare che il riferimento a Rubberduck è fallito con un'eccezione</comment>
+  </data>
+  <data name="TestRunner_ComException" xml:space="preserve">
+    <value>Eccezione COM inattesa durante l'esecuzione dei test.</value>
+    <comment>Restituito quando si verifica un'eccezione COM  durante il test</comment>
+  </data>
+  <data name="TestRunner_ExceptionDuringRun" xml:space="preserve">
+    <value>L'esecuzione del metodo di test è fallita con un'eccezione.</value>
+    <comment>Restituito quando si verifica un'eccezione generica durante il test</comment>
+  </data>
+  <data name="TestRunner_GenericException" xml:space="preserve">
+    <value>Eccezione imprevista durante l'esecuzione dei test.</value>
+    <comment>Restituito quando si verifica un'eccezione generica non intercettata in alcun safeguard</comment>
+  </data>
+  <data name="TestRunner_ModuleInitializeFailure" xml:space="preserve">
+    <value>C'è stato un problema provando ad eseguire @ModuleInitialize. Modulo ignorato.</value>
+    <comment>Restituito quando l'esecuzione ModuleInitialize fallisce con un'eccezione</comment>
+  </data>
+  <data name="TestRunner_TestInitializeFailure" xml:space="preserve">
+    <value>C'è stato un problema provando ad eseguire @TestInitialize. Modulo ignorato.</value>
+    <comment>Restituito quando l'esecuzione TestInitialize fallisce con un'eccezione</comment>
+  </data>
+  <data name="Assert_MismatchedTypes" xml:space="preserve">
+    <value>I valori di [atteso] e [reale] non sono dello stesso tipo.</value>
+  </data>
+  <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
+    <value>Né [atteso] né [reale] sono array.</value>
+  </data>
+  <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
+    <value>[atteso] è un tipo riferimento e [reale] è un tipo valore.</value>
+  </data>
+  <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
+    <value>[atteso] è un tipo valore e [reale] è un tipo riferimento.</value>
+  </data>
+  <data name="Assert_VerifyInternalErrorMessage" xml:space="preserve">
+    <value>Rubberduck non ha potuto processare i risultati dell'invocazione.</value>
+  </data>
+</root>

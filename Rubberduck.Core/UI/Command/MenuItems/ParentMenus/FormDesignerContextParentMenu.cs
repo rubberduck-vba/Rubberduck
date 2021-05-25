@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Rubberduck.Parsing.UIContext;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public class FormDesignerContextParentMenu : ParentMenuItemBase
     {
-        public FormDesignerContextParentMenu(IEnumerable<IMenuItem> items, int beforeIndex)
-            : base("RubberduckMenu", items, beforeIndex)
+        public FormDesignerContextParentMenu(IEnumerable<IMenuItem> items, int beforeIndex, IUiDispatcher dispatcher)
+            : base(dispatcher,"RubberduckMenu", items, beforeIndex)
         {
         }
 
@@ -14,8 +15,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
     public class FormDesignerControlContextParentMenu : ParentMenuItemBase
     {
-        public FormDesignerControlContextParentMenu(IEnumerable<IMenuItem> items, int beforeIndex)
-            : base("RubberduckMenu", items, beforeIndex)
+        public FormDesignerControlContextParentMenu(IEnumerable<IMenuItem> items, int beforeIndex, IUiDispatcher dispatcher)
+            : base(dispatcher,"RubberduckMenu", items, beforeIndex)
         {
         }
 

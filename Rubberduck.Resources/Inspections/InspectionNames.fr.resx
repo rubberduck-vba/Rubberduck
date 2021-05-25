@@ -261,9 +261,6 @@
   <data name="ImplicitByRefModifierInspection" xml:space="preserve">
     <value>Paramètre ByRef implicite</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Annotation illégale</value>
-  </data>
   <data name="EmptyForEachBlockInspection" xml:space="preserve">
     <value>Boucle 'For Each...Next' vide</value>
   </data>

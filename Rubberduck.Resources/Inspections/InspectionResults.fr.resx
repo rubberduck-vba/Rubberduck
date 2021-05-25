@@ -285,9 +285,6 @@
   <data name="EmptyDoWhileBlockInspection" xml:space="preserve">
     <value>Une boucle 'Do...While' vide, qui ne contient aucune instruction exécutable, laisse songeur quant aux intentions de l'auteur. Évitez d'écrire du code qui n'a pas besoin d'être écrit.</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>L'annotation '{0}' est illégale dans ce contexte.</value>
-  </data>
   <data name="RedundantOptionInspection" xml:space="preserve">
     <value>'{0}' n'a aucun effet.</value>
   </data>

@@ -1,0 +1,374 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CodeExplorer_Add" xml:space="preserve">
+    <value>Aggiungi...</value>
+  </data>
+  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
+    <value>Modulo di classe (.cls)</value>
+  </data>
+  <data name="CodeExplorer_AddExistingFileText" xml:space="preserve">
+    <value>File esistenti...</value>
+  </data>
+  <data name="CodeExplorer_AddFormText" xml:space="preserve">
+    <value>UserForm (.frm)</value>
+  </data>
+  <data name="CodeExplorer_AddMDIFormText" xml:space="preserve">
+    <value>Maschera MDI (.frm)</value>
+  </data>
+  <data name="CodeExplorer_AddModule" xml:space="preserve">
+    <value>Aggiungi</value>
+  </data>
+  <data name="CodeExplorer_AddPropertyPageText" xml:space="preserve">
+    <value>Pagina delle proprietà (.pag)</value>
+  </data>
+  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
+    <value>Modulo standard (.bas)</value>
+  </data>
+  <data name="CodeExplorer_AddTemplatesSubMenu" xml:space="preserve">
+    <value>Modelli</value>
+  </data>
+  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
+    <value>Modulo di test</value>
+  </data>
+  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
+    <value>Modulo di test con stubs</value>
+  </data>
+  <data name="CodeExplorer_AddUserControlText" xml:space="preserve">
+    <value>UserControl (.ctl)</value>
+  </data>
+  <data name="CodeExplorer_AddUserDocumentText" xml:space="preserve">
+    <value>Documento utente (.dob)</value>
+  </data>
+  <data name="CodeExplorer_AddVBFormText" xml:space="preserve">
+    <value>Maschera (.frm)</value>
+  </data>
+  <data name="CodeExplorer_Annotate" xml:space="preserve">
+    <value>Annota</value>
+  </data>
+  <data name="CodeExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck Dichiarazioni Utente - {0}</value>
+  </data>
+  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
+    <value>Raggruppa tutto</value>
+  </data>
+  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
+    <value>Copia i risultati dell'ispezione negli appunti</value>
+  </data>
+  <data name="CodeExplorer_Delete" xml:space="preserve">
+    <value>Cancella</value>
+  </data>
+  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
+    <value>Visualizza i &amp;nomi dei membri</value>
+  </data>
+  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
+    <value>Visualizza lo stile</value>
+  </data>
+  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
+    <value>Visualizza le &amp;firme complete</value>
+  </data>
+  <data name="CodeExplorer_Exclude" xml:space="preserve">
+    <value>Escludi dal progetto</value>
+  </data>
+  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
+    <value>Espandi tutto</value>
+  </data>
+  <data name="CodeExplorer_Export" xml:space="preserve">
+    <value>Esporta...</value>
+  </data>
+  <data name="CodeExplorer_ExportAll" xml:space="preserve">
+    <value>Esporta Progetto...</value>
+  </data>
+  <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
+    <value>Estrai Interfaccia...</value>
+  </data>
+  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
+    <value>Trova Tutte le Implementazioni...</value>
+  </data>
+  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
+    <value>Trova Tutti i Riferimenti...</value>
+  </data>
+  <data name="CodeExplorer_FontSizeToolTip" xml:space="preserve">
+    <value>Dimensione del carattere</value>
+  </data>
+  <data name="CodeExplorer_Import" xml:space="preserve">
+    <value>Importa...</value>
+  </data>
+  <data name="CodeExplorer_Indent" xml:space="preserve">
+    <value>Indentazione</value>
+  </data>
+  <data name="CodeExplorer_LibraryReferences" xml:space="preserve">
+    <value>Riferimenti di Libreria</value>
+  </data>
+  <data name="CodeExplorer_MoveToFolder" xml:space="preserve">
+    <value>Sposta nella cartella...</value>
+  </data>
+  <data name="CodeExplorer_Navigate" xml:space="preserve">
+    <value>Na&amp;viga</value>
+  </data>
+  <data name="CodeExplorer_New" xml:space="preserve">
+    <value>&amp;Nuovo</value>
+  </data>
+  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
+    <value>Aggiungi un componente al progetto attivo</value>
+  </data>
+  <data name="CodeExplorer_Open" xml:space="preserve">
+    <value>Apri</value>
+  </data>
+  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
+    <value>Apri Designer</value>
+  </data>
+  <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
+    <value>Proprietà del progetto</value>
+  </data>
+  <data name="CodeExplorer_Print" xml:space="preserve">
+    <value>Stampa...</value>
+  </data>
+  <data name="CodeExplorer_ProjectReferences" xml:space="preserve">
+    <value>Riferimenti del Progetto</value>
+  </data>
+  <data name="CodeExplorer_Refresh" xml:space="preserve">
+    <value>A&amp;ggiorna</value>
+  </data>
+  <data name="CodeExplorer_Remove" xml:space="preserve">
+    <value>Rimuovi...</value>
+  </data>
+  <data name="CodeExplorer_Rename" xml:space="preserve">
+    <value>Rinomina...</value>
+  </data>
+  <data name="CodeExplorer_ResourceFileText" xml:space="preserve">
+    <value>Risorse</value>
+  </data>
+  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
+    <value>Esegui Tutti i &amp;Test</value>
+  </data>
+  <data name="CodeExplorer_SearchPlaceholder" xml:space="preserve">
+    <value>Cerca...</value>
+  </data>
+  <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
+    <value>Imposta come avvio</value>
+  </data>
+  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
+    <value>Apri Designer</value>
+  </data>
+  <data name="CodeExplorer_Sort" xml:space="preserve">
+    <value>Ordina</value>
+  </data>
+  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
+    <value>Come nel modulo</value>
+  </data>
+  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
+    <value>per Nome</value>
+  </data>
+  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
+    <value>Raggruppa per Tipo</value>
+  </data>
+  <data name="CodeExplorer_SyncCodePaneToolTip" xml:space="preserve">
+    <value>Sincronizza con il pannello del codice</value>
+  </data>
+  <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
+    <value>Explorer del Codice</value>
+  </data>
+  <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
+    <value>{0} (parsing...)</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Caption" xml:space="preserve">
+    <value>Conferma Cancellazione</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Prompt" xml:space="preserve">
+    <value>{0} sarà cancellato definitivamente.
+
+Continuare?</value>
+  </data>
+  <data name="DeleteFailed_Caption" xml:space="preserve">
+    <value>Cancellazione fallita</value>
+  </data>
+  <data name="DeleteFailed_Message" xml:space="preserve">
+    <value>Non è stato possibile cancellare i seguenti file:
+
+{0}</value>
+  </data>
+  <data name="ExportBeforeRemove_Caption" xml:space="preserve">
+    <value>Confermare l'esporazione</value>
+  </data>
+  <data name="ExportBeforeRemove_Prompt" xml:space="preserve">
+    <value>Esportare '{0}' prima della rimozione?</value>
+  </data>
+  <data name="ExportError_Caption" xml:space="preserve">
+    <value>Errore di esportazione di '{0}'</value>
+  </data>
+  <data name="RemoveError_Caption" xml:space="preserve">
+    <value>Errore di rimozione {0}</value>
+  </data>
+  <data name="ReplaceFromFiles" xml:space="preserve">
+    <value>Sostituisci i contenuti dai File...</value>
+  </data>
+  <data name="SyncProject" xml:space="preserve">
+    <value>Sincronizzare il progetto</value>
+  </data>
+  <data name="UpdateFromFiles" xml:space="preserve">
+    <value>Aggiorna i componenti dai File...</value>
+  </data>
+  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
+    <value>Mostra / nascondi firme</value>
+  </data>
+  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
+    <value>Mostra / nascondi cartelle</value>
+  </data>
+  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+    <value>Naviga</value>
+  </data>
+  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>Per il file '{0}', i(l)  file(s) binari(o) necessari(o) '{1}' è/sono mancanti/e e il componente di destinazione '{2}' non esiste ancora.
+
+Importazione annullata.</value>
+  </data>
+  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>Per il file '{0}', i(l)  file(s) binari(o) necessari(o) '{1}' è/sono mancanti/e.
+
+Importazione annullata.</value>
+  </data>
+  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
+    <value>Non ci sono documenti modulo con nome '{0}'; il file '{1}' non può essere importato.
+
+Importazione annullata.</value>
+  </data>
+  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
+    <value>Più file contengono il codice per il componente '{0}'.
+
+Importazione annullata.</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
+    <value>Tutti i file</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
+    <value>VB File</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
+    <value>Importa File Sorgente</value>
+  </data>
+  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
+    <value>L'estensione del file '{0}' non è supportata.
+
+Importazione annullata.</value>
+  </data>
+  <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>_Explorer del Codice</value>
+  </data>
+</root>

@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Rubberduck.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
@@ -35,13 +37,14 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         {
             base.Initialize();
             SetStatusLabelCaption(ParserState.Pending);
-            EvaluateCanExecute(_state);
+            EvaluateCanExecuteAsync(_state, CancellationToken.None);
         }
 
         private Declaration _lastDeclaration;
         private ParserState _lastStatus = ParserState.None;
-        private void EvaluateCanExecute(RubberduckParserState state, Declaration selected)
+        private async Task EvaluateCanExecuteAsync(RubberduckParserState state, Declaration selected, CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
             var currentStatus = _state.Status;
             if (_lastStatus == currentStatus && 
                 (selected == null || selected.Equals(_lastDeclaration)) &&
@@ -52,26 +55,77 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
             _lastStatus = currentStatus;
             _lastDeclaration = selected;
-            base.EvaluateCanExecute(state);
+            await base.EvaluateCanExecuteAsync(state, token);
         }
 
-        private void OnSelectionChange(object sender, DeclarationChangedEventArgs e)
+        private readonly ConcurrentDictionary<string, CancellationTokenSource> _tokenSources = new ConcurrentDictionary<string, CancellationTokenSource>();
+
+        private async void OnSelectionChange(object sender, DeclarationChangedEventArgs e)
         {
-            var caption = _formatter.Format(e.Declaration, e.MultipleControlsSelected);
-            if (string.IsNullOrEmpty(caption))
+            try
             {
-                //Fallback caption for selections in the Project window.                               
-                caption = e.FallbackCaption;
-            }
+                try
+                {
+                    if (_tokenSources.TryRemove(nameof(OnSelectionChange), out var existing))
+                    {
+                        existing.Cancel();
+                    }
+                }
+                catch (ObjectDisposedException)
+                {
+                    Logger.Trace($"CancellationTokenSource was already disposed for {nameof(OnSelectionChange)}.");
+                }
 
-            var refCount = e.Declaration?.References.Count() ?? 0;
-            var description = e.Declaration?.DescriptionString ?? string.Empty;
-            //& renders the next character as if it was an accelerator.
-            SetContextSelectionCaption(caption?.Replace("&", "&&"), refCount, description);
-            EvaluateCanExecute(_state, e.Declaration);
+                var source = _tokenSources.GetOrAdd(nameof(OnSelectionChange), k => new CancellationTokenSource());
+                var token = source.Token;
+
+                Task.Run(async () =>
+                    {
+                        var caption = await _formatter.FormatAsync(e.Declaration, e.MultipleControlsSelected, token);
+                        token.ThrowIfCancellationRequested();
+
+                        var argRefCount = e.Declaration is ParameterDeclaration parameter ? parameter.ArgumentReferences.Count() : 0;
+                        var refCount = (e.Declaration?.References.Count() ?? 0) + argRefCount;
+                        var description = e.Declaration?.DescriptionString.Trim() ?? string.Empty;
+                        token.ThrowIfCancellationRequested();
+
+                        //& renders the next character as if it was an accelerator.
+                        SetContextSelectionCaption(caption?.Replace("&", "&&"), refCount, description);
+                        token.ThrowIfCancellationRequested();
+
+                        await EvaluateCanExecuteAsync(_state, e.Declaration, token);
+
+                    }, token)
+                    .ContinueWith(t =>
+                    {
+                        try
+                        {
+                            if (!t.IsCanceled)
+                            {
+                                source.Dispose();
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Logger.Trace($"CancellationTokenSource.Dispose() threw an exception for {nameof(OnSelectionChange)}: {exception}");
+                        }
+                    }, token);
+            }
+            catch(ObjectDisposedException)
+            {
+                Logger.Trace($"CancellationTokenSource was already disposed for {nameof(OnSelectionChange)}.");
+            }
+            catch (OperationCanceledException exception)
+            {
+                Logger.Info(exception);
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+            }
         }
 
-        
+
         private void OnParserStatusMessageUpdate(object sender, RubberduckStatusMessageEventArgs e)
         {
             var message = e.Message;
@@ -84,11 +138,56 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             SetStatusLabelCaption(message, _state.ModuleExceptions.Count);            
         }
 
-        private void OnParserStateChanged(object sender, EventArgs e)
+        private async void OnParserStateChanged(object sender, EventArgs e)
         {
-            _lastStatus = _state.Status;
-            EvaluateCanExecute(_state);    
-            SetStatusLabelCaption(_state.Status, _state.ModuleExceptions.Count);                 
+            try
+            {
+                _lastStatus = _state.Status;
+                try
+                {
+                    if (_tokenSources.TryRemove(nameof(OnParserStateChanged), out var existing))
+                    {
+                        existing.Cancel();
+                    }
+                }
+                catch (ObjectDisposedException)
+                {
+                    Logger.Trace($"CancellationTokenSource was already disposed for {nameof(OnParserStateChanged)}.");
+                }
+
+                var source = _tokenSources.GetOrAdd(nameof(OnParserStateChanged), k => new CancellationTokenSource());
+                var token = source.Token;
+
+                await EvaluateCanExecuteAsync(_state, token)
+                    .ContinueWith(t =>
+                    {
+                        try
+                        {
+                            if (!t.IsCanceled)
+                            {
+                                source.Dispose();
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Logger.Trace($"CancellationTokenSource.Dispose() threw an exception for {nameof(OnParserStateChanged)}: {exception}");
+                        }
+                    }, token);
+
+                SetStatusLabelCaption(_state.Status, _state.ModuleExceptions.Count);
+            }
+            catch (ObjectDisposedException)
+            {
+                Logger.Trace($"CancellationTokenSource was already disposed for {nameof(OnParserStateChanged)}.");
+            }
+            catch (OperationCanceledException exception)
+            {
+                Logger.Info(exception);
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+            }
         }
 
         public void SetStatusLabelCaption(ParserState state, int? errorCount = null)
@@ -99,16 +198,12 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         private void SetStatusLabelCaption(string caption, int? errorCount = null)
         {
-            var reparseCommandButton =
-                FindChildByTag(typeof(ReparseCommandMenuItem).FullName) as ReparseCommandMenuItem;
-            if (reparseCommandButton == null)
+            if (!(FindChildByTag(typeof(ReparseCommandMenuItem).FullName) is ReparseCommandMenuItem reparseCommandButton))
             {
                 return;
             }
 
-            var showErrorsCommandButton =
-                FindChildByTag(typeof(ShowParserErrorsCommandMenuItem).FullName) as ShowParserErrorsCommandMenuItem;
-            if (showErrorsCommandButton == null)
+            if (!(FindChildByTag(typeof(ShowParserErrorsCommandMenuItem).FullName) is ShowParserErrorsCommandMenuItem showErrorsCommandButton))
             {
                 return;
             }
@@ -119,7 +214,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 {
                     reparseCommandButton.SetCaption(caption);
                     reparseCommandButton.SetToolTip(string.Format(RubberduckUI.ReparseToolTipText, caption));
-                    if (errorCount.HasValue && errorCount.Value > 0)
+                    if (errorCount > 0)
                     {
                         showErrorsCommandButton.SetToolTip(
                             string.Format(RubberduckUI.ParserErrorToolTipText, errorCount.Value));
@@ -168,6 +263,18 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             if (_isDisposed || !disposing)
             {
                 return;
+            }
+
+            foreach (var source in _tokenSources)
+            {
+                try
+                {
+                    source.Value.Dispose();
+                }
+                catch (Exception exception)
+                {
+                    Logger.Trace($"Disposing CancellationTokenSource for {nameof(OnParserStateChanged)} threw an exception: {exception}");
+                }
             }
 
             _selectionService.SelectionChanged -= OnSelectionChange;

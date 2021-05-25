@@ -56,6 +56,28 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        [TestCase("Workbook")]
+        [TestCase("Worksheet")]
+        [TestCase("Range")]
+        [TestCase("Excel.Workbook")]
+        public void ImplicitActiveWorkbookReference_ExplicitApplicationMember(string typeName)
+        {
+            var inputCode =
+                $@"
+Sub foo()
+    Dim bar As {typeName}
+    Dim sheet As Worksheet
+    Set sheet = bar.Application.Worksheets(""Sheet1"")
+End Sub";
+
+            const int expected = 1;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ImplicitActiveWorkbookReference_ReportsSheets()
         {
             const string inputCode =

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using NLog;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
@@ -75,26 +77,26 @@ namespace Rubberduck
                     _logger.Error(exception);
                 }
             }
-            EvaluateCanExecute(_parser.State);
+            EvaluateCanExecuteAsync(_parser.State, CancellationToken.None).Wait();
         }
 
-        public void OnSelectedDeclarationChange(object sender, DeclarationChangedEventArgs e)
+        public async void OnSelectedDeclarationChange(object sender, DeclarationChangedEventArgs e)
         {
-            EvaluateCanExecute(_parser.State);
+            await EvaluateCanExecuteAsync(_parser.State, CancellationToken.None);
         }
 
-        private void OnParserStateChanged(object sender, EventArgs e)
+        private async void OnParserStateChanged(object sender, EventArgs e)
         {            
-            EvaluateCanExecute(_parser.State);
+            await EvaluateCanExecuteAsync(_parser.State, CancellationToken.None);
         }
 
-        public void EvaluateCanExecute(RubberduckParserState state)
+        public async Task EvaluateCanExecuteAsync(RubberduckParserState state, CancellationToken token)
         {
             foreach (var menu in _menus)
             {
                 try
                 {
-                    menu.EvaluateCanExecute(state);
+                    await menu.EvaluateCanExecuteAsync(state, token);
                 }
                 catch (Exception exception)
                 {

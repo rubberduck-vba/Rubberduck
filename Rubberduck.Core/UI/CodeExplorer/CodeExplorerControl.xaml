@@ -58,7 +58,8 @@
             <converters:AnnotationToCodeStringConverter x:Key="AnnotationToCodeString" />
             <converters:AnnotateDeclarationCommandParameterToTupleConverter x:Key="AnnotateDeclarationCommandParameterToTuple" />
             <converters:AnnotateDeclarationCommandCEVisibilityConverter x:Key="AnnotateDeclarationCommandVisibility" />
-
+            <converters:DeclarationToDeclarationTypeStringConverter x:Key="DeclarationTypeNameConverter" />
+            
             <CompositeCollection x:Key="AddModuleCommands" x:Shared="False">
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddExistingFileText}"
                           Command="{Binding ImportCommand}"
@@ -488,7 +489,7 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Caption}"
+                    <MenuItem Header="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=Caption}"
                           Command="{Binding AddRemoveReferencesCommand}"
                           CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                         <MenuItem.Icon>
@@ -562,6 +563,9 @@
                                   Command="{Binding FindAllImplementationsCommand}"
                                   CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                     </MenuItem>
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=PeekDefinitionCommandText}"
+                              Command="{Binding PeekDefinitionCommand}"
+                              CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Indent}"
                               Command="{Binding IndenterCommand}"
                               CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
@@ -604,7 +608,8 @@
                     </HierarchicalDataTemplate.Resources>
                     <StackPanel Orientation="Horizontal">
                         <Grid>
-                            <Image Style="{StaticResource ToolbarIconStyle}">
+                            <Image Style="{StaticResource ToolbarIconStyle}" 
+                                   ToolTip="{Binding Converter={StaticResource DeclarationTypeNameConverter}}">
                                 <Image.Source>
                                     <MultiBinding Converter="{StaticResource NodeToIcon}">
                                         <MultiBinding.Bindings>
@@ -616,12 +621,14 @@
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>
-                            <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}" />
+                            <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}"
+                                   ToolTip="{Binding Converter={StaticResource DeclarationTypeNameConverter}}"/>
                         </Grid>
                         <TextBlock Style="{StaticResource TreeViewItemStyleModified}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
+
             <i:Interaction.Behaviors>
                 <controls:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
@@ -674,5 +681,12 @@
                 </WrapPanel>
             </ScrollViewer>
         </Border>
+
+        <Popup x:Name="PeekDefPopup" 
+               Placement="MousePoint" 
+               IsOpen="{Binding ShowPeekDefinitionPopup, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+               StaysOpen="True">
+            <controls:PeekControl DataContext="{Binding PeekDefinitionViewModel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+        </Popup>
     </Grid>
 </UserControl>

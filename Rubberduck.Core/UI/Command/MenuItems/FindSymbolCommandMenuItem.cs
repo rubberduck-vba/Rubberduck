@@ -12,8 +12,6 @@ namespace Rubberduck.UI.Command.MenuItems
         {}
 
         public override string Key => "ContextMenu_FindSymbol";
-        public override bool BeginGroup => true;
-
         public override Image Image => Resources.CommandBarIcons.FindSymbol;
         public override Image Mask => Resources.CommandBarIcons.FindSymbolMask;
 

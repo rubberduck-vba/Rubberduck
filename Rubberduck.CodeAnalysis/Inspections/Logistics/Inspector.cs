@@ -63,7 +63,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Logistics
             }
             token.ThrowIfCancellationRequested();
 
-            state.OnStatusMessageUpdate(RubberduckUI.CodeInspections_Inspecting);
+            state.OnStatusMessageUpdate(CodeAnalysisUI.CodeInspections_Inspecting);
             var allIssues = new ConcurrentBag<IInspectionResult>();
             token.ThrowIfCancellationRequested();
 

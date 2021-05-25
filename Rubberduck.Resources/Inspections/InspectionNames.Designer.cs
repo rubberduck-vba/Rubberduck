@@ -61,7 +61,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Annotation in incompatible component type.
+        ///   Looks up a localized string similar to Annotation in component with incompatible type.
         /// </summary>
         public static string AnnotationInIncompatibleComponentTypeInspection {
             get {

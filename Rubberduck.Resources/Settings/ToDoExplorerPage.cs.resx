@@ -117,16 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
+    <value>Text:</value>
+  </data>
   <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>TODO Explorer</value>
+    <value>TODO Průzkumník</value>
   </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
     <value>Text tokenu:</value>
   </data>
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>Seznam tokenu:</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Text:</value>
   </data>
 </root>

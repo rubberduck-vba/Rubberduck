@@ -2715,17 +2715,30 @@ End Sub";
 
         
         [Test]
-        public void TestCircleSpecialForm()
+        [TestCase(", 4, 5, 6, 7")]
+        [TestCase(",,,, 7")]
+        [TestCase(",, 5, 6, 7")]
+        [TestCase(", , , 6, 7")]
+        [TestCase(",,,,")]
+        [TestCase(",, 5,, 7")]
+        [TestCase(", 4, 5,, 7")]
+        [TestCase(", 4, 5, 6,")]
+        [TestCase(", 4,,, 7")]
+        [TestCase("")]
+        [TestCase(", 4,")]
+        [TestCase(", 4, 5")]
+        [TestCase(", 4, 5, 6")]
+        public void TestCircleSpecialForm(string optionalPart)
         {
-            string code = @"
+            var code = $@"
 Sub Test()
-    Me.Circle Step (1, 2), 3, 4, 5, 6, 7
+    Me.Circle Step (1, 2), 3{optionalPart}
 End Sub";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
         }
 
-        
+
         [Test]
         public void TestCircleSpecialForm_WithoutStep()
         {

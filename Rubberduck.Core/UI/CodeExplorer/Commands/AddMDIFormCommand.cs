@@ -23,14 +23,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             _projectsProvider = projectsProvider;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         public override IEnumerable<ProjectType> AllowableProjectTypes => Types;
 
         public override ComponentType ComponentType => ComponentType.MDIForm;
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             if (!(parameter is CodeExplorerItemViewModel node))
             {

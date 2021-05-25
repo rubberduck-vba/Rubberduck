@@ -443,16 +443,16 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>An annotation has more arguments than allowed; superfluous arguments are ignored.</value>
   </data>
   <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
-    <value>Implicit references to workbook members inside a workbook document module can be mistaken for implicit references to the active workbook, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved. If the intent was to refer to the active workbook, qualify with 'ActiveWorkbook' to prevent a bug.</value>
+    <value>Implicit references to workbook members inside a workbook document module can be mistaken for implicit references to the active workbook, which is the behavior in all other modules. By explicitly qualifying these member calls with 'Me', the ambiguity can be resolved. If the intent was to refer to the active workbook, qualify with 'ActiveWorkbook' to prevent a bug.</value>
   </data>
   <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
-    <value>Implicit references to worksheet members inside a worksheet document module can be mistaken for implicit references to the active worksheet, which is the behavior in all other modules. By explicitly qualifying these member calls with Me, the ambiguity can be resolved. If the intent is to refer to the active worksheet, qualify with 'ActiveSheet' to prevent a bug.</value>
+    <value>Implicit references to worksheet members inside a worksheet document module can be mistaken for implicit references to the active worksheet, which is the behavior in all other modules. By explicitly qualifying these member calls with 'Me', the ambiguity can be resolved. If the intent is to refer to the active worksheet, qualify with 'ActiveSheet' to prevent a bug.</value>
   </data>
   <data name="MisleadingByRefParameterInspection" xml:space="preserve">
     <value>The last parameter (the 'Value' parameter) of property mutators (Let/Set) are always passed ByVal. This is true regardless of the presence or absence of a ByRef or ByVal modifier. Exception: A UserDefinedType must always be passed ByRef even when it is the last parameter of a property mutator.</value>
   </data>
   <data name="AnnotationInIncompatibleComponentTypeInspection" xml:space="preserve">
-    <value>An annotation was specified in a module type that isn't compatible with that annotation. Some annotations can only be used in a specific module type; others cannot be used in certain module types.</value>
+    <value>An annotation was specified in a module of a type that isn't compatible with that annotation. Some annotations can only be used in a module of a specific type; others cannot be used in modules of certain types.</value>
   </data>
   <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
     <value>A comment was parsed as a syntactically valid annotation, but not recognized as a supported annotation type.</value>

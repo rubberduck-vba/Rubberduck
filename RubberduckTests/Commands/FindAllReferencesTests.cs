@@ -40,7 +40,7 @@ End Sub";
             {
                 var vm = ArrangeSearchResultsWindowViewModel();
                 var service = ArrangeFindAllReferencesService(state, vm);
-                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, service);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -67,7 +67,7 @@ End Sub";
             {
                 var vm = new SearchResultsWindowViewModel();
                 var service = ArrangeFindAllReferencesService(state, vm);
-                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, service);
 
                 command.Execute(null);
 
@@ -92,7 +92,7 @@ End Sub";
             {
                 var vm = new SearchResultsWindowViewModel();
                 var service = ArrangeFindAllReferencesService(state, vm);
-                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, service);
 
                 command.Execute(null);
 
@@ -117,7 +117,7 @@ End Sub";
             {
                 var vm = new SearchResultsWindowViewModel();
                 var service = ArrangeFindAllReferencesService(state, vm);
-                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, service);
 
                 command.Execute(null);
 
@@ -139,7 +139,7 @@ End Sub";
                 var messageBox = new Mock<IMessageBox>();
                 var vm = ArrangeSearchResultsWindowViewModel();
                 var service = ArrangeFindAllReferencesService(state, vm, messageBox: messageBox.Object);
-                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, service);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -165,7 +165,7 @@ End Sub";
                 var navigateCommand = new Mock<INavigateCommand>();
                 var vm = ArrangeSearchResultsWindowViewModel();
                 var service = ArrangeFindAllReferencesService(state, vm, navigateCommand.Object);
-                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, service);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -184,7 +184,7 @@ End Sub";
             {
                 var vm = ArrangeSearchResultsWindowViewModel();
                 var service = ArrangeFindAllReferencesService(state, vm);
-                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, service);
 
                 command.Execute(null);
 
@@ -215,7 +215,7 @@ End Sub";
 
                 var vm = ArrangeSearchResultsWindowViewModel();
                 var service = ArrangeFindAllReferencesService(state, vm);
-                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, service);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -304,7 +304,7 @@ End Sub
 
                 var vm = ArrangeSearchResultsWindowViewModel();
                 var service = ArrangeFindAllReferencesService(state, vm);
-                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, service);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "TextBox1");
 
                 command.Execute(target);
@@ -338,7 +338,7 @@ End Sub
                 var navigateCommand = new Mock<INavigateCommand>();
                 var vm = ArrangeSearchResultsWindowViewModel();
                 var service = ArrangeFindAllReferencesService(state, vm, navigateCommand.Object);
-                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, service);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "TextBox1");
 
                 command.Execute(target);
@@ -371,7 +371,7 @@ End Sub
                 var messageBox = new Mock<IMessageBox>();
                 var vm = ArrangeSearchResultsWindowViewModel();
                 var service = ArrangeFindAllReferencesService(state, vm, messageBox: messageBox.Object);
-                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, service);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "TextBox1");
 
                 command.Execute(target);
@@ -433,7 +433,7 @@ End Sub
 
                 var vm = ArrangeSearchResultsWindowViewModel();
                 var service = ArrangeFindAllReferencesService(state, vm);
-                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, service);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "Form1");
 
                 command.Execute(target);
@@ -468,7 +468,7 @@ End Sub
                 AssertParserReady(state);
                 var vm = ArrangeSearchResultsWindowViewModel();
                 var service = ArrangeFindAllReferencesService(state, vm, navigateCommand.Object);
-                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, service);
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Form1"));
 
                 navigateCommand.Verify(n => n.Execute(It.IsAny<object>()), Times.Once);
@@ -499,7 +499,7 @@ End Sub
                 var messageBox = new Mock<IMessageBox>();
                 var vm = ArrangeSearchResultsWindowViewModel();
                 var service = ArrangeFindAllReferencesService(state, vm, messageBox: messageBox.Object);
-                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, service);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "Form1");
 
                 command.Execute(target);
@@ -525,11 +525,11 @@ End Sub
             return new SearchResultsWindowViewModel();
         }
 
-        private static FindAllReferencesService ArrangeFindAllReferencesService(RubberduckParserState state,
+        private static FindAllReferencesAction ArrangeFindAllReferencesService(RubberduckParserState state,
             ISearchResultsWindowViewModel viewModel, INavigateCommand navigateCommand = null, IMessageBox messageBox = null,
             SearchResultPresenterInstanceManager presenterService = null, IUiDispatcher uiDispatcher = null)
         {
-            return new FindAllReferencesService(
+            return new FindAllReferencesAction(
                 navigateCommand ?? new Mock<INavigateCommand>().Object, 
                 messageBox ?? new Mock<IMessageBox>().Object, 
                 state, 
@@ -538,27 +538,26 @@ End Sub
                 uiDispatcher ?? new Mock<IUiDispatcher>().Object);
         }
 
-        private static FindAllReferencesCommand ArrangeFindAllReferencesCommand(RubberduckParserState state,
-            Mock<IVBE> vbe)
+        private static FindAllReferencesCommand ArrangeFindAllReferencesCommand(RubberduckParserState state, Mock<IVBE> vbe)
         {
             var viewModel = ArrangeSearchResultsWindowViewModel();
             var finder = ArrangeFindAllReferencesService(state, viewModel);
-            return ArrangeFindAllReferencesCommand(state, vbe, viewModel, finder);
+            return ArrangeFindAllReferencesCommand(state, vbe, finder);
         }
 
         private static FindAllReferencesCommand ArrangeFindAllReferencesCommand(RubberduckParserState state,
-            Mock<IVBE> vbe, ISearchResultsWindowViewModel viewModel, FindAllReferencesService finder)
+            Mock<IVBE> vbe, FindAllReferencesAction finder)
         {
-            return ArrangeFindAllReferencesCommand(state, vbe, viewModel, finder, MockVbeEvents.CreateMockVbeEvents(vbe));
+            return ArrangeFindAllReferencesCommand(state, vbe, finder, MockVbeEvents.CreateMockVbeEvents(vbe));
         }
 
         private static FindAllReferencesCommand ArrangeFindAllReferencesCommand(RubberduckParserState state,
-            Mock<IVBE> vbe, ISearchResultsWindowViewModel viewModel, FindAllReferencesService finder,
+            Mock<IVBE> vbe, FindAllReferencesAction finder,
             Mock<IVbeEvents> vbeEvents)
         {
             var selectionService = new SelectionService(vbe.Object, state.ProjectsProvider);
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
-            return new FindAllReferencesCommand(state, state, selectedDeclarationService, vbe.Object, viewModel, finder, vbeEvents.Object);
+            return new FindAllReferencesCommand(state, state, selectedDeclarationService, vbe.Object, finder, vbeEvents.Object);
         }
     }
 }

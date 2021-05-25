@@ -2369,7 +2369,7 @@ End Sub";
             dispatcher.Setup(m => m.Invoke(It.IsAny<Action>())).Callback((Action argument) => argument.Invoke());
             dispatcher.Setup(m => m.StartTask(It.IsAny<Action>(), It.IsAny<TaskCreationOptions>())).Returns((Action argument, TaskCreationOptions options) => Task.Factory.StartNew(argument.Invoke, options));
 
-            var viewModel = new CodeExplorerViewModel(state, null, generalSettingsProvider.Object, null, dispatcher.Object, vbe.Object, null,
+            var viewModel = new CodeExplorerViewModel(state, null, null, generalSettingsProvider.Object, null, dispatcher.Object, vbe.Object, null,
                 new CodeExplorerSyncProvider(vbe.Object, state, vbeEvents.Object), new List<IAnnotation>());
 
             parser.Parse(new CancellationTokenSource());

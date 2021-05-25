@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
+using Rubberduck.CodeAnalysis;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
@@ -100,7 +100,7 @@ namespace Rubberduck.UI.Command.ComCommands
         {
             if (_vbeSettings.CompileOnDemand)
             {
-                return _messageBox.ConfirmYesNo(RubberduckUI.Command_Reparse_CompileOnDemandEnabled, RubberduckUI.Command_Reparse_CompileOnDemandEnabled_Caption, false);
+                return _messageBox.ConfirmYesNo(CodeAnalysisUI.Command_Reparse_CompileOnDemandEnabled, CodeAnalysisUI.Command_Reparse_CompileOnDemandEnabled_Caption, false);
             }
 
             return true;
@@ -137,9 +137,9 @@ namespace Rubberduck.UI.Command.ComCommands
                 string.Join(Environment.NewLine, failedNames));
             // FIXME using Exclamation instead of warning now... 
             return _messageBox.ConfirmYesNo(
-                string.Format(RubberduckUI.Command_Reparse_CannotCompile,
+                string.Format(CodeAnalysisUI.Command_Reparse_CannotCompile,
                     formattedList),
-                RubberduckUI.Command_Reparse_CannotCompile_Caption, false);
+                CodeAnalysisUI.Command_Reparse_CannotCompile_Caption, false);
             
         }
     }

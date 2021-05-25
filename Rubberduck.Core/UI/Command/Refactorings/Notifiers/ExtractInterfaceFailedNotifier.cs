@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
@@ -10,7 +11,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             : base(messageBox)
         { }
 
-        protected override string Caption => Resources.RubberduckUI.ExtractInterface_Caption;
+        protected override string Caption => RefactoringsUI.ExtractInterface_Caption;
 
         protected override string Message(RefactoringException exception)
         {
@@ -18,7 +19,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             {
                 case InvalidDeclarationTypeException invalidDeclarationType:
                     Logger.Warn(invalidDeclarationType);
-                    return string.Format(Resources.RubberduckUI.RefactoringFailure_InvalidDeclarationType, 
+                    return string.Format(RefactoringsUI.RefactoringFailure_InvalidDeclarationType, 
                         invalidDeclarationType.TargetDeclaration.QualifiedModuleName,
                         invalidDeclarationType.TargetDeclaration.DeclarationType,
                         DeclarationType.ClassModule);

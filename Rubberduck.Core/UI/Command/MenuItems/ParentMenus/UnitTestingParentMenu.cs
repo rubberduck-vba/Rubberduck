@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Rubberduck.Parsing.UIContext;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public class UnitTestingParentMenu : ParentMenuItemBase
     {
-        public UnitTestingParentMenu(IEnumerable<IMenuItem> items) 
-            : base("RubberduckMenu_UnitTests", items)
+        public UnitTestingParentMenu(IEnumerable<IMenuItem> items, IUiDispatcher dispatcher) 
+            : base(dispatcher, "RubberduckMenu_UnitTests", items)
         {
         }
 

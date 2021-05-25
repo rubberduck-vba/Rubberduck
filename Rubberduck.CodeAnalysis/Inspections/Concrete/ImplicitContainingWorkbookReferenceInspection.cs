@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.CodeAnalysis.Inspections.Attributes;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -61,10 +58,9 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            var qualifiers = base.GetQualifierCandidates(reference, finder);
             return Declaration.GetModuleParent(reference.ParentScoping) is DocumentModuleDeclaration document
-                && document.SupertypeNames.Contains("Workbook")
-                && !qualifiers.Any();
+                   && document.SupertypeNames.Contains("Workbook")
+                   && reference.QualifyingReference == null;
         }
 
         protected override string ResultDescription(IdentifierReference reference)

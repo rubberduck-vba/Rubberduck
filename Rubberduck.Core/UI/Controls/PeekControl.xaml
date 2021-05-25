@@ -1,0 +1,102 @@
+﻿<UserControl x:Class="Rubberduck.UI.Controls.PeekControl"
+       x:Name="PopupChildControl"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+       xmlns:local="clr-namespace:Rubberduck.UI.Controls"
+       xmlns:converters="clr-namespace:Rubberduck.UI.Converters" 
+       d:DataContext="{d:DesignInstance Type=local:PeekDefinitionViewModel}"
+       mc:Ignorable="d"
+       MinWidth="350" MaxWidth="550"
+       MinHeight="140" MaxHeight="450">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Controls/ToolBar.xaml"/>
+                <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:CodeExplorerNodeToIconConverter x:Key="DeclarationToIcon" />
+            <converters:AccessibilityToIconConverter x:Key="AccessibilityToIcon" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <DockPanel>
+
+    <Grid Background="{DynamicResource {x:Static SystemColors.InfoBrushKey}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" BorderBrush="Black" BorderThickness="1px" />
+
+            <Image Grid.Row="0" Grid.Column="0" VerticalAlignment="Top"
+                   Style="{StaticResource IconStyle}" 
+                   Source="{Binding NavigateCommandParameter, Converter={StaticResource DeclarationToIcon}, Mode=OneWay}" />
+            <Image Grid.Row="0" Grid.Column="0" VerticalAlignment="Top"
+                   Style="{StaticResource IconStyle}" 
+                   Source="{Binding Target.Accessibility, Converter={StaticResource AccessibilityToIcon}, Mode=OneWay}" />
+
+            <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
+                       Text="{Binding Target.IdentifierName}" 
+                       ToolTip="{Binding Target.IdentifierName}"
+                       TextWrapping="NoWrap"
+                       FontSize="16" FontWeight="Bold"
+                       Margin="2" VerticalAlignment="Top" />
+
+            <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                        Orientation="Vertical">
+                <TextBlock Text="{Binding Target.DeclarationType}"
+                           FontSize="10"
+                           Margin="2"/>
+                <TextBlock Text="{Binding DescriptionString}" 
+                           TextWrapping="Wrap"
+                           FontStyle="Italic"
+                           Margin="2,0,2,4"/>
+            </StackPanel>
+
+            <local:LinkButton Grid.Row="3" Grid.Column="1" Margin="4" HorizontalAlignment="Right"
+                              Click="LinkButton_OnClick"
+                              Command="{Binding  NavigateCommand}"
+                              CommandParameter="{Binding Target}">
+                <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_NavigateText}" />
+            </local:LinkButton>
+            <local:LinkButton Grid.Row="3" Grid.Column="2" Margin="4" HorizontalAlignment="Right"
+                              Click="LinkButton_OnClick"
+                              Command="{Binding FindReferencesCommand}"
+                              CommandParameter="{Binding Target}">
+                <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_FindAllReferencesText}" />
+            </local:LinkButton>
+
+            <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Opacity="0.8" Background="White" Padding="4" Margin="2">
+                <local:BindableTextEditor Background="Transparent" Padding="4" IsReadOnly="True"
+                                          FontFamily="Consolas"
+                                          HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" 
+                                          Text="{Binding Body}">
+                </local:BindableTextEditor>
+            </Border>
+
+            <Thumb x:Name="DragThumb" Cursor="Hand" Height="22" VerticalAlignment="Top"
+                   Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                <Thumb.Template>
+                    <ControlTemplate></ControlTemplate>
+                </Thumb.Template>
+            </Thumb>
+
+            <local:CloseButton Grid.Row="0" Grid.Column="2"
+                               VerticalAlignment="Top" HorizontalAlignment="Right"
+                               Command="{Binding CloseCommand}"
+                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CloseButtonText}" />
+        </Grid>
+
+    </DockPanel>
+
+</UserControl>

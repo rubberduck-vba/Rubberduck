@@ -13,12 +13,10 @@
     &lt;CodeInspection Name="EmptyStringLiteralInspection" Severity="Warning" InspectionType="LanguageOpportunities" /&gt;
     &lt;CodeInspection Name="ImplicitByRefModifierInspection" Severity="Hint" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="FunctionReturnValueNotUsedInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
-    &lt;CodeInspection Name="IllegalAnnotationInspection" Severity="Error" InspectionType="RubberduckOpportunities" /&gt;
     &lt;CodeInspection Name="RedundantByRefModifierInspection" Severity="DoNotShow" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="MissingAttributeInspection" Severity="Warning" InspectionType="RubberduckOpportunities" /&gt;
-    &lt;CodeInspection Name="AttributeValueOutOfSyncInspection" Severity="Warning" InspectionType="RubberduckOpportunities" /&gt;
+    &lt;CodeInspection Name="AttributeOutOfSyncInspection" Severity="Warning" InspectionType="RubberduckOpportunities" /&gt;
     &lt;CodeInspection Name="MissingAnnotationArgumentInspection" Severity="Error" InspectionType="CodeQualityIssues" /&gt;
-    &lt;CodeInspection Name="MissingMemberAnnotationInspection" Severity="Error" InspectionType="RubberduckOpportunities" /&gt;
     &lt;CodeInspection Name="ModuleScopeDimKeywordInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
     &lt;CodeInspection Name="MultilineParameterInspection" Severity="Suggestion" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
     &lt;CodeInspection Name="MultipleDeclarationsInspection" Severity="Warning" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
@@ -48,9 +46,7 @@
     &lt;CodeInspection Name="HostSpecificExpressionInspection" Severity="Warning" InspectionType="LanguageOpportunities" /&gt;
     &lt;CodeInspection Name="HungarianNotationInspection" Severity="Suggestion" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
     &lt;CodeInspection Name="ImplicitActiveSheetReferenceInspection" Severity="Warning" InspectionType="LanguageOpportunities" /&gt;
-    &lt;CodeInspection Name="ImplicitContainingSheetReferenceInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
     &lt;CodeInspection Name="ImplicitActiveWorkbookReferenceInspection" Severity="Warning" InspectionType="LanguageOpportunities" /&gt;
-    &lt;CodeInspection Name="ImplicitContainingWorkbookReferenceInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
     &lt;CodeInspection Name="ImplicitDefaultMemberAssignmentInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
     &lt;CodeInspection Name="ImplicitPublicMemberInspection" Severity="Hint" InspectionType="LanguageOpportunities" /&gt;
     &lt;CodeInspection Name="ImplicitVariantReturnTypeInspection" Severity="Hint" InspectionType="LanguageOpportunities" /&gt;
@@ -86,6 +82,8 @@
     &lt;CodeInspection Name="AssignmentNotUsedInspection" Severity="Suggestion" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="UnderscoreInPublicClassModuleMemberInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="ExcelUdfNameIsValidCellReferenceInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="EmptyMethodInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="ImplementedInterfaceMemberInspection" Severity="Suggestion" InspectionType="CodeQualityIssues" /&gt;
   &lt;/CodeInspections&gt;
   &lt;WhitelistedIdentifiers /&gt;
   &lt;RunInspectionsOnSuccessfulParse&gt;true&lt;/RunInspectionsOnSuccessfulParse&gt;
