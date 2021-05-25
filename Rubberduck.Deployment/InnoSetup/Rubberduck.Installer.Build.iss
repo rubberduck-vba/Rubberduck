@@ -88,7 +88,6 @@ Name: "Czech"; MessagesFile: "compiler:Languages\Czech.isl"
 Name: "Spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "Italian"; MessagesFile: "compiler:Languages\Italian.isl"
 
-
 [Dirs]
 ; Make folder "readonly" to support icons (it does not actually make folder readonly. A weird Windows quirk)
 Name: {group}; Attribs: readonly
@@ -105,6 +104,9 @@ Source: "{#GraphicsDir}Ducky.ico"; DestDir: "{group}"; Attribs: hidden system; F
 ; Makes it easier to fix VBE registration issues
 Source: "{#IncludesDir}Rubberduck.RegisterAddIn.bat"; DestDir: "{app}"; Flags: ignoreversion replacesameversion;
 Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: ignoreversion replacesameversion;
+
+; 'LegacyWorkload' initial configuration (disables autocompletion and inspections that could spawn too many results in legacy code)
+Source: "{#SourcePath}\WorkloadConfigs\Legacy\rubberduck.config"; DestDir: "{userappdata}\{#AppName}"; Flags: ignoreversion replacesameversion; Check: CheckUseLegacyWorkloadConfig;
 
 [Registry]
 ; DO NOT attempt to register VBE Add-In with this section. It doesn't work
@@ -193,6 +195,13 @@ var
   RegisterAddInOptionPage: TInputOptionWizardPage;
 
   ///<remarks>
+  ///Custom page to indicate whether the installer should copy the 'legacy workload'
+  ///initial configuration file to disable certain features and inspections.
+  ///<see cref="RegisterAddIn" />
+  ///</remakrs>
+  WorkloadOptionPage: TInputOptionWizardPage;
+
+  ///<remarks>
   ///Set by the <see cref="RegisterAddInOptionPage" />; should be
   ///read-only normally. When set to true, it is used to check if
   ///elevation is needed for the installer.
@@ -217,6 +226,11 @@ var
   ///function and should be read-only in all other contexts.
   ///</remarks>
   PerUserOnly : Boolean;
+
+  ///<remarks>
+  ///Indicates that the installer should copy the 'legacy workload' initial configuration file.
+  ///</remarks>
+  UseLegacyWorkloadConfig : Boolean;
 
 // External functions section
 
@@ -525,6 +539,14 @@ begin
     result := true;
 end;
 
+function CheckUseLegacyWorkloadConfig():boolean;
+begin
+  if UseLegacyWorkloadConfig then
+    result := true
+  else
+    result := false;
+end;
+
 ///<remarks>
 ///Used by <see cref="RegisterAddIn" />, passing in parameters to actually create
 ///the per-user registry entries to enable VBE addin for that user.
@@ -550,10 +572,9 @@ begin
 end;
 
 ///<remarks>
-///Called after successfully installing, including via the elevated installer
-///to register the VBE addin.
+///Called after successfully installing, including via the elevated installer to register the VBE addin.
 ///</remarks>
-procedure RegisterAddin();
+procedure RegisterAddIn();
 begin
     if IsWin64() then
     begin
@@ -569,7 +590,7 @@ begin
 end;
 
 ///<remarks>
-///Delete registry keys created by <see cref="RegisterAddin" />
+///Delete registry keys created by <see cref="RegisterAddIn" />
 ///</remarks>
 procedure UnregisterAddin();
 begin
@@ -840,10 +861,9 @@ end;
 ///The second event of installer allow us to customize the wizard by
 ///assessing whether we were launched in elevated context from an
 ///non-elevated installer; <see cref="HasElevateSwitch" />. We then
-///set up the <see cref="InstallForWhoOptionPage" /> and
-///<see cref="RegisterAddInOptionPage" /> pages. In both cases, their
-///behavior differs depending on whether we are elevated, and need to be
-///configured accordingly.
+///set up the custom installer pages. In the case of <see cref="InstallForWhoOptionPage" /> and
+///<see cref="RegisterAddInOptionPage" />, their behavior differs depending on whether we are elevated, 
+///and need to be configured accordingly.
 ///</remarks>
 procedure InitializeWizard();
 begin
@@ -881,6 +901,25 @@ begin
     InstallForWhoOptionPage.Values[1] := true;
   end;
 
+    WorkloadOptionPage :=
+    CreateInputOptionPage(
+        wpLicense,
+        ExpandConstant('{cm:UseLegacyWorkloadCaption}'),
+        ExpandConstant('{cm:UseLegacyWorkloadMessage}'),
+        ExpandConstant('{cm:UseLegacyWorkloadDescription}'),
+        false, false);
+
+  if IsUpgradeApp() = NoneIsInstalled then
+  begin
+      WorkloadOptionPage.Add(ExpandConstant('{cm:UseLegacyWorkloadButtonCaption}'))    
+  end
+    else
+  begin
+      WorkloadOptionPage.Add(ExpandConstant('{cm:OverwriteWithLegacyWorkloadButtonCaption}'))    
+  end;
+  
+  WorkloadOptionPage.Values[0] := false;
+
   RegisterAddInOptionPage :=
     CreateInputOptionPage(
       wpInstalling,
@@ -891,6 +930,7 @@ begin
 
   RegisterAddInOptionPage.Add(ExpandConstant('{cm:RegisterAddInButtonCaption}'));
   RegisterAddInOptionPage.Values[0] := true;
+
 end;
 
 ///<remarks>
@@ -986,6 +1026,7 @@ begin
     Log(Format('AppSuffix: %s', [GetAppSuffix()]));
     Log(Format('ShouldCreateUninstaller: %d', [ShouldCreateUninstaller()]));
     Log(Format('ShouldInstallAllUsers variable: %d', [ShouldInstallAllUsers]));
+    Log(Format('UseLegacyWorkloadConfig variable: %d', [UseLegacyWorkloadConfig]));
 
     if not IsElevated() and ShouldInstallAllUsers then
     begin
@@ -1069,6 +1110,20 @@ begin
     begin
       Log('Addin registration was declined because the user unchecked the checkbox');
     end;
+  end
+    else if CurPageID = WorkloadOptionPage.ID then
+  begin
+    if WorkloadOptionPage.Values[0] then
+    begin
+      Log('Legacy workload initial config was requested and will be copied to the destination folder.');
+      //UseLegacyWorkloadConfig := True;
+    end
+      else
+    begin
+      Log('Skipping legacy workload config because the option was left unchecked.');
+      //UseLegacyWorkloadConfig := False;
+    end;
+	UseLegacyWorkloadConfig := WorkloadOptionPage.Values[0];
   end;
 
   // Re-enable the button disabled at start of procedure
