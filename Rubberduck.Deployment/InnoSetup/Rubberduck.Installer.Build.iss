@@ -86,6 +86,7 @@ Name: "French"; MessagesFile: "compiler:Languages\French.isl"
 Name: "German"; MessagesFile: "compiler:Languages\German.isl"
 Name: "Czech"; MessagesFile: "compiler:Languages\Czech.isl"
 Name: "Spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
+Name: "Italian"; MessagesFile: "compiler:Languages\Italian.isl"
 
 [Dirs]
 ; Make folder "readonly" to support icons (it does not actually make folder readonly. A weird Windows quirk)
@@ -127,6 +128,7 @@ Source: "{#SourcePath}\WorkloadConfigs\Legacy\rubberduck.config"; DestDir: "{use
 #include <German.CustomMessages.iss>
 #include <Czech.CustomMessages.iss>
 #include <Spanish.CustomMessages.iss>
+#include <Italian.CustomMessages.iss>
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#AppName}}"; Filename: "{#AppURL}"
@@ -912,7 +914,7 @@ begin
 
   WorkloadOptionPage :=
     CreateInputOptionPage(
-        wpInstalling,
+        wpLicense,
         ExpandConstant('{cm:UseLegacyWorkloadCaption}'),
         ExpandConstant('{cm:UseLegacyWorkloadMessage}'),
         ExpandConstant('{cm:UseLegacyWorkloadDescription}'),
@@ -1120,6 +1122,7 @@ begin
     begin
       Log('Skipping legacy workload config because the option was left unchecked.');
     end;
+	UseLegacyWorkloadConfig := WorkloadOptionPage.Values[0];
   end;
 
   // Re-enable the button disabled at start of procedure
