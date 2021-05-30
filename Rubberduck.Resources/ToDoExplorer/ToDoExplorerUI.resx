@@ -126,6 +126,15 @@
   <data name="TodoExplorer_LineNumber" xml:space="preserve">
     <value>Line Number</value>
   </data>
+  <data name="TodoSettings_TokenLabel" xml:space="preserve">
+    <value>Token Text:</value>
+  </data>
+  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
+    <value>Token List:</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>															
   <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck TODO Items - {0}
 {1} items found.</value>
@@ -144,5 +153,8 @@
   </data>
   <data name="ToDoExplorerWindowSettings_AccessKey" xml:space="preserve">
     <value>T_odo Explorer</value>
+  </data>
+    <data name="FilterLabel" xml:space="preserve">
+    <value>Filter:</value>
   </data>
 </root>

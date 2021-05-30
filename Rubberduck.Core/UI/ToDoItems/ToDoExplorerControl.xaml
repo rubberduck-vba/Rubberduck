@@ -46,6 +46,9 @@
                     <Style TargetType="Image">
                         <Setter Property="Height" Value="16" />
                     </Style>
+                    <Style TargetType="Label">
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                    </Style>
                 </ToolBar.Resources>
 
                 <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Refresh}" Command="{Binding RefreshCommand}">
@@ -60,7 +63,7 @@
 
                 <Separator />
 
-                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" VerticalContentAlignment="Center" />
+                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" />
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByMarker}"
@@ -76,6 +79,11 @@
 
                 <Separator />
 
+                <Label Content="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=FilterLabel}" />
+                <controls:SearchBox Width="100"
+                                    Text="{Binding ToDoFilter, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
+
+                <Separator />
                 <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}"
                         ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=CollapseAll}">
                     <Image Source="{StaticResource CollapseAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
