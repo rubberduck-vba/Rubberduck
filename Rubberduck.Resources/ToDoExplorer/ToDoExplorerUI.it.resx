@@ -145,4 +145,16 @@
   <data name="ToDoExplorerWindowSettings_AccessKey" xml:space="preserve">
     <value>Explorer dei T_odo</value>
   </data>
+  <data name="FilterLabel" xml:space="preserve">
+    <value>Filtro:</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>Testo</value>
+  </data>
+  <data name="TodoSettings_TokenLabel" xml:space="preserve">
+    <value>Testo del Token:</value>
+  </data>
+  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
+    <value>Lista del Token:</value>
+  </data>
 </root>

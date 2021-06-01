@@ -61,6 +61,15 @@ namespace Rubberduck.Resources.ToDoExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter:.
+        /// </summary>
+        public static string FilterLabel {
+            get {
+                return ResourceManager.GetString("FilterLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to T_odo Explorer.
         /// </summary>
         public static string TodoExplorer_Caption {
@@ -131,6 +140,33 @@ namespace Rubberduck.Resources.ToDoExplorer {
         public static string ToDoExplorerWindowSettings_AccessKey {
             get {
                 return ResourceManager.GetString("ToDoExplorerWindowSettings_AccessKey", resourceCulture);
+            }
+        }
+
+                /// <summary>
+        ///   Looks up a localized string similar to Text.
+        /// </summary>
+        public static string TodoSettings_Text {
+            get {
+                return ResourceManager.GetString("TodoSettings_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token Text:.
+        /// </summary>
+        public static string TodoSettings_TokenLabel {
+            get {
+                return ResourceManager.GetString("TodoSettings_TokenLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token List:.
+        /// </summary>
+        public static string TodoSettings_TokenListLabel {
+            get {
+                return ResourceManager.GetString("TodoSettings_TokenListLabel", resourceCulture);
             }
         }
     }
