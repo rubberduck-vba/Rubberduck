@@ -305,6 +305,7 @@ namespace Rubberduck.UI.ToDoItems
                 _state.StateChanged -= HandleStateChanged;
             }
         }
+
         private string _toDoFilter;
         public string ToDoFilter 
         { 
