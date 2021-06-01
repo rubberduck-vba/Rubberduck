@@ -79,6 +79,8 @@
 
                 <Separator />
 
+                <Image Source="{StaticResource FilterImage}" />
+
                 <Label Content="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=FilterLabel}" />
                 <controls:SearchBox Width="100"
                                     Text="{Binding ToDoFilter, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
