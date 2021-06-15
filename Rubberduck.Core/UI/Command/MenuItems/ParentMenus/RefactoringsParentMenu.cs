@@ -23,7 +23,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         ReorderParameters,
         MoveCloserToUsage,
         EncapsulateField,
-        IntroduceParameter,
+        PromoteToParameter,
         IntroduceField,
         MoveToFolder,
         MoveContainingFolder,

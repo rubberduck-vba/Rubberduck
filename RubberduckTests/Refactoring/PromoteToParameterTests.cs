@@ -17,12 +17,12 @@ using Rubberduck.VBEditor.Utility;
 namespace RubberduckTests.Refactoring
 {
     [TestFixture]
-    public class IntroduceParameterTests : RefactoringTestBase
+    public class PromoteToParameterTests : RefactoringTestBase
     {
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_NoParamsInList_Sub()
+        public void PromoteToParameterRefactoring_NoParamsInList_Sub()
         {
             //Input
             const string inputCode =
@@ -43,7 +43,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_NoParamsInList_Function()
+        public void PromoteToParameterRefactoring_NoParamsInList_Function()
         {
             //Input
             const string inputCode =
@@ -66,7 +66,7 @@ End Function";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_OneParamInList()
+        public void PromoteToParameterRefactoring_OneParamInList()
         {
             //Input
             const string inputCode =
@@ -87,7 +87,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_OneParamInList_MultipleLines()
+        public void PromoteToParameterRefactoring_OneParamInList_MultipleLines()
         {
             //Input
             const string inputCode =
@@ -111,7 +111,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_MultipleParamsOnMultipleLines()
+        public void PromoteToParameterRefactoring_MultipleParamsOnMultipleLines()
         {
             //Input
             const string inputCode =
@@ -134,7 +134,7 @@ End Sub";   // note: the VBE removes extra spaces
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_MultipleVariablesInStatement_MoveFirst()
+        public void PromoteToParameterRefactoring_MultipleVariablesInStatement_MoveFirst()
         {
             //Input
             const string inputCode =
@@ -161,7 +161,7 @@ End Sub";   // note: the VBE removes extra spaces
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_MultipleVariablesInStatement_MoveSecond()
+        public void PromoteToRefactoring_MultipleVariablesInStatement_MoveSecond()
         {
             //Input
             const string inputCode =
@@ -188,7 +188,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_MultipleVariablesInStatement_MoveLast()
+        public void PromoteToParameterRefactoring_MultipleVariablesInStatement_MoveLast()
         {
             //Input
             const string inputCode =
@@ -215,7 +215,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_MultipleVariablesInStatement_OnOneLine_MoveFirst()
+        public void PromoteToParameterRefactoring_MultipleVariablesInStatement_OnOneLine_MoveFirst()
         {
             //Input
             const string inputCode =
@@ -239,7 +239,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_ThrowsTargetDeclarationIsNotContainedInAMethodExceptionAndDoesNothingForField()
+        public void PromoteToParameterRefactoring_ThrowsTargetDeclarationIsNotContainedInAMethodExceptionAndDoesNothingForField()
         {
             //Input
             const string inputCode =
@@ -256,7 +256,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_ThrowsNoDeclarationForSelectionExceptionAndDoesNothingForInvalidSelection()
+        public void PromoteToParameterRefactoring_ThrowsNoDeclarationForSelectionExceptionAndDoesNothingForInvalidSelection()
         {
             //Input
             const string inputCode =
@@ -273,7 +273,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_Properties_GetAndLet()
+        public void PromoteToParameterRefactoring_Properties_GetAndLet()
         {
             //Input
             const string inputCode =
@@ -302,7 +302,7 @@ End Property";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_Properties_GetAndSet()
+        public void PromoteToParameterRefactoring_Properties_GetAndSet()
         {
             //Input
             const string inputCode =
@@ -331,7 +331,7 @@ End Property";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_ImplementsInterface()
+        public void PromoteToParameterRefactoring_ImplementsInterface()
         {
             //Input
             const string inputCode1 =
@@ -389,7 +389,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_ImplementsInterface_MultipleInterfaceImplementations()
+        public void PromoteToParameterRefactoring_ImplementsInterface_MultipleInterfaceImplementations()
         {
             //Input
             const string inputCode1 =
@@ -466,7 +466,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_ImplementsInterface_Reject()
+        public void PromoteToParameterRefactoring_ImplementsInterface_Reject()
         {
             //Input
             const string inputCode1 =
@@ -515,7 +515,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_PassInTarget()
+        public void PromoteToParameterRefactoring_PassInTarget()
         {
             //Input
             const string inputCode =
@@ -535,7 +535,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_PassInTarget_NonVariable()
+        public void PromoteToParameterRefactoring_PassInTarget_NonVariable()
         {
             //Input
             const string inputCode =
@@ -559,8 +559,8 @@ End Sub";
                 msgBox = new Mock<IMessageBox>().Object;
             }
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var baseRefactoring = new IntroduceParameterRefactoringAction(state, rewritingManager);
-            return new IntroduceParameterRefactoring(baseRefactoring, msgBox, selectionService, selectedDeclarationProvider);
+            var baseRefactoring = new PromoteToParameterRefactoringAction(state, rewritingManager);
+            return new PromoteToParameterRefactoring(baseRefactoring, msgBox, selectionService, selectedDeclarationProvider);
         }
 
         private IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IMessageBox msgBox = null, QualifiedSelection? initialSelection = null)

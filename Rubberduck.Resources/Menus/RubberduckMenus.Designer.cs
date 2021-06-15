@@ -270,7 +270,7 @@ namespace Rubberduck.Resources.Menus {
         /// <summary>
         ///   Looks up a localized string similar to Introduce &amp;Parameter.
         /// </summary>
-        public static string RefactorMenu_IntroduceParameter {
+        public static string RefactorMenu_PromoteToParameter {
             get {
                 return ResourceManager.GetString("RefactorMenu_IntroduceParameter", resourceCulture);
             }

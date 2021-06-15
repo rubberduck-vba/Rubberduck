@@ -6,14 +6,14 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
-    public class RefactorIntroduceParameterCommand : RefactorCodePaneCommandBase
+    public class RefactorPromoteToParameterCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
-        public RefactorIntroduceParameterCommand (
-            IntroduceParameterRefactoring refactoring, 
-            IntroduceParameterFailedNotifier introduceParameterFailedNotifier, 
+        public RefactorPromoteToParameterCommand (
+            PromoteToParameterRefactoring refactoring, 
+            PromoteToParameterFailedNotifier introduceParameterFailedNotifier, 
             RubberduckParserState state,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider)

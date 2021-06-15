@@ -7,9 +7,9 @@ using Rubberduck.CodeAnalysis.Inspections.Extensions;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
-    public class IntroduceParameterFailedNotifier : RefactoringFailureNotifierBase
+    public class PromoteToParameterFailedNotifier : RefactoringFailureNotifierBase
     {
-        public IntroduceParameterFailedNotifier(IMessageBox messageBox)
+        public PromoteToParameterFailedNotifier(IMessageBox messageBox)
             : base(messageBox)
         { }
 
