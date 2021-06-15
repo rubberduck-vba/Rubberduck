@@ -324,7 +324,7 @@ A private class can still implement a public interface.</value>
     <comment>{0}: name of target</comment>
   </data>
   <data name="PromoteToParameter_Caption" xml:space="preserve">
-    <value>Rubberduck - Introduce Parameter</value>
+    <value>Rubberduck - Promote to Parameter</value>
   </data>
   <data name="PromoteToParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
     <value>The target '{0}' is not contained in a method.</value>

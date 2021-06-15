@@ -97,7 +97,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 functionDeclaration.IdentifierName, interfaceImplementation.ComponentName,
                 interfaceImplementation.IdentifierName);
 
-            return _messageBox.Question(message, RefactoringsUI.IntroduceParameter_Caption);
+            return _messageBox.Question(message, RefactoringsUI.PromoteToParameter_Caption);
         }
     }
 }

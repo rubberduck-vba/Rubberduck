@@ -966,7 +966,7 @@ namespace Rubberduck.Refactorings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck - Introduce Parameter.
+        ///   Looks up a localized string similar to Rubberduck - Promote to Parameter.
         /// </summary>
         public static string PromoteToParameter_Caption {
             get {
