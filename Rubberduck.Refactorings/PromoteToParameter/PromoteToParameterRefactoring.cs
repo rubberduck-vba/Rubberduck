@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.Refactorings.Exceptions.PromoteToParameter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
