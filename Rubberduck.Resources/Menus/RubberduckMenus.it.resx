@@ -190,7 +190,7 @@
   <data name="RefactorMenu_IntroduceField" xml:space="preserve">
     <value>Introduci &amp;Campo</value>
   </data>
-  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
+  <data name="RefactorMenu_PromoteToParameter" xml:space="preserve">
     <value>Introduci &amp;Parametro</value>
   </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">

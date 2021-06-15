@@ -1,14 +1,11 @@
 ﻿using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
-using Rubberduck.Refactorings.Exceptions.IntroduceParameter;
-using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
-namespace Rubberduck.Refactorings.IntroduceParameter
+namespace Rubberduck.Refactorings.PromoteToParameter
 {
     public class PromoteToParameterRefactoring : RefactoringBase
     {

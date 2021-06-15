@@ -1,6 +1,6 @@
 ﻿using Rubberduck.Parsing.Symbols;
 
-namespace Rubberduck.Refactorings.IntroduceParameter
+namespace Rubberduck.Refactorings.PromoteToParameter
 {
     public class PromoteToParameterModel : IRefactoringModel
     {

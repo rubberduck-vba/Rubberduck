@@ -2,7 +2,6 @@ using System.Linq;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactorings.IntroduceParameter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
@@ -11,7 +10,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
-using Rubberduck.Refactorings.Exceptions.IntroduceParameter;
+using Rubberduck.Refactorings.PromoteToParameter;
 using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring

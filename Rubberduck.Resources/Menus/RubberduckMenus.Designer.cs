@@ -268,15 +268,6 @@ namespace Rubberduck.Resources.Menus {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Introduce &amp;Parameter.
-        /// </summary>
-        public static string RefactorMenu_PromoteToParameter {
-            get {
-                return ResourceManager.GetString("RefactorMenu_IntroduceParameter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Move Closer To &amp;Usage.
         /// </summary>
         public static string RefactorMenu_MoveCloserToUsage {
@@ -300,6 +291,15 @@ namespace Rubberduck.Resources.Menus {
         public static string RefactorMenu_MoveToFolder {
             get {
                 return ResourceManager.GetString("RefactorMenu_MoveToFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Introduce &amp;Parameter.
+        /// </summary>
+        public static string RefactorMenu_PromoteToParameter {
+            get {
+                return ResourceManager.GetString("RefactorMenu_PromoteToParameter", resourceCulture);
             }
         }
         

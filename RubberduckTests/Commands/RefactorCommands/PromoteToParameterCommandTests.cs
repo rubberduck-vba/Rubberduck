@@ -1,9 +1,10 @@
-﻿using Moq;
+﻿using System.ComponentModel;
+using Moq;
 using NUnit.Framework;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.IntroduceParameter;
+using Rubberduck.Refactorings.PromoteToParameter;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
@@ -46,7 +47,7 @@ End Property";
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
             var baseRefactoring = new PromoteToParameterRefactoringAction(state, rewritingManager);
             var refactoring = new PromoteToParameterRefactoring(baseRefactoring, msgBox, selectionService, selectedDeclarationProvider);
-            var notifier = new IntroduceParameterFailedNotifier(msgBox);
+            var notifier = new PromoteToParameterFailedNotifier(msgBox);
             return new RefactorPromoteToParameterCommand(refactoring, notifier, state, selectionService, selectedDeclarationProvider);
         }
 

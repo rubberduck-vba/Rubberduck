@@ -1,6 +1,6 @@
 ﻿using Rubberduck.Parsing.Symbols;
 
-namespace Rubberduck.Refactorings.Exceptions.IntroduceParameter
+namespace Rubberduck.Refactorings.Exceptions.PromoteToParameter
 {
     public class TargetDeclarationIsNotContainedInAMethodException : InvalidTargetDeclarationException
     {

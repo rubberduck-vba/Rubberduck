@@ -1,6 +1,6 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.IntroduceParameter;
+using Rubberduck.Refactorings.PromoteToParameter;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.Utility;
 

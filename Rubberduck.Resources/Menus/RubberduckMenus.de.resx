@@ -204,7 +204,7 @@
   <data name="RefactorMenu_IntroduceField" xml:space="preserve">
     <value>&amp;Feld einführen</value>
   </data>
-  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
+  <data name="RefactorMenu_PromoteToParameter" xml:space="preserve">
     <value>Parameter e&amp;inführen</value>
   </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
