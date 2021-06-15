@@ -248,7 +248,7 @@ Private Sub Foo()
 End Sub";
             var selection = new Selection(1, 10);
 
-            var actualCode = RefactoredCode(inputCode, selection, typeof(TargetDeclarationIsNotContainedInAMethodException));
+            var actualCode = RefactoredCode(inputCode, selection, typeof(Rubberduck.Refactorings.Exceptions.PromoteToParameter.TargetDeclarationIsNotContainedInAMethodException));
             Assert.AreEqual(inputCode, actualCode);
         }
 

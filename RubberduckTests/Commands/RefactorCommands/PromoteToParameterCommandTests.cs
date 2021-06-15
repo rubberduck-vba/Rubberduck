@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
