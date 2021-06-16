@@ -336,4 +336,10 @@
   <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
     <value>Incluir la prueba</value>
   </data>
+  <data name="TestOutcome_Fail" xml:space="preserve">
+    <value>Fallo</value>
+  </data>
+  <data name="TestExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>Explorador de _pruebas</value>
+  </data>
 </root>

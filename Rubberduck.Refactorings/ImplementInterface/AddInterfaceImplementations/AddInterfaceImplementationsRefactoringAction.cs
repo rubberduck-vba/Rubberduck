@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources;
+using Tokens = Rubberduck.Resources.Tokens;
 
 namespace Rubberduck.Refactorings.AddInterfaceImplementations
 {

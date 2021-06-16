@@ -180,9 +180,6 @@
   <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
     <value>Modul</value>
   </data>
-  <data name="TestOutcome_Failed" xml:space="preserve">
-    <value>Fehlerhaft</value>
-  </data>
   <data name="TestOutcome_Inconclusive" xml:space="preserve">
     <value>Ergebnislos</value>
   </data>
@@ -335,5 +332,14 @@
   </data>
   <data name="TestExplorer_ContextMenuUnignoreGroup" xml:space="preserve">
     <value>Ignorieren aller Tests in der Gruppe aufheben</value>
+  </data>
+  <data name="TestOutcome_Failed" xml:space="preserve">
+    <value>Fehlerhaft</value>
+  </data>
+  <data name="TestOutcome_Fail" xml:space="preserve">
+    <value>Fehlgeschlagen</value>
+  </data>
+  <data name="TestExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>_Test Explorer</value>
   </data>
 </root>

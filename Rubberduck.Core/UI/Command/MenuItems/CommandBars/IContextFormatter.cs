@@ -1,8 +1,11 @@
+using System.Threading;
 using Path = System.IO.Path;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
+using Rubberduck.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {
@@ -11,16 +14,16 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         /// <summary>
         /// Determines the formatting of the contextual selection caption when a codepane is active.
         /// </summary>
-        string Format(ICodePane activeCodePane, Declaration declaration);
+        Task<string> FormatAsync(ICodePane activeCodePane, Declaration declaration, CancellationToken token);
         /// <summary>
         /// Determines the formatting of the contextual selection caption when a codepane is not active.
         /// </summary>
-        string Format(Declaration declaration, bool multipleControls);
+        Task<string> FormatAsync(Declaration declaration, bool multipleControls, CancellationToken token);
     }
 
     public class ContextFormatter : IContextFormatter
     {
-        public string Format(ICodePane activeCodePane, Declaration declaration)
+        public async Task<string> FormatAsync(ICodePane activeCodePane, Declaration declaration, CancellationToken token)
         {
             if (activeCodePane == null)
             {
@@ -35,87 +38,105 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
             var selection = qualifiedSelection.Value;
             var codePaneSelectionText = selection.Selection.ToString();
-            var contextSelectionText = FormatDeclaration(declaration);
+            var contextSelectionText = await FormatDeclarationAsync(declaration, token);
 
             return $"{codePaneSelectionText} | {contextSelectionText}";
         }
 
-        public string Format(Declaration declaration, bool multipleControls)
+        public async Task<string> FormatAsync(Declaration declaration, bool multipleControls, CancellationToken token)
         {
-            return declaration == null ? string.Empty : FormatDeclaration(declaration, multipleControls);
+            if (declaration == null)
+            {
+                return string.Empty;
+            }
+            
+            token.ThrowIfCancellationRequested();
+            // designer, there is no code pane selection
+            return await FormatDeclarationAsync(declaration, token, multipleControls);
         }
 
-        private string FormatDeclaration(Declaration declaration, bool multipleControls = false)
+        private async Task<string> FormatDeclarationAsync(Declaration declaration, CancellationToken token, bool multipleControls = false)
         {
+            token.ThrowIfCancellationRequested();
             var moduleName = declaration.QualifiedName.QualifiedModuleName;
-            var declarationType = RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, Settings.Settings.Culture);
+            var declarationType = CodeAnalysisUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, Settings.Settings.Culture);
 
             var typeName = TypeName(declaration, multipleControls, declarationType);
-            var formattedDeclaration = FormattedDeclaration(declaration, typeName, moduleName, declarationType);
+            var formattedDeclaration = await FormattedDeclarationAsync(declaration, typeName, moduleName, declarationType, token);
             return formattedDeclaration.Trim();
         }
 
-        private static string FormattedDeclaration(
+        private async Task<string> FormattedDeclarationAsync(
             Declaration declaration, 
             string typeName,
             QualifiedModuleName moduleName, 
-            string declarationType)
+            string declarationType, 
+            CancellationToken token)
         {
-            if (declaration.ParentDeclaration != null)
+            return await Task.Run(() =>
             {
-                if (declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
+
+                token.ThrowIfCancellationRequested();
+                if (declaration.ParentDeclaration != null)
                 {
-                    // locals, parameters
-                    return $"{declaration.ParentDeclaration.QualifiedName}:{declaration.IdentifierName} {typeName}";
+                    if (declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
+                    {
+                        // locals, parameters
+                        return $"{declaration.ParentDeclaration.QualifiedName}:{declaration.IdentifierName} {typeName}";
+                    }
+
+                    if (declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
+                    {
+                        // fields
+                        var withEvents = declaration.IsWithEvents ? $"({Tokens.WithEvents}) " : string.Empty;
+                        return $"{withEvents}{moduleName}.{declaration.IdentifierName} {typeName}";
+                    }
                 }
 
-                if (declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
+                token.ThrowIfCancellationRequested();
+                if (declaration.DeclarationType.HasFlag(DeclarationType.Member))
                 {
-                    // fields
-                    var withEvents = declaration.IsWithEvents ? "(WithEvents) " : string.Empty;
-                    return $"{withEvents}{moduleName}.{declaration.IdentifierName} {typeName}";
-                }
-            } 
+                    var formattedDeclaration = $"{declaration.QualifiedName}";
+                    if (declaration.DeclarationType == DeclarationType.Function
+                        || declaration.DeclarationType == DeclarationType.PropertyGet)
+                    {
+                        formattedDeclaration += $" {typeName}";
+                    }
 
-            if (declaration.DeclarationType.HasFlag(DeclarationType.Member))
-            {
-                var formattedDeclaration = declaration.QualifiedName.ToString();
-                if (declaration.DeclarationType == DeclarationType.Function
-                    || declaration.DeclarationType == DeclarationType.PropertyGet)
-                {
-                    formattedDeclaration += typeName;
+                    return formattedDeclaration;
                 }
 
-                return formattedDeclaration;
-            }
-            
-            if (declaration.DeclarationType.HasFlag(DeclarationType.Module))
-            {
-                return $"{moduleName} ({declarationType})";
-            }
-            
-            switch (declaration.DeclarationType)
-            {
-                case DeclarationType.Project:
-                case DeclarationType.BracketedExpression:
-                    var filename = Path.GetFileName(declaration.QualifiedName.QualifiedModuleName.ProjectPath);
-                    return $"{filename}{(string.IsNullOrEmpty(filename) ? string.Empty : ";")}{declaration.IdentifierName} ({declarationType})";
-                case DeclarationType.Enumeration:
-                case DeclarationType.UserDefinedType:
-                    return !declaration.IsUserDefined
-                        // built-in enums & UDT's don't have a module
-                        ? $"{Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.IdentifierName}"
-                        : moduleName.ToString();
-                case DeclarationType.EnumerationMember:
-                case DeclarationType.UserDefinedTypeMember:
-                    return declaration.IsUserDefined
-                        ? $"{moduleName}.{declaration.ParentDeclaration.IdentifierName}.{declaration.IdentifierName} {typeName}"
-                        : $"{Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.ParentDeclaration.IdentifierName}.{declaration.IdentifierName} {typeName}";
-                case DeclarationType.ComAlias:
-                    return $"{Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.IdentifierName} (alias:{declaration.AsTypeName})";
-            }
+                if (declaration.DeclarationType.HasFlag(DeclarationType.Module))
+                {
+                    return $"{moduleName} ({declarationType})";
+                }
 
-            return string.Empty;
+                token.ThrowIfCancellationRequested();
+                switch (declaration.DeclarationType)
+                {
+                    case DeclarationType.Project:
+                    case DeclarationType.BracketedExpression:
+                        var filename = Path.GetFileName(declaration.QualifiedName.QualifiedModuleName.ProjectPath);
+                        return
+                            $"{filename}{(string.IsNullOrEmpty(filename) ? string.Empty : ";")}{declaration.IdentifierName} ({declarationType})";
+                    case DeclarationType.Enumeration:
+                    case DeclarationType.UserDefinedType:
+                        return !declaration.IsUserDefined
+                            // built-in enums & UDTs don't have a module
+                            ? $"{Path.GetFileName(moduleName.ProjectPath)};{declaration.IdentifierName}"
+                            : moduleName.ToString();
+                    case DeclarationType.EnumerationMember:
+                    case DeclarationType.UserDefinedTypeMember:
+                        return declaration.IsUserDefined
+                            ? $"{moduleName}.{declaration.ParentDeclaration.IdentifierName}.{declaration.IdentifierName} {typeName}"
+                            : $"{Path.GetFileName(moduleName.ProjectPath)};{declaration.ParentDeclaration.IdentifierName}.{declaration.IdentifierName} {typeName}";
+                    case DeclarationType.ComAlias:
+                        return
+                            $"{Path.GetFileName(moduleName.ProjectPath)};{declaration.IdentifierName} (alias:{declaration.AsTypeName})";
+                }
+
+                return string.Empty;
+            }, token);
         }
 
         private static string TypeName(Declaration declaration, bool multipleControls, string declarationType)
@@ -125,18 +146,20 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 return RubberduckUI.ContextMultipleControlsSelection;
             }
 
-            var typeName = declaration.IsArray
-                ? $"{declaration.AsTypeName}()"
-                : declaration.AsTypeName;
+            var typeName = Tokens.IDispatch.Equals(declaration.AsTypeName, System.StringComparison.InvariantCultureIgnoreCase)
+                ? Tokens.Object
+                : declaration.AsTypeName ?? string.Empty;
+
+            var friendlyTypeName = declaration.IsArray ? $"{typeName}()" : typeName;
 
             switch (declaration)
             {
                 case ValuedDeclaration valued:
-                    return $"({declarationType}{(string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName)}{(string.IsNullOrEmpty(valued.Expression) ? string.Empty : $" = {valued.Expression}")})";
+                    return $"({declarationType}{(string.IsNullOrEmpty(friendlyTypeName) ? string.Empty : ":" + friendlyTypeName)}{(string.IsNullOrEmpty(valued.Expression) ? string.Empty : $" = {valued.Expression}")})";
                 case ParameterDeclaration parameter:
-                    return $"({declarationType}{(string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName)}{(string.IsNullOrEmpty(parameter.DefaultValue) ? string.Empty : $" = {parameter.DefaultValue}")})";
+                    return $"({declarationType}{(string.IsNullOrEmpty(friendlyTypeName) ? string.Empty : ":" + friendlyTypeName)}{(string.IsNullOrEmpty(parameter.DefaultValue) ? string.Empty : $" = {parameter.DefaultValue}")})";
                 default:
-                    return $"({declarationType}{(string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName)})";
+                    return $"({declarationType}{(string.IsNullOrEmpty(friendlyTypeName) ? string.Empty : ":" + friendlyTypeName)})";
             }
         }
     }

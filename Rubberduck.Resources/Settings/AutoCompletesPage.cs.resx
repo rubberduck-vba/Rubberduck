@@ -124,7 +124,7 @@
     <value>Configure which Rubberduck autocompletions are enabled.</value>
   </data>
   <data name="EnableSmartConcat" xml:space="preserve">
-    <value>Enable smart concatenation</value>
+    <value>Povolit chytré odsazování</value>
   </data>
   <data name="CompleteBlockOnTab" xml:space="preserve">
     <value>Automatické doplnění bloku po stisku TAB</value>

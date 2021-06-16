@@ -5,13 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
+using Tokens = Rubberduck.Resources.Tokens;
 
 namespace Rubberduck.Refactorings.Common
 {
     public static class VBAIdentifierValidator
     {
-        private static IEnumerable<string> ReservedIdentifiers =
-            typeof(Tokens).GetFields().Select(item => item.GetValue(null).ToString()).ToArray();
 
         /// <summary>
         /// Predicate function determining if an identifier string's content will trigger a result for the UseMeaningfulNames inspection.
@@ -26,8 +26,8 @@ namespace Rubberduck.Refactorings.Common
         public static bool TryMatchMeaninglessIdentifierCriteria(string name, out string criteriaMatchMessage)
         {
             criteriaMatchMessage = string.Empty;
-            string Vowels = "aeiouyàâäéèêëïîöôùûü";
-            int MinimumNameLength = 3;
+            const string Vowels = "aeiouyàâäéèêëïîöôùûü";
+            const int MinimumNameLength = 3;
 
             bool HasVowel()
                 => name.Any(character => Vowels.Any(vowel =>
@@ -84,30 +84,30 @@ namespace Rubberduck.Refactorings.Common
 
             if (string.IsNullOrEmpty(name))
             {
-                criteriaMatchMessage = RubberduckUI.InvalidNameCriteria_IsNullOrEmpty;
+                criteriaMatchMessage = RefactoringsUI.InvalidNameCriteria_IsNullOrEmpty;
                 return true;
             }
 
             //Does not start with a letter
             if (!char.IsLetter(name.First()))
             {
-                criteriaMatchMessage = string.Format(RubberduckUI.InvalidNameCriteria_DoesNotStartWithLetterFormat, name);
+                criteriaMatchMessage = string.Format(RefactoringsUI.InvalidNameCriteria_DoesNotStartWithLetterFormat, name);
                 return true;
             }
 
             //Has special characters
             if (name.Any(c => !char.IsLetterOrDigit(c) && c != '_'))
             {
-                criteriaMatchMessage = string.Format(RubberduckUI.InvalidNameCriteria_InvalidCharactersFormat, name);
+                criteriaMatchMessage = string.Format(RefactoringsUI.InvalidNameCriteria_InvalidCharactersFormat, name);
                 return true;
             }
 
             //Is a reserved identifier
             if (!declarationType.HasFlag(DeclarationType.UserDefinedTypeMember))
             {
-                if (ReservedIdentifiers.Contains(name, StringComparer.InvariantCultureIgnoreCase))
+                if (Tokens.IllegalIdentifierNames.Contains(name, StringComparer.InvariantCultureIgnoreCase))
                 {
-                    criteriaMatchMessage = string.Format(RubberduckUI.InvalidNameCriteria_IsReservedKeywordFormat, name);
+                    criteriaMatchMessage = string.Format(RefactoringsUI.InvalidNameCriteria_IsReservedKeywordFormat, name);
                     return true;
                 }
             }
@@ -118,11 +118,11 @@ namespace Rubberduck.Refactorings.Common
 
                 //Name is not a reserved identifier, but when used as a UDTMember array declaration
                 //it collides with the 'Name' Statement (Renames a disk file, directory, or folder)
-                var invalidUDTArrayIdentifiers = ReservedIdentifiers.Concat(new List<string>() { "Name" });
+                var invalidUDTArrayIdentifiers = Tokens.IllegalIdentifierNames.Concat(new List<string>() { "Name" });
 
                 if (invalidUDTArrayIdentifiers.Contains(name, StringComparer.InvariantCultureIgnoreCase))
                 {
-                    criteriaMatchMessage = string.Format(RubberduckUI.InvalidNameCriteria_IsReservedKeywordFormat, name);
+                    criteriaMatchMessage = string.Format(RefactoringsUI.InvalidNameCriteria_IsReservedKeywordFormat, name);
                     return true;
                 }
             }
@@ -131,14 +131,14 @@ namespace Rubberduck.Refactorings.Common
             if (declarationType.HasFlag(DeclarationType.Project)
                 && name.Equals("VBA", StringComparison.InvariantCultureIgnoreCase))
             {
-                criteriaMatchMessage = string.Format(RubberduckUI.InvalidNameCriteria_IsReservedKeywordFormat, name);
+                criteriaMatchMessage = string.Format(RefactoringsUI.InvalidNameCriteria_IsReservedKeywordFormat, name);
                 return true;
             }
 
             //Exceeds max length
             if (name.Length > maxNameLength)
             {
-                criteriaMatchMessage = string.Format(RubberduckUI.InvalidNameCriteria_ExceedsMaximumLengthFormat, name);
+                criteriaMatchMessage = string.Format(RefactoringsUI.InvalidNameCriteria_ExceedsMaximumLengthFormat, name);
                 return true;
             }
             return false;
@@ -158,27 +158,27 @@ namespace Rubberduck.Refactorings.Common
 
             if (string.IsNullOrEmpty(name))
             {
-                criteriaMatchMessages.Add(RubberduckUI.InvalidNameCriteria_IsNullOrEmpty);
+                criteriaMatchMessages.Add(RefactoringsUI.InvalidNameCriteria_IsNullOrEmpty);
             }
 
             //Does not start with a letter
             if (!char.IsLetter(name.First()))
             {
-                criteriaMatchMessages.Add(string.Format(RubberduckUI.InvalidNameCriteria_DoesNotStartWithLetterFormat, name));
+                criteriaMatchMessages.Add(string.Format(RefactoringsUI.InvalidNameCriteria_DoesNotStartWithLetterFormat, name));
             }
 
             //Has special characters
             if (name.Any(c => !char.IsLetterOrDigit(c) && c != '_'))
             {
-                criteriaMatchMessages.Add(string.Format(RubberduckUI.InvalidNameCriteria_InvalidCharactersFormat, name));
+                criteriaMatchMessages.Add(string.Format(RefactoringsUI.InvalidNameCriteria_InvalidCharactersFormat, name));
             }
 
             //Is a reserved identifier
             if (!declarationType.HasFlag(DeclarationType.UserDefinedTypeMember))
             {
-                if (ReservedIdentifiers.Contains(name, StringComparer.InvariantCultureIgnoreCase))
+                if (Tokens.IllegalIdentifierNames.Contains(name, StringComparer.InvariantCultureIgnoreCase))
                 {
-                    criteriaMatchMessages.Add(string.Format(RubberduckUI.InvalidNameCriteria_IsReservedKeywordFormat, name));
+                    criteriaMatchMessages.Add(string.Format(RefactoringsUI.InvalidNameCriteria_IsReservedKeywordFormat, name));
                 }
             }
             else if (isArrayDeclaration) //is a DeclarationType.UserDefinedTypeMember
@@ -188,11 +188,11 @@ namespace Rubberduck.Refactorings.Common
 
                 //Name is not a reserved identifier, but when used as a UDTMember array declaration
                 //it collides with the 'Name' Statement (Renames a disk file, directory, or folder)
-                var invalidUDTArrayIdentifiers = ReservedIdentifiers.Concat(new List<string>() { "Name" });
+                var invalidUDTArrayIdentifiers = Tokens.IllegalIdentifierNames.Concat(new List<string>() { "Name" });
 
                 if (invalidUDTArrayIdentifiers.Contains(name, StringComparer.InvariantCultureIgnoreCase))
                 {
-                    criteriaMatchMessages.Add(string.Format(RubberduckUI.InvalidNameCriteria_IsReservedKeywordFormat, name));
+                    criteriaMatchMessages.Add(string.Format(RefactoringsUI.InvalidNameCriteria_IsReservedKeywordFormat, name));
                 }
             }
 
@@ -200,13 +200,13 @@ namespace Rubberduck.Refactorings.Common
             if (declarationType.HasFlag(DeclarationType.Project)
                 && name.Equals("VBA", StringComparison.InvariantCultureIgnoreCase))
             {
-                criteriaMatchMessages.Add(string.Format(RubberduckUI.InvalidNameCriteria_IsReservedKeywordFormat, name));
+                criteriaMatchMessages.Add(string.Format(RefactoringsUI.InvalidNameCriteria_IsReservedKeywordFormat, name));
             }
 
             //Exceeds max length
             if (name.Length > maxNameLength)
             {
-                criteriaMatchMessages.Add(string.Format(RubberduckUI.InvalidNameCriteria_ExceedsMaximumLengthFormat, name));
+                criteriaMatchMessages.Add(string.Format(RefactoringsUI.InvalidNameCriteria_ExceedsMaximumLengthFormat, name));
             }
 
             return criteriaMatchMessages;

@@ -461,4 +461,49 @@ Continue?</value>
   <data name="CodeExplorer_Annotate" xml:space="preserve">
     <value>Annotate</value>
   </data>
+  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
+    <value>There is no existing document module with name '{0}'; file '{1}' cannot be imported.
+
+Import aborted.</value>
+    <comment>{0} module name, {1} filename</comment>
+  </data>
+  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>For file '{0}', the required binary file(s) '{1}' are missing and the target component '{2}' does not already exists.
+
+Import aborted.</value>
+    <comment>{0} filename, {1} binaries, {2} module name</comment>
+  </data>
+  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>For file '{0}', the requires binary file(s) '{1}' are missing.
+
+Import aborted.</value>
+    <comment>{0} filename, {1} binaries</comment>
+  </data>
+  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
+    <value>Multiple files contain code for the component '{0}'.
+
+Import aborted.</value>
+    <comment>{0} module name</comment>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
+    <value>All Files</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
+    <value>VB Files</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
+    <value>Import Source Files</value>
+  </data>
+  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
+    <value>The extension of the file '{0}' is not supported.
+
+Import aborted.</value>
+    <comment>{0} filename of unsupported file</comment>
+  </data>
+  <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>Code _Explorer</value>
+  </data>
+  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+    <value>Navigate</value>
+  </data>
 </root>

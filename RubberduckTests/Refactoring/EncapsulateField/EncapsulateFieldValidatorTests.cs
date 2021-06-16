@@ -8,7 +8,6 @@ using Rubberduck.VBEditor.Utility;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Linq;
-using Rubberduck.Resources;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -489,7 +488,7 @@ Public mF|oo As Long
 
             Assert.AreEqual(false, model[fieldName].TryValidateEncapsulationAttributes(out var errorMessage), errorMessage);
 
-            var expectedMessage = string.Format(RubberduckUI.InvalidNameCriteria_IsReservedKeywordFormat, fieldName);
+            var expectedMessage = string.Format(RefactoringsUI.InvalidNameCriteria_IsReservedKeywordFormat, fieldName);
             Assert.AreEqual(expectedMessage, errorMessage);
         }
 

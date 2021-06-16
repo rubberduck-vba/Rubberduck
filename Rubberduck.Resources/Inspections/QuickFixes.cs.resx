@@ -300,4 +300,13 @@
   <data name="IgnoreInModuleQuickFix" xml:space="preserve">
     <value>Ignorovat v modulu</value>
   </data>
+  <data name="AnnotateEntryPointQuickFix" xml:space="preserve">
+    <value>Přidat @EntryPoint anotaci</value>
+  </data>
+  <data name="DeclareAsExplicitTypeQuickFix" xml:space="preserve">
+    <value>Deklarovat jako Explicitní Typ</value>
+  </data>
+  <data name="QualifyWithMeQuickFix" xml:space="preserve">
+    <value>Kvalifikujte 'Me' reference.</value>
+  </data>
 </root>

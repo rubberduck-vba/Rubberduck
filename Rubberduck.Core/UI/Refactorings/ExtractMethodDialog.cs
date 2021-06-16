@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Resources;
+using Tokens = Rubberduck.Resources.Tokens;
 
 namespace Rubberduck.UI.Refactorings
 {
@@ -32,16 +35,16 @@ namespace Rubberduck.UI.Refactorings
 
         private void Localize()
         {
-            Text = RubberduckUI.ExtractMethod_Caption;
+            Text = RefactoringsUI.ExtractMethod_Caption;
             OkButton.Text = RubberduckUI.OK;
             CancelDialogButton.Text = RubberduckUI.CancelButtonText;
 
-            TitleLabel.Text = RubberduckUI.ExtractMethod_TitleText;
-            InstructionsLabel.Text = RubberduckUI.ExtractMethod_InstructionsText;
+            TitleLabel.Text = RefactoringsUI.ExtractMethod_TitleText;
+            InstructionsLabel.Text = RefactoringsUI.ExtractMethod_InstructionsText;
             NameLabel.Text = RubberduckUI.NameLabelText;
-            AccessibilityLabel.Text = RubberduckUI.ExtractMethod_AccessibilityLabel;
-            ParametersLabel.Text = RubberduckUI.ExtractMethod_ParametersLabel;
-            PreviewLabel.Text = RubberduckUI.ExtractMethod_PreviewLabel;
+            AccessibilityLabel.Text = RefactoringsUI.ExtractMethod_AccessibilityLabel;
+            ParametersLabel.Text = RefactoringsUI.ExtractMethod_ParametersLabel;
+            PreviewLabel.Text = RefactoringsUI.ExtractMethod_PreviewLabel;
         }
 
         private void InitializeParameterGrid()
@@ -96,7 +99,7 @@ namespace Rubberduck.UI.Refactorings
 
         public bool SetReturnValue
         {
-            get { return _setReturnValue; }
+            get => _setReturnValue;
             set
             {
                 _setReturnValue = value;
@@ -109,7 +112,7 @@ namespace Rubberduck.UI.Refactorings
         private Accessibility _accessibility;
         public Accessibility Accessibility
         {
-            get { return _accessibility; }
+            get => _accessibility;
             set
             {
                 _accessibility = value; 
@@ -131,18 +134,14 @@ namespace Rubberduck.UI.Refactorings
         private void OnViewEvent(EventHandler target, EventArgs args = null)
         {
             var handler = target;
-            if (handler == null)
-            {
-                return;
-            }
 
-            handler(this, args ?? EventArgs.Empty);
+            handler?.Invoke(this, args ?? EventArgs.Empty);
         }
 
         private string _preview;
         public string Preview
         {
-            get { return _preview; }
+            get => _preview;
             set
             {
                 _preview = value;
@@ -165,12 +164,8 @@ namespace Rubberduck.UI.Refactorings
         private BindingList<ExtractedParameter> _returnValues; 
         public IEnumerable<ExtractedParameter> ReturnValues
         {
-            get { return _returnValues; }
-            set
-            {
-                _returnValues = new BindingList<ExtractedParameter>(value.ToList());
-                //var items = _returnValues.ToArray();
-            }
+            get => _returnValues;
+            set => _returnValues = new BindingList<ExtractedParameter>(value.ToList());
         }
 
         private readonly ExtractedParameter _returnValue;
@@ -183,7 +178,7 @@ namespace Rubberduck.UI.Refactorings
 
         public string MethodName
         {
-            get { return MethodNameBox.Text; }
+            get => MethodNameBox.Text;
             set
             {
                 MethodNameBox.Text = value;
@@ -194,11 +189,9 @@ namespace Rubberduck.UI.Refactorings
 
         private void ValidateName()
         {
-            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
-
             OkButton.Enabled = MethodName != OldMethodName
                                && char.IsLetter(MethodName.FirstOrDefault())
-                               && !tokenValues.Contains(MethodName, StringComparer.InvariantCultureIgnoreCase)
+                               && !Tokens.IllegalIdentifierNames.Contains(MethodName, StringComparer.InvariantCultureIgnoreCase)
                                && !MethodName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
 
             InvalidNameValidationIcon.Visible = !OkButton.Enabled;

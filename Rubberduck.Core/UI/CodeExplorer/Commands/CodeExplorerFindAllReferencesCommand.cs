@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Rubberduck.AddRemoveReferences;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor.Events;
@@ -19,45 +20,74 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         };
 
         private readonly RubberduckParserState _state;
-        private readonly FindAllReferencesService _finder;
+        private readonly FindAllReferencesAction _finder;
 
         public CodeExplorerFindAllReferencesCommand(
             RubberduckParserState state, 
-            FindAllReferencesService finder, 
+            FindAllReferencesAction finder, 
             IVbeEvents vbeEvents) 
             : base(vbeEvents)
         {
             _state = state;
             _finder = finder;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute, true);
         }
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
-            return _state.Status == ParserState.Ready
-                       && ((ICodeExplorerNode)parameter).Declaration != null 
-                       && !(parameter is CodeExplorerReferenceViewModel reference 
-                            && reference.IsDimmed);
+            switch (parameter)
+            {
+                case CodeExplorerReferenceViewModel refNode:
+                    return refNode.IsDimmed;
+                case ICodeExplorerNode node:
+                    return !(node is CodeExplorerCustomFolderViewModel)
+                        && !(node is CodeExplorerReferenceFolderViewModel);
+                case Declaration declaration:
+                    return !(declaration is ProjectDeclaration);
+                default:
+                    return false;
+            }
         }
 
         protected override void OnExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready ||
-                !(parameter is ICodeExplorerNode node) ||
-                node.Declaration == null)
+            var node = parameter as ICodeExplorerNode;
+            var declaration = parameter as Declaration;
+            var reference = parameter as CodeExplorerReferenceViewModel;
+
+            if (_state.Status != ParserState.Ready || node == null && declaration == null)
             {
                 return;
             }
 
-            if (parameter is CodeExplorerReferenceViewModel reference)
+            if (declaration != null)
             {
-                if (!(reference.Reference is ReferenceModel model))
+                // command could have been invoked from PeekReferences code explorer popup
+                _finder.FindAllReferences(declaration);
+                return;
+            }
+
+            if (reference != null)
+            {
+                if (!(node.Parent.Declaration is ProjectDeclaration))
                 {
+                    Logger.Error(
+                        $"The specified ICodeExplorerNode ({node.GetType()}) is expected to be a direct child of a node whose declaration is a ProjectDeclaration.");
                     return;
                 }
-                _finder.FindAllReferences(node.Parent.Declaration, model.ToReferenceInfo());
-                return;
+
+                if(node.Parent?.Declaration is ProjectDeclaration projectDeclaration)
+                {
+                    if (!(reference.Reference is ReferenceModel model))
+                    {
+                        Logger.Warn($"Project reference '{reference.Name}' does not have an explorable reference model ({nameof(CodeExplorerReferenceViewModel)}.{nameof(CodeExplorerReferenceViewModel.Reference)} is null.");
+                        return;
+                    }
+
+                    _finder.FindAllReferences(projectDeclaration, model.ToReferenceInfo());
+                    return;
+                }
             }
 
             _finder.FindAllReferences(node.Declaration);

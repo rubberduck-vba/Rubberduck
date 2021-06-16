@@ -452,7 +452,7 @@
     <value>Misleading ByRef parameter modifier</value>
   </data>
   <data name="AnnotationInIncompatibleComponentTypeInspection" xml:space="preserve">
-    <value>Annotation in incompatible component type</value>
+    <value>Annotation in component with incompatible type</value>
   </data>
   <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
     <value>Unrecognized annotation</value>

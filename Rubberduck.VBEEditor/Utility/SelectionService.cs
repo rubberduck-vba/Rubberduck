@@ -20,6 +20,13 @@ namespace Rubberduck.VBEditor.Utility
             _projectsProvider = projectsProvider;
         }
 
+        public QualifiedModuleName ProjectExplorerSelection()
+        {
+            using (var component = _vbe.SelectedVBComponent)
+            {
+                return component.QualifiedModuleName;
+            }
+        }
 
         public QualifiedSelection? ActiveSelection()
         {

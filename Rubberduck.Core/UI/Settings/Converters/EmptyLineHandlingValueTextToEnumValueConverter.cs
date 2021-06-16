@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
-using Rubberduck.Resources;
+using Rubberduck.CodeAnalysis;
 using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.UI.Settings.Converters
@@ -12,7 +12,7 @@ namespace Rubberduck.UI.Settings.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var enumValue = (EmptyLineHandling)value;
-            return RubberduckUI.ResourceManager.GetString("EmptyLineHandling_" + enumValue, CultureInfo.CurrentUICulture);
+            return CodeAnalysisUI.ResourceManager.GetString("EmptyLineHandling_" + enumValue, CultureInfo.CurrentUICulture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -22,7 +22,7 @@ namespace Rubberduck.UI.Settings.Converters
             var values = Enum.GetValues(typeof(EmptyLineHandling)).OfType<EmptyLineHandling>();
 
             foreach (var v in values.Where(v =>
-                RubberduckUI.ResourceManager.GetString("EmptyLineHandling_" + v, CultureInfo.CurrentUICulture) == selectedString))
+                CodeAnalysisUI.ResourceManager.GetString("EmptyLineHandling_" + v, CultureInfo.CurrentUICulture) == selectedString))
             {
                 return v;
             }

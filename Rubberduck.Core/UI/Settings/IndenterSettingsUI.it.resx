@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AlignCommentsWithCode" xml:space="preserve">
+    <value>Allinea i commenti con il codice</value>
+  </data>
+  <data name="AlignContinuations" xml:space="preserve">
+    <value>Allinea le continuazioni</value>
+  </data>
+  <data name="AlignDims" xml:space="preserve">
+    <value>Allinea i dimensionamenti (Dim)</value>
+  </data>
+  <data name="AlignmentOptionsLabel" xml:space="preserve">
+    <value>Opzioni di allineamento</value>
+  </data>
+  <data name="CodeSampleHeader" xml:space="preserve">
+    <value>Esempio di Codice indentato</value>
+  </data>
+  <data name="EmptyLineHeading" xml:space="preserve">
+    <value>Trattamento delle righe vuote:</value>
+  </data>
+  <data name="EnableOptionsLabel" xml:space="preserve">
+    <value>Opzioni di Abilitazione</value>
+  </data>
+  <data name="EnableUndo" xml:space="preserve">
+    <value>Abilita annullamenti</value>
+  </data>
+  <data name="EndOfLineCommentStyle" xml:space="preserve">
+    <value>Stile dei commenti di fine riga:</value>
+  </data>
+  <data name="ForceCompilerDirectivesToColumn1" xml:space="preserve">
+    <value>Forza le direttive di compilazione nella colonna 1</value>
+  </data>
+  <data name="ForceDebugDirectivesToColumn1" xml:space="preserve">
+    <value>Forza le direttive di debug nella colonna 1</value>
+  </data>
+  <data name="IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
+    <value>Ignorare le righe vuote per individuare il primo commento e i blocchi di dichiarazione</value>
+  </data>
+  <data name="IgnoreOperators" xml:space="preserve">
+    <value>Ignorare gli operatori</value>
+  </data>
+  <data name="IndentCase" xml:space="preserve">
+    <value>Indenta Case</value>
+  </data>
+  <data name="IndentCompilerDirectives" xml:space="preserve">
+    <value>Indenta le direttive di compilazione</value>
+  </data>
+  <data name="IndentEntireProcedureBody" xml:space="preserve">
+    <value>Indenta l'intero corpo della procedura</value>
+  </data>
+  <data name="IndentEnumTypeAsProcedure" xml:space="preserve">
+    <value>Indenta i commenti nei blocchi Enum e Type come nelle procedure</value>
+  </data>
+  <data name="IndentFirstCommentBlock" xml:space="preserve">
+    <value>Indenta il primo blocco dei commenti</value>
+  </data>
+  <data name="IndentFirstDeclarationBlock" xml:space="preserve">
+    <value>Indenta il primo blocco di dichiarazione</value>
+  </data>
+  <data name="IndentOptionsLabel" xml:space="preserve">
+    <value>Opzioni di indentazione</value>
+  </data>
+  <data name="IndentSpaces" xml:space="preserve">
+    <value>Spazi di indentazione:</value>
+  </data>
+  <data name="PreviewCode" xml:space="preserve">
+    <value>Public Enum EsempioEnum
+' Commento di Enum
+Foo
+Bar ' commento del Membro.
+End Enum
+
+' Esempio di Procedura
+Sub EsempioProc()
+
+' SMART INDENTER
+' Original VB6 code graciously offered to Rubberduck by Stephen Bullen &amp; Rob Bovey
+' © 2016 by Rubberduck VBA.
+
+Dim count As Integer
+Static name As String
+
+If YouLikeRubberduck Then
+' Mettici una Stella su GitHub http://github.com/rubberduck-vba/Rubberduck
+' Seguici su Twitter @rubberduckvba
+' Visita http://rubberduckvba.com per novità ed aggiornamenti
+
+Select Case X
+Case "A"
+' Se hai qualche commento o suggerimento, _
+o trovi codice VBA valido con indentazione non corretta,
+
+#If VBA6 Then
+MsgBox "Contatta contact@rubberduck-vba.com"
+#End If
+
+Case "Stringhe e parametri continuati possono essere" _
+&amp; "allineati in verticale per una più facile lettura, ignorando eventualmente" _
+&amp; "qualsiasi operatore (&amp;+, ecc) all'inizio della riga."
+
+Debug.Print "X&lt;&gt;1"
+End Select      'Case X
+End If      'Più Strumenti? Suggerimenti http://github.com/rubberduck-vba/Rubberduck/Issues/New
+
+End Sub</value>
+  </data>
+  <data name="SpecialOptionsLabel" xml:space="preserve">
+    <value>Opzioni Speciali</value>
+  </data>
+  <data name="VerticalSpacing" xml:space="preserve">
+    <value>Preserva la spaziatura verticale</value>
+  </data>
+  <data name="VerticalSpacingLabel" xml:space="preserve">
+    <value>Spaziatura Verticale</value>
+  </data>
+  <data name="GroupRelatedProperties" xml:space="preserve">
+    <value>Rimuovi gli spazi verticali tra membri proprietà collegati</value>
+  </data>
+</root>

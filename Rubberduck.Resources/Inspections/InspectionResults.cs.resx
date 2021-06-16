@@ -243,9 +243,6 @@
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>Komponenta '{0}' používá 'Option Base 1'.</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Anotace '{0}' je v tomto kontextu ilegální.</value>
-  </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Modul nebo člen '{0}' má '{1}' anotaci, ale žádný korespondující atribut.</value>
   </data>
@@ -464,5 +461,26 @@ In memoriam, 1972-2018</value>
   </data>
   <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
     <value>Konstanta '{0}' je implicitně typována.</value>
+  </data>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Anotace '{0}' je v tomto kontextu ilegální.</value>
+  </data>
+  <data name="InvalidAnnotationInspection_IncompatibleComponentType" xml:space="preserve">
+    <value>Anotace '{0}' nemůže být použita v '{1}'.</value>
+  </data>
+  <data name="InvalidAnnotationInspection_NotInRequiredComponentType" xml:space="preserve">
+    <value>Anotace '{0}' je použita v '{1}', ale platná je pouze v '{2}'.</value>
+  </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>Člen '{0}' implicitně odkazuje na modul dokumentu, který obsahuje sešit.</value>
+  </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>Člen '{0}' implicitně odkazuje na modul dokumentu, který obsahuje list.</value>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>'{0}' není rozpoznán jako Rubberduck anotace (zatím?)</value>
+  </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>Modifikátor ByRef použitý pro parametr '{0}' členu '{1}' je zavádějící.</value>
   </data>
 </root>

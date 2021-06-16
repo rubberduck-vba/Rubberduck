@@ -126,15 +126,6 @@
   <data name="TodoExplorer_LineNumber" xml:space="preserve">
     <value>Ligne</value>
   </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Texte:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Liste:</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Texte</value>
-  </data>
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>Copier dans le presse-papier</value>
   </data>
@@ -148,5 +139,8 @@
   <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
     <value>Rubberduck marqueurs TODO - {0}
 {1} marqueurs trouvés.</value>
+  </data>
+  <data name="ToDoExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>Explorateur de marqueurs "T_ODO"</value>
   </data>
 </root>

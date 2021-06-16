@@ -38,7 +38,7 @@ namespace Rubberduck.UI.Controls
 
         public bool CanFind(Declaration declaration)
         {
-            return declaration is ModuleBodyElementDeclaration moduleBody &&
+            return declaration is ClassModuleDeclaration || declaration is ModuleBodyElementDeclaration moduleBody &&
                    moduleBody.Accessibility == Accessibility.Public &&
                    declaration.ParentDeclaration is ClassModuleDeclaration;
         }
@@ -151,7 +151,7 @@ namespace Rubberduck.UI.Controls
 
             var results = implementations.Select(declaration =>
                 new SearchResultItem(
-                    declaration.ParentScopeDeclaration,
+                    declaration is ClassModuleDeclaration ? declaration : declaration.ParentScopeDeclaration,
                     new NavigateCodeEventArgs(declaration.QualifiedName.QualifiedModuleName, declaration.Selection),
                     GetModuleLine(declaration.QualifiedName.QualifiedModuleName, declaration.Selection.StartLine)));
 

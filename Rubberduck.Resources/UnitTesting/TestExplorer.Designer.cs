@@ -421,6 +421,15 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Test Explorer.
+        /// </summary>
+        public static string TestExplorerWindowSettings_AccessKey {
+            get {
+                return ResourceManager.GetString("TestExplorerWindowSettings_AccessKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hr.
         /// </summary>
         public static string TestOutcome_DurationHour {
@@ -453,6 +462,15 @@ namespace Rubberduck.Resources.UnitTesting {
         public static string TestOutcome_DurationSecond {
             get {
                 return ResourceManager.GetString("TestOutcome_DurationSecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fail.
+        /// </summary>
+        public static string TestOutcome_Fail {
+            get {
+                return ResourceManager.GetString("TestOutcome_Fail", resourceCulture);
             }
         }
         

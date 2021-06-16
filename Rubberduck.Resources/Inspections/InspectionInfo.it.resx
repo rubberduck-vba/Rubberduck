@@ -1,0 +1,460 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
+    <value>L'oggetto Applicazione Excel non implementa direttamente l'interfaccia WorksheetFunction. Tutte le chiamate effettuate ai membri di WorksheetFunction vengono gestite come associazione tardiva e gli errori nel membro chiamato verranno restituiti racchiusi in un Variant di VbVarType.vbError. Ciò rende gli errori non intercettabili con i gestori di errori e aggiunge una riduzione delle prestazioni rispetto alle chiamate associate iniziali. Considera la possibilità di chiamare Application.WorksheetFunction in modo esplicito. Nota: se questa chiamata ha generato errori in passato, tali errori sono stati ignorati. Se si applica la soluzione rapida, è necessario disporre di una corretta gestione degli errori.</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Il compilatore VBA non genera un errore se un oggetto viene passato come argomento per un parametro con un tipo di oggetto dichiarato incompatibile, cioè con un tipo di oggetto che non è né lo stesso tipo, né un supertipo né un sottotipo. In quasi tutte le circostanze il passaggio di un argomento di questo tipo porta a un errore di runtime, che è più difficile da rilevare e indica un bug. In tutte le altre situazioni il codice può essere modificato per passare solo argomenti di tipi dichiarati compatibili.</value>
+  </data>
+  <data name="AssignedByValParameterInspection" xml:space="preserve">
+    <value>Il parametro viene passato per valore, ma è assegnato un nuovo valore / riferimento. Considera invece di creare una copia locale se il chiamante non deve conoscere il nuovo valore. Se il chiamante dovesse vedere il nuovo valore, il parametro dovrebbe essere passato invece ByRef, e hai un bug.</value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Un'assegnazione è immediatamente sovrascritta da un'altra assegnazione o non è mai referenziata.</value>
+  </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>Un'annotazione Rubberduck è specificata per un modulo o un membro, ma l'attributo corrispondente ha un valore diverso. Gli attributi e le annotazioni del modulo devono essere sincronizzati.</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
+    <value>A un membro viene assegnato Vero / Falso in diversi rami di un'istruzione if senza altre istruzioni condizionali. Utilizza invece la condizione direttamente al membro.</value>
+  </data>
+  <data name="ConstantNotUsedInspection" xml:space="preserve">
+    <value>Rubberduck non è riuscito a trovare alcun riferimento alla costante. Valuta la possibilità di rimuovere la dichiarazione inutilizzata.</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>Il compilatore VBA non genera un errore se è richiesta una chiamata di membro predefinito indicizzato ma il tipo dichiarato dell'oggetto non dispone di un membro predefinito adatto. In quasi tutte le circostanze, questo porta a un errore di runtime 91 'Oggetto o variabile del blocco With non impostata' o 438 'L'oggetto non supporta questa proprietà o metodo' a seconda che l'oggetto abbia il valore 'Nothing' o meno, che è più difficile da rilevare e indica un bug.</value>
+  </data>
+  <data name="DefaultProjectNameInspection" xml:space="preserve">
+    <value>Considera di nominare il tuo progetto VBA.</value>
+  </data>
+  <data name="DefTypeStatementInspection" xml:space="preserve">
+    <value>L'utilizzo dell'istruzione 'Def[Type]' consente di specificare i tipi utilizzando un prefisso. Questo stile di denominazione è fortemente scoraggiato e dovrebbe essere evitato.</value>
+  </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>Un'annotazione viene specificata più volte, mentre dovrebbe essere specificata solo una volta.</value>
+  </data>
+  <data name="EmptyCaseBlockInspection" xml:space="preserve">
+    <value>Un blocco 'Case' vuoto senza alcuna istruzione eseguibile, lascia un manutentore a chiedersi quale sia l'intento del codice. Evita di scrivere codice che non serve.</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspection" xml:space="preserve">
+    <value>Un ciclo 'Do ... While' vuoto senza alcuna istruzione eseguibile, lascia un manutentore a chiedersi quale sia l'intento del codice. Evita di scrivere codice che non serve.</value>
+  </data>
+  <data name="EmptyElseBlockInspection" xml:space="preserve">
+    <value>Un ciclo 'Else' vuoto senza alcuna istruzione eseguibile, lascia un manutentore a chiedersi quale sia l'intento del codice. Evita di scrivere codice che non serve.</value>
+  </data>
+  <data name="EmptyForEachBlockInspection" xml:space="preserve">
+    <value>Un ciclo 'For Each ... Next' vuoto senza alcuna istruzione eseguibile, lascia un manutentore a chiedersi quale sia l'intento del codice. Evita di scrivere codice che non serve.</value>
+  </data>
+  <data name="EmptyForLoopBlockInspection" xml:space="preserve">
+    <value>Un ciclo 'For ... Next' vuoto senza alcuna istruzione eseguibile, lascia un manutentore a chiedersi quale sia l'intento del codice. Evita di scrivere codice che non serve.</value>
+  </data>
+  <data name="EmptyIfBlockInspection" xml:space="preserve">
+    <value>Un ramo condizionale vuoto senza alcuna istruzione eseguibile, lascia un manutentore a chiedersi quale sia l'intento del codice. Evita di scrivere codice che non serve.</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>I metodi senza istruzioni eseguibili sembra che stiano facendo qualcosa che in realtà non fanno, causando quindi un comportamento imprevisto.</value>
+  </data>
+  <data name="EmptyModuleInspection" xml:space="preserve">
+    <value>I moduli e le classi vuoti indicano funzionalità non ancora implementate o rappresentano un bagaglio non necessario che può danneggiare la manutenibilità di un progetto.</value>
+  </data>
+  <data name="EmptyStringLiteralInspection" xml:space="preserve">
+    <value>La costante incorporata 'vbNullString' è un puntatore ad una stringa nulla che occupa 0 byte di memoria, che trasmette in modo inequivocabile l'intento di una stringa vuota.</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspection" xml:space="preserve">
+    <value>Un blocco 'Loop' vuoto senza alcuna istruzione eseguibile, lascia un manutentore a chiedersi quale sia l'intento del codice. Evita di scrivere codice che non serve.</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
+    <value>Considera invece di esporre una proprietà.</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>Una procedura che restituisce un oggetto può restituire 'Nothing'. Ciò causerà un errore di runtime 91 - 'Oggetto o variabile del blocco With non impostata' al successivo accesso al membro. Eseguire un controllo 'Is Nothing' dopo l'assegnazione 'Set' per evitare errori di runtime.</value>
+  </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>Le funzioni visibili in Excel come funzioni definite dall'utente restituiranno un errore '#REF!' quando sono utilizzate su un foglio di lavoro se corrispondono al nome di un riferimento di cella valido. Se la funzione deve essere utilizzata come UDF, deve essere rinominata. Se la funzione non è concepita per essere utilizzata come UDF, dovrebbe essere definita come 'Private' o spostata da un modulo standard.</value>
+  </data>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>Un membro è scritto come una funzione, ma è sempre utilizzato come una procedura. Valuta la possibilità di convertire la 'Function' in 'Sub'.</value>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>Il valore di ritorno di una funzione viene scartato, ovvero la funzione viene utilizzata come una procedura 'Sub'. O si tratta di una svista o la funzione viene utilizzata per altre finalità, la cui esistenza sarebbe anche un segnale d'allarme.</value>
+  </data>
+  <data name="HostSpecificExpressionInspection" xml:space="preserve">
+    <value>Le espressioni tra parentesi vengono valutate dall'applicazione host in fase di esecuzione, il che significa che VBA non può convalidare l'espressione in fase di compilazione. Considerare invece l'utilizzo del modello a oggetti dell'applicazione host.</value>
+  </data>
+  <data name="HungarianNotationInspection" xml:space="preserve">
+    <value>La notazione ungherese rende il codice meno leggibile ed è ridondante quando si utilizzano variabili fortemente tipizzate e nomi significativi.</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Un modulo di classe che deve essere utilizzato come interfaccia per classi concrete dovrebbe generalmente essere astratto da qualsiasi implementazione. Se è tua intenzione utilizzare questo modulo di classe come un tipo concreto, puoi tranquillamente ignorare questo risultato dell'ispezione.</value>
+  </data>
+  <data name="ImplicitActiveSheetReferenceInspection" xml:space="preserve">
+    <value>I riferimenti impliciti al foglio attivo rendono il codice fragile ed è più difficile eseguire il debug. Considera l'idea di rendere espliciti questi riferimenti quando sono voluti e prediligi l'uso di riferimenti agli oggetti. Ignora se la chiamata del membro si riferisce a un tipo che Rubberduck non può risolvere.</value>
+  </data>
+  <data name="ImplicitActiveWorkbookReferenceInspection" xml:space="preserve">
+    <value>I riferimenti impliciti alla cartella di lavoro attiva rendono il codice fragile ed è più difficile eseguire il debug. Considera l'idea di rendere espliciti questi riferimenti quando sono voluti e prediligi l'uso di riferimenti agli oggetti. Ignora se la chiamata del membro si riferisce a un tipo che Rubberduck non può risolvere.</value>
+  </data>
+  <data name="ImplicitByRefModifierInspection" xml:space="preserve">
+    <value>I parametri sono passati per riferimento se non diversamente specificato, il che può creare confusione e causare bug. Preferire il passaggio di parametri per valore e specificare ByRef in modo esplicito quando si passano i parametri per riferimento.</value>
+  </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>I riferimenti impliciti ai membri della cartella di lavoro all'interno di un documento del modulo della cartella di lavoro possono essere errori per i riferimenti impliciti alla cartella di lavoro attiva, che è il comportamento in tutti gli altri moduli. Qualificando esplicitamente queste chiamate dei membri con Me, l'ambiguità può essere risolta.</value>
+  </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>I riferimenti impliciti ai membri del foglio di lavoro all'interno di un documento del modulo del foglio di lavoro possono essere errori per i riferimenti impliciti al foglio di lavoro attivo, che è il comportamento in tutti gli altri moduli. Qualificando esplicitamente queste chiamate dei membri con Me, l'ambiguità può essere risolta.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Gli accessi ai membri predefiniti nascondono il membro effettivamente chiamato. Ciò è particolarmente fuorviante se non vi è alcuna indicazione nell'espressione che tale chiamata sia stata effettuata. Può causare errori in cui un membro è stato dimenticato di essere chiamato passando inosservato.</value>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Se la clausola di tipo 'As' per una dichiarazione 'Const' non è inclusa, il tipo è implicito. Includere un 'As &lt;Type&gt;' esplicito sostituendo '&lt;Type&gt;' con il tipo di dati corretto per esplicitare il tipo del valore della costante.</value>
+  </data>
+  <data name="ImplicitPublicMemberInspection" xml:space="preserve">
+    <value>I membri del modulo sono pubblici per impostazione predefinita, mentre si può pensare il contrario. Considerare la possibilità di specificare modificatori di accesso esplicito per evitare ambiguità.</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Gli accessi ai membri predefiniti nascondono il membro effettivamente chiamato. Ciò è particolarmente fuorviante se non vi è alcuna indicazione nell'espressione che tale chiamata viene effettuata e il membro predefinito finale non si trova sull'interfaccia dell'oggetto stesso. In particolare, questo può causare errori in cui un membro è stato dimenticato di essere chiamato passando inosservato.</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Gli accessi ai membri predefiniti nascondono il membro effettivamente chiamato. Ciò è particolarmente fuorviante se non vi è alcuna indicazione nell'espressione che tale chiamata viene effettuata e se il membro predefinito non può essere determinato dal tipo dichiarato dell'oggetto. Di conseguenza, con errori in cui un membro è stato dimenticato di essere chiamato passando inosservato e se non ci fosse un membro predefinito adatto in fase di esecuzione, verrà generato un errore 438 'L'oggetto non supporta questa proprietà o metodo'.</value>
+  </data>
+  <data name="ImplicitVariantReturnTypeInspection" xml:space="preserve">
+    <value>I membri che restituiscono un valore implicitamente restituiscono un 'Variant' se non diversamente specificato. Prendi in considerazione la restituzione di un 'Variant' esplicito quando il tipo restituito non è noto o specificalo esplicitamente.</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un accesso al membro predefinito nasconde quale membro è effettivamente chiamato. Sebbene sia evidente che ci sia una chiamata nel caso di accesso indicizzato ad un membro predefinito, esplicitarlo di solito è meglio per la leggibilità.</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un accesso al membro predefinito nasconde quale membro è effettivamente chiamato. Sebbene sia evidente che ci sia una chiamata nel caso di accesso indicizzato ad un membro predefinito, eplicitarlo di solito è meglio per la leggibilità. Ciò vale soprattutto se il membro predefinito a cui si accede non si trova sull'interfaccia dell'oggetto stesso ma deve essere risolto tramite una catena di chiamate ai membri predefiniti.</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un accesso al membro predefinito nasconde quale membro è effettivamente chiamato. Sebbene sia evidente che ci sia una chiamata nel caso di accesso indicizzato ad un membro predefinito, eplicitarlo di solito è meglio per la leggibilità. A maggior ragione se il membro predefinito non può essere determinato in fase di compilazione. Inoltre, se non c'è un membro predefinito adatto in fase di esecuzione, sarà generato un errore 438 'L'oggetto non supporta questa proprietà o metodo'.</value>
+  </data>
+  <data name="IntegerDataTypeInspection" xml:space="preserve">
+    <value>Il valore massimo di un intero con segno a 16 bit è 32.767 - l'utilizzo di un tipo di dati intero a 32 bit (Long) ove possibile può aiutare a prevenire errori di runtime di 'Overflow' ed è gestito meglio dalle moderne CPU.</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>IsMissing deve essere chiamato solo su argomenti opzionali e restituirà risultati corretti solo se il tipo di argomento è 'Variant' senza un valore predefinito esplicito. Tutti gli altri usi restituiranno 'False'.</value>
+  </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>IsMissing deve essere chiamato solo su argomenti della procedura che lo contiene e quasi tutti gli altri utilizzi restituiranno 'False'. Il passaggio di qualsiasi altra espressione alla funzione equivale a 'VarType({expression}) = vbError' e in rari casi può causare l'arresto anomalo dell'applicazione host.</value>
+  </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Una parola chiave è utilizzata come membro in un'enumerazione o in un tipo definito dall'utente. Ciò può portare a una risoluzione ambigua. Valuta la possibilità di rinominare il membro.</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Sono presenti continuazioni di riga tra le parole chiave. Non c'è una buona ragione per metterle lì; considera la possibilità di rimuoverle del tutto.</value>
+  </data>
+  <data name="LineLabelNotUsedInspection" xml:space="preserve">
+    <value>Un'etichetta di riga a cui non si salta mai ('GoTo', 'Resume', ...) non serve a nulla. Considera l'idea di rimuoverla.</value>
+  </data>
+  <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
+    <value>Viene effettuata una chiamata di accesso ad un membro su un'interfaccia estesa che Rubberduck non è riuscito a risolvere, o il membro non è stato trovato. Se VBA non è in grado di risolvere il tipo in fase di esecuzione, sarà generato l'errore 438. Se è disponibile un'interfaccia equivalente e non estesa che Rubberduck può risolvere, prendi in considerazione di usarla.</value>
+  </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>L'ultimo parametro (il parametro 'Value') dei mutatori di proprietà è sempre passato da ByVal. Questo vale indipendentemente dalla presenza o assenza di un modificatore ByRef o ByVal. Eccezione: un UserDefinedType deve sempre essere passato ByRef anche quando è l'ultimo parametro di un mutatore di proprietà.</value>
+  </data>
+  <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
+    <value>Un parametro di annotazione è mancante o specificato in modo errato. La sintassi corretta è: '@Annotation([parameter])\nExample: '@Folder("Parent.Child")</value>
+  </data>
+  <data name="MissingAttributeInspection" xml:space="preserve">
+    <value>Un'annotazione di Rubberduck è specificata per un modulo o un membro, ma l'attributo corrispondente non è presente. Gli attributi e le annotazioni del modulo devono essere sincronizzati.</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Gli attributi dei membri non vengono visualizzati in VBE. Aggiungendo un'annotazione, rendi questi attributi più espliciti e Rubberduck può mantenere sincronizzati annotazioni e attributi.</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Gli attributi del modulo non vengono visualizzati nel VBE. Aggiungendo un'annotazione, rendi questi attributi più espliciti e Rubberduck può mantenere sincronizzati annotazioni e attributi.</value>
+  </data>
+  <data name="ModuleScopeDimKeywordInspection" xml:space="preserve">
+    <value>La parola chiave 'Public' può essere utilizzata solo a livello di modulo; anche la sua controparte 'Private' può essere utilizzata solo a livello di modulo. Tuttavia, 'Dim' può essere utilizzato per dichiarare le variabili a livello sia della procedura sia del modulo. Per coerenza, sarebbe preferibile riservare 'Dim' per le variabili locali e quindi utilizzare 'Private' invece di 'Dim' a livello di modulo.</value>
+  </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>I moduli senza l'annotazione '@Folder' non possono ricevere raggruppamenti personalizzati in Explorer del Codice.</value>
+  </data>
+  <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
+    <value>Una variabile a livello di modulo utilizzata solo in una procedura dovrebbe essere dichiarata in quella procedura.</value>
+  </data>
+  <data name="MultilineParameterInspection" xml:space="preserve">
+    <value>Considerare la possibilità di continuare le firme lunghe tra i parametri. La suddivisione di una dichiarazione di parametro su più righe probabilmente danneggia la leggibilità.</value>
+  </data>
+  <data name="MultipleDeclarationsInspection" xml:space="preserve">
+    <value>La dichiarazione di più variabili nella stessa istruzione è legale, ma dovrebbe essere usata con parsimonia. Considera la possibilità di dichiarare variabili più vicine al loro utilizzo, in una singola istruzione per dichiarazione.</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>I numeri di riga negativi vengono effettivamente inseriti come letterali esadecimali e quindi ottimizzati da VBE. Modificare di nuovo la riga la farà diventare rossa poiché i numeri di riga negativi sono di fatto illegali.</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>L'identificatore contiene uno spazio non separatore che assomiglia molto a uno spazio normale (illegale nel nome di un identificatore), che offusca il codice e crea un'esperienza confusa. Considera l'idea di utilizzare caratteri visibili per gli identificatori.</value>
+  </data>
+  <data name="NonReturningFunctionInspection" xml:space="preserve">
+    <value>Questo è probabilmente un bug. Il valore di ritorno di una funzione o del getter di una proprietà deve essere assegnato prima di uscire, altrimenti il programma non funzionerà con i risultati attesi. Se una funzione non ha un valore di ritorno significativo, considera invece di dichiararla come una procedura 'Sub'.</value>
+  </data>
+  <data name="ObjectVariableNotSetInspection" xml:space="preserve">
+    <value>Per quanto ne sa Rubberduck, questa variabile è una variabile oggetto, assegnata senza la parola chiave 'Set'. Ciò causa l'errore 91 di runtime 'Oggetto o variabile del blocco With non impostata' o 438 'L'oggetto non supporta questa proprietà o metodo' a seconda che la variabile abbia o meno il valore 'Nothing'.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>L'utilizzo di un oggetto con un membro predefinito in una posizione che richiede una procedura porta a una chiamata implicita del membro predefinito. Questo è molto probabilmente non intenzionale e influisce negativamente sulla leggibilità.</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>Le implementazioni di Windows di Visual Basic supportano solo la convenzione di chiamata StdCall. La convenzione di chiamata CDecl è supportata solo nelle versioni Macintosh di VBA. L'uso di questa parola chiave in Windows provocherà l'errore di runtime 49 - 'Convenzione di chiamata DLL non valida'. Se questa procedura deve essere utilizzata solo su host Macintosh, dovrebbe essere compilata in modo condizionale.</value>
+  </data>
+  <data name="ObsoleteCallStatementInspection" xml:space="preserve">
+    <value>L'istruzione 'Call' non è più necessaria per chiamare le procedure ed esiste nel linguaggio solo per supportare il codice legacy che lo richiedeva; può essere riscritta in modo sicuro in una chiamata implicita.</value>
+  </data>
+  <data name="ObsoleteCommentSyntaxInspection" xml:space="preserve">
+    <value>L'istruzione 'Rem' esiste nel linguaggio solo per supportare il codice legacy che lo richiedeva; può essere tranquillamente sostituito con un  apostrofo / virgoletta singola di commento.</value>
+  </data>
+  <data name="ObsoleteErrorSyntaxInspection" xml:space="preserve">
+    <value>L'istruzione 'Error' esiste nel linguaggio solo per supportare il codice legacy che lo richiedeva; è meglio invece usare 'Err.Raise'.</value>
+  </data>
+  <data name="ObsoleteGlobalInspection" xml:space="preserve">
+    <value>La parola chiave 'Global' esiste nel linguaggio solo per supportare il codice legacy che la richiedeva; può essere tranquillamente sostituita con il modificatore 'Public'.</value>
+  </data>
+  <data name="ObsoleteLetStatementInspection" xml:space="preserve">
+    <value>L'istruzione 'Let' esiste nel linguaggio solo per supportare il codice legacy che lo richiedeva; può essere rimossa in modo sicuro, poiché il VBA moderno non richiede quella parola chiave per le assegnazioni di valore.</value>
+  </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Questo membro è contrassegnato come '@Obsolete'. Non dovrebbe più essere utilizzato, dovrebbe esserci un'alternativa migliore.</value>
+  </data>
+  <data name="ObsoleteTypeHintInspection" xml:space="preserve">
+    <value>I caratteri di suggerimento del tipo esistono nel linguaggio solo per supportare il codice legacy che lo richiedeva; possono essere tranquillamente sostituiti nelle dichiarazioni con una clausola di tipo "As" che specifica esplicitamente il tipo e possono essere omessi in altri riferimenti a identificatori.</value>
+  </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>I cicli 'While ... Wend' esistono per compatibilità con le versioni precedenti e sono stati sostituiti dall'introduzione dei blocchi 'Do While ... Loop', che supportano l'istruzione di uscita 'Exit Do'. Non è possibile uscire dai cicli 'While ... Wend' se non soddisfacendo la condizione 'While'.</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>Sebbene ciò sia legale, questa è una "caratteristica" scarsamente documentata che significa qualcosa di diverso -- anche lo stato di errore viene cancellato oltre a disabilitare qualsiasi gestione degli errori. Tuttavia, questo può essere ambiguo in quanto un'etichetta di riga negativa di -1 può finire come obiettivo e una gestione degli errori eccessivamente complessa di solito indica la necessità di refactoring della procedura.</value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>On Local Error esiste solo per compatibilità con le versioni precedenti di Visual Basic e tutti gli errori vengono considerati come locali indipendentemente dall'istruzione On Local Error. L'uso improprio di questa parola chiave dà l'impressione che esista una distinzione tra i tipi di gestione degli errori mentre in realtà non esiste.</value>
+  </data>
+  <data name="OptionBaseInspection" xml:space="preserve">
+    <value>Gli array sono in genere a base zero. Questa opzione modifica il limite inferiore predefinito per gli array di dimensioni implicite e può introdurre errori off-by-one se non si è cauti.</value>
+  </data>
+  <data name="OptionBaseZeroInspection" xml:space="preserve">
+    <value>Questa è l'impostazione predefinita, non è necessario specificarla.</value>
+  </data>
+  <data name="OptionExplicitInspection" xml:space="preserve">
+    <value>VBA compilerà tranquillamente un errore di battitura: usa 'Option Explicit' per impedire la corretta compilazione di un programma errato.</value>
+  </data>
+  <data name="ParameterCanBeByValInspection" xml:space="preserve">
+    <value>Un parametro che viene passato per riferimento e a cui non è assegnato un nuovo valore / riferimento, potrebbe invece essere passato per valore.</value>
+  </data>
+  <data name="ParameterNotUsedInspection" xml:space="preserve">
+    <value>Un parametro viene passato a un membro che non lo utilizza. Considera l'idea di rimuovere quel parametro.</value>
+  </data>
+  <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
+    <value>Una procedura che ha un solo parametro passato per riferimento a cui viene assegnato un nuovo valore / riferimento prima che la procedura termini, utilizza un parametro ByRef come valore di ritorno: considera invece di renderla una funzione.</value>
+  </data>
+  <data name="ProcedureNotUsedInspection" xml:space="preserve">
+    <value>Rubberduck non è riuscito a trovare alcun chiamante per una procedura. Se la procedura è agganciata a un macro-pulsante, usata come funzione definita dall'utente (UDF) o gestisce un evento dell'applicazione che Rubberduck non conosceva, puoi tranquillamente ignorare questo risultato dell'ispezione; in caso contrario, valutare la possibilità di rimuoverla.</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>Il compilatore VBA non genera un errore se una variabile oggetto viene utilizzata in un punto che richiede una procedura e il tipo dichiarato dell'oggetto non dispone di un membro predefinito appropriato. In quasi tutte le circostanze, questo porta a un errore di runtime 91 'Oggetto o  variabile del blocco With non impostata' o 438 'L'oggetto non supporta questa proprietà o metodo' a seconda che l'oggetto abbia il valore 'Nothing' o meno, che è più difficile da rilevare e indica un bug.</value>
+  </data>
+  <data name="RedundantByRefModifierInspection" xml:space="preserve">
+    <value>Per impostazione predefinita, tutti i parametri vengono passati per riferimento, quindi non è necessario includere il modificatore 'ByRef'.</value>
+  </data>
+  <data name="RedundantOptionInspection" xml:space="preserve">
+    <value>Essendo l'impostazione predefinita/implicita per questa opzione, questa istruzione può essere tranquillamente omessa.</value>
+  </data>
+  <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
+    <value>Una dichiarazione di variabile oggetto istanziata automaticamente nell'ambito della procedura cambia il funzionamento dell'annullamento del riferimento, il che può portare a un comportamento imprevisto.</value>
+  </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Il compilatore VBA non genera un errore se un oggetto è assegnato a una variabile con un tipo di oggetto dichiarato incompatibile, cioè con un tipo di oggetto che non è né lo stesso tipo, né un supertipo né un sottotipo. In quasi tutte le circostanze una tale assegnazione porta a un errore di runtime, che è più difficile da rilevare e indica un bug. In tutte le altre situazioni il codice può essere modificato per utilizzare solo assegnazioni tra tipi dichiarati compatibili.</value>
+  </data>
+  <data name="ShadowedDeclarationInspection" xml:space="preserve">
+    <value>Due dichiarazioni nell'ambito di validità hanno lo stesso nome identificativo. Prendi in considerazione l'utilizzo di nomi di identificatori completi, altrimenti solo uno di essi sarà disponibile per l'uso.</value>
+  </data>
+  <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
+    <value>Excel definisce già una variabile oggetto con ambito globale con questo riferimento. Prendi in considerazione l'utilizzo della proprietà 'CodeName' del foglio.</value>
+  </data>
+  <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
+    <value>Il passo del ciclo for-next non è specificato. Questo potrebbe non essere intenzionale.</value>
+  </data>
+  <data name="StepOneIsRedundantInspection" xml:space="preserve">
+    <value>1 è il passo predefinito in un ciclo for-next e quindi è ridondante.</value>
+  </data>
+  <data name="StopKeywordInspection" xml:space="preserve">
+    <value>La parola chiave 'Stop' interrompe l'esecuzione e fa apparire il debugger. Evita il suo utilizzo nel codice distribuito.</value>
+  </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>Un'annotazione ha più argomenti di quelli consentiti; gli argomenti superflui sono ignorati.</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Ogni volta che entrambi i termini di un'assegnazione senza Set sono oggetti, c'è un'assegnazione dal membro predefinito dell'RHS a quello dell'LHS. Sebbene ciò possa essere intenzionale, in molte situazioni maschererà semplicemente un Set dimenticato per errore.</value>
+  </data>
+  <data name="UnassignedVariableUsageInspection" xml:space="preserve">
+    <value>Questo è probabilmente un bug. Si fa riferimento a una variabile, ma non viene mai assegnata.</value>
+  </data>
+  <data name="UndeclaredVariableInspection" xml:space="preserve">
+    <value>Il codice che utilizza variabili non dichiarate non viene compilato quando viene specificato Option Explicit. Le variabili non dichiarate sono sempre Variant, un tipo di dati che incorre in overhead e archiviazione non necessari.</value>
+  </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Un modulo di classe che contiene membri con il trattino basso non può essere implementato da altre classi. Il carattere trattino basso viene utilizzato come separatore tra il nome dell'interfaccia / oggetto e il nome del membro implementato: avere un carattere trattino basso nel nome del membro confonde il compilatore, che quindi si rifiuta di compilare il progetto. Evita i caratteri trattino basso nei nomi dei membri pubblici seguendo una convenzione di denominazione 'PascalCase'.</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
+    <value>La gestione degli errori dovrebbe essere ripristinata dopo aver utilizzato 'On Error Resume Next'.</value>
+  </data>
+  <data name="UnreachableCaseInspection" xml:space="preserve">
+    <value>Una condizione 'Case' o restituisce sempre False, causando un errore in fase di esecuzione, o l'effetto cumulativo delle precedenti istruzioni 'Case' rappresenta tutti i valori possibili o un sovrainsieme dei valori dell'istruzione 'Case'. Di conseguenza, il blocco 'Case' non sarà mai eseguito ed è "codice inattivo" oppure l'istruzione 'Case' è un errore in fase di esecuzione in attesa di verificarsi. Valuta la possibilità di rimuovere, riordinare o modificare l'istruzione 'Case'.</value>
+  </data>
+  <data name="UntypedFunctionUsageInspection" xml:space="preserve">
+    <value>Esiste una funzione equivalente che restituisce una stringa e dovrebbe essere utilizzata preferibilmente per evitare conversioni di tipo implicite.
+Se il parametro può essere nullo, ignorare questo risultato dell'ispezione; il passaggio di un valore nullo a una funzione che prevede una stringa genererebbe un errore di runtime di mancata corrispondenza del tipo.</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>La notazione con il punto escalmativo, formalmente nota come espressione di accesso al dizionario, solo apparentemente è fortemente tipizzata. Si tratta in realtà di un accesso di tipo stringa al membro parametrizzato come predefinito dell'oggetto su cui viene utilizzata.</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>La notazione con il punto escalmativo, formalmente nota come espressione di accesso al dizionario, solo apparentemente è fortemente tipizzata. Si tratta in realtà di un accesso di tipo stringa al membro parametrizzato come predefinito dell'oggetto su cui viene utilizzata. Ciò è particolarmente fuorviante se il membro parametrizzato come predefinito non si trova sull'oggetto stesso e può essere raggiunto solo chiamando prima il membro predefinito senza parametri.</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>La notazione con il punto escalmativo, formalmente nota come espressione di accesso al dizionario, solo apparentemente è fortemente tipizzata. Si tratta in realtà di un accesso di tipo stringa al membro parametrizzato come predefinito dell'oggetto su cui viene utilizzata. Ciò è particolarmente fuorviante: il membro predefinito non può essere determinato in fase di compilazione.</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>Il compilatore VBA non genera un errore se un oggetto viene utilizzato in una posizione che richiede un tipo di valore e il tipo dichiarato dell'oggetto non dispone di un membro predefinito appropriato. In quasi tutte le circostanze, questo porta a un errore di runtime 91 'Oggetto o variabile del blocco With non impostata' o 438 'L'oggetto non supporta questa proprietà o metodo' a seconda che l'oggetto abbia il valore 'Nothing' o meno, che è più difficile da rilevare e indica un bug.</value>
+  </data>
+  <data name="VariableNotAssignedInspection" xml:space="preserve">
+    <value>La variabile non è assegnata. Se questo non è previsto, probabilmente c'è un bug. Ignorare questo risultato dell'ispezione se la variabile viene assegnata in un'altra procedura tramite un parametro ByRef.</value>
+  </data>
+  <data name="VariableNotUsedInspection" xml:space="preserve">
+    <value>La variabile non ha riferimenti</value>
+  </data>
+  <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
+    <value>Una variabile il cui tipo non è dichiarato esplicitamente è implicitamente 'Variant'. Considera l'idea di renderla una 'Variant' esplicita, se previsto, o di dichiarare un tipo più specifico.</value>
+  </data>
+  <data name="WriteOnlyPropertyInspection" xml:space="preserve">
+    <value>Una proprietà che espone un mutatore ma nessuna funzione di accesso è indice di errore nella struttura e crea un'API confusa. Considera l'idea di esporre un getter o di convertire il mutatore in un metodo.</value>
+  </data>
+  <data name="UseMeaningfulNameInspection" xml:space="preserve">
+    <value>I nomi degli identificatori dovrebbero indicare per cosa sono usati e dovrebbero essere leggibili; evitare di togliere tutte le vocali, suffissi numerici e nomi di 1-2 caratteri.</value>
+  </data>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Non è stato possibile associare l'annotazione a una destinazione. L'annotazione è fuori posto? Un'annotazione destinata a essere specificata a livello di modulo non può essere utilizzata per annotare i membri; al contrario, le annotazioni intese come annotazioni di membri non possono essere utilizzate a livello di modulo.</value>
+  </data>
+  <data name="AnnotationInIncompatibleComponentTypeInspection" xml:space="preserve">
+    <value>È stata specificata un'annotazione in un modulo di un tipo che non è compatibile con tale annotazione. Alcune annotazioni possono essere utilizzate solo in un modulo di un tipo specifico; altre non possono essere utilizzate in moduli di determinati tipi.</value>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>Un commento è stato analizzato come annotazione sintatticamente valida, ma non riconosciuto come tipo di annotazione supportato.</value>
+  </data>
+</root>

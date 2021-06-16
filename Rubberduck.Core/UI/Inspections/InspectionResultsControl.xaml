@@ -151,7 +151,7 @@
 
                 <Image Source="{StaticResource FilterImage}" />
 
-                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_Filter}" VerticalContentAlignment="Center" />
+                <Label Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=GroupingGrid_Filter}" VerticalContentAlignment="Center" />
 
                 <controls:SearchBox Width="100"
                                     Text="{Binding InspectionDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
@@ -159,25 +159,25 @@
                 <Label Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI ,Key=CodeInspection_SeverityFilter}" />
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByError}"
+                              ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=FilterByError}"
                               IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Error}}">
                     <Image Source="{StaticResource FilterByErrorImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByWarning}"
+                              ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=FilterByWarning}"
                               IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Warning}}">
                     <Image Source="{StaticResource FilterByWarningImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterBySuggestion}"
+                              ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=FilterBySuggestion}"
                               IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Suggestion}}">
                     <Image Source="{StaticResource FilterBySuggestionImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByHint}"
+                              ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=FilterByHint}"
                               IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Hint}}">
                     <Image Source="{StaticResource FilterByHintImage}" />
                 </ToggleButton>
@@ -185,12 +185,12 @@
                 <Separator />
 
                 <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}" Margin="2"
-                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_CollapseAll}">
+                        ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=CollapseAll}">
                     <Image Source="{StaticResource CollapseAllImage}" />
                 </Button>
 
                 <Button Name="ExpandAll" Command="{Binding ExpandAllCommand}" Margin="2"
-                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_ExpandAll}">
+                        ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=ExpandAll}">
                     <Image Source="{StaticResource ExpandAllImage}" />
                 </Button>
 
@@ -232,15 +232,15 @@
                             </DataTemplate>
                         </DataGrid.RowDetailsTemplate>
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}">
+                            <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionResults_Type}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate DataType="inspections:IInspectionResult">
                                         <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}, Mode=OneTime}" Width="16" Height="16" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description, Mode=OneTime}" />
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime, Converter={StaticResource GroupingGridLocationConverter}}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description, Mode=OneTime}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime, Converter={StaticResource GroupingGridLocationConverter}}" />
                         </DataGrid.Columns>
                         <DataGrid.ContextMenu>
                             <ContextMenu ItemsSource="{Binding PlacementTarget.DataContext.QuickFixes, RelativeSource={RelativeSource Self}}"

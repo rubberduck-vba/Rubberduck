@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using NLog;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
@@ -140,37 +142,45 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
             if (item.Command != null)
             {
-                child.Click += child_Click;
+                child.Click += Child_Click;
             }
             return child;
         }
 
-        public void EvaluateCanExecute(RubberduckParserState state)
+        public async Task EvaluateCanExecuteAsync(RubberduckParserState state, CancellationToken token)
         {
-            foreach (var kvp in _items.Where(kv => kv.Key != null && kv.Value != null && !kv.Value.IsWrappingNullReference))
+            var usableMenuItems = _items.Where(kv => kv.Key != null && kv.Value != null && !kv.Value.IsWrappingNullReference);
+            foreach (var kvp in usableMenuItems)
             {
+                token.ThrowIfCancellationRequested();
                 var commandItem = kvp.Key;
                 var canExecute = false;
                 try
                 {
-                    canExecute = commandItem.EvaluateCanExecute(state);
-
+                    canExecute = await Task.Run(() => commandItem.EvaluateCanExecute(state), token);
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e, $"{commandItem?.GetType().Name ?? nameof(ICommandMenuItem)}.EvaluateCanExecute(RubberduckParserState) threw an exception.");
+                    Logger.Error(e,
+                        $"{commandItem?.GetType().Name ?? nameof(ICommandMenuItem)}.EvaluateCanExecute(RubberduckParserState) threw an exception.");
                 }
+
+                token.ThrowIfCancellationRequested();
                 try
                 {
-                    kvp.Value.IsEnabled = canExecute;
-                    if (commandItem?.HiddenWhenDisabled ?? false)
+                    _uiDispatcher.InvokeAsync(() =>
                     {
-                        kvp.Value.IsVisible = canExecute;
-                    }
+                        kvp.Value.IsEnabled = canExecute;
+                        if (commandItem?.HiddenWhenDisabled ?? false)
+                        {
+                            kvp.Value.IsVisible = canExecute;
+                        }
+                    });
                 }
-                catch (COMException exception)
+                catch (Exception exception)
                 {
-                    Logger.Error(exception,$"COMException while trying to set IsEnabled and IsVisible on {commandItem?.GetType().Name ?? nameof(ICommandMenuItem)}");
+                    Logger.Error(exception,
+                        $"Setting IsEnabled and IsVisible on {commandItem?.GetType().Name ?? nameof(ICommandMenuItem)} threw an exception.");
                 }
             }
         }
@@ -231,7 +241,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 {
                     if (!button.IsWrappingNullReference)
                     {
-                        button.Click -= child_Click;
+                        button.Click -= Child_Click;
                     }
                     button.Delete();
                     button.Dispose();
@@ -244,7 +254,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             _items.Clear();
         }
 
-        private void child_Click(object sender, CommandBarButtonClickEventArgs e)
+        private void Child_Click(object sender, CommandBarButtonClickEventArgs e)
         {
             ICommandMenuItem item;
             try

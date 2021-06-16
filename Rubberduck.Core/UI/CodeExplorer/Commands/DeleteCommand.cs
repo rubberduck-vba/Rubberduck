@@ -34,12 +34,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _vbe = vbe;
             _fileSystem = fileSystem;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         public override IEnumerable<Type> ApplicableNodeTypes { get; } = new List<Type> { typeof(CodeExplorerComponentViewModel) };
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             return _vbe.Kind == VBEKind.Standalone &&
                    _removeCommand.CanExecute(parameter);
