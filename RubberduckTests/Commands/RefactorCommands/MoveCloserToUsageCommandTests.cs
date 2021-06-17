@@ -21,6 +21,7 @@ namespace RubberduckTests.Commands.RefactorCommands
     public class MoveCloserToUsageCommandTests : RefactorCodePaneCommandTestBase
     {
         [Category("Commands")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Test]
         public void MoveCloserToUsage_CanExecute_Field_NoReferences()
         {
@@ -32,6 +33,7 @@ namespace RubberduckTests.Commands.RefactorCommands
         }
 
         [Category("Commands")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Test]
         public void MoveCloserToUsage_CanExecute_LocalVariable_NoReferences()
         {
@@ -45,6 +47,7 @@ End Property";
         }
 
         [Category("Commands")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Test]
         public void MoveCloserToUsage_CanExecute_Const_NoReferences()
         {
@@ -56,6 +59,7 @@ End Property";
         }
 
         [Category("Commands")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Test]
         public void MoveCloserToUsage_CanExecute_Field()
         {
@@ -70,6 +74,7 @@ End Sub";
         }
 
         [Category("Commands")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Test]
         public void MoveCloserToUsage_CanExecute_LocalVariable()
         {
@@ -84,6 +89,7 @@ End Property";
         }
 
         [Category("Commands")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Test]
         public void MoveCloserToUsage_CanExecute_Const()
         {
@@ -102,7 +108,15 @@ End Sub";
         {
             var msgBox = new Mock<IMessageBox>().Object;
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var baseRefactoring = new MoveCloserToUsageRefactoringAction(new DeleteDeclarationsRefactoringAction(state, rewritingManager), rewritingManager);
+            
+            var deleteDeclarationRefactoringAction = new DeleteDeclarationsRefactoringAction(state,
+                new DeleteModuleElementsRefactoringAction(state, rewritingManager),
+                new DeleteProcedureScopeElementsRefactoringAction(state, rewritingManager),
+                new DeleteUDTMembersRefactoringAction(state, rewritingManager),
+                new DeleteEnumMembersRefactoringAction(state, rewritingManager),
+                rewritingManager);
+
+            var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationRefactoringAction, rewritingManager);
             var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
             var notifier = new MoveCloserToUsageFailedNotifier(msgBox);
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);

@@ -1179,7 +1179,14 @@ End Sub";
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var baseRefactoring = new MoveCloserToUsageRefactoringAction(new DeleteDeclarationsRefactoringAction(state, rewritingManager), rewritingManager);
+            var deleteDeclarationsRefactoringAction = new DeleteDeclarationsRefactoringAction(state,
+                new DeleteModuleElementsRefactoringAction(state, rewritingManager),
+                new DeleteProcedureScopeElementsRefactoringAction(state, rewritingManager),
+                new DeleteUDTMembersRefactoringAction(state, rewritingManager),
+                new DeleteEnumMembersRefactoringAction(state, rewritingManager),
+                rewritingManager);
+
+            var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationsRefactoringAction, rewritingManager);
             return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
         }
     }

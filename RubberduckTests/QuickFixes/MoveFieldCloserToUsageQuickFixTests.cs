@@ -21,6 +21,7 @@ namespace RubberduckTests.QuickFixes
     {
         [Test]
         [Category("QuickFixes")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         public void MoveFieldCloserToUsage_QuickFixWorks()
         {
             const string inputCode =
@@ -41,6 +42,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         public void MoveFieldCloserToUsage_QuickFixWorks_SingleLineIfStatement()
         {
             const string inputCode =
@@ -76,6 +78,7 @@ End Sub
 
         [Test]
         [Category("QuickFixes")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         public void MoveFieldCloserToUsage_QuickFixWorks_SingleLineThenStatement()
         {
             const string inputCode =
@@ -97,6 +100,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         public void MoveFieldCloserToUsage_QuickFixWorks_SingleLineElseStatement()
         {
             const string inputCode =
@@ -128,7 +132,15 @@ End Sub";
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
                 var selectionService = MockedSelectionService();
                 var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-                var baseRefactoring = new MoveCloserToUsageRefactoringAction(new DeleteDeclarationsRefactoringAction(state, rewritingManager), rewritingManager);
+
+                var deleteDeclarationRefactoringAction = new DeleteDeclarationsRefactoringAction(state,
+                    new DeleteModuleElementsRefactoringAction(state, rewritingManager),
+                    new DeleteProcedureScopeElementsRefactoringAction(state, rewritingManager),
+                    new DeleteUDTMembersRefactoringAction(state, rewritingManager),
+                    new DeleteEnumMembersRefactoringAction(state, rewritingManager),
+                    rewritingManager);
+
+                var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationRefactoringAction, rewritingManager);
                 var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
                 var quickFix = new MoveFieldCloserToUsageQuickFix(refactoring);
 

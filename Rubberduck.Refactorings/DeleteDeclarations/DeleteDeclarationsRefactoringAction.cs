@@ -25,6 +25,12 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IRewritingManager _rewritingManager;
+
+        private readonly ICodeOnlyRefactoringAction<DeleteModuleElementsModel> _deleteModuleElementsRefactoringAction;
+        private readonly ICodeOnlyRefactoringAction<DeleteProcedureScopeElementsModel> _deleteProcedureScopeElementsRefactoringAction;
+        private readonly ICodeOnlyRefactoringAction<DeleteUDTMembersModel> _deleteUDTMembersRefactoringAction;
+        private readonly ICodeOnlyRefactoringAction<DeleteEnumMembersModel> _deleteEnumMembersRefactoringAction;
+
         private static List<DeclarationType> _supportedDeclarationTypes = new List<DeclarationType>()
         {
             DeclarationType.Variable,
@@ -41,10 +47,21 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
             DeclarationType.LineLabel
         };
 
-        public DeleteDeclarationsRefactoringAction(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager)
+        public DeleteDeclarationsRefactoringAction(IDeclarationFinderProvider declarationFinderProvider,
+            DeleteModuleElementsRefactoringAction deleteModuleElementsRefactoringAction,
+            DeleteProcedureScopeElementsRefactoringAction deleteProcedureScopeElementsRefactoringAction,
+            DeleteUDTMembersRefactoringAction deleteUDTMembersRefactoringAction,
+            DeleteEnumMembersRefactoringAction deleteEnumMembersRefactoringAction,
+            IRewritingManager rewritingManager)
             : base(rewritingManager) 
         {
             _declarationFinderProvider = declarationFinderProvider;
+
+            _deleteModuleElementsRefactoringAction = deleteModuleElementsRefactoringAction;
+            _deleteProcedureScopeElementsRefactoringAction = deleteProcedureScopeElementsRefactoringAction;
+            _deleteUDTMembersRefactoringAction = deleteUDTMembersRefactoringAction;
+            _deleteEnumMembersRefactoringAction = deleteEnumMembersRefactoringAction;
+            
             _rewritingManager = rewritingManager;
         }
 
@@ -74,8 +91,7 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
             var moduleElementTargets = targets.Where(t => t.ParentDeclaration is ModuleDeclaration).ToList();
             if (moduleElementTargets.Any())
             {
-                var refactoringAction = new DeleteModuleElementsRefactoringAction(_declarationFinderProvider, _rewritingManager);
-                refactoringAction.Refactor(new DeleteModuleElementsModel(moduleElementTargets), rewriteSession);
+                _deleteModuleElementsRefactoringAction.Refactor(new DeleteModuleElementsModel(moduleElementTargets), rewriteSession);
             }
         }
 
@@ -87,8 +103,7 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
 
             if (procedureLocalTargets.Any())
             {
-                var refactoringAction = new DeleteProcedureScopeElementsRefactoringAction(_declarationFinderProvider, _rewritingManager);
-                refactoringAction.Refactor(new DeleteProcedureScopeElementsModel(procedureLocalTargets), rewriteSession);
+                _deleteProcedureScopeElementsRefactoringAction.Refactor(new DeleteProcedureScopeElementsModel(procedureLocalTargets), rewriteSession);
             }
         }
         private void DeleteUserDefinedTypeMembers(IEnumerable<Declaration> targets, IRewriteSession rewriteSession)
@@ -96,8 +111,7 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
             var udtMemberTargets = targets.Where(t => t.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember)).ToList();
             if (udtMemberTargets.Any())
             {
-                var refactoringAction = new DeleteUDTMembersRefactoringAction(_declarationFinderProvider, _rewritingManager);
-                refactoringAction.Refactor(new DeleteUDTMembersModel(udtMemberTargets), rewriteSession);
+                _deleteUDTMembersRefactoringAction.Refactor(new DeleteUDTMembersModel(udtMemberTargets), rewriteSession);
             }
         }
 
@@ -106,8 +120,7 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
             var enumMemberTargets = targets.Where(t => t.DeclarationType.HasFlag(DeclarationType.EnumerationMember)).ToList();
             if (enumMemberTargets.Any())
             {
-                var refactoringAction = new DeleteEnumMembersRefactoringAction(_declarationFinderProvider, _rewritingManager);
-                refactoringAction.Refactor(new DeleteEnumMembersModel(enumMemberTargets), rewriteSession);
+                _deleteEnumMembersRefactoringAction.Refactor(new DeleteEnumMembersModel(enumMemberTargets), rewriteSession);
             }
         }
 

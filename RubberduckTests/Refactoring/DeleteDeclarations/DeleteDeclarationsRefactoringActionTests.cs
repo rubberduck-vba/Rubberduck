@@ -144,8 +144,8 @@ End Sub
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {
-                var action = new DeleteDeclarationsRefactoringAction(state, rewritingManager);
-                Assert.Throws<InvalidDeclarationTypeException>(() => action.Refactor(TestModel(state, "arg1"), rewritingManager.CheckOutCodePaneSession()));
+                var refactoringAction = DeleteDeclarationsTestSupport.CreateDeleteDeclarationRefactoringAction(state, rewritingManager);
+                Assert.Throws<InvalidDeclarationTypeException>(() => refactoringAction.Refactor(TestModel(state, "arg1"), rewritingManager.CheckOutCodePaneSession()));
             }
         }
 
@@ -483,10 +483,10 @@ End Sub
 
         private IDictionary<string, string> RefactoredCode(IVBE vbe, IRewritingManager rewritingManager, IDeclarationFinderProvider finderProvider, DeleteDeclarationsModel model)
         {
-            var action = new DeleteDeclarationsRefactoringAction(finderProvider, rewritingManager);
+            var refactoringAction = DeleteDeclarationsTestSupport.CreateDeleteDeclarationRefactoringAction(finderProvider, rewritingManager);
 
             var session = rewritingManager.CheckOutCodePaneSession();
-            action.Refactor(model, session);
+            refactoringAction.Refactor(model, session);
 
             session.TryRewrite();
 

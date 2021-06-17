@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.DeleteDeclarations;
 using Rubberduck.SmartIndenter;
@@ -42,7 +43,7 @@ namespace RubberduckTests.Refactoring.DeleteDeclarations
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {
-                var refactoringAction = new DeleteDeclarationsRefactoringAction(state, rewritingManager);
+                var refactoringAction = CreateDeleteDeclarationRefactoringAction(state, rewritingManager);
 
                 var session = rewritingManager.CheckOutCodePaneSession();
 
@@ -58,6 +59,7 @@ namespace RubberduckTests.Refactoring.DeleteDeclarations
                     .ToDictionary(component => component.Name, component => component.CodeModule.Content());
             }
         }
+
         internal IEnumerable<Declaration> TestTargets(IDeclarationFinderProvider declarationFinderProvider, params string[] targetIdentifiers)
         {
             var targetsList = new List<Declaration>();
@@ -67,6 +69,16 @@ namespace RubberduckTests.Refactoring.DeleteDeclarations
             }
 
             return targetsList;
+        }
+
+        public static DeleteDeclarationsRefactoringAction CreateDeleteDeclarationRefactoringAction(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager)
+        {
+            return new DeleteDeclarationsRefactoringAction(declarationFinderProvider,
+                 new DeleteModuleElementsRefactoringAction(declarationFinderProvider, rewritingManager),
+                 new DeleteProcedureScopeElementsRefactoringAction(declarationFinderProvider, rewritingManager),
+                 new DeleteUDTMembersRefactoringAction(declarationFinderProvider, rewritingManager),
+                 new DeleteEnumMembersRefactoringAction(declarationFinderProvider, rewritingManager),
+                 rewritingManager);
         }
     }
 }
