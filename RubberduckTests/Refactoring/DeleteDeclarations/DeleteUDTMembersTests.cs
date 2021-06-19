@@ -22,7 +22,7 @@ using System.Linq;
 namespace RubberduckTests.Refactoring.DeleteDeclarations
 {
     [TestFixture]
-    public class DeclarationsDeleter_UDTTests
+    public class DeleteUDTMembersTests
     {
         private readonly DeleteDeclarationsTestSupport _support = new DeleteDeclarationsTestSupport();
 
@@ -96,8 +96,8 @@ End Type
         }
 
         //Every UserDefinedType must have at least one member...Removing all members is equivalent to removing the entire UDT declaration
-        //Passing all UDT members to the UdtMemberDeclarationsDeleter results in an exception.  Passing them
-        //in via the DeleteDeclarationRefactoring substitutes the EnumDeclaration for the members.
+        //Passing all UDT members to the DeleteUDTMembersRefactoringAction results in an exception.  Passing them
+        //in via the DeleteDeclarationsRefactoringAction removes the UserDefinedTypeDeclaration in its entirety.
         [Test]
         [Category("Refactorings")]
         [Category(nameof(DeleteDeclarationsRefactoringAction))]
@@ -118,63 +118,67 @@ End Type
 Public Sub Test1()
 End Sub
 ";
-
-            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, inputCode, ComponentType.StandardModule)).Object;
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                var testTargets = new List<Declaration>();
-                foreach (var id in new string[] { "FirstValue", "SecondValue", "ThirdValue" })
-                {
-                    testTargets.Add(state.DeclarationFinder.MatchName(id).First());
-                }
-
-                var udtDeleter = new DeleteEnumMembersRefactoringAction(state, rewritingManager);
-                var model = new DeleteEnumMembersModel(testTargets);
-
-                Assert.Throws<InvalidOperationException>(() => udtDeleter.Refactor(model, rewritingManager.CheckOutCodePaneSession()));
-            }
+            Assert.Throws<InvalidOperationException>(() => GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "FirstValue", "SecondValue", "ThirdValue")));
         }
 
-        private List<string> GetRetainedLines(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder)
-            => GetRetainedCodeBlock(moduleCode, modelBuilder)
+        [TestCase(true)]
+        [TestCase(false)]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        public void RespectsInjectTODOCommentFlag(bool injectTODO)
+        {
+            var inputCode =
+@"
+Option Explicit
+
+Private Type TestType
+'A comment preceding the FirstValue
+    FirstValue As Long
+'A comment preceding the SecondValue
+    SecondValue As String
+    ThirdValue As Boolean
+End Type
+";
+
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "FirstValue"), injectTODO);
+            var injectedContent = injectTODO
+                ? DeleteDeclarationsTestSupport.TodoContent
+                : string.Empty;
+            StringAssert.Contains($"'{injectedContent}A comment preceding the FirstValue", actualCode);
+            StringAssert.Contains($"A comment preceding the SecondValue", actualCode);
+        }
+
+        private List<string> GetRetainedLines(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder, bool injectTODO = false)
+            => GetRetainedCodeBlock(moduleCode, modelBuilder, injectTODO)
                 .Trim()
                 .Split(new string[] { Environment.NewLine }, StringSplitOptions.None)
                 .ToList();
 
-        private string GetRetainedCodeBlock(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder)
+        private string GetRetainedCodeBlock(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> targetListBuilder, bool injectTODO = false)
         {
-            var refactoredCode = ModifiedCode(
-                modelBuilder,
+            var refactoredCode = _support.TestRefactoring(
+                targetListBuilder,
+                RefactorUDTMembers,
+                injectTODO,
                 (MockVbeBuilder.TestModuleName, moduleCode, ComponentType.StandardModule));
 
             return refactoredCode[MockVbeBuilder.TestModuleName];
         }
 
-        private IDictionary<string, string> ModifiedCode(Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder, params (string componentName, string content, ComponentType componentType)[] modules)
+        private static IExecutableRewriteSession RefactorUDTMembers(RubberduckParserState state, IEnumerable<Declaration> targets, IRewritingManager rewritingManager, bool injectTODOComment)
         {
-            var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
-            return ModifiedCode(vbe, modelBuilder);
-        }
+            var refactoringAction = new  DeleteUDTMembersRefactoringAction(state, new DeclarationDeletionTargetFactory(state), rewritingManager);
 
-        private static IDictionary<string, string> ModifiedCode(IVBE vbe, Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder)
-        {
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
+            var model = new  DeleteUDTMembersModel(targets)
             {
-                var refactoringAction = new DeleteUDTMembersRefactoringAction(state, rewritingManager);
+                InjectTODOForRetainedComments = injectTODOComment
+            };
 
-                var session = rewritingManager.CheckOutCodePaneSession();
+            var session = rewritingManager.CheckOutCodePaneSession();
 
-                var model = new DeleteUDTMembersModel(modelBuilder(state));
+            refactoringAction.Refactor(model, session);
 
-                refactoringAction.Refactor(model, session);
-
-                session.TryRewrite();
-
-                return vbe.ActiveVBProject.VBComponents
-                    .ToDictionary(component => component.Name, component => component.CodeModule.Content());
-            }
+            return session;
         }
     }
 }

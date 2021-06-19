@@ -22,9 +22,48 @@ using System.Linq;
 namespace RubberduckTests.Refactoring.DeleteDeclarations
 {
     [TestFixture]
-    public class DeclarationsDeleter_MemberTests
+    public class DeclarationsDeleter_MemberTests : ModuleSectionElementsTestsBase
     {
-        private readonly DeleteDeclarationsTestSupport _support = new DeleteDeclarationsTestSupport();
+        //https://github.com/rubberduck-vba/Rubberduck/issues/5719
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        public void RemovePropertyLet()
+        {
+            var inputCode =
+$@"
+Option Explicit
+
+Public Property Get Test1() As Long
+End Property
+
+Public Property Let Test1(ByVal RHS As Long)
+End Property
+
+Public Property Get Test2() As Long
+End Property
+
+Public Property Let Test2(ByVal RHS As Long)
+End Property
+";
+
+            var expected =
+$@"
+Option Explicit
+
+Public Property Get Test1() As Long
+End Property
+
+Public Property Get Test2() As Long
+End Property
+
+Public Property Let Test2(ByVal RHS As Long)
+End Property
+";
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargetsUsingDeclarationType(state, ("Test1", DeclarationType.PropertyLet)));
+            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
+        }
 
         [TestCase("Sub", "End Sub")]
         [TestCase("Property Let", "End Property")]
@@ -65,7 +104,7 @@ Public {methodType} Test1()
 Public {methodType} Test4()
 {endStmt}
 ";
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test2", "Test3"));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test2", "Test3"));
             StringAssert.Contains(expected, actualCode);
             StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
@@ -108,7 +147,7 @@ Public {methodType} Test1() As Long
 Public {methodType} Test4() As Long
 {endStmt}
 ";
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test2", "Test3"));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test2", "Test3"));
             StringAssert.Contains(expected, actualCode);
             StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
@@ -138,7 +177,7 @@ Option Explicit
 
 {indent}'Comment following Test1
 ";
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test1"));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test1"));
             StringAssert.Contains(expected, actualCode);
             StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
@@ -174,7 +213,7 @@ Private mTest As Long
 
 'Comment at End of Module
 ";
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test1", "Test2", "Test3"));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test1", "Test2", "Test3"));
             StringAssert.Contains(expected, actualCode);
             StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
@@ -220,7 +259,7 @@ Private {memberTypeDeclaration} ImUsed(ByVal arg As Long)
     mValue = arg
 {endMemberExpression}
 ";
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "ImNotUsed"));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "ImNotUsed"));
             StringAssert.Contains(expected, actualCode);
             StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
@@ -256,7 +295,7 @@ Private Sub Class_Initialize()
     Set InternalState = New VBA.Collection
 End Sub
 ";
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "NewEnum"));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "NewEnum"));
             StringAssert.Contains(expected, actualCode);
             StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
@@ -304,7 +343,7 @@ End Sub
             IEnumerable<Declaration> TestTargets(RubberduckParserState st, string id)
                 => st.DeclarationFinder.UserDeclarations(DeclarationType.PropertyGet);
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => TestTargets(state, "Item"));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => TestTargets(state, "Item"));
             StringAssert.Contains(expected, actualCode);
             StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
@@ -342,9 +381,35 @@ Private Sub Bizz()
 End Sub
 ";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"));
             StringAssert.Contains(expected, actualCode);
             StringAssert.AreEqualIgnoringCase(expected, actualCode);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        public void RespectsInjectTODOCommentFlag(bool injectTODO)
+        {
+            var inputCode =
+@"
+Option Explicit
+
+Public mVar1 As Long
+
+
+'@Ignore ""UseMeaningfulName""
+'A comment following an Annotation
+Public Sub Test1()
+End Sub
+";
+
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test1"), injectTODO);
+            var injectedContent = injectTODO
+                ? DeleteDeclarationsTestSupport.TodoContent
+                : string.Empty;
+            StringAssert.Contains($"'{injectedContent}A comment following an Annotation", actualCode);
         }
     }
 }

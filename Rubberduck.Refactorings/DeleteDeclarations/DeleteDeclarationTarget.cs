@@ -85,6 +85,12 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
 
         public ParserRuleContext ListContext => _listContext;
 
+        public virtual bool HasPrecedingLabel(out VBAParser.StatementLabelDefinitionContext labelContext)
+        {
+            labelContext = null;
+            return false;
+        }
+
         protected static VBAParser.EndOfStatementContext GetFollowingEndOfStatementContext(ParserRuleContext context)
         {
             context.TryGetFollowingContext(out VBAParser.EndOfStatementContext eos); 

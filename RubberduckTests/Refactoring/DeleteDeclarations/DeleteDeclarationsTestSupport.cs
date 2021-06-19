@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.DeleteDeclarations;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -15,43 +16,25 @@ using System.Threading.Tasks;
 
 namespace RubberduckTests.Refactoring.DeleteDeclarations
 {
-    internal class DeleteDeclarationsTestSupport
+    public class DeleteDeclarationsTestSupport
     {
-        internal List<string> GetRetainedLines(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder)
-            => GetRetainedCodeBlock(moduleCode, modelBuilder)
-                .Trim()
-                .Split(new string[] { Environment.NewLine }, StringSplitOptions.None)
-                .ToList();
+        //TODO: Replace ImplementInterface Resource with resource element for this refactoring
+        public static string TodoContent => Rubberduck.Resources.Refactorings.Refactorings.ImplementInterface_TODO;
 
-        internal string GetRetainedCodeBlock(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder)
-        {
-            var refactoredCode = ModifiedCode(
-                modelBuilder,
-                (MockVbeBuilder.TestModuleName, moduleCode, ComponentType.StandardModule));
-
-            return refactoredCode[MockVbeBuilder.TestModuleName];
-        }
-
-        public IDictionary<string, string> ModifiedCode(Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder, params (string componentName, string content, ComponentType componentType)[] modules)
+        public IDictionary<string, string> TestRefactoring(Func<RubberduckParserState, IEnumerable<Declaration>> testTargetListBuilder, Func<RubberduckParserState, IEnumerable<Declaration>, IRewritingManager, bool, IExecutableRewriteSession> refactorAction, bool injectTODOComment, params (string componentName, string content, ComponentType componentType)[] modules)
         {
             var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
-            return ModifiedCode(vbe, modelBuilder);
+            return RefactorCode(vbe, testTargetListBuilder, refactorAction, injectTODOComment);
         }
 
-        private static IDictionary<string, string> ModifiedCode(IVBE vbe, Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder)
+        private static IDictionary<string, string> RefactorCode(IVBE vbe, Func<RubberduckParserState, IEnumerable<Declaration>> testTargetListBuilder, Func<RubberduckParserState, IEnumerable<Declaration>, IRewritingManager, bool, IExecutableRewriteSession> refactorAction, bool injectTODOComment)
         {
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {
-                var refactoringAction = CreateDeleteDeclarationRefactoringAction(state, rewritingManager);
+                var targets = testTargetListBuilder(state);
 
-                var session = rewritingManager.CheckOutCodePaneSession();
-
-                var targets =  modelBuilder(state);
-
-                var model = new DeleteDeclarationsModel(targets);
-
-                refactoringAction.Refactor(model, session);
+                var session = refactorAction(state, targets, rewritingManager, injectTODOComment);
 
                 session.TryRewrite();
 
@@ -71,13 +54,29 @@ namespace RubberduckTests.Refactoring.DeleteDeclarations
             return targetsList;
         }
 
+        internal IEnumerable<Declaration> TestTargetsUsingDeclarationType(IDeclarationFinderProvider declarationFinderProvider, params (string, DeclarationType)[] targetIdentifiersAccessorPair)
+        {
+            var targetsList = new List<Declaration>();
+            foreach ((string id, DeclarationType decType) in targetIdentifiersAccessorPair)
+            {
+                var target = declarationFinderProvider.DeclarationFinder
+                    .MatchName(id)
+                    .Single(t => t.DeclarationType == decType);
+
+                targetsList.Add(target);
+            }
+
+            return targetsList;
+        }
+
         public static DeleteDeclarationsRefactoringAction CreateDeleteDeclarationRefactoringAction(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager)
         {
+            var deletionTargetFactory = new DeclarationDeletionTargetFactory(declarationFinderProvider);
             return new DeleteDeclarationsRefactoringAction(declarationFinderProvider,
-                 new DeleteModuleElementsRefactoringAction(declarationFinderProvider, rewritingManager),
-                 new DeleteProcedureScopeElementsRefactoringAction(declarationFinderProvider, rewritingManager),
-                 new DeleteUDTMembersRefactoringAction(declarationFinderProvider, rewritingManager),
-                 new DeleteEnumMembersRefactoringAction(declarationFinderProvider, rewritingManager),
+                 new DeleteModuleElementsRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
+                 new DeleteProcedureScopeElementsRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
+                 new DeleteUDTMembersRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
+                 new DeleteEnumMembersRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
                  rewritingManager);
         }
     }

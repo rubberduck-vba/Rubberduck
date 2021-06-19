@@ -380,11 +380,12 @@ Public notUsed1 As Long, notUsed2 As Long, notUsed3 As Long
 
         private static DeleteDeclarationsRefactoringAction CreateDeleteDeclarationRefactoringAction(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager)
         {
+            var deletionTargetFactory = new DeclarationDeletionTargetFactory(declarationFinderProvider);
             return new DeleteDeclarationsRefactoringAction(declarationFinderProvider,
-                 new DeleteModuleElementsRefactoringAction(declarationFinderProvider, rewritingManager),
-                 new DeleteProcedureScopeElementsRefactoringAction(declarationFinderProvider, rewritingManager),
-                 new DeleteUDTMembersRefactoringAction(declarationFinderProvider, rewritingManager),
-                 new DeleteEnumMembersRefactoringAction(declarationFinderProvider, rewritingManager),
+                 new DeleteModuleElementsRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
+                 new DeleteProcedureScopeElementsRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
+                 new DeleteUDTMembersRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
+                 new DeleteEnumMembersRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
                  rewritingManager);
         }
     }

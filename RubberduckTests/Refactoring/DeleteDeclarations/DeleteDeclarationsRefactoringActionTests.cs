@@ -24,6 +24,8 @@ namespace RubberduckTests.Refactoring.DeleteDeclarations
     {
         private static string threeConsecutiveNewLines = $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}";
 
+        private readonly DeleteDeclarationsTestSupport _support = new DeleteDeclarationsTestSupport();
+
         [Test]
         [Category("Refactorings")]
         [Category(nameof(DeleteDeclarationsRefactoringAction))]
@@ -59,9 +61,9 @@ Public Sub DoNothing()
 End Sub
 ";
 
-            var actualCode = GetRetainedCodeBlock(inputCode, state => TestModel(state, "Test", "Label1"));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test", "Label1"));
             StringAssert.Contains(expected, actualCode);
-            StringAssert.DoesNotContain("Label1:", actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("var0", "Label1")]
@@ -91,9 +93,9 @@ var0 = arg
 End Sub
 ";
 
-            var actualCode = GetRetainedCodeBlock(inputCode, state => TestModel(state, targets));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, targets));
             StringAssert.Contains(expected, actualCode);
-            StringAssert.DoesNotContain("Label1:", actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("Test", "localVar")]
@@ -124,8 +126,9 @@ Public Sub DoNothing()
 End Sub
 ";
 
-            var actualCode = GetRetainedCodeBlock(inputCode, state => TestModel(state, targets));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, targets));
             StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [Test]
@@ -140,19 +143,13 @@ Option Explicit
 Public Sub TestSub(arg1 As Long)
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, inputCode, ComponentType.StandardModule)).Object;
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                var refactoringAction = DeleteDeclarationsTestSupport.CreateDeleteDeclarationRefactoringAction(state, rewritingManager);
-                Assert.Throws<InvalidDeclarationTypeException>(() => refactoringAction.Refactor(TestModel(state, "arg1"), rewritingManager.CheckOutCodePaneSession()));
-            }
+            Assert.Throws<InvalidDeclarationTypeException>(() => GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "arg1")));
         }
 
         [Test]
         [Category("Refactorings")]
         [Category(nameof(DeleteDeclarationsRefactoringAction))]
-        public void AddTargetsAfterModelInstantiation()
+        public void DecalarationsDeleteModel_AddDeclarationsToDelete()
         {
             var inputCode =
 $@"
@@ -193,7 +190,17 @@ End Function
                 var funcBizz = state.DeclarationFinder.MatchName("Bizz").First();
 
                 model.AddDeclarationsToDelete(funcBizz);
-                var results = RefactoredCode(vbe, rewritingManager, state, model);
+
+                var refactoringAction = DeleteDeclarationsTestSupport.CreateDeleteDeclarationRefactoringAction(state, rewritingManager);
+
+                var session = rewritingManager.CheckOutCodePaneSession();
+                refactoringAction.Refactor(model, session);
+
+                session.TryRewrite();
+
+                var results = vbe.ActiveVBProject.VBComponents
+                    .ToDictionary(component => component.Name, component => component.CodeModule.Content());
+
                 var actualCode = results[MockVbeBuilder.TestModuleName];
 
 
@@ -234,25 +241,9 @@ Public Sub Test1()
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, inputCode, ComponentType.StandardModule)).Object;
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                var testTargets = new List<Declaration>();
-                foreach (var id in new string[] { "FirstValue", "SecondValue", "ThirdValue" })
-                {
-                    testTargets.Add(state.DeclarationFinder.MatchName(id).First());
-                }
-
-                var model = new DeleteDeclarationsModel();
-                model.AddRangeOfDeclarationsToDelete(testTargets);
-
-                var results = RefactoredCode(vbe, rewritingManager, state, model);
-                var actualCode = results[MockVbeBuilder.TestModuleName];
-
-                StringAssert.Contains(expected, actualCode);
-                StringAssert.AreEqualIgnoringCase(expected, actualCode);
-            }
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "FirstValue", "SecondValue", "ThirdValue"));
+            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         //Every UserDefinedType must declare at least one member...Removing all members is equivalent to removing the entire UDT declaration
@@ -286,25 +277,9 @@ Public Sub Test1()
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, inputCode, ComponentType.StandardModule)).Object;
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                var testTargets = new List<Declaration>();
-                foreach (var id in new string[] { "FirstValue", "SecondValue", "ThirdValue" })
-                {
-                    testTargets.Add(state.DeclarationFinder.MatchName(id).First());
-                }
-
-                var model = new DeleteDeclarationsModel();
-                model.AddRangeOfDeclarationsToDelete(testTargets);
-
-                var results = RefactoredCode(vbe, rewritingManager, state, model);
-                var actualCode = results[MockVbeBuilder.TestModuleName];
-
-                StringAssert.Contains(expected, actualCode);
-                StringAssert.AreEqualIgnoringCase(expected, actualCode);
-            }
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "FirstValue", "SecondValue", "ThirdValue"));
+            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [Test]
@@ -343,25 +318,10 @@ Public Sub Test1()
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, inputCode, ComponentType.StandardModule)).Object;
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                var testTargets = new List<Declaration>();
-                foreach (var id in new string[] { "EFirstValue", "ESecondValue", "EThirdValue", "TFirstValue", "TSecondValue", "TThirdValue" })
-                {
-                    testTargets.Add(state.DeclarationFinder.MatchName(id).First());
-                }
-
-                var model = new DeleteDeclarationsModel();
-                model.AddRangeOfDeclarationsToDelete(testTargets);
-
-                var results = RefactoredCode(vbe, rewritingManager, state, model);
-                var actualCode = results[MockVbeBuilder.TestModuleName];
-
-                StringAssert.Contains(expected, actualCode);
-                StringAssert.AreEqualIgnoringCase(expected, actualCode);
-            }
+            var actualCode = GetRetainedCodeBlock(inputCode, 
+                state => _support.TestTargets(state, "EFirstValue", "ESecondValue", "EThirdValue", "TFirstValue", "TSecondValue", "TThirdValue"));
+            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [Test]
@@ -394,25 +354,9 @@ Public Sub Test1()
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, inputCode, ComponentType.StandardModule)).Object;
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                var testTargets = new List<Declaration>();
-                foreach (var id in new string[] { "ThirdValue", "TestType" })
-                {
-                    testTargets.Add(state.DeclarationFinder.MatchName(id).First());
-                }
-
-                var model = new DeleteDeclarationsModel();
-                model.AddRangeOfDeclarationsToDelete(testTargets);
-
-                var results = RefactoredCode(vbe, rewritingManager, state, model);
-                var actualCode = results[MockVbeBuilder.TestModuleName];
-
-                StringAssert.Contains(expected, actualCode);
-                StringAssert.AreEqualIgnoringCase(expected, actualCode);
-            }
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "ThirdValue", "TestType"));
+            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [Test]
@@ -445,73 +389,36 @@ Public Sub Test1()
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, inputCode, ComponentType.StandardModule)).Object;
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                var testTargets = new List<Declaration>();
-                foreach (var id in new string[] { "ThirdValue", "TestEnum" })
-                {
-                    testTargets.Add(state.DeclarationFinder.MatchName(id).First());
-                }
-
-                var model = new DeleteDeclarationsModel();
-                model.AddRangeOfDeclarationsToDelete(testTargets);
-
-                var results = RefactoredCode(vbe, rewritingManager, state, model);
-                var actualCode = results[MockVbeBuilder.TestModuleName];
-
-                StringAssert.Contains(expected, actualCode);
-                StringAssert.AreEqualIgnoringCase(expected, actualCode);
-            }
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "ThirdValue", "TestEnum"));
+            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
-        private IDictionary<string, string> RefactoredCode(Func<RubberduckParserState, DeleteDeclarationsModel> modelBuilder, params (string componentName, string content, ComponentType componentType)[] modules)
+        private string GetRetainedCodeBlock(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> targetListBuilder, bool injectTODO = false)
         {
-            var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
-            return RefactoredCode(vbe, modelBuilder);
-        }
-
-        private IDictionary<string, string> RefactoredCode(IVBE vbe, Func<RubberduckParserState, DeleteDeclarationsModel> modelBuilder)
-        {
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                return RefactoredCode(vbe, rewritingManager, state, modelBuilder(state));
-            }
-        }
-
-        private IDictionary<string, string> RefactoredCode(IVBE vbe, IRewritingManager rewritingManager, IDeclarationFinderProvider finderProvider, DeleteDeclarationsModel model)
-        {
-            var refactoringAction = DeleteDeclarationsTestSupport.CreateDeleteDeclarationRefactoringAction(finderProvider, rewritingManager);
-
-            var session = rewritingManager.CheckOutCodePaneSession();
-            refactoringAction.Refactor(model, session);
-
-            session.TryRewrite();
-
-            return vbe.ActiveVBProject.VBComponents
-                .ToDictionary(component => component.Name, component => component.CodeModule.Content());
-        }
-
-        private string GetRetainedCodeBlock(string moduleCode, Func<RubberduckParserState, DeleteDeclarationsModel> modelBuilder)
-        {
-            var refactoredCode = RefactoredCode(
-                modelBuilder,
+            var refactoredCode = _support.TestRefactoring(
+                targetListBuilder,
+                RefactorAllElementTypes,
+                injectTODO,
                 (MockVbeBuilder.TestModuleName, moduleCode, ComponentType.StandardModule));
 
             return refactoredCode[MockVbeBuilder.TestModuleName];
         }
 
-        private static DeleteDeclarationsModel TestModel(RubberduckParserState state, params string[] identifiers)
+        private static IExecutableRewriteSession RefactorAllElementTypes(RubberduckParserState state, IEnumerable<Declaration> targets, IRewritingManager rewritingManager, bool injectTODOComment)
         {
-            var finder = state.DeclarationFinder;
-            var targets = new List<Declaration>();
-            foreach (var tgt in identifiers)
+            var refactoringAction = DeleteDeclarationsTestSupport.CreateDeleteDeclarationRefactoringAction(state, rewritingManager);
+
+            var model = new DeleteDeclarationsModel(targets)
             {
-                targets.Add(finder.MatchName(tgt).Single());
-            }
-            return new DeleteDeclarationsModel(targets);
+                InjectTODOForRetainedComments = injectTODOComment
+            };
+
+            var session = rewritingManager.CheckOutCodePaneSession();
+
+            refactoringAction.Refactor(model, session);
+
+            return session;
         }
     }
 }

@@ -133,11 +133,12 @@ End Sub";
                 var selectionService = MockedSelectionService();
                 var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
 
+                var deletionTargetFactory = new DeclarationDeletionTargetFactory(state);
                 var deleteDeclarationRefactoringAction = new DeleteDeclarationsRefactoringAction(state,
-                    new DeleteModuleElementsRefactoringAction(state, rewritingManager),
-                    new DeleteProcedureScopeElementsRefactoringAction(state, rewritingManager),
-                    new DeleteUDTMembersRefactoringAction(state, rewritingManager),
-                    new DeleteEnumMembersRefactoringAction(state, rewritingManager),
+                    new DeleteModuleElementsRefactoringAction(state, deletionTargetFactory, rewritingManager),
+                    new DeleteProcedureScopeElementsRefactoringAction(state, deletionTargetFactory, rewritingManager),
+                    new DeleteUDTMembersRefactoringAction(state, deletionTargetFactory, rewritingManager),
+                    new DeleteEnumMembersRefactoringAction(state, deletionTargetFactory, rewritingManager),
                     rewritingManager);
 
                 var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationRefactoringAction, rewritingManager);

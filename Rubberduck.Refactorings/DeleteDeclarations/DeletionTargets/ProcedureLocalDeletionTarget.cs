@@ -41,6 +41,14 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
             ? _targetContext 
             : _targetContext.GetChild<VBAParser.MainBlockStmtContext>();
 
+        public override bool HasPrecedingLabel(out VBAParser.StatementLabelDefinitionContext labelContext)
+        {
+            labelContext = null;
+            var result =  DeleteContext.Parent is ParserRuleContext prc && prc.TryGetChildContext(out labelContext);
+            return result;
+        }
+
+
         private static VBAParser.EndOfStatementContext GetEndOfStatementContext(Declaration target)
         {
             var blockContext = target.Context.GetAncestor<VBAParser.BlockContext>();

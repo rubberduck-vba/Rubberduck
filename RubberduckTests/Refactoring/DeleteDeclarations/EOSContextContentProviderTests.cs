@@ -115,42 +115,6 @@ End Sub";
             SetupAndInvokeTest(inputCode, "mVar1", thisTest);
         }
 
-        //[Test]
-        //[Category("Refactorings")]
-        //[Category(nameof(DeleteDeclarationsRefactoringAction))]
-        //public void FindsPreAnnotationLineContexts()
-        //{
-        //    void thisTest(EOSContextContentProvider sut)
-        //    {
-        //        var goalContexts = sut.PreAnnotationCommentContexts;
-
-        //        Assert.AreEqual(2, goalContexts.Count);
-        //        StringAssert.Contains("'First Pre-Annotation Comment Context", goalContexts.First().GetText());
-        //        var second = goalContexts.Skip(1).First();
-        //        StringAssert.Contains("'Second Pre-Annotation Comment Context", second.GetText());
-        //    }
-
-        //    SetupAndInvokeTest(TestContent1, "DoSomethingElse", thisTest);
-        //}
-
-        //[Test]
-        //[Category("Refactorings")]
-        //[Category(nameof(DeleteDeclarationsRefactoringAction))]
-        //public void FindsPostAnnotationLineContexts()
-        //{
-        //    void thisTest(EOSContextContentProvider sut)
-        //    {
-        //        var goalContexts = sut.PostAnnotationCommentContexts;
-
-        //        Assert.AreEqual(2, goalContexts.Count);
-        //        StringAssert.Contains("'First Post-Annotation Comment Context", goalContexts.First().GetText());
-        //        var second = goalContexts.Skip(1).First();
-        //        StringAssert.Contains("'Second Post-Annotation Comment Context", second.GetText());
-        //    }
-
-        //    SetupAndInvokeTest(TestContent1, "DoSomethingElse", thisTest);
-        //}
-
         [Test]
         [Category("Refactorings")]
         [Category(nameof(DeleteDeclarationsRefactoringAction))]
@@ -158,7 +122,6 @@ End Sub";
         {
             void thisTest(EOSContextContentProvider sut)
             {
-                //StringAssert.Contains($"{Environment.NewLine}{ Environment.NewLine}", sut.EndingNewLines);
                 StringAssert.Contains($"{Environment.NewLine}{ Environment.NewLine}", sut.Separation);
             }
 
@@ -189,7 +152,6 @@ End Sub
 ";
             void thisTest(EOSContextContentProvider sut)
             {
-                //StringAssert.Contains(expectedIndentation, sut.NextContextIndentation);
                 StringAssert.Contains(expectedIndentation, sut.Indentation);
             }
 
@@ -202,14 +164,14 @@ End Sub
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {
-                var xVar = state.DeclarationFinder.MatchName(memberName).First();
-                var eos = GetEOS(xVar.Context);
+                var target = state.DeclarationFinder.MatchName(memberName).First();
+                var eos = GetEOS(target.Context);
 
-                var rewriter = rewritingManager.CheckOutCodePaneSession().CheckOutModuleRewriter(xVar.QualifiedModuleName);
+                var rewriter = rewritingManager.CheckOutCodePaneSession().CheckOutModuleRewriter(target.QualifiedModuleName);
 
-                 var eosEX = new EOSContextContentProvider(eos, rewriter);
+                 var eosContentProvider = new EOSContextContentProvider(eos, rewriter);
 
-                testSUT(eosEX);
+                testSUT(eosContentProvider);
             }
         }
 

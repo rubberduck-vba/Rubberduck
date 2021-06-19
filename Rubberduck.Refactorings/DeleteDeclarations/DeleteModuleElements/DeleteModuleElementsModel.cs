@@ -7,18 +7,9 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.DeleteDeclarations
 {
-    public class DeleteModuleElementsModel : IRefactoringModel
+    public class DeleteModuleElementsModel : DeleteDeclarationsModel
     {
-        public DeleteModuleElementsModel()
-        {
-            Targets = new List<Declaration>();
-        }
-
         public DeleteModuleElementsModel(IEnumerable<Declaration> targets)
-        {
-            Targets = targets.ToList();
-        }
-
-        public List<Declaration> Targets { get; }
+            : base(targets) { }
     }
 }

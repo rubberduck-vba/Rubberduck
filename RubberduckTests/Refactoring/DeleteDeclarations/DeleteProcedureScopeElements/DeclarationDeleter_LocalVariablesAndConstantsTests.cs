@@ -38,9 +38,13 @@ Public Sub Foo()
     {declaration}
 End Sub";
 
-            var actualCodeLines = _support.GetRetainedLines(inputCode, state => _support.TestTargets(state, "bizz"));
-            Assert.IsFalse(actualCodeLines.Contains(declaration));
-            Assert.AreEqual(2, actualCodeLines.Count());
+            var expected =
+$@"
+Public Sub Foo()
+End Sub";
+
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "bizz"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("Const bizz1 As Integer = 9, bizz2 As Integer = 8, bizz3 As Integer = 7", "Const bizz1 As Integer = 9, bizz3", "bizz2")]
@@ -57,7 +61,7 @@ Public Sub Foo()
     {declaration}
 End Sub";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, toDelete));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, toDelete));
             StringAssert.Contains(expected, actualCode);
         }
 
@@ -65,7 +69,7 @@ End Sub";
         [TestCase("Const const1 As Integer = 9", "const2", "const3")]
         [Category("Refactorings")]
         [Category(nameof(DeleteDeclarationsRefactoringAction))]
-        public void ConstantsDeclarationListsLineContinuations(string expectedCode, params string[] toDelete)
+        public void ConstantsDeclarationListsLineContinuations(string expected, params string[] toDelete)
         {
             var inputCode =
 @"
@@ -74,15 +78,15 @@ Public Sub Foo()
             const3 As Integer = 7
 End Sub";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, toDelete));
-            StringAssert.Contains(expectedCode, actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, toDelete));
+            StringAssert.Contains(expected, actualCode);
         }
 
         [TestCase("Dim bizz3 As Integer", "bizz1", "bizz2")]
         [TestCase("Dim bizz1 As Integer", "bizz2", "bizz3")]
         [Category("Refactorings")]
         [Category(nameof(DeleteDeclarationsRefactoringAction))]
-        public void VariableDeclarationListsLineContinuations(string expectedCode, params string[] toDelete)
+        public void VariableDeclarationListsLineContinuations(string expected, params string[] toDelete)
         {
             var inputCode =
 @"
@@ -91,8 +95,8 @@ Public Sub Foo()
             bizz3 As Integer
 End Sub";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, toDelete));
-            StringAssert.Contains(expectedCode, actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, toDelete));
+            StringAssert.Contains(expected, actualCode);
         }
 
         [Test]
@@ -107,15 +111,15 @@ Public Sub Foo()
             const3 As Integer = 7
 End Sub";
 
-            var expectedCode =
+            var expected =
 @"
 Public Sub Foo()
     Const const1 As Integer = 9, _
             const3 As Integer = 7
 End Sub";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "const2"));
-            StringAssert.Contains(expectedCode, actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "const2"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [Test]
@@ -130,15 +134,15 @@ Public Sub Foo()
             bizz3 As Integer
 End Sub";
 
-            var expectedCode =
+            var expected =
 @"
 Public Sub Foo()
     Dim bizz1 As Integer, _
             bizz3 As Integer
 End Sub";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "bizz2"));
-            StringAssert.Contains(expectedCode, actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "bizz2"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("Const bizz1 As Integer = 9, bizz2 As Integer = 8, bizz3 As Integer = 7")]
@@ -151,10 +155,17 @@ End Sub";
 $@"
 Public Sub Foo()
     {declaration}
-End Sub";
+End Sub
+";
 
-            var actualCodeLines = _support.GetRetainedLines(inputCode, state => _support.TestTargets(state, "bizz1", "bizz2", "bizz3"));
-            Assert.IsTrue(2 == actualCodeLines.Count(), $"Unexpected line count: {Environment.NewLine} {string.Join(Environment.NewLine, actualCodeLines)}");
+            var expected =
+$@"
+Public Sub Foo()
+End Sub
+";
+
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "bizz1", "bizz2", "bizz3"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("Dim bizz1 As Long: Dim bizz2 As Long 'Comment on bizz2", "bizz2 As Long 'Comment on bizz2")]
@@ -172,9 +183,10 @@ Option Explicit
 Sub Foo()
     {declarationList}
     ' More Comments
-End Sub";
+End Sub
+";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "bizz1"));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "bizz1"));
             StringAssert.Contains(expected, actualCode);
             StringAssert.Contains("More Comments", actualCode);
         }
@@ -196,7 +208,7 @@ Sub Foo()
     ' More Comments
 End Sub";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, remove));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, remove));
             StringAssert.Contains($"Dim {retain} As String", actualCode);
             StringAssert.Contains("'Comment ", actualCode);
             StringAssert.Contains("More Comments", actualCode);
@@ -220,7 +232,7 @@ Sub Foo()
     ' More Comments
 End Sub";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, remove));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, remove));
             StringAssert.Contains($"Const {retain} As Long", actualCode);
             StringAssert.Contains("'Comment ", actualCode);
             StringAssert.Contains("More Comments", actualCode);
@@ -267,8 +279,8 @@ Sub Foo(ByRef arg As Long)
 End Sub
 ";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "bizz1", "bizz2"));
-            StringAssert.Contains(expected, actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "bizz1", "bizz2"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("            Dim varKept As Long", "    'More Comments")]
@@ -311,8 +323,8 @@ Sub Foo(ByRef arg As Long)
 End Sub
 ";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "bizz1", "bizz2"));
-            StringAssert.Contains(expected, actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "bizz1", "bizz2"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("Dim bar As Boolean", "1", "bar")]
@@ -333,7 +345,7 @@ Private Sub Foo()
 End Sub
 ";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, targets));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, targets));
             StringAssert.Contains(expected, actualCode);
             StringAssert.Contains("2   Dim bat As Integer", actualCode);
             foreach (var deletedIdentifier in targets)
@@ -360,7 +372,7 @@ Label1:   {expression}
 End Sub
 ";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, targets));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, targets));
             StringAssert.Contains(expected, actualCode);
             StringAssert.Contains("   Dim bat As Integer", actualCode);
             foreach (var deletedIdentifier in targets)
@@ -368,6 +380,7 @@ End Sub
                 StringAssert.DoesNotContain(deletedIdentifier, actualCode);
             }
         }
+
         [TestCase("Dim target As Long: target = arg", "target = arg")]
         [TestCase("Const target As Long = 100: arg = target * arg", "arg = target * arg")]
         [Category("Refactorings")]
@@ -393,9 +406,8 @@ Label1:    {expectedExpression}
     Dim var2 As Variant
 End Sub";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "target"));
-            StringAssert.Contains(expected, actualCode);
-            StringAssert.Contains("Dim var2", actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "target"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("Dim bizz As Boolean")]
@@ -413,16 +425,15 @@ End Sub";
 3{indent}bizz = True
 End Sub";
 
-            var expectedCode =
+            var expected =
                 $@"Private Sub Foo()
 1{indent}
 2{indent}Dim bat As Integer
 3{indent}bizz = True
 End Sub";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "bizz"));
-            StringAssert.Contains(expectedCode, actualCode);
-            StringAssert.AreEqualIgnoringCase(expectedCode, actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "bizz"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
         [TestCase("'@Ignore VariableNotUsed, VariableNotAssigned, UseMeaningfulName", "Dim X As Long")]
         [TestCase("'@Ignore ConstantNotUsed, UseMeaningfulName", "Const X As Long = 7")]
@@ -443,7 +454,7 @@ Public Sub DoSomething(arg As Long)
 End Sub
 ";
 
-            var expectedCode =
+            var expected =
 $@"
 Option Explicit
 
@@ -453,8 +464,8 @@ Public Sub DoSomething(arg As Long)
 End Sub
 ";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"));
-            Assert.AreEqual(expectedCode, actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("'@Ignore VariableNotUsed, VariableNotAssigned, UseMeaningfulName", "Dim X As Long, alsoNotUsed As String")]
@@ -476,7 +487,7 @@ Public Sub DoSomething(arg As Long)
 End Sub
 ";
 
-            var expectedCode =
+            var expected =
 $@"
 Option Explicit
 
@@ -486,9 +497,8 @@ Public Sub DoSomething(arg As Long)
 End Sub
 ";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X", "alsoNotUsed"));
-            StringAssert.Contains(expectedCode, actualCode);
-            StringAssert.AreEqualIgnoringCase(expectedCode, actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X", "alsoNotUsed"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("'@Ignore VariableNotUsed, VariableNotAssigned, UseMeaningfulName", "Dim X As Long, usedVar As Long", "Dim usedVar As Long")]
@@ -509,7 +519,7 @@ Public Sub DoSomething(ByRef arg As Long)
 End Sub
 ";
 
-            var expectedCode =
+            var expected =
 $@"
 Option Explicit
 
@@ -521,8 +531,8 @@ Public Sub DoSomething(ByRef arg As Long)
 End Sub
 ";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"));
-            Assert.AreEqual(expectedCode, actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("    ", "Dim X As Long", "VariableNotUsed")]
@@ -548,7 +558,7 @@ Public Sub DoSomething(ByRef arg As Long)
 End Sub
 ";
 
-            var expectedCode =
+            var expected =
 $@"
 Option Explicit
 
@@ -559,8 +569,8 @@ Public Sub DoSomething(ByRef arg As Long)
 End Sub
 ";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"));
-            StringAssert.Contains(expectedCode, actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("Dim X As Long", "VariableNotUsed")]
@@ -585,7 +595,7 @@ Public Sub DoSomething(ByRef arg As Long)
 End Sub
 ";
 
-            var expectedCode =
+            var expected =
 $@"
 Option Explicit
 
@@ -598,9 +608,8 @@ Public Sub DoSomething(ByRef arg As Long)
 End Sub
 ";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"));
-            StringAssert.Contains(expectedCode, actualCode);
-            Assert.AreEqual(expectedCode, actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("Dim X As Long", "VariableNotUsed")]
@@ -625,7 +634,7 @@ Public Sub DoSomethingElse(arg As Long)
 End Sub
 ";
 
-            var expectedCode =
+            var expected =
 $@"
 Option Explicit
 
@@ -637,9 +646,70 @@ Public Sub DoSomethingElse(arg As Long)
 End Sub
 ";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"));
-            StringAssert.Contains(expectedCode, actualCode);
-            Assert.AreEqual(expectedCode, actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
+        }
+
+        [TestCase("Dim X As Long", true)]
+        [TestCase("Dim X As Long", false)]
+        [TestCase("Const X As Long = 9", true)]
+        [TestCase("Const X As Long = 9", false)]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        public void RespectsInjectTODOCommentFlag(string declaration, bool injectTODO)
+        {
+            var inputCode =
+$@"
+Option Explicit
+
+Public mVar1 As Long
+
+Public Sub DoSomethingElse(arg As Long)
+    'There is already a comment
+    '@Ignore UseMeaningfulName
+    'And then another
+    {declaration}
+
+    Dim usedVar As Long
+    arg = usedVar
+    
+End Sub
+";
+
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"), injectTODO);
+            var injectedContent = injectTODO
+                ? DeleteDeclarationsTestSupport.TodoContent
+                : string.Empty;
+
+            StringAssert.Contains($"'{injectedContent}There is already a comment", actualCode);
+            StringAssert.Contains($"'{injectedContent}And then another", actualCode);
+        }
+
+        private string GetRetainedCodeBlock(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> targetListBuilder, bool injectTODO = false)
+        {
+            var refactoredCode = _support.TestRefactoring(
+                targetListBuilder,
+                RefactorProcedureScopeElements,
+                injectTODO,
+                (MockVbeBuilder.TestModuleName, moduleCode, ComponentType.StandardModule));
+
+            return refactoredCode[MockVbeBuilder.TestModuleName];
+        }
+
+        private static IExecutableRewriteSession RefactorProcedureScopeElements(RubberduckParserState state, IEnumerable<Declaration> targets, IRewritingManager rewritingManager, bool injectTODOComment)
+        {
+            var refactoringAction = new DeleteProcedureScopeElementsRefactoringAction(state, new DeclarationDeletionTargetFactory(state), rewritingManager);
+
+            var model = new DeleteProcedureScopeElementsModel(targets)
+            {
+                InjectTODOForRetainedComments = injectTODOComment
+            };
+
+            var session = rewritingManager.CheckOutCodePaneSession();
+
+            refactoringAction.Refactor(model, session);
+
+            return session;
         }
     }
 }

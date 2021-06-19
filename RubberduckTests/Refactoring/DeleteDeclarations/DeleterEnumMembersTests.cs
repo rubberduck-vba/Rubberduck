@@ -22,7 +22,7 @@ using System.Linq;
 namespace RubberduckTests.Refactoring.DeleteDeclarations
 {
     [TestFixture]
-    public class DeclarationsDeleter_EnumTests
+    public class DeleterEnumMembersTests
     {
         private readonly DeleteDeclarationsTestSupport _support = new DeleteDeclarationsTestSupport();
 
@@ -96,8 +96,8 @@ End Enum
         }
 
         //Every Enum must have at least one member...Removing all members is equivalent to removing the entire Enum declaration
-        //Passing all enum members to the EnumMemberDeclarationsDeleter results in an exception.  Passing them
-        //in via the DeleteDeclarationRefactoring substitutes the EnumDeclaration for the members.
+        //Passing all enum members to the DeleteEnumMembersRefactoringAction results in an exception.  Passing them
+        //in via the DeleteDeclarationsRefactoringAction removes the EnumDeclaration in its entirety.
         [Test]
         [Category("Refactorings")]
         [Category(nameof(DeleteDeclarationsRefactoringAction))]
@@ -119,62 +119,61 @@ Public Sub Test1()
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, inputCode, ComponentType.StandardModule)).Object;
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                var testTargets = new List<Declaration>();
-                foreach (var id in new string[] { "FirstValue", "SecondValue", "ThirdValue" })
-                {
-                    testTargets.Add(state.DeclarationFinder.MatchName(id).First());
-                }
-
-                var enumDeleter = new DeleteEnumMembersRefactoringAction(state, rewritingManager);
-                var model = new DeleteEnumMembersModel(testTargets);
-
-                Assert.Throws<InvalidOperationException>(() => enumDeleter.Refactor(model, rewritingManager.CheckOutCodePaneSession()));
-            }
+            Assert.Throws<InvalidOperationException>(() => GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "FirstValue", "SecondValue", "ThirdValue")));
         }
 
-        private List<string> GetRetainedLines(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder)
-            => GetRetainedCodeBlock(moduleCode, modelBuilder)
-                .Trim()
-                .Split(new string[] { Environment.NewLine }, StringSplitOptions.None)
-                .ToList();
-
-        private string GetRetainedCodeBlock(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder)
+        [TestCase(true)]
+        [TestCase(false)]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        public void RespectsInjectTODOCommentFlag(bool injectTODO)
         {
-            var refactoredCode = ModifiedCode(
-                modelBuilder,
+            var inputCode =
+@"
+Option Explicit
+
+Private Enum TestEnum
+'A comment preceding the FirstValue
+    FirstValue
+'A comment preceding the SecondValue
+    SecondValue
+End Enum
+
+";
+
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "FirstValue"), injectTODO);
+            var injectedContent = injectTODO
+                ? DeleteDeclarationsTestSupport.TodoContent
+                : string.Empty;
+            StringAssert.Contains($"'{injectedContent}A comment preceding the FirstValue", actualCode);
+            StringAssert.Contains($"A comment preceding the SecondValue", actualCode);
+        }
+
+        private string GetRetainedCodeBlock(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> targetListBuilder, bool injectTODO = false)
+        {
+            var refactoredCode = _support.TestRefactoring(
+                targetListBuilder,
+                RefactorEnumMembers,
+                injectTODO,
                 (MockVbeBuilder.TestModuleName, moduleCode, ComponentType.StandardModule));
 
             return refactoredCode[MockVbeBuilder.TestModuleName];
         }
 
-        private IDictionary<string, string> ModifiedCode(Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder, params (string componentName, string content, ComponentType componentType)[] modules)
+        private static IExecutableRewriteSession RefactorEnumMembers(RubberduckParserState state, IEnumerable<Declaration> targets, IRewritingManager rewritingManager, bool injectTODOComment)
         {
-            var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
-            return ModifiedCode(vbe, modelBuilder);
-        }
+            var refactoringAction = new DeleteEnumMembersRefactoringAction(state, new DeclarationDeletionTargetFactory(state), rewritingManager);
 
-        private static IDictionary<string, string> ModifiedCode(IVBE vbe, Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder)
-        {
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
+            var model = new DeleteEnumMembersModel(targets)
             {
-                var session = rewritingManager.CheckOutCodePaneSession();
+                InjectTODOForRetainedComments = injectTODOComment
+            };
 
-                var refactoringAction = new DeleteEnumMembersRefactoringAction(state, rewritingManager);
+            var session = rewritingManager.CheckOutCodePaneSession();
 
-                var model = new DeleteEnumMembersModel(modelBuilder(state));
+            refactoringAction.Refactor(model, session);
 
-                refactoringAction.Refactor(model, session);
-
-                session.TryRewrite();
-
-                return vbe.ActiveVBProject.VBComponents
-                    .ToDictionary(component => component.Name, component => component.CodeModule.Content());
-            }
+            return session;
         }
     }
 }

@@ -48,7 +48,7 @@ Sub Foo(ByVal arg As Long)
 
 End Sub";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Label1"));
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Label1"));
             StringAssert.Contains(expected, actualCode);
             StringAssert.DoesNotContain("Label1:", actualCode);
         }
@@ -71,8 +71,35 @@ Sub Foo(ByVal arg As Long)
 
 {expectedRewrite}End Sub";
 
-            var actualCode = _support.GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Label1"));
-            StringAssert.Contains(expected, actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Label1"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
+        }
+
+        private string GetRetainedCodeBlock(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> targetListBuilder, bool injectTODO = false)
+        {
+            var refactoredCode = _support.TestRefactoring(
+                targetListBuilder,
+                RefactorProcedureScopeElements,
+                injectTODO,
+                (MockVbeBuilder.TestModuleName, moduleCode, ComponentType.StandardModule));
+
+            return refactoredCode[MockVbeBuilder.TestModuleName];
+        }
+
+        private static IExecutableRewriteSession RefactorProcedureScopeElements(RubberduckParserState state, IEnumerable<Declaration> targets, IRewritingManager rewritingManager, bool injectTODOComment)
+        {
+            var refactoringAction = new DeleteProcedureScopeElementsRefactoringAction(state, new DeclarationDeletionTargetFactory(state), rewritingManager);
+
+            var model = new DeleteProcedureScopeElementsModel(targets)
+            {
+                InjectTODOForRetainedComments = injectTODOComment
+            };
+
+            var session = rewritingManager.CheckOutCodePaneSession();
+
+            refactoringAction.Refactor(model, session);
+
+            return session;
         }
     }
 }

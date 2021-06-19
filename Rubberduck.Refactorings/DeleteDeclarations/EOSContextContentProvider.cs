@@ -11,7 +11,34 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.DeleteDeclarations
 {
-    internal class EOSContextContentProvider
+    public interface IEOSContextContentProvider
+    {
+        VBAParser.EndOfStatementContext EOSContext { get; }
+
+        bool IsNullEOS { get; }
+
+        VBAParser.IndividualNonEOFEndOfStatementContext DeclarationLogicalLineCommentContext { get; }
+
+        bool HasDeclarationLogicalLineComment { get; }
+
+        string OriginalEOSContent { get; }
+
+        string ModifiedEOSContent { get; }
+
+        bool ModifiedContentContainsCommentMarker { get; }
+
+        string ContentPriorToSeparationAndIndentation { get; }
+
+        string ContentFreeOfStartingNewLines { get; }
+
+        IEnumerable<VBAParser.CommentContext> AllComments { get; }
+
+        string Indentation { get; }
+
+        string Separation { get; }
+    }
+
+    public class EOSContextContentProvider : IEOSContextContentProvider
     {
         protected static string _lineContinuationExpression = $"{Tokens.LineContinuation}{Environment.NewLine}";
 
@@ -19,7 +46,7 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
         private readonly IModuleRewriter _rewriter;
         private readonly List<VBAParser.IndividualNonEOFEndOfStatementContext> _individualNonEOFEndOfStatementContexts;
 
-        public EOSContextContentProvider(VBAParser.EndOfStatementContext eosContext, IModuleRewriter rewriter, IEnumerable<VBAParser.AnnotationContext> deletedAnnotationContexts = null)
+        public EOSContextContentProvider(VBAParser.EndOfStatementContext eosContext, IModuleRewriter rewriter)
         {
             if (rewriter is null)
             {
@@ -34,6 +61,8 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
         }
 
         public VBAParser.EndOfStatementContext EOSContext => _eosContext;
+
+        public bool IsNullEOS => _eosContext == null;
 
         public VBAParser.IndividualNonEOFEndOfStatementContext DeclarationLogicalLineCommentContext
             => _individualNonEOFEndOfStatementContexts.Any() && IsComment(_individualNonEOFEndOfStatementContexts.First())
@@ -63,14 +92,17 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
         public string ContentFreeOfStartingNewLines
             => string.Concat(ModifiedEOSContent.SkipWhile(c => IsNewLineCharacter(c)));
 
-        private string SeparationAndIndentation => ModifiedEOSContent.StartsWith(":")
-            ? string.Empty
-            : Regex.Match(ModifiedEOSContent, @"(\r\n)+\s*$").Value;
-
+        public IEnumerable<VBAParser.CommentContext> AllComments => _eosContext.children.Where(ch => ch is ParserRuleContext prc && prc.GetDescendent<VBAParser.CommentContext>() != null)
+                .Select(ch => (ch as ParserRuleContext).GetDescendent<VBAParser.CommentContext>());
 
         public string Indentation => GetSeparationAndIndentation.Indentation;
 
         public string Separation => GetSeparationAndIndentation.Separation;
+
+        private string SeparationAndIndentation => ModifiedEOSContent.StartsWith(":")
+            ? string.Empty
+            : Regex.Match(ModifiedEOSContent, @"(\r\n)+\s*$").Value;
+
 
         private (string Separation, string Indentation) GetSeparationAndIndentation
         {
@@ -86,9 +118,6 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
 
         private bool IsComment(VBAParser.IndividualNonEOFEndOfStatementContext ctxt)
             => ctxt?.GetDescendent<VBAParser.CommentContext>() != null;
-
-        private bool IsAnnotation(VBAParser.IndividualNonEOFEndOfStatementContext ctxt)
-            => ctxt?.GetDescendent<VBAParser.AnnotationContext>() != null;
 
         private static bool IsNewLineCharacter(char c)
             => c == '\r' || c == '\n';

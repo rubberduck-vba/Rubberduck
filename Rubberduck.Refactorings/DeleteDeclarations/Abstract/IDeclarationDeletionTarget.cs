@@ -53,5 +53,7 @@ namespace Rubberduck.Refactorings
         ParserRuleContext ListContext { get; }
 
         ParserRuleContext TargetContext { get; }
+
+        bool HasPrecedingLabel(out VBAParser.StatementLabelDefinitionContext labelContext);
     }
 }

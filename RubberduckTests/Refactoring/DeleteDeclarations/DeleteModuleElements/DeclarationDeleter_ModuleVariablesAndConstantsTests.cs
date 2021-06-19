@@ -22,13 +22,10 @@ using System.Text.RegularExpressions;
 
 namespace RubberduckTests.Refactoring.DeleteDeclarations
 {
-    //TODO: Go thru and add AreEqualIgnoreCase tests where matching results are expected
-    //leaving it all up to 'Contains' can mask un-deleted elements
     [TestFixture]
-    public class DeclarationDeleter_ModuleVariablesAndConstantsTests
-    {
-        private readonly DeleteDeclarationsTestSupport _support = new DeleteDeclarationsTestSupport();
 
+    public class DeclarationDeleter_ModuleVariablesAndConstantsTests : ModuleSectionElementsTestsBase
+    {
         [TestCase("Option Explicit\r\n\r\n")]
         [TestCase("")]
         [Category("Refactorings")]
@@ -51,7 +48,6 @@ $@"
 {optionExplicit}Public Sub Test()
 End Sub";
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "mVar1", "mVar2", "mVar3", "mVar4", "mVar5"));
-            StringAssert.Contains(expected, actualCode);
             StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
@@ -80,7 +76,7 @@ Option Explicit
 Public Sub Test()
 End Sub";
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "mVar1", "mVar2", "mVar3", "mVar4", "mVar5"));
-            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("Public", "target As Integer")]
@@ -98,9 +94,13 @@ Option Explicit
 {visibility} {declaration}
 ";
 
-            var actualCodeLines = GetRetainedLines(inputCode, state => _support.TestTargets(state, "target"));
-            Assert.IsFalse(actualCodeLines.Contains($"{visibility} {declaration}"));
-            Assert.AreEqual(1, actualCodeLines.Count());
+            var expected =
+$@"
+Option Explicit
+";
+
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "target"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("Public notUsed1 As Long")]
@@ -135,7 +135,7 @@ Public notUsed3 As Long
 ";
 
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "notUsed1"));
-            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("Public  mVar1 As Long: ", "Public mVar2 As Long")]
@@ -164,8 +164,7 @@ Option Explicit
 Public Sub Test()
 End Sub";
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "mVar1", "mVar3", "mVar4", "mVar5"));
-            StringAssert.Contains(expected, actualCode);
-            StringAssert.DoesNotContain(":", actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [Test]
@@ -198,7 +197,7 @@ Public Sub Test()
 End Sub";
 
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "mVar1", "mVar2", "mVar3", "mVar5"));
-            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [Test]
@@ -231,7 +230,7 @@ Public Sub Test()
 End Sub";
 
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "mVar1", "mVar2", "mVar3", "mVar5"));
-            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [Test]
@@ -261,7 +260,7 @@ Option Explicit
 Public used As String
 ";
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "notUsed1", "notUsed2", "notUsed3"));
-            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [Test]
@@ -291,7 +290,7 @@ Option Explicit
 Public used As String
 ";
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "notUsed1", "notUsed2", "notUsed3"));
-            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("notUsed1", "notUsed2", "notUsed3")]
@@ -372,8 +371,15 @@ Private used As Long
 {declarationList}
 ";
 
-            var actualCodeLines = GetRetainedLines(inputCode, state => _support.TestTargets(state, "notUsed1", "notUsed2", "notUsed3"));
-            Assert.IsTrue(3 == actualCodeLines.Count(), $"Unexpected line count: {Environment.NewLine} {string.Join(Environment.NewLine, actualCodeLines)}");
+            var expected =
+$@"
+Option Explicit
+
+Private used As Long
+";
+
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "notUsed1", "notUsed2", "notUsed3"));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [Test]
@@ -410,19 +416,8 @@ Option Explicit 'Use this to force explicit declarations
 Private somethingElse As Double
 ";
 
-//            var str =
-//$@"
-//Option Explicit 'Use this to force explicit declarations
-
-
-
-
-//    ";
-            //var result = Regex.Match(str, @"(.{2})\s*$");
-            //var result = Regex.Match(str, @"(\r\n)+\s*$");
-
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "target"));
-            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [Test]
@@ -468,7 +463,7 @@ Public Sub Test()
 End Sub";
 
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "mVar1", "mVar2", "mVar3", "mVar4", "mVar5"));
-            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [Test]
@@ -514,7 +509,7 @@ Public Sub Test()
 End Sub";
 
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "mVar1", "mVar2", "mVar3", "mVar4", "mVar5"));
-            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("Public mVar1 As Long")]
@@ -548,7 +543,7 @@ Option Explicit
 Public Sub Test()
 End Sub";
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "mVar1"));
-            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [Test]
@@ -575,7 +570,7 @@ Public Sub DoSomething()
 End Sub
 ";
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "SomeValue"));
-            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
         [TestCase("Public X As Long", "VariableNotUsed")]
@@ -612,8 +607,7 @@ End Sub
 ";
 
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"));
-            StringAssert.Contains(expectedCode, actualCode);
-            Assert.AreEqual(expectedCode, actualCode);
+            StringAssert.AreEqualIgnoringCase(expectedCode, actualCode);
         }
         [TestCase("    ", "Public X As Long", "VariableNotUsed")]
         [TestCase("    ", "Public Const X As Long = 9", "ConstantNotUsed")]
@@ -652,104 +646,34 @@ End Sub
 ";
 
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "X"));
-            StringAssert.Contains(expectedCode, actualCode);
             StringAssert.AreEqualIgnoringCase(expectedCode, actualCode);
-            StringAssert.Contains(expectedCode, actualCode);
         }
 
-        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
         [Category("Refactorings")]
         [Category(nameof(DeleteDeclarationsRefactoringAction))]
-        public void RemoveEnumDeclaration()
+        public void RespectsInjectTODOCommentFlag(bool injectTODO)
         {
             var inputCode =
 @"
 Option Explicit
 
+'@Ignore ""VariableNotUsed""
+'A comment following an Annotation
 Public mVar1 As Long
-
-Private Enum TestEnum
-    FirstValue
-    SecondValue
-End Enum
 
 Public Sub Test1()
 End Sub
 ";
 
-            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "TestEnum"));
-            StringAssert.Contains("mVar1", actualCode);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "mVar1"), injectTODO);
+            StringAssert.DoesNotContain("mVar1", actualCode);
             StringAssert.Contains("Test1", actualCode);
-            StringAssert.DoesNotContain("TestEnum", actualCode);
-            StringAssert.DoesNotContain("FirstValue", actualCode);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category(nameof(DeleteDeclarationsRefactoringAction))]
-        public void RemoveUDTDeclaration()
-        {
-            var inputCode =
-@"
-Option Explicit
-
-Public mVar1 As Long
-
-Private Type TestType
-    FirstValue As Long
-    SecondValue As Long
-End Type
-
-Public Sub Test1()
-End Sub
-";
-
-            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "TestType"));
-            StringAssert.Contains("mVar1", actualCode);
-            StringAssert.Contains("Test1", actualCode);
-            StringAssert.DoesNotContain("TestType", actualCode);
-            StringAssert.DoesNotContain("FirstValue", actualCode);
-        }
-
-        private List<string> GetRetainedLines(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder)
-            => GetRetainedCodeBlock(moduleCode, modelBuilder)
-                .Trim()
-                .Split(new string[] { Environment.NewLine }, StringSplitOptions.None)
-                .ToList();
-
-        private string GetRetainedCodeBlock(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder)
-        {
-            var refactoredCode = ModifiedCode(
-                modelBuilder,
-                (MockVbeBuilder.TestModuleName, moduleCode, ComponentType.StandardModule));
-
-            return refactoredCode[MockVbeBuilder.TestModuleName];
-        }
-
-        private IDictionary<string, string> ModifiedCode(Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder, params (string componentName, string content, ComponentType componentType)[] modules)
-        {
-            var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
-            return ModifiedCode(vbe, modelBuilder);
-        }
-
-        private static IDictionary<string, string> ModifiedCode(IVBE vbe, Func<RubberduckParserState, IEnumerable<Declaration>> modelBuilder)
-        {
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                var refactoringAction = new DeleteModuleElementsRefactoringAction(state, rewritingManager);
-
-                var session = rewritingManager.CheckOutCodePaneSession();
-
-                var model = new DeleteModuleElementsModel(modelBuilder(state));
-
-                refactoringAction.Refactor(model, session);
-
-                session.TryRewrite();
-
-                return vbe.ActiveVBProject.VBComponents
-                    .ToDictionary(component => component.Name, component => component.CodeModule.Content());
-            }
+            var injectedContent = injectTODO
+                ? DeleteDeclarationsTestSupport.TodoContent
+                : string.Empty;
+            StringAssert.Contains($"'{injectedContent}A comment following an Annotation", actualCode);
         }
     }
 }

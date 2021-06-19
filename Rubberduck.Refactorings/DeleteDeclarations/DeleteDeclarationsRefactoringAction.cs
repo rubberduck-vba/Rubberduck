@@ -78,24 +78,29 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
                 throw new InvalidDeclarationTypeException(invalidDeclaration);
             }
 
-            var scrubbedTargets = ModifyTargetsListToAvoidBoundaryReplacementErrors(model);
+            var preprocessedTargets = ModifyTargetsListToAvoidBoundaryReplacementErrors(model);
 
-            DeleteModuleElements(scrubbedTargets, rewriteSession);
-            DeleteProcedureScopeElements(scrubbedTargets, rewriteSession);
-            DeleteUserDefinedTypeMembers(scrubbedTargets, rewriteSession);
-            DeleteEnumerationMembers(scrubbedTargets, rewriteSession);
+            DeleteModuleElements(preprocessedTargets, model, rewriteSession);
+            DeleteProcedureScopeElements(preprocessedTargets, model, rewriteSession);
+            DeleteUserDefinedTypeMembers(preprocessedTargets, model, rewriteSession);
+            DeleteEnumerationMembers(preprocessedTargets, model, rewriteSession);
         }
 
-        private void DeleteModuleElements(IEnumerable<Declaration> targets, IRewriteSession rewriteSession)
+        private void DeleteModuleElements(IEnumerable<Declaration> targets, DeleteDeclarationsModel model, IRewriteSession rewriteSession)
         {
             var moduleElementTargets = targets.Where(t => t.ParentDeclaration is ModuleDeclaration).ToList();
             if (moduleElementTargets.Any())
             {
-                _deleteModuleElementsRefactoringAction.Refactor(new DeleteModuleElementsModel(moduleElementTargets), rewriteSession);
+                var moduleElementsModel = new DeleteModuleElementsModel(moduleElementTargets)
+                {
+                    InsertValidationTODOForRetainedComments = model.InsertValidationTODOForRetainedComments
+                };
+
+                _deleteModuleElementsRefactoringAction.Refactor(moduleElementsModel, rewriteSession);
             }
         }
 
-        private void DeleteProcedureScopeElements(IEnumerable<Declaration> targets, IRewriteSession rewriteSession)
+        private void DeleteProcedureScopeElements(IEnumerable<Declaration> targets, DeleteDeclarationsModel model, IRewriteSession rewriteSession)
         {
             var procedureLocalTargets = targets.Where(t => !(t.ParentDeclaration is ModuleDeclaration)
                 && !(t.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember) || t.DeclarationType.HasFlag(DeclarationType.EnumerationMember)))
@@ -103,24 +108,36 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
 
             if (procedureLocalTargets.Any())
             {
-                _deleteProcedureScopeElementsRefactoringAction.Refactor(new DeleteProcedureScopeElementsModel(procedureLocalTargets), rewriteSession);
+                var proceduralScopeElementModel = new DeleteProcedureScopeElementsModel(procedureLocalTargets)
+                {
+                    InsertValidationTODOForRetainedComments = model.InsertValidationTODOForRetainedComments
+                };
+                _deleteProcedureScopeElementsRefactoringAction.Refactor(proceduralScopeElementModel, rewriteSession);
             }
         }
-        private void DeleteUserDefinedTypeMembers(IEnumerable<Declaration> targets, IRewriteSession rewriteSession)
+        private void DeleteUserDefinedTypeMembers(IEnumerable<Declaration> targets, DeleteDeclarationsModel model, IRewriteSession rewriteSession)
         {
             var udtMemberTargets = targets.Where(t => t.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember)).ToList();
             if (udtMemberTargets.Any())
             {
-                _deleteUDTMembersRefactoringAction.Refactor(new DeleteUDTMembersModel(udtMemberTargets), rewriteSession);
+                var udtMemberElementModel = new DeleteUDTMembersModel(udtMemberTargets)
+                {
+                    InsertValidationTODOForRetainedComments = model.InsertValidationTODOForRetainedComments
+                };
+                _deleteUDTMembersRefactoringAction.Refactor(udtMemberElementModel, rewriteSession);
             }
         }
 
-        private void DeleteEnumerationMembers(IEnumerable<Declaration> targets, IRewriteSession rewriteSession)
+        private void DeleteEnumerationMembers(IEnumerable<Declaration> targets, DeleteDeclarationsModel model, IRewriteSession rewriteSession)
         {
             var enumMemberTargets = targets.Where(t => t.DeclarationType.HasFlag(DeclarationType.EnumerationMember)).ToList();
             if (enumMemberTargets.Any())
             {
-                _deleteEnumMembersRefactoringAction.Refactor(new DeleteEnumMembersModel(enumMemberTargets), rewriteSession);
+                var enumMemberstModel = new DeleteEnumMembersModel(enumMemberTargets)
+                {
+                    InsertValidationTODOForRetainedComments = model.InsertValidationTODOForRetainedComments
+                };
+                _deleteEnumMembersRefactoringAction.Refactor(enumMemberstModel, rewriteSession);
             }
         }
 
