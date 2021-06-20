@@ -299,16 +299,16 @@ Une classe privée peut toujours implémenter une interface publique.</value>
   <data name="IntroduceField_Caption" xml:space="preserve">
     <value>Rubberduck - Introduire un champ</value>
   </data>
-  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
+  <data name="PromoteToParameter_PromptIfTargetIsInterface" xml:space="preserve">
     <value>La méthode '{0}' implémente '{1}.{2}'. Modifier la signature de l'interface? (se propagera à toutes les implémentations)</value>
   </data>
   <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
     <value>La cible '{0}' est déjà un champ.</value>
   </data>
-  <data name="IntroduceParameter_Caption" xml:space="preserve">
+  <data name="PromoteToParameter_Caption" xml:space="preserve">
     <value>Rubberduck - Introduire un paramètre</value>
   </data>
-  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
+  <data name="PromoteToParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
     <value>La cible '{0}' n'est pas contenue dans une procédure.</value>
   </data>
   <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">

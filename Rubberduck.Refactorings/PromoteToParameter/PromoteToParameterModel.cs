@@ -1,13 +1,13 @@
 ﻿using Rubberduck.Parsing.Symbols;
 
-namespace Rubberduck.Refactorings.IntroduceParameter
+namespace Rubberduck.Refactorings.PromoteToParameter
 {
-    public class IntroduceParameterModel : IRefactoringModel
+    public class PromoteToParameterModel : IRefactoringModel
     {
         public Declaration Target { get; }
         public ModuleBodyElementDeclaration EnclosingMember { get; }
 
-        public IntroduceParameterModel(Declaration target, ModuleBodyElementDeclaration enclosingMember)
+        public PromoteToParameterModel(Declaration target, ModuleBodyElementDeclaration enclosingMember)
         {
             Target = target;
             EnclosingMember = enclosingMember;

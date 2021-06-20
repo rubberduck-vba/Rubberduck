@@ -2,18 +2,18 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
-using Rubberduck.Refactorings.Exceptions.IntroduceParameter;
+using Rubberduck.Refactorings.Exceptions.PromoteToParameter;
 using Rubberduck.CodeAnalysis.Inspections.Extensions;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
-    public class IntroduceParameterFailedNotifier : RefactoringFailureNotifierBase
+    public class PromoteToParameterFailedNotifier : RefactoringFailureNotifierBase
     {
-        public IntroduceParameterFailedNotifier(IMessageBox messageBox)
+        public PromoteToParameterFailedNotifier(IMessageBox messageBox)
             : base(messageBox)
         { }
 
-        protected override string Caption => RefactoringsUI.IntroduceParameter_Caption;
+        protected override string Caption => RefactoringsUI.PromoteToParameter_Caption;
 
         protected override string Message(RefactoringException exception)
         {
@@ -21,7 +21,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             {
                 case TargetDeclarationIsNotContainedInAMethodException targetNotInMethod:
                     Logger.Warn(targetNotInMethod);
-                    return string.Format(RefactoringsUI.IntroduceParameterFailed_TargetNotContainedInMethod,
+                    return string.Format(RefactoringsUI.PromoteToParameterFailed_TargetNotContainedInMethod,
                         targetNotInMethod.TargetDeclaration.QualifiedName);
                 case InvalidDeclarationTypeException invalidDeclarationType:
                     Logger.Warn(invalidDeclarationType);

@@ -6,19 +6,20 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
-namespace Rubberduck.Refactorings.IntroduceParameter
+
+namespace Rubberduck.Refactorings.PromoteToParameter
 {
-    public class IntroduceParameterRefactoringAction : RefactoringActionBase<IntroduceParameterModel>
+    public class PromoteToParameterRefactoringAction : RefactoringActionBase<PromoteToParameterModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public IntroduceParameterRefactoringAction(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager)
+        public PromoteToParameterRefactoringAction(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager)
             : base(rewritingManager)
         {
             _declarationFinderProvider = declarationFinderProvider;
         }
 
-        protected override void Refactor(IntroduceParameterModel model, IRewriteSession rewriteSession)
+        protected override void Refactor(PromoteToParameterModel model, IRewriteSession rewriteSession)
         {
             var target = model.Target;
             UpdateSignature(target, model.EnclosingMember, rewriteSession);

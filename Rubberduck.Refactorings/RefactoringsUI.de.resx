@@ -323,16 +323,16 @@ Eine private Klasse kann eine private Schnittstelle implementieren.</value>
   <data name="IntroduceField_Caption" xml:space="preserve">
     <value>Rubberduck - Feld einfügen</value>
   </data>
-  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
+  <data name="PromoteToParameter_PromptIfTargetIsInterface" xml:space="preserve">
     <value>Methode '{0}' implementiert '{1}.{2}'. Ändern der Interface Signatur? (Wird auf alle Implementierungen angewendet.)</value>
   </data>
   <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
     <value>Das Ziel '{0}' ist bereits ein Feld.</value>
   </data>
-  <data name="IntroduceParameter_Caption" xml:space="preserve">
+  <data name="PromoteToParameter_Caption" xml:space="preserve">
     <value>Rubberduck - Parameter einfügen</value>
   </data>
-  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
+  <data name="PromoteToParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
     <value>Das Ziel '{0}' ist nicht in einer Methode enthalten.</value>
   </data>
   <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">
