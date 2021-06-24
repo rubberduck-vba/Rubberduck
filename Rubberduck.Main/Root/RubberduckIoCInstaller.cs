@@ -387,9 +387,11 @@ namespace Rubberduck.Root
                 .ImplementedBy<ReplacePrivateUDTMemberReferencesModelFactory>()
                 .LifestyleSingleton());
 
+
             RegisterUnreachableCaseFactories(container);
 
             RegisterEncapsulateFieldRefactoringFactories(container);
+            RegisterDeleteDeclarationsRefactoringActionFactories(container);
         }
 
         private void RegisterUnreachableCaseFactories(IWindsorContainer container)
@@ -413,6 +415,12 @@ namespace Rubberduck.Root
             container.Register(Component.For<IEncapsulateFieldModelFactory>()
                 .ImplementedBy<EncapsulateFieldModelFactory>()
                 .LifestyleSingleton());
+        }
+
+        private void RegisterDeleteDeclarationsRefactoringActionFactories(IWindsorContainer container)
+        {
+            container.Kernel.Register(Component.For<IDeclarationDeletionTargetFactory>()
+                .ImplementedBy<DeclarationDeletionTargetFactory>());
         }
 
         private void RegisterQuickFixes(IWindsorContainer container, Assembly[] assembliesToRegister)
