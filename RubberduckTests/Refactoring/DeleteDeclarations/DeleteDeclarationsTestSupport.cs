@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Rewriter;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
@@ -67,17 +68,6 @@ namespace RubberduckTests.Refactoring.DeleteDeclarations
             }
 
             return targetsList;
-        }
-
-        public static DeleteDeclarationsRefactoringAction CreateDeleteDeclarationRefactoringAction(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager)
-        {
-            var deletionTargetFactory = new DeclarationDeletionTargetFactory(declarationFinderProvider);
-            return new DeleteDeclarationsRefactoringAction(declarationFinderProvider,
-                 new DeleteModuleElementsRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
-                 new DeleteProcedureScopeElementsRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
-                 new DeleteUDTMembersRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
-                 new DeleteEnumMembersRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
-                 rewritingManager);
         }
     }
 }

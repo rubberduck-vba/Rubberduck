@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Castle.Windsor;
 using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -191,10 +192,11 @@ End Function
 
                 model.AddDeclarationsToDelete(funcBizz);
 
-                var refactoringAction = DeleteDeclarationsTestSupport.CreateDeleteDeclarationRefactoringAction(state, rewritingManager);
+                var deleteDeclarationsResolver = new DeleteDeclarationsTestsResolver(state, rewritingManager);
+                var deleteDeclarationRefactoringAction = deleteDeclarationsResolver.Resolve<DeleteDeclarationsRefactoringAction>();
 
                 var session = rewritingManager.CheckOutCodePaneSession();
-                refactoringAction.Refactor(model, session);
+                deleteDeclarationRefactoringAction.Refactor(model, session);
 
                 session.TryRewrite();
 
@@ -407,16 +409,17 @@ End Sub
 
         private static IExecutableRewriteSession RefactorAllElementTypes(RubberduckParserState state, IEnumerable<Declaration> targets, IRewritingManager rewritingManager, bool injectTODOComment)
         {
-            var refactoringAction = DeleteDeclarationsTestSupport.CreateDeleteDeclarationRefactoringAction(state, rewritingManager);
-
             var model = new DeleteDeclarationsModel(targets)
             {
-                InjectTODOForRetainedComments = injectTODOComment
+                InsertValidationTODOForRetainedComments = injectTODOComment
             };
 
             var session = rewritingManager.CheckOutCodePaneSession();
 
-            refactoringAction.Refactor(model, session);
+            var deleteDeclarationRefactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+                .Resolve<DeleteDeclarationsRefactoringAction>();
+            
+            deleteDeclarationRefactoringAction.Refactor(model, session);
 
             return session;
         }

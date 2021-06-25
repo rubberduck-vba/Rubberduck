@@ -290,6 +290,7 @@ Option Explicit
 Public used As String
 ";
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "notUsed1", "notUsed2", "notUsed3"));
+            StringAssert.Contains(expected, actualCode);
             StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 

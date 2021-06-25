@@ -324,6 +324,7 @@ End Sub
 ";
 
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "bizz1", "bizz2"));
+            StringAssert.Contains(expected, actualCode);
             StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
@@ -698,14 +699,15 @@ End Sub
 
         private static IExecutableRewriteSession RefactorProcedureScopeElements(RubberduckParserState state, IEnumerable<Declaration> targets, IRewritingManager rewritingManager, bool injectTODOComment)
         {
-            var refactoringAction = new DeleteProcedureScopeElementsRefactoringAction(state, new DeclarationDeletionTargetFactory(state), rewritingManager);
-
             var model = new DeleteProcedureScopeElementsModel(targets)
             {
-                InjectTODOForRetainedComments = injectTODOComment
+                InsertValidationTODOForRetainedComments = injectTODOComment
             };
 
             var session = rewritingManager.CheckOutCodePaneSession();
+
+            var refactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+                .Resolve<DeleteProcedureScopeElementsRefactoringAction>();
 
             refactoringAction.Refactor(model, session);
 

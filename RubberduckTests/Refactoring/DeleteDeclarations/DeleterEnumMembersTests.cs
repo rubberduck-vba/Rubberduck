@@ -162,14 +162,15 @@ End Enum
 
         private static IExecutableRewriteSession RefactorEnumMembers(RubberduckParserState state, IEnumerable<Declaration> targets, IRewritingManager rewritingManager, bool injectTODOComment)
         {
-            var refactoringAction = new DeleteEnumMembersRefactoringAction(state, new DeclarationDeletionTargetFactory(state), rewritingManager);
-
             var model = new DeleteEnumMembersModel(targets)
             {
-                InjectTODOForRetainedComments = injectTODOComment
+                InsertValidationTODOForRetainedComments = injectTODOComment
             };
 
             var session = rewritingManager.CheckOutCodePaneSession();
+
+            var refactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+                .Resolve<DeleteEnumMembersRefactoringAction>();
 
             refactoringAction.Refactor(model, session);
 

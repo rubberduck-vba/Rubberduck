@@ -3,6 +3,7 @@ using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Parsing;
@@ -10,6 +11,7 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.DeleteDeclarations;
 using Rubberduck.SmartIndenter;
 using RubberduckTests.Mocks;
+using RubberduckTests.Refactoring.DeleteDeclarations;
 using RubberduckTests.Settings;
 using System;
 using System.Linq;
@@ -244,6 +246,11 @@ End Property
 
 Public Property Get SomeOtherProperty() As String
 End Property
+
+Private Sub ReferencingSub()
+   Dim tester As String
+   tester = ReadOnlyProperty
+End Sub
 ";
 
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ProcedureNotUsedInspection(state));
@@ -349,7 +356,10 @@ Public notUsed1 As Long, notUsed2 As Long, notUsed3 As Long
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var resultToFix = inspectionResults.First();
 
-                var quickFix = new RemoveUnusedDeclarationQuickFix(CreateDeleteDeclarationRefactoringAction(state, rewritingManager));
+                var deleteDeclarationRefactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+                    .Resolve<DeleteDeclarationsRefactoringAction>();
+
+                var quickFix = new RemoveUnusedDeclarationQuickFix(deleteDeclarationRefactoringAction);
 
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
                 quickFix.Fix(resultToFix, rewriteSession);
@@ -368,7 +378,10 @@ Public notUsed1 As Long, notUsed2 As Long, notUsed3 As Long
                 var inspection = inspectionFactory(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-                var quickFix = new RemoveUnusedDeclarationQuickFix(CreateDeleteDeclarationRefactoringAction(state, rewritingManager));
+                var deleteDeclarationRefactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+                    .Resolve<DeleteDeclarationsRefactoringAction>();
+                
+                var quickFix = new RemoveUnusedDeclarationQuickFix(deleteDeclarationRefactoringAction);
 
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
                 quickFix.FixMany(inspectionResults.ToList(), rewriteSession);
@@ -376,17 +389,6 @@ Public notUsed1 As Long, notUsed2 As Long, notUsed3 As Long
 
                 return component.CodeModule.Content();
             }
-        }
-
-        private static DeleteDeclarationsRefactoringAction CreateDeleteDeclarationRefactoringAction(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager)
-        {
-            var deletionTargetFactory = new DeclarationDeletionTargetFactory(declarationFinderProvider);
-            return new DeleteDeclarationsRefactoringAction(declarationFinderProvider,
-                 new DeleteModuleElementsRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
-                 new DeleteProcedureScopeElementsRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
-                 new DeleteUDTMembersRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
-                 new DeleteEnumMembersRefactoringAction(declarationFinderProvider, deletionTargetFactory, rewritingManager),
-                 rewritingManager);
         }
     }
 }

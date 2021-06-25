@@ -13,6 +13,10 @@ using Rubberduck.SmartIndenter;
 using RubberduckTests.Settings;
 using Rubberduck.Refactorings.DeleteDeclarations;
 using Rubberduck.Refactorings;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
+using RubberduckTests.Refactoring.DeleteDeclarations;
+using Castle.Windsor;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -133,13 +137,8 @@ End Sub";
                 var selectionService = MockedSelectionService();
                 var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
 
-                var deletionTargetFactory = new DeclarationDeletionTargetFactory(state);
-                var deleteDeclarationRefactoringAction = new DeleteDeclarationsRefactoringAction(state,
-                    new DeleteModuleElementsRefactoringAction(state, deletionTargetFactory, rewritingManager),
-                    new DeleteProcedureScopeElementsRefactoringAction(state, deletionTargetFactory, rewritingManager),
-                    new DeleteUDTMembersRefactoringAction(state, deletionTargetFactory, rewritingManager),
-                    new DeleteEnumMembersRefactoringAction(state, deletionTargetFactory, rewritingManager),
-                    rewritingManager);
+                var deleteDeclarationRefactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+                    .Resolve<DeleteDeclarationsRefactoringAction>();
 
                 var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationRefactoringAction, rewritingManager);
                 var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);

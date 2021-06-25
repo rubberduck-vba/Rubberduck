@@ -15,6 +15,8 @@ using Rubberduck.Refactorings.DeleteDeclarations;
 using Rubberduck.SmartIndenter;
 using RubberduckTests.Settings;
 using System;
+using Rubberduck.Parsing.Grammar;
+using RubberduckTests.Refactoring.DeleteDeclarations;
 
 namespace RubberduckTests.Refactoring
 {
@@ -1176,16 +1178,30 @@ End Sub";
             Assert.AreEqual(expectedCode, actualCode);
         }
 
+        //Overrides the RefactoringTestBase class version.  MoveCloserToUsage uses the
+        //DeleteDeclarationRefactoringAction which has a dedicated CW container to create objects for tests.  
+        //The RefactoringTestBase version of NoActiveSelection_Throws uses a null 'state' parameter which CW 
+        //cannot abide.
+        [Test]
+        [Category("Refactorings")]
+        public override void NoActiveSelection_Throws()
+        {
+            var testVbe = TestVbe(string.Empty, out _);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(testVbe);
+            using (state)
+            {
+                var refactoring = TestRefactoring(rewritingManager, state, initialSelection: null);
+                Assert.Throws<NoActiveSelectionException>(() => refactoring.Refactor());
+            }
+        }
+
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
             var deletionTargetFactory = new DeclarationDeletionTargetFactory(state);
-            var deleteDeclarationsRefactoringAction = new DeleteDeclarationsRefactoringAction(state,
-                new DeleteModuleElementsRefactoringAction(state, deletionTargetFactory, rewritingManager),
-                new DeleteProcedureScopeElementsRefactoringAction(state, deletionTargetFactory, rewritingManager),
-                new DeleteUDTMembersRefactoringAction(state, deletionTargetFactory, rewritingManager),
-                new DeleteEnumMembersRefactoringAction(state, deletionTargetFactory, rewritingManager),
-                rewritingManager);
+
+            var deleteDeclarationsRefactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+                .Resolve<DeleteDeclarationsRefactoringAction>();
 
             var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationsRefactoringAction, rewritingManager);
             return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);

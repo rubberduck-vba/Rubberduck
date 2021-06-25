@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Rewriter;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
@@ -29,14 +30,15 @@ namespace RubberduckTests.Refactoring.DeleteDeclarations
 
         protected static IExecutableRewriteSession RefactorModuleElements(RubberduckParserState state, IEnumerable<Declaration> targets, IRewritingManager rewritingManager, bool injectTODOComment)
         {
-            var refactoringAction = new DeleteModuleElementsRefactoringAction(state, new DeclarationDeletionTargetFactory(state), rewritingManager);
-
             var model = new DeleteModuleElementsModel(targets)
             {
-                InjectTODOForRetainedComments = injectTODOComment
+                InsertValidationTODOForRetainedComments = injectTODOComment
             };
 
             var session = rewritingManager.CheckOutCodePaneSession();
+
+            var refactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+                .Resolve<DeleteModuleElementsRefactoringAction>();
 
             refactoringAction.Refactor(model, session);
 

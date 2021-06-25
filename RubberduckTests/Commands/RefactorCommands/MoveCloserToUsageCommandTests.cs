@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NUnit.Framework;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
@@ -13,6 +14,7 @@ using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
+using RubberduckTests.Refactoring.DeleteDeclarations;
 using RubberduckTests.Settings;
 
 namespace RubberduckTests.Commands.RefactorCommands
@@ -109,13 +111,9 @@ End Sub";
             var msgBox = new Mock<IMessageBox>().Object;
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
 
-            var deletionTargetFactory = new DeclarationDeletionTargetFactory(state);
-            var deleteDeclarationRefactoringAction = new DeleteDeclarationsRefactoringAction(state,
-                new DeleteModuleElementsRefactoringAction(state, deletionTargetFactory, rewritingManager),
-                new DeleteProcedureScopeElementsRefactoringAction(state, deletionTargetFactory, rewritingManager),
-                new DeleteUDTMembersRefactoringAction(state, deletionTargetFactory, rewritingManager),
-                new DeleteEnumMembersRefactoringAction(state, deletionTargetFactory, rewritingManager),
-                rewritingManager);
+
+            var deleteDeclarationRefactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+                .Resolve<DeleteDeclarationsRefactoringAction>();
 
             var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationRefactoringAction, rewritingManager);
             var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);

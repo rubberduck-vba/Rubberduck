@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using Castle.Windsor;
 using NUnit.Framework;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -167,14 +168,15 @@ End Type
 
         private static IExecutableRewriteSession RefactorUDTMembers(RubberduckParserState state, IEnumerable<Declaration> targets, IRewritingManager rewritingManager, bool injectTODOComment)
         {
-            var refactoringAction = new  DeleteUDTMembersRefactoringAction(state, new DeclarationDeletionTargetFactory(state), rewritingManager);
-
             var model = new  DeleteUDTMembersModel(targets)
             {
-                InjectTODOForRetainedComments = injectTODOComment
+                InsertValidationTODOForRetainedComments = injectTODOComment
             };
 
             var session = rewritingManager.CheckOutCodePaneSession();
+
+            var refactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+                .Resolve<DeleteUDTMembersRefactoringAction>();
 
             refactoringAction.Refactor(model, session);
 

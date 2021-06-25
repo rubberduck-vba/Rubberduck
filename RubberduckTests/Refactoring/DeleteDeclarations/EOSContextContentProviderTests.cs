@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using Castle.Windsor;
 using NUnit.Framework;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -46,7 +47,7 @@ End Sub
         [Category(nameof(DeleteDeclarationsRefactoringAction))]
         public void FindsDeclarationLogicalLineContext()
         {
-            void thisTest(EOSContextContentProvider sut)
+            void thisTest(IEOSContextContentProvider sut)
             {
                 var goalContext = sut.DeclarationLogicalLineCommentContext;
 
@@ -75,7 +76,7 @@ Public Const notUsed1 As Long = 100, _
 Public used As String
 ";
 
-            void thisTest(EOSContextContentProvider sut)
+            void thisTest(IEOSContextContentProvider sut)
             {
                 var goalContext = sut.DeclarationLogicalLineCommentContext;
                 var content = goalContext.GetText();
@@ -104,7 +105,7 @@ Private mVar1 As Long 'This is a comment for mVar1 _
 Public Sub Test()
 End Sub";
 
-            void thisTest(EOSContextContentProvider sut)
+            void thisTest(IEOSContextContentProvider sut)
             {
                 var goalContext = sut.DeclarationLogicalLineCommentContext;
                 var content = goalContext.GetText();
@@ -120,7 +121,7 @@ End Sub";
         [Category(nameof(DeleteDeclarationsRefactoringAction))]
         public void FindsSeparationToNextContext()
         {
-            void thisTest(EOSContextContentProvider sut)
+            void thisTest(IEOSContextContentProvider sut)
             {
                 StringAssert.Contains($"{Environment.NewLine}{ Environment.NewLine}", sut.Separation);
             }
@@ -150,7 +151,7 @@ Public Sub DoSomethingElse(arg As Long) 'Is A DeclarationLogical Line Comment
 {expectedIndentation}Dim X As Long
 End Sub
 ";
-            void thisTest(EOSContextContentProvider sut)
+            void thisTest(IEOSContextContentProvider sut)
             {
                 StringAssert.Contains(expectedIndentation, sut.Indentation);
             }
@@ -158,7 +159,7 @@ End Sub
             SetupAndInvokeTest(inputCode, "DoSomethingElse", thisTest);
         }
 
-        private static void SetupAndInvokeTest(string inputCode, string memberName, Action<EOSContextContentProvider> testSUT)
+        private static void SetupAndInvokeTest(string inputCode, string memberName, Action<IEOSContextContentProvider> testSUT)
         {
             var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, inputCode, ComponentType.StandardModule)).Object;
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
@@ -169,7 +170,10 @@ End Sub
 
                 var rewriter = rewritingManager.CheckOutCodePaneSession().CheckOutModuleRewriter(target.QualifiedModuleName);
 
-                 var eosContentProvider = new EOSContextContentProvider(eos, rewriter);
+                var eosContentProviderFactory = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+                        .Resolve<IEOSContextContentProviderFactory>();
+
+                var eosContentProvider = eosContentProviderFactory.Create(eos, rewriter);
 
                 testSUT(eosContentProvider);
             }
