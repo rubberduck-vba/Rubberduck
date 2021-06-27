@@ -22,7 +22,7 @@ using System.Linq;
 namespace RubberduckTests.Refactoring.DeleteDeclarations
 {
     [TestFixture]
-    public class DeleterEnumMembersTests
+    public class DeleteDeclarationsEnumMembersTests
     {
         private readonly DeleteDeclarationsTestSupport _support = new DeleteDeclarationsTestSupport();
 
@@ -141,31 +141,69 @@ End Enum
 
 ";
 
-            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "FirstValue"), injectTODO);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "FirstValue"), (m) => m.InsertValidationTODOForRetainedComments = injectTODO);
             var injectedContent = injectTODO
                 ? DeleteDeclarationsTestSupport.TodoContent
                 : string.Empty;
-            StringAssert.Contains($"'{injectedContent}A comment preceding the FirstValue", actualCode);
+            StringAssert.Contains($"{injectedContent}A comment preceding the FirstValue", actualCode);
             StringAssert.Contains($"A comment preceding the SecondValue", actualCode);
         }
 
-        private string GetRetainedCodeBlock(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> targetListBuilder, bool injectTODO = false)
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        public void DeleteDeclarationsInMultipleEnumerations()
+        {
+            var inputCode =
+@"
+Option Explicit
+
+Private Enum TestEnum1
+    FirstValue
+    SecondValue
+End Enum
+
+Private Enum TestEnum2
+    FirstValue
+    SecondValue
+End Enum
+";
+
+            var expected =
+@"
+Option Explicit
+
+Private Enum TestEnum1
+    SecondValue
+End Enum
+
+Private Enum TestEnum2
+    SecondValue
+End Enum
+";
+
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargetsUsingParentDeclaration(state, ("FirstValue", "TestEnum1"), ("FirstValue", "TestEnum2")));
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
+            StringAssert.Contains(expected, actualCode);
+        }
+
+        
+
+        private string GetRetainedCodeBlock(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> targetListBuilder, Action<IDeleteDeclarationsModel> modelFlagsAction = null)
         {
             var refactoredCode = _support.TestRefactoring(
                 targetListBuilder,
                 RefactorEnumMembers,
-                injectTODO,
+                modelFlagsAction ?? _support.DefaultModelFlagAction,
                 (MockVbeBuilder.TestModuleName, moduleCode, ComponentType.StandardModule));
 
             return refactoredCode[MockVbeBuilder.TestModuleName];
         }
 
-        private static IExecutableRewriteSession RefactorEnumMembers(RubberduckParserState state, IEnumerable<Declaration> targets, IRewritingManager rewritingManager, bool injectTODOComment)
+        private static IExecutableRewriteSession RefactorEnumMembers(RubberduckParserState state, IEnumerable<Declaration> targets, IRewritingManager rewritingManager, Action<IDeleteDeclarationsModel> modelFlagsAction)
         {
-            var model = new DeleteEnumMembersModel(targets)
-            {
-                InsertValidationTODOForRetainedComments = injectTODOComment
-            };
+            var model = new DeleteEnumMembersModel(targets);
+            modelFlagsAction(model);
 
             var session = rewritingManager.CheckOutCodePaneSession();
 

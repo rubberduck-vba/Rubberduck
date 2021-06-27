@@ -1,36 +1,33 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using System;
-using System.Collections.Generic;
+using Rubberduck.Refactorings.DeleteDeclarations.Abstract;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.DeleteDeclarations
 {
-    internal class EnumMemberDeletionTarget : DeleteDeclarationTarget, IEnumMemberDeletionTarget
+    internal class EnumMemberDeletionTarget : DeclarationDeletionTargetBase, IEnumMemberDeletionTarget
     {
-        public EnumMemberDeletionTarget(IDeclarationFinderProvider declarationFinderProvider, Declaration target)
-            : base(declarationFinderProvider, target)
+        public EnumMemberDeletionTarget(IDeclarationFinderProvider declarationFinderProvider, Declaration target, IModuleRewriter rewriter)
+            : base(declarationFinderProvider, target, rewriter)
         {
-            _targetContext = target.Context;
+            ListContext = target.Context.GetAncestor<VBAParser.EnumerationStmtContext>();
 
-            _deleteContext = target.Context.GetChild<VBAParser.IdentifierContext>();
+            TargetContext = target.Context;
 
-            _listContext = target.Context.GetAncestor<VBAParser.EnumerationStmtContext>();
+            DeleteContext = target.Context.GetChild<VBAParser.IdentifierContext>();
 
-            var enumStmtContext = TargetProxy.Context.GetAncestor<VBAParser.EnumerationStmtContext>();
-            _precedingEOSContext = TargetProxy.Context == enumStmtContext.children.SkipWhile(ch => !(ch is VBAParser.EnumerationStmt_ConstantContext)).First()
-                ? enumStmtContext.GetChild<VBAParser.EndOfStatementContext>()
-                : (enumStmtContext.children
+            PrecedingEOSContext = TargetProxy.Context == ListContext.children.SkipWhile(ch => !(ch is VBAParser.EnumerationStmt_ConstantContext)).First()
+                ? ListContext.GetChild<VBAParser.EndOfStatementContext>()
+                : (ListContext.children
                     .TakeWhile(ch => ch != TargetProxy.Context)
                     .Last() as ParserRuleContext)
                     .GetChild<VBAParser.EndOfStatementContext>();
 
-            _eosContext = GetFollowingEndOfStatementContext(_deleteContext);
+            TargetEOSContext = DeleteContext.GetFollowingEndOfStatementContext();
         }
     }
 }

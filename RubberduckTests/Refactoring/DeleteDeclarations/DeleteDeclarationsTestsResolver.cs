@@ -30,7 +30,6 @@ namespace RubberduckTests.Refactoring.DeleteDeclarations
             Install(new WindsorContainer(), null);
         }
 
-
         public void Install(IWindsorContainer container, IConfigurationStore store)
             => Install(container);
 
@@ -42,12 +41,16 @@ namespace RubberduckTests.Refactoring.DeleteDeclarations
             RegisterInstances(container);
             RegisterSingletonObjects(container);
             RegisterInterfaceToImplementationPairsSingleton(container);
+            RegisterAutoFactories(container);
         }
 
         private void RegisterInstances(IWindsorContainer container)
         {
             container.Kernel.Register(Component.For<IDeclarationFinderProvider, RubberduckParserState>().Instance(_declarationFinderProvider));
-            container.Kernel.Register(Component.For<IRewritingManager>().Instance(_rewritingManager));
+            if (_rewritingManager != null)
+            {
+                container.Kernel.Register(Component.For<IRewritingManager>().Instance(_rewritingManager));
+            }
         }
 
         private static void RegisterSingletonObjects(IWindsorContainer container)
@@ -63,12 +66,21 @@ namespace RubberduckTests.Refactoring.DeleteDeclarations
         {
             container.Kernel.Register(Component.For<IDeclarationDeletionTargetFactory>()
                 .ImplementedBy<DeclarationDeletionTargetFactory>());
+        }
 
-            container.Kernel.Register(Component.For<IDeleteDeclarationEndOfStatementContentModifierFactory>()
-                .ImplementedBy<DeleteDeclarationEndOfStatementContentModifierFactory>());
+        private static void RegisterAutoFactories(IWindsorContainer container)
+        {
+            container.Kernel.AddFacility<TypedFactoryFacility>();
 
-            container.Kernel.Register(Component.For<IEOSContextContentProviderFactory>()
-                .ImplementedBy<EOSContextContentProviderFactory>());
+            container.Kernel.Register(
+                Component.For<IDeclarationDeletionGroup>()
+                    .ImplementedBy<DeclarationDeletionGroup>().LifestyleTransient(),
+                Component.For<IDeclarationDeletionGroupFactory>().AsFactory().LifestyleSingleton());
+
+            container.Kernel.Register(
+                Component.For<IDeclarationDeletionGroupsGenerator>()
+                    .ImplementedBy<DeletionGroupsGenerator>().LifestyleTransient(),
+                Component.For<IDeclarationDeletionGroupsGeneratorFactory>().AsFactory().LifestyleSingleton());
         }
     }
 }

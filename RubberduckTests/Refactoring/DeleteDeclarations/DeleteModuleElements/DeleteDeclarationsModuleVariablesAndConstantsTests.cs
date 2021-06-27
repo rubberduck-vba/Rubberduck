@@ -24,7 +24,7 @@ namespace RubberduckTests.Refactoring.DeleteDeclarations
 {
     [TestFixture]
 
-    public class DeclarationDeleter_ModuleVariablesAndConstantsTests : ModuleSectionElementsTestsBase
+    public class DeleteDeclarationsModuleVariablesAndConstantsTests : ModuleSectionElementsTestsBase
     {
         [TestCase("Option Explicit\r\n\r\n")]
         [TestCase("")]
@@ -547,6 +547,41 @@ End Sub";
             StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
+        [TestCase("Public mVar1 As Long")]
+        [TestCase("Public Const mVar1 As Long = 100")]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        public void RemovesLogicalLineCommentwithLineContinuationInjectTODO(string declaration)
+        {
+            var inputCode =
+$@"
+Option Explicit
+
+    Private retained As Long
+
+    'Comment above mVar1
+{declaration} 'This is a comment for mVar1 _
+        'and so is this
+
+        'Comment below mVar1
+Public Sub Test()
+End Sub";
+
+            var expected =
+$@"
+Option Explicit
+
+    Private retained As Long
+
+    {DeleteDeclarationsTestSupport.TodoContent}Comment above mVar1
+        {DeleteDeclarationsTestSupport.TodoContent}Comment below mVar1
+Public Sub Test()
+End Sub";
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "mVar1"), (m) => m.InsertValidationTODOForRetainedComments = true);
+            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
+        }
+
         [Test]
         [Category("Refactorings")]
         [Category(nameof(DeleteDeclarationsRefactoringAction))]
@@ -668,13 +703,143 @@ Public Sub Test1()
 End Sub
 ";
 
-            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "mVar1"), injectTODO);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "mVar1"), (m) => m.InsertValidationTODOForRetainedComments = injectTODO);
             StringAssert.DoesNotContain("mVar1", actualCode);
             StringAssert.Contains("Test1", actualCode);
             var injectedContent = injectTODO
                 ? DeleteDeclarationsTestSupport.TodoContent
                 : string.Empty;
-            StringAssert.Contains($"'{injectedContent}A comment following an Annotation", actualCode);
+            StringAssert.Contains($"{injectedContent}A comment following an Annotation", actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        public void MultipleDeleteGroupsCheck_DeclarationSection()
+        {
+            var inputCode =
+@"
+    Private firstLong As Long 'Group1
+
+    Private mainCollection As Collection
+
+    Private firstStr As String 'Group2
+    Private secondStr As String 'Group2
+    
+    Private thirdStr As String 'Group2
+
+    Private firstVar As Variant
+
+    Private i As Long
+
+    Private firstBool As Boolean
+
+    Private secondBool As Boolean 'Group3
+";
+
+            var expected =
+@"
+    Private mainCollection As Collection
+
+    Private firstVar As Variant
+
+    Private i As Long
+
+    Private firstBool As Boolean
+";
+
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "firstLong", "firstStr", "secondStr", "thirdStr", "secondBool"));
+            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        public void MultipleDeleteGroupsCheck_DeclarationSectionEveryOtherDeclaration()
+        {
+            var inputCode =
+@"
+    Private firstLong As Long 'Group1
+
+    Private mainCollection As Collection
+
+    Private firstStr As String 'Group2
+    Private secondStr As String 'Group2
+    
+    Private thirdStr As String 'Group2
+
+    Private firstVar As Variant
+";
+
+            var expected =
+@"
+    Private mainCollection As Collection
+
+    Private firstVar As Variant
+";
+
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "firstLong", "firstStr", "secondStr", "thirdStr"));
+            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        public void MultipleDeleteGroupsCheck_DeclarationSectionEveryOtherDeclarationLastWithMultiple()
+        {
+            var inputCode =
+@"
+    Private firstLong As Long 'Group1
+
+    Private mainCollection As Collection
+
+    Private firstStr As String 'Group2
+
+    Private firstVar As Variant
+";
+
+            var expected =
+@"
+    Private mainCollection As Collection
+
+    Private firstVar As Variant
+";
+
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "firstLong", "firstStr"));
+            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        public void FindsDeclarationLogicalLineContextListDeclarationMultiLineComment()
+        {
+            var inputCode =
+$@"
+Option Explicit
+
+    Private retained As Long
+
+    'Comment above mVar1
+Private mVar1 As Long 'This is a comment for mVar1 _
+        'and so is this
+
+        'Comment below mVar1
+Public Sub Test()
+End Sub";
+
+            void thisTest(IDeclarationDeletionTarget sut)
+            {
+                var commentContext = sut.GetDeclarationLogicalLineCommentContext();
+                var content = commentContext?.GetText() ?? string.Empty;
+                StringAssert.Contains("'This is a comment for mVar1", content);
+                StringAssert.Contains("'and so is this", content);
+            }
+
+            _support.SetupAndInvokeIDeclarationDeletionTargetTest(inputCode, "mVar1", thisTest);
         }
     }
 }

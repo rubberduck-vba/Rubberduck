@@ -190,7 +190,7 @@ End Sub";
 
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableNotUsedInspection(state));
             var lines = actualCode.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Select(l => l.Trim());
-            Assert.IsTrue(lines.Contains("' Comment"));
+            Assert.IsTrue(lines.Contains($"{DeleteDeclarationsTestSupport.TodoContent} Comment"));
             Assert.IsFalse(lines.Contains("var1"));
         }
 

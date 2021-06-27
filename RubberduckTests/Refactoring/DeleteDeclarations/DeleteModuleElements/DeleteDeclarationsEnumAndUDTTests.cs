@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace RubberduckTests.Refactoring.DeleteDeclarations
 {
     [TestFixture]
-    public class DeclarationDeleter_EnumAndUDTDeclarationTests : ModuleSectionElementsTestsBase
+    public class DeleteDeclarationsEnumAndUDTTests : ModuleSectionElementsTestsBase
     {
         [Test]
         [Category("Refactorings")]

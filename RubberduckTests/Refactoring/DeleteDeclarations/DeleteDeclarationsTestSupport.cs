@@ -22,20 +22,25 @@ namespace RubberduckTests.Refactoring.DeleteDeclarations
         //TODO: Replace ImplementInterface Resource with resource element for this refactoring
         public static string TodoContent => Rubberduck.Resources.Refactorings.Refactorings.ImplementInterface_TODO;
 
-        public IDictionary<string, string> TestRefactoring(Func<RubberduckParserState, IEnumerable<Declaration>> testTargetListBuilder, Func<RubberduckParserState, IEnumerable<Declaration>, IRewritingManager, bool, IExecutableRewriteSession> refactorAction, bool injectTODOComment, params (string componentName, string content, ComponentType componentType)[] modules)
+        public IDictionary<string, string> TestRefactoring(Func<RubberduckParserState, IEnumerable<Declaration>> testTargetListBuilder, Func<RubberduckParserState, IEnumerable<Declaration>, IRewritingManager, Action<IDeleteDeclarationsModel>, IExecutableRewriteSession> refactorAction, Action<IDeleteDeclarationsModel> modelFlagsAction, params (string componentName, string content, ComponentType componentType)[] modules)
         {
             var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
-            return RefactorCode(vbe, testTargetListBuilder, refactorAction, injectTODOComment);
+            return RefactorCode(vbe, testTargetListBuilder, refactorAction, modelFlagsAction);
         }
 
-        private static IDictionary<string, string> RefactorCode(IVBE vbe, Func<RubberduckParserState, IEnumerable<Declaration>> testTargetListBuilder, Func<RubberduckParserState, IEnumerable<Declaration>, IRewritingManager, bool, IExecutableRewriteSession> refactorAction, bool injectTODOComment)
+        public void DefaultModelFlagAction(IDeleteDeclarationsModel model)
+        {
+            model.InsertValidationTODOForRetainedComments = false;
+        }
+
+        private static IDictionary<string, string> RefactorCode(IVBE vbe, Func<RubberduckParserState, IEnumerable<Declaration>> testTargetListBuilder, Func<RubberduckParserState, IEnumerable<Declaration>, IRewritingManager, Action<IDeleteDeclarationsModel>, IExecutableRewriteSession> refactorAction, Action<IDeleteDeclarationsModel> modelFlagsAction)
         {
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {
                 var targets = testTargetListBuilder(state);
 
-                var session = refactorAction(state, targets, rewritingManager, injectTODOComment);
+                var session = refactorAction(state, targets, rewritingManager, modelFlagsAction);
 
                 session.TryRewrite();
 
@@ -68,6 +73,40 @@ namespace RubberduckTests.Refactoring.DeleteDeclarations
             }
 
             return targetsList;
+        }
+        internal IEnumerable<Declaration> TestTargetsUsingParentDeclaration(IDeclarationFinderProvider declarationFinderProvider, params (string, string)[] targetIdentifiersAccessorPair)
+        {
+            var targetsList = new List<Declaration>();
+            foreach ((string id, string parentID) in targetIdentifiersAccessorPair)
+            {
+                var parentDeclaration = declarationFinderProvider.DeclarationFinder
+                    .MatchName(parentID).Single();
+
+                var target = declarationFinderProvider.DeclarationFinder
+                    .MatchName(id)
+                    .Single(t => t.ParentDeclaration == parentDeclaration);
+
+                targetsList.Add(target);
+            }
+
+            return targetsList;
+        }
+
+        public void SetupAndInvokeIDeclarationDeletionTargetTest(string inputCode, string targetIdentifier, Action<IDeclarationDeletionTarget> testSUT)
+        {
+            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, inputCode, ComponentType.StandardModule)).Object;
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                var target = state.DeclarationFinder.MatchName(targetIdentifier).First();
+
+                var resolver = new DeleteDeclarationsTestsResolver(state, rewritingManager);
+
+                var deleteTarget = resolver.Resolve<IDeclarationDeletionTargetFactory>()
+                    .Create(target, rewritingManager.CheckOutCodePaneSession());
+
+                testSUT(deleteTarget);
+            }
         }
     }
 }

@@ -1,13 +1,9 @@
 ﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
-using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,17 +11,14 @@ using System.Linq;
 namespace Rubberduck.Refactorings.DeleteDeclarations
 {
     /// <summary>
-    /// Removes 0 to n Declarations along with associated Annotations and comments on the same logicalline
-    /// of the Declaration.  Other surrounding comments are edited to include a TODO statement indicating
+    /// Removes 0 to n Declarations along with associated Annotations. Removes comments on the same logical line
+    /// as the removed Declaration.  Other surrounding comments are edited to include a TODO statement indicating
     /// that the user should evaluate if the comment is still valid.
     /// Warning: If references to the removed Declarations are not removed/modified by other code, 
     /// this refactoring action will generate uncompilable code.
     /// </summary>
     public class DeleteDeclarationsRefactoringAction : CodeOnlyRefactoringActionBase<DeleteDeclarationsModel>
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly IRewritingManager _rewritingManager;
-
         private readonly ICodeOnlyRefactoringAction<DeleteModuleElementsModel> _deleteModuleElementsRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<DeleteProcedureScopeElementsModel> _deleteProcedureScopeElementsRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<DeleteUDTMembersModel> _deleteUDTMembersRefactoringAction;
@@ -47,22 +40,17 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
             DeclarationType.LineLabel
         };
 
-        public DeleteDeclarationsRefactoringAction(IDeclarationFinderProvider declarationFinderProvider,
-            DeleteModuleElementsRefactoringAction deleteModuleElementsRefactoringAction,
+        public DeleteDeclarationsRefactoringAction(DeleteModuleElementsRefactoringAction deleteModuleElementsRefactoringAction,
             DeleteProcedureScopeElementsRefactoringAction deleteProcedureScopeElementsRefactoringAction,
             DeleteUDTMembersRefactoringAction deleteUDTMembersRefactoringAction,
             DeleteEnumMembersRefactoringAction deleteEnumMembersRefactoringAction,
             IRewritingManager rewritingManager)
-            : base(rewritingManager) 
+            : base(rewritingManager)
         {
-            _declarationFinderProvider = declarationFinderProvider;
-
             _deleteModuleElementsRefactoringAction = deleteModuleElementsRefactoringAction;
             _deleteProcedureScopeElementsRefactoringAction = deleteProcedureScopeElementsRefactoringAction;
             _deleteUDTMembersRefactoringAction = deleteUDTMembersRefactoringAction;
             _deleteEnumMembersRefactoringAction = deleteEnumMembersRefactoringAction;
-            
-            _rewritingManager = rewritingManager;
         }
 
         public override void Refactor(DeleteDeclarationsModel model, IRewriteSession rewriteSession)
@@ -78,93 +66,70 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
                 throw new InvalidDeclarationTypeException(invalidDeclaration);
             }
 
-            var preprocessedTargets = ModifyTargetsListToAvoidBoundaryReplacementErrors(model);
+            //Minimize/optimize target list to prevent Rewriter boundary overlap errors and uncompilable code scenarios
+            var minimizedTargets = RemoveTargetChildren(model.Targets);
+            minimizedTargets = ReplaceDeleteAllUDTMembersOrEnumMembersWithParent(minimizedTargets);
 
-            DeleteModuleElements(preprocessedTargets, model, rewriteSession);
-            DeleteProcedureScopeElements(preprocessedTargets, model, rewriteSession);
-            DeleteUserDefinedTypeMembers(preprocessedTargets, model, rewriteSession);
-            DeleteEnumerationMembers(preprocessedTargets, model, rewriteSession);
+            var targetsGroup = GroupTargetsByRefactoringActionScope(minimizedTargets);
+
+            DeleteTargets<DeleteModuleElementsModel>(targetsGroup.ModuleScope, model, rewriteSession);
+            DeleteTargets<DeleteProcedureScopeElementsModel>(targetsGroup.ProcedureScope, model, rewriteSession);
+            DeleteTargets<DeleteEnumMembersModel>(targetsGroup.EnumMembers, model, rewriteSession);
+            DeleteTargets<DeleteUDTMembersModel>(targetsGroup.UdtMembers, model, rewriteSession);
         }
 
-        private void DeleteModuleElements(IEnumerable<Declaration> targets, DeleteDeclarationsModel model, IRewriteSession rewriteSession)
+        private void DeleteTargets<T>(IEnumerable<Declaration> targets, DeleteDeclarationsModel model, IRewriteSession rewriteSession) where T : DeleteDeclarationsModel, new()
         {
-            var moduleElementTargets = targets.Where(t => t.ParentDeclaration is ModuleDeclaration).ToList();
-            if (moduleElementTargets.Any())
+            if (!targets.Any())
             {
-                var moduleElementsModel = new DeleteModuleElementsModel(moduleElementTargets)
-                {
-                    InsertValidationTODOForRetainedComments = model.InsertValidationTODOForRetainedComments
-                };
+                return;
+            }
 
-                _deleteModuleElementsRefactoringAction.Refactor(moduleElementsModel, rewriteSession);
+            var tModel = CreateCodeOnlyRefactoringModel<T>(targets, model);
+
+            switch (tModel)
+            {
+                case DeleteModuleElementsModel deleteModuleElementsModel:
+                    _deleteModuleElementsRefactoringAction.Refactor(deleteModuleElementsModel, rewriteSession);
+                    return;
+                case DeleteProcedureScopeElementsModel procedureScopeElementsModel:
+                    _deleteProcedureScopeElementsRefactoringAction.Refactor(procedureScopeElementsModel, rewriteSession);
+                    return;
+                case DeleteEnumMembersModel enumMembersModel:
+                    _deleteEnumMembersRefactoringAction.Refactor(enumMembersModel, rewriteSession);
+                    return;
+                case DeleteUDTMembersModel udtMembersModel:
+                    _deleteUDTMembersRefactoringAction.Refactor(udtMembersModel, rewriteSession);
+                    return;
+                default:
+                    throw new ArgumentException();
             }
         }
 
-        private void DeleteProcedureScopeElements(IEnumerable<Declaration> targets, DeleteDeclarationsModel model, IRewriteSession rewriteSession)
+        private static (IEnumerable<Declaration> ModuleScope,
+            IEnumerable<Declaration> ProcedureScope,
+            IEnumerable<Declaration> EnumMembers,
+            IEnumerable<Declaration> UdtMembers)
+        GroupTargetsByRefactoringActionScope(IEnumerable<Declaration> targets)
         {
-            var procedureLocalTargets = targets.Where(t => !(t.ParentDeclaration is ModuleDeclaration)
-                && !(t.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember) || t.DeclarationType.HasFlag(DeclarationType.EnumerationMember)))
-                .ToList();
+            var moduleScopeTargets = targets.Where(t => t.ParentDeclaration is ModuleDeclaration);
 
-            if (procedureLocalTargets.Any())
-            {
-                var proceduralScopeElementModel = new DeleteProcedureScopeElementsModel(procedureLocalTargets)
-                {
-                    InsertValidationTODOForRetainedComments = model.InsertValidationTODOForRetainedComments
-                };
-                _deleteProcedureScopeElementsRefactoringAction.Refactor(proceduralScopeElementModel, rewriteSession);
-            }
-        }
-        private void DeleteUserDefinedTypeMembers(IEnumerable<Declaration> targets, DeleteDeclarationsModel model, IRewriteSession rewriteSession)
-        {
-            var udtMemberTargets = targets.Where(t => t.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember)).ToList();
-            if (udtMemberTargets.Any())
-            {
-                var udtMemberElementModel = new DeleteUDTMembersModel(udtMemberTargets)
-                {
-                    InsertValidationTODOForRetainedComments = model.InsertValidationTODOForRetainedComments
-                };
-                _deleteUDTMembersRefactoringAction.Refactor(udtMemberElementModel, rewriteSession);
-            }
+            var enumMemberTargets = targets.Where(t => t.DeclarationType.HasFlag(DeclarationType.EnumerationMember));
+
+            var udtMemberTargets = targets.Where(t => t.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember));
+
+            var procedureScopeTargets = targets
+                .Except(moduleScopeTargets)
+                .Except(enumMemberTargets)
+                .Except(udtMemberTargets);
+
+            return (moduleScopeTargets, procedureScopeTargets, enumMemberTargets, udtMemberTargets);
         }
 
-        private void DeleteEnumerationMembers(IEnumerable<Declaration> targets, DeleteDeclarationsModel model, IRewriteSession rewriteSession)
-        {
-            var enumMemberTargets = targets.Where(t => t.DeclarationType.HasFlag(DeclarationType.EnumerationMember)).ToList();
-            if (enumMemberTargets.Any())
-            {
-                var enumMemberstModel = new DeleteEnumMembersModel(enumMemberTargets)
-                {
-                    InsertValidationTODOForRetainedComments = model.InsertValidationTODOForRetainedComments
-                };
-                _deleteEnumMembersRefactoringAction.Refactor(enumMemberstModel, rewriteSession);
-            }
-        }
-
-        private static List<Declaration> ModifyTargetsListToAvoidBoundaryReplacementErrors(DeleteDeclarationsModel model)
-        {
-            var targets = model.Targets.ToList();
-
-            targets = RemoveTargetChildren(targets);
-
-            List<Declaration> toRemove = new List<Declaration>();
-            List<Declaration> toAdd = new List<Declaration>();
-
-            //Replace members with the Parent declaration if all the members are in the list of targets
-            var modifiesEnumMemberTargets = RequiresEnumDeclarationDeletion(targets, ref toRemove, ref toAdd);
-            var modifiesUDTMemberTargets = RequiresUserDefinedTypeDeclarationDeletion(targets, ref toRemove, ref toAdd);
-
-            if (modifiesEnumMemberTargets || modifiesUDTMemberTargets)
-            {
-                targets.RemoveAll(t => toRemove.Contains(t));
-                targets.AddRange(toAdd);
-            }
-
-            return targets;
-        }
-
-        //Remove targets where the Parent declaration is also in the list of deletion targets
-        private static List<Declaration> RemoveTargetChildren(List<Declaration> targets)
+        /// <summary>
+        /// Removes targets where the Parent declaration is also in the list of deletion targets
+        /// </summary>
+        private static List<Declaration> RemoveTargetChildren(IEnumerable<Declaration> targets)
         {
             var declarationTypes = new List<DeclarationType>() 
             { 
@@ -173,12 +138,38 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
                 DeclarationType.UserDefinedType
             };
 
+            var optimizedTargets = targets.ToList();
+
             foreach (var decType in declarationTypes)
             {
                 var parentDeclarations = targets.Where(t => t.DeclarationType.HasFlag(decType));
                 var toRemove = targets.Where(t => parentDeclarations.Contains(t.ParentDeclaration));
-                targets.RemoveAll(t => toRemove.Contains(t));
+                optimizedTargets.RemoveAll(t => toRemove.Contains(t));
             }
+            return optimizedTargets;
+        }
+
+        /// <summary>
+        /// If all members of an Enum or UserDefinedType are targeted for deletion, adds the UserDefinedType
+        /// and/or Enum declaration to the target list and removes the associated Members.  Both UDT and
+        /// Enum Types must have at least one member to compile.
+        /// </summary>
+        private static List<Declaration> ReplaceDeleteAllUDTMembersOrEnumMembersWithParent(List<Declaration> targets)
+        {
+            List<Declaration> toRemove = new List<Declaration>();
+            List<Declaration> toAdd = new List<Declaration>();
+
+            //Replace members with the Parent declaration if all the members are in the list of targets
+            var modifiesEnumMemberTargets = RequiresEnumDeclarationDeletion(targets, ref toRemove, ref toAdd);
+            
+            var modifiesUDTMemberTargets = RequiresUserDefinedTypeDeclarationDeletion(targets, ref toRemove, ref toAdd);
+
+            if (modifiesEnumMemberTargets || modifiesUDTMemberTargets)
+            {
+                targets.RemoveAll(t => toRemove.Contains(t));
+                targets.AddRange(toAdd);
+            }
+
             return targets;
         }
 
@@ -215,6 +206,20 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
             }
 
             return toRemove.Count > 0;
+        }
+
+        private static T CreateCodeOnlyRefactoringModel<T>(IEnumerable<Declaration> targets, DeleteDeclarationsModel model) where T: DeleteDeclarationsModel, new()
+        {
+            var newModel = new T()
+            {
+                InsertValidationTODOForRetainedComments = model.InsertValidationTODOForRetainedComments,
+                DeleteDeclarationLogicalLineComments = model.DeleteDeclarationLogicalLineComments,
+                DeleteAnnotations = model.DeleteAnnotations,
+                DeleteDeclarationsOnly = model.DeleteDeclarationsOnly
+            };
+
+            newModel.AddRangeOfDeclarationsToDelete(targets);
+            return newModel;
         }
     }
 }

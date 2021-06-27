@@ -1,31 +1,39 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Symbols;
 using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.DeleteDeclarations
 {
     public interface IDeleteDeclarationsModel : IRefactoringModel
     {
-        List<Declaration> Targets { get; }
-        bool InsertValidationTODOForRetainedComments { get; }
+        IEnumerable<Declaration> Targets { get; }
 
-        string RemoveAllExceptionMessage { get; }
+        /// <summary>
+        /// When set to true, this flag overides all other flags and prevents changes to Annotations and Comments.  
+        /// Default value is false.
+        /// </summary>
+        bool DeleteDeclarationsOnly { set; get; }
 
-        void SetGroups(List<DeletionGroup> deletionGroups, List<IDeclarationDeletionTarget> deletionTargets);
+        /// <summary>
+        /// when set to true, this flag enables edits to comments adjacent to delete targets.  Default value is true.
+        /// </summary>
+        bool InsertValidationTODOForRetainedComments { set;  get; }
 
-        List<DeletionGroup> DeletionGroups { get; }
+        /// <summary>
+        /// When set to true, this flag enables the deletion of comments found on the same logical line as a 
+        /// deleted Declaration.  Default value is true.
+        /// </summary>
+        bool DeleteDeclarationLogicalLineComments { set;  get; }
 
-        List<IDeclarationDeletionTarget> DeletionTargets { get; }
+        /// <summary>
+        /// When set to true, this flag enables the removal of Annotations exclusively associated with a set of deleted Declarations.  
+        /// Default value is true.
+        /// </summary>
+        bool DeleteAnnotations { set;  get; }
     }
 
-    public class DeleteDeclarationsModel : IDeleteDeclarationsModel, IDeleteDeclarationModifyEndOfStatementContentModel
+    public class DeleteDeclarationsModel : IDeleteDeclarationsModel
     {
-        private HashSet<Declaration> _targets = new HashSet<Declaration>();
-
-        private List<IDeclarationDeletionTarget> _deletionTargets = new List<IDeclarationDeletionTarget>();
-
-        private List<DeletionGroup> _deletionGroups = new List<DeletionGroup>();
+        private readonly HashSet<Declaration> _targets = new HashSet<Declaration>();
 
         public DeleteDeclarationsModel()
         {}
@@ -53,28 +61,14 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
             }
         }
 
-        public List<Declaration> Targets => new List<Declaration>(_targets);
+        public IEnumerable<Declaration> Targets => new List<Declaration>(_targets);
 
-        /// <summary>
-        /// IndentModifiedModules should only be set to 'true' when the DeleteDeclationsRefactoringAction
-        /// is the initiating/top-level refactoring action (e.g., RemoveUnusedDeclarationQuickFix)
-        /// </summary>
-        public bool IndentModifiedModules { set; get; } = false;
+        public bool DeleteDeclarationsOnly { set; get; } = false;
 
         public bool InsertValidationTODOForRetainedComments { set; get; } = true;
 
-        public string RemoveAllExceptionMessage { set;  get; }
+        public bool DeleteDeclarationLogicalLineComments { set;  get; } = true;
 
-        public void SetGroups(List<DeletionGroup> deletionGroups, List<IDeclarationDeletionTarget> deletionTargets)
-        {
-            _deletionGroups = deletionGroups;
-            _deletionTargets = deletionTargets;
-        }
-
-        public List<DeletionGroup> DeletionGroups => _deletionGroups;
-
-        public List<IDeclarationDeletionTarget> DeletionTargets => _deletionTargets;
-
-        public bool RemoveDeclarationLogicalLineComment { get; set; } = true;
+        public bool DeleteAnnotations { set; get; } = true;
     }
 }

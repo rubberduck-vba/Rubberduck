@@ -22,49 +22,8 @@ using System.Linq;
 namespace RubberduckTests.Refactoring.DeleteDeclarations
 {
     [TestFixture]
-    public class DeclarationsDeleter_MemberTests : ModuleSectionElementsTestsBase
+    public class DeleteDeclarationsMemberTests : ModuleSectionElementsTestsBase
     {
-        //https://github.com/rubberduck-vba/Rubberduck/issues/5719
-        [Test]
-        [Category("Refactorings")]
-        [Category(nameof(DeleteDeclarationsRefactoringAction))]
-        public void RemovePropertyLet()
-        {
-            var inputCode =
-$@"
-Option Explicit
-
-Public Property Get Test1() As Long
-End Property
-
-Public Property Let Test1(ByVal RHS As Long)
-End Property
-
-Public Property Get Test2() As Long
-End Property
-
-Public Property Let Test2(ByVal RHS As Long)
-End Property
-";
-
-            var expected =
-$@"
-Option Explicit
-
-Public Property Get Test1() As Long
-End Property
-
-Public Property Get Test2() As Long
-End Property
-
-Public Property Let Test2(ByVal RHS As Long)
-End Property
-";
-            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargetsUsingDeclarationType(state, ("Test1", DeclarationType.PropertyLet)));
-            StringAssert.Contains(expected, actualCode);
-            StringAssert.AreEqualIgnoringCase(expected, actualCode);
-        }
-
         [TestCase("Sub", "End Sub")]
         [TestCase("Property Let", "End Property")]
         [TestCase("Property Set", "End Property")]
@@ -148,6 +107,89 @@ Public {methodType} Test4() As Long
 {endStmt}
 ";
             var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test2", "Test3"));
+            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
+        }
+
+        [TestCase("Sub", "End Sub")]
+        [TestCase("Property Let", "End Property")]
+        [TestCase("Property Set", "End Property")]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        public void RemoveFirstProcedureDeclaration_NoOptionExplicit(string methodType, string endStmt)
+        {
+            var inputCode =
+$@"
+Public {methodType} Test1()
+{endStmt}
+
+
+
+Public {methodType} Test2()
+{endStmt}
+
+
+Public {methodType} Test3()
+{endStmt}
+
+Public {methodType} Test4()
+{endStmt}
+";
+
+            var expected =
+$@"
+Public {methodType} Test2()
+{endStmt}
+
+
+Public {methodType} Test3()
+{endStmt}
+
+Public {methodType} Test4()
+{endStmt}
+";
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test1"));
+            StringAssert.Contains(expected, actualCode);
+            StringAssert.AreEqualIgnoringCase(expected, actualCode);
+        }
+
+        [TestCase("Function", "End Function")]
+        [TestCase("Property Get", "End Property")]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        public void RemoveFunctionDeclarations_NoOptionExplicit(string methodType, string endStmt)
+        {
+            var inputCode =
+$@"
+Public {methodType} Test1() As Long
+{endStmt}
+
+
+
+Public {methodType} Test2() As Long
+{endStmt}
+
+
+Public {methodType} Test3() As Long
+{endStmt}
+
+Public {methodType} Test4() As Long
+{endStmt}
+";
+
+            var expected =
+$@"
+Public {methodType} Test2() As Long
+{endStmt}
+
+
+Public {methodType} Test3() As Long
+{endStmt}
+
+Public {methodType} Test4() As Long
+{endStmt}
+";
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test1"));
             StringAssert.Contains(expected, actualCode);
             StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
@@ -300,7 +342,6 @@ End Sub
             StringAssert.AreEqualIgnoringCase(expected, actualCode);
         }
 
-        //TODO: What is the correct result here?  Should the @DefaultMember annotation be moved to a 'surviving' property?
         [Test]
         [Category("Refactorings")]
         [Category(nameof(DeleteDeclarationsRefactoringAction))]
@@ -405,11 +446,118 @@ Public Sub Test1()
 End Sub
 ";
 
-            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test1"), injectTODO);
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargets(state, "Test1"), (m) => m.InsertValidationTODOForRetainedComments = injectTODO);
             var injectedContent = injectTODO
                 ? DeleteDeclarationsTestSupport.TodoContent
                 : string.Empty;
-            StringAssert.Contains($"'{injectedContent}A comment following an Annotation", actualCode);
+            StringAssert.Contains($"{injectedContent}A comment following an Annotation", actualCode);
+        }
+
+        private static string _groupedPropertiesRemovalTestsContent =
+$@"
+Option Explicit
+
+Public Property Get AA() As Long
+End Property
+Public Property Let AA(ByVal RHS As Long)
+End Property
+
+Public Property Get TestTarget() As Variant
+End Property
+Public Property Let TestTarget(ByVal RHS As Variant)
+End Property
+Public Property Set TestTarget(ByVal RHS As Variant)
+End Property
+
+Public Property Get CC() As Long
+End Property
+Public Property Let CC(ByVal RHS As Long)
+End Property
+";
+
+        [TestCase(DeclarationType.PropertyLet)]
+        [TestCase(DeclarationType.PropertySet)]
+        [TestCase(DeclarationType.PropertyGet)]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        public void RemoveOnePropertyOfPropertyGroupTrio(DeclarationType declarationType)
+        {
+            var inputCode =
+$@"
+Option Explicit
+
+Public Property Get AA() As Long
+End Property
+Public Property Let AA(ByVal RHS As Long)
+End Property
+
+Public Property Get TestTarget() As Variant
+End Property
+Public Property Let TestTarget(ByVal RHS As Variant)
+End Property
+Public Property Set TestTarget(ByVal RHS As Variant)
+End Property
+
+Public Property Get CC() As Long
+End Property
+Public Property Let CC(ByVal RHS As Long)
+End Property
+";
+
+            var expected = string.Empty;
+
+            if (declarationType == DeclarationType.PropertyLet)
+            {
+                expected =
+    $@"
+Public Property Let AA(ByVal RHS As Long)
+End Property
+
+Public Property Get TestTarget() As Variant
+End Property
+Public Property Set TestTarget(ByVal RHS As Variant)
+End Property
+
+Public Property Get CC() As Long
+End Property
+";
+            }
+            else if (declarationType == DeclarationType.PropertySet)
+            {
+                expected =
+    $@"
+Public Property Let AA(ByVal RHS As Long)
+End Property
+
+Public Property Get TestTarget() As Variant
+End Property
+Public Property Let TestTarget(ByVal RHS As Variant)
+End Property
+
+Public Property Get CC() As Long
+End Property
+";
+            }
+
+            else if (declarationType == DeclarationType.PropertyGet)
+            {
+                expected =
+    $@"
+Public Property Let AA(ByVal RHS As Long)
+End Property
+
+Public Property Let TestTarget(ByVal RHS As Variant)
+End Property
+Public Property Set TestTarget(ByVal RHS As Variant)
+End Property
+
+Public Property Get CC() As Long
+End Property
+";
+            }
+
+            var actualCode = GetRetainedCodeBlock(inputCode, state => _support.TestTargetsUsingDeclarationType(state, ("TestTarget", declarationType)));
+            StringAssert.Contains(expected, actualCode);
         }
     }
 }

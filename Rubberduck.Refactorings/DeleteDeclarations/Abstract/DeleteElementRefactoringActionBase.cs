@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing;
+﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -7,197 +6,228 @@ using Rubberduck.Parsing.VBA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace Rubberduck.Refactorings.DeleteDeclarations
+namespace Rubberduck.Refactorings.DeleteDeclarations.Abstract
 {
-    public struct DeletionGroup
-    {
-        public ParserRuleContext PrecedingNonDeletedContext { set; get; }
-
-        public List<ParserRuleContext> Contexts { set; get; }
-
-        public bool IsLastContext(ParserRuleContext parserRuleContext) => Contexts.Last() == parserRuleContext;
-    }
-
     public abstract class DeleteElementRefactoringActionBase<TModel> : CodeOnlyRefactoringActionBase<TModel> where TModel : class, IRefactoringModel
     {
-        protected readonly IDeclarationFinderProvider _declarationFinderProvider;
-        protected readonly IRewritingManager _rewritingManager;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IDeclarationDeletionTargetFactory _declarationDeletionTargetFactory;
-        private readonly IDeleteDeclarationEndOfStatementContentModifierFactory _deleteDeclarationEndOfStatementContentModifierFactory;
+        private readonly IDeclarationDeletionGroupsGenerator _declarationDeletionGroupsGenerator;
 
-        public DeleteElementRefactoringActionBase(IDeclarationFinderProvider declarationFinderProvider, IDeclarationDeletionTargetFactory deletionTargetFactory, IDeleteDeclarationEndOfStatementContentModifierFactory eosModifierFactory, IRewritingManager rewritingManager)
+        protected const string EOS_COLON = ": ";
+
+        public DeleteElementRefactoringActionBase(IDeclarationFinderProvider declarationFinderProvider,
+            IDeclarationDeletionTargetFactory deletionTargetFactory,
+            IDeclarationDeletionGroupsGeneratorFactory deletionGroupsGeneratorFactory,
+            IRewritingManager rewritingManager)
             : base(rewritingManager)
         {
             _declarationFinderProvider = declarationFinderProvider;
-            _rewritingManager = rewritingManager;
             _declarationDeletionTargetFactory = deletionTargetFactory;
-            _deleteDeclarationEndOfStatementContentModifierFactory = eosModifierFactory;
+            _declarationDeletionGroupsGenerator = deletionGroupsGeneratorFactory.Create();
         }
-        protected abstract void RefactorGuardClause(IDeleteDeclarationsModel model);
-
-        protected abstract IOrderedEnumerable<ParserRuleContext> GetAllContextElements(Declaration declaration);
-
-        protected Action<DeletionGroup, IDeclarationDeletionTarget> RetrieveNonDeleteDeclarationForGroup { private set;  get; } = (g, t) => g.PrecedingNonDeletedContext =  t.PrecedingEOSContext;
-
-        protected void InjectRetrieveNonDeleteDeclarationForDeletionGroupAction(Action<DeletionGroup, IDeclarationDeletionTarget> setter)
-            => RetrieveNonDeleteDeclarationForGroup = setter;
 
         protected void DeleteDeclarations(IDeleteDeclarationsModel model, IRewriteSession rewriteSession)
         {
-            RefactorGuardClause(model);
+            var deletionTargets = CreateDeletionTargets(model.Targets, rewriteSession, _declarationDeletionTargetFactory);
 
-            foreach (var targetGroup in model.Targets.ToLookup(t => t.QualifiedModuleName))
+            var targetsLookup = deletionTargets.ToLookup(dt => dt.TargetProxy.QualifiedModuleName);
+
+            foreach (var moduleQualifiedDeleteGroups in targetsLookup)
             {
-                var deletionTargets = CreateDeletionTargets(model.Targets, _declarationDeletionTargetFactory);
+                var deletionGroups = _declarationDeletionGroupsGenerator.Generate(moduleQualifiedDeleteGroups);
+                    
+                var rewriter = rewriteSession.CheckOutModuleRewriter(moduleQualifiedDeleteGroups.Key);
 
-                var deletionGroups = CreateDeletionGroups(deletionTargets, model.RemoveAllExceptionMessage);
+                if (!model.DeleteDeclarationsOnly && model.DeleteAnnotations)
+                {
+                    DeleteAnnotations(_declarationFinderProvider, deletionGroups, rewriter);
+                }
 
-                model.SetGroups(deletionGroups, deletionTargets);
-
-                ModifyDeletionGroups(model, rewriteSession.CheckOutModuleRewriter(targetGroup.Key));
+                RemoveDeletionGroups(deletionGroups, model, rewriter);
             }
         }
 
-        protected virtual List<IDeclarationDeletionTarget> CreateDeletionTargets(List<Declaration> targets, IDeclarationDeletionTargetFactory factory)
-            => factory.CreateMany(targets).ToList();
-
-        protected IOrderedEnumerable<ParserRuleContext> GetAllTargetContextElements<TTarget, TDelete>(Declaration declaration)
-            where TTarget : ParserRuleContext
-            where TDelete : ParserRuleContext
+        protected virtual void RemoveDeletionGroups(IEnumerable<IDeclarationDeletionGroup> deletionGroups, IDeleteDeclarationsModel model, IModuleRewriter rewriter)
         {
-            var blockContext = declaration.Context.GetAncestor<TTarget>();
-
-            return blockContext.children
-                .Where(dt => dt is TDelete)
-                .Cast<ParserRuleContext>()
-                .OrderBy(c => c.GetSelection());
+            foreach (var deletionGroup in deletionGroups.Where(dg => dg.OrderedFullDeletionTargets.Any()))
+            {
+                RemoveFullDeletionGroup(deletionGroup, model, rewriter);
+            }
         }
 
-       protected virtual void ModifyDeletionGroups(IDeleteDeclarationsModel model, IModuleRewriter rewriter)
-            => model.DeletionGroups.ForEach(dg => RemoveDeletionGroup(dg, model, rewriter));
-
-        protected void RemoveDeletionGroup(DeletionGroup deletionGroup, IDeleteDeclarationsModel model, IModuleRewriter rewriter)
+        protected void RemoveFullDeletionGroup(IDeclarationDeletionGroup deletionGroup, IDeleteDeclarationsModel model, IModuleRewriter rewriter)
         {
-            foreach (var deleteContext in deletionGroup.Contexts)
+            foreach (var deleteTarget in deletionGroup.OrderedFullDeletionTargets)
             {
-                //Remove the declaration
-                var deleteTarget = model.DeletionTargets.FirstOrDefault(d => d.TargetContext == deleteContext);
-                if (!deleteTarget?.IsFullDelete ?? true)
+                DeleteTarget(deleteTarget, rewriter);
+            }
+
+            if (model.DeleteDeclarationsOnly)
+            {
+                return;
+            }
+
+            var lastTarget = deletionGroup.OrderedFullDeletionTargets.LastOrDefault();
+
+            foreach (var deleteTarget in deletionGroup.OrderedFullDeletionTargets.Where(t => t != lastTarget && t.TargetEOSContext != null))
+            {
+                rewriter.Remove(deleteTarget.TargetEOSContext);
+            }
+
+            if (lastTarget is null || lastTarget.TargetEOSContext is null)
+            {
+                return;
+            }
+
+            lastTarget.PrecedingEOSContext = GetPrecedingNonDeletedEOSContextForGroup(deletionGroup);
+
+            ModifyLastTargetEOS(lastTarget, model, rewriter);
+        }
+
+        // The default GetPrecedingNonDeletedEOSContextForGroup is overridden by DeleteModuleElementsRefactoringAction 
+        // and DeleteProcedureScopeElementsRefactoringAction
+        protected virtual VBAParser.EndOfStatementContext GetPrecedingNonDeletedEOSContextForGroup(IDeclarationDeletionGroup deletionGroup)
+            => deletionGroup.Targets.FirstOrDefault()?.PrecedingEOSContext;
+
+        protected virtual IEnumerable<IDeclarationDeletionTarget> CreateDeletionTargets(IEnumerable<Declaration> declarations, IRewriteSession rewriteSession, IDeclarationDeletionTargetFactory targetFactory)
+            => targetFactory.CreateMany(declarations, rewriteSession);
+
+        protected Action<IDeclarationDeletionTarget, IModuleRewriter> DeleteTarget { set; get; }
+            = (t, rewriter) => rewriter.Remove(t.DeleteContext);
+
+        /// <summary>
+        /// Replaces the EndOfStatementContext preceding the deletion group. 
+        /// </summary>
+        /// <remarks>
+        /// The preceding EndOfStatementContext is replaced with a merged version of the preceding EndOfStatementContext
+        /// and the last delete target's EndOfStatementContext.  
+        /// </remarks>
+        protected void ModifyLastTargetEOS(IDeclarationDeletionTarget lastTarget, IDeleteDeclarationsModel model, IModuleRewriter rewriter)
+        {
+            if (lastTarget.TargetEOSContext.GetText() == EOS_COLON)
+            {
+                //Remove the declarations EOS colon character and use the PrecedingEOSContext as-is
+                lastTarget.Rewriter.Remove(lastTarget.TargetEOSContext);
+                return;
+            }
+
+            ModifyRelatedComments(lastTarget, model, rewriter);
+
+            var replacementText = lastTarget.EOSContextToReplace == lastTarget.TargetEOSContext
+                ? lastTarget.ModifiedTargetEOSContent
+                : lastTarget.BuildEOSReplacementContent();
+
+            rewriter.Replace(lastTarget.EOSContextToReplace, replacementText);
+
+            if (lastTarget.DeletionIncludesEOSContext)
+            {
+                rewriter.Remove(lastTarget.TargetEOSContext);
+            }
+        }
+
+        protected static void ModifyRelatedComments(IDeclarationDeletionTarget deleteTarget, IDeleteDeclarationsModel model, IModuleRewriter rewriter)
+        {
+            var targetEOSComments = deleteTarget.TargetEOSContext.GetAllComments();
+
+            if (deleteTarget.IsFullDelete)
+            {
+                var declarationLogicalLineCommentContext = deleteTarget.GetDeclarationLogicalLineCommentContext();
+
+                if (model.DeleteDeclarationLogicalLineComments && declarationLogicalLineCommentContext != null)
                 {
-                    //Removing a subset of declarations within a list is handled elsewhere
+                    DeleteDeclarationLogicalLineComments(deleteTarget, declarationLogicalLineCommentContext, rewriter);
+                    targetEOSComments = targetEOSComments.Where(c => c != declarationLogicalLineCommentContext);
+                }
+                else if (!model.DeleteDeclarationLogicalLineComments && declarationLogicalLineCommentContext != null)
+                {
+                    //If we are keeping the Declaration line comments, then insert a newline or it will end up on the
+                    //same line as the last comment of the preceding EOSContext
+                    rewriter.InsertBefore(declarationLogicalLineCommentContext.Start.TokenIndex, Environment.NewLine);
+                }
+            }
+
+            if (model.InsertValidationTODOForRetainedComments)
+            {
+                var injectedTODOContent = Resources.Refactorings.Refactorings.ImplementInterface_TODO;
+
+                foreach (var comment in targetEOSComments.Concat(deleteTarget.PrecedingEOSContext.GetAllComments()))
+                {
+                    var content = comment.GetText();
+                    var indexOfFirstCommentMarker = content.IndexOf(Tokens.CommentMarker);
+                    var newContent = $"{content.Substring(0, indexOfFirstCommentMarker)}{injectedTODOContent}{content.Substring(indexOfFirstCommentMarker + 1)}";
+                    rewriter.Replace(comment, newContent);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deletes only those Annotations where ALL the Declarations referencing the same Annotation are selected for deletion.  
+        /// </summary>
+        private static void DeleteAnnotations(IDeclarationFinderProvider declarationFinderProvider, IReadOnlyCollection<IDeclarationDeletionGroup> deletionGroups, IModuleRewriter rewriter)
+        {
+            foreach (var deletionGroup in deletionGroups)
+            {
+                if (!TryGetDeletableAnnotations(deletionGroup, declarationFinderProvider, out var deletableAnnotations))
+                {
                     continue;
                 }
 
-                rewriter.Remove(deleteTarget.DeleteContext);
-                
-                if (deleteTarget.TargetProxy.Annotations.Any())
+                foreach (var annotation in deletableAnnotations)
                 {
-                    //Note: deleting an Annotation deletes a context within the Preceding expression/declaration's EndOfStatementContext
-                    foreach (var annotation in deleteTarget.TargetProxy.Annotations.Select(a => a.Context))
+                    if (annotation.TryGetAncestor<VBAParser.IndividualNonEOFEndOfStatementContext>(out var annotationListIndividualNonEOFEOSCtxt))
                     {
-                        var annotationListIndividualEOFofEOSCtxt = annotation.GetAncestor<VBAParser.IndividualNonEOFEndOfStatementContext>();
-                        rewriter.Remove(annotationListIndividualEOFofEOSCtxt);
+                        rewriter.Remove(annotationListIndividualNonEOFEOSCtxt);
                     }
                 }
+            }
+        }
+        private static bool TryGetDeletableAnnotations(IDeclarationDeletionGroup deletionGroup, IDeclarationFinderProvider declarationFinderProvider, out List<VBAParser.AnnotationContext> deletableAnnotations)
+        {
+            deletableAnnotations = new List<VBAParser.AnnotationContext>();
 
-                if (deletionGroup.IsLastContext(deleteTarget.TargetContext))
+            var relevantAnnotations = deletionGroup.Declarations
+                .SelectMany(d => d.Annotations)
+                .Select(a => a.Context)
+                .Distinct();
+
+            var moduleDeclarations = declarationFinderProvider.DeclarationFinder
+                .Members(deletionGroup.Declarations.First().QualifiedModuleName).ToList();
+
+            foreach (var annotation in relevantAnnotations)
+            {
+                var declarationsAssociatedWithAnnotation = moduleDeclarations
+                    .Where(t => t.Annotations.Any(a => a.Context == annotation));
+
+                if (declarationsAssociatedWithAnnotation.Any(d => !deletionGroup.Declarations.Contains(d)))
                 {
-                    //Merge/Modify the EOSContext of the preceding non-deleted declaration with the EOSContext of the
-                    //last declaration of the group
-                    RetrieveNonDeleteDeclarationForGroup(deletionGroup, deleteTarget);
-                    MergeEOSContexts(deleteTarget, model, rewriter);
-                    break;
+                    continue;
                 }
 
-                if (deleteTarget.EndOfStatementContext != null)
-                {
-                    rewriter.Remove(deleteTarget.EndOfStatementContext);
-                }
+                deletableAnnotations.Add(annotation);
             }
+
+            return deletableAnnotations.Any();
         }
 
-        protected virtual void MergeEOSContexts(IDeclarationDeletionTarget deleteTarget, IDeleteDeclarationsModel model, IModuleRewriter rewriter)
+        private static void DeleteDeclarationLogicalLineComments(IDeclarationDeletionTarget deleteTarget, VBAParser.CommentContext declarationLineCommentContext, IModuleRewriter rewriter)
         {
-            var modifier = _deleteDeclarationEndOfStatementContentModifierFactory.Create();
-            modifier.ModifyEndOfStatementContextContent(deleteTarget, model as IDeleteDeclarationModifyEndOfStatementContentModel, rewriter);
-        }
-
-        private static List<int> GetNonDeleteContextIndices(IOrderedEnumerable<ParserRuleContext> orderedContexts, IEnumerable<IDeclarationDeletionTarget> deleteDeclarationTargets)
-        {
-            var nonDeleteIndices = new List<int>();
-            for (var idx = 0; idx < orderedContexts.Count(); idx++)
+            if (declarationLineCommentContext is null)
             {
-                if (deleteDeclarationTargets.SingleOrDefault(dt => dt.TargetContext == orderedContexts.ElementAt(idx)) is null)
-                {
-                    nonDeleteIndices.Add(idx);
-                }
-            }
-            return nonDeleteIndices;
-        }
-
-        private List<DeletionGroup> CreateDeletionGroups(List<IDeclarationDeletionTarget> deleteDeclarationTargets, string removeAllExceptionMessage = null)
-        {
-            var orderedContexts = GetAllContextElements(deleteDeclarationTargets.First().TargetProxy);
-
-            var nonDeleteIndices = GetNonDeleteContextIndices(orderedContexts, deleteDeclarationTargets);
-
-            if (removeAllExceptionMessage != null && !nonDeleteIndices.Any())
-            {
-                throw new InvalidOperationException(removeAllExceptionMessage);
+                return;
             }
 
-            return AssociatePrecedingNonDeleteContexts(nonDeleteIndices, orderedContexts, deleteDeclarationTargets);
-        }
+            var individualNonEOFEOS = declarationLineCommentContext.GetAncestor<VBAParser.IndividualNonEOFEndOfStatementContext>();
+            var contextToDelete = individualNonEOFEOS.GetChild<VBAParser.EndOfLineContext>();
+            
+            var ws = contextToDelete.GetDescendent<VBAParser.WhiteSpaceContext>();
+            var containsLineContinuation = ws?.GetText().Contains(Tokens.LineContinuation) ?? false;
 
-        private static List<DeletionGroup> AssociatePrecedingNonDeleteContexts(List<int> nonDeleteIndices, IEnumerable<ParserRuleContext> contexts, List<IDeclarationDeletionTarget> deleteDeclarationTargets)
-        {
-            if (!nonDeleteIndices.Any())
+            if (contextToDelete != null && declarationLineCommentContext.Start.Line == deleteTarget.TargetEOSContext.Start.Line || containsLineContinuation)
             {
-                return new List<DeletionGroup>()
-                {
-                    new DeletionGroup()
-                    {
-                        PrecedingNonDeletedContext = null,
-                        Contexts = contexts.ToList()
-                    }
-                };
+                rewriter.Remove(contextToDelete);
             }
-
-            var results = new List<DeletionGroup>();
-
-            if (!nonDeleteIndices.Contains(0))
-            {
-                var deletionGroup = new DeletionGroup()
-                {
-                    PrecedingNonDeletedContext = null,
-                    Contexts = contexts.Take(nonDeleteIndices.First()).ToList()
-                };
-                results.Add(deletionGroup);
-            }
-
-            for (var ndIdx = 0; ndIdx < nonDeleteIndices.Count; ndIdx++)
-            {
-                var firstNonDelete = nonDeleteIndices.ElementAt(ndIdx);
-
-                var nextNonDelete = ndIdx + 1 < nonDeleteIndices.Count
-                    ? contexts.ElementAt(nonDeleteIndices.ElementAt(ndIdx + 1))
-                    : null;
-
-                var toDelete = contexts.SkipWhile(ctxt => ctxt != contexts.ElementAt(firstNonDelete))
-                    .Skip(1) //skip the leading nonDeleteContext
-                    .TakeWhile(ctxt => ctxt != nextNonDelete);
-
-                var deletionGroup = new DeletionGroup()
-                {
-                    PrecedingNonDeletedContext = contexts.ElementAt(ndIdx),
-                    Contexts = toDelete.ToList()
-                };
-                results.Add(deletionGroup);
-            }
-
-            return results;
         }
     }
 }

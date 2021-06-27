@@ -1,54 +1,44 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.DeleteDeclarations
 {
-    //TODO: Could use this as a base class for ModuleFieldDT, ModuleConstantDT, MemberDT, UDTDT, EnumDT
-    internal class ModuleElementDeletionTarget : DeleteDeclarationTarget, IModuleElementDeletionTarget
+    internal class ModuleElementDeletionTarget : DeclarationDeletionTargetBase, IModuleElementDeletionTarget
     {
-        public ModuleElementDeletionTarget(IDeclarationFinderProvider declarationFinderProvider, Declaration target)
-            : base(declarationFinderProvider, target)
+        public ModuleElementDeletionTarget(IDeclarationFinderProvider declarationFinderProvider, Declaration target, IModuleRewriter rewriter)
+            : base(declarationFinderProvider, target, rewriter)
         {
+            ListContext = GetListContext(target);
+
             if (target.Context.TryGetAncestor<VBAParser.ModuleDeclarationsElementContext>(out var mde))
             {
-                _targetContext = mde;
+                TargetContext = mde;
             }
             else if (target.Context.TryGetAncestor<VBAParser.ModuleBodyElementContext>(out var mbe))
             {
-                _targetContext = mbe;
-            }
-            
-            if (target.DeclarationType == DeclarationType.Variable
-                || target.DeclarationType == DeclarationType.Constant)
-            {
-                _listContext = GetListContext(target);
+                TargetContext = mbe;
             }
 
-            _deleteContext = target.DeclarationType.HasFlag(DeclarationType.Member)
+            DeleteContext = target.DeclarationType.HasFlag(DeclarationType.Member)
                 ? target.Context.GetAncestor<VBAParser.ModuleBodyElementContext>()
                 : target.Context.GetAncestor<VBAParser.ModuleDeclarationsElementContext>() as ParserRuleContext;
 
-            _eosContext = GetFollowingEndOfStatementContext(_deleteContext);
+            //The preceding EOS Context cannot be determined directly from the target.  It depends upon what else is deleted
+            //adjacent to the target.
+            PrecedingEOSContext = null;
+
+            TargetEOSContext = DeleteContext.GetFollowingEndOfStatementContext();
         }
 
-        public override bool IsFullDelete 
-            => DeclarationType != DeclarationType.Variable && TargetProxy.DeclarationType != DeclarationType.Constant
-                || _allDeclarationsInList.Intersect(_targets).Count() == _allDeclarationsInList.Count;
-        
-        public void SetPrecedingEOSContext(VBAParser.EndOfStatementContext eos)
-        {
-            if (TargetProxy.ParentDeclaration is ModuleDeclaration)
-            {
-                _precedingEOSContext = eos;
-            }
-        }
+        public override bool IsFullDelete
+            => TargetProxy.DeclarationType != DeclarationType.Variable && TargetProxy.DeclarationType != DeclarationType.Constant
+                || AllDeclarationsInListContext.Intersect(Targets).Count() == AllDeclarationsInListContext.Count;
+
+        public void SetPrecedingEOSContext(VBAParser.EndOfStatementContext eos) => PrecedingEOSContext = eos;
     }
 }

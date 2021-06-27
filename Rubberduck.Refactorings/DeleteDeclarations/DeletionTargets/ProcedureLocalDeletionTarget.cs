@@ -1,73 +1,107 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.DeleteDeclarations
 {
-    internal class ProcedureLocalDeletionTarget<T> : DeleteDeclarationTarget, IProcedureLocalDeletionTarget where T : ParserRuleContext
+    internal class ProcedureLocalDeletionTarget<T> : DeclarationDeletionTargetBase, ILocalScopeDeletionTarget where T : ParserRuleContext
     {
-        public ProcedureLocalDeletionTarget(IDeclarationFinderProvider declarationFinderProvider, Declaration target)
-            : base(declarationFinderProvider, target)
+        public ProcedureLocalDeletionTarget(IDeclarationFinderProvider declarationFinderProvider, Declaration target, IModuleRewriter rewriter)
+            : base(declarationFinderProvider, target, rewriter)
         {
-            _listContext = target.Context.GetAncestor<T>();
+            ListContext = target.Context.GetAncestor<T>();
+
+            TargetContext = target.Context.GetAncestor<VBAParser.BlockStmtContext>();
 
             //If there is a label on the declaration's line, delete just the declaration's context
-            _targetContext = target.Context.GetAncestor<VBAParser.BlockStmtContext>();
-
-            _deleteContext = _targetContext.TryGetChildContext<VBAParser.StatementLabelDefinitionContext>(out _)
-                ? _targetContext.GetChild<VBAParser.MainBlockStmtContext>()
+            DeleteContext = TargetContext.TryGetChildContext<VBAParser.StatementLabelDefinitionContext>(out _)
+                ? TargetContext.GetChild<VBAParser.MainBlockStmtContext>()
                 : target.Context.GetAncestor<VBAParser.BlockStmtContext>() as ParserRuleContext;
 
-            _eosContext = GetFollowingEndOfStatementContext(_deleteContext);
+            //The preceding EOS Context cannot be determined directly from the target.  It depends upon 
+            //what other targets are deleted adjacent to the target.
+            PrecedingEOSContext = null;
 
-            _precedingEOSContext = GetEndOfStatementContext(TargetProxy);
-        }
+            TargetEOSContext = DeleteContext.GetFollowingEndOfStatementContext();
 
-        public override VBAParser.EndOfStatementContext PrecedingEOSContext => _precedingEOSContext;
-
-        public override bool IsFullDelete 
-            => _allDeclarationsInList.Intersect(_targets).Count() == _allDeclarationsInList.Count;
-        
-        public bool DeleteAssociatedLabel { set; get; } = false;
-
-        public override ParserRuleContext DeleteContext => DeleteAssociatedLabel 
-            ? _targetContext 
-            : _targetContext.GetChild<VBAParser.MainBlockStmtContext>();
-
-        public override bool HasPrecedingLabel(out VBAParser.StatementLabelDefinitionContext labelContext)
-        {
-            labelContext = null;
-            var result =  DeleteContext.Parent is ParserRuleContext prc && prc.TryGetChildContext(out labelContext);
-            return result;
-        }
-
-
-        private static VBAParser.EndOfStatementContext GetEndOfStatementContext(Declaration target)
-        {
-            var blockContext = target.Context.GetAncestor<VBAParser.BlockContext>();
-            var targetBlockStmt = target.Context.GetAncestor<VBAParser.BlockStmtContext>();
-            VBAParser.EndOfStatementContext precedingEOSContext;
-
-            precedingEOSContext = blockContext.children
-                .TakeWhile(ch => !(ch is VBAParser.BlockStmtContext bst && bst == targetBlockStmt))
-                .LastOrDefault() as VBAParser.EndOfStatementContext;
-
-            //precedingEOSContext will be null if the target is the first Declaration following the procedure Declaration
-            if (precedingEOSContext is null)
+            switch (TargetContext.Parent.Parent)
             {
-                var arglistCtxt = target.Context
-                    .GetAncestor<VBAParser.ModuleBodyElementContext>()
-                    .GetDescendent<VBAParser.ArgListContext>();
-                precedingEOSContext = GetFollowingEndOfStatementContext(arglistCtxt);
+                case VBAParser.ForNextStmtContext forNext:
+                    ScopingContext = forNext.GetChild<VBAParser.UnterminatedBlockContext>();
+                    break;
+                case VBAParser.ForEachStmtContext forEach:
+                    ScopingContext = forEach.GetChild<VBAParser.UnterminatedBlockContext>();
+                    break;
+                default:
+                    ScopingContext = TargetContext.Parent as ParserRuleContext;
+                    break;
             }
-            return precedingEOSContext;
+
+            //Initializes for the default use case where a Label exists on the same logical line as a Variable/Constant to be  
+            //deleted.  The VBAParser.EndOfStatementContext (of the Variable/Const) is retained to provide spacing
+            //and indentation for the next BlockStatementContext.  If the Label is also to be deleted, this flag is modified.
+            DeletionIncludesEOSContext = !HasSameLogicalLineLabel(out _);
+        }
+
+        public override bool IsFullDelete
+            => AllDeclarationsInListContext.Intersect(Targets).Count() == AllDeclarationsInListContext.Count;
+
+        public ILocalScopeDeletionTarget AssociatedLabelToDelete { private set; get; }
+
+        public void SetupToDeleteAssociatedLabel(ILabelDeletionTarget label)
+        {
+            AssociatedLabelToDelete = label as ILocalScopeDeletionTarget;
+            DeletionIncludesEOSContext = label != null;
+        }
+
+        public virtual bool IsLabel(out ILabelDeletionTarget labelTarget)
+        {
+            labelTarget = null;
+            return false;
+        }
+
+        public ParserRuleContext ScopingContext { get; }
+
+        public override ParserRuleContext DeleteContext => AssociatedLabelToDelete != null
+            ? TargetContext
+            : TargetContext.GetChild<VBAParser.MainBlockStmtContext>();
+
+        public void SetPrecedingEOSContext(VBAParser.EndOfStatementContext eos) => PrecedingEOSContext = eos;
+
+        public virtual bool HasSameLogicalLineLabel(out VBAParser.StatementLabelDefinitionContext labelContext)
+        {
+            return TargetContext.TryGetChildContext(out labelContext);
+        }
+
+        public override string BuildEOSReplacementContent()
+        {
+            if (!(DeleteContext.Parent is ParserRuleContext prc
+                && prc.TryGetChildContext<VBAParser.StatementLabelDefinitionContext>(out _)))
+            {
+                //No label to contend with
+                return base.BuildEOSReplacementContent();
+            }
+
+            var replacement = string.Empty;
+            var separationAndIndentation = string.Empty;
+
+            if (!ModifiedTargetEOSContent.Contains(Tokens.CommentMarker))
+            {
+                var priorToSeparationContent = GetCurrentTextPriorToSeparationAndIndentation(PrecedingEOSContext, Rewriter);
+
+                if (priorToSeparationContent.Contains(Tokens.CommentMarker))
+                {
+                    replacement = priorToSeparationContent;
+                }
+
+                separationAndIndentation = PrecedingEOSContext.GetSeparation();
+            }
+
+            return replacement + separationAndIndentation;
         }
     }
 }

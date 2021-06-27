@@ -1,8 +1,6 @@
-﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
+﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.DeleteDeclarations;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
@@ -14,29 +12,31 @@ using System.Threading.Tasks;
 
 namespace RubberduckTests.Refactoring.DeleteDeclarations
 {
-    public class ModuleSectionElementsTestsBase
+    public class DeleteDeclarationsLocalsTestsBase
     {
         protected readonly DeleteDeclarationsTestSupport _support = new DeleteDeclarationsTestSupport();
-        protected string GetRetainedCodeBlock(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> targetListBuilder, Action<IDeleteDeclarationsModel> modelFlagAction = null)
+
+        protected string GetRetainedCodeBlock(string moduleCode, Func<RubberduckParserState, IEnumerable<Declaration>> targetListBuilder, Action<IDeleteDeclarationsModel> modelFlagsAction = null)
         {
             var refactoredCode = _support.TestRefactoring(
                 targetListBuilder,
-                RefactorModuleElements,
-                modelFlagAction ?? _support.DefaultModelFlagAction,
+                RefactorProcedureScopeElements,
+                modelFlagsAction ?? _support.DefaultModelFlagAction,
                 (MockVbeBuilder.TestModuleName, moduleCode, ComponentType.StandardModule));
 
             return refactoredCode[MockVbeBuilder.TestModuleName];
         }
 
-        protected static IExecutableRewriteSession RefactorModuleElements(RubberduckParserState state, IEnumerable<Declaration> targets, IRewritingManager rewritingManager, Action<IDeleteDeclarationsModel> modelFlagAction)
+        private static IExecutableRewriteSession RefactorProcedureScopeElements(RubberduckParserState state, IEnumerable<Declaration> targets, IRewritingManager rewritingManager, Action<IDeleteDeclarationsModel> modelFlagsAction)
         {
-            var model = new DeleteModuleElementsModel(targets);
-            modelFlagAction(model);
+            var model = new DeleteProcedureScopeElementsModel(targets);
+
+            modelFlagsAction(model);
 
             var session = rewritingManager.CheckOutCodePaneSession();
 
             var refactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
-                .Resolve<DeleteModuleElementsRefactoringAction>();
+                .Resolve<DeleteProcedureScopeElementsRefactoringAction>();
 
             refactoringAction.Refactor(model, session);
 

@@ -7,77 +7,89 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Rubberduck.Refactorings.DeleteDeclarations
+namespace Rubberduck.Refactorings.DeleteDeclarations.Abstract
 {
     public abstract class DeleteVariableOrConstantRefactoringActionBase<TModel> : DeleteElementRefactoringActionBase<TModel> where TModel : class, IRefactoringModel
     {
         private static readonly string _lineContinuationExpression = $"{Tokens.LineContinuation}{Environment.NewLine}";
 
-        public DeleteVariableOrConstantRefactoringActionBase(IDeclarationFinderProvider declarationFinderProvider, IDeclarationDeletionTargetFactory deletionTargetFactory, IDeleteDeclarationEndOfStatementContentModifierFactory eosModifierFactory, IRewritingManager rewritingManager)
-            : base(declarationFinderProvider, deletionTargetFactory, eosModifierFactory, rewritingManager)
+        public DeleteVariableOrConstantRefactoringActionBase(IDeclarationFinderProvider declarationFinderProvider, 
+            IDeclarationDeletionTargetFactory deletionTargetFactory,
+            IDeclarationDeletionGroupsGeneratorFactory deletionGroupsGeneratorFactory,
+            IRewritingManager rewritingManager)
+            : base(declarationFinderProvider, deletionTargetFactory, deletionGroupsGeneratorFactory,rewritingManager)
         {}
 
-        protected override void ModifyDeletionGroups(IDeleteDeclarationsModel model, IModuleRewriter rewriter)
+        protected override void RemoveDeletionGroups(IEnumerable<IDeclarationDeletionGroup> deletionGroups, IDeleteDeclarationsModel model, IModuleRewriter rewriter)
         {
-            model.DeletionGroups.ForEach(dg => RemoveDeletionGroup(dg, model, rewriter));
+            foreach (var deletionGroup in deletionGroups)
+            {
+                if (deletionGroup.OrderedPartialDeletionTargets.Any())
+                {
+                    RemovePartialDeletionTargets(deletionGroup, model, rewriter);
+                }
 
-            model.DeletionGroups.ForEach(dg => RemovePartialDeletions(dg, model.DeletionTargets, rewriter));
+                if (deletionGroup.OrderedFullDeletionTargets.Any())
+                {
+                    RemoveFullDeletionGroup(deletionGroup, model, rewriter);
+                }
+            }
         }
 
-        protected override List<IDeclarationDeletionTarget> CreateDeletionTargets(List<Declaration> targets, IDeclarationDeletionTargetFactory factory)
+        private void RemovePartialDeletionTargets(IDeclarationDeletionGroup deletionGroup, IDeleteDeclarationsModel model, IModuleRewriter rewriter)
+        {
+            var lastTarget = deletionGroup.OrderedPartialDeletionTargets.Last();
+
+            lastTarget.PrecedingEOSContext = GetPrecedingNonDeletedEOSContextForGroup(deletionGroup);
+
+            var retainedDeclarationsExpression = lastTarget.ListContext.GetText().Contains(_lineContinuationExpression)
+                ? $"{BuildDeclarationsExpressionWithLineContinuations(lastTarget)}"
+                : $"{string.Join(", ", lastTarget.RetainedDeclarations.Select(d => d.Context.GetText()))}";
+
+            rewriter.Replace(lastTarget.ListContext.Parent, $"{GetDeclarationScopeExpression(lastTarget.TargetProxy)} {retainedDeclarationsExpression}");
+
+            if (lastTarget is null || lastTarget.TargetEOSContext is null)
+            {
+                return;
+            }
+
+            if (lastTarget.TargetEOSContext.GetText() == EOS_COLON)
+            {
+                //Remove the declarations EOS colon character and use the PrecedingEOSContext as-is
+                lastTarget.Rewriter.Remove(lastTarget.TargetEOSContext);
+                return;
+            }
+
+            ModifyRelatedComments(lastTarget, model, rewriter);
+
+            rewriter.Replace(lastTarget.TargetEOSContext, lastTarget.ModifiedTargetEOSContent);
+        }
+
+        protected override IEnumerable<IDeclarationDeletionTarget> CreateDeletionTargets(IEnumerable<Declaration> declarations, IRewriteSession rewriteSession, IDeclarationDeletionTargetFactory targetFactory)
         {
             var deletionTargets = new List<IDeclarationDeletionTarget>();
 
-            var remainingTargets = targets;
+            var remainingTargets = declarations.ToList();
 
             while (remainingTargets.Any())
             {
-                var deleteTarget = factory.Create(targets.First());
+                var deleteTarget = targetFactory.Create(remainingTargets.First(), rewriteSession);
 
                 if (deleteTarget.AllDeclarationsInListContext.Count >= 1)
                 {
-                    var listContextRelatedTargets = deleteTarget.AllDeclarationsInListContext.Intersect(targets);
+                    var listContextRelatedTargets = deleteTarget.AllDeclarationsInListContext.Intersect(declarations);
                     deleteTarget.AddTargets(listContextRelatedTargets);
                     remainingTargets.RemoveAll(t => listContextRelatedTargets.Contains(t));
                 }
                 else
                 {
-                    remainingTargets.RemoveAll(t => t == targets.First());
+                    remainingTargets.RemoveAll(t => t == declarations.First());
                 }
+
                 deletionTargets.Add(deleteTarget);
             }
 
-            return HandleLabelAndVarOrConstInSameBlock(deletionTargets);
-        }
-
-        protected virtual List<IDeclarationDeletionTarget> HandleLabelAndVarOrConstInSameBlock(List<IDeclarationDeletionTarget> blockDeleteTargets)
-        {
-            return blockDeleteTargets;
-        }
-
-
-        private static void RemovePartialDeletions(DeletionGroup deletionGroup, List<IDeclarationDeletionTarget> deleteTargets, IModuleRewriter rewriter)
-        {
-            foreach (var de in deletionGroup.Contexts)
-            {
-                var decDeleteTarget = deleteTargets.FirstOrDefault(d => d.TargetContext == de);
-                if (decDeleteTarget?.IsFullDelete ?? true)
-                {
-                    continue;
-                }
-
-                //TODO: Need test(s) for Label with same-line multi variable list that is fully and partially deleted
-                RemoveListDeclarationSubsetVariableOrConstant(decDeleteTarget, rewriter);
-            }
-        }
-        private static void RemoveListDeclarationSubsetVariableOrConstant(IDeclarationDeletionTarget deleteDeclarationTarget, IModuleRewriter rewriter)
-        {
-            //Delete a subset of the the declaration list
-            var retainedDeclarationsExpression = deleteDeclarationTarget.ListContext.GetText().Contains(_lineContinuationExpression)
-                ? $"{BuildDeclarationsExpressionWithLineContinuations(deleteDeclarationTarget)}"
-                : $"{string.Join(", ", deleteDeclarationTarget.RetainedDeclarations.Select(d => d.Context.GetText()))}";
-
-            rewriter.Replace(deleteDeclarationTarget.ListContext.Parent, $"{GetDeclarationScopeExpression(deleteDeclarationTarget.TargetProxy)} {retainedDeclarationsExpression}");
+            return deletionTargets;
         }
 
         private static string BuildDeclarationsExpressionWithLineContinuations(IDeclarationDeletionTarget deleteDeclarationTarget)
