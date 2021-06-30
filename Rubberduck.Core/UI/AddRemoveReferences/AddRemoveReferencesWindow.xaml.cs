@@ -16,12 +16,6 @@ namespace Rubberduck.UI.AddRemoveReferences
 
         private AddRemoveReferencesViewModel ViewModel => DataContext as AddRemoveReferencesViewModel;
 
-        private void UpdateCurrentSelection(Selector sender)
-        {
-            var selectedReferenceModel = (ReferenceModel)sender.SelectedItem;
-            ViewModel.CurrentSelection = selectedReferenceModel;
-        }
-
         private void ListView_SynchronizeCurrentSelection_OnSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             UpdateCurrentSelection((Selector)sender);
@@ -31,6 +25,12 @@ namespace Rubberduck.UI.AddRemoveReferences
             Version.Text = cs?.Version ?? string.Empty;
             LocaleName.Text = cs?.LocaleName ?? string.Empty;
             FullPath.Text = cs?.FullPath ?? string.Empty;
+        }
+
+        private void UpdateCurrentSelection(Selector sender)
+        {
+            var selectedReferenceModel = (ReferenceModel)sender.SelectedItem;
+            ViewModel.CurrentSelection = selectedReferenceModel;
         }
     }
 }
