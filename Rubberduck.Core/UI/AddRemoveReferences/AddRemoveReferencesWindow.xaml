@@ -188,7 +188,7 @@
                                       ItemsSource="{Binding AvailableReferences}" 
                                       HorizontalContentAlignment="Stretch"
                                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                      GotFocus="ListView_SynchronizeCurrentSelection_OnGotFocus">
+                                      SelectionChanged="ListView_SynchronizeCurrentSelection_OnSelectionChanged">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="Height" Value="20" />
@@ -246,8 +246,7 @@
                                       SelectionMode="Single"
                                       ItemsSource="{Binding ProjectReferences, NotifyOnTargetUpdated=True}" 
                                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                      HorizontalContentAlignment="Stretch"
-                                      GotFocus="ListView_SynchronizeCurrentSelection_OnGotFocus">
+                                      HorizontalContentAlignment="Stretch" SelectionChanged="ListView_SynchronizeCurrentSelection_OnSelectionChanged">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="Height" Value="20" />
