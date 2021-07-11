@@ -88,35 +88,6 @@ Private my|Bar As TBar";
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void UserDefinedTypeMembers_UDTFieldReferences()
-        {
-            var inputCode =
-$@"
-Private Type TBar
-    First As String
-    Second As Long
-End Type
-
-Private my|Bar As TBar
-
-Public Sub Foo(newValue As String)
-    myBar.First = newValue
-End Sub";
-
-            var userInput = new UserInputDataObject()
-                .UserSelectsField("myBar");
-
-            userInput.EncapsulateUsingUDTField();
-
-            var presenterAction = Support.SetParameters(userInput);
-
-            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("  First = newValue", actualCode);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
         public void LoadsExistingUDT()
         {
             var inputCode =
@@ -335,37 +306,6 @@ Public {selectedInput}({dimensions}) As String
             StringAssert.Contains($" AnArray({dimensions}) As String", actualCode);
         }
 
-        [TestCase("anArray", "5")]
-        [TestCase("anArray", "1 To 100")]
-        [TestCase("anArray", "")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void UserDefinedType_LocallyReferencedArray(string arrayIdentifier, string dimensions)
-        {
-            var selectedInput = arrayIdentifier.Replace("n", "n|");
-            var inputCode =
-$@"
-Public {selectedInput}({dimensions}) As String
-
-Public Property Get AnArrayTest() As Variant
-    AnArrayTest = anArray
-End Property
-
-";
-
-            var userInput = new UserInputDataObject()
-                .UserSelectsField(arrayIdentifier);
-
-            userInput.EncapsulateUsingUDTField();
-
-            var presenterAction = Support.SetParameters(userInput);
-            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("Property Get AnArray() As Variant", actualCode);
-            StringAssert.Contains("AnArray = this.AnArray", actualCode);
-            StringAssert.Contains("AnArrayTest = this.AnArray", actualCode);
-            StringAssert.Contains($" AnArray({dimensions}) As String", actualCode);
-        }
-
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
@@ -493,112 +433,6 @@ Private my|Bar As TBar
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Public Property Let FooBar(", actualCode);
             StringAssert.Contains($"this.MyBar.FooBar = {Support.RHSIdentifier}", actualCode);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void GivenReferencedPublicField_UpdatesReferenceToNewProperty()
-        {
-            var codeClass1 =
-                @"|Public fizz As Integer
-
-Sub Foo()
-    fizz = 1
-End Sub";
-            var codeClass2 =
-@"Sub Foo()
-    Dim theClass As Class1
-    theClass.fizz = 0
-    Bar theClass.fizz
-End Sub
-
-Sub Bar(ByVal v As Integer)
-End Sub";
-
-            var userInput = new UserInputDataObject()
-                .AddUserInputSet("fizz", "Name");
-
-            userInput.EncapsulateUsingUDTField();
-
-            var presenterAction = Support.SetParameters(userInput);
-
-            var refactoredCode = Support.RefactoredCode(presenterAction,
-                ("Class1", codeClass1.ToCodeString(), ComponentType.ClassModule),
-                ("Class2", codeClass2, ComponentType.ClassModule));
-
-            StringAssert.Contains("Name = 1", refactoredCode["Class1"]);
-            StringAssert.Contains("theClass.Name = 0", refactoredCode["Class2"]);
-            StringAssert.Contains("Bar theClass.Name", refactoredCode["Class2"]);
-            StringAssert.DoesNotContain("fizz", refactoredCode["Class2"]);
-        }
-
-        [TestCase(false)]
-        [TestCase(true)]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void StandardModuleSource_ExternalReferences(bool moduleResolve)
-        {
-            var sourceModuleName = "SourceModule";
-            var referenceExpression = moduleResolve ? $"{sourceModuleName}." : string.Empty;
-            var sourceModuleCode =
-$@"
-
-Public th|is As Long";
-
-            var procedureModuleReferencingCode =
-$@"Option Explicit
-
-Private Const bar As Long = 7
-
-Public Sub Bar()
-    {referenceExpression}this = bar
-End Sub
-
-Public Sub Foo()
-    With {sourceModuleName}
-        .this = bar
-    End With
-End Sub
-";
-
-            var classModuleReferencingCode =
-$@"Option Explicit
-
-Private Const bar As Long = 7
-
-Public Sub Bar()
-    {referenceExpression}this = bar
-End Sub
-
-Public Sub Foo()
-    With {sourceModuleName}
-        .this = bar
-    End With
-End Sub
-";
-
-            var userInput = new UserInputDataObject()
-                .UserSelectsField("this", "MyProperty");
-
-            userInput.EncapsulateUsingUDTField();
-
-            var presenterAction = Support.SetParameters(userInput);
-
-            var refactoredCode = Support.RefactoredCode(presenterAction,
-                (sourceModuleName, sourceModuleCode.ToCodeString(), ComponentType.StandardModule),
-                ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule),
-                ("ClassModule", classModuleReferencingCode, ComponentType.ClassModule));
-
-            var referencingModuleCode = refactoredCode["StdModule"];
-            StringAssert.Contains($"{sourceModuleName}.MyProperty = ", referencingModuleCode);
-            StringAssert.DoesNotContain($"{sourceModuleName}.{sourceModuleName}.MyProperty = ", referencingModuleCode);
-            StringAssert.Contains($"  .MyProperty = bar", referencingModuleCode);
-
-            var referencingClassCode = refactoredCode["ClassModule"];
-            StringAssert.Contains($"{sourceModuleName}.MyProperty = ", referencingClassCode);
-            StringAssert.DoesNotContain($"{sourceModuleName}.{sourceModuleName}.MyProperty = ", referencingClassCode);
-            StringAssert.Contains($"  .MyProperty = bar", referencingClassCode);
         }
 
         [Test]

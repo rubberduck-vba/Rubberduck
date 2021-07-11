@@ -3,6 +3,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.VBEditor;
 using System;
+using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -24,6 +25,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string PropertyAsTypeName { get; }
         bool CanBeReadWrite { get; }
         bool IsReadOnly { set; get; }
+        bool IsAssignedExternally { get; }
         IEncapsulateFieldConflictFinder ConflictFinder { set; get; }
         bool TryValidateEncapsulationAttributes(out string errorMessage);
     }
@@ -65,7 +67,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool CanBeReadWrite { get; }
 
-        public virtual bool IsReadOnly { set; get; }
+        private bool _isReadOnly;
+        public virtual bool IsReadOnly 
+        {
+            set
+            {
+                _isReadOnly = value
+                    ? !IsAssignedExternally
+                    : !CanBeReadWrite;
+            }
+            get => _isReadOnly;
+        }
+
+        public bool IsAssignedExternally
+            => Declaration.References.Any(rf => rf.IsAssignment && rf.QualifiedModuleName != Declaration.QualifiedModuleName);
 
         public virtual IEncapsulateFieldConflictFinder ConflictFinder { set; get; }
 
