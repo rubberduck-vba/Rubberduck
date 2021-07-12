@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Product>Rubberduck.Com</Product>
+    <Description>This assembly provide reflecting and reasoning about COM types.</Description>
+    <Copyright>Copyright © 2015-2021</Copyright>
+    <AssemblyName>Rubberduck.Com</AssemblyName>
+    <Title>Rubberduck.Com</Title>
+    <RootNamespace>Rubberduck.Com</RootNamespace>
+    <ProjectGuid>{E7521588-0C7A-4627-B6E6-CC431B1DE963}</ProjectGuid>
+    <UnifyOutputPath>true</UnifyOutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DocumentationFile>Rubberduck.Com.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <WarningLevel>1</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <NoWarn>1701;1702;1591;4011;1001;7035;1053</NoWarn>
+  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+  <PropertyGroup>
+    <Antlr4UseCSharpGenerator>True</Antlr4UseCSharpGenerator>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NLog">
+      <Version>4.5.10</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.Schema">
+      <Version>4.5.10</Version>
+    </PackageReference>
+    <PackageReference Include="Vanara.PInvoke.Ole" Version="3.3.8" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Rubberduck.Com</name>
+    </assembly>
+    <members>
+        <member name="T:Rubberduck.Com.Extensions.ExtensionHelper">
+            <summary>
+            Type API specific extensions for managing memory allocated by calls to Get*** which must be
+            followed by a corresponding Release ***. This is used by other extensions classes:
+            <see cref="T:Rubberduck.Com.Extensions.TypeLibExtensions"/>
+            <see cref="T:Rubberduck.Com.Extensions.TypeInfoExtensions"/>
+            </summary>
+        </member>
+        <member name="T:Rubberduck.Com.WellKnown">
+            <summary>
+            There are several constants that are used within the type library APIs; this class helps
+            encapsulates different constants for easy discovery. Each group of related constants should
+            be in a nested class to allow us to use syntax like <see cref="F:Rubberduck.Com.WellKnown.Iids.IID_DISPATCH"/>
+            to make it easier to locate the constant when programming against the API. 
+            </summary>
+        </member>
+        <member name="T:Rubberduck.Com.WellKnown.DispIds">
+            <summary>
+            MS-OAUT Section 2.2.32.1
+            https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-oaut/cb9d0131-c6bd-463d-9c40-7264856a10c5
+            Also see:
+            https://docs.microsoft.com/en-us/previous-versions/windows/desktop/automat/dispid-constants
+            The lower DISPIDs constants are not used by all clients. For example, the <see cref="F:Rubberduck.Com.WellKnown.DispIds.DISPID_CONSTRUCTOR"/> 
+            and <see cref="F:Rubberduck.Com.WellKnown.DispIds.DISPID_DESTRUCTOR"/> are used as part of DCOM but not normally within Automation. 
+            </summary>
+        </member>
+        <member name="T:Rubberduck.Com.WellKnown.MemberIds">
+            <summary>
+            MS-OAUT Section 2.2.35.1
+            https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-oaut/5fbb4851-25f6-45ef-9f83-e9dd633e1e00
+            </summary>
+        </member>
+        <member name="T:Rubberduck.Com.WellKnown.ImplIndexes">
+            <summary>
+            Used with <see cref="!:ICreateTypeInfo.AddImplType(uint, uint)"/>'s first parameter, based on the 
+            documentation referred here:
+            https://docs.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-icreatetypeinfo-addimpltype
+            </summary>
+        </member>
+        <member name="F:Rubberduck.Com.WellKnown.ImplIndexes.DualUnknown">
+            <summary>
+            The implementation must be a IUnknown-derived interface for use in a dual implementation
+            </summary>
+        </member>
+        <member name="F:Rubberduck.Com.WellKnown.ImplIndexes.BaseInterface">
+            <summary>
+            The base interface for which the current <see cref="!:ICreateTypeInfo"/> derives from. Normally, 
+            this is either the <code>IUnknown</code> or <code>IDispatch"</code> interface. It may derive
+            from another interface as long the root is one of either. The referenced <see cref="!:ITypeInfo"/>
+            must be of <see cref="!:TYPEKIND.TKIND_INTERFACE"/>.
+            </summary>
+        </member>
+        <member name="F:Rubberduck.Com.WellKnown.ImplIndexes.DispatchInterface">
+            <summary>
+            The IUnknown implementation of the interface for which the dispatch interface must be
+            based on. 
+            </summary>
+        </member>
+    </members>
+</doc>
