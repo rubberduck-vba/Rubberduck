@@ -276,7 +276,7 @@ bazz As Date";
             var presenterAction = Support.SetParametersForSingleTarget(fieldName, "Name");
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             StringAssert.Contains(contains1, actualCode);
-            StringAssert.Contains(contains1, actualCode);
+            StringAssert.Contains(contains2, actualCode);
             if (doesNotContain.Length > 0)
             {
                 StringAssert.DoesNotContain(doesNotContain, actualCode);

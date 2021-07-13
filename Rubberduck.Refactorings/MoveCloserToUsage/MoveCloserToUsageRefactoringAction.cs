@@ -4,15 +4,18 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings.DeleteDeclarations;
 
 namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
     public class MoveCloserToUsageRefactoringAction : RefactoringActionBase<MoveCloserToUsageModel>
     {
-        public MoveCloserToUsageRefactoringAction(IRewritingManager rewritingManager) 
+        private readonly ICodeOnlyRefactoringAction<DeleteDeclarationsModel> _deleteDeclarationsRefactoringAction;
+        public MoveCloserToUsageRefactoringAction(DeleteDeclarationsRefactoringAction deleteDeclarationsRefactoringAction, IRewritingManager rewritingManager) 
             : base(rewritingManager)
-        {}
+        {
+            _deleteDeclarationsRefactoringAction = deleteDeclarationsRefactoringAction;
+        }
 
         protected override void Refactor(MoveCloserToUsageModel model, IRewriteSession rewriteSession)
         {
@@ -22,12 +25,15 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
 
             InsertNewDeclaration(variable, rewriteSession);
-            RemoveOldDeclaration(variable, rewriteSession);
+
+            _deleteDeclarationsRefactoringAction.Refactor(new DeleteDeclarationsModel(variable), rewriteSession);
+
             UpdateQualifiedCalls(variable, rewriteSession);
         }
 
         private void InsertNewDeclaration(VariableDeclaration target, IRewriteSession rewriteSession)
         {
+            var fieldDeclarationType = target.ParentDeclaration is ModuleDeclaration ? Tokens.Static : Tokens.Dim;
             var subscripts = target.Context.GetDescendent<VBAParser.SubscriptsContext>()?.GetText() ?? string.Empty;
             var identifier = target.IsArray ? $"{target.IdentifierName}({subscripts})" : target.IdentifierName;
 
@@ -78,21 +84,6 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
 
             return $"{declarationText}{Environment.NewLine}";
-        }
-
-        private void RemoveOldDeclaration(VariableDeclaration target, IRewriteSession rewriteSession)
-        {
-            var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
-
-            //If a label precedes the declaration, then delete just the variable so that the line and label are retained.
-            if (target.Context.TryGetAncestor<VBAParser.BlockStmtContext>(out var blockContext)
-                && blockContext.children.Any(c => c is VBAParser.StatementLabelDefinitionContext))
-            {
-                rewriter.Remove(target);
-                return;
-            }
-
-            rewriter.RemoveVariables(new VariableDeclaration[] { target });
         }
 
         private void UpdateQualifiedCalls(VariableDeclaration target, IRewriteSession rewriteSession)

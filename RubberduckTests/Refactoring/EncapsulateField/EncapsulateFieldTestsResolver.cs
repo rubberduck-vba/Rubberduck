@@ -22,6 +22,7 @@ using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.Interaction;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Castle.MicroKernel.SubSystems.Configuration;
+using Rubberduck.Refactorings.DeleteDeclarations;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -112,6 +113,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             container.Kernel.Register(Component.For<ModifyUserDefinedTypeRefactoringAction>());
             container.Kernel.Register(Component.For<ReplaceReferencesRefactoringAction>());
             container.Kernel.Register(Component.For<ReplaceDeclarationIdentifierRefactoringAction>());
+            container.Kernel.Register(Component.For<DeleteDeclarationsRefactoringAction>());
             container.Kernel.Register(Component.For<EncapsulateFieldPreviewProvider>());
             container.Kernel.Register(Component.For<EncapsulateFieldUseBackingFieldPreviewProvider>());
             container.Kernel.Register(Component.For<EncapsulateFieldUseBackingUDTMemberPreviewProvider>());

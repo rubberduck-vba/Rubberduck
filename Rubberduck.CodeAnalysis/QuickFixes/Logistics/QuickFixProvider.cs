@@ -80,22 +80,22 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Logistics
 
         public void Fix(IQuickFix fix, IEnumerable<IInspectionResult> resultsToFix)
         {
-            var results = resultsToFix.ToList();
+            var fixableResults = resultsToFix.Where(r => CanFix(fix, r)).ToList();
 
-            if (!results.Any())
+            if (!fixableResults.Any())
             {
                 return;
             }
 
             var rewriteSession = RewriteSession(fix.TargetCodeKind);
-            foreach (var result in results)
-            {
-                if (!CanFix(fix, result))
-                {
-                    continue;
-                }
 
-                fix.Fix(result, rewriteSession);
+            try
+            {
+                fix.FixMany(fixableResults, rewriteSession);
+            }
+            catch (RewriteFailedException)
+            {
+                _failureNotifier.NotifyQuickFixExecutionFailure(rewriteSession.Status);
             }
             Apply(rewriteSession);
         }
