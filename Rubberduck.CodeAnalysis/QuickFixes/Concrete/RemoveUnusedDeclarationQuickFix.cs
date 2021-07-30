@@ -57,20 +57,14 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var model = new DeleteDeclarationsModel(result.Target)
-            {
-                IndentModifiedModules = true
-            };
+            var model = new DeleteDeclarationsModel(result.Target);
 
             _refactoring.Refactor(model, rewriteSession);
         }
 
         public override void FixMany(IReadOnlyCollection<IInspectionResult> results, IRewriteSession rewriteSession)
         {
-            var model = new DeleteDeclarationsModel(results.Select(r => r.Target))
-            {
-                IndentModifiedModules = true
-            };
+            var model = new DeleteDeclarationsModel(results.Select(r => r.Target));
 
             _refactoring.Refactor(model, rewriteSession);
         }
