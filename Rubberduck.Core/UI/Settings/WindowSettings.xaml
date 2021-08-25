@@ -40,19 +40,19 @@
             </Label>
             <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=WindowSettings_StartupVisibilityHeader}"
                    FontWeight="SemiBold" />
-            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorerDockablePresenter_Caption}"
+            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorerWindowSettings_AccessKey}"
                       IsChecked="{Binding CodeExplorerVisibleOnStartup, Mode=TwoWay}"
                       Margin="5,0,0,5"
                       HorizontalAlignment="Left" />
-            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspections}"
+            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionsWindowSettings_AccessKey}"
                       IsChecked="{Binding CodeInspectionsVisibleOnStartup, Mode=TwoWay}"
                       Margin="5,0,0,5"
                       HorizontalAlignment="Left" />
-            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorerWindow_Caption}"
+            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorerWindowSettings_AccessKey}"
                       IsChecked="{Binding TestExplorerVisibleOnStartup, Mode=TwoWay}"
                       Margin="5,0,0,5"
                       HorizontalAlignment="Left" />
-            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TodoExplorer_Caption}"
+            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=ToDoExplorerWindowSettings_AccessKey}"
                       IsChecked="{Binding TodoExplorerVisibleOnStartup, Mode=TwoWay}"
                       Margin="5,0,0,5"
                       HorizontalAlignment="Left" />

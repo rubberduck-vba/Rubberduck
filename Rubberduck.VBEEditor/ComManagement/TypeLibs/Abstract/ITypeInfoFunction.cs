@@ -21,6 +21,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract
         string Name { get; }
         int ParamCount { get; }
         PROCKIND ProcKind { get; }
-        void Dispose();
+        //void Dispose();
     }
 }

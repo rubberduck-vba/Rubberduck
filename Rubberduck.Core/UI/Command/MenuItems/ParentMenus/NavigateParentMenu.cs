@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Rubberduck.Parsing.UIContext;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public class NavigateParentMenu : ParentMenuItemBase
     {
-        public NavigateParentMenu(IEnumerable<IMenuItem> items) 
-            : base("RubberduckMenu_Navigate", items)
+        public NavigateParentMenu(IEnumerable<IMenuItem> items, IUiDispatcher dispatcher) 
+            : base(dispatcher,"RubberduckMenu_Navigate", items)
         {
         }
 

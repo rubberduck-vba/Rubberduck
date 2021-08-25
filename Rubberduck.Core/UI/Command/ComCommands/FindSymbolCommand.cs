@@ -15,7 +15,6 @@ namespace Rubberduck.UI.Command.ComCommands
     public class FindSymbolCommand : ComCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly DeclarationIconCache _iconCache;
         private readonly NavigateCommand _navigateCommand;
 
         public FindSymbolCommand(
@@ -26,14 +25,12 @@ namespace Rubberduck.UI.Command.ComCommands
             : base(vbeEvents)
         {
             _state = state;
-            _iconCache = iconCache;
-
             _navigateCommand = new NavigateCommand(selectionService);
         }
 
         protected override void OnExecute(object parameter)
         {
-            var viewModel = new FindSymbolViewModel(_state.AllUserDeclarations, _iconCache);
+            var viewModel = new FindSymbolViewModel(_state.AllUserDeclarations);
             var view = new FindSymbolDialog(viewModel);
             {
                 viewModel.Navigate += (sender, e) => { view.Hide(); };

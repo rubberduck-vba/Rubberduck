@@ -244,9 +244,6 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   <data name="ShadowedDeclarationInspection" xml:space="preserve">
     <value>Deux déclarations ont le même nom dans le même espace-nom: une seule d'entre elles peut être utilisée.</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Une annotation devant être spécifiée au niveau du module ne peut être utilisée pour annoter de membres; les annotations devant être spécifiées au niveau des membres du module, ne peuvent être utilisées au niveau du module; toutes les annotations ne devrait être spécifiées qu'une seule fois par module/membre.</value>
-  </data>
   <data name="RedundantOptionInspection" xml:space="preserve">
     <value>Cette instruction correspondant aux paramètres par défaut et peut être supprimée sans effet.</value>
   </data>
@@ -441,5 +438,23 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   </data>
   <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
     <value>Une annotation a plus d'arguments que permis; les arguments superflus seront ignorés.</value>
+  </data>
+  <data name="AnnotationInIncompatibleComponentTypeInspection" xml:space="preserve">
+    <value>Une annotation est spécifiée dans un module d'un type qui n'est pas compatible avec cette annotation. Certaines annotations peuvent seulement être utilisées dans certains types de modules.</value>
+  </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>Les références implicites au classeur hôte dans un module de type 'Workbook' sont faciles à méprendre pour des références implicites au classeur actif (ActiveWorkbook). Qualifier l'appel avec 'Me' enlève cette ambiguité. Si l'intention est de référencer le classeur actif, qualifier avec 'ActiveWorkbook' pour prévenir un bogue.</value>
+  </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>Les références implicites à la feuille hôte dans ce même module peuvent facilement être méprises pour des références à la feuille active (ActiveSheet). Qualifier l'appel avec 'Me' enlève l'ambiguité. Si l'intention est de référer à la feuille active, qualifier l'appel avec 'ActiveSheet' pour prévenir un bogue.</value>
+  </data>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>L'annotation n'a pu être liée à une cible. Une annotation ciblant un module ne peut être utilisée pour une méthode; une annotation destinée à un membre ne peut être utilisée pour un module.</value>
+  </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>Le dernier paramètre ('Value' ou 'RHS') d'un membre Property Let ou Property Set est toujours passé par valeur (ByVal), et ce même en présence d'un modificateur ByRef, implicite ou explicite (sauf pour un type UDT).</value>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>Un commentaire correspond à la syntaxe pour une annotation valide, mais ne correspond à aucunne annotation supportée.</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-version: '2.5.1.{build}'
+version: '2.5.2.{build}'
 
 # enforce crlf fixing
 init:
@@ -143,7 +143,7 @@ deploy:
 # This is Duga posting stuff to the war room
 notifications:
   - provider: Webhook
-    url: http://stats.zomis.net/GithubHookSEChatService/hooks/github/payload?roomId=14929
+    url: https://duga.zomis.net/appveyor/14929
     on_build_success: true
     on_build_failure: true
     on_build_status_changed: false

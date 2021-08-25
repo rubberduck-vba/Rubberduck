@@ -52,7 +52,7 @@
                     <DockPanel FlowDirection="LeftToRight">
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                             <Label Style="{StaticResource HeaderText}"
-                                Content="{Resx Key=CodeInspectionSettings_InspectionSeveritySettingsLabel, ResxName=Rubberduck.Resources.RubberduckUI}" Margin="5,5,0,5" Width="127" />
+                                Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI,Key=CodeInspectionSettingsPage_InspectionSeveritySettingsLabel}" Margin="5,5,0,5" Width="127" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                 <StackPanel.Resources>
                                     <Style BasedOn="{StaticResource HeaderText}" TargetType="Label">
@@ -61,12 +61,17 @@
                                 </StackPanel.Resources>
                                 <Label Content="-" />
                                 <Image Source="{StaticResource FilterImage}" Width="19" />
-                                <Label Content="{Resx Key=InspectionSettings_FilterByDescription, ResxName=Rubberduck.Resources.RubberduckUI}" />
-                                <controls:SearchBox Width="100"
+                                <Label Target="{Binding ElementName=searchBox, Path=ValueContainerInput}"
+                                       Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_FilterByDescription}" />
+                                <controls:SearchBox x:Name="searchBox"
+                                                    Width="100"
                                                     Text="{Binding InspectionSettingsDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="26" />
                                 <Border Width="10" />
-                                <Label Content="{Resx Key=InspectionSettings_FilterBySeverity, ResxName=Rubberduck.Resources.RubberduckUI}" />
-                                <ComboBox Width="100"
+                                <Label Target="{Binding ElementName=severity}"
+                                       Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_FilterBySeverity}" />
+                                <ComboBox x:Name="severity"
+                                          Width="100"
+                                          VerticalContentAlignment="Center"
                                           ItemsSource="{Binding SeverityFilters, UpdateSourceTrigger=PropertyChanged}"
                                           SelectedItem="{Binding SelectedSeverityFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </StackPanel>
@@ -134,22 +139,22 @@
                 <Border Style="{StaticResource BorderHeader}"
                         Margin="0,15,0,5">
                     <Label Style="{StaticResource HeaderText}"
-                           Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_Misc}">
+                           Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_Misc}">
                     </Label>
                 </Border>
 
                 <StackPanel>
                     <CheckBox IsChecked="{Binding RunInspectionsOnSuccessfulParse}" 
-                              Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse}" />
+                              Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_Misc_RunInspectionsOnSuccessfulParse}" />
                 </StackPanel>
 
                 <Border Style="{StaticResource BorderHeader}"
                         Margin="0,15,0,5">
                     <Label Style="{StaticResource HeaderText}"
-                           Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_WhitelistedIdentifiersLabel}" />
+                           Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_WhitelistedIdentifiersLabel}" />
                 </Border>
 
-                <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_WhitelistedIdentifiersDescription}" />
+                <TextBlock Text="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_WhitelistedIdentifiersDescription}" />
                 <ToolBarTray IsLocked="True"
                              Background="Transparent">
                     <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}"

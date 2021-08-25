@@ -328,4 +328,47 @@ Continuer?</value>
   <data name="CodeExplorer_MoveToFolder" xml:space="preserve">
     <value>Déplacer vers le dossier...</value>
   </data>
+  <data name="CodeExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck: Déclarations - {0}</value>
+  </data>
+  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
+    <value>Aucun module document existant avec le nom '{0}'; le fichier '{1}' ne pourra pas être importé.
+
+Échec de l'importation.</value>
+  </data>
+  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>Le fichier binaire '{1}' associé à '{0}' est manquant, et le module cible '{2}' n'existe pas déjà dans le projet.
+
+Échec de l'importation.</value>
+  </data>
+  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>Le fichier '{0}' requiert le fichier binaire '{1}', qui est manquant.
+
+Échec de l'importation.</value>
+  </data>
+  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
+    <value>Plus d'un fichier contient du code pour le componsant '{0}'.
+
+Échec de l'importation.</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
+    <value>Tous les fichiers</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
+    <value>Fichiers VB</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
+    <value>Importer fichiers source</value>
+  </data>
+  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
+    <value>L'extension du fichier '{0}' n'est pas prise en charge.
+
+Importation annulée.</value>
+  </data>
+  <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>_Explorateur</value>
+  </data>
+  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+    <value>Naviguer</value>
+  </data>
 </root>

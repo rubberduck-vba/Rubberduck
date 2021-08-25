@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -25,25 +26,22 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             _openCommand = openCommand;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
-            return ((CodeExplorerItemViewModel)parameter).QualifiedSelection.HasValue;
+            return (parameter as CodeExplorerItemViewModel)?.QualifiedSelection.HasValue ?? false;
         }
 
         protected override void OnExecute(object parameter)
         {
-            if (!CanExecute(parameter))
+            if (parameter is CodeExplorerItemViewModel item && item.QualifiedSelection.HasValue)
             {
-                return;
+                _openCommand.Execute(item.QualifiedSelection.Value.GetNavitationArgs());
             }
-
-            // ReSharper disable once PossibleInvalidOperationException - tested above.
-            _openCommand.Execute(((CodeExplorerItemViewModel)parameter).QualifiedSelection.Value.GetNavitationArgs());
         }
     }
 }

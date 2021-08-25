@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubberduck.VBEditor.Utility;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,7 +20,7 @@ namespace Rubberduck.Parsing.UIContext
         /// on the UI thread's dispatcher and executed asynchronously.
         /// <para>For additional operations on the UI thread, you can get a
         /// reference to the UI thread's context thanks to the property
-        /// <see cref="UiContext" /></para>.
+        /// <see cref="UiContextProvider" /></para>.
         /// </summary>
         /// <param name="action">The action that will be executed on the UI
         /// thread</param>

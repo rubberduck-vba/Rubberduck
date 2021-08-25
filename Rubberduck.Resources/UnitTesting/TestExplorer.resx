@@ -270,7 +270,7 @@
   </data>
   <data name="UnitTest_NewMethod_BaseName" xml:space="preserve">
     <value>TestMethod</value>
-    <comment>As it "Sub TestMethod1()". Also appended to the end of Stub tests - i.e "Sub FooTestMethod()".   Localize as an indentifier.</comment>
+    <comment>As in "Sub TestMethod1()". Also appended to the end of Stub tests - i.e "Sub FooTestMethod()".   Localize as an indentifier.</comment>
   </data>
   <data name="UnitTest_NewMethod_ExpectedError" xml:space="preserve">
     <value>ExpectedError</value>
@@ -362,5 +362,11 @@
   </data>
   <data name="TestExplorer_ContextMenuIgnoreSelectedTests" xml:space="preserve">
     <value>Ignore selected tests</value>
+  </data>
+  <data name="TestOutcome_Fail" xml:space="preserve">
+    <value>Fail</value>
+  </data>
+  <data name="TestExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>_Test Explorer</value>
   </data>
 </root>

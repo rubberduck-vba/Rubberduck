@@ -45,21 +45,21 @@ namespace Rubberduck.UI.AddRemoveReferences
 
         private static readonly Dictionary<string, string> HostFilters = new Dictionary<string, string>
         {
-            { "EXCEL.EXE", string.Format(RubberduckUI.References_BrowseFilterExcel, string.Join(";", HostFileFilters["EXCEL.EXE"].Select(_ => $"*.{_}"))) },
-            { "WINWORD.EXE", string.Format(RubberduckUI.References_BrowseFilterWord, string.Join(";", HostFileFilters["WINWORD.EXE"].Select(_ => $"*.{_}"))) }, 
-            { "MSACCESS.EXE", string.Format(RubberduckUI.References_BrowseFilterAccess, string.Join(";", HostFileFilters["MSACCESS.EXE"].Select(_ => $"*.{_}"))) },
-            { "POWERPNT.EXE", string.Format(RubberduckUI.References_BrowseFilterPowerPoint, string.Join(";", HostFileFilters["POWERPNT.EXE"].Select(_ => $"*.{_}"))) },
-            { "OUTLOOK.EXE", string.Format(RubberduckUI.References_BrowseFilterOutlook, string.Join(";", HostFileFilters["OUTLOOK.EXE"].Select(_ => $"*.{_}"))) },
-            { "MSPUB.EXE", string.Format(RubberduckUI.References_BrowseFilterOutlook, string.Join(";", HostFileFilters["MSPUB.EXE"].Select(_ => $"*.{_}"))) },
-            { "VISIO.EXE", string.Format(RubberduckUI.References_BrowseFilterVisio, string.Join(";", HostFileFilters["VISIO.EXE"].Select(_ => $"*.{_}"))) },
+            { "EXCEL.EXE", string.Format(AddRemoveReferencesUI.BrowseFilterExcel, string.Join(";", HostFileFilters["EXCEL.EXE"].Select(_ => $"*.{_}"))) },
+            { "WINWORD.EXE", string.Format(AddRemoveReferencesUI.BrowseFilterWord, string.Join(";", HostFileFilters["WINWORD.EXE"].Select(_ => $"*.{_}"))) }, 
+            { "MSACCESS.EXE", string.Format(AddRemoveReferencesUI.BrowseFilterAccess, string.Join(";", HostFileFilters["MSACCESS.EXE"].Select(_ => $"*.{_}"))) },
+            { "POWERPNT.EXE", string.Format(AddRemoveReferencesUI.BrowseFilterPowerPoint, string.Join(";", HostFileFilters["POWERPNT.EXE"].Select(_ => $"*.{_}"))) },
+            { "OUTLOOK.EXE", string.Format(AddRemoveReferencesUI.BrowseFilterOutlook, string.Join(";", HostFileFilters["OUTLOOK.EXE"].Select(_ => $"*.{_}"))) },
+            { "MSPUB.EXE", string.Format(AddRemoveReferencesUI.BrowseFilterOutlook, string.Join(";", HostFileFilters["MSPUB.EXE"].Select(_ => $"*.{_}"))) },
+            { "VISIO.EXE", string.Format(AddRemoveReferencesUI.BrowseFilterVisio, string.Join(";", HostFileFilters["VISIO.EXE"].Select(_ => $"*.{_}"))) },
         };
 
         private static readonly List<string> FileFilters = new List<string>
         {
-            RubberduckUI.References_BrowseFilterExecutable,
-            RubberduckUI.References_BrowseFilterTypes,
-            RubberduckUI.References_BrowseFilterActiveX,
-            RubberduckUI.References_BrowseFilterAllFiles,
+            AddRemoveReferencesUI.BrowseFilterExecutable,
+            AddRemoveReferencesUI.BrowseFilterTypes,
+            AddRemoveReferencesUI.BrowseFilterActiveX,
+            AddRemoveReferencesUI.BrowseFilterAllFiles,
         };
 
         public static bool HostHasProjects { get; }
@@ -127,14 +127,14 @@ namespace Rubberduck.UI.AddRemoveReferences
             {
                 if (string.IsNullOrEmpty(Model?.Project?.IdentifierName))
                 {
-                    return RubberduckUI.References_Caption;
+                    return AddRemoveReferencesUI.Caption;
                 }
 
                 var project = _projectsProvider.Project(Model.Project.ProjectId);
 
                 if (project == null)
                 {
-                    return RubberduckUI.References_Caption;
+                    return AddRemoveReferencesUI.Caption;
                 }
 
                 return project.ProjectDisplayName;
@@ -277,7 +277,7 @@ namespace Rubberduck.UI.AddRemoveReferences
             using (var dialog = _browser.CreateOpenFileDialog())
             {
                 dialog.Filter = string.Join("|", FileFilters);
-                dialog.Title = RubberduckUI.References_BrowseCaption;
+                dialog.Title = AddRemoveReferencesUI.BrowseCaption;
                 var result = dialog.ShowDialog();
                 if (result != DialogResult.OK || string.IsNullOrEmpty(dialog.FileName))
                 {

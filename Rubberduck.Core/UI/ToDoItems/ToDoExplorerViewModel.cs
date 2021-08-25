@@ -15,7 +15,6 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Settings;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources.ToDoExplorer;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
@@ -254,8 +253,8 @@ namespace Rubberduck.UI.ToDoItems
                 .Select(formattedItem => formattedItem.ToArray()).ToArray();
 
             var resource = _items.Count == 1
-                ? ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Singular
-                : ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Plural;
+                ? Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Singular
+                : Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Plural;
 
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _items.Count);
 
@@ -306,5 +305,28 @@ namespace Rubberduck.UI.ToDoItems
                 _state.StateChanged -= HandleStateChanged;
             }
         }
+
+        private string _toDoFilter;
+        public string ToDoFilter 
+        { 
+            get => _toDoFilter;
+            set
+            {
+                if (_toDoFilter != value)
+                {
+                    _toDoFilter = value;
+                    OnPropertyChanged();
+                    Items.Filter = FilterResults;
+                    OnPropertyChanged(nameof(Items));
+                }
+            }
+        }
+
+        private bool FilterResults(object marker)
+        {
+            var toDoItem = marker as ToDoItem;
+
+            return string.IsNullOrEmpty(ToDoFilter) || CultureInfo.CurrentUICulture.CompareInfo.IndexOf(toDoItem.Description, ToDoFilter, CompareOptions.IgnoreCase) >=0;
+        }								   
     }
 }

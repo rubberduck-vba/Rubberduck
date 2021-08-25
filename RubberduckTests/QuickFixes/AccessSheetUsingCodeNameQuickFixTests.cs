@@ -180,7 +180,7 @@ End Sub";
             const string inputCode = @"
 Public Sub Foo()
     Dim ws As Worksheet
-    Set ws = ThisWorkbook.Worksheets(""Name"")
+    Set ws = ThisWorkbook.Worksheets(""Sheet2"")
     ws.Cells(1, 1) = ""foo""
 End Sub
 
@@ -216,26 +216,30 @@ End Sub";
         private IVBE TestVbe(string code, string sheetName, out IVBComponent component)
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, code)
-                .AddComponent("Sheet1", ComponentType.Document, "",
-                    properties: new[]
-                    {
+            var projectBuilder = builder
+                .ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("ThisWorkbook", ComponentType.Document, string.Empty,
+                    properties: new[] {
+                        CreateVBComponentPropertyMock("Name", "ThisWorkbook").Object,
+                    })
+                .AddComponent("Sheet1", ComponentType.Document, string.Empty,
+                    properties: new[] {
                         CreateVBComponentPropertyMock("Name", sheetName).Object,
                         CreateVBComponentPropertyMock("CodeName", "Sheet1").Object
                     })
-                .AddComponent("SheetWithDifferentCodeName", ComponentType.Document, "",
-                    properties: new[]
-                    {
-                        CreateVBComponentPropertyMock("Name", "Name").Object,
+                .AddComponent("CodeName", ComponentType.Document, string.Empty,
+                    properties: new[] {
+                        CreateVBComponentPropertyMock("Name", "Sheet2").Object,
                         CreateVBComponentPropertyMock("CodeName", "CodeName").Object
                     })
                 .AddReference(ReferenceLibrary.Excel)
-                .Build();
+                .AddComponent("Module1", ComponentType.StandardModule, code);
 
-            component = project.Object.VBComponents[0];
-
-            return builder.AddProject(project).Build().Object;
+            var mockProject = projectBuilder.Build().Object;
+            component = mockProject.VBComponents["Module1"];
+            var project = projectBuilder.Build();
+            var vbe = builder.AddProject(project).Build();
+            return vbe.Object;
         }
 
         private static Mock<IProperty> CreateVBComponentPropertyMock(string propertyName, string propertyValue)

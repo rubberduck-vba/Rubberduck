@@ -25,11 +25,10 @@
         <DockPanel Dock="Top"
                    Background="{StaticResource BackgroundLightBrush}">
             <StackPanel>
-
-                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_TitleLabel}"
+                <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractInterface_TitleLabel}" 
                        FontWeight="Bold" />
-                <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_InstructionLabel}"
-                           Margin="5,0" />
+                <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractInterface_InstructionLabel}"
+                       Margin="5,0" />
             </StackPanel>
         </DockPanel>
         <Grid Grid.Row="1"
@@ -56,7 +55,7 @@
                        Visibility="{Binding IsValidInterfaceName, Converter={StaticResource BoolToHiddenVisibility}}" />
             </StackPanel>
 
-            <GroupBox Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_ImplementationOptionsGroupBox}"
+            <GroupBox Header="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractInterface_ImplementationOptionsGroupBox}"
                       Grid.Row="1"
                       Margin="5"
                       Padding="5">
@@ -69,7 +68,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_InstancingGroupBox}"
+            <GroupBox Header="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractInterface_InstancingGroupBox}"
                       Grid.Row="2"
                       Margin="5"
                       Padding="5">
@@ -79,15 +78,15 @@
                               Visibility="{Binding CanChooseInterfaceInstancing, Converter={StaticResource BoolToVisibility}}">
                     </ComboBox>
                     <TextBlock Visibility="{Binding CanChooseInterfaceInstancing, Converter={StaticResource BoolToHiddenVisibility}}"
-                               Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_PublicInstancingMandatedByPublicClass}"
+                               Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractInterface_PublicInstancingMandatedByPublicClass}"
                                TextWrapping="Wrap" />
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_MembersGroupBox}"
-                      Grid.Row="3"
-                      Margin="5"
-                      Padding="5">
+            <GroupBox Header="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractInterface_MembersGroupBox}"
+                  Grid.Row="3"
+                  Margin="5"
+                  Padding="5">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="110*" />

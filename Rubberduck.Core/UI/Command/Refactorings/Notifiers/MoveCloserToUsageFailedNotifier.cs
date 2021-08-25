@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.MoveCloserToUsage;
 
@@ -11,7 +12,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             : base(messageBox)
         {}
 
-        protected override string Caption => Resources.RubberduckUI.MoveCloserToUsage_Caption;
+        protected override string Caption => RefactoringsUI.MoveCloserToUsage_Caption;
 
         protected override string Message(RefactoringException exception)
         {
@@ -19,32 +20,32 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             {
                 case TargetDeclarationConflictsWithPreexistingDeclaration conflictWithPreexistingDeclaration:
                     Logger.Warn(conflictWithPreexistingDeclaration);
-                    return string.Format(Resources.RubberduckUI.MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope,
+                    return string.Format(RefactoringsUI.MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope,
                         conflictWithPreexistingDeclaration.TargetDeclaration.QualifiedName,
                         conflictWithPreexistingDeclaration.ConflictingDeclaration.QualifiedName);
                 case TargetDeclarationNonPrivateInNonStandardModule nonPrivateInNonStandardModule:
                     Logger.Warn(nonPrivateInNonStandardModule);
-                    return string.Format(Resources.RubberduckUI.MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule,
+                    return string.Format(RefactoringsUI.MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule,
                         nonPrivateInNonStandardModule.TargetDeclaration.QualifiedName);
                 case TargetDeclarationInDifferentNonStandardModuleException inDifferentNonStandardModule:
                     Logger.Warn(inDifferentNonStandardModule);
-                    return string.Format(Resources.RubberduckUI.MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule,
+                    return string.Format(RefactoringsUI.MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule,
                         inDifferentNonStandardModule.TargetDeclaration.QualifiedName);
                 case TargetDeclarationInDifferentProjectThanUses inDifferentProject:
                     Logger.Warn(inDifferentProject);
-                    return string.Format(Resources.RubberduckUI.MoveCloserToUsageFailure_TargetIsInDifferentProject,
+                    return string.Format(RefactoringsUI.MoveCloserToUsageFailure_TargetIsInDifferentProject,
                         inDifferentProject.TargetDeclaration.QualifiedName);
                 case TargetDeclarationUsedInMultipleMethodsException usedInMultiple:
                     Logger.Warn(usedInMultiple);
-                    return string.Format(Resources.RubberduckUI.MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods,
+                    return string.Format(RefactoringsUI.MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods,
                         usedInMultiple.TargetDeclaration.QualifiedName);
                 case TargetDeclarationNotUserDefinedException notUsed:
                     Logger.Warn(notUsed);
-                    return string.Format(Resources.RubberduckUI.MoveCloserToUsageFailure_TargetHasNoReferences,
+                    return string.Format(RefactoringsUI.MoveCloserToUsageFailure_TargetHasNoReferences,
                         notUsed.TargetDeclaration.QualifiedName);
                 case InvalidDeclarationTypeException invalidDeclarationType:
                     Logger.Warn(invalidDeclarationType);
-                    return string.Format(Resources.RubberduckUI.RefactoringFailure_InvalidDeclarationType,
+                    return string.Format(RefactoringsUI.RefactoringFailure_InvalidDeclarationType,
                         invalidDeclarationType.TargetDeclaration.QualifiedName,
                         invalidDeclarationType.TargetDeclaration.DeclarationType,
                         DeclarationType.Variable);

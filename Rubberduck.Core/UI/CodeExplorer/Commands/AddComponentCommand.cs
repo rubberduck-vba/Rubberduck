@@ -31,7 +31,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _addComponentService = addComponentService;
             _projectsProvider = projectsProvider;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecuteBase);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
@@ -45,7 +45,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             AddComponent(parameter as CodeExplorerItemViewModel);
         }
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecuteBase(object parameter)
         {
             if (!(parameter is CodeExplorerItemViewModel node) 
                 || node.Declaration == null)

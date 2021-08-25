@@ -189,7 +189,7 @@
   <data name="RefactorMenu_IntroduceField" xml:space="preserve">
     <value>Představit Po&amp;le</value>
   </data>
-  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
+  <data name="RefactorMenu_PromoteToParameter" xml:space="preserve">
     <value>Představit &amp;Parametr</value>
   </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
@@ -263,5 +263,11 @@
   </data>
   <data name="AnnotateMenu_SelectedModule" xml:space="preserve">
     <value>Vybraný Modul</value>
+  </data>
+  <data name="ProjectExplorer_IgnoreProject" xml:space="preserve">
+    <value>Ignorovat Projekt</value>
+  </data>
+  <data name="ProjectExplorer_UnignoreProject" xml:space="preserve">
+    <value>Odignorovat Projekt</value>
   </data>
 </root>

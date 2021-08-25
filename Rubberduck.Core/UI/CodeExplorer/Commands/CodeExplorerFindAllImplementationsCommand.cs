@@ -27,12 +27,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _state = state;
             _finder = finder;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             return _state.Status == ParserState.Ready &&
                    parameter is CodeExplorerItemViewModel node &&

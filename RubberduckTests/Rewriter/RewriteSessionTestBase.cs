@@ -54,10 +54,8 @@ namespace RubberduckTests.Rewriter
         [Category("Rewriter")]
         public void StatusChangesToInvalidStateStaleParseTreeIfADirtyRewriterGetsCheckedOut()
         {
-            var isCalled = false;
             var rewriteSession = RewriteSession(session =>
             {
-                isCalled = true;
                 return true;
             }, out _, rewritersAreDirty: true);
             var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");

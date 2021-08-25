@@ -108,7 +108,7 @@
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" Dock="Top" Background="{x:Static SystemColors.WindowBrush}">
             <Label DockPanel.Dock="Top" Content="{Binding ProjectCaption}" FontWeight="Bold" />
-            <TextBlock DockPanel.Dock="Top" Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_SubCaption}" Margin="10,0,0,10" />
+            <TextBlock DockPanel.Dock="Top" Text="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=SubCaption}" Margin="10,0,0,10" />
         </DockPanel>
         <Border Grid.Row="1" Background="{x:Static SystemColors.ControlLightBrush}">
             <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ControlLightBrush}" Margin="5">
@@ -123,7 +123,7 @@
                             <TabItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{StaticResource LibraryIcon}" />
-                                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_TypeLibs}" Margin="5,0,10,0" />
+                                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=TypeLibs}" Margin="5,0,10,0" />
                                 </StackPanel>
                             </TabItem.Header>
                         </TabItem>
@@ -131,7 +131,7 @@
                             <TabItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{StaticResource VbaProjectIcon}" />
-                                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Projects}" Margin="5,0,10,0" />
+                                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=Projects}" Margin="5,0,10,0" />
                                 </StackPanel>
                             </TabItem.Header>
                         </TabItem>
@@ -139,7 +139,7 @@
                             <TabItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{StaticResource PinnedIcon}" />
-                                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Pinned}" Margin="5,0,10,0" />
+                                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=Pinned}" Margin="5,0,10,0" />
                                 </StackPanel>
                             </TabItem.Header>
                         </TabItem>
@@ -147,7 +147,7 @@
                             <TabItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{StaticResource RecentIcon}" />
-                                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Recent}" Margin="5,0,10,0" />
+                                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=Recent}" Margin="5,0,10,0" />
                                 </StackPanel>
                             </TabItem.Header>
                         </TabItem>
@@ -157,7 +157,7 @@
                             Command="{Binding BrowseCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image Margin="0,0,5,0" Height="16" Source="{StaticResource BrowseIcon}" />
-                            <TextBlock Background="Transparent" Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_BrowseButtonText}" />
+                            <TextBlock Background="Transparent" Text="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=BrowseButtonText}" />
                         </StackPanel>
                     </Button>
                     <Grid Grid.Row="1" Margin="10,10,10,5">
@@ -180,7 +180,7 @@
                                                 Background="{x:Static SystemColors.WindowBrush}"
                                                 Width="Auto"
                                                 Text="{Binding Search, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                Hint="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_SearchPlaceholder}" />
+                                                Hint="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=SearchPlaceholder}" />
                         </Border>
                         <Border Grid.Row="1" Grid.Column="0">
                             <ListView Name="LibrarySelect" SelectedItem="{Binding SelectedLibrary, Mode=TwoWay}" 
@@ -188,7 +188,7 @@
                                       ItemsSource="{Binding AvailableReferences}" 
                                       HorizontalContentAlignment="Stretch"
                                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                      GotFocus="ListView_SynchronizeCurrentSelection_OnGotFocus">
+                                      SelectionChanged="ListView_SynchronizeCurrentSelection_OnSelectionChanged">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="Height" Value="20" />
@@ -207,7 +207,7 @@
                                                     Background="Transparent"
                                                     BorderBrush="Transparent"
                                                     Command="{Binding DataContext.PinLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}"
-                                                    ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_PinToolTip}" ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
+                                                    ToolTip="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=PinToolTip}" ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
                                                 <i:Interaction.Behaviors>
                                                     <controls:BindableListItemDrillThroughBehavior />
                                                 </i:Interaction.Behaviors>
@@ -230,12 +230,12 @@
                         </Border>
                         <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
                             <Button Command="{Binding AddCommand}" Width="40" Height="20" Padding="0" Margin="0,1"
-                                    ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_AddToolTip}"
+                                    ToolTip="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=AddToolTip}"
                                     ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
                                 <Image Margin="5,0" Source="{StaticResource AddIcon}" />
                             </Button>
                             <Button Command="{Binding RemoveCommand}" Width="40" Height="20" Padding="0" Margin="0,1"
-                                    ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_RemoveToolTip}"
+                                    ToolTip="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=RemoveToolTip}"
                                     ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
                                 <Image Margin="5,0" Source="{StaticResource RemoveIcon}" />
                             </Button>
@@ -246,8 +246,7 @@
                                       SelectionMode="Single"
                                       ItemsSource="{Binding ProjectReferences, NotifyOnTargetUpdated=True}" 
                                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                      HorizontalContentAlignment="Stretch"
-                                      GotFocus="ListView_SynchronizeCurrentSelection_OnGotFocus">
+                                      HorizontalContentAlignment="Stretch" SelectionChanged="ListView_SynchronizeCurrentSelection_OnSelectionChanged">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="Height" Value="20" />
@@ -265,7 +264,7 @@
                                             </Grid.ColumnDefinitions>
                                             <Button Name="MoveUpButton" Grid.Column="0" Margin="1" Background="Transparent" BorderBrush="{StaticResource ButtonFaceBrush}"
                                                     Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}"
-                                                    ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_MoveUpToolTip}" ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
+                                                    ToolTip="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=MoveUpToolTip}" ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
                                                 <Button.Style>
                                                     <Style TargetType="{x:Type Button}" >
                                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -312,7 +311,7 @@
                                             </Button>
                                             <Button Name="MoveDownButton" Grid.Column="1" Margin="1" Background="Transparent" BorderBrush="{StaticResource ButtonFaceBrush}"
                                                 Command="{Binding DataContext.MoveDownCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}"
-                                                ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_MoveDownToolTip}" ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
+                                                ToolTip="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=MoveDownToolTip}" ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
                                                 <Button.Style>
                                                     <Style TargetType="{x:Type Button}">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -359,7 +358,7 @@
                                             </Button>
                                             <Button Grid.Column="2" Width="16" Height="16" Background="Transparent" BorderBrush="Transparent"
                                                     Command="{Binding DataContext.PinReferenceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}"
-                                                    ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_PinToolTip}" ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
+                                                    ToolTip="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=PinToolTip}" ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
                                                 <Image Source="{Binding Status, Converter={StaticResource StatusToIcon}}" />
                                                 <i:Interaction.Behaviors>
                                                     <controls:BindableListItemDrillThroughBehavior />
@@ -401,13 +400,13 @@
                                 <Label Grid.Row="0" Grid.Column="1"  
                                        Foreground="{x:Static SystemColors.GrayTextBrush}" 
                                        VerticalAlignment="Center" 
-                                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Version}" />
+                                       Content="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=Version}" />
                                 <TextBox x:Name="Version"
                                          Grid.Row="0" Grid.Column="2" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.Version, Mode=OneWay}" />
                                 <Label Grid.Row="0" Grid.Column="3"  
                                        Foreground="{x:Static SystemColors.GrayTextBrush}" 
                                        VerticalAlignment="Center" 
-                                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Locale}" />
+                                       Content="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=Locale}" />
                                 <TextBox x:Name="LocaleName"
                                          Grid.Row="0" Grid.Column="4" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.LocaleName, Mode=OneWay}" />
                                 <TextBox x:Name="FullPath"

@@ -205,7 +205,7 @@ End Sub
 
             var result = field.TryValidateEncapsulationAttributes(out var errorMessage);
 
-            var expectedError = string.Format(RubberduckUI.EncapsulateField_ArrayHasExternalRedimFormat, field.IdentifierName);
+            var expectedError = string.Format(RefactoringsUI.EncapsulateField_ArrayHasExternalRedimFormat, field.IdentifierName);
 
             StringAssert.AreEqualIgnoringCase(expectedError, errorMessage);
             Assert.IsFalse(result);

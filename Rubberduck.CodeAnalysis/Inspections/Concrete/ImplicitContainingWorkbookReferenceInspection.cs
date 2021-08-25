@@ -10,12 +10,12 @@ using Rubberduck.Resources.Inspections;
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
-    /// Locates unqualified Workbook.Worksheets/Sheets/Names member calls inside workbook document modules that implicitly refer to the containing workbook.
+    /// Locates unqualified Workbook.Worksheets/Sheets/Names member calls inside workbook document modules, that implicitly refer to the host workbook.
     /// </summary>
-    /// <reference name="Excel" />
+    /// <hostApp name="Excel" />
     /// <why>
-    /// Implicit references inside a workbook document module can be mistakes for implicit references to the active workbook, which is the behavior in all other modules 
-    /// By explicitly qualifying these member calls with Me, the ambiguity can be resolved.
+    /// Implicit references inside a workbook document module can easily be mistaken for implicit references to the active workbook (ActiveWorkbook), which is the behavior in all other module types.
+    /// By explicitly qualifying these member calls with 'Me', the ambiguity can be resolved. If the intent is to actually refer to the active workbook, qualify with 'ActiveWorkbook' to prevent a bug.
     /// </why>
     /// <example hasResult="true">
     /// <module name="ThisWorkbook" type="Document Module">
@@ -37,28 +37,30 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// ]]>
     /// </module>
     /// </example>
-    [RequiredLibrary("Excel")]
+    [RequiredHost("Excel")]
     internal sealed class ImplicitContainingWorkbookReferenceInspection : ImplicitWorkbookReferenceInspectionBase
     {
         public ImplicitContainingWorkbookReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         { }
 
-        private static readonly List<string> _alwaysActiveWorkbookReferenceParents = new List<string>
+        private static readonly string[] ParentsNeverReferringToContainingWorkbook = new[]
         {
-            "_Application", "Application"
+            "Application", "_Application"
         };
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
             return base.ObjectionableDeclarations(finder)
-                .Where(declaration => !_alwaysActiveWorkbookReferenceParents.Contains(declaration.ParentDeclaration.IdentifierName));
+                .Where(declaration => !ParentsNeverReferringToContainingWorkbook
+                    .Any(name => declaration.ParentDeclaration.IdentifierName.Equals(name, System.StringComparison.InvariantCultureIgnoreCase)));
         }
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            return Declaration.GetModuleParent(reference.ParentNonScoping) is DocumentModuleDeclaration document
-                   && document.SupertypeNames.Contains("Workbook");
+            return Declaration.GetModuleParent(reference.ParentScoping) is DocumentModuleDeclaration document
+                   && document.SupertypeNames.Contains("Workbook")
+                   && reference.QualifyingReference == null;
         }
 
         protected override string ResultDescription(IdentifierReference reference)

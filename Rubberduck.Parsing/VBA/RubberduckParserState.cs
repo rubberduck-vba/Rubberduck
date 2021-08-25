@@ -119,30 +119,10 @@ namespace Rubberduck.Parsing.VBA
         [SuppressMessage("ReSharper", "JoinNullCheckWithUsage")]
         public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory, IVbeEvents vbeEvents)
         {
-            if (vbe == null)
-            {
-                throw new ArgumentNullException(nameof(vbe));
-            }
-
-            if (projectRepository == null)
-            {
-                throw new ArgumentException(nameof(projectRepository));
-            }
-
-            if (declarationFinderFactory == null)
-            {
-                throw new ArgumentNullException(nameof(declarationFinderFactory)); 
-            }
-
-            if (vbeEvents == null)
-            {
-                throw new ArgumentNullException(nameof(vbeEvents));
-            }
-
-            _vbe = vbe;
-            _projectRepository = projectRepository;
-            _declarationFinderFactory = declarationFinderFactory;
-            _vbeEvents = vbeEvents;
+            _vbe = vbe ?? throw new ArgumentNullException(nameof(vbe));
+            _projectRepository = projectRepository ?? throw new ArgumentException(nameof(projectRepository));
+            _declarationFinderFactory = declarationFinderFactory ?? throw new ArgumentNullException(nameof(declarationFinderFactory));
+            _vbeEvents = vbeEvents ?? throw new ArgumentNullException(nameof(vbeEvents));
             
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
@@ -167,10 +147,7 @@ namespace Rubberduck.Parsing.VBA
             _declarationFinderFactory.Release(oldDeclarationFinder);
         }
 
-        public void RefreshDeclarationFinder()
-        {
-            RefreshFinder(_hostApp);
-        }
+        public void RefreshDeclarationFinder() => RefreshFinder(_hostApp);
 
         #region Event Handling
 
@@ -324,15 +301,12 @@ namespace Rubberduck.Parsing.VBA
         /// were projects with duplicate ID's to clear the old
         /// declarations referencing the project by the old ID.
         /// </summary>
-        public void RefreshProjects()
-        {
-            _projectRepository.Refresh();
-        }
+        public void RefreshProjects() => _projectRepository.Refresh();
+        
 
         private void RefreshProject(string projectId)
         {
             _projectRepository.Refresh(projectId);
-
             ClearStateCache(projectId);
         }
 
@@ -456,10 +430,8 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private IVBProject GetProject(string projectId)
-        {
-            return _projectRepository.Project(projectId);
-        }
+        private IVBProject GetProject(string projectId) => _projectRepository.Project(projectId);
+        
 
         public void EvaluateParserState(CancellationToken token)
         {
@@ -657,10 +629,9 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void SetModuleComments(QualifiedModuleName module, IEnumerable<CommentNode> comments)
-        {
+        public void SetModuleComments(QualifiedModuleName module, IEnumerable<CommentNode> comments) =>
             _moduleStates[module].SetComments(new List<CommentNode>(comments));
-        }
+        
 
         public IReadOnlyCollection<CommentNode> GetModuleComments(QualifiedModuleName module)
         {
@@ -723,10 +694,8 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private bool ThereAreDeclarations()
-        {
-            return _moduleStates.Values.Any(state => state.Declarations != null && state.Declarations.Any());
-        }
+        private bool ThereAreDeclarations() => _moduleStates.Values.Any(state => state.Declarations != null && state.Declarations.Any());
+        
 
         /// <summary>
         /// Gets a copy of the failed resolution stores directly from the module states. (Used for refreshing the DeclarationFinder.)
@@ -954,7 +923,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         /// <summary>
-        /// Removes the specified <see cref="declaration"/> from the collection.
+        /// Removes the specified <see cref="Declaration"/> from the collection.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns>Returns true when successful.</returns>

@@ -21,7 +21,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <CollectionViewSource x:Key="BuiltInTemplatesViewSource" x:Name="BuiltInTemplatesView" Source="{Binding BuiltInTemplates}" />
-            <CollectionViewSource x:Key="UserDefinedTemplatesViewSource" x:Name="BuiltInTemplatesView" Source="{Binding UserDefinedTemplates}" />
+            <CollectionViewSource x:Key="UserDefinedTemplatesViewSource" x:Name="UserDefinedTemplatesView" Source="{Binding UserDefinedTemplates}" />
             <CollectionViewSource x:Key="AnnotationsViewSource" x:Name="AnnotationsView" Source="{Binding Annotations}" />
 
             <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
@@ -47,6 +47,8 @@
             <BitmapImage x:Key="SyncImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/SyncArrows.png" />
             <BitmapImage x:Key="FontSizeImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/edit-size.png" />
             <BitmapImage x:Key="ExtractInterfaceImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ExtractInterface.png" />
+            <BitmapImage x:Key="CollapseAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/collapse-all.png" />
+            <BitmapImage x:Key="ExpandAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/expand-all.png" />
 
             <converters:BooleanToNullableDoubleConverter x:Key="BoolToDouble" />
             <converters:TemplateCommandParameterToTupleConverter x:Key="TemplateCommandParameterToTuple" />
@@ -56,7 +58,8 @@
             <converters:AnnotationToCodeStringConverter x:Key="AnnotationToCodeString" />
             <converters:AnnotateDeclarationCommandParameterToTupleConverter x:Key="AnnotateDeclarationCommandParameterToTuple" />
             <converters:AnnotateDeclarationCommandCEVisibilityConverter x:Key="AnnotateDeclarationCommandVisibility" />
-
+            <converters:DeclarationToDeclarationTypeStringConverter x:Key="DeclarationTypeNameConverter" />
+            
             <CompositeCollection x:Key="AddModuleCommands" x:Shared="False">
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddExistingFileText}"
                           Command="{Binding ImportCommand}"
@@ -381,6 +384,19 @@
                         </i:Interaction.Behaviors>
                     </MenuItem>
                 </Menu>
+
+                <Separator />
+
+                <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}" Margin="2"
+                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_CollapseAll}">
+                    <Image Source="{StaticResource CollapseAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                </Button>
+                
+                <Button Name="ExpandAll" Command="{Binding ExpandAllCommand}" Margin="2"
+                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_ExpandAll}">
+                    <Image Source="{StaticResource ExpandAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                </Button>
+                
             </ToolBar>
         </ToolBarTray>
 
@@ -473,7 +489,7 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Caption}"
+                    <MenuItem Header="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=Caption}"
                           Command="{Binding AddRemoveReferencesCommand}"
                           CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                         <MenuItem.Icon>
@@ -547,6 +563,9 @@
                                   Command="{Binding FindAllImplementationsCommand}"
                                   CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                     </MenuItem>
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=PeekDefinitionCommandText}"
+                              Command="{Binding PeekDefinitionCommand}"
+                              CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Indent}"
                               Command="{Binding IndenterCommand}"
                               CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
@@ -589,7 +608,8 @@
                     </HierarchicalDataTemplate.Resources>
                     <StackPanel Orientation="Horizontal">
                         <Grid>
-                            <Image Style="{StaticResource ToolbarIconStyle}">
+                            <Image Style="{StaticResource ToolbarIconStyle}" 
+                                   ToolTip="{Binding Converter={StaticResource DeclarationTypeNameConverter}}">
                                 <Image.Source>
                                     <MultiBinding Converter="{StaticResource NodeToIcon}">
                                         <MultiBinding.Bindings>
@@ -601,12 +621,14 @@
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>
-                            <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}" />
+                            <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}"
+                                   ToolTip="{Binding Converter={StaticResource DeclarationTypeNameConverter}}"/>
                         </Grid>
                         <TextBlock Style="{StaticResource TreeViewItemStyleModified}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
+
             <i:Interaction.Behaviors>
                 <controls:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
@@ -659,5 +681,12 @@
                 </WrapPanel>
             </ScrollViewer>
         </Border>
+
+        <Popup x:Name="PeekDefPopup" 
+               Placement="MousePoint" 
+               IsOpen="{Binding ShowPeekDefinitionPopup, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+               StaysOpen="True">
+            <controls:PeekControl DataContext="{Binding PeekDefinitionViewModel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+        </Popup>
     </Grid>
 </UserControl>

@@ -36,12 +36,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _indenter = indenter;
             _navigateCommand = navigateCommand;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             if (_state.Status != ParserState.Ready)
             {

@@ -62,6 +62,8 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.UI.Refactorings.AnnotateDeclaration;
 using Rubberduck.Refactoring.ParseTreeValue;
 using System.IO.Abstractions;
+using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.UI.Command.ComCommands;
 
 namespace Rubberduck.Root
 {
@@ -147,11 +149,16 @@ namespace Rubberduck.Root
                     Dependency.OnComponent("attributesComponentSourceCodeProvider", typeof(SourceFileHandlerComponentSourceCodeHandlerAdapter)))
                 .LifestyleSingleton());
 
+            container.Register(Component.For<CodeExplorerViewModel>()
+                .Forward<IPeekDefinitionPopupProvider>()
+                .LifestyleSingleton());
+
             container.Register(Component.For<TestExplorerModel>()
                 .LifestyleSingleton());
             container.Register(Component.For<IVBEInteraction>()
                 .ImplementedBy<VBEInteraction>()
                 .LifestyleSingleton());
+
 
             RegisterSettingsViewModel(container);
             RegisterRefactoringPreviewProviders(container);
@@ -590,6 +597,7 @@ namespace Rubberduck.Root
                 typeof(CodePaneRefactoringsParentMenu),
                 typeof(AnnotateParentMenu),
                 typeof(SmartIndenterParentMenu),
+                typeof(PeekDefinitionCommandMenuItem),
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
                 typeof(FindAllImplementationsCommandMenuItem),
@@ -657,6 +665,7 @@ namespace Rubberduck.Root
             return new[]
             {
                 typeof(ProjectExplorerRefactorRenameCommandMenuItem),
+                typeof(ProjectExplorerPeekDefinitionCommandMenuItem),
                 typeof(ProjectExplorerFindSymbolCommandMenuItem),
                 typeof(ProjectExplorerFindAllReferencesCommandMenuItem),
                 typeof(ProjectExplorerFindAllImplementationsCommandMenuItem),
@@ -736,7 +745,7 @@ namespace Rubberduck.Root
                 typeof(RefactorExtractMethodCommandMenuItem),
                 typeof(RefactorReorderParametersCommandMenuItem),
                 typeof(RefactorRemoveParametersCommandMenuItem),
-                typeof(RefactorIntroduceParameterCommandMenuItem),
+                typeof(RefactorPromoteToParameterCommandMenuItem),
                 typeof(RefactorIntroduceFieldCommandMenuItem),
                 typeof(RefactorEncapsulateFieldCommandMenuItem),
                 typeof(RefactorMoveCloserToUsageCommandMenuItem),
@@ -753,6 +762,7 @@ namespace Rubberduck.Root
             {
                 typeof(CodeExplorerCommandMenuItem),
                 typeof(RegexSearchReplaceCommandMenuItem),               
+                //typeof(PeekDefinitionCommandMenuItem),
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
                 typeof(FindAllImplementationsCommandMenuItem)

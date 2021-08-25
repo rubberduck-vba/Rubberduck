@@ -120,156 +120,20 @@
   <data name="CancelButtonText" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
-  <data name="DeclarationType_ClassModule" xml:space="preserve">
-    <value>Klasse</value>
-  </data>
-  <data name="DeclarationType_Constant" xml:space="preserve">
-    <value>Konstante</value>
-  </data>
-  <data name="DeclarationType_Enumeration" xml:space="preserve">
-    <value>Enum</value>
-  </data>
-  <data name="DeclarationType_EnumerationMember" xml:space="preserve">
-    <value>Enum-Element (Konstante)</value>
-  </data>
-  <data name="DeclarationType_Event" xml:space="preserve">
-    <value>Ereignis</value>
-  </data>
-  <data name="DeclarationType_Function" xml:space="preserve">
-    <value>Funktion</value>
-  </data>
-  <data name="DeclarationType_LibraryFunction" xml:space="preserve">
-    <value>Bibliotheks-Funktion</value>
-  </data>
-  <data name="DeclarationType_ProceduralModule" xml:space="preserve">
-    <value>Modul</value>
-  </data>
-  <data name="DeclarationType_Parameter" xml:space="preserve">
-    <value>Parameter</value>
-  </data>
-  <data name="DeclarationType_Procedure" xml:space="preserve">
-    <value>Prozedur</value>
-  </data>
-  <data name="DeclarationType_PropertyGet" xml:space="preserve">
-    <value>Get-Eigenschaftsprozedur</value>
-  </data>
-  <data name="DeclarationType_PropertyLet" xml:space="preserve">
-    <value>Let-Eigenschaftsprozedur</value>
-  </data>
-  <data name="DeclarationType_PropertySet" xml:space="preserve">
-    <value>Set-Eigenschaftsprozedur</value>
-  </data>
-  <data name="DeclarationType_UserDefinedType" xml:space="preserve">
-    <value>Nutzerdefinierter Typ</value>
-  </data>
-  <data name="DeclarationType_UserDefinedTypeMember" xml:space="preserve">
-    <value>Element eines nutzerdefinierten Typs</value>
-  </data>
-  <data name="DeclarationType_Variable" xml:space="preserve">
-    <value>Variable</value>
-  </data>
   <data name="NameLabelText" xml:space="preserve">
     <value>Name:</value>
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
-  <data name="RenameDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Umbenennen</value>
-  </data>
-  <data name="RenameDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Bitte geben Sie einen neuen Namen für {0} '{1}' an.</value>
-    <comment>0: Deklarationstyp; 1: Identifikationsname</comment>
-  </data>
-  <data name="RenameDialog_TitleText" xml:space="preserve">
-    <value>Identifikator umbenennen</value>
-  </data>
-  <data name="DeclarationType_LineLabel" xml:space="preserve">
-    <value>Sprungmarke</value>
-  </data>
-  <data name="CodeInspections_Inspecting" xml:space="preserve">
-    <value>Inspiziere...</value>
-  </data>
-  <data name="ExtractMethod_OutputNone" xml:space="preserve">
-    <value>(nichts)</value>
-  </data>
   <data name="Parsing" xml:space="preserve">
     <value>(Parse...)</value>
-  </data>
-  <data name="ReorderParamsDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Parameter umordnen</value>
-  </data>
-  <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Wählen sie einen Parameter und bewegen Sie ihn mit der Maus oder den Schaltflächen nach oben oder unten.</value>
-  </data>
-  <data name="ReorderParamsDialog_MoveDownButtonText" xml:space="preserve">
-    <value>Nach unten</value>
-  </data>
-  <data name="ReorderParamsDialog_MoveUpButtonText" xml:space="preserve">
-    <value>Nach oben</value>
-  </data>
-  <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
-    <value>Parameter umordnen</value>
-  </data>
-  <data name="DeclarationType_Control" xml:space="preserve">
-    <value>VBDesigner-Objekt</value>
-  </data>
-  <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
-    <value>Optionale Parameter müssen am Ende der Parameterliste deklariert werden.</value>
-  </data>
-  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
-    <value>Weniger als zwei Parameter für die Methode '{0}'.</value>
-    <comment>0: Gewähltes Ziel</comment>
   </data>
   <data name="AllReferences_NoneFound" xml:space="preserve">
     <value>Keine Referenzen für '{0}' gefunden.</value>
   </data>
-  <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
-    <value>ParamArray-Parameter muss als letztes spezifiziert werden.</value>
-  </data>
-  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
-    <value>Keine Parameter in Methode '{0}'.</value>
-    <comment>0: Gewähltes Ziel</comment>
-  </data>
   <data name="AllReferences_Caption" xml:space="preserve">
     <value>Alle Referenzen: '{0}'</value>
-  </data>
-  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
-    <value>Parameter entfernen</value>
-  </data>
-  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>Die Methode '{0}' implementiert '{1}.{2}'. Signatur Ändern? (Wird auf alle Implementierungen angewendet)</value>
-    <comment>0: Gewähltes Ziel; 1: Name des Interfaces; 2: Name des Interfacemembers</comment>
-  </data>
-  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
-    <value>Kann den letzten Parameter eines Setters oder Letters nicht entfernen.</value>
-  </data>
-  <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
-    <value>Die aktuelle Auswahl kann nicht extrahiert werden.</value>
-  </data>
-  <data name="ExtractMethod_AccessibilityLabel" xml:space="preserve">
-    <value>Zugriffsebene:</value>
-  </data>
-  <data name="ExtractMethod_Caption" xml:space="preserve">
-    <value>Rubberduck - Methode Extrahieren</value>
-  </data>
-  <data name="ExtractMethod_InstructionsText" xml:space="preserve">
-    <value>Bitte spezifizieren Sie Methodenname, Rückgabetyp und/oder Parameter (falls anwendbar), sowie andere Optionen.</value>
-  </data>
-  <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
-    <value>Parameter:</value>
-  </data>
-  <data name="ExtractMethod_PreviewLabel" xml:space="preserve">
-    <value>Vorschau:</value>
-  </data>
-  <data name="ExtractMethod_ReturnLabel" xml:space="preserve">
-    <value>Rückgabe:</value>
-  </data>
-  <data name="ExtractMethod_SetBoxLabel" xml:space="preserve">
-    <value>Set</value>
-  </data>
-  <data name="ExtractMethod_TitleText" xml:space="preserve">
-    <value>Methode extrahieren</value>
   </data>
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Klasse oder Element '{0}' ist nicht implementiert.</value>
@@ -307,12 +171,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementierungen von '{0}'</value>
   </data>
-  <data name="CodeInspections" xml:space="preserve">
-    <value>Code Untersuchung</value>
-  </data>
-  <data name="CodeInspections_Run" xml:space="preserve">
-    <value>Code-Untersuchung ausführen</value>
-  </data>
   <data name="Fix" xml:space="preserve">
     <value>Beheben</value>
   </data>
@@ -346,14 +204,8 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Type" xml:space="preserve">
     <value>Typ</value>
   </data>
-  <data name="TodoExplorer_Caption" xml:space="preserve">
-    <value>ToDo Liste</value>
-  </data>
   <data name="Warning" xml:space="preserve">
     <value>Warnung</value>
-  </data>
-  <data name="EasterEgg_Continuator" xml:space="preserve">
-    <value>Sie haben das Abzeichen "Continuator" erhalten!</value>
   </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Modul-Optionen sollten zuerst deklariert werden</value>
@@ -369,12 +221,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="Language_FR" xml:space="preserve">
     <value>Französisch</value>
-  </data>
-  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Parameter entfernen</value>
-  </data>
-  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Wählen Sie einen Parameter und benutzen Sie die Schaltflächen oder doppelklicken Sie um ihn zu bewegen oder zu löschen.</value>
   </data>
   <data name="Restore" xml:space="preserve">
     <value>Wiederherstellen</value>
@@ -394,32 +240,8 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Rename" xml:space="preserve">
     <value>Umbenennen</value>
   </data>
-  <data name="CodeInspections_CopyToolTip" xml:space="preserve">
-    <value>Untersuchungsergebnisse in Zwischenablage kopieren</value>
-  </data>
   <data name="Go" xml:space="preserve">
     <value>Los</value>
-  </data>
-  <data name="CodeInspections_GoToolTip" xml:space="preserve">
-    <value>Zum ausgewählten Problem navigieren</value>
-  </data>
-  <data name="CodeInspections_NextToolTip" xml:space="preserve">
-    <value>Zum nächsten Problem navigieren</value>
-  </data>
-  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
-    <value>Zum vorigen Problem navigieren</value>
-  </data>
-  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
-    <value>Das Problem beheben</value>
-  </data>
-  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
-    <value>Code-Untersuchung ausführen</value>
-  </data>
-  <data name="TodoExplorer_Description" xml:space="preserve">
-    <value>Beschreibung</value>
-  </data>
-  <data name="TodoExplorer_LineNumber" xml:space="preserve">
-    <value>Zeilennummer</value>
   </data>
   <data name="ProjectName" xml:space="preserve">
     <value>Projektname</value>
@@ -436,60 +258,20 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Project" xml:space="preserve">
     <value>Projekt</value>
   </data>
-  <data name="DeclarationType_Project" xml:space="preserve">
-    <value>Projekt</value>
-  </data>
   <data name="Change" xml:space="preserve">
     <value>Ändern</value>
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Entfernen</value>
   </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Markierungstext:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Markierungen:</value>
-  </data>
   <data name="Navigation" xml:space="preserve">
     <value>Navigation</value>
-  </data>
-  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>Methode '{0}' implementiert '{1}.{2}'. Wollen Sie den Interfacemember umbenennen?</value>
-    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
   <data name="OK_AllCaps" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="New" xml:space="preserve">
     <value>Neu</value>
-  </data>
-  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>Der neue Name '{0}' kollidiert mit dem Namen des existierenden Elements '{1}'. '{2}' in '{0}' umzubenennen kann zu nicht kompilierbarem Code oder einer Änderung der Logik führen.
-Wollen Sie trotzdem fortfahren?</value>
-  </data>
-  <data name="Rename_DeclarationType" xml:space="preserve">
-    <value>{0} Umbenennen</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
-    <value>{0} Problem</value>
-  </data>
-  <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
-    <value>{0} ({1} Probleme)</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck Code Untersuchung - {0} 
-{1} Problem gefunden.</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
-    <value>{0} Probleme</value>
-  </data>
-  <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
-    <value>{0} ({1} Problem)</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck Code Untersuchung - {0} 
-{1} Probleme gefunden.</value>
   </data>
   <data name="Language_DE" xml:space="preserve">
     <value>Deutsch</value>
@@ -506,71 +288,11 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
     <value>Suche Symbol</value>
   </data>
-  <data name="ExtractInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Extrahiere Interface</value>
-  </data>
   <data name="DeselectAll_Button" xml:space="preserve">
     <value>Alles abwählen</value>
   </data>
   <data name="SelectAll_Button" xml:space="preserve">
     <value>Alles auswählen</value>
-  </data>
-  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
-    <value>Extrahiere Interface</value>
-  </data>
-  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
-    <value>Elemente</value>
-  </data>
-  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
-    <value>Bitte spezifizieren Sie den Interfacenamen und die Elemente.</value>
-  </data>
-  <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
-    <value>Die Auswahl ist keine Variable.</value>
-  </data>
-  <data name="EncapsulateField_Caption" xml:space="preserve">
-    <value>Rubberduck - Gekapseltes Feld</value>
-  </data>
-  <data name="EncapsulateField_Preview" xml:space="preserve">
-    <value>Vorschau:</value>
-  </data>
-  <data name="EncapsulateField_PropertyName" xml:space="preserve">
-    <value>Eigenschaftsname:</value>
-  </data>
-  <data name="EncapsulateField_TitleText" xml:space="preserve">
-    <value>Feld Kapseln</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
-    <value>'{0}' hat keine Referenzen.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
-    <value>'{0}' hat Referenzen in mehrere Methoden.</value>
-  </data>
-  <data name="IntroduceField_Caption" xml:space="preserve">
-    <value>Rubberduck - Feld einfügen</value>
-  </data>
-  <data name="IntroduceParameter_Caption" xml:space="preserve">
-    <value>Rubberduck - Parameter einfügen</value>
-  </data>
-  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
-    <value>Methode '{0}' implementiert '{1}.{2}'. Ändern der Interface Signatur? (Wird auf alle Implementierungen angewendet.)</value>
-  </data>
-  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
-    <value>Rubberduck - Näher an die Nutzung führen</value>
-  </data>
-  <data name="EncapsulateField_InstructionText" xml:space="preserve">
-    <value>Bitte wählen Sie ein oder mehrere Felder, die gekapselt werden sollen. Die Eigenschaftsnamen könne vor dem bestätigen geändert werden.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
-    <value>Ungültige Auswahl.</value>
-  </data>
-  <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
-    <value>Die aktuelle Auswahl ist ungültig.</value>
-  </data>
-  <data name="ImplementInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Interface Implementieren</value>
-  </data>
-  <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
-    <value>Anzeigesprache:</value>
   </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Schweregrad:</value>
@@ -587,95 +309,8 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
     <value>Standardabstand</value>
   </data>
-  <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
-    <value>Beschreibung</value>
-  </data>
-  <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
-    <value>Aktiv</value>
-  </data>
-  <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
-    <value>Richte Kommentare am Code aus</value>
-  </data>
-  <data name="IndenterSettings_AlignContinuations" xml:space="preserve">
-    <value>Richte Fortsetzung aus</value>
-  </data>
-  <data name="IndenterSettings_AlignDims" xml:space="preserve">
-    <value>Ausrichtung der Deklarationen</value>
-  </data>
-  <data name="IndenterSettings_AlignmentOptionsLabel" xml:space="preserve">
-    <value>Ausrichtungsoptionen</value>
-  </data>
-  <data name="IndenterSettings_EnableOptionsLabel" xml:space="preserve">
-    <value>Optionen freigeben</value>
-  </data>
-  <data name="IndenterSettings_EnableUndo" xml:space="preserve">
-    <value>Rückgängig freigeben</value>
-  </data>
-  <data name="IndenterSettings_EndOfLineCommentStyle" xml:space="preserve">
-    <value>Zeilenende Kommentarstil:</value>
-  </data>
-  <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
-    <value>Erzwinge Kompilerdirektiven in Spalte 1</value>
-  </data>
-  <data name="IndenterSettings_ForceDebugDirectivesToColumn1" xml:space="preserve">
-    <value>Erzwinge Debugdirektiven in Spalte 1</value>
-  </data>
-  <data name="IndenterSettings_IgnoreOperators" xml:space="preserve">
-    <value>Ignoriere Operatoren</value>
-  </data>
-  <data name="IndenterSettings_IndentCase" xml:space="preserve">
-    <value>Rücke 'Case' ein</value>
-  </data>
-  <data name="IndenterSettings_IndentCompilerDirectives" xml:space="preserve">
-    <value>Rücke Kompilerdirektiven ein</value>
-  </data>
-  <data name="IndenterSettings_IndentEntireProcedureBody" xml:space="preserve">
-    <value>Rücke gesamten Prozedurblock ein</value>
-  </data>
-  <data name="IndenterSettings_IndentFirstCommentBlock" xml:space="preserve">
-    <value>Rücke ersten Kommentarblock ein</value>
-  </data>
-  <data name="IndenterSettings_IndentFirstDeclarationBlock" xml:space="preserve">
-    <value>Rücke ersten Deklarationsblock ein</value>
-  </data>
-  <data name="IndenterSettings_IndentOptionsLabel" xml:space="preserve">
-    <value>Rücke Optionen ein</value>
-  </data>
-  <data name="IndenterSettings_IndentSpaces" xml:space="preserve">
-    <value>Einrückungsleerzeichen:</value>
-  </data>
-  <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
-    <value>Spezielle Optionen</value>
-  </data>
-  <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
-    <value>Nach Modul</value>
-  </data>
-  <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
-    <value>Nach Inspektionstyp</value>
-  </data>
-  <data name="CodeInspectionResults_Issue" xml:space="preserve">
-    <value>Problem</value>
-  </data>
-  <data name="CodeInspectionResults_Location" xml:space="preserve">
-    <value>Ort</value>
-  </data>
-  <data name="CodeInspectionResults_Type" xml:space="preserve">
-    <value>Typ</value>
-  </data>
-  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
-    <value>Gruppierung</value>
-  </data>
-  <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
-    <value>Nach Inspektionstyp</value>
-  </data>
   <data name="GroupingStyle_ByLocation" xml:space="preserve">
     <value>Nach Ort</value>
-  </data>
-  <data name="GroupingStyle_ByOutcome" xml:space="preserve">
-    <value>Nach Ergebnis</value>
-  </data>
-  <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
-    <value>Tastenkürzel:</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Einstellungen</value>
@@ -731,21 +366,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Parse alle offenen Projekte</value>
   </data>
-  <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
-    <value>Strg</value>
-  </data>
-  <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
-    <value>Alt</value>
-  </data>
-  <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
-    <value>Taste2</value>
-  </data>
-  <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
-    <value>Taste1</value>
-  </data>
-  <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
-    <value>Umschalt</value>
-  </data>
   <data name="CommonHotkey_InvalidKey" xml:space="preserve">
     <value>Ungültiges Zeichen.</value>
   </data>
@@ -758,53 +378,11 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>Hotkey ({0}) ist nicht registriert.</value>
   </data>
-  <data name="GroupingStyle_ByMarker" xml:space="preserve">
-    <value>Nach Markierung</value>
-  </data>
-  <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
-    <value>Bibliotheksprozedur</value>
-  </data>
   <data name="Find" xml:space="preserve">
     <value>Suchen</value>
   </data>
-  <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
-    <value>Punkte (.)</value>
-  </data>
-  <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
-    <value>Ordner-Trennzeichen:</value>
-  </data>
-  <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
-    <value>Schrägstrich (/)</value>
-  </data>
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Parserfehler</value>
-  </data>
-  <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
-    <value>Minimale Logging-Empfindlichkeit:</value>
-  </data>
-  <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
-    <value>Debugging</value>
-  </data>
-  <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
-    <value>Fehler</value>
-  </data>
-  <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
-    <value>Fatal</value>
-  </data>
-  <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
-    <value>Informationen</value>
-  </data>
-  <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
-    <value>Kein Logging</value>
-  </data>
-  <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
-    <value>Spuren</value>
-  </data>
-  <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
-    <value>Warnung</value>
-  </data>
-  <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
-    <value>Logging-Ordner anzeigen</value>
   </data>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Löse Referenzen auf...</value>
@@ -815,73 +393,11 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="RubberduckFatalError" xml:space="preserve">
     <value>In Rubberduck ist ein Fehler aufgetreten. Bitte speichern Sie Ihre Arbeit und starten Sie das Hostprogramm neu. Laden Sie dann Ihre Logdatei zu unserer GitHub-Seite hoch.</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
-    <value>Explizit erlaubte Namen</value>
-  </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
-    <value>Diese Namen werden von der Inspektion "Nutze aussagekräftige Namen" ignoriert.</value>
-  </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Inspektionsschwere</value>
-  </data>
-  <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
-    <value>Kommentare in Enums und Typen wie in Prozeduren einrücken</value>
-  </data>
-  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
-    <value>Inspektionen nach erfolgreichem Parsen automatisch starten</value>
-  </data>
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck wird nicht neu geladen</value>
   </data>
-  <data name="GeneralSettings_ShowSplash" xml:space="preserve">
-    <value>Ein Startlogo zu Beginn zeigen</value>
-  </data>
-  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
-    <value>Verschiedenes</value>
-  </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Werkzeugfenster wurden nicht korrekt entfernt und/oder konnten nicht wieder hergestellt werden; Die VBE könnte instabil sein. Rubberduck wird beim nächsten Start der VBE normal laden.</value>
-  </data>
-  <data name="IndenterSettings_PreviewCode" xml:space="preserve">
-    <value>Public Enum BeispielEnum
-' Enum Kommentar.
-Foo
-Bar ' Element-Kommentar.
-End Enum
-
-' Beispielprozedur
-Sub BeispielProc()
-
-' SMART INDENTER
-' Der originale VB6-Code wurde Rubberduck gnädigerweise von Stephen Bullen &amp; Rob Bovey angeboten
-' © 2016 by Rubberduck VBA.
-
-Dim zaehler As Integer
-Static name As String
-
-If SieMoegenRubberduck Then
-' Einen Stern auf GitHub geben: http://github.com/rubberduck-vba/Rubberduck
-' Auf Twitter folgen @rubberduckvba
-' http://rubberduckvba.com für Neuigkeiten und Aktualisierungen
-
-Select Case X
-Case "A"
-' Falls sie Kommentare oder Vorschläge haben, _
-oder validen VBA code gefunden haben, der nicht korrekt eingerückt wird,
-
-#If VBA6 Then
-MsgBox "Kontaktieren Sie contact@rubberduck-vba.com"
-#End If
-
-Case "Fortgeführte Strings und Parameter können" _
-&amp; "zur Lesbarkeit aufgereiht werden. Optional können" _
-&amp; "beliebige Operatoren (&amp;+, usw.) am Zeilenbeginn ignoriert werden."
-
-Debug.Print "X&lt;&gt;1"
-End Select      'Case X
-End If      'Mehr Werkzeuge? Vorschläge an http://github.com/rubberduck-vba/Rubberduck/Issues/New
-
-End Sub</value>
   </data>
   <data name="ParserErrorToolTipText" xml:space="preserve">
     <value>{0} Modul(e) konnten nicht geparsed werden; Klicken Sie für Details.</value>
@@ -896,30 +412,6 @@ End Sub</value>
     <value>Einstellungen für Smart Indenter wurden in der Registry gefunden.
 Möchten sie die Einstellungen in Rubberduck importieren?</value>
   </data>
-  <data name="GeneralSettings_CheckVersion" xml:space="preserve">
-    <value>Beim Start prüfen, ob eine neuere Version verfügbar ist.</value>
-  </data>
-  <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
-    <value>Variablenname der Lokalen Kopie festlegen</value>
-  </data>
-  <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
-    <value>Eingerücktes Codebeispiel</value>
-  </data>
-  <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Bitte geben Sie einen Namen für die lokale Kopie von ByVal {0} '{1}'.</value>
-  </data>
-  <data name="IndenterSettings_VerticalSpacing" xml:space="preserve">
-    <value>Vertikalen Abstand aufrecht erhalten</value>
-  </data>
-  <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
-    <value>Vertikalen Abstand</value>
-  </data>
-  <data name="DeclarationType_BracketedExpression" xml:space="preserve">
-    <value>Laufzeitausdruck</value>
-  </data>
-  <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
-    <value>ByVal zugewiesener Parameter QuickFix - Lokale Kopie erstellen</value>
-  </data>
   <data name="WindowSettings_StartupVisibilityHeader" xml:space="preserve">
     <value>Fenstersichtbarkeit beim Start</value>
   </data>
@@ -931,23 +423,11 @@ Um den Change Log anzuschauen und Rubberduck manuell zu aktualisieren, klicken S
 
 Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Diese können unter Rubberduck &gt; Einstellungen deaktiviert werden.</value>
   </data>
-  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
-    <value>'{0}' ist in diesem Kontext bereits verfügbar.</value>
-  </data>
-  <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
-    <value>Bitte stellen Sie zur Umbenennung sicher, dass genau ein Control-Objekt ausgewählt ist.</value>
-  </data>
   <data name="ContextMultipleControlsSelection" xml:space="preserve">
     <value>Mehrere Schaltflächen</value>
   </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>Variable '{0}' ist zugewiesen. Zuweisung(en) entfernen?</value>
-  </data>
-  <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
-    <value>Konnte Interfacemitglied {0} nicht umbenennen.</value>
-  </data>
-  <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
-    <value>Konnte {0} nicht umbenennen.</value>
   </data>
   <data name="Preview" xml:space="preserve">
     <value>Vorschau</value>
@@ -955,61 +435,11 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   <data name="EmptyUIRefreshMessage" xml:space="preserve">
     <value>Um die Projekte in der VBE zu parsen und zu analysieren.</value>
   </data>
-  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
-    <value>VB Dateien</value>
-  </data>
-  <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
-    <value>{0} {1} kann nicht geändert werden.</value>
-  </data>
-  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
-    <value>Methode '{0}' ist ein EventHandler für die Schaltfläche '{1}'. Nur die Schaltfläche kann umbenannt werden. Stattdessen '{1}' umbennen?</value>
-  </data>
-  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
-    <value>Alle Dateien</value>
-  </data>
-  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
-    <value>Quellcode aus Datei importieren</value>
-  </data>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck sieht noch nichts.</value>
   </data>
-  <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
-    <value>Auf eigene Verantwortung und Gefahr aktivieren. Aktivierung und / oder Verwendung von Funktionalitäten in dieser Sektion kann zu unvorhergesehenen Fehlern und unwiederbringlichem Datenverlust führen.</value>
-  </data>
-  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
-    <value>Die Methode '{0}' ist eine Implementierung des Ereignisses '{1}.{2}'. Stattdessen Ereignis '{2}' umbenennen?</value>
-  </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Einen Ordner als Ziel für den Quellcode von {0} wählen:</value>
-  </data>
-  <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
-    <value>Experimentelle Funktionalität:</value>
-  </data>
-  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
-    <value>In die Zwischenablage kopieren</value>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck TODO Markierungen - {0}
-{1} Markierungen gefunden.</value>
-  </data>
-  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
-    <value>{0}: {1} - {2}.{3} Zeile {4}.</value>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck TODO Markierungen - {0}
-{1} Markierungen gefunden.</value>
-  </data>
-  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
-    <value>Codemetrikergebnisse</value>
-  </data>
-  <data name="CodeMetrics_Complexity" xml:space="preserve">
-    <value>Zyklomatische Komplexität</value>
-  </data>
-  <data name="CodeMetrics_Lines" xml:space="preserve">
-    <value>Codezeilen</value>
-  </data>
-  <data name="CodeMetrics_Nesting" xml:space="preserve">
-    <value>Maximale Einrückung</value>
   </data>
   <data name="ParserState_Started" xml:space="preserve">
     <value>Gestartet</value>
@@ -1053,142 +483,23 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
     <value>Aktives Projekt exportieren</value>
   </data>
-  <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
-    <value>Tastenkürzel sollten Alt und/oder Strg verwenden.</value>
-  </data>
-  <data name="GeneralSettings_HotkeyRestrictionToolTip" xml:space="preserve">
-    <value>Die aktuellen Tastenkürzeleinstellungen könnten ungewollte Nebeneffekte haben.</value>
-  </data>
-  <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
-    <value>Warnung</value>
-  </data>
-  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
-    <value>Folgende(s) Projekt(e) können nicht kompiliert werden. Dies führt höchstwahrscheinlich zu Parserfehlern. Trotzdem fortfahren? {0}</value>
-  </data>
-  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
-    <value>Konnte nicht vor dem Parsen kompilieren.</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
-    <value>Code vor dem Parsen kompilieren</value>
-  </data>
-  <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
-    <value>Die VBE-Einstellung "Bei Bedarf Kompilieren" ist aktuell eingeschalten. Dies ist nicht empfohlen, da Kompilierungsfehler und Probleme beim Parsen versteckt werden können. Trotzdem Parsen?</value>
-  </data>
-  <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
-    <value>Einstellung "Bei Bedarf Kompilieren"</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
-    <value>Die VBE-Einstellung "Bei Bedarf Kompilieren" ist aktuell eingeschalten. Wir raten stark dazu, diese Option über den Einstellungsdialog unter "Allgemein" auszuschalten, um das "Vor dem Parsen kompilieren"-Feature zu nutzen. Die Einstellung jetzt anpassen?
-
-ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
-  </data>
-  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
-    <value>"Bei Bedarf Kompilieren" ist aktuell eingeschalten</value>
-  </data>
   <data name="Add" xml:space="preserve">
     <value>Hinzufügen</value>
-  </data>
-  <data name="TodoMarkerBug" xml:space="preserve">
-    <value>BUG</value>
-  </data>
-  <data name="TodoMarkerNote" xml:space="preserve">
-    <value>NOTE</value>
-  </data>
-  <data name="TodoMarkerTodo" xml:space="preserve">
-    <value>TODO</value>
   </data>
   <data name="IndentCurrentProject" xml:space="preserve">
     <value>Aktuelles Projekt</value>
   </data>
-  <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
-    <value>Beschreibung:</value>
-  </data>
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Beschäftigt</value>
-  </data>
-  <data name="InspectionResults_FilterByError" xml:space="preserve">
-    <value>Fehler</value>
-  </data>
-  <data name="InspectionResults_FilterByHint" xml:space="preserve">
-    <value>Tipp</value>
-  </data>
-  <data name="InspectionResults_FilterBySuggestion" xml:space="preserve">
-    <value>Vorschlag</value>
-  </data>
-  <data name="InspectionResults_FilterByWarning" xml:space="preserve">
-    <value>Warnung</value>
-  </data>
-  <data name="GroupingGrid_FilterBy" xml:space="preserve">
-    <value>Filtern nach</value>
   </data>
   <data name="GroupingStyle_ByCategory" xml:space="preserve">
     <value>Nach Kategorie</value>
   </data>
-  <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
-    <value>Leerzeilen bei der Suche nach dem ersten Kommentar und nach Deklarationsblöcken ignorieren</value>
-  </data>
-  <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
-    <value>Schweregrad:</value>
-  </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Tschechisch</value>
   </data>
-  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
-    <value>Ignorieren</value>
-  </data>
-  <data name="EmptyLineHandling_Indent" xml:space="preserve">
-    <value>Einrücken</value>
-  </data>
-  <data name="EmptyLineHandling_Remove" xml:space="preserve">
-    <value>Entfernen</value>
-  </data>
-  <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
-    <value>Leerzeilenbehandlung:</value>
-  </data>
-  <data name="References_BrowseFilterAllFiles" xml:space="preserve">
-    <value>Alle Dateien(*.*)|*.*</value>
-  </data>
-  <data name="References_BrowseFilterExcel" xml:space="preserve">
-    <value>Microsoft-Excel-Dateien ({0})|{0}</value>
-  </data>
-  <data name="References_BrowseFilterPowerPoint" xml:space="preserve">
-    <value>PowerPoint-Addin-Dateien({0})|{0}</value>
-  </data>
-  <data name="References_BrowseFilterAccess" xml:space="preserve">
-    <value>Microsoft-Access-Datenbanken({0})|{0}</value>
-  </data>
-  <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
-    <value>Korrektur für hochauflösende Displayskalierung</value>
-  </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>TODO Explorer</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Text</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Text:</value>
-  </data>
   <data name="ReferenceSettings_FixBroken" xml:space="preserve">
     <value>Versuche fehlerhafte Referenzen zu reparieren</value>
-  </data>
-  <data name="References_Version" xml:space="preserve">
-    <value>Version:</value>
-  </data>
-  <data name="References_BrowseFilterActiveX" xml:space="preserve">
-    <value>ActiveX-Kontrollelemente (*.ocx)|*.ocx</value>
-  </data>
-  <data name="References_AddToolTip" xml:space="preserve">
-    <value>Zu Projekt hinzufügen</value>
-  </data>
-  <data name="References_CaptionTemplate" xml:space="preserve">
-    <value>Referenzen hinzufügen/entfernen - {0}</value>
-  </data>
-  <data name="References_Caption" xml:space="preserve">
-    <value>Referenzen hinzufügen/entfernen...</value>
-  </data>
-  <data name="References_BrowseFilterVisio" xml:space="preserve">
-    <value>Alle Visio-Dateien ({0})|{0}</value>
   </data>
   <data name="ApplyButtonText" xml:space="preserve">
     <value>Ausführen</value>
@@ -1196,74 +507,14 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="ReferenceSettings_FolderDialogHeader" xml:space="preserve">
     <value>Projektverzeichnis öffnen</value>
   </data>
-  <data name="References_BrowseCaption" xml:space="preserve">
-    <value>Verzeichnis der Referenz öffnen</value>
-  </data>
-  <data name="References_AddFailedCaption" xml:space="preserve">
-    <value>Hinzufügen der Referenz fehlgeschlagen</value>
-  </data>
-  <data name="References_BrowseFilterExecutable" xml:space="preserve">
-    <value>Ausführbare Dateien (*.exe;*.dll)|*.exe;*.dll</value>
-  </data>
-  <data name="References_Locale" xml:space="preserve">
-    <value>Sprache:</value>
-  </data>
-  <data name="References_BrowseFilterOutlook" xml:space="preserve">
-    <value>Outlook-VBA-Dateien ({0})|{0}</value>
-  </data>
-  <data name="References_PinToolTip" xml:space="preserve">
-    <value>Referenz anheften</value>
-  </data>
-  <data name="References_Pinned" xml:space="preserve">
-    <value>Angeheftet</value>
-  </data>
   <data name="ReferenceSettings_FoldersHeader" xml:space="preserve">
     <value>Projektverzeichnisse</value>
-  </data>
-  <data name="References_Projects" xml:space="preserve">
-    <value>Projekte</value>
-  </data>
-  <data name="References_BrowseFilterWord" xml:space="preserve">
-    <value>Word-Dokumente ({0})|{0}</value>
-  </data>
-  <data name="References_BrowseFilterTypes" xml:space="preserve">
-    <value>Typbibliotheken (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll</value>
-  </data>
-  <data name="References_TypeLibs" xml:space="preserve">
-    <value>Typbibliotheken</value>
   </data>
   <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
     <value>Verfolge nicht von Rubberduck hinzugefügte Referenzen</value>
   </data>
-  <data name="References_DefaultLocale" xml:space="preserve">
-    <value>Standard</value>
-  </data>
-  <data name="References_SubCaption" xml:space="preserve">
-    <value>Wähle Typbibliotheken und VB-Projekte zum Hinzufügen oder Entfernen.</value>
-  </data>
-  <data name="References_SearchPlaceholder" xml:space="preserve">
-    <value>Nach Referenz suchen...</value>
-  </data>
-  <data name="References" xml:space="preserve">
-    <value>Referenzen</value>
-  </data>
-  <data name="References_BrowseFilterPublisher" xml:space="preserve">
-    <value>Publisher-Dateien ({0}|{0}</value>
-  </data>
   <data name="ReferenceSettings_RecentTracked" xml:space="preserve">
     <value>Zuletzt verfolgte Referenzen:</value>
-  </data>
-  <data name="References_Recent" xml:space="preserve">
-    <value>Zuletzt verwendet</value>
-  </data>
-  <data name="References_RemoveToolTip" xml:space="preserve">
-    <value>Vom Projekt enfernen</value>
-  </data>
-  <data name="References_MoveDownToolTip" xml:space="preserve">
-    <value>Aufwärts bewegen</value>
-  </data>
-  <data name="References_MoveUpToolTip" xml:space="preserve">
-    <value>Abwärts bewegen</value>
   </data>
   <data name="MemberAttributeRecoveryRewriteFailedMessage" xml:space="preserve">
     <value>Das Wiederherstellen der Elementattribute ist fehlgeschlagen.</value>
@@ -1283,65 +534,8 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Performancewarnung</value>
   </data>
-  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
-    <value>'{0}' ist keine Nutzerdeklaration.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
-    <value>Die Variable '{0}' ist nicht im selben Projekt definiert, in dem sie verwendet wird.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
-    <value>Die Variable '{0}' ist weder in der Komponente definiert, in der sie verwendet wir, noch in einem Standardmodul.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
-    <value>'{0}' ist eine nicht private Modulvariable außerhalb eines Standardmoduls.</value>
-  </data>
-  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
-    <value>In der Methode, die '{0}' verwendet, referenziert der Name dieser Variable bereits die Deklaration '{1}.</value>
-  </data>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
-  </data>
-  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
-    <value>Refactoring fehlgeschlagen.</value>
-  </data>
-  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
-    <value>Es gibt keine aktive Selektion.</value>
-  </data>
-  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
-    <value>Es ist kein zulässiges Ziel selektiert.</value>
-  </data>
-  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
-    <value>Das Ziel des Refactorings ist null.</value>
-  </data>
-  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
-    <value>Es wurde kein Codemodul für das Zielmodul '{0}' gefunden.</value>
-  </data>
-  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
-    <value>Es wurde das Zielkontrollelement '{0}' nicht gefunden.</value>
-  </data>
-  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
-    <value>Das Ziel '{0}' ist ein Standardeventhandler, welcher nicht umbenannt werden kann.</value>
-  </data>
-  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
-    <value>Das Ziel ist nicht benutzerdefiniert.</value>
-  </data>
-  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
-    <value>Der Typ des Ziels '{0}'ist '{1}' anstatt des erwarteten Typs '{2}'.</value>
-  </data>
-  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
-    <value>Es ist keine Implements-Anweisung ausgewählt.</value>
-  </data>
-  <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
-    <value>Das Ziel '{0}' ist bereits ein Feld.</value>
-  </data>
-  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
-    <value>Das Ziel '{0}' ist nicht in einer Methode enthalten.</value>
-  </data>
-  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
-    <value>Der Typ des Ziels '{0}'ist '{1}' anstatt eines der erwarteten Typen '{2}'.</value>
-  </data>
-  <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>Filter</value>
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>Nach Codeuntersuchung</value>
@@ -1355,58 +549,17 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="InspectionResults_ExpandAll" xml:space="preserve">
     <value>Alle ausklappen</value>
   </data>
-  <data name="References_BrowseButtonText" xml:space="preserve">
-    <value>Durchsuchen...</value>
-  </data>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Speichern &amp; Schließen</value>
   </data>
-  <data name="TestOutcome_Fail" xml:space="preserve">
-    <value>Fehlgeschlagen</value>
-  </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Erfolgreich</value>
-  </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Unbekannt</value>
-  </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Uneindeutig</value>
-  </data>
-  <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
-    <value>'{0}' beginnt nicht mit einem Buchstaben.</value>
-  </data>
-  <data name="InvalidNameCriteria_ExceedsMaximumLengthFormat" xml:space="preserve">
-    <value>'{0}' überschreitet die maximal erlaubte Länge.</value>
-  </data>
-  <data name="InvalidNameCriteria_InvalidCharactersFormat" xml:space="preserve">
-    <value>'{0}' enthält mindestens ein anderes Sonderzeichen als der Unterstrich.</value>
-  </data>
-  <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">
-    <value>Bezeichner in VBA können nicht Null sein oder Länge Null haben.</value>
-  </data>
-  <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
-    <value>'{0}' ist ein reserviertes Schlüsselwort.</value>
-  </data>
   <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
     <value>Der Name '{0}' wird die "Sinnige Namen verwenden"-Inspektion auslösen.</value>
-  </data>
-  <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
-    <value>{0} Überlegen Sie, einen anderen Namen zu wählen.</value>
-  </data>
-  <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
-    <value>Informiere mich, wenn ein neuer Prerelease verfügbar ist.</value>
   </data>
   <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
     <value>Prerelease</value>
   </data>
   <data name="VersionCheck_BuildType_Release" xml:space="preserve">
     <value>Release</value>
-  </data>
-  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
-    <value>Die Dateierweiterung der Datei '{0}' wird nicht unterstützt.
-
-Import abgebrochen.</value>
   </data>
   <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Projektinhalt durch Inhalt von Dateien ersetzen</value>
@@ -1417,33 +570,10 @@ Import abgebrochen.</value>
   <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Komponenten aus Dateien aktualisieren</value>
   </data>
-  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
-    <value>Mehrere Dateien enthalten Code für die Komponente '{0}'.
-
-Import abgebrochen.</value>
-  </data>
   <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
     <value>Der Komponententyp der existierenden Komponente '{0}' stimmt nicht mit dem dem zur Dateierweiterung der Datei '{1}' gehörenden überein.
 
 Import abgebrochen.</value>
-  </data>
-  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
-    <value>Es existiert kein Dokumentenmodul namens '{0}', weshalb die Datei '{1}' nicht importiert werden kann.
-
-Import abgebrochen.</value>
-  </data>
-  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
-    <value>Für die Datei '{0}' fehlen die benötigte(n) Binärdatei(en) '{1}' und die Zielkomponente '{2}' existiert noch nicht.
-
-Import abgebrochen.</value>
-  </data>
-  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
-    <value>Für die Datei '{0}' fehlen die benötigte(n) Binärdatei(en) '{1}'.
-
-Import abgebrochen.</value>
-  </data>
-  <data name="TestExplorer_AppendHeader" xml:space="preserve">
-    <value>Rubberduck: Testergebnisse - {0}</value>
   </data>
   <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
     <value>ActiveX-Designer</value>
@@ -1487,220 +617,58 @@ Import abgebrochen.</value>
   <data name="ComponentType_UserControl" xml:space="preserve">
     <value>Benutzerkontrollelement</value>
   </data>
-  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
-    <value>Es war nicht möglich den Parser zum Ausführen des Refactorings temporär zu deaktivieren.</value>
+  <data name="GroupingStyle_ByOutcome" xml:space="preserve">
+    <value>Nach Ergebnis</value>
   </data>
-  <data name="MoveToFolderDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - In Ordner verschieben</value>
+  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
+    <value>Gruppierung</value>
   </data>
-  <data name="MoveToFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Bitte geben Sie einen neuen Ordner für {0} '{1}' im Ordner '{2}' an.</value>
+  <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
+    <value>Nach Inspektionstyp</value>
   </data>
-  <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
-    <value>In Ordner verschieben</value>
+  <data name="GroupingStyle_ByMarker" xml:space="preserve">
+    <value>Nach Markierung</value>
   </data>
-  <data name="MoveToFolderDialog_FolderLabelText" xml:space="preserve">
-    <value>Ordner:</value>
+  <data name="DeclarationType_Document" xml:space="preserve">
+    <value>Dokument</value>
   </data>
-  <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Bitte geben Sie einen neuen Ordner für die Komponenten an.</value>
+  <data name="CodeInspectionsWindowSettings_AccessKey" xml:space="preserve">
+    <value>Code _Untersuchung</value>
   </data>
-  <data name="MoveFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Bitte geben Sie einen Ordner an, in den der Unterordner '{0}' des Ordners '{1}' verschoben werden soll.</value>
+  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
+    <value>Zum vorigen Problem navigieren</value>
   </data>
-  <data name="MoveFoldersDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Bitte geben Sie einen Ordner an, in den die Ordner verschoben werden sollen.</value>
+  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
+    <value>Das Problem beheben</value>
   </data>
-  <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Bitte geben Sie einen Ordner an, in den der Ordner '{0}' verschoben werden soll.</value>
+  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
+    <value>Code-Untersuchung ausführen</value>
   </data>
-  <data name="MoveFoldersDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Ordner verschieben</value>
+  <data name="CodeInspections_Run" xml:space="preserve">
+    <value>Code-Untersuchung ausführen</value>
   </data>
-  <data name="MoveFoldersDialog_TitleText" xml:space="preserve">
-    <value>Ordner verschieben</value>
+  <data name="CodeInspections_GoToolTip" xml:space="preserve">
+    <value>Zum ausgewählten Problem navigieren</value>
   </data>
-  <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
-    <value>Es wurde kein Zielordner festgelegt.</value>
+  <data name="CodeInspections_NextToolTip" xml:space="preserve">
+    <value>Zum nächsten Problem navigieren</value>
   </data>
-  <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
-    <value>Die Komponente '{0}' würde durch das Refactoring verändert, aber ihr Inhalt ist in Rubberduck veraltet. Bitte lassen Sie Rubberduck seinen Stand aktualisieren und versuchen Sie es erneut.</value>
+  <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
+    <value>{0} {1} {2} {3} {4} {5}</value>
   </data>
-  <data name="AnnotateDeclarationDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Annotation hinzufügen</value>
+  <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
+    <value>ParamArray-Parameter muss als letztes spezifiziert werden.</value>
   </data>
-  <data name="AnnotateDeclarationDialog_TitleText" xml:space="preserve">
-    <value>Annotation hinzufügen</value>
+  <data name="TodoMarkerBug" xml:space="preserve">
+    <value>BUG</value>
   </data>
-  <data name="AnnotateDeclarationDialog_ArgumentsLabel" xml:space="preserve">
-    <value>Annotationsargumente:</value>
+  <data name="TodoMarkerNote" xml:space="preserve">
+    <value>NOTE</value>
   </data>
-  <data name="AnnotateDeclarationDialog_AnnotationLabel" xml:space="preserve">
-    <value>Hinzuzufügende Annotation:</value>
+  <data name="TodoMarkerTodo" xml:space="preserve">
+    <value>TODO</value>
   </data>
-  <data name="AnnotateDeclarationDialog_DeclarationLabel" xml:space="preserve">
-    <value>Deklaration, zu welcher eine Annotation hinzugefügt werden soll:</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_ArgumentValueHeader" xml:space="preserve">
-    <value>Wert</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_ArgumentTypeHeader" xml:space="preserve">
-    <value>Typ</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_RemoveArgumentButtonLabel" xml:space="preserve">
-    <value>Entfernen</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_AddArgumentButtonLabel" xml:space="preserve">
-    <value>Hinzufügen</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_Instructions" xml:space="preserve">
-    <value>Wählen Sie eine Annotation (und Werte), die zu der Deklaration hinzugefügt werden soll.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
-    <value>Annotationsargumente dürfen keine Kontrollzeichen enthalten.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_InspectionName" xml:space="preserve">
-    <value>Annotationsargumente vom Typ 'Inspektionsname' müssen der Name einer existierenden Inspektion sein.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_AttributeNameStart" xml:space="preserve">
-    <value>Annotationsargumente vom Typ 'Attributname' müssen mit 'VB_' anfangen.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
-    <value>Annotationsargumente vom Typ 'Zahl' müssen eine ganze Zahl oder eine Gleitkommazahl sein.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
-    <value>Annotationsargumente vom Typ 'Wahrheitswert' müssen entweder 'True' oder 'False' sein.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_EmptyArgument" xml:space="preserve">
-    <value>Annotationsargumente dürfen nicht leer sein.</value>
-  </data>
-  <data name="AnnotationArgumentType_Text" xml:space="preserve">
-    <value>Text</value>
-  </data>
-  <data name="AnnotationArgumentType_Number" xml:space="preserve">
-    <value>Zahl</value>
-  </data>
-  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
-    <value>Inspektionsname</value>
-  </data>
-  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
-    <value>Wahrheitswert</value>
-  </data>
-  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
-    <value>Attribut</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_Newline" xml:space="preserve">
-    <value>Annotationsargumente dürfen nur aus einer einzigen Zeile bestehen.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
-    <value>Annotationsargumente vom Typ 'Attributname' dürfen keine Leerzeichen enthalten.</value>
-  </data>
-  <data name="AnnotationArgument_ValidationError_TooLong" xml:space="preserve">
-    <value>Annotationsargumente dürfen nicht länger als {0} Zeihen sein.</value>
-  </data>
-  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
-    <value>Das Refactoring kann Annotationen nur zu Komponenten, Methoden und Variablen hinzufügen. Die Zieldeklaration hatte allerdings den Typ '{0}'.</value>
-  </data>
-  <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
-    <value>Es ist in VBA nicht möglich nur die Groß- und Kleinschreibung eines Namens zu ändern.</value>
-  </data>
-  <data name="MoveFolders_SameNameSubfolder" xml:space="preserve">
-    <value>Der Zielordner '{0}' enthält bereits einen Unterordner '{1}'. Die Ordner werden zusammengelegt, wenn der Ordner verschoben wird.
-Wollen Sie fortfahren?</value>
-  </data>
-  <data name="MoveFolders_SameNameSubfolders" xml:space="preserve">
-    <value>Der Zielordner '{0}' enthält bereits die Unterordner {1}. Gleichnamige Ordner werden verschmolzen, wenn die Ordner verschoben werden.
-Wollen Sie fortfahren?</value>
-  </data>
-  <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
-    <value>Mehrere Ordner mit demselben Namen werden verschoben. Dies wird Sie zusammenlegen.
-Wollen Sie fortfahren?</value>
-  </data>
-  <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
-    <value>Ordnernamen dürfen nicht leer sein.</value>
-  </data>
-  <data name="MoveFolders_ControlCharacter" xml:space="preserve">
-    <value>Ordnernamen dürfen keine Kontrollzeichen wie etwa Zeilenumbrüche enthalten.</value>
-  </data>
-  <data name="MoveFolders_EmptySubfolderName" xml:space="preserve">
-    <value>Die Namen individueller Unterordner dürfen nicht leer sein.</value>
-  </data>
-  <data name="RenameDialog_Folder" xml:space="preserve">
-    <value>Ordner</value>
-  </data>
-  <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
-    <value>Der Ordner '{0}' existiert bereits. '{1}' in '{2}. umzubenennen wird die Ordner verschmelzen.
-Wollen Sie fortfahren?</value>
-  </data>
-  <data name="RenameDialog_FolderLabel" xml:space="preserve">
-    <value>Ordner:</value>
-  </data>
-  <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
-    <value>Kompletter Ordnername:</value>
-  </data>
-  <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
-    <value>Ordner umbenennen</value>
-  </data>
-  <data name="GeneralSettings_EnableDragAndDrop" xml:space="preserve">
-    <value>Drag and Drop im Code Explorer aktivieren</value>
-  </data>
-  <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
-    <value>Attribut hinzufügen/anpassen</value>
-  </data>
-  <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
-    <value>Das Kapseln von '{0}' ist nicht möglich. Es existieren ReDim({0})-Anweisungen in anderen Modulen.</value>
-  </data>
-  <data name="EncapsulateField_ParameterName" xml:space="preserve">
-    <value>Parametername:</value>
-  </data>
-  <data name="EncapsulateField_PreviewMarker" xml:space="preserve">
-    <value>'&lt;===== Eigenschafts- und Deklarationsänderungen oberhalb dieser Zeile =====&gt;</value>
-  </data>
-  <data name="EncapsulateField_PrivateUDTPropertyText" xml:space="preserve">
-    <value>Erstellt eine Eigenschaft für jedes UDT-Element</value>
-  </data>
-  <data name="EncapsulateField_ReadOnlyCheckBoxContent" xml:space="preserve">
-    <value>Schreibgeschützt</value>
-  </data>
-  <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
-    <value>Felder in einem privaten Typ kapseln</value>
-  </data>
-  <data name="ExtractInterface_Private" xml:space="preserve">
-    <value>Privat</value>
-  </data>
-  <data name="ExtractInterface_Public" xml:space="preserve">
-    <value>Öffentlich</value>
-  </data>
-  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
-    <value>Die implementierende Klasse ist öffentlich, was es notwendig macht, dass die Schnittstelle ebenfalls öffentlich ist.
-Falls Sie eine 'private' Schnittstelle benötigen, machen Sie bitte die implementierende Klasse ebenfalls privat.
-Eine private Klasse kann eine private Schnittstelle implementieren.</value>
-  </data>
-  <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
-    <value>Namenskonflikt</value>
-  </data>
-  <data name="EncapsulateField_SetterType" xml:space="preserve">
-    <value>Typ des Schreibzugriffs:</value>
-  </data>
-  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
-    <value>Sichtbarkeit</value>
-  </data>
-  <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
-    <value>Implementierungsoptionen:</value>
-  </data>
-  <data name="ExtractInterface_OptionAddEmptyImplementation" xml:space="preserve">
-    <value>Füge leere Implementierung hinzu</value>
-  </data>
-  <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
-    <value>Ersetze Elemente durch Interface-Elemente</value>
-  </data>
-  <data name="TestOutcome_Ignored" xml:space="preserve">
-    <value>Ignoriert</value>
-  </data>
-  <data name="ExtractInterface_OptionForwardToInterfaceMembers" xml:space="preserve">
-    <value>Weiterreichen des Object Element Aufrufe an das Interface Element</value>
-  </data>
-  <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
-    <value>Weiterreichen der Interface Elemente Aufrufe an die Object Elemente</value>
+  <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
+    <value>Die Auswahl ist keine Variable.</value>
   </data>
 </root>

@@ -94,9 +94,9 @@ namespace Rubberduck.Refactorings.EncapsulateFieldInsertNewCode
                 return;
             }
 
-            var allNewContent = string.Join(NewLines.DOUBLE_SPACE, new string[] { newDeclarationSectionBlock });
+            var allNewContent = string.Join(NewLines.DOUBLE_SPACE, newDeclarationSectionBlock);
 
-            var previewMarker = model.NewContentAggregator.RetrieveBlock(RubberduckUI.EncapsulateField_PreviewMarker);
+            var previewMarker = model.NewContentAggregator.RetrieveBlock(RefactoringsUI.EncapsulateField_PreviewMarker);
             if (!string.IsNullOrEmpty(previewMarker))
             {
                 allNewContent = $"{allNewContent}{Environment.NewLine}{previewMarker}";

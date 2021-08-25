@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -19,6 +20,7 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.Templates;
 using Rubberduck.UI.CodeExplorer.Commands.DragAndDrop;
 using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.UI.Controls;
 using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -35,22 +37,30 @@ namespace Rubberduck.Navigation.CodeExplorer
         DeclarationTypeThenCodeLine = DeclarationType | CodeLine
     }
 
+    public interface IPeekDefinitionPopupProvider
+    {
+        void PeekDefinition(Declaration target);
+    }
+
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public sealed class CodeExplorerViewModel : ViewModelBase
+    public sealed class CodeExplorerViewModel : ViewModelBase, IPeekDefinitionPopupProvider
     {
         // ReSharper disable NotAccessedField.Local - The settings providers aren't used, but several enhancement requests will need them.
+#pragma warning disable IDE0052 // Remove unread private members
         private readonly RubberduckParserState _state;
         private readonly RemoveCommand _externalRemoveCommand;
-        private readonly IConfigurationService<GeneralSettings> _generalSettingsProvider;      
+        private readonly IConfigurationService<GeneralSettings> _generalSettingsProvider;
         private readonly IConfigurationService<WindowSettings> _windowSettingsProvider;
         private readonly IUiDispatcher _uiDispatcher;
         private readonly IVBE _vbe;
         private readonly ITemplateProvider _templateProvider;
+#pragma warning restore IDE0052 // Remove unread private members
         // ReSharper restore NotAccessedField.Local
 
         public CodeExplorerViewModel(
             RubberduckParserState state,
             RemoveCommand removeCommand,
+            PeekDefinitionNavigateCommand peekNavigateCommand,
             IConfigurationService<GeneralSettings> generalSettingsProvider, 
             IConfigurationService<WindowSettings> windowSettingsProvider, 
             IUiDispatcher uiDispatcher,
@@ -77,11 +87,15 @@ namespace Rubberduck.Navigation.CodeExplorer
             CollapseAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseNodes, EvaluateCanSwitchNodeState);
             ExpandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes, EvaluateCanSwitchNodeState);
             ClearSearchCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteClearSearchCommand);
+            CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAllCommand);
+            ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAllCommand);
             if (_externalRemoveCommand != null)
             {
                 RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, _externalRemoveCommand.CanExecute);
             }
 
+            PeekDefinitionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecutePeekDefinitionCommand, CanExecutePeekDefinitionCommand);
+            ClosePeekDefinitionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteClosePeekDefinitionCommand);
 
             OnPropertyChanged(nameof(Projects));
 
@@ -92,7 +106,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public ObservableCollection<ICodeExplorerNode> Projects { get; } = new ObservableCollection<ICodeExplorerNode>();
 
+#pragma warning disable IDE1006 // Naming Styles
         private ObservableCollection<Template> templates => _templateProvider.GetTemplates();
+#pragma warning restore IDE1006 // Naming Styles
 
         public ObservableCollection<Template> BuiltInTemplates =>
             new ObservableCollection<Template>(templates.Where(t => !t.IsUserDefined)
@@ -345,6 +361,22 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        private void ExecuteCollapseAllCommand(object parameter)
+        {
+            foreach (var project in Projects)
+            {
+                ExecuteCollapseNodes(project);
+            }
+        }
+
+        private void ExecuteExpandAllCommand(object parameter)
+        {
+            foreach (var project in Projects)
+            {
+                ExecuteExpandNodes(project);
+            }
+        }
+
         private bool EvaluateCanSwitchNodeState(object parameter)
         {
             return SelectedItem?.Children?.Any() ?? false;
@@ -420,7 +452,65 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CodeExplorerMoveToFolderDragAndDropCommand MoveToFolderDragAndDropCommand { get; set; }
 
-    public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
+        public CommandBase CollapseAllCommand { get; }
+        public CommandBase ExpandAllCommand { get; }
+
+        public CommandBase PeekDefinitionCommand { get; }
+        public CommandBase ClosePeekDefinitionCommand { get; }
+        public PeekDefinitionFindAllReferencesCommand PeekFindReferencesCommand { get; set; }
+        public PeekDefinitionNavigateCommand PeekNavigateCommand { get; set; }
+
+        private bool _showPeekDefinitionPopup;
+        public bool ShowPeekDefinitionPopup
+        {
+            get => _showPeekDefinitionPopup;
+            set
+            {
+                if (value != _showPeekDefinitionPopup)
+                {
+                    _showPeekDefinitionPopup = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private PeekDefinitionViewModel _peekDefinitionViewModel;
+        public PeekDefinitionViewModel PeekDefinitionViewModel
+        {
+            get => _peekDefinitionViewModel;
+            private set
+            {
+                if (_peekDefinitionViewModel != value)
+                {
+                    _peekDefinitionViewModel = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private void ExecutePeekDefinitionCommand(object param)
+        {
+            if (param is ICodeExplorerNode node)
+            {
+                PeekDefinitionViewModel = new PeekDefinitionViewModel(node, PeekFindReferencesCommand, PeekNavigateCommand, ClosePeekDefinitionCommand, _state);
+            }
+            else if (param is Declaration declaration)
+            {
+                PeekDefinitionViewModel = new PeekDefinitionViewModel(declaration, PeekFindReferencesCommand, PeekNavigateCommand, ClosePeekDefinitionCommand, _state);
+            }
+            else
+            {
+                PeekDefinitionViewModel = null;
+            }
+
+            ShowPeekDefinitionPopup = PeekDefinitionViewModel != null;
+        }
+
+        private void ExecuteClosePeekDefinitionCommand(object param) => ShowPeekDefinitionPopup = false;
+
+        private bool CanExecutePeekDefinitionCommand(object param) => param is Declaration || SelectedItem is CodeExplorerMemberViewModel || SelectedItem is CodeExplorerComponentViewModel;
+
+        public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
         {
             if (declaration == null)
             {
@@ -516,5 +606,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                 _generalSettingsProvider.SettingsChanged -= GeneralSettingsChanged;
             }
         }
+
+        // IPeekDefinitionPopupProvider.PeekDefinition
+        public void PeekDefinition(Declaration target) => ExecutePeekDefinitionCommand(target);
     }
 }

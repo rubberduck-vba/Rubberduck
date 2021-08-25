@@ -9,7 +9,7 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
-using Rubberduck.Resources;
+using Rubberduck.Resources.CodeExplorer;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
@@ -67,17 +67,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             MessageBox = messageBox;
             DeclarationFinderProvider = declarationFinderProvider;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
 
             ComponentTypesForExtension = ComponentTypeExtensions.ComponentTypesForExtension(_vbe.Kind);
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
-            AddToOnExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
+            AddToOnExecuteEvaluation(EvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             return _vbe.ProjectsCount == 1 || ThereIsAValidActiveProject();
         }
@@ -158,8 +158,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 dialog.ShowHelp = false;
                 dialog.Title = DialogsTitle;
                 dialog.Filter =
-                    $"{RubberduckUI.ImportCommand_OpenDialog_Filter_VBFiles} ({FilterExtension})|{FilterExtension}|" +
-                    $"{RubberduckUI.ImportCommand_OpenDialog_Filter_AllFiles}, (*.*)|*.*";
+                    $"{CodeExplorerUI.ImportCommand_OpenDialog_Filter_VBFiles} ({FilterExtension})|{FilterExtension}|" +
+                    $"{CodeExplorerUI.ImportCommand_OpenDialog_Filter_AllFiles}, (*.*)|*.*";
 
                 if (dialog.ShowDialog() != DialogResult.OK)
                 {
@@ -178,14 +178,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        protected virtual string DialogsTitle => RubberduckUI.ImportCommand_OpenDialog_Title;
+        protected virtual string DialogsTitle => CodeExplorerUI.ImportCommand_OpenDialog_Title;
 
         //TODO: Gather all conflicts and report them in one error dialog instead of reporting them one at a time.
         private void NotifyUserAboutAbortDueToUnsupportedFileExtensions(IEnumerable<string> fileNames)
         {
             var firstUnsupportedFile = fileNames.First(filename => !ImportableExtensions.Contains(Path.GetExtension(filename)));
             var unsupportedFileName = Path.GetFileName(firstUnsupportedFile);
-            var message = string.Format(RubberduckUI.ImportCommand_UnsupportedFileExtensions, unsupportedFileName);
+            var message = string.Format(CodeExplorerUI.ImportCommand_UnsupportedFileExtensions, unsupportedFileName);
             MessageBox.NotifyWarn(message, DialogsTitle);
         }
 
@@ -453,7 +453,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 .GroupBy(kvp => kvp.Value)
                 .First(moduleNameGroup => moduleNameGroup.Count() > 1)
                 .Key;
-            var message = string.Format(RubberduckUI.ImportCommand_DuplicateModule, firstDuplicateModuleName);
+            var message = string.Format(CodeExplorerUI.ImportCommand_DuplicateModule, firstDuplicateModuleName);
             MessageBox.NotifyWarn(message, DialogsTitle);
         }
 
@@ -476,7 +476,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             var firstNonExistingDocumentFilename = documentFiles.First(filename => !existingModules.ContainsKey(filename));
             var firstNonExistingDocumentModuleName = moduleNames[firstNonExistingDocumentFilename];
             var message = string.Format(
-                RubberduckUI.ImportCommand_DocumentDoesNotExist,
+                CodeExplorerUI.ImportCommand_DocumentDoesNotExist,
                 firstNonExistingDocumentModuleName,
                 firstNonExistingDocumentFilename);
             MessageBox.NotifyWarn(message, DialogsTitle);
@@ -487,7 +487,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             var firstFilenameForFileWithoutBinaryAndComponent = filesWithoutBinary.First();
             var missingBinariesOfFirstFilenameWithoutBinaryAndComponent = string.Join(", ", missingBinaries[firstFilenameForFileWithoutBinaryAndComponent]);
             var message = string.Format(
-                RubberduckUI.ImportCommand_BinaryDoesNotExist,
+                CodeExplorerUI.ImportCommand_BinaryDoesNotExist,
                 firstFilenameForFileWithoutBinaryAndComponent,
                 missingBinariesOfFirstFilenameWithoutBinaryAndComponent);
             MessageBox.NotifyWarn(message, DialogsTitle);
@@ -499,7 +499,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             var moduleNameOfFirstFilenameWithoutBinaryAndComponent = moduleNames[firstFilenameForFileWithoutBinaryAndComponent];
             var missingBinariesOfFirstFilenameWithoutBinaryAndComponent = string.Join("', '", missingBinaries[firstFilenameForFileWithoutBinaryAndComponent]);
             var message = string.Format(
-                RubberduckUI.ImportCommand_BinaryAndComponentDoNotExist,
+                CodeExplorerUI.ImportCommand_BinaryAndComponentDoNotExist,
                 firstFilenameForFileWithoutBinaryAndComponent,
                 moduleNameOfFirstFilenameWithoutBinaryAndComponent,
                 missingBinariesOfFirstFilenameWithoutBinaryAndComponent);

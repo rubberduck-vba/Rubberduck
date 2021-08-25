@@ -97,7 +97,7 @@ namespace Rubberduck.Refactoring.ParseTreeValue
             {
                 return false;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //even though a SyntaxErrorException/InputMismatchException is thrown, 
                 //this catch-all block seems to be needed(?)

@@ -23,6 +23,7 @@
             <BitmapImage x:Key="DeleteImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/todo-completed.png" />
             <BitmapImage x:Key="GroupByMarkerImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/sticky-note-pin.png" />
             <BitmapImage x:Key="GroupByLocationImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectClass.png" />
+            <BitmapImage x:Key="FilterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/Funnel.png" />
             <BitmapImage x:Key="SettingsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/gear.png" />
             <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
             <BitmapImage x:Key="ExpandAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/expand-all.png" />
@@ -46,6 +47,9 @@
                     <Style TargetType="Image">
                         <Setter Property="Height" Value="16" />
                     </Style>
+                    <Style TargetType="Label">
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                    </Style>
                 </ToolBar.Resources>
 
                 <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Refresh}" Command="{Binding RefreshCommand}">
@@ -60,7 +64,7 @@
 
                 <Separator />
 
-                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" VerticalContentAlignment="Center" />
+                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" />
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByMarker}"
@@ -76,13 +80,20 @@
 
                 <Separator />
 
+                <Image Source="{StaticResource FilterImage}" />
+
+                <Label Content="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=FilterLabel}" />
+                <controls:SearchBox Width="100"
+                                    Text="{Binding ToDoFilter, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
+
+                <Separator />
                 <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}"
-                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_CollapseAll}">
+                        ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=CollapseAll}">
                     <Image Source="{StaticResource CollapseAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Button Name="ExpandAll" Command="{Binding ExpandAllCommand}"
-                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_ExpandAll}">
+                        ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=ExpandAll}">
                     <Image Source="{StaticResource ExpandAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
                 </Button>
 

@@ -244,9 +244,6 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>Dies ist die Standardeinstellung, sie muss nicht spezifiziert werden.</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Eine Annotation für die Modulebene kann nicht verwendet werden, um Elemente zu annotieren; Eine Annotation für Elemente kann auf Modulebene nicht verwendet werden; Modul- und Elementannotationen sollten nur einmal spezifiziert werden.</value>
-  </data>
   <data name="RedundantOptionInspection" xml:space="preserve">
     <value>Da dies die Standardeinstellung für diese Option ist, kann die Anweisung ohne Nebeneffekte entfernt werden.</value>
   </data>
@@ -443,12 +440,21 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Eine Annotation hat mehr Argumente als erlaubt. Die überzähligen Argumente werden ignoriert.</value>
   </data>
   <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
-    <value>Implizite Referenzen zu Elementen eines Workbooks in einem Workbook-Modul können mit Referenzen zum aktiven Workbook verwechselt werden, da dies das Verhalten für solche Referenzen ist überall außerhalb von Workbook-Modulen. Die Uneindeutigkeit kann aufgelöst werden, indem die Referenzen mit 'Me' qualifiziert werden.</value>
+    <value>Implizite Referenzen zu Elementen eines Workbooks in einem Workbook-Modul können mit Referenzen zum aktiven Workbook verwechselt werden, da dies das Verhalten für solche Referenzen ist überall außerhalb von Workbook-Modulen. Die Uneindeutigkeit kann aufgelöst werden, indem die Referenzen mit 'Me' qualifiziert werden. Sollte eine Referenz zum aktiven Workbook beabsichtigt gewesen sein, sollte der Elementzugriff explizit mit 'ActiveWorkbook' qualifiziert werden.</value>
   </data>
   <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
-    <value>Implizite Referenzen zu Elementen eines Worksheets in einem Worksheet-Modul können mit Referenzen zum aktiven Worksheet verwechselt werden, da dies das Verhalten für solche Referenzen ist überall außerhalb von Worksheet-Modulen. Die Uneindeutigkeit kann aufgelöst werden, indem die Referenzen mit 'Me' qualifiziert werden.</value>
+    <value>Implizite Referenzen zu Elementen eines Worksheets in einem Worksheet-Modul können mit Referenzen zum aktiven Worksheet verwechselt werden, da dies das Verhalten für solche Referenzen ist überall außerhalb von Worksheet-Modulen. Die Uneindeutigkeit kann aufgelöst werden, indem die Referenzen mit 'Me' qualifiziert werden. Sollte eine Referenz zum aktiven Worksheet beabsichtigt gewesen sein, sollte der Elementzugriff explizit mit 'ActiveSheet' qualifiziert werden.</value>
   </data>
   <data name="MisleadingByRefParameterInspection" xml:space="preserve">
     <value>Der letzte Parameter (der 'Wert'-Parameter) der Eigenschaftsmutation wird immer als ByVal übergeben. Dies gilt unabhänig der An- oder Abwesenheit eines ByRef oder ByVal Modifizieres. Ausnahme: Ein nutzerdefinierter Type (UserDefinedType) muss immer als ByRef übergeben werden, auch wenn er der letzte Parameter einer Eigenschaftmutation ist.</value>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>Ein Kommentar wurde als eine syntaktisch zulässige Annotation erkannt, doch kein unterstützter Annotationstyp konnte erkannt werden.</value>
+  </data>
+  <data name="AnnotationInIncompatibleComponentTypeInspection" xml:space="preserve">
+    <value>Eine Annotation wurde in einer Komponente mit einem zu dieser inkompatiblen Typ verwendet. Manche Annotationen können nur in Komponenten eines spezifischen Typs verwendet werden, andere wiederum nicht in Komponenten bestimmter Typen.</value>
+  </data>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Die Annotation konnte keinem Ziel zugewiesen werden. Eine Annotation für die Modulebene kann nicht verwendet werden, um Elemente zu annotieren. Eine Annotation für Elemente kann auf Modulebene nicht verwendet werden. Modul- und Elementannotationen sollten nur einmal spezifiziert werden.</value>
   </data>
 </root>

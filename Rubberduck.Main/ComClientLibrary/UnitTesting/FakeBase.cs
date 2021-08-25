@@ -61,7 +61,7 @@ namespace Rubberduck.UnitTesting
             var returnInfo =
                 ReturnValues.Where(r => r.Invocation == (any ? FakesProvider.AllInvocations : (int) InvocationCount) &&
                                    r.Argument != null &&
-                                   r.Argument == string.Empty).ToList();
+                                   string.IsNullOrWhiteSpace(r.Argument.ToString())).ToList();
 
             if (returnInfo.Count <= 0)
             {

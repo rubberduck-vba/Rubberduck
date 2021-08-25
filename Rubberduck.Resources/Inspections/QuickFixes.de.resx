@@ -306,4 +306,7 @@
   <data name="DeclareAsExplicitTypeQuickFix" xml:space="preserve">
     <value>Als expliziten Typ deklarieren</value>
   </data>
+  <data name="AnnotateEntryPointQuickFix" xml:space="preserve">
+    <value>@EntryPoint-Annotation hinzufügen</value>
+  </data>
 </root>
