@@ -114,6 +114,10 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             container.Kernel.Register(Component.For<ReplaceReferencesRefactoringAction>());
             container.Kernel.Register(Component.For<ReplaceDeclarationIdentifierRefactoringAction>());
             container.Kernel.Register(Component.For<DeleteDeclarationsRefactoringAction>());
+            container.Kernel.Register(Component.For<DeleteModuleElementsRefactoringAction>());
+            container.Kernel.Register(Component.For<DeleteProcedureScopeElementsRefactoringAction>());
+            container.Kernel.Register(Component.For<DeleteUDTMembersRefactoringAction>());
+            container.Kernel.Register(Component.For<DeleteEnumMembersRefactoringAction>());
             container.Kernel.Register(Component.For<EncapsulateFieldPreviewProvider>());
             container.Kernel.Register(Component.For<EncapsulateFieldUseBackingFieldPreviewProvider>());
             container.Kernel.Register(Component.For<EncapsulateFieldUseBackingUDTMemberPreviewProvider>());
@@ -150,6 +154,9 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
             container.Kernel.Register(Component.For<IReplacePrivateUDTMemberReferencesModelFactory>()
                 .ImplementedBy<ReplacePrivateUDTMemberReferencesModelFactory>());
+
+            container.Kernel.Register(Component.For<IDeclarationDeletionTargetFactory>()
+                .ImplementedBy<DeclarationDeletionTargetFactory>());
         }
 
         private static void RegisterInterfaceToImplementationPairsTransient(IWindsorContainer container)
@@ -173,6 +180,16 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             container.Kernel.Register(Component.For<IEncapsulateFieldCandidateSetsProviderFactory>().AsFactory().LifestyleSingleton());
             container.Kernel.Register(Component.For<IEncapsulateFieldConflictFinderFactory>().AsFactory().LifestyleSingleton());
             container.Kernel.Register(Component.For<INewContentAggregatorFactory>().AsFactory().LifestyleSingleton());
+
+            container.Kernel.Register(
+                Component.For<IDeclarationDeletionGroup>()
+                    .ImplementedBy<DeclarationDeletionGroup>().LifestyleTransient(),
+                Component.For<IDeclarationDeletionGroupFactory>().AsFactory().LifestyleSingleton());
+
+            container.Kernel.Register(
+                Component.For<IDeclarationDeletionGroupsGenerator>()
+                    .ImplementedBy<DeletionGroupsGenerator>().LifestyleTransient(),
+                Component.For<IDeclarationDeletionGroupsGeneratorFactory>().AsFactory().LifestyleSingleton());
         }
     }
 }
