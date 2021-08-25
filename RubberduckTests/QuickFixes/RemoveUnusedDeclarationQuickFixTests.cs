@@ -212,7 +212,7 @@ End Function";
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableNotUsedInspection(state));
             var lines = actualCode.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             StringAssert.AreEqualIgnoringCase("Dim var2 As String", lines[1].Trim());
-            StringAssert.AreEqualIgnoringCase("' Comment", lines[2].Trim());
+            StringAssert.Contains(" Comment", lines[2].Trim());
             StringAssert.DoesNotContain("var1", actualCode);
         }
 
