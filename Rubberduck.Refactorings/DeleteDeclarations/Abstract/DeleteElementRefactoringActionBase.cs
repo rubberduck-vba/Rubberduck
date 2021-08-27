@@ -150,7 +150,7 @@ namespace Rubberduck.Refactorings.DeleteDeclarations.Abstract
 
             if (model.InsertValidationTODOForRetainedComments)
             {
-                var injectedTODOContent = Resources.Refactorings.Refactorings.ImplementInterface_TODO;
+                var injectedTODOContent = Resources.Refactorings.Refactorings.CommentVerification_TODO;
 
                 foreach (var comment in targetEOSComments.Concat(deleteTarget.PrecedingEOSContext.GetAllComments()))
                 {

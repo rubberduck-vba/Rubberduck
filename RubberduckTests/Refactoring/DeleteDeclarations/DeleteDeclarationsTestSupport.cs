@@ -19,8 +19,7 @@ namespace RubberduckTests.Refactoring.DeleteDeclarations
 {
     public class DeleteDeclarationsTestSupport
     {
-        //TODO: Replace ImplementInterface Resource with resource element for this refactoring
-        public static string TodoContent => Rubberduck.Resources.Refactorings.Refactorings.ImplementInterface_TODO;
+        public static string TodoContent => Rubberduck.Resources.Refactorings.Refactorings.CommentVerification_TODO;
 
         public IDictionary<string, string> TestRefactoring(Func<RubberduckParserState, IEnumerable<Declaration>> testTargetListBuilder, Func<RubberduckParserState, IEnumerable<Declaration>, IRewritingManager, Action<IDeleteDeclarationsModel>, IExecutableRewriteSession> refactorAction, Action<IDeleteDeclarationsModel> modelFlagsAction, params (string componentName, string content, ComponentType componentType)[] modules)
         {
