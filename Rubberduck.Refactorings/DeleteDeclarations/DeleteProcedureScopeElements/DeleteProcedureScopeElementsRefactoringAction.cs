@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.DeleteDeclarations
 {
-    public class DeleteProcedureScopeElementsRefactoringAction : DeleteVariableOrConstantRefactoringActionBase<DeleteProcedureScopeElementsModel>
+    public class DeleteProcedureScopeElementsRefactoringAction : DeleteElementsRefactoringActionBase<DeleteProcedureScopeElementsModel>
     {
         public DeleteProcedureScopeElementsRefactoringAction(IDeclarationFinderProvider declarationFinderProvider, 
             IDeclarationDeletionTargetFactory targetFactory,
@@ -28,15 +28,15 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
                 throw new InvalidOperationException("Only declarations within procedures can be refactored by this object");
             }
 
-            DeleteDeclarations(model, rewriteSession);
+            DeleteDeclarations(model, rewriteSession, CreateDeletionTargetsLocalScope);
         }
 
         //Creating local targets are the same as creating a module level deletion targets except that Labels 
-        //need to be addressed
-        protected override IEnumerable<IDeclarationDeletionTarget> CreateDeletionTargets(IEnumerable<Declaration> declarations, IRewriteSession rewriteSession, IDeclarationDeletionTargetFactory targetFactory)
+        //need to be accounted for
+        private IEnumerable<IDeclarationDeletionTarget> CreateDeletionTargetsLocalScope(IEnumerable<Declaration> declarations, IRewriteSession rewriteSession, IDeclarationDeletionTargetFactory targetFactory)
         {
-            var allLocalScopeTargets = base.CreateDeletionTargets(declarations, rewriteSession, targetFactory)
-                .Cast<ILocalScopeDeletionTarget>();
+            var allLocalScopeTargets = base.CreateDeletionTargetsSupportingPartialDeletions(declarations, rewriteSession, targetFactory)
+                 .Cast<ILocalScopeDeletionTarget>();
 
             var labelTargets = allLocalScopeTargets.Where(t => t.IsLabel(out _)).Cast<ILabelDeletionTarget>().ToList();
             if (!labelTargets.Any())

@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.DeleteDeclarations
 {
-    public class DeleteModuleElementsRefactoringAction : DeleteVariableOrConstantRefactoringActionBase<DeleteModuleElementsModel>
+    public class DeleteModuleElementsRefactoringAction : DeleteElementsRefactoringActionBase<DeleteModuleElementsModel>
     {
         public DeleteModuleElementsRefactoringAction(IDeclarationFinderProvider declarationFinderProvider, 
             IDeclarationDeletionTargetFactory targetFactory,
@@ -25,7 +25,7 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
                 throw new InvalidOperationException("Only module-scope declarations can be refactored by this object");
             }
 
-            DeleteDeclarations(model, rewriteSession);
+            DeleteDeclarations(model, rewriteSession, base.CreateDeletionTargetsSupportingPartialDeletions);
         }
 
         protected override VBAParser.EndOfStatementContext GetPrecedingNonDeletedEOSContextForGroup(IDeclarationDeletionGroup deletionGroup)

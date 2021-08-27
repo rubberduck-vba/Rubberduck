@@ -175,23 +175,28 @@ namespace Rubberduck.Refactorings
 
         private static IOrderedEnumerable<IDeclarationDeletionTarget> GetOrderedDeleteTargets(DeletionGroupsGeneratorModel model, (int? Start, int? End) nonDeletePair)
         {
-            //Default Func handles the use case of a group of delete target contexts that are bounded by a pair of 
-            //retained contexts in scope
-            Func<IEnumerable<ParserRuleContext>, IEnumerable<ParserRuleContext>> getDeleteContexts 
-                = (ctxts) => ctxts.Skip(nonDeletePair.Start.Value + 1).Take(nonDeletePair.End.Value - nonDeletePair.Start.Value - 1);
+            var deleteContexts = new List<ParserRuleContext>();
 
             //DeletionTargets occupy the first 1 to n contexts preceding the first retained context in scope
             if (!nonDeletePair.Start.HasValue)
             {
-                getDeleteContexts = (ctxts) => ctxts.Take(nonDeletePair.End.Value);
+                deleteContexts = model.OrderedContexts.Take(nonDeletePair.End.Value).ToList();
             }
             //DeletionTargets occupy the last 1 to n contexts after the last retained context in scope
             else if (!nonDeletePair.End.HasValue)
             {
-                getDeleteContexts = (ctxts) => ctxts.Skip(nonDeletePair.Start.Value + 1);
+                deleteContexts = model.OrderedContexts.Skip(nonDeletePair.Start.Value + 1).ToList();
+            }
+            //A group of delete target contexts are bounded by a pair of retained contexts in scope
+            else
+            {
+                deleteContexts = model.OrderedContexts
+                    .Skip(nonDeletePair.Start.Value + 1)
+                    .Take(nonDeletePair.End.Value - nonDeletePair.Start.Value - 1)
+                    .ToList();
             }
 
-            return model.Targets.Where(t => getDeleteContexts(model.OrderedContexts)
+            return model.Targets.Where(t => deleteContexts
                 .Contains(t.TargetContext))
                 .OrderBy(rt => rt.TargetContext.GetSelection());
         }

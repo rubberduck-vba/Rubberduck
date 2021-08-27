@@ -202,7 +202,7 @@ End Property
                 precedingNonDeleteTarget.Context.TryGetFollowingContext<VBAParser.EndOfStatementContext>(out var eos);
 
                 Assert.IsNotNull(eos);
-                sut.SetPrecedingEOSContext(eos);
+                sut.PrecedingEOSContext = eos;
 
                 var actualEOS = sut.BuildEOSReplacementContent();
 
@@ -247,7 +247,7 @@ End Property
                 (precedingNonDeleteTarget.Context as ParserRuleContext).TryGetFollowingContext<VBAParser.EndOfStatementContext>(out var eos);
 
                 Assert.IsNotNull(eos);
-                sut.SetPrecedingEOSContext(eos);
+                sut.PrecedingEOSContext = eos;
 
                 var actualEOS = sut.BuildEOSReplacementContent();
 

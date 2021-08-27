@@ -7,9 +7,7 @@ using System.Collections.Generic;
 namespace Rubberduck.Refactorings
 {
     public interface IModuleElementDeletionTarget : IDeclarationDeletionTarget
-    {
-        void SetPrecedingEOSContext(VBAParser.EndOfStatementContext eos);
-    }
+    { }
 
     public interface IPropertyDeletionTarget
     {
@@ -27,8 +25,6 @@ namespace Rubberduck.Refactorings
         ILocalScopeDeletionTarget AssociatedLabelToDelete { get; }
 
         bool IsLabel(out ILabelDeletionTarget labelTarget);
-
-        void SetPrecedingEOSContext(VBAParser.EndOfStatementContext eos);
 
         ParserRuleContext ScopingContext { get; }
         bool HasSameLogicalLineLabel(out VBAParser.StatementLabelDefinitionContext labelContext);

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.DeleteDeclarations
 {
-    public class DeleteUDTMembersRefactoringAction : DeleteElementRefactoringActionBase<DeleteUDTMembersModel>
+    public class DeleteUDTMembersRefactoringAction : DeleteElementsRefactoringActionBase<DeleteUDTMembersModel>
     {
         public DeleteUDTMembersRefactoringAction(IDeclarationFinderProvider declarationFinderProvider, 
             IDeclarationDeletionTargetFactory targetFactory,
@@ -23,7 +23,7 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
                 throw new InvalidOperationException("Only DeclarationType.UserDefinedTypeMember can be refactored by this class");
             }
 
-            DeleteDeclarations(model, rewriteSession);
+            DeleteDeclarations(model, rewriteSession, (declarations, rewriterSession, targetFactory) => targetFactory.CreateMany(declarations, rewriteSession));
         }
     }
 }

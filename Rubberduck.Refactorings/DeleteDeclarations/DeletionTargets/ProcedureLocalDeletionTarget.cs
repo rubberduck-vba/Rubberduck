@@ -70,8 +70,6 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
             ? TargetContext
             : TargetContext.GetChild<VBAParser.MainBlockStmtContext>();
 
-        public void SetPrecedingEOSContext(VBAParser.EndOfStatementContext eos) => PrecedingEOSContext = eos;
-
         public virtual bool HasSameLogicalLineLabel(out VBAParser.StatementLabelDefinitionContext labelContext)
         {
             return TargetContext.TryGetChildContext(out labelContext);

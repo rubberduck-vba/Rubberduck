@@ -6,18 +6,21 @@ using Rubberduck.Parsing.VBA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Rubberduck.Refactorings.DeleteDeclarations.Abstract
 {
-    public abstract class DeleteElementRefactoringActionBase<TModel> : CodeOnlyRefactoringActionBase<TModel> where TModel : class, IRefactoringModel
+    public abstract class DeleteElementsRefactoringActionBase<TModel> : CodeOnlyRefactoringActionBase<TModel> where TModel : class, IRefactoringModel
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IDeclarationDeletionTargetFactory _declarationDeletionTargetFactory;
         private readonly IDeclarationDeletionGroupsGenerator _declarationDeletionGroupsGenerator;
+        
+        private static readonly string _lineContinuationExpression = $"{Tokens.LineContinuation}{Environment.NewLine}";
 
         protected const string EOS_COLON = ": ";
 
-        public DeleteElementRefactoringActionBase(IDeclarationFinderProvider declarationFinderProvider,
+        public DeleteElementsRefactoringActionBase(IDeclarationFinderProvider declarationFinderProvider,
             IDeclarationDeletionTargetFactory deletionTargetFactory,
             IDeclarationDeletionGroupsGeneratorFactory deletionGroupsGeneratorFactory,
             IRewritingManager rewritingManager)
@@ -28,16 +31,18 @@ namespace Rubberduck.Refactorings.DeleteDeclarations.Abstract
             _declarationDeletionGroupsGenerator = deletionGroupsGeneratorFactory.Create();
         }
 
-        protected void DeleteDeclarations(IDeleteDeclarationsModel model, IRewriteSession rewriteSession)
+        protected void DeleteDeclarations(IDeleteDeclarationsModel model, 
+            IRewriteSession rewriteSession, 
+            Func<IEnumerable<Declaration>, IRewriteSession, IDeclarationDeletionTargetFactory, IEnumerable<IDeclarationDeletionTarget>> generateDeletionTargets)
         {
-            var deletionTargets = CreateDeletionTargets(model.Targets, rewriteSession, _declarationDeletionTargetFactory);
+            var deletionTargets = generateDeletionTargets(model.Targets, rewriteSession, _declarationDeletionTargetFactory);
 
             var targetsLookup = deletionTargets.ToLookup(dt => dt.TargetProxy.QualifiedModuleName);
 
             foreach (var moduleQualifiedDeleteGroups in targetsLookup)
             {
                 var deletionGroups = _declarationDeletionGroupsGenerator.Generate(moduleQualifiedDeleteGroups);
-                    
+
                 var rewriter = rewriteSession.CheckOutModuleRewriter(moduleQualifiedDeleteGroups.Key);
 
                 if (!model.DeleteDeclarationsOnly && model.DeleteAnnotations)
@@ -49,11 +54,19 @@ namespace Rubberduck.Refactorings.DeleteDeclarations.Abstract
             }
         }
 
-        protected virtual void RemoveDeletionGroups(IEnumerable<IDeclarationDeletionGroup> deletionGroups, IDeleteDeclarationsModel model, IModuleRewriter rewriter)
+        protected void RemoveDeletionGroups(IEnumerable<IDeclarationDeletionGroup> deletionGroups, IDeleteDeclarationsModel model, IModuleRewriter rewriter)
         {
-            foreach (var deletionGroup in deletionGroups.Where(dg => dg.OrderedFullDeletionTargets.Any()))
+            foreach (var deletionGroup in deletionGroups)
             {
-                RemoveFullDeletionGroup(deletionGroup, model, rewriter);
+                if (deletionGroup.OrderedPartialDeletionTargets.Any())
+                {
+                    RemovePartialDeletionTargets(deletionGroup, model, rewriter);
+                }
+
+                if (deletionGroup.OrderedFullDeletionTargets.Any())
+                {
+                    RemoveFullDeletionGroup(deletionGroup, model, rewriter);
+                }
             }
         }
 
@@ -91,8 +104,32 @@ namespace Rubberduck.Refactorings.DeleteDeclarations.Abstract
         protected virtual VBAParser.EndOfStatementContext GetPrecedingNonDeletedEOSContextForGroup(IDeclarationDeletionGroup deletionGroup)
             => deletionGroup.Targets.FirstOrDefault()?.PrecedingEOSContext;
 
-        protected virtual IEnumerable<IDeclarationDeletionTarget> CreateDeletionTargets(IEnumerable<Declaration> declarations, IRewriteSession rewriteSession, IDeclarationDeletionTargetFactory targetFactory)
-            => targetFactory.CreateMany(declarations, rewriteSession);
+        protected IEnumerable<IDeclarationDeletionTarget> CreateDeletionTargetsSupportingPartialDeletions(IEnumerable<Declaration> declarations, IRewriteSession rewriteSession, IDeclarationDeletionTargetFactory targetFactory)
+        {
+            var deletionTargets = new List<IDeclarationDeletionTarget>();
+
+            var remainingTargets = declarations.ToList();
+
+            while (remainingTargets.Any())
+            {
+                var deleteTarget = targetFactory.Create(remainingTargets.First(), rewriteSession);
+
+                if (deleteTarget.AllDeclarationsInListContext.Count >= 1)
+                {
+                    var listContextRelatedTargets = deleteTarget.AllDeclarationsInListContext.Intersect(declarations);
+                    deleteTarget.AddTargets(listContextRelatedTargets);
+                    remainingTargets.RemoveAll(t => listContextRelatedTargets.Contains(t));
+                }
+                else
+                {
+                    remainingTargets.RemoveAll(t => t == declarations.First());
+                }
+
+                deletionTargets.Add(deleteTarget);
+            }
+
+            return deletionTargets;
+        }
 
         protected Action<IDeclarationDeletionTarget, IModuleRewriter> DeleteTarget { set; get; }
             = (t, rewriter) => rewriter.Remove(t.DeleteContext);
@@ -228,6 +265,87 @@ namespace Rubberduck.Refactorings.DeleteDeclarations.Abstract
             {
                 rewriter.Remove(contextToDelete);
             }
+        }
+
+        private void RemovePartialDeletionTargets(IDeclarationDeletionGroup deletionGroup, IDeleteDeclarationsModel model, IModuleRewriter rewriter)
+        {
+            var lastTarget = deletionGroup.OrderedPartialDeletionTargets.Last();
+
+            lastTarget.PrecedingEOSContext = GetPrecedingNonDeletedEOSContextForGroup(deletionGroup);
+
+            var retainedDeclarationsExpression = lastTarget.ListContext.GetText().Contains(_lineContinuationExpression)
+                ? $"{BuildDeclarationsExpressionWithLineContinuations(lastTarget)}"
+                : $"{string.Join(", ", lastTarget.RetainedDeclarations.Select(d => d.Context.GetText()))}";
+
+            rewriter.Replace(lastTarget.ListContext.Parent, $"{GetDeclarationScopeExpression(lastTarget.TargetProxy)} {retainedDeclarationsExpression}");
+
+            if (lastTarget is null || lastTarget.TargetEOSContext is null)
+            {
+                return;
+            }
+
+            if (lastTarget.TargetEOSContext.GetText() == EOS_COLON)
+            {
+                //Remove the declarations EOS colon character and use the PrecedingEOSContext as-is
+                lastTarget.Rewriter.Remove(lastTarget.TargetEOSContext);
+                return;
+            }
+
+            ModifyRelatedComments(lastTarget, model, rewriter);
+
+            rewriter.Replace(lastTarget.TargetEOSContext, lastTarget.ModifiedTargetEOSContent);
+        }
+
+        private static string BuildDeclarationsExpressionWithLineContinuations(IDeclarationDeletionTarget deleteDeclarationTarget)
+        {
+            var elementsByLineContinuation = deleteDeclarationTarget.ListContext.GetText().Split(new string[] { _lineContinuationExpression }, StringSplitOptions.None);
+
+            if (elementsByLineContinuation.Count() == 1)
+            {
+                throw new ArgumentException("'targetsToDelete' parameter does not contain line extension(s)");
+            }
+
+            var expr = new StringBuilder();
+            foreach (var element in elementsByLineContinuation)
+            {
+                var idContexts = deleteDeclarationTarget.RetainedDeclarations.Where(r => element.Contains(r.Context.GetText())).Select(d => d);
+                foreach (var ctxt in idContexts)
+                {
+                    var indent = string.Concat(element.TakeWhile(e => e == ' '));
+
+                    expr = expr.Length == 0
+                        ? expr.Append(ctxt.Context.GetText())
+                        : expr.Append($",{_lineContinuationExpression}{indent}{ctxt.Context.GetText()}");
+                }
+            }
+            return expr.ToString();
+        }
+
+        private static string GetDeclarationScopeExpression(Declaration listPrototype)
+        {
+            if (listPrototype.DeclarationType.HasFlag(DeclarationType.Variable))
+            {
+                var accessToken = listPrototype.Accessibility == Accessibility.Implicit
+                    ? Tokens.Private
+                    : $"{listPrototype.Accessibility}";
+
+                return listPrototype.ParentDeclaration is ModuleDeclaration
+                    ? accessToken
+                    : Tokens.Dim;
+            }
+
+            if (listPrototype.DeclarationType.HasFlag(DeclarationType.Constant))
+            {
+                var accessToken = listPrototype.Accessibility == Accessibility.Implicit
+                    ? Tokens.Private
+                    : $"{listPrototype.Accessibility}";
+
+                return listPrototype.ParentDeclaration is ModuleDeclaration
+                    ? $"{accessToken} {Tokens.Const}"
+                    : Tokens.Const;
+            }
+
+            throw new ArgumentException("Unsupported DeclarationType");
         }
     }
 }

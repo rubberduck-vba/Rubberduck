@@ -38,7 +38,5 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
         public override bool IsFullDelete
             => TargetProxy.DeclarationType != DeclarationType.Variable && TargetProxy.DeclarationType != DeclarationType.Constant
                 || AllDeclarationsInListContext.Intersect(Targets).Count() == AllDeclarationsInListContext.Count;
-
-        public void SetPrecedingEOSContext(VBAParser.EndOfStatementContext eos) => PrecedingEOSContext = eos;
     }
 }
