@@ -29,7 +29,7 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
         }
     }
 
-    public static class EndOfStatementContextExtensions
+    internal static class EndOfStatementContextExtensions
     {
         private const string EndOfStatementColon = ": ";
 

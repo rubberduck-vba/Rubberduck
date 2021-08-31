@@ -24,7 +24,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
                 .Select(className => finder.FindClassModule(className, excel, true))
                 .OfType<ModuleDeclaration>();
 
-
             return globalModules
                 .SelectMany(moduleClass => moduleClass.Members)
                 .Where(declaration => TargetMemberNames.Contains(declaration.IdentifierName)
