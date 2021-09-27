@@ -1,5 +1,7 @@
 ﻿using System;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -8,6 +10,8 @@ namespace Rubberduck.Parsing.Binding
 {
     public sealed class TypeBindingContext : IBindingContext
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly DeclarationFinder _declarationFinder;
 
         public TypeBindingContext(DeclarationFinder declarationFinder)
@@ -31,9 +35,17 @@ namespace Rubberduck.Parsing.Binding
                     return Visit(module, parent, ctLExprContext.lExpression());
                 case VBAParser.BuiltInTypeExprContext builtInTypeExprContext:
                     return Visit(builtInTypeExprContext.builtInType());
+                case ParserRuleContext unexpectedContext:
+                    return HandleUnexpectedExpressionType(unexpectedContext);
                 default:
-                    throw new NotSupportedException($"Unexpected context type {expression.GetType()}");
+                    throw new NotSupportedException($"Unexpected expression parse tree type {expression.GetType()}");
             }
+        }
+
+        public IExpressionBinding HandleUnexpectedExpressionType(ParserRuleContext expression)
+        {
+            Logger.Warn($"Unexpected expression context type {expression.GetType()}");
+            return new FailedExpressionBinding(expression);
         }
 
         private IExpressionBinding Visit(VBAParser.BuiltInTypeContext builtInType)
@@ -52,7 +64,7 @@ namespace Rubberduck.Parsing.Binding
                 case VBAParser.IndexExprContext indexExprContext:
                     return Visit(module, parent, indexExprContext);
                 default:
-                    throw new NotSupportedException($"Unexpected lExpression type {expression.GetType()}");
+                    return HandleUnexpectedExpressionType(expression);
             }
         }
 
