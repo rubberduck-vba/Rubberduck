@@ -1,6 +1,4 @@
-﻿using System;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
+﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -16,7 +14,14 @@ namespace Rubberduck.Parsing.Binding
             _declarationFinder = declarationFinder;
         }
 
-        public override IBoundExpression Resolve(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
+        public override IBoundExpression Resolve(
+            Declaration module, 
+            Declaration parent, 
+            ParserRuleContext expression,
+            IBoundExpression withBlockVariable, 
+            StatementResolutionContext statementContext,
+            bool requiresLetCoercion = false, 
+            bool isLetAssignment = false)
         {
             IExpressionBinding bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
             if (bindingTree != null)
@@ -26,7 +31,14 @@ namespace Rubberduck.Parsing.Binding
             return null;
         }
 
-        public override IExpressionBinding BuildTree(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
+        public override IExpressionBinding BuildTree(
+            Declaration module, 
+            Declaration parent,
+            ParserRuleContext expression, 
+            IBoundExpression withBlockVariable,
+            StatementResolutionContext statementContext, 
+            bool requiresLetCoercion = false, 
+            bool isLetAssignment = false)
         {
             switch (expression)
             {
@@ -36,10 +48,8 @@ namespace Rubberduck.Parsing.Binding
                     return Visit(module, parent, expressionContext);
                 case VBAParser.AddressOfExpressionContext addressOfExpressionContext:
                     return Visit(module, parent, addressOfExpressionContext);
-                case ParserRuleContext unexpectedContext:
-                    return HandleUnexpectedExpressionType(unexpectedContext);
                 default:
-                    throw new NotSupportedException($"Unexpected expression parse tree type {expression.GetType()}");
+                    return HandleUnexpectedExpressionType(expression);
             }
         }
 

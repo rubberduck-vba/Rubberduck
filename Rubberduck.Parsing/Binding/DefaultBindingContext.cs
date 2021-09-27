@@ -3,7 +3,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
-using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Parsing.Binding
@@ -24,26 +23,24 @@ namespace Rubberduck.Parsing.Binding
             _procedurePointerBindingContext = procedurePointerBindingContext;
         }
 
-        public override IBoundExpression Resolve(
-            Declaration module, 
-            Declaration parent, 
-            IParseTree expression, 
-            IBoundExpression withBlockVariable, 
-            StatementResolutionContext statementContext, 
-            bool requiresLetCoercion = false, 
+        public override IBoundExpression Resolve(Declaration module,
+            Declaration parent,
+            ParserRuleContext expression,
+            IBoundExpression withBlockVariable,
+            StatementResolutionContext statementContext,
+            bool requiresLetCoercion = false,
             bool isLetAssignment = false)
         {
             var bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext, requiresLetCoercion, isLetAssignment);
             return bindingTree?.Resolve();
         }
 
-        public override IExpressionBinding BuildTree(
-            Declaration module, 
-            Declaration parent, 
-            IParseTree expression, 
-            IBoundExpression withBlockVariable, 
+        public override IExpressionBinding BuildTree(Declaration module,
+            Declaration parent,
+            ParserRuleContext expression,
+            IBoundExpression withBlockVariable,
             StatementResolutionContext statementContext,
-            bool requiresLetCoercion = false, 
+            bool requiresLetCoercion = false,
             bool isLetAssignment = false)
         {
             return Visit(
@@ -56,7 +53,7 @@ namespace Rubberduck.Parsing.Binding
                 isLetAssignment);
         }
 
-        public IExpressionBinding Visit(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
+        public IExpressionBinding Visit(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
         {
             if (requiresLetCoercion && expression is ParserRuleContext context)
             {
@@ -82,10 +79,8 @@ namespace Rubberduck.Parsing.Binding
                     return Visit(module, parent, outputListContext, withBlockVariable);
                 case VBAParser.UnqualifiedObjectPrintStmtContext unqualifiedObjectPrintStmtContext:
                     return Visit(module, parent, unqualifiedObjectPrintStmtContext, withBlockVariable);
-                case ParserRuleContext unexpectedContext:
-                    return HandleUnexpectedExpressionType(unexpectedContext);
                 default:
-                    throw new NotSupportedException($"Unexpected expression parse tree type {expression.GetType()}");
+                    return HandleUnexpectedExpressionType(expression);
             }
         }
 

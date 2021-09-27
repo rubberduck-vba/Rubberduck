@@ -17,21 +17,19 @@ namespace Rubberduck.Parsing.Binding
             return new FailedExpressionBinding(expression);
         }
 
-        public abstract IBoundExpression Resolve(
-            Declaration module, 
-            Declaration parent, 
-            IParseTree expression,
-            IBoundExpression withBlockVariable, 
-            StatementResolutionContext statementContext, 
+        public abstract IBoundExpression Resolve(Declaration module,
+            Declaration parent,
+            ParserRuleContext expression,
+            IBoundExpression withBlockVariable,
+            StatementResolutionContext statementContext,
             bool requiresLetCoercion = false,
             bool isLetAssignment = false);
 
-        public abstract IExpressionBinding BuildTree(
-            Declaration module, 
-            Declaration parent, 
-            IParseTree expression,
-            IBoundExpression withBlockVariable, 
-            StatementResolutionContext statementContext, 
+        public abstract IExpressionBinding BuildTree(Declaration module,
+            Declaration parent,
+            ParserRuleContext expression,
+            IBoundExpression withBlockVariable,
+            StatementResolutionContext statementContext,
             bool requiresLetCoercion = false,
             bool isLetAssignment = false);
     }
