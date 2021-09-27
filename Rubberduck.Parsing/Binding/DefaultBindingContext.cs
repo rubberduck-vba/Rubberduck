@@ -8,7 +8,7 @@ using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Parsing.Binding
 {
-    public sealed class DefaultBindingContext : IBindingContext
+    public sealed class DefaultBindingContext : BindingContextBase
     {
         private readonly DeclarationFinder _declarationFinder;
         private readonly IBindingContext _typeBindingContext;
@@ -24,13 +24,20 @@ namespace Rubberduck.Parsing.Binding
             _procedurePointerBindingContext = procedurePointerBindingContext;
         }
 
-        public IBoundExpression Resolve(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion, bool isLetAssignment)
+        public override IBoundExpression Resolve(
+            Declaration module, 
+            Declaration parent, 
+            IParseTree expression, 
+            IBoundExpression withBlockVariable, 
+            StatementResolutionContext statementContext, 
+            bool requiresLetCoercion = false, 
+            bool isLetAssignment = false)
         {
             var bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext, requiresLetCoercion, isLetAssignment);
             return bindingTree?.Resolve();
         }
 
-        public IExpressionBinding BuildTree(
+        public override IExpressionBinding BuildTree(
             Declaration module, 
             Declaration parent, 
             IParseTree expression, 
@@ -75,8 +82,10 @@ namespace Rubberduck.Parsing.Binding
                     return Visit(module, parent, outputListContext, withBlockVariable);
                 case VBAParser.UnqualifiedObjectPrintStmtContext unqualifiedObjectPrintStmtContext:
                     return Visit(module, parent, unqualifiedObjectPrintStmtContext, withBlockVariable);
+                case ParserRuleContext unexpectedContext:
+                    return HandleUnexpectedExpressionType(unexpectedContext);
                 default:
-                    throw new NotSupportedException($"Unexpected context type {expression.GetType()}");
+                    throw new NotSupportedException($"Unexpected expression parse tree type {expression.GetType()}");
             }
         }
 
@@ -160,7 +169,7 @@ namespace Rubberduck.Parsing.Binding
                     return Visit(builtInTypeExprContext);
                 //We do not handle the VBAParser.TypeofexprContext because that should only ever appear as a child of an IS relational operator expression and is specifically handled there.
                 default:
-                    throw new NotSupportedException($"Unexpected expression type {expression.GetType()}");
+                    return HandleUnexpectedExpressionType(expression);
             }
         }
 
@@ -187,7 +196,7 @@ namespace Rubberduck.Parsing.Binding
                 case VBAParser.ObjectPrintExprContext objectPrintExprContext:
                     return Visit(module, parent, objectPrintExprContext, withBlockVariable);
                 default:
-                    throw new NotSupportedException($"Unexpected lExpression type {expression.GetType()}");
+                    return HandleUnexpectedExpressionType(expression);
             }
         }
 

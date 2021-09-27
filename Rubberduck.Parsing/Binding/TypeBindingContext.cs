@@ -8,10 +8,8 @@ using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Parsing.Binding
 {
-    public sealed class TypeBindingContext : IBindingContext
+    public sealed class TypeBindingContext : BindingContextBase
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly DeclarationFinder _declarationFinder;
 
         public TypeBindingContext(DeclarationFinder declarationFinder)
@@ -19,13 +17,13 @@ namespace Rubberduck.Parsing.Binding
             _declarationFinder = declarationFinder;
         }
 
-        public IBoundExpression Resolve(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
+        public override IBoundExpression Resolve(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
         {
             IExpressionBinding bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
             return bindingTree?.Resolve();
         }
 
-        public IExpressionBinding BuildTree(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
+        public override IExpressionBinding BuildTree(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
         {
             switch (expression)
             {
@@ -40,12 +38,6 @@ namespace Rubberduck.Parsing.Binding
                 default:
                     throw new NotSupportedException($"Unexpected expression parse tree type {expression.GetType()}");
             }
-        }
-
-        public IExpressionBinding HandleUnexpectedExpressionType(ParserRuleContext expression)
-        {
-            Logger.Warn($"Unexpected expression context type {expression.GetType()}");
-            return new FailedExpressionBinding(expression);
         }
 
         private IExpressionBinding Visit(VBAParser.BuiltInTypeContext builtInType)
