@@ -30,6 +30,12 @@ namespace Rubberduck.Parsing
                                  context.Stop.EndColumn() + 1);
         }
 
+        public static bool Contains(this ParserRuleContext context, ParserRuleContext otherContext)
+        {
+            return context.start.TokenIndex <= otherContext.start.TokenIndex
+                   && context.stop.TokenIndex >= otherContext.stop.TokenIndex;
+        }
+
         /// <summary>
         ///  Gets the tokens belonging to the context from the token stream.
         /// </summary>
