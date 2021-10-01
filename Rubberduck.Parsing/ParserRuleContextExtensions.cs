@@ -30,10 +30,13 @@ namespace Rubberduck.Parsing
                                  context.Stop.EndColumn() + 1);
         }
 
-        public static bool Contains(this ParserRuleContext context, ParserRuleContext otherContext)
+        /// <summary>
+        ///  Returns whether the other context from the same parse tree is wholly contained in the current context
+        /// </summary>
+        public static bool Contains(this ParserRuleContext context, ParserRuleContext otherContextInSameParseTree)
         {
-            return context.start.TokenIndex <= otherContext.start.TokenIndex
-                   && context.stop.TokenIndex >= otherContext.stop.TokenIndex;
+            return context.start.TokenIndex <= otherContextInSameParseTree.start.TokenIndex
+                   && context.stop.TokenIndex >= otherContextInSameParseTree.stop.TokenIndex;
         }
 
         /// <summary>
