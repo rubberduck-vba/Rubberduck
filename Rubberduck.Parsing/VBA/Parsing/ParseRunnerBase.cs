@@ -96,6 +96,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
             _state.AddParseTree(module, results.AttributesParseTree, CodeKind.AttributesCode);
             _state.SetModuleComments(module, results.Comments);
             _state.SetModuleAnnotations(module, results.Annotations);
+            _state.SetModuleLogicalLines(module, results.LogicalLines);
             _state.SetModuleAttributes(module, results.Attributes);
             _state.SetMembersAllowingAttributes(module, results.MembersAllowingAttributes);
             _state.SetCodePaneTokenStream(module, results.CodePaneTokenStream);

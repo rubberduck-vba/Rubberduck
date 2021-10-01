@@ -870,6 +870,11 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public LogicalLineStore GetLogicalLines(QualifiedModuleName module)
+        {
+            return _moduleStates[module].LogicalLines;
+        }
+
         public List<KeyValuePair<QualifiedModuleName, IParseTree>> AttributeParseTrees
         {
             get
