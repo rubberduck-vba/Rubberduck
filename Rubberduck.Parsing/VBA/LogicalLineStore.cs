@@ -81,5 +81,20 @@ namespace Rubberduck.Parsing.VBA
         {
             return _logicalLineEnds.Count;
         }
+
+        public int? StartOfContainingLogicalLine(int physicalLineNumber)
+        {
+            var logicalLine = LogicalLineNumber(physicalLineNumber);
+            return logicalLine.HasValue
+                ? PhysicalStartLineNumber(logicalLine.Value)
+                : null;
+        }
+        public int? EndOfContainingLogicalLine(int physicalLineNumber)
+        {
+            var logicalLine = LogicalLineNumber(physicalLineNumber);
+            return logicalLine.HasValue
+                ? PhysicalEndLineNumber(logicalLine.Value)
+                : null;
+        }
     }
 }

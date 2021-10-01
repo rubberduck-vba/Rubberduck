@@ -168,5 +168,107 @@ namespace RubberduckTests.Parsing
 
             Assert.AreEqual(expectedPhysicalLine, actualPhysicalLineNumber);
         }
+
+        [Test]
+        [Category("Resolver")]
+        [TestCase(-42)]
+        [TestCase(0)]
+
+        public void StartOfContainingLogicalLine_ReturnsNullForPhysicalLinesSmallerThanOne(int physicalLine)
+        {
+            var logicalLineEnds = new List<int> { 22, 4, 94, 28323, 3, 5, 17 };
+            var logicalLineStore = new LogicalLineStore(logicalLineEnds);
+
+            var actualPhysicalLineNumber = logicalLineStore.StartOfContainingLogicalLine(physicalLine);
+
+            Assert.IsNull(actualPhysicalLineNumber);
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [TestCase(28324)]
+        [TestCase(283324)]
+
+        public void StartOfContainingLogicalLine_ReturnsNullForPhysicalLinesLargerThenTheMaxPhysicalEndLine(int physicalLine)
+        {
+            var logicalLineEnds = new List<int> { 22, 4, 94, 28323, 3, 5, 17 };
+            var logicalLineStore = new LogicalLineStore(logicalLineEnds);
+
+            var actualPhysicalLineNumber = logicalLineStore.StartOfContainingLogicalLine(physicalLine);
+
+            Assert.IsNull(actualPhysicalLineNumber);
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [TestCase(1, 1)]
+        [TestCase(2, 1)]
+        [TestCase(5, 5)]
+        [TestCase(77, 23)]
+        [TestCase(100, 95)]
+        [TestCase(10000, 95)]
+        [TestCase(17, 6)]
+        [TestCase(18, 18)]
+
+        public void StartOfContainingLogicalLine_ReturnsExpectedPhysicalLineForPhysicalLinesBetweenOneAndTheMaxPhysicalEndLine(int physicalLine, int expectedPhysicalLine)
+        {
+            var logicalLineEnds = new List<int> { 22, 4, 94, 28323, 3, 5, 17 };
+            var logicalLineStore = new LogicalLineStore(logicalLineEnds);
+
+            var actualPhysicalLineNumber = logicalLineStore.StartOfContainingLogicalLine(physicalLine);
+
+            Assert.AreEqual(expectedPhysicalLine, actualPhysicalLineNumber);
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [TestCase(-42)]
+        [TestCase(0)]
+
+        public void EndOfContainingLogicalLine_ReturnsNullForPhysicalLinesSmallerThanOne(int physicalLine)
+        {
+            var logicalLineEnds = new List<int> { 22, 4, 94, 28323, 3, 5, 17 };
+            var logicalLineStore = new LogicalLineStore(logicalLineEnds);
+
+            var actualPhysicalLineNumber = logicalLineStore.EndOfContainingLogicalLine(physicalLine);
+
+            Assert.IsNull(actualPhysicalLineNumber);
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [TestCase(28324)]
+        [TestCase(283324)]
+
+        public void EndOfContainingLogicalLine_ReturnsNullForPhysicalLinesLargerThenTheMaxPhysicalEndLine(int physicalLine)
+        {
+            var logicalLineEnds = new List<int> { 22, 4, 94, 28323, 3, 5, 17 };
+            var logicalLineStore = new LogicalLineStore(logicalLineEnds);
+
+            var actualPhysicalLineNumber = logicalLineStore.EndOfContainingLogicalLine(physicalLine);
+
+            Assert.IsNull(actualPhysicalLineNumber);
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [TestCase(1, 3)]
+        [TestCase(2, 3)]
+        [TestCase(5, 5)]
+        [TestCase(77, 94)]
+        [TestCase(100, 28323)]
+        [TestCase(10000, 28323)]
+        [TestCase(17, 17)]
+        [TestCase(18, 22)]
+
+        public void EndOfContainingLogicalLine_ReturnsExpectedPhysicalLineForPhysicalLinesBetweenOneAndTheMaxPhysicalEndLine(int physicalLine, int expectedPhysicalLine)
+        {
+            var logicalLineEnds = new List<int> { 22, 4, 94, 28323, 3, 5, 17 };
+            var logicalLineStore = new LogicalLineStore(logicalLineEnds);
+
+            var actualPhysicalLineNumber = logicalLineStore.EndOfContainingLogicalLine(physicalLine);
+
+            Assert.AreEqual(expectedPhysicalLine, actualPhysicalLineNumber);
+        }
     }
 }
