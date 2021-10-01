@@ -313,6 +313,20 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return lineStore.NumberOfLogicalLines();
         }
 
+        public int? StartOfContainingLogicalLine(QualifiedModuleName module, int physicalLine)
+        {
+            return _logicalLines.TryGetValue(module, out var lineStore)
+                ? lineStore.StartOfContainingLogicalLine(physicalLine)
+                : null;
+        }
+
+        public int? EndOfContainingLogicalLine(QualifiedModuleName module, int physicalLine)
+        {
+            return _logicalLines.TryGetValue(module, out var lineStore)
+                ? lineStore.EndOfContainingLogicalLine(physicalLine)
+                : null;
+        }
+
         public IEnumerable<Declaration> Members(Declaration module)
         {
             return Members(module.QualifiedName.QualifiedModuleName);
@@ -565,12 +579,18 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public IEnumerable<IParseTreeAnnotation> FindAnnotations(QualifiedModuleName module, int annotatedLine)
         {
-            if(!_annotations.TryGetValue(module, out var annotationsByLineInModule))
+            if (!_annotations.TryGetValue(module, out var annotationsByLineInModule))
             {
                 return Enumerable.Empty<IParseTreeAnnotation>();
             }
 
-            return annotationsByLineInModule.TryGetValue(annotatedLine, out var result) 
+            var firstLineOfAnnotatedLogicalLine = StartOfContainingLogicalLine(module, annotatedLine);
+            if (!firstLineOfAnnotatedLogicalLine.HasValue)
+            {
+                return Enumerable.Empty<IParseTreeAnnotation>();
+            }
+
+            return annotationsByLineInModule.TryGetValue(firstLineOfAnnotatedLogicalLine.Value, out var result) 
                 ? result 
                 : Enumerable.Empty<IParseTreeAnnotation>();
         }
