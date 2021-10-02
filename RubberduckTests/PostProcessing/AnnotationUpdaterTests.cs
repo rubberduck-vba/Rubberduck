@@ -390,7 +390,7 @@ End Sub
 
         [Test]
         [Category("AnnotationUpdater")]
-        public void AddAnnotationNotOnFirstPhysicalLineOfALogicalLineDoesNothing()
+        public void AddAnnotationNotOnFirstPhysicalLineOfALogicalLineAddsAnnotationAboveLogicalLine()
         {
             const string inputCode =
                 @"
@@ -406,6 +406,7 @@ baz As Variant
 
             const string expectedCode =
                 @"
+'@Obsolete
 Private fooBar As Long, _
 baz As Variant
 
