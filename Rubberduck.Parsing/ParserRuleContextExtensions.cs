@@ -31,6 +31,15 @@ namespace Rubberduck.Parsing
         }
 
         /// <summary>
+        ///  Returns whether the other context from the same parse tree is wholly contained in the current context
+        /// </summary>
+        public static bool Contains(this ParserRuleContext context, ParserRuleContext otherContextInSameParseTree)
+        {
+            return context.start.TokenIndex <= otherContextInSameParseTree.start.TokenIndex
+                   && context.stop.TokenIndex >= otherContextInSameParseTree.stop.TokenIndex;
+        }
+
+        /// <summary>
         ///  Gets the tokens belonging to the context from the token stream.
         /// </summary>
         public static IEnumerable<IToken> GetTokens(this ParserRuleContext context, CommonTokenStream tokenStream)
