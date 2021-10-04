@@ -322,6 +322,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;IIf&apos; Function&apos;s behavior is sometimes mis-interpreted to expect that ONLY the &apos;TruePart&apos; or ONLY the &apos;FalsePart&apos; expression will be evaluated based on the first argument.  But, as with any VBA method, all arguments are evaluated before calling the method.  Consequently, IIf can be a source of unintended side-effects and errors.  Expressions involving Functions used in the &apos;TruePart&apos; or &apos;FalsePart&apos; should be evaluated for potential side-effects and errors knowing that all referenced Function(s) in the a [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string IIfSideEffectInspection {
+            get {
+                return ResourceManager.GetString("IIfSideEffectInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A class module that is meant to be used as interface for concrete classes should generally be abstracted of any implementations. If it is your intention to use this class module as a concrete type, you can safely ignore this inspection result..
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {

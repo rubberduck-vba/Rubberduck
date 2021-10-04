@@ -457,4 +457,7 @@
   <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
     <value>Unrecognized annotation</value>
   </data>
+  <data name="IIfSideEffectInspection" xml:space="preserve">
+    <value>Potential 'IIf' Function side effects</value>
+  </data>
 </root>

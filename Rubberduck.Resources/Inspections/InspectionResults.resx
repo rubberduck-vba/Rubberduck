@@ -536,4 +536,8 @@ In memoriam, 1972-2018</value>
     <value>'{0}' is not a recognized Rubberduck annotation (yet?)</value>
     <comment>{0} Unrecognized annotation name</comment>
   </data>
+  <data name="IIfSideEffectInspection" xml:space="preserve">
+    <value>'{0}' invoked by 'IIf' Function</value>
+    <comment>{0} method name</comment>
+  </data>
 </root>
