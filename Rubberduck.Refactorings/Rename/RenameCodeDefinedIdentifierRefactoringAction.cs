@@ -181,9 +181,9 @@ namespace Rubberduck.Refactorings.Rename
                 ModuleQualifyExternalReferences = true
             };
 
-            foreach (var rf in target.References)
+            foreach (var reference in target.References)
             {
-                replaceReferencesModel.AssignReferenceReplacementExpression(rf, newName);
+                replaceReferencesModel.AssignReferenceReplacementExpression(reference, newName);
             }
 
             _replaceReferencesRefactoringAction.Refactor(replaceReferencesModel, rewriteSession);
