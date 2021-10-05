@@ -381,6 +381,47 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void VariableNotAssigned_ArrayWithElementAssignment_DoesNotReturnResult()
+        {
+            const string inputCode = @"
+Public Sub Foo()
+    Dim arr(0 To 0) As Variant
+    arr(0) = 42
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void VariableNotAssigned_ReDimDeclaredArrayWithElementAssignment_DoesNotReturnResult()
+        {
+            const string inputCode = @"
+Public Sub Foo()
+    ReDim arr(0 To 0) As Variant
+    arr(0) = 42
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        //See issue #5845 at https://github.com/rubberduck-vba/Rubberduck/issues/5845
+        public void VariableNotAssigned_VariantUsedAsArrayWithElementAssignment_DoesNotReturnResult()
+        {
+            const string inputCode = @"
+Public Sub Foo()
+    Dim arr As Variant
+    ReDim arr(0 To 0) As Variant
+    arr(0) = 42
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void VariableNotAssigned_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
