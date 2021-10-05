@@ -5,6 +5,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember;
+using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using System.Linq;
 namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackingUDTMember
 {
     [TestFixture]
-    public class EncapsulateFieldUseBackingUDTMemberTests
+    public class EncapsulateFieldUseBackingUDTMemberRefactoringActionTests
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 

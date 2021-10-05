@@ -136,8 +136,9 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
         public bool SelectedFieldHasEditablePropertyName => !SelectedFieldIsPrivateUDT;
 
-        public bool EnableReadOnlyOption 
-            => !(_masterDetailManager.DetailField?.IsRequiredToBeReadOnly ?? false);
+        public bool EnableReadOnlyOption
+            => !((_masterDetailManager.DetailField?.IsRequiredToBeReadOnly ?? false) 
+                || (_masterDetailManager.DetailField?.IsRequiredToBeReadWrite ?? false));
 
         public string GroupBoxHeaderContent
             => $"{_masterDetailManager.DetailField?.TargetID ?? string.Empty} {RefactoringsUI.EncapsulateField_PropertyName} ";

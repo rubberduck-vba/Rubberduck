@@ -7,13 +7,14 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
 {
     public class EncapsulateFieldUseBackingUDTMemberModel : IRefactoringModel
     {
-        private List<IEncapsulateFieldAsUDTMemberCandidate> _encapsulateAsUDTMemberCandidates;
+        private readonly List<IEncapsulateFieldAsUDTMemberCandidate> _encapsulateAsUDTMemberCandidates;
 
         public EncapsulateFieldUseBackingUDTMemberModel(IObjectStateUDT targetObjectStateUserDefinedTypeField, 
             IEnumerable<IEncapsulateFieldAsUDTMemberCandidate> encapsulateAsUDTMemberCandidates,
             IEnumerable<IObjectStateUDT> objectStateUserDefinedTypeCandidates)
         {
             _encapsulateAsUDTMemberCandidates = encapsulateAsUDTMemberCandidates.ToList();
+
             EncapsulationCandidates = _encapsulateAsUDTMemberCandidates.Cast<IEncapsulateFieldCandidate>().ToList();
 
             ObjectStateUDTField = targetObjectStateUserDefinedTypeField;
@@ -21,6 +22,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             ObjectStateUDTCandidates = objectStateUserDefinedTypeCandidates.ToList();
 
             QualifiedModuleName = encapsulateAsUDTMemberCandidates.First().QualifiedModuleName;
+
         }
 
         public INewContentAggregator NewContentAggregator { set; get; }
