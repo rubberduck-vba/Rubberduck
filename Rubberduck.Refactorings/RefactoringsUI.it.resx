@@ -431,13 +431,13 @@ Continuare?</value>
   <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
     <value>'{0}' non inizia con una lettera.</value>
   </data>
-  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
+  <data name="PromoteToParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
     <value>La destinazione '{0}' non è contenuta in un metodo.</value>
   </data>
-  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
+  <data name="PromoteToParameter_PromptIfTargetIsInterface" xml:space="preserve">
     <value>Il metodo '{0}' implementa '{1}.{2}'. Modificare la firma dell'interfaccia? (Si propagherà a tutte le implementazioni.)</value>
   </data>
-  <data name="IntroduceParameter_Caption" xml:space="preserve">
+  <data name="PromoteToParameter_Caption" xml:space="preserve">
     <value>Rubberduck - Introduci Parametro</value>
   </data>
   <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">

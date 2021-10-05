@@ -190,6 +190,11 @@ namespace Rubberduck.Parsing.Symbols
             return GetName(context.identifier());
         }
 
+        public static string GetName(VBAParser.BuiltInTypeContext context)
+        {
+            return context.GetText();
+        }
+
         public static string GetName(VBAParser.IdentifierContext context, out Interval tokenInterval)
         {
             tokenInterval = Interval.Of(context.Start.TokenIndex, context.Stop.TokenIndex);

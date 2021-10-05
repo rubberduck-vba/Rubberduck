@@ -1,23 +1,21 @@
 ﻿using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
-using Rubberduck.Refactorings.Exceptions.IntroduceParameter;
-using Rubberduck.Resources;
+using Rubberduck.Refactorings.Exceptions.PromoteToParameter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
-namespace Rubberduck.Refactorings.IntroduceParameter
+namespace Rubberduck.Refactorings.PromoteToParameter
 {
-    public class IntroduceParameterRefactoring : RefactoringBase
+    public class PromoteToParameterRefactoring : RefactoringBase
     {
-        private readonly IRefactoringAction<IntroduceParameterModel> _refactoringAction;
+        private readonly IRefactoringAction<PromoteToParameterModel> _refactoringAction;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IMessageBox _messageBox;
 
-        public IntroduceParameterRefactoring(
-            IntroduceParameterRefactoringAction refactoringAction, 
+        public PromoteToParameterRefactoring(
+            PromoteToParameterRefactoringAction refactoringAction, 
             IMessageBox messageBox, 
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider)
@@ -71,10 +69,10 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             _refactoringAction.Refactor(model);
         }
 
-        private IntroduceParameterModel Model(Declaration target)
+        private PromoteToParameterModel Model(Declaration target)
         {
             var enclosingMember = _selectedDeclarationProvider.SelectedMember(target.QualifiedSelection);
-            return new IntroduceParameterModel(target, enclosingMember);
+            return new PromoteToParameterModel(target, enclosingMember);
         }
 
         private bool PromptIfMethodImplementsInterface(Declaration targetVariable)
@@ -93,11 +91,11 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return true;
             }
 
-            var message = string.Format(RefactoringsUI.IntroduceParameter_PromptIfTargetIsInterface,
+            var message = string.Format(RefactoringsUI.PromoteToParameter_PromptIfTargetIsInterface,
                 functionDeclaration.IdentifierName, interfaceImplementation.ComponentName,
                 interfaceImplementation.IdentifierName);
 
-            return _messageBox.Question(message, RefactoringsUI.IntroduceParameter_Caption);
+            return _messageBox.Question(message, RefactoringsUI.PromoteToParameter_Caption);
         }
     }
 }

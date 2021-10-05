@@ -302,16 +302,16 @@ Privání třída může stále implementovat public (veřejný) interface.</val
   <data name="IntroduceField_Caption" xml:space="preserve">
     <value>Rubberduck - Představ Pole</value>
   </data>
-  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
+  <data name="PromoteToParameter_PromptIfTargetIsInterface" xml:space="preserve">
     <value>Metoda '{0}' implementuje '{1}.{2}'. Změnit podpis rozhraní? (Rozšíří se na všechny implementace.)</value>
   </data>
   <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
     <value>Cíl '{0}' je již pole.</value>
   </data>
-  <data name="IntroduceParameter_Caption" xml:space="preserve">
+  <data name="PromoteToParameter_Caption" xml:space="preserve">
     <value>Rubberduck - Představ Vlastnost</value>
   </data>
-  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
+  <data name="PromoteToParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
     <value>Cíl '{0}' není obsažen v metodě.</value>
   </data>
   <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">

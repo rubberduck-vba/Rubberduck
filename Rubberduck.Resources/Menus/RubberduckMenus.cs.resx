@@ -189,7 +189,7 @@
   <data name="RefactorMenu_IntroduceField" xml:space="preserve">
     <value>Představit Po&amp;le</value>
   </data>
-  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
+  <data name="RefactorMenu_PromoteToParameter" xml:space="preserve">
     <value>Představit &amp;Parametr</value>
   </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">

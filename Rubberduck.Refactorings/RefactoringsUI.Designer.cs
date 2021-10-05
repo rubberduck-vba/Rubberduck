@@ -205,7 +205,7 @@ namespace Rubberduck.Refactorings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Annotation arguments of type &apos;Number&apos; have to be a valid number in integer of floating point format..
+        ///   Looks up a localized string similar to Annotation arguments of type &apos;Number&apos; have to be a valid number in integer or floating point format..
         /// </summary>
         public static string AnnotationArgument_ValidationError_NotANumber {
             get {
@@ -693,33 +693,6 @@ namespace Rubberduck.Refactorings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck - Introduce Parameter.
-        /// </summary>
-        public static string IntroduceParameter_Caption {
-            get {
-                return ResourceManager.GetString("IntroduceParameter_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (Will propagate to all implementations.).
-        /// </summary>
-        public static string IntroduceParameter_PromptIfTargetIsInterface {
-            get {
-                return ResourceManager.GetString("IntroduceParameter_PromptIfTargetIsInterface", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The target &apos;{0}&apos; is not contained in a method..
-        /// </summary>
-        public static string IntroduceParameterFailed_TargetNotContainedInMethod {
-            get {
-                return ResourceManager.GetString("IntroduceParameterFailed_TargetNotContainedInMethod", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; does not start with a letter..
         /// </summary>
         public static string InvalidNameCriteria_DoesNotStartWithLetterFormat {
@@ -989,6 +962,33 @@ namespace Rubberduck.Refactorings {
         public static string MoveToFolderDialog_TitleText {
             get {
                 return ResourceManager.GetString("MoveToFolderDialog_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Promote to Parameter.
+        /// </summary>
+        public static string PromoteToParameter_Caption {
+            get {
+                return ResourceManager.GetString("PromoteToParameter_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (Will propagate to all implementations.).
+        /// </summary>
+        public static string PromoteToParameter_PromptIfTargetIsInterface {
+            get {
+                return ResourceManager.GetString("PromoteToParameter_PromptIfTargetIsInterface", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target &apos;{0}&apos; is not contained in a method..
+        /// </summary>
+        public static string PromoteToParameterFailed_TargetNotContainedInMethod {
+            get {
+                return ResourceManager.GetString("PromoteToParameterFailed_TargetNotContainedInMethod", resourceCulture);
             }
         }
         

@@ -315,7 +315,7 @@ A private class can still implement a public interface.</value>
   <data name="IntroduceField_Caption" xml:space="preserve">
     <value>Rubberduck - Introduce Field</value>
   </data>
-  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
+  <data name="PromoteToParameter_PromptIfTargetIsInterface" xml:space="preserve">
     <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (Will propagate to all implementations.)</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
@@ -323,10 +323,10 @@ A private class can still implement a public interface.</value>
     <value>The target '{0}' is already a field.</value>
     <comment>{0}: name of target</comment>
   </data>
-  <data name="IntroduceParameter_Caption" xml:space="preserve">
-    <value>Rubberduck - Introduce Parameter</value>
+  <data name="PromoteToParameter_Caption" xml:space="preserve">
+    <value>Rubberduck - Promote to Parameter</value>
   </data>
-  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
+  <data name="PromoteToParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
     <value>The target '{0}' is not contained in a method.</value>
     <comment>{0}: name of target</comment>
   </data>

@@ -726,7 +726,7 @@ namespace Rubberduck.Root
                 typeof(RefactorExtractMethodCommandMenuItem),
                 typeof(RefactorReorderParametersCommandMenuItem),
                 typeof(RefactorRemoveParametersCommandMenuItem),
-                typeof(RefactorIntroduceParameterCommandMenuItem),
+                typeof(RefactorPromoteToParameterCommandMenuItem),
                 typeof(RefactorIntroduceFieldCommandMenuItem),
                 typeof(RefactorEncapsulateFieldCommandMenuItem),
                 typeof(RefactorMoveCloserToUsageCommandMenuItem),

@@ -3,7 +3,7 @@ using NUnit.Framework;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.IntroduceParameter;
+using Rubberduck.Refactorings.PromoteToParameter;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
@@ -14,11 +14,11 @@ using Rubberduck.VBEditor.Utility;
 namespace RubberduckTests.Commands.RefactorCommands
 {
     [TestFixture]
-    public class IntroduceParameterCommandTests : RefactorCodePaneCommandTestBase
+    public class PromoteToParameterCommandTests : RefactorCodePaneCommandTestBase
     {
         [Category("Commands")]
         [Test]
-        public void IntroduceParameter_CanExecute_Field()
+        public void PromoteToParameter_CanExecute_Field()
         {
             const string input =
                 @"Dim d As Boolean";
@@ -29,7 +29,7 @@ namespace RubberduckTests.Commands.RefactorCommands
 
         [Category("Commands")]
         [Test]
-        public void IntroduceParameter_CanExecute_LocalVariable()
+        public void PromoteToParameter_CanExecute_LocalVariable()
         {
             const string input =
                 @"Property Get foo() As Boolean
@@ -44,10 +44,10 @@ End Property";
         {
             var msgBox = new Mock<IMessageBox>().Object;
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var baseRefactoring = new IntroduceParameterRefactoringAction(state, rewritingManager);
-            var refactoring = new IntroduceParameterRefactoring(baseRefactoring, msgBox, selectionService, selectedDeclarationProvider);
-            var notifier = new IntroduceParameterFailedNotifier(msgBox);
-            return new RefactorIntroduceParameterCommand(refactoring, notifier, state, selectionService, selectedDeclarationProvider);
+            var baseRefactoring = new PromoteToParameterRefactoringAction(state, rewritingManager);
+            var refactoring = new PromoteToParameterRefactoring(baseRefactoring, msgBox, selectionService, selectedDeclarationProvider);
+            var notifier = new PromoteToParameterFailedNotifier(msgBox);
+            return new RefactorPromoteToParameterCommand(refactoring, notifier, state, selectionService, selectedDeclarationProvider);
         }
 
         protected override IVBE SetupAllowingExecution()

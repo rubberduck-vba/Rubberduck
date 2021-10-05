@@ -157,7 +157,7 @@ namespace Rubberduck.Parsing.Binding
                 case VBAParser.MarkedFileNumberExprContext markedFileNumberExprContext:
                     return Visit(module, parent, markedFileNumberExprContext, withBlockVariable);
                 case VBAParser.BuiltInTypeExprContext builtInTypeExprContext:
-                    return Visit(builtInTypeExprContext);
+                    return Visit(module, parent, builtInTypeExprContext, statementContext);
                 //We do not handle the VBAParser.TypeofexprContext because that should only ever appear as a child of an IS relational operator expression and is specifically handled there.
                 default:
                     throw new NotSupportedException($"Unexpected expression type {expression.GetType()}");
@@ -209,8 +209,17 @@ namespace Rubberduck.Parsing.Binding
             return Visit(module, parent, expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
         }
 
-        private IExpressionBinding Visit(VBAParser.BuiltInTypeExprContext expression)
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.BuiltInTypeExprContext expression, StatementResolutionContext statementContext)
         {
+            //It is legal to name variables like built-in types.
+            //So, we try and see whether it resolves.
+            var builtInTypeNamedNameBinding = new SimpleNameDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, Identifier.GetName(expression.builtInType()), statementContext);
+            var resolutionResult = builtInTypeNamedNameBinding.Resolve();
+            if (resolutionResult.Classification != ExpressionClassification.ResolutionFailed)
+            {
+                return builtInTypeNamedNameBinding;
+            }
+
             // Not actually an expression, but treated as one to allow for a faster parser.
             return new BuiltInTypeDefaultBinding(expression);
         }
