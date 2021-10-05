@@ -317,10 +317,10 @@ namespace Rubberduck.Deployment.Build
 
         private void HarvestMetadataWithWixToFile(DllFileParameters parameters)
         {
-            var command = $"\"{WixToolsDir}heat.exe\" file \"{parameters.SourceDll}\" -out \"{parameters.DllXml}\"";
+            var command = $"\"{WixToolsDir}heat.exe\" file \"{parameters.SourceDll}\" -fips -out \"{parameters.DllXml}\"";
             ExecuteTask(command);
 
-            command = $"\"{WixToolsDir}heat.exe\" file \"{parameters.SourceTlb32}\" -out \"{parameters.TlbXml}\"";
+            command = $"\"{WixToolsDir}heat.exe\" file \"{parameters.SourceTlb32}\" -fips -out \"{parameters.TlbXml}\"";
             ExecuteTask(command);
         }
 
