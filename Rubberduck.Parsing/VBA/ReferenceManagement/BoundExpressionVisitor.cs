@@ -24,9 +24,10 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             Declaration parent,
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false,
-            bool isSetAssignment = false)
+            bool isSetAssignment = false,
+            bool isReDim = false)
         {
-            Visit(boundExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+            Visit(boundExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment, isReDim: isReDim);
         }
 
         /// <summary>
@@ -50,12 +51,13 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false,
             bool isSetAssignment = false,
-            bool hasArrayAccess = false)
+            bool hasArrayAccess = false,
+            bool isReDim = false)
         {
             switch (boundExpression)
             {
                 case SimpleNameExpression simpleNameExpression:
-                    return Visit(simpleNameExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+                    return Visit(simpleNameExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment, isReDim);
                 case MemberAccessExpression memberAccessExpression:
                     return Visit(memberAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
                 case IndexExpression indexExpression:
@@ -119,7 +121,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             Declaration parent,
             bool isAssignmentTarget,
             bool hasExplicitLetStatement,
-            bool isSetAssignment)
+            bool isSetAssignment,
+            bool isReDim)
         {
             var callSiteContext = expression.Context;
             var callee = expression.ReferencedDeclaration;
@@ -136,7 +139,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 FindIdentifierAnnotations(module, selection.StartLine),
                 isAssignmentTarget,
                 hasExplicitLetStatement,
-                isSetAssignment);
+                isSetAssignment,
+                isReDim: isReDim);
         }
 
         private IEnumerable<IParseTreeAnnotation> FindIdentifierAnnotations(QualifiedModuleName module, int line)
