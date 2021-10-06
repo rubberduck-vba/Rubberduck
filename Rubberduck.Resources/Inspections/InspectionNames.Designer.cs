@@ -934,6 +934,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Suspicious access to a predeclared instance.
+        /// </summary>
+        public static string SuspiciousPredeclaredInstanceAccessInspection {
+            get {
+                return ResourceManager.GetString("SuspiciousPredeclaredInstanceAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable is used but not assigned..
         /// </summary>
         public static string UnassignedVariableUsageInspection {

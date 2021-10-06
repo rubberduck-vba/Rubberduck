@@ -934,6 +934,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to While a stateful default instance might be intentional, it is a common source of bugs and should be avoided. Use the &apos;Me&apos; qualifier to explicitly refer to the current instance and eliminate any ambiguity..
+        /// </summary>
+        public static string SuspiciousPredeclaredInstanceAccessInspection {
+            get {
+                return ResourceManager.GetString("SuspiciousPredeclaredInstanceAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This is likely a bug. A variable is being referred to, but is never assigned..
         /// </summary>
         public static string UnassignedVariableUsageInspection {
