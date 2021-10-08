@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.ComReferenceLoading;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA.DeclarationResolving
@@ -46,7 +47,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                     module =>
                     {
                         ResolveDeclarations(module,
-                            _state.ParseTrees.Find(s => s.Key == module).Value,
+                            _state.GetParseTree(module),
+                            _state.GetLogicalLines(module),
                             projects,
                             token);
                     }

@@ -84,7 +84,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
             cancellationToken.ThrowIfCancellationRequested();
 
             Logger.Trace($"ParseTaskID {taskId} begins code pane pass.");
-            var (codePaneParseTree, codePaneTokenStream) = CodePanePassResults(module, cancellationToken, rewriter);
+            var (codePaneParseTree, codePaneTokenStream, logicalLines) = CodePanePassResults(module, cancellationToken, rewriter);
             Logger.Trace($"ParseTaskID {taskId} finished code pane pass.");
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -110,6 +110,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
                 attributesParseTree,
                 comments,
                 annotations,
+                logicalLines,
                 attributes,
                 membersAllowingAttributes,
                 codePaneTokenStream,
@@ -157,12 +158,24 @@ namespace Rubberduck.Parsing.VBA.Parsing
             return attributesParseResults;
         }
 
-        private (IParseTree tree, ITokenStream tokenStream) CodePanePassResults(QualifiedModuleName module, CancellationToken token, TokenStreamRewriter rewriter = null)
+        private (IParseTree tree, ITokenStream tokenStream, LogicalLineStore logicalLines) CodePanePassResults(QualifiedModuleName module, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
             token.ThrowIfCancellationRequested();
             var code = rewriter?.GetText() ?? _codePaneSourceCodeProvider.SourceCode(module);
+            var logicalLines = LogicalLines(code);
             token.ThrowIfCancellationRequested();
-            return _parser.Parse(module.ComponentName, module.ProjectId, code, token, CodeKind.CodePaneCode);
+            var (tree, tokenStream) = _parser.Parse(module.ComponentName, module.ProjectId, code, token, CodeKind.CodePaneCode);
+            return (tree, tokenStream, logicalLines);
+        }
+
+        private LogicalLineStore LogicalLines(string code)
+        {
+            var lines = code.Split(new []{Environment.NewLine}, StringSplitOptions.None);
+            var logicalLineEnds = lines
+                .Select((line, index) => (line, index))
+                .Where(tpl => !tpl.line.TrimEnd().EndsWith(" _")) //Not line-continued
+                .Select(tpl => tpl.index + 1); //VBA lines are 1-based.
+            return new LogicalLineStore(logicalLineEnds);
         }
 
         private class CommentListener : VBAParserBaseListener

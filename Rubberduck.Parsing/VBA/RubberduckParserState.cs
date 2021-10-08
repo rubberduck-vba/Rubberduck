@@ -141,7 +141,8 @@ namespace Rubberduck.Parsing.VBA
             var oldDeclarationFinder = DeclarationFinder;
             DeclarationFinder = _declarationFinderFactory.Create(
                 AllDeclarationsFromModuleStates, 
-                AllAnnotations,
+                AllAnnotations, 
+                AllLogicalLines,
                 AllFailedResolutionsFromModuleStates,
                 host);
             _declarationFinderFactory.Release(oldDeclarationFinder);
@@ -656,6 +657,19 @@ namespace Rubberduck.Parsing.VBA
                 return annotations;
             }
         }
+        public IReadOnlyDictionary<QualifiedModuleName, LogicalLineStore> AllLogicalLines
+        {
+            get
+            {
+                var logicalLineStored = new Dictionary<QualifiedModuleName, LogicalLineStore>();
+                foreach (var module in _moduleStates.Keys)
+                {
+                    logicalLineStored.Add(module, _moduleStates[module].LogicalLines);
+                }
+
+                return logicalLineStored;
+            }
+        }
 
         public IEnumerable<IParseTreeAnnotation> GetAnnotations(QualifiedModuleName module)
         {
@@ -670,6 +684,10 @@ namespace Rubberduck.Parsing.VBA
         public void SetModuleAnnotations(QualifiedModuleName module, IEnumerable<IParseTreeAnnotation> annotations)
         {
             _moduleStates[module].SetAnnotations(new List<IParseTreeAnnotation>(annotations));
+        }
+        public void SetModuleLogicalLines(QualifiedModuleName module, LogicalLineStore logicalLines)
+        {
+            _moduleStates[module].SetLogicalLines(logicalLines);
         }
 
         /// <summary>
@@ -850,6 +868,11 @@ namespace Rubberduck.Parsing.VBA
                 default:
                     throw new ArgumentOutOfRangeException(nameof(codeKind), codeKind, null);
             }
+        }
+
+        public LogicalLineStore GetLogicalLines(QualifiedModuleName module)
+        {
+            return _moduleStates[module].LogicalLines;
         }
 
         public List<KeyValuePair<QualifiedModuleName, IParseTree>> AttributeParseTrees
