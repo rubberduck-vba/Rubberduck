@@ -21,6 +21,7 @@ namespace Rubberduck.Parsing.VBA
         public int ModuleContentHashCode { get; private set; }
         public List<CommentNode> Comments { get; private set; }
         public List<IParseTreeAnnotation> Annotations { get; private set; }
+        public LogicalLineStore LogicalLines { get; private set; }
         public SyntaxErrorException ModuleException { get; private set; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> ModuleAttributes { get; private set; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> MembersAllowingAttributes { get; private set; }
@@ -124,6 +125,11 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState SetAnnotations(List<IParseTreeAnnotation> annotations)
         {
             Annotations = annotations;
+            return this;
+        }
+        public ModuleState SetLogicalLines(LogicalLineStore logicalLines)
+        {
+            LogicalLines = logicalLines;
             return this;
         }
 

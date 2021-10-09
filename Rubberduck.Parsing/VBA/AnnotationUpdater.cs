@@ -59,35 +59,37 @@ namespace Rubberduck.Parsing.VBA
 
             var annotationText = AnnotationText(annotationInfo.Name, annotationValues);
 
-            string codeToAdd;
-            IModuleRewriter rewriter;
-            if (context.start.Line == 1)
+            int? startOfLogicalLine = _parseTreeProvider
+                .GetLogicalLines(moduleName)
+                ?.StartOfContainingLogicalLine(context.start.Line);
+
+            if (!startOfLogicalLine.HasValue)
             {
-                codeToAdd = $"{annotationText}{Environment.NewLine}";
-                rewriter = rewriteSession.CheckOutModuleRewriter(moduleName);
-                rewriter.InsertBefore(0, codeToAdd);
+                _logger.Warn("Tried to add an annotation to a context that is not on any known logical line of the module.");
+                _logger.Trace($"Tried to add annotation {annotationInfo.Name} with values {AnnotationValuesText(annotationValues)} to a context with startline {context.start.Line} in module {moduleName} that is outside all known logical lines.");
                 return;
             }
 
-            var previousEndOfLine = PreviousEndOfLine(context);
-            if (previousEndOfLine == null)
+            if (startOfLogicalLine.Value == 1)
             {
-                //We are on the first logical line, but not the first physical line.
+                InsertAtStartOfModule(rewriteSession, moduleName, annotationText);
                 return;
             }
 
-            if (context.start.Line > previousEndOfLine.stop.Line + 1)
-            {
-                _logger.Warn("Tried to add an annotation to a context not on the first physical line of a logical line.");
-                _logger.Trace($"Tried to add annotation {annotationInfo.Name} with values {AnnotationValuesText(annotationValues)} to a the context with text '{context.GetText()}' at {context.GetSelection()} in module {moduleName}.");
-                return;
-            }
+            var endOfLineBeforeLogicalLine = EndOfLineBeforePhysicalLine(context, startOfLogicalLine.Value);
 
-            codeToAdd = previousEndOfLine.TryGetFollowingContext(out VBAParser.WhiteSpaceContext whitespaceAtStartOfLine)
+            var codeToAdd = endOfLineBeforeLogicalLine.TryGetFollowingContext(out VBAParser.WhiteSpaceContext whitespaceAtStartOfLine)
                             ? $"{whitespaceAtStartOfLine.GetText()}{annotationText}{Environment.NewLine}"
                             : $"{annotationText}{Environment.NewLine}";
-            rewriter = rewriteSession.CheckOutModuleRewriter(moduleName);
-            rewriter.InsertAfter(previousEndOfLine.stop.TokenIndex, codeToAdd);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(moduleName);
+            rewriter.InsertAfter(endOfLineBeforeLogicalLine.stop.TokenIndex, codeToAdd);
+        }
+
+        private static void InsertAtStartOfModule(IRewriteSession rewriteSession, QualifiedModuleName moduleName, string annotationText)
+        {
+            var codeToAdd = $"{annotationText}{Environment.NewLine}";
+            var rewriter = rewriteSession.CheckOutModuleRewriter(moduleName);
+            rewriter.InsertBefore(0, codeToAdd);
         }
 
         private static string AnnotationText(IAnnotation annotationInformation, IReadOnlyList<string> values)
@@ -110,14 +112,14 @@ namespace Rubberduck.Parsing.VBA
             return string.Join(", ", annotationValues);
         }
 
-        private static VBAParser.EndOfLineContext PreviousEndOfLine(ParserRuleContext context)
+        private static VBAParser.EndOfLineContext EndOfLineBeforePhysicalLine(ParserRuleContext context, int physicalLine)
         {
             var moduleContext = context.GetAncestor<VBAParser.ModuleContext>();
             var endOfLineListener = new EndOfLineListener();
             ParseTreeWalker.Default.Walk(endOfLineListener, moduleContext);
             var previousEol = endOfLineListener.Contexts
                 .OrderBy(eol => eol.Start.TokenIndex)
-                .LastOrDefault(eol => eol.stop.TokenIndex < context.start.TokenIndex);
+                .LastOrDefault(eol => eol.start.Line < physicalLine);
             return previousEol;
         }
 
@@ -319,7 +321,7 @@ namespace Rubberduck.Parsing.VBA
 
         private static void RemoveEntireLine(IModuleRewriter rewriter, ParserRuleContext contextInCommentOrAnnotation)
         {
-            var previousEndOfLineContext = PreviousEndOfLine(contextInCommentOrAnnotation);
+            var previousEndOfLineContext = EndOfLineBeforePhysicalLine(contextInCommentOrAnnotation, contextInCommentOrAnnotation.start.Line);
             var containingCommentOrAnnotationContext = contextInCommentOrAnnotation.GetAncestor<VBAParser.CommentOrAnnotationContext>();
 
             if (previousEndOfLineContext == null)

@@ -3,12 +3,11 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
-using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Parsing.Binding
 {
-    public sealed class DefaultBindingContext : IBindingContext
+    public sealed class DefaultBindingContext : BindingContextBase
     {
         private readonly DeclarationFinder _declarationFinder;
         private readonly IBindingContext _typeBindingContext;
@@ -24,19 +23,24 @@ namespace Rubberduck.Parsing.Binding
             _procedurePointerBindingContext = procedurePointerBindingContext;
         }
 
-        public IBoundExpression Resolve(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion, bool isLetAssignment)
+        public override IBoundExpression Resolve(Declaration module,
+            Declaration parent,
+            ParserRuleContext expression,
+            IBoundExpression withBlockVariable,
+            StatementResolutionContext statementContext,
+            bool requiresLetCoercion = false,
+            bool isLetAssignment = false)
         {
             var bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext, requiresLetCoercion, isLetAssignment);
             return bindingTree?.Resolve();
         }
 
-        public IExpressionBinding BuildTree(
-            Declaration module, 
-            Declaration parent, 
-            IParseTree expression, 
-            IBoundExpression withBlockVariable, 
+        public override IExpressionBinding BuildTree(Declaration module,
+            Declaration parent,
+            ParserRuleContext expression,
+            IBoundExpression withBlockVariable,
             StatementResolutionContext statementContext,
-            bool requiresLetCoercion = false, 
+            bool requiresLetCoercion = false,
             bool isLetAssignment = false)
         {
             return Visit(
@@ -49,7 +53,7 @@ namespace Rubberduck.Parsing.Binding
                 isLetAssignment);
         }
 
-        public IExpressionBinding Visit(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
+        public IExpressionBinding Visit(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
         {
             if (requiresLetCoercion && expression is ParserRuleContext context)
             {
@@ -76,7 +80,7 @@ namespace Rubberduck.Parsing.Binding
                 case VBAParser.UnqualifiedObjectPrintStmtContext unqualifiedObjectPrintStmtContext:
                     return Visit(module, parent, unqualifiedObjectPrintStmtContext, withBlockVariable);
                 default:
-                    throw new NotSupportedException($"Unexpected context type {expression.GetType()}");
+                    return HandleUnexpectedExpressionType(expression);
             }
         }
 
@@ -160,7 +164,7 @@ namespace Rubberduck.Parsing.Binding
                     return Visit(module, parent, builtInTypeExprContext, statementContext);
                 //We do not handle the VBAParser.TypeofexprContext because that should only ever appear as a child of an IS relational operator expression and is specifically handled there.
                 default:
-                    throw new NotSupportedException($"Unexpected expression type {expression.GetType()}");
+                    return HandleUnexpectedExpressionType(expression);
             }
         }
 
@@ -187,7 +191,7 @@ namespace Rubberduck.Parsing.Binding
                 case VBAParser.ObjectPrintExprContext objectPrintExprContext:
                     return Visit(module, parent, objectPrintExprContext, withBlockVariable);
                 default:
-                    throw new NotSupportedException($"Unexpected lExpression type {expression.GetType()}");
+                    return HandleUnexpectedExpressionType(expression);
             }
         }
 
