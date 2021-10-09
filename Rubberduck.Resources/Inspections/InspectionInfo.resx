@@ -458,6 +458,6 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>A comment was parsed as a syntactically valid annotation, but not recognized as a supported annotation type.</value>
   </data>
   <data name="IIfSideEffectInspection" xml:space="preserve">
-    <value>The 'IIf' Function's behavior is sometimes mis-interpreted to expect that ONLY the 'TruePart' or ONLY the 'FalsePart' expression will be evaluated based on the first argument.  But, as with any VBA method, all arguments are evaluated before calling the method.  Consequently, IIf can be a source of unintended side-effects and errors.  Expressions involving Functions used in the 'TruePart' or 'FalsePart' should be evaluated for potential side-effects and errors knowing that all referenced Function(s) in the arguments will be invoked everytime IIf is executed.</value>
+    <value>All arguments of any function/procedure call are always evaluated before the function is invoked so that their respective values can be passed as parameters. Even so, the IIf Function's behavior is sometimes mis-interpreted to expect that ONLY the 'TruePart' or ONLY the 'FalsePart' expression will be evaluated based on the result of the first argument expression. Consequently, the IIf Function can be a source of unanticipated side-effects and errors if the user does not account for the fact that both the TruePart and FalsePart arguments are always evaluated.</value>
   </data>
 </root>

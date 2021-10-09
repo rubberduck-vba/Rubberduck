@@ -322,7 +322,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;IIf&apos; Function&apos;s behavior is sometimes mis-interpreted to expect that ONLY the &apos;TruePart&apos; or ONLY the &apos;FalsePart&apos; expression will be evaluated based on the first argument.  But, as with any VBA method, all arguments are evaluated before calling the method.  Consequently, IIf can be a source of unintended side-effects and errors.  Expressions involving Functions used in the &apos;TruePart&apos; or &apos;FalsePart&apos; should be evaluated for potential side-effects and errors knowing that all referenced Function(s) in the a [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to All arguments of any function/procedure call are always evaluated before the function is invoked so that their respective values can be passed as parameters. Even so, the IIf Function&apos;s behavior is sometimes mis-interpreted to expect that ONLY the &apos;TruePart&apos; or ONLY the &apos;FalsePart&apos; expression will be evaluated based on the result of the first argument expression. Consequently, the IIf Function can be a source of unanticipated side-effects and errors if the user does not account for the fact that both the Tr [rest of string was truncated]&quot;;.
         /// </summary>
         public static string IIfSideEffectInspection {
             get {
