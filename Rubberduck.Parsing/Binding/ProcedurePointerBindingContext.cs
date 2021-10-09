@@ -1,12 +1,11 @@
-﻿using System;
-using Antlr4.Runtime.Tree;
+﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Parsing.Binding
 {
-    public sealed class ProcedurePointerBindingContext : IBindingContext
+    public sealed class ProcedurePointerBindingContext : BindingContextBase
     {
         private readonly DeclarationFinder _declarationFinder;
 
@@ -15,7 +14,14 @@ namespace Rubberduck.Parsing.Binding
             _declarationFinder = declarationFinder;
         }
 
-        public IBoundExpression Resolve(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
+        public override IBoundExpression Resolve(
+            Declaration module, 
+            Declaration parent, 
+            ParserRuleContext expression,
+            IBoundExpression withBlockVariable, 
+            StatementResolutionContext statementContext,
+            bool requiresLetCoercion = false, 
+            bool isLetAssignment = false)
         {
             IExpressionBinding bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
             if (bindingTree != null)
@@ -25,7 +31,14 @@ namespace Rubberduck.Parsing.Binding
             return null;
         }
 
-        public IExpressionBinding BuildTree(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
+        public override IExpressionBinding BuildTree(
+            Declaration module, 
+            Declaration parent,
+            ParserRuleContext expression, 
+            IBoundExpression withBlockVariable,
+            StatementResolutionContext statementContext, 
+            bool requiresLetCoercion = false, 
+            bool isLetAssignment = false)
         {
             switch (expression)
             {
@@ -36,7 +49,7 @@ namespace Rubberduck.Parsing.Binding
                 case VBAParser.AddressOfExpressionContext addressOfExpressionContext:
                     return Visit(module, parent, addressOfExpressionContext);
                 default:
-                    throw new NotSupportedException($"Unexpected context type {expression.GetType()}");
+                    return HandleUnexpectedExpressionType(expression);
             }
         }
 
@@ -52,7 +65,7 @@ namespace Rubberduck.Parsing.Binding
                 case VBAParser.LExprContext lExprContext:
                     return Visit(module, parent, lExprContext.lExpression());
                 default:
-                    throw new NotSupportedException($"Unexpected expression type {expression.GetType()}");
+                    return HandleUnexpectedExpressionType(expression);
             }
         }
 
@@ -65,7 +78,7 @@ namespace Rubberduck.Parsing.Binding
                 case VBAParser.MemberAccessExprContext memberAccessExprContext:
                     return Visit(module, parent, memberAccessExprContext);
                 default:
-                    throw new NotSupportedException($"Unexpected lExpression type {expression.GetType()}");
+                    return HandleUnexpectedExpressionType(expression);
             }
         }
 
