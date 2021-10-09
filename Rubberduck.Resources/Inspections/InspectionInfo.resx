@@ -457,4 +457,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
     <value>A comment was parsed as a syntactically valid annotation, but not recognized as a supported annotation type.</value>
   </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>In general, the VBE editor catches this type of error and will not compile.  However, there are a few scenarios where the error is overlooked by the compiler and an error is generated at runtime.  To avoid a runtime error, implement the missing Property or Subroutine. </value>
+  </data>
 </root>

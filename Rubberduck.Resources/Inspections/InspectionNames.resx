@@ -457,4 +457,7 @@
   <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
     <value>Unrecognized annotation</value>
   </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>Read-Only Property assignment</value>
+  </data>
 </root>
