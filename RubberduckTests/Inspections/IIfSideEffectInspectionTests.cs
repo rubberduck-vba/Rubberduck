@@ -93,8 +93,9 @@ End Function
             Assert.AreEqual(expected, IIfInspectionResults(inputcode).Count());
         }
 
-        [TestCase(@"IIf(flag, CLng(CStr(Func1() + 10) & ""000""), default)", 1)]
-        [TestCase(@"IIf(flag, default, CLng(CStr(Func1() + 10) & ""000""))", 1)]
+        [TestCase(@"IIf(flag, CLng(CStr(Func1() + 10) & ""000""), default)", 3)]
+        [TestCase(@"IIf(flag, default, CLng(CStr(Func1() + 10) & ""000""))", 3)]
+        [TestCase(@"IIf(flag, default, CLng(Trim(CStr(Func1() + 10)) & ""000""))", 3)] //Trim is not flagged
         [TestCase(@"IIf(CLng(CStr(Func1() + 10) & ""000""), 2000, default, default)", 0)]
         [Category("Inspections")]
         [Category("IIfSideEffect")]

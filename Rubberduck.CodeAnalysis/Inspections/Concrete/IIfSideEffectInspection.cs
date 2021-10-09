@@ -17,9 +17,11 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// or FalsePart(third argument) of the IIf built-in function.
     /// </summary>
     /// <why>
-    /// Functions/Properties referenced by the second or third parameter of an 'IIf' function call are 
-    /// a potential source of unintended side-effects.  A common mis-interpretation of IIf is that only one 
-    /// of the two argument expressions are evaluated.  In fact, both are evaluated on each IIf call.
+    /// All arguments of any function/procedure call are always evaluated before the function is invoked so that 
+    /// their respective values can be passed as parameters. Even so, the IIf Function's behavior is sometimes mis-interpreted 
+    /// to expect that ONLY the 'TruePart' or ONLY the 'FalsePart' expression will be evaluated based on the result of the 
+    /// first argument expression. Consequently, the IIf Function can be a source of unanticipated side-effects and errors 
+    /// if the user does not account for the fact that both the TruePart and FalsePart arguments are always evaluated.
     /// </why>
     /// <example hasResult="true">
     /// <module name="MyModule" type="Standard Module">
@@ -103,6 +105,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
+        private static Dictionary<string, string> _nonSideEffectingLibraryFunctionIdentifiers = CreateLibraryFunctionIdentifiersToIgnore();
+
         public IIfSideEffectInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
@@ -128,9 +132,9 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
             var objectionableReferences = ReferencesInModule(module, finder)
                 .Where(reference => reference.Declaration.DeclarationType.HasFlag(DeclarationType.Function)
-                    && reference.Declaration.IsUserDefined
+                    && !_nonSideEffectingLibraryFunctionIdentifiers.ContainsKey(reference.IdentifierName.ToUpperInvariant())
                     && reference.Context.TryGetAncestor<VBAParser.ArgumentContext>(out _)
-                    && iifTruePartAndFalsePartArgumentContexts.Any(ac => ac.ContainsTokenIndex(reference.Context.Start.TokenIndex)));
+                    && iifTruePartAndFalsePartArgumentContexts.Any(ac => ac.Contains(reference.Context)));
 
             return objectionableReferences
                 .Select(reference => InspectionResult(reference, finder))
@@ -188,6 +192,75 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected override string ResultDescription(IdentifierReference reference)
         {
             return string.Format(InspectionResults.IIfSideEffectInspection, reference.IdentifierName);
+        }
+
+        /// <summary>
+        /// Loads VBA Standard library functions that are not be side-effecting or highly unlikely to raise errors
+        /// </summary>
+        /// <returns></returns>
+        private static Dictionary<string, string> CreateLibraryFunctionIdentifiersToIgnore()
+        {
+            return LoadLibraryFunctionIdentifiersToIgnore( new Dictionary<string, string>(),
+                //MS-VBAL 6.1.2.3 Conversion Module
+                /*Excluded for potential of raising errors:
+                 * "CBool", "CByte", "CCur", "CDate", "CVDate", "CDbl", "CDec", "CInt", "CLng", "CLngLng", "ClngPtr",
+                 * "CSng", "CStr", "CVar", "CVErr", "Error","Error$", "Fix", "Hex", "Hex$", "Int", "Oct", "Oct$", "Str", 
+                 * "Str$", "Val"
+                 */
+
+                //MS-VBAL 6.1.2.4 DateTime Module
+                /*Excluded for potential of raising errors: 
+                 * "DateAdd", "DateDiff", "DatePart", "DateSerial", "DateValue", "Day", "Hour", "Minute", "Month", "Second", 
+                 * "TimeSerial","TimeValue", "Weekday", "Year"
+                 */
+                "Calendar", "Date", "Date$", "Now", "Time", "Time$", "Timer",
+                //MS-VBAL 6.1.2.5 File System
+                /*Excluded for potential of raising errors: 
+                 * "CurDir", "CurDir$", "Dir", "EOF", "FileAttr", "FileDateTime", "FileLen", "FreeFile", "Loc", "LOF", "Seek" 
+                 */
+
+                //MS-VBAL 6.1.2.6 Financial - all excluded
+                /*Excluded for potential of raising errors: 
+                 * "DDB", "FV", "IPmt", "IRR", "MIRR", "NPer", "NPV", "Pmt", "PPmt", "PV", "Rate", "SLN", "SYD"
+                 */
+
+                //MS-VBAL 6.1.2.7 Information
+                "IMEStatus", "IsArray", "IsDate", "IsEmpty", "IsError", "IsMissing", "IsNull", "IsNumeric", "IsObject", 
+                "QBColor", "RGB", "TypeName", "VarType",
+
+                //MS-VBAL 6.1.2.8 Interaction
+                /* Excluded as Potentially side-effecting: 
+                 * "CallByName", "Choose", "Command", "Command$", "CreateObject", 
+                 * GetObject", "DoEvents", "InputBox", "MsgBox", "Shell", "Switch", "GetAllSettings", "GetAttr", "GetSetting", 
+                 * "Partition"
+                 */
+                "Environ", "Environ$", "IIf",
+
+                //MS-VBAL 6.1.2.10 Math
+                /*Excluded for potential of raising errors: 
+                 * "Abs", "Atn", "Cos", "Exp", "Log", "Round", "Sgn", "Sin", "Sqr", "Tan"
+                */
+                "Rnd",
+
+                //MS-VBAL 6.1.2.11 Strings
+                /* Excluded for potential of raising errors: 
+                 * "Format", "Format$", "FormatDateTime", "FormatNumber", "FormatPercent", "InStr", "InStrB", "InStrRev",
+                 * "Join", "Left", "LeftB", "Left$", "LeftB$", "Mid", "MidB", "Mid$", "MidB$", "Replace", "Right", "RightB", 
+                 * "Right$", "RightB$", "Asc", "AscW", "AscB", "Chr", "Chr$", "ChB", "ChB$", "ChrW", "ChrW$", "Filter", 
+                 * "MonthName", "WeekdayName", "Space", "Space$", "Split","StrConv", "String", "String$"
+                */
+                "LCase", "LCase$", "Len", "LenB", "Trim", "LTrim", "RTrim", "Trim$", "LTrim$", "RTrim$", "StrComp", 
+                "StrReverse", "UCase", "UCase$"
+                );
+        }
+
+        private static Dictionary<string, string> LoadLibraryFunctionIdentifiersToIgnore(Dictionary<string, string> idMap, params string[] identifiers)
+        {
+            foreach (var identifier in identifiers)
+            {
+                idMap.Add(identifier.ToUpperInvariant(), identifier);
+            }
+            return idMap;
         }
     }
 }
