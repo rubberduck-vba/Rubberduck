@@ -106,12 +106,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 return false;
             }
 
-            var parseTree = state.GetParseTree(interfaceClass.QualifiedName.QualifiedModuleName);
-            var context = ((Antlr4.Runtime.ParserRuleContext)parseTree).GetDescendents<VBAParser.ImplementsStmtContext>();
-
             // true if active code pane is for a class/document/form module
-            return !context.Any()
-                   && !state.IsNewOrModified(interfaceClass.QualifiedModuleName)
+            return !state.IsNewOrModified(interfaceClass.QualifiedModuleName)
                    && !state.IsNewOrModified(qualifiedName);
         }
     }

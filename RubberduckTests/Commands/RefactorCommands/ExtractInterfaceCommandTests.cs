@@ -172,6 +172,22 @@ End Property";
             Assert.IsTrue(CanExecute(input));
         }
 
+        //https://github.com/rubberduck-vba/Rubberduck/issues/5693
+        [Test]
+        [Category("Commands")]
+        [Category("Extract Interface")]
+        public void ExtractInterface_CanExecute_ExistingImplements()
+        {
+            var input =
+@"
+Implements ITest
+
+Property Set Foo(value)
+End Property";
+
+            Assert.IsTrue(CanExecute(input));
+        }
+
         private bool CanExecute(string inputCode, ComponentType componentType = ComponentType.ClassModule)
         {
             return CanExecute(inputCode, Selection.Home, componentType);
