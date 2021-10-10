@@ -79,6 +79,22 @@ End Sub
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void NoMemberAccess_NoResult()
+        {
+            var className = "UserForm1";
+            var code = $@"
+Attribute VB_PredeclaredId = True
+Public AnyField As Long
+Private Sub Test()
+    If Me Is UserForm1 Then Exit Sub
+End Sub
+";
+            var inspectionResults = InspectionResultsForModules((className, code, ComponentType.UserForm));
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
             return new SuspiciousPredeclaredInstanceAccessInspection(state);

@@ -51,14 +51,12 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            if (!(reference.Declaration is ClassModuleDeclaration module) || 
-                !module.HasPredeclaredId ||
-                !reference.ParentScoping.ParentDeclaration.Equals(module))
-            {
-                return false;
-            }
-
-            return reference.IdentifierName != Tokens.Me;
+            return 
+                reference.Declaration is ClassModuleDeclaration module && 
+                module.HasPredeclaredId &&
+                reference.ParentScoping.ParentDeclaration.Equals(module) &&
+                reference.Context.TryGetAncestor<VBAParser.LExpressionContext>(out var expression) &&
+                reference.IdentifierName != Tokens.Me && expression.GetText() == reference.IdentifierName;
         }
 
         protected override string ResultDescription(IdentifierReference reference)
