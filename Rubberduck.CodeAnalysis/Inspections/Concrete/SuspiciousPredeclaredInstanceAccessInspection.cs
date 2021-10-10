@@ -13,10 +13,26 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// This inspection warns about references to the default instance of a class, inside that class.
     /// </summary>
     /// <why>
-    /// While a stateful default instance might be intentional, it is a common source of bugs and should be avoided.
+    /// While a stateful default instance might be intentional, when it isn't it's easily a source of bugs.
     /// Use the Me qualifier to explicitly refer to the current instance and eliminate any ambiguity.
+    /// Global state accidentally stored in a class' default instance is not shared by all other instances of that class.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub Test1()
+    ///     UserForm1.Show ' the default instance is being shown
+    /// End Sub
+    /// 
+    /// Public Sub Test2()
+    ///     With New UserForm1
+    ///         .Show ' a new instance is being shown
+    ///     End With
+    /// End Sub
+    /// ]]>
+    /// </module>
     /// <module name="UserForm1" type="UserForm Module">
     /// <![CDATA[
     /// Option Explicit
@@ -24,12 +40,27 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// 
     /// Private Sub CommandButton1_Click()
     ///     ClickCount = ClickCount + 1
-    ///     UserForm1.TextBox1.Text = ClickCount
+    ///     UserForm1.TextBox1.Text = ClickCount ' only TextBox1 on the default instance is affected
     /// End Sub
     /// ]]>
     /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub Test1()
+    ///     UserForm1.Show ' the default instance is being shown
+    /// End Sub
+    /// 
+    /// Public Sub Test2()
+    ///     With New UserForm1
+    ///         .Show ' a new instance is being shown
+    ///     End With
+    /// End Sub
+    /// ]]>
+    /// </module>
     /// <module name="UserForm1" type="UserForm Module">
     /// <![CDATA[
     /// Option Explicit
@@ -37,7 +68,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// 
     /// Private Sub CommandButton1_Click()
     ///     ClickCount = ClickCount + 1
-    ///     Me.TextBox1.Text = ClickCount
+    ///     Me.TextBox1.Text = ClickCount ' always works as expected
     /// End Sub
     /// ]]>
     /// </module>
