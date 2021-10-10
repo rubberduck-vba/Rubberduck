@@ -86,13 +86,13 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 reference.Declaration is ClassModuleDeclaration module && 
                 module.HasPredeclaredId &&
                 reference.ParentScoping.ParentDeclaration.Equals(module) &&
-                reference.Context.TryGetAncestor<VBAParser.LExpressionContext>(out var expression) &&
-                reference.IdentifierName != Tokens.Me && expression.GetText() == reference.IdentifierName;
+                reference.Context.TryGetAncestor<VBAParser.MemberAccessExprContext>(out var expression) &&
+                reference.IdentifierName != Tokens.Me && expression.lExpression()?.GetText() == reference.IdentifierName;
         }
 
         protected override string ResultDescription(IdentifierReference reference)
         {
-            reference.Context.TryGetAncestor<VBAParser.LExpressionContext>(out var expression);
+            reference.Context.TryGetAncestor<VBAParser.MemberAccessExprContext>(out var expression);
             return string.Format(InspectionResults.SuspiciousPredeclaredInstanceAccessInspection, reference.IdentifierName, expression.GetText());
         }
     }
