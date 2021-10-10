@@ -457,4 +457,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
     <value>A comment was parsed as a syntactically valid annotation, but not recognized as a supported annotation type.</value>
   </data>
+  <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
+    <value>While a stateful default instance might be intentional, it is a common source of bugs and should be avoided. Use the 'Me' qualifier to explicitly refer to the current instance and eliminate any ambiguity.</value>
+  </data>
 </root>

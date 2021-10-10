@@ -457,4 +457,7 @@
   <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
     <value>Unrecognized annotation</value>
   </data>
+  <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
+    <value>Suspicious access to a predeclared instance</value>
+  </data>
 </root>
