@@ -98,6 +98,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             // interface class must have members to be implementable
             var hasMembers = state.AllUserDeclarations.Any(item =>
                 item.DeclarationType.HasFlag(DeclarationType.Member)
+                && item.Accessibility != Accessibility.Private
                 && item.ParentDeclaration != null
                 && item.ParentDeclaration.Equals(interfaceClass));
 
