@@ -871,6 +871,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attempt to assign Read-Only Property &apos;{0}&apos;.
+        /// </summary>
+        public static string ReadOnlyPropertyAssignmentInspection {
+            get {
+                return ResourceManager.GetString("ReadOnlyPropertyAssignmentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; has a redundant &apos;ByRef&apos; modifier..
         /// </summary>
         public static string RedundantByRefModifierInspection {
