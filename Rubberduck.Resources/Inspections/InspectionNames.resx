@@ -460,6 +460,9 @@
   <data name="IIfSideEffectInspection" xml:space="preserve">
     <value>Potential 'IIf' Function side effects</value>
   </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>Read-Only Property assignment</value>
+  </data>
   <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
     <value>Suspicious access to a predeclared instance</value>
   </data>
