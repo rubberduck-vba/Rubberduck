@@ -460,4 +460,7 @@
   <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
     <value>Suspicious access to a predeclared instance</value>
   </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>Public control field access</value>
+  </data>
 </root>
