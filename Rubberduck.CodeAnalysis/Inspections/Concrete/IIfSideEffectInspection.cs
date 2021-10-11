@@ -119,8 +119,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
             var iifReferences = _declarationFinderProvider.DeclarationFinder.BuiltInDeclarations(DeclarationType.Function)
-                //'ToUpperInvariant' in case the user has (at some point) entered a declaration that re-cased "IIf"
-                .SingleOrDefault(d => d.IdentifierName.ToUpperInvariant().Equals("IIF"))
+                .SingleOrDefault(d => string.Compare( d.IdentifierName, "IIf", System.StringComparison.InvariantCultureIgnoreCase) == 0)
                 .References.Where(rf => rf.QualifiedModuleName == module);
 
             if (!iifReferences.Any())
