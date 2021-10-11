@@ -979,6 +979,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Identifier &apos;{0}&apos; in &apos;{1}&apos; is suspiciously referring to the default instance of that class type..
+        /// </summary>
+        public static string SuspiciousPredeclaredInstanceAccessInspection {
+            get {
+                return ResourceManager.GetString("SuspiciousPredeclaredInstanceAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}
         ///Andrew &quot;ThunderFrame&quot; Jackson would be proud! 
         ///You&apos;re seeing this inspection result because there&apos;s no way that&apos;s real code and you&apos;re just pushing the limits of Rubberduck&apos;s parsing and resolving capabilities, right? ...RIGHT? 
