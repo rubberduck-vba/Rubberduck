@@ -309,4 +309,7 @@
   <data name="AnnotateEntryPointQuickFix" xml:space="preserve">
     <value>Add @EntryPoint annotation</value>
   </data>
+  <data name="ReplaceQualifierWithMeQuickFix" xml:space="preserve">
+    <value>Replace qualifier with 'Me'</value>
+  </data>
 </root>

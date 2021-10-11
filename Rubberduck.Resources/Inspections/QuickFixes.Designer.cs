@@ -547,6 +547,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Replace qualifier with &apos;Me&apos;.
+        /// </summary>
+        public static string ReplaceQualifierWithMeQuickFix {
+            get {
+                return ResourceManager.GetString("ReplaceQualifierWithMeQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Replace &apos;While...Wend&apos; with &apos;Do While...Loop&apos;.
         /// </summary>
         public static string ReplaceWhileWendWithDoWhileLoopQuickFix {

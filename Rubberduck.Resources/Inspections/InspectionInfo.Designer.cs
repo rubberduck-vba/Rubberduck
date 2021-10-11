@@ -835,6 +835,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In general, the VBE editor catches this type of error and will not compile.  However, there are a few scenarios where the error is overlooked by the compiler and an error is generated at runtime.  To avoid a runtime error, implement the missing Property or Subroutine. .
+        /// </summary>
+        public static string ReadOnlyPropertyAssignmentInspection {
+            get {
+                return ResourceManager.GetString("ReadOnlyPropertyAssignmentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By default, all parameters are passed by reference, so it is not necessary to include the &apos;ByRef&apos; modifier..
         /// </summary>
         public static string RedundantByRefModifierInspection {
@@ -930,6 +939,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string SuspiciousLetAssignmentInspection {
             get {
                 return ResourceManager.GetString("SuspiciousLetAssignmentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to While a stateful default instance might be intentional, it is a common source of bugs and should be avoided. Use the &apos;Me&apos; qualifier to explicitly refer to the current instance and eliminate any ambiguity..
+        /// </summary>
+        public static string SuspiciousPredeclaredInstanceAccessInspection {
+            get {
+                return ResourceManager.GetString("SuspiciousPredeclaredInstanceAccessInspection", resourceCulture);
             }
         }
         

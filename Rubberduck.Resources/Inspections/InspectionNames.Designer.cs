@@ -835,6 +835,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Read-Only Property assignment.
+        /// </summary>
+        public static string ReadOnlyPropertyAssignmentInspection {
+            get {
+                return ResourceManager.GetString("ReadOnlyPropertyAssignmentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Redundant &apos;ByRef&apos; modifier.
         /// </summary>
         public static string RedundantByRefModifierInspection {
@@ -930,6 +939,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string SuspiciousLetAssignmentInspection {
             get {
                 return ResourceManager.GetString("SuspiciousLetAssignmentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suspicious access to a predeclared instance.
+        /// </summary>
+        public static string SuspiciousPredeclaredInstanceAccessInspection {
+            get {
+                return ResourceManager.GetString("SuspiciousPredeclaredInstanceAccessInspection", resourceCulture);
             }
         }
         
