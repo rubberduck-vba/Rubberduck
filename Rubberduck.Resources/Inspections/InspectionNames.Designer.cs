@@ -844,6 +844,14 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Public control field access.
+        /// </summary>
+        public static string PublicControlFieldAccessInspection {
+            get {
+                return ResourceManager.GetString("PublicControlFieldAccessInspection", resourceCulture);
+            }
+        }
+        
         ///   Looks up a localized string similar to Read-Only Property assignment.
         /// </summary>
         public static string ReadOnlyPropertyAssignmentInspection {

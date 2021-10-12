@@ -548,4 +548,8 @@ In memoriam, 1972-2018</value>
     <value>Identifier '{0}' in '{1}' is suspiciously referring to the default instance of that class type.</value>
     <comment>{0} identifier name; {1} expression/context</comment>
   </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>Control '{0}.{1}' is being accessed from outside its parent form.</value>
+    <comment>{0} parent UserForm name; {1} control name</comment>
+  </data>
 </root>

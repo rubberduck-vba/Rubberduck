@@ -880,6 +880,14 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Control &apos;{0}.{1}&apos; is being accessed from outside its parent form..
+        /// </summary>
+        public static string PublicControlFieldAccessInspection {
+            get {
+                return ResourceManager.GetString("PublicControlFieldAccessInspection", resourceCulture);
+            }
+        }
+        
         ///   Looks up a localized string similar to Attempt to assign Read-Only Property &apos;{0}&apos;.
         /// </summary>
         public static string ReadOnlyPropertyAssignmentInspection {

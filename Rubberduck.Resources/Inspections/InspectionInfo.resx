@@ -466,4 +466,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
     <value>While a stateful default instance might be intentional, it is a common source of bugs and should be avoided. Use the 'Me' qualifier to explicitly refer to the current instance and eliminate any ambiguity.</value>
   </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>MSForms exposes UserForm controls as public fields; accessing these fields outside the UserForm class breaks encapsulation and needlessly couples code with specific form controls. Consider encapsulating the desired values into their own 'model' class, making event handlers in the form manipulate these 'model' properties, and then the calling code can query this encapsulated state instead of querying form controls.</value>
+  </data>
 </root>
