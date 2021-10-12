@@ -16,6 +16,9 @@ namespace Rubberduck.VersionCheck
 #if DEBUG
             IsDebugBuild = true;
 #endif
+            VersionString = IsDebugBuild
+                ? $"{version.Major}.{version.Minor}.{version.Build}.x (debug)"
+                : version.ToString();
         }
 
         private Version _latestVersion;
@@ -47,5 +50,6 @@ namespace Rubberduck.VersionCheck
 
         public Version CurrentVersion { get; }
         public bool IsDebugBuild { get; }
+        public string VersionString { get; }
     }
 }

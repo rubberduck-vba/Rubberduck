@@ -24,7 +24,7 @@ namespace Rubberduck.UI.About
             ViewLogCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteViewLog);
         }
 
-        public string Version => string.Format(Resources.RubberduckUI.Rubberduck_AboutBuild, _version.CurrentVersion);
+        public string Version => string.Format(Resources.RubberduckUI.Rubberduck_AboutBuild, _version.VersionString);
 
         public string OperatingSystem => 
             string.Format(AboutUI.AboutWindow_OperatingSystem, Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86");
