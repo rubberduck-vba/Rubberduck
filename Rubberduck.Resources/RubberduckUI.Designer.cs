@@ -415,6 +415,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Peek definition.
+        /// </summary>
+        public static string CommandDescription_PeekDefinitionCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_PeekDefinitionCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refactor / Encapsulate Field.
         /// </summary>
         public static string CommandDescription_RefactorEncapsulateFieldCommand {
