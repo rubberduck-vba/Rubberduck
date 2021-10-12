@@ -52,10 +52,7 @@ namespace Rubberduck.UI.Command
                     if (_versionCheck.CurrentVersion < t.Result)
                     {
                         var proceed = true;
-                        
-                        // revision is always 0 for a debug build, CI build# otherwise.
-                        var isDebugBuild = _versionCheck.CurrentVersion.Revision == 0;
-                        if (isDebugBuild || !settings.IncludePreRelease)
+                        if (_versionCheck.IsDebugBuild || !settings.IncludePreRelease)
                         {
                             // if the latest version has a revision number and isn't a pre-release build,
                             // avoid prompting since we can't know if the build already includes the latest version.

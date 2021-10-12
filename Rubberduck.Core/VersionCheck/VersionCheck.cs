@@ -1,5 +1,4 @@
 ﻿using Rubberduck.Settings;
-using Rubberduck.SettingsProvider;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -13,7 +12,10 @@ namespace Rubberduck.VersionCheck
         /// <param name="version">That would be the version of the assembly for the <c>_Extension</c> class.</param>
         public VersionCheck(Version version)
         {
-           CurrentVersion = version;
+            CurrentVersion = version;
+#if DEBUG
+            IsDebugBuild = true;
+#endif
         }
 
         private Version _latestVersion;
@@ -44,5 +46,6 @@ namespace Rubberduck.VersionCheck
         }
 
         public Version CurrentVersion { get; }
+        public bool IsDebugBuild { get; }
     }
 }

@@ -24,7 +24,7 @@ namespace RubberduckTests
             return new Configuration(settings);
         }
 
-        private VersionCheckCommand CreateSUT(Configuration config, Version currentVersion, Version latestVersion, out Mock<IMessageBox> mockPrompt)
+        private VersionCheckCommand CreateSUT(Configuration config, Version currentVersion, Version latestVersion, out Mock<IMessageBox> mockPrompt, out Mock<IVersionCheck> mockService)
         {
             mockPrompt = new Mock<IMessageBox>();
             mockPrompt.Setup(m => m.Question(It.IsAny<string>(), It.IsAny<string>()));
@@ -33,7 +33,7 @@ namespace RubberduckTests
             var mockConfig = new Mock<IConfigurationService<Configuration>>();
             mockConfig.Setup(m => m.Read()).Returns(() => config);
 
-            var mockService = new Mock<IVersionCheck>();
+            mockService = new Mock<IVersionCheck>();
             
             mockService.Setup(m => m.CurrentVersion)
                        .Returns(() => currentVersion);
@@ -48,10 +48,11 @@ namespace RubberduckTests
         public void DebugBuild_ReleaseOnly_LatestHasRevisionNumber_NoPrompt()
         {
             var config = CreateConfig(includePreReleases: false);
-            var currentVersion = new Version(2, 5, 2, 0); // debug build: revision 0
+            var currentVersion = new Version(2, 5, 2, 0);
             var latestVersion = new Version(2, 5, 2, 1);
 
-            var sut = CreateSUT(config, currentVersion, latestVersion, out var mockPrompt);
+            var sut = CreateSUT(config, currentVersion, latestVersion, out var mockPrompt, out var mockService);
+            mockService.Setup(m => m.IsDebugBuild).Returns(() => true);
 
             sut.Execute(null);
 
@@ -62,10 +63,11 @@ namespace RubberduckTests
         public void DebugBuild_PreReleases_NoPrompt()
         {
             var config = CreateConfig(includePreReleases: true);
-            var currentVersion = new Version(2, 5, 2, 0); // debug build: revision 0
+            var currentVersion = new Version(2, 5, 2, 0);
             var latestVersion = new Version(2, 5, 2, 5678);
 
-            var sut = CreateSUT(config, currentVersion, latestVersion, out var mockPrompt);
+            var sut = CreateSUT(config, currentVersion, latestVersion, out var mockPrompt, out var mockService);
+            mockService.Setup(m => m.IsDebugBuild).Returns(() => true);
 
             sut.Execute(null);
 
@@ -76,10 +78,11 @@ namespace RubberduckTests
         public void DebugBuild_ReleaseOnly_Prompt()
         {
             var config = CreateConfig(includePreReleases: false);
-            var currentVersion = new Version(2, 5, 2, 0); // debug build: revision 0
+            var currentVersion = new Version(2, 5, 2, 0);
             var latestVersion = new Version(2, 5, 3, 0);
 
-            var sut = CreateSUT(config, currentVersion, latestVersion, out var mockPrompt);
+            var sut = CreateSUT(config, currentVersion, latestVersion, out var mockPrompt, out var mockService);
+            mockService.Setup(m => m.IsDebugBuild).Returns(() => true);
 
             sut.Execute(null);
 
@@ -90,10 +93,11 @@ namespace RubberduckTests
         public void DebugBuild_PreReleases_Prompt()
         {
             var config = CreateConfig(includePreReleases: true);
-            var currentVersion = new Version(2, 5, 2, 0); // debug build: revision 0
+            var currentVersion = new Version(2, 5, 2, 0);
             var latestVersion = new Version(2, 5, 3, 5678);
 
-            var sut = CreateSUT(config, currentVersion, latestVersion, out var mockPrompt);
+            var sut = CreateSUT(config, currentVersion, latestVersion, out var mockPrompt, out var mockService);
+            mockService.Setup(m => m.IsDebugBuild).Returns(() => true);
 
             sut.Execute(null);
 
@@ -107,7 +111,8 @@ namespace RubberduckTests
             var currentVersion = new Version(2, 5, 2, 4567);
             var latestVersion = new Version(2, 5, 2, 1);
 
-            var sut = CreateSUT(config, currentVersion, latestVersion, out var mockPrompt);
+            var sut = CreateSUT(config, currentVersion, latestVersion, out var mockPrompt, out var mockService);
+            mockService.Setup(m => m.IsDebugBuild).Returns(() => false);
 
             sut.Execute(null);
 
@@ -121,7 +126,8 @@ namespace RubberduckTests
             var currentVersion = new Version(2, 5, 2, 4567);
             var latestVersion = new Version(2, 5, 2, 5678);
 
-            var sut = CreateSUT(config, currentVersion, latestVersion, out var mockPrompt);
+            var sut = CreateSUT(config, currentVersion, latestVersion, out var mockPrompt, out var mockService);
+            mockService.Setup(m => m.IsDebugBuild).Returns(() => false);
 
             sut.Execute(null);
 
@@ -135,7 +141,8 @@ namespace RubberduckTests
             var currentVersion = new Version(2, 5, 2, 4567);
             var latestVersion = new Version(2, 5, 3, 0);
 
-            var sut = CreateSUT(config, currentVersion, latestVersion, out var mockPrompt);
+            var sut = CreateSUT(config, currentVersion, latestVersion, out var mockPrompt, out var mockService);
+            mockService.Setup(m => m.IsDebugBuild).Returns(() => false);
 
             sut.Execute(null);
 

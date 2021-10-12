@@ -9,5 +9,6 @@ namespace Rubberduck.VersionCheck
     {
         Task<Version> GetLatestVersionAsync(GeneralSettings settings, CancellationToken token = default);
         Version CurrentVersion { get; }
+        bool IsDebugBuild { get; }
     }
 }
