@@ -322,6 +322,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All arguments of any function/procedure call are always evaluated before the function is invoked so that their respective values can be passed as parameters. Even so, the IIf Function&apos;s behavior is sometimes mis-interpreted to expect that ONLY the &apos;TruePart&apos; or ONLY the &apos;FalsePart&apos; expression will be evaluated based on the result of the first argument expression. Consequently, the IIf Function can be a source of unanticipated side-effects and errors if the user does not account for the fact that both the Tr [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string IIfSideEffectInspection {
+            get {
+                return ResourceManager.GetString("IIfSideEffectInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A class module that is meant to be used as interface for concrete classes should generally be abstracted of any implementations. If it is your intention to use this class module as a concrete type, you can safely ignore this inspection result..
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {

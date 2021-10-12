@@ -322,6 +322,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; invoked by &apos;IIf&apos; Function.
+        /// </summary>
+        public static string IIfSideEffectInspection {
+            get {
+                return ResourceManager.GetString("IIfSideEffectInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Interface class module &apos;{2}&apos; contains a concrete implementation for {0} &apos;{1}&apos;..
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
