@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Reflection;
 using Rubberduck.Interaction;
 using Rubberduck.VersionCheck;
 using Rubberduck.Resources;
@@ -50,7 +51,18 @@ namespace Rubberduck.UI.Command
                 {
                     if (_versionCheck.CurrentVersion < t.Result)
                     {
-                        PromptAndBrowse(t.Result, settings.IncludePreRelease);
+                        var proceed = true;
+                        if (_versionCheck.IsDebugBuild || !settings.IncludePreRelease)
+                        {
+                            // if the latest version has a revision number and isn't a pre-release build,
+                            // avoid prompting since we can't know if the build already includes the latest version.
+                            proceed = t.Result.Revision == 0;
+                        }
+
+                        if (proceed)
+                        {
+                            PromptAndBrowse(t.Result, settings.IncludePreRelease);
+                        }
                     }
                 });
         }

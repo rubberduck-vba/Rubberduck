@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Moq;
 using NUnit.Framework;
 using Rubberduck.Interaction;
@@ -172,9 +173,98 @@ End Property";
             Assert.IsTrue(CanExecute(input));
         }
 
+        [Test]
+        [Category("Commands")]
+        [Category("Extract Interface")]
+        public void ExtractInterface_CanExecute_NoPublicMembers()
+        {
+            const string input =
+                @"Private Sub foo(value)
+End Sub";
+
+            Assert.False(CanExecute(input));
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/5693
+        [Test]
+        [Category("Commands")]
+        [Category("Extract Interface")]
+        public void ExtractInterface_CanExecute_ExistingImplements()
+        {
+            var input =
+$@"
+Implements I{MockVbeBuilder.TestModuleName}
+
+Public Sub FirstSub()
+End Sub
+
+Public Sub SecondSub()
+End Sub
+
+Private Sub I{MockVbeBuilder.TestModuleName}_FirstSub()
+    FirstSub
+End Sub
+";
+
+            var firstGeneratedInterfaceClassContent =
+@"
+Option Explicit
+
+Public Sub FirstSub()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, input, ComponentType.ClassModule),
+                ($"I{MockVbeBuilder.TestModuleName}", firstGeneratedInterfaceClassContent, ComponentType.ClassModule));
+
+            Assert.IsTrue(CanExecute(vbe.Object, MockVbeBuilder.TestModuleName));
+        }
+
+        [Test]
+        [Category("Commands")]
+        [Category("Extract Interface")]
+        public void ExtractInterface_CanExecute_ExistingImplementsNoRemainingTargets()
+        {
+            var input =
+$@"
+Implements I{MockVbeBuilder.TestModuleName}
+
+Private Sub I{MockVbeBuilder.TestModuleName}_FirstSub()
+    Err.Raise 5   'TODO implement interface member
+End Sub
+";
+
+            var generatedInterfaceClassContent =
+@"
+Option Explicit
+
+Public Sub FirstSub()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, input, ComponentType.ClassModule),
+                ($"I{MockVbeBuilder.TestModuleName}", generatedInterfaceClassContent, ComponentType.ClassModule));
+
+
+            Assert.IsFalse(CanExecute(vbe.Object, MockVbeBuilder.TestModuleName));
+        }
+
         private bool CanExecute(string inputCode, ComponentType componentType = ComponentType.ClassModule)
         {
             return CanExecute(inputCode, Selection.Home, componentType);
+        }
+
+        private bool CanExecute(IVBE vbe, string targetComponentName)
+        {
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                var targetQMN = state.DeclarationFinder.AllModules.Single(q => q.ComponentName == targetComponentName);
+
+                var selectionServiceMock = new Mock<ISelectionService>();
+                selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => new QualifiedSelection(targetQMN, Selection.Home));
+
+                var testCommand = TestCommand(vbe, state, rewritingManager, selectionServiceMock.Object);
+                return testCommand.CanExecute(null);
+            }
         }
 
         protected override CommandBase TestCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager, ISelectionService selectionService)
