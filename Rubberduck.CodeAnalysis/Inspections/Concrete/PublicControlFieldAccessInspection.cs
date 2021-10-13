@@ -10,8 +10,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Flags MSForms controls being accessed from outside the UserForm that contains them.
     /// </summary>
     /// <why>
-    /// MSForms exposes UserForm controls as public fields; accessing these fields outside the UserForm class breaks encapsulation and needlessly couples code with specific form controls.
-    /// Consider encapsulating the desired values into their own 'model' class, making event handlers in the form manipulate these 'model' properties, and then the calling code can query this encapsulated state instead of querying form controls.
+    /// MSForms exposes UserForm controls as public fields; accessing these fields outside the UserForm class breaks encapsulation and couples
+    /// the application logic with specific form controls rather than the data they hold.  
+    /// For a more object-oriented approach and code that can be unit-tested, consider encapsulating the desired values into their own 'model' class,
+    /// making event handlers in the form manipulate these 'model' properties, then have the code that displayed the form query this encapsulated state as needed.
     /// </why>
     /// <example hasResult="true">
     /// <module name="Module1" type="Standard Module">
@@ -28,6 +30,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </module>
+    /// </example>
     /// <example hasResult="false">
     /// <module name="Module1" type="Standard Module">
     /// <![CDATA[
@@ -45,9 +48,9 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// </module>
     /// <module name="UserForm1" type="UserForm Module">
     /// <![CDATA[
-    /// ' simple solution: embed the model in the form itself, and expose getters for each desired property.
-    /// ' > pros: simple to implement.
-    /// ' > cons: view vs model responsibilities are fuzzy.
+    /// ' simple solution: embed the model in the form itself, expose a getter procedure for each desired property.
+    /// ' > pros: simple to implement, silences the inspection!
+    /// ' > cons: view vs model responsibilities are fuzzy, intellisense get bloated, business logic is still coupled with the UI.
     /// Option Explicit
     /// 
     /// Public Property Get ExportPath() As String
@@ -59,7 +62,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Property
     /// ]]>
     /// </module>
-    /// </example>
     /// </example>
     /// <example hasResult="false">
     /// <module name="Module1" type="Standard Module">
@@ -107,15 +109,16 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// </module>
     /// <module name="UserForm1" type="UserForm Module">
     /// <![CDATA[
-    /// ' thorough solution: encapsulate the model data into its own data type.
-    /// ' > pros: easily extended, cleanly separates data from presentation concerns.
-    /// ' > cons: model-view-presenter architecture requires more modules and can feel "overkill" for simpler scenarios.
+    /// ' MVP solution: encapsulate the model data into its own data type.
+    /// ' > pros: easily extended, cleanly separates data from presentation concerns; application logic can be tested independently of the form.
+    /// ' > cons: Model-View-Presenter architecture requires more modules and can feel/be "overkill" for simpler scenarios.
     /// Option Explicit
     /// Private Type TView
     ///     Model As TestModel
     /// End Type
     /// Private This As TView
     ///
+    /// '@Description "Gets or sets Model object for this instance."
     /// Public Property Get Model() As TestModel
     ///     Set Model = This.Model
     /// End Property
@@ -125,12 +128,16 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Property
     ///
     /// Private Sub ExportPathBox_Change()
+    ///     ' the export path has changed; update the model accordingly
     ///     Model.ExportPath = ExportPathBox.Text
     /// End Sub
     ///
     /// Private Sub FileNameBox_Change()
+    ///     ' the file name has changed; update the model accordingly
     ///     Model.FileName = FileNameBox.Text
     /// End Sub
+    ///
+    /// '...
     /// ]]>
     /// </module>
     /// </example>
