@@ -12,7 +12,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// </summary>
     /// <why>
     /// VBA parameters are implicitly ByRef, which differs from modern VB (VB.NET) and most other programming languages which are implicitly ByVal.
-    /// So, explicitly identifing VBA parameter mechanisms (the ByRef and ByVal modifiers) can help surface potentially unexpected language results.
+    /// So, explicitly identifying VBA parameter mechanisms (the ByRef and ByVal modifiers) can help surface potentially unexpected language results.
     /// The inspection does not flag an implicit parameter mechanism for the last parameter of Property mutators (Let or Set).
     /// VBA applies a ByVal parameter mechanism to the last parameter in the absence (or presence!) of a modifier. 
     /// Exception: UserDefinedType parameters must always be passed as ByRef.
