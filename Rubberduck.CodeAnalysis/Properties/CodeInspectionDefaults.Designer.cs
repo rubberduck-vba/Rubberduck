@@ -147,10 +147,10 @@ namespace Rubberduck.CodeAnalysis.Properties {
             " Name=\"EmptyMethodInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssu" +
             "es\" />\r\n    <CodeInspection Name=\"ImplementedInterfaceMemberInspection\" Severity" +
             "=\"Suggestion\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"P" +
-            "ublicControlFieldAccessInspection\" Severity=\"Hint\" InspectionType=\"CodeQualityIs" +
-            "sues\" />\r\n  </CodeInspections>\r\n  <WhitelistedIdentifiers />\r\n  <RunInspectionsO" +
-            "nSuccessfulParse>true</RunInspectionsOnSuccessfulParse>\r\n</CodeInspectionSetting" +
-            "s>")]
+            "ublicControlFieldAccessInspection\" Severity=\"Hint\" InspectionType=\"LanguageOppor" +
+            "tunities\" />\r\n  </CodeInspections>\r\n  <WhitelistedIdentifiers />\r\n  <RunInspecti" +
+            "onsOnSuccessfulParse>true</RunInspectionsOnSuccessfulParse>\r\n</CodeInspectionSet" +
+            "tings>")]
         public global::Rubberduck.CodeAnalysis.Settings.CodeInspectionSettings CodeInspectionSettings {
             get {
                 return ((global::Rubberduck.CodeAnalysis.Settings.CodeInspectionSettings)(this["CodeInspectionSettings"]));
