@@ -106,10 +106,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             container.Kernel.Register(Component.For<EncapsulateFieldRefactoringAction>());
             container.Kernel.Register(Component.For<EncapsulateFieldUseBackingUDTMemberRefactoringAction>());
             container.Kernel.Register(Component.For<EncapsulateFieldUseBackingFieldRefactoringAction>());
-            container.Kernel.Register(Component.For<ReplacePrivateUDTMemberReferencesRefactoringAction>());
             container.Kernel.Register(Component.For<EncapsulateFieldInsertNewCodeRefactoringAction>());
             container.Kernel.Register(Component.For<ModifyUserDefinedTypeRefactoringAction>());
-            container.Kernel.Register(Component.For<ReplaceReferencesRefactoringAction>());
             container.Kernel.Register(Component.For<ReplaceDeclarationIdentifierRefactoringAction>());
             container.Kernel.Register(Component.For<DeleteDeclarationsRefactoringAction>());
             container.Kernel.Register(Component.For<DeleteModuleElementsRefactoringAction>());
@@ -150,11 +148,9 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             container.Register(Component.For<IEncapsulateFieldRefactoringActionsProvider>()
                .ImplementedBy<EncapsulateFieldRefactoringActionsProvider>());
 
-//            container.Kernel.Register(Component.For<IReplacePrivateUDTMemberReferencesModelFactory>()
-//                .ImplementedBy<ReplacePrivateUDTMemberReferencesModelFactory>());
-//
-//            container.Kernel.Register(Component.For<IDeclarationDeletionTargetFactory>()
-//                .ImplementedBy<DeclarationDeletionTargetFactory>());
+            container.Kernel.Register(Component.For<IDeclarationDeletionTargetFactory>()
+                .ImplementedBy<DeclarationDeletionTargetFactory>());
+            
             container.Register(Component.For<IEncapsulateFieldReferenceReplacerFactory>()
                 .ImplementedBy<EncapsulateFieldReferenceReplacerFactory>());
         }

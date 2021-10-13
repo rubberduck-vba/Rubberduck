@@ -1,6 +1,4 @@
 ﻿using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactorings.Common;
 using System.Linq;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldInsertNewCode;
@@ -12,8 +10,6 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
     public class EncapsulateFieldUseBackingUDTMemberRefactoringAction : CodeOnlyRefactoringActionBase<EncapsulateFieldUseBackingUDTMemberModel>
     {
         private readonly ICodeOnlyRefactoringAction<ModifyUserDefinedTypeModel> _modifyUDTRefactoringAction;       
-        private readonly ICodeOnlyRefactoringAction<ReplacePrivateUDTMemberReferencesModel> _replacePrivateUDTMemberReferencesRefactoringAction;
-        private readonly ICodeOnlyRefactoringAction<ReplaceReferencesModel> _replaceReferencesRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> _encapsulateFieldInsertNewCodeRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<DeleteDeclarationsModel> _deleteDeclarationsRefactoringAction;
         private readonly INewContentAggregatorFactory _newContentAggregatorFactory;
@@ -29,7 +25,6 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
             _modifyUDTRefactoringAction = refactoringActionsProvider.ModifyUserDefinedType;
             _encapsulateFieldInsertNewCodeRefactoringAction = refactoringActionsProvider.EncapsulateFieldInsertNewCode;
             _deleteDeclarationsRefactoringAction = refactoringActionsProvider.DeleteDeclarations;
-            _replaceUDTMemberReferencesModelFactory = replaceUDTMemberReferencesModelFactory;
             _encapsulateFieldReferenceReplacerFactory = encapsulateFieldReferenceReplacerFactory;
             _newContentAggregatorFactory = newContentAggregatorFactory;
         }
@@ -51,10 +46,9 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember
 
         private void ModifyFields(EncapsulateFieldUseBackingUDTMemberModel encapsulateFieldModel, IRewriteSession rewriteSession)
         {
-            var rewriter = rewriteSession.CheckOutModuleRewriter(encapsulateFieldModel.QualifiedModuleName);
+            var deletionsModel = new DeleteDeclarationsModel(encapsulateFieldModel.SelectedFieldCandidates.Select(f => f.Declaration));
             
-            rewriter.RemoveVariables(encapsulateFieldModel.SelectedFieldCandidates.Select(f => f.Declaration)
-                .Cast<VariableDeclaration>());
+            _deleteDeclarationsRefactoringAction.Refactor(deletionsModel, rewriteSession);
 
             if (encapsulateFieldModel.ObjectStateUDTField.IsExistingDeclaration)
             {

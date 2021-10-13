@@ -18,8 +18,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
         private readonly ICodeOnlyRefactoringAction<ReplaceDeclarationIdentifierModel> _replaceDeclarationIdentifiers;
         private readonly ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> _encapsulateFieldInsertNewCodeRefactoringAction;
         private readonly ICodeOnlyRefactoringAction<DeleteDeclarationsModel> _deleteDeclarationsRefactoringAction;
-        private readonly IReplacePrivateUDTMemberReferencesModelFactory _replaceUDTMemberReferencesModelFactory;
-        //private readonly INewContentAggregatorFactory _newContentAggregatorFactory;
+        private readonly INewContentAggregatorFactory _newContentAggregatorFactory;
         private readonly IEncapsulateFieldReferenceReplacerFactory _encapsulateFieldReferenceReplacerFactory;
 
         public EncapsulateFieldUseBackingFieldRefactoringAction(
@@ -32,7 +31,6 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
             _replaceDeclarationIdentifiers = refactoringActionsProvider.ReplaceDeclarationIdentifiers;
             _encapsulateFieldInsertNewCodeRefactoringAction = refactoringActionsProvider.EncapsulateFieldInsertNewCode;
             _deleteDeclarationsRefactoringAction = refactoringActionsProvider.DeleteDeclarations;
-            //_replaceUDTMemberReferencesModelFactory = replaceUDTMemberReferencesModelFactory;
             _newContentAggregatorFactory = newContentAggregatorFactory;
             _encapsulateFieldReferenceReplacerFactory = encapsulateFieldReferenceReplacerFactory;
         }
@@ -60,7 +58,9 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
 
         private void ModifyFields(EncapsulateFieldUseBackingFieldModel model, List<IEncapsulateFieldCandidate> publicFieldsToRemove, IRewriteSession rewriteSession)
         {
-            _deleteDeclarationsRefactoringAction.Refactor(new DeleteDeclarationsModel(publicFieldsToRemove.Select(f => f.Declaration)), rewriteSession);
+            var deletionsModel = new DeleteDeclarationsModel(publicFieldsToRemove.Select(f => f.Declaration));
+            
+            _deleteDeclarationsRefactoringAction.Refactor(deletionsModel, rewriteSession);
 
             var retainedFieldDeclarations = model.SelectedFieldCandidates
                 .Except(publicFieldsToRemove)
