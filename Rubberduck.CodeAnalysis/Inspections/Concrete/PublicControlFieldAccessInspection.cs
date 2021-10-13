@@ -81,7 +81,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </module>
-    /// <module name="TestMmodel" type="Class Module">
+    /// <module name="TestModel" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
     /// Private Type TModel
