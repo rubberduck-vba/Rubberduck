@@ -33,6 +33,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private readonly ConcurrentDictionary<(QualifiedMemberName memberName, DeclarationType declarationType), ConcurrentBag<Declaration>> _newUndeclared;
 
         private IDictionary<QualifiedModuleName,IDictionary<int, List<IParseTreeAnnotation>>> _annotations;
+        private readonly IReadOnlyDictionary<QualifiedModuleName, LogicalLineStore> _logicalLines;
         private IDictionary<Declaration, List<ParameterDeclaration>> _parametersByParent;
         private IDictionary<DeclarationType, List<Declaration>> _userDeclarationsByType;
        
@@ -68,14 +69,15 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 : declaration.QualifiedSelection;
         }
         
-        public DeclarationFinder(
-            IReadOnlyList<Declaration> declarations, 
-            IEnumerable<IParseTreeAnnotation> annotations, 
+        public DeclarationFinder(IReadOnlyList<Declaration> declarations,
+            IEnumerable<IParseTreeAnnotation> annotations,
+            IReadOnlyDictionary<QualifiedModuleName, LogicalLineStore> logicalLines,
             IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> failedResolutionStores,
             IHostApplication hostApp = null)
         {
             _hostApp = hostApp;
             _failedResolutionStores = failedResolutionStores;
+            _logicalLines = logicalLines;
 
             _newFailedResolutionStores = new ConcurrentDictionary<QualifiedModuleName, IMutableFailedResolutionStore>();
             _newUndeclared = new ConcurrentDictionary<(QualifiedMemberName memberName, DeclarationType declarationType), ConcurrentBag<Declaration>>();
@@ -279,7 +281,51 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         //This does not need a lock because enumerators over a ConcurrentBag uses a snapshot.    
         public IEnumerable<Declaration> FreshUndeclared => _newUndeclared.AllValues();
-        public IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> FreshFailedResolutionStores => _newFailedResolutionStores.ToDictionary(kvp => kvp.Key, kvp => (IFailedResolutionStore)new FailedResolutionStore(kvp.Value));  
+        public IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> FreshFailedResolutionStores => _newFailedResolutionStores.ToDictionary(kvp => kvp.Key, kvp => (IFailedResolutionStore)new FailedResolutionStore(kvp.Value));
+
+        public int? LogicalLine(QualifiedModuleName module, int physicalLine)
+        {
+            return _logicalLines.TryGetValue(module, out var lineStore)
+                ? lineStore.LogicalLineNumber(physicalLine)
+                : null;
+        }
+
+        public int? PhysicalStartLine(QualifiedModuleName module, int logicalLine)
+        {
+            return _logicalLines.TryGetValue(module, out var lineStore)
+                ? lineStore.PhysicalStartLineNumber(logicalLine)
+                : null;
+        }
+
+        public int? PhysicalEndLine(QualifiedModuleName module, int logicalLine)
+        {
+            return _logicalLines.TryGetValue(module, out var lineStore)
+                ? lineStore.PhysicalEndLineNumber(logicalLine)
+                : null;
+        }
+
+        public int? NumberOfLogicalLines(QualifiedModuleName module)
+        {
+            if (!_logicalLines.TryGetValue(module, out var lineStore))
+            {
+                return null;
+            }
+            return lineStore.NumberOfLogicalLines();
+        }
+
+        public int? StartOfContainingLogicalLine(QualifiedModuleName module, int physicalLine)
+        {
+            return _logicalLines.TryGetValue(module, out var lineStore)
+                ? lineStore.StartOfContainingLogicalLine(physicalLine)
+                : null;
+        }
+
+        public int? EndOfContainingLogicalLine(QualifiedModuleName module, int physicalLine)
+        {
+            return _logicalLines.TryGetValue(module, out var lineStore)
+                ? lineStore.EndOfContainingLogicalLine(physicalLine)
+                : null;
+        }
 
         public IEnumerable<Declaration> Members(Declaration module)
         {
@@ -533,12 +579,18 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public IEnumerable<IParseTreeAnnotation> FindAnnotations(QualifiedModuleName module, int annotatedLine)
         {
-            if(!_annotations.TryGetValue(module, out var annotationsByLineInModule))
+            if (!_annotations.TryGetValue(module, out var annotationsByLineInModule))
             {
                 return Enumerable.Empty<IParseTreeAnnotation>();
             }
 
-            return annotationsByLineInModule.TryGetValue(annotatedLine, out var result) 
+            var firstLineOfAnnotatedLogicalLine = StartOfContainingLogicalLine(module, annotatedLine);
+            if (!firstLineOfAnnotatedLogicalLine.HasValue)
+            {
+                return Enumerable.Empty<IParseTreeAnnotation>();
+            }
+
+            return annotationsByLineInModule.TryGetValue(firstLineOfAnnotatedLogicalLine.Value, out var result) 
                 ? result 
                 : Enumerable.Empty<IParseTreeAnnotation>();
         }

@@ -808,7 +808,7 @@ Import aborted.</value>
   <data name="TodoMarkerTodo" xml:space="preserve">
     <value>TODO</value>
   </data>
-  <data name="DeclarationType_Document" xml:space="preserve">
-    <value>document</value>
+  <data name="CommandDescription_PeekDefinitionCommand" xml:space="preserve">
+    <value>Peek definition</value>
   </data>
 </root>

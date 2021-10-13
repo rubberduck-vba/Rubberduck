@@ -390,10 +390,6 @@ namespace Rubberduck.Root
                 .ImplementedBy<AnnotationArgumentViewModelFactory>()
                 .LifestyleSingleton());
 
-            container.Register(Component.For<IReplacePrivateUDTMemberReferencesModelFactory>()
-                .ImplementedBy<ReplacePrivateUDTMemberReferencesModelFactory>()
-                .LifestyleSingleton());
-
             RegisterUnreachableCaseFactories(container);
 
             RegisterEncapsulateFieldRefactoringFactories(container);
@@ -422,6 +418,9 @@ namespace Rubberduck.Root
             container.Register(Component.For<IEncapsulateFieldModelFactory>()
                 .ImplementedBy<EncapsulateFieldModelFactory>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IEncapsulateFieldReferenceReplacerFactory>()
+                .ImplementedBy<EncapsulateFieldReferenceReplacerFactory>()
+                 .LifestyleSingleton());
         }
 
         private void RegisterDeleteDeclarationsRefactoringActionFactories(IWindsorContainer container)

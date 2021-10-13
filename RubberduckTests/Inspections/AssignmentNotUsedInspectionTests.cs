@@ -790,6 +790,26 @@ End Function
         }
 
         [Test]
+        public void ConditionalAssignments_NotConsideredForOverwritingAssignment()
+        {
+            string code =
+$@"
+Public Function Test() As Boolean
+    Dim value As Boolean
+    value = True
+
+    If True Then
+        value = False
+    End If
+
+    Test = value
+End Function
+";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
         public void ResumeStmt_SingleResult()
         {
             string code =

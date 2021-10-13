@@ -1,12 +1,11 @@
-﻿using System;
-using Antlr4.Runtime.Tree;
+﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Parsing.Binding
 {
-    public sealed class TypeBindingContext : IBindingContext
+    public sealed class TypeBindingContext : BindingContextBase
     {
         private readonly DeclarationFinder _declarationFinder;
 
@@ -15,13 +14,26 @@ namespace Rubberduck.Parsing.Binding
             _declarationFinder = declarationFinder;
         }
 
-        public IBoundExpression Resolve(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
+        public override IBoundExpression Resolve(
+            Declaration module, 
+            Declaration parent, ParserRuleContext expression,
+            IBoundExpression withBlockVariable, 
+            StatementResolutionContext statementContext,
+            bool requiresLetCoercion = false, 
+            bool isLetAssignment = false)
         {
             IExpressionBinding bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
             return bindingTree?.Resolve();
         }
 
-        public IExpressionBinding BuildTree(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
+        public override IExpressionBinding BuildTree(
+            Declaration module, 
+            Declaration parent,
+            ParserRuleContext expression, 
+            IBoundExpression withBlockVariable,
+            StatementResolutionContext statementContext, 
+            bool requiresLetCoercion = false, 
+            bool isLetAssignment = false)
         {
             switch (expression)
             {
@@ -32,7 +44,7 @@ namespace Rubberduck.Parsing.Binding
                 case VBAParser.BuiltInTypeExprContext builtInTypeExprContext:
                     return Visit(builtInTypeExprContext.builtInType());
                 default:
-                    throw new NotSupportedException($"Unexpected context type {expression.GetType()}");
+                    return HandleUnexpectedExpressionType(expression);
             }
         }
 
@@ -52,7 +64,7 @@ namespace Rubberduck.Parsing.Binding
                 case VBAParser.IndexExprContext indexExprContext:
                     return Visit(module, parent, indexExprContext);
                 default:
-                    throw new NotSupportedException($"Unexpected lExpression type {expression.GetType()}");
+                    return HandleUnexpectedExpressionType(expression);
             }
         }
 

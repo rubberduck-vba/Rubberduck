@@ -9,12 +9,13 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 {
     public class DeclarationFinderFactory : IDeclarationFinderFactory 
     {
-        public DeclarationFinder Create(IReadOnlyList<Declaration> declarations, 
+        public DeclarationFinder Create(IReadOnlyList<Declaration> declarations,
             IEnumerable<IParseTreeAnnotation> annotations,
+            IReadOnlyDictionary<QualifiedModuleName, LogicalLineStore> logicalLines,
             IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> failedResolutionStores,
             IHostApplication hostApp)
         {
-            return new DeclarationFinder(declarations, annotations, failedResolutionStores, hostApp);
+            return new DeclarationFinder(declarations, annotations, logicalLines, failedResolutionStores, hostApp);
         }
 
         public void Release(DeclarationFinder declarationFinder)

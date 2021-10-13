@@ -322,6 +322,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; invoked by &apos;IIf&apos; Function.
+        /// </summary>
+        public static string IIfSideEffectInspection {
+            get {
+                return ResourceManager.GetString("IIfSideEffectInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Interface class module &apos;{2}&apos; contains a concrete implementation for {0} &apos;{1}&apos;..
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
@@ -871,6 +880,23 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Control &apos;{0}.{1}&apos; is being accessed from outside its parent form..
+        /// </summary>
+        public static string PublicControlFieldAccessInspection {
+            get {
+                return ResourceManager.GetString("PublicControlFieldAccessInspection", resourceCulture);
+            }
+        }
+        
+        ///   Looks up a localized string similar to Attempt to assign Read-Only Property &apos;{0}&apos;.
+        /// </summary>
+        public static string ReadOnlyPropertyAssignmentInspection {
+            get {
+                return ResourceManager.GetString("ReadOnlyPropertyAssignmentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; has a redundant &apos;ByRef&apos; modifier..
         /// </summary>
         public static string RedundantByRefModifierInspection {
@@ -966,6 +992,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string SuspiciousLetAssignmentInspection {
             get {
                 return ResourceManager.GetString("SuspiciousLetAssignmentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identifier &apos;{0}&apos; in &apos;{1}&apos; is suspiciously referring to the default instance of that class type..
+        /// </summary>
+        public static string SuspiciousPredeclaredInstanceAccessInspection {
+            get {
+                return ResourceManager.GetString("SuspiciousPredeclaredInstanceAccessInspection", resourceCulture);
             }
         }
         

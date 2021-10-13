@@ -6,6 +6,8 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
 using Rubberduck.SmartIndenter;
+using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 using RubberduckTests.Settings;
 using System;
 using System.Collections.Generic;

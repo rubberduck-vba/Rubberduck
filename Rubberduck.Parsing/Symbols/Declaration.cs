@@ -382,7 +382,8 @@ namespace Rubberduck.Parsing.Symbols
             bool isArrayAccess = false,
             bool isProcedureCoercion = false,
             bool isInnerRecursiveDefaultMemberAccess = false,
-            IdentifierReference qualifyingReference = null
+            IdentifierReference qualifyingReference = null,
+            bool isReDim = false
             )
         {
             var oldReference = _references.FirstOrDefault(r =>
@@ -416,7 +417,8 @@ namespace Rubberduck.Parsing.Symbols
                 isArrayAccess,
                 isProcedureCoercion,
                 isInnerRecursiveDefaultMemberAccess,
-                qualifyingReference);
+                qualifyingReference,
+                isReDim);
             _references.AddOrUpdate(newReference, 1, (key, value) => 1);
             return newReference;
         }

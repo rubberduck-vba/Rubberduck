@@ -141,14 +141,23 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             }
 
             //Member accesses are parsed right-to-left, e.g. 'foo.Bar' is the parent of 'foo'.
-            //Thus, having a member access parent means that the return value is used somehow.
-            var ownFunctionCallExpression = context.Parent is VBAParser.MemberAccessExprContext methodCall
-                ? methodCall
-                : context;
-            var memberAccessParent = ownFunctionCallExpression.GetAncestor<VBAParser.MemberAccessExprContext>();
+            //Thus, having a member access parent and being contained in its lExpression on the left of the dot
+            //or having a further member access parent means that the return value is used somehow.
+            var memberAccessParent = context.GetAncestor<VBAParser.MemberAccessExprContext>();
             if (memberAccessParent != null)
             {
-                return false;
+                //This case is necessary for member accesses in particular on simple name expressions since the context is the simpleNameExpression there and not the identifier.
+                if (memberAccessParent.lExpression().Contains(context))
+                {
+                    return false;
+                }
+
+                //This case is necessary if the context is itself the unrestricted identifier in a member access. 
+                var furtherMemberAccessParent = memberAccessParent.GetAncestor<VBAParser.MemberAccessExprContext>();
+                if (furtherMemberAccessParent != null)
+                {
+                    return false;
+                }
             }
 
             //If we are in an output list, the value is used somewhere in defining the argument.

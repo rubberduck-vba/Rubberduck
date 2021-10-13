@@ -72,13 +72,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string PropertyAsTypeName => _wrapped.PropertyAsTypeName;
 
-        public bool CanBeReadWrite => !_wrapped.Declaration.IsArray;
+        public bool CanBeReadWrite => _wrapped.CanBeReadWrite;
 
         public bool IsReadOnly
         {
             set => _wrapped.IsReadOnly = value;
             get => _wrapped.IsReadOnly;
         }
+
+        public bool IsAssignedExternally => _wrapped.IsAssignedExternally;
 
         public IEncapsulateFieldConflictFinder ConflictFinder
         {

@@ -84,6 +84,7 @@
     &lt;CodeInspection Name="ExcelUdfNameIsValidCellReferenceInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="EmptyMethodInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="ImplementedInterfaceMemberInspection" Severity="Suggestion" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="PublicControlFieldAccessInspection" Severity="Hint" InspectionType="LanguageOpportunities" /&gt;
   &lt;/CodeInspections&gt;
   &lt;WhitelistedIdentifiers /&gt;
   &lt;RunInspectionsOnSuccessfulParse&gt;true&lt;/RunInspectionsOnSuccessfulParse&gt;
