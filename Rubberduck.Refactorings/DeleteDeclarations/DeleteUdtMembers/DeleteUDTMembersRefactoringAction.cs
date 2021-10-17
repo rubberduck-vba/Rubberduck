@@ -18,12 +18,15 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
 
         public override void Refactor(DeleteUDTMembersModel model, IRewriteSession rewriteSession)
         {
-            if (model.Targets.Any(t => t.DeclarationType != DeclarationType.UserDefinedTypeMember))
+            if (!CanRefactorAllTargets(model))
             {
                 throw new InvalidOperationException("Only DeclarationType.UserDefinedTypeMember can be refactored by this class");
             }
 
             DeleteDeclarations(model, rewriteSession, (declarations, rewriterSession, targetFactory) => targetFactory.CreateMany(declarations, rewriteSession));
         }
+
+        protected override bool CanRefactorAllTargets(DeleteUDTMembersModel model)
+             => model.Targets.Any(t => t.DeclarationType == DeclarationType.UserDefinedTypeMember);
     }
 }

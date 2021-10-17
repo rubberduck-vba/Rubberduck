@@ -18,12 +18,15 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
 
         public override void Refactor(DeleteEnumMembersModel model, IRewriteSession rewriteSession)
         {
-            if (model.Targets.Any(t => t.DeclarationType != DeclarationType.EnumerationMember))
+            if (!CanRefactorAllTargets(model))
             {
                 throw new InvalidOperationException("Only DeclarationType.EnumerationMember can be refactored by this class");
             }
 
             DeleteDeclarations(model, rewriteSession, (declarations, rewriterSession, targetFactory) => targetFactory.CreateMany(declarations, rewriteSession));
         }
+
+        protected override bool CanRefactorAllTargets(DeleteEnumMembersModel model) 
+            => model.Targets.All(t => t.DeclarationType == DeclarationType.EnumerationMember);
     }
 }

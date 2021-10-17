@@ -23,13 +23,16 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
 
         public override void Refactor(DeleteProcedureScopeElementsModel model, IRewriteSession rewriteSession)
         {
-            if (model.Targets.Any(t => t.ParentDeclaration is ModuleDeclaration))
+            if (!CanRefactorAllTargets(model))
             {
-                throw new InvalidOperationException("Only declarations within procedures can be refactored by this object");
+                throw new InvalidOperationException("Only declarations within procedures other than parameters can be refactored by this object");
             }
 
             DeleteDeclarations(model, rewriteSession, CreateDeletionTargetsLocalScope);
         }
+
+        protected override bool CanRefactorAllTargets(DeleteProcedureScopeElementsModel model)
+            => model.Targets.All(t => t.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Member) && !t.DeclarationType.HasFlag(DeclarationType.Parameter));
 
         //Creating local targets are the same as creating a module level deletion targets except that Labels 
         //need to be accounted for

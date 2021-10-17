@@ -31,6 +31,8 @@ namespace Rubberduck.Refactorings.DeleteDeclarations.Abstract
             _declarationDeletionGroupsGenerator = deletionGroupsGeneratorFactory.Create();
         }
 
+        protected abstract bool CanRefactorAllTargets(TModel model);
+
         protected void DeleteDeclarations(IDeleteDeclarationsModel model, 
             IRewriteSession rewriteSession, 
             Func<IEnumerable<Declaration>, IRewriteSession, IDeclarationDeletionTargetFactory, IEnumerable<IDeclarationDeletionTarget>> generateDeletionTargets)

@@ -20,13 +20,16 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
 
         public override void Refactor(DeleteModuleElementsModel model, IRewriteSession rewriteSession)
         {
-            if (model.Targets.Any(t => !(t.ParentDeclaration is ModuleDeclaration)))
+            if (!CanRefactorAllTargets(model))
             {
                 throw new InvalidOperationException("Only module-scope declarations can be refactored by this object");
             }
 
             DeleteDeclarations(model, rewriteSession, base.CreateDeletionTargetsSupportingPartialDeletions);
         }
+
+        protected override bool CanRefactorAllTargets(DeleteModuleElementsModel model)
+            => model.Targets.All(t => t.ParentDeclaration is ModuleDeclaration);
 
         protected override VBAParser.EndOfStatementContext GetPrecedingNonDeletedEOSContextForGroup(IDeclarationDeletionGroup deletionGroup)
         {
