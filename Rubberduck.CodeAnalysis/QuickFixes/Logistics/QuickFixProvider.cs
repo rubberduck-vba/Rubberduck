@@ -59,17 +59,17 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Logistics
                 && !result.DisabledQuickFixes.Contains(fix.GetType().Name);
         }
 
-        public void Fix(IQuickFix fix, IInspectionResult result)
+        public void Fix(IQuickFix quickFix, IInspectionResult result)
         {
-            if (!CanFix(fix, result))
+            if (!CanFix(quickFix, result))
             {
                 return;
             }
 
-            var rewriteSession = RewriteSession(fix.TargetCodeKind);
+            var rewriteSession = RewriteSession(quickFix.TargetCodeKind);
             try
             {
-                fix.Fix(result, rewriteSession);
+                quickFix.Fix(result, rewriteSession);
             }
             catch (RewriteFailedException)
             {
@@ -78,20 +78,20 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Logistics
             Apply(rewriteSession);
         }
 
-        public void Fix(IQuickFix fix, IEnumerable<IInspectionResult> resultsToFix)
+        public void Fix(IQuickFix quickFix, IEnumerable<IInspectionResult> resultsToFix)
         {
-            var fixableResults = resultsToFix.Where(r => CanFix(fix, r)).ToList();
+            var fixableResults = resultsToFix.Where(r => CanFix(quickFix, r)).ToList();
 
             if (!fixableResults.Any())
             {
                 return;
             }
 
-            var rewriteSession = RewriteSession(fix.TargetCodeKind);
+            var rewriteSession = RewriteSession(quickFix.TargetCodeKind);
 
             try
             {
-                fix.FixMany(fixableResults, rewriteSession);
+                quickFix.Fix(fixableResults, rewriteSession);
             }
             catch (RewriteFailedException)
             {

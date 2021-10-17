@@ -63,7 +63,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Abstract
         /// The default implementation enumerates the results collection calling Fix() for each result.
         /// Override this funcion when a QuickFix needs operate on results as a group (e.g., RemoveUnusedDeclarationQuickFix)
         /// </remarks>
-        public virtual void FixMany(IReadOnlyCollection<IInspectionResult> results, IRewriteSession rewriteSession)
+        public virtual void Fix(IReadOnlyCollection<IInspectionResult> results, IRewriteSession rewriteSession)
         {
             foreach (var result in results)
             {

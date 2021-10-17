@@ -384,7 +384,7 @@ Public notUsed1 As Long, notUsed2 As Long, notUsed3 As Long
                 var quickFix = new RemoveUnusedDeclarationQuickFix(deleteDeclarationRefactoringAction);
 
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
-                quickFix.FixMany(inspectionResults.ToList(), rewriteSession);
+                quickFix.Fix(inspectionResults.ToList(), rewriteSession);
                 rewriteSession.TryRewrite();
 
                 return component.CodeModule.Content();

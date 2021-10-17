@@ -164,7 +164,7 @@ End Sub";
                     ? rewritingManager.CheckOutAttributesSession()
                     : rewritingManager.CheckOutCodePaneSession();
 
-                quickFix.FixMany(inspectionResults.Where(r => predicate(r)).ToList(), rewriteSession);
+                quickFix.Fix(inspectionResults.Where(r => predicate(r)).ToList(), rewriteSession);
 
                 rewriteSession.TryRewrite();
 

@@ -62,7 +62,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             _refactoring.Refactor(model, rewriteSession);
         }
 
-        public override void FixMany(IReadOnlyCollection<IInspectionResult> results, IRewriteSession rewriteSession)
+        public override void Fix(IReadOnlyCollection<IInspectionResult> results, IRewriteSession rewriteSession)
         {
             var model = new DeleteDeclarationsModel(results.Select(r => r.Target));
 
