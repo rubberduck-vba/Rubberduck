@@ -10,8 +10,8 @@ namespace Rubberduck.Refactorings
         public DeclarationDeletionGroup(IOrderedEnumerable<IDeclarationDeletionTarget> deletionTargets)
         {
             Targets = deletionTargets.ToList();
-            OrderedFullDeletionTargets = deletionTargets.Where(dt => dt.IsFullDelete).ToList();
-            OrderedPartialDeletionTargets = deletionTargets.Where(dt => !dt.IsFullDelete).ToList();
+            OrderedFullDeletionTargets = deletionTargets.Where(dt => dt.IsFullDelete).OrderBy(dt => dt);
+            OrderedPartialDeletionTargets = deletionTargets.Where(dt => !dt.IsFullDelete).OrderBy(dt => dt);
         }
 
         public ParserRuleContext PrecedingNonDeletedContext { set; get; }
@@ -20,8 +20,8 @@ namespace Rubberduck.Refactorings
 
         public IEnumerable<Declaration> Declarations => Targets.SelectMany(t => t.Declarations);
 
-        public IReadOnlyCollection<IDeclarationDeletionTarget> OrderedFullDeletionTargets { private set; get; }
+        public IOrderedEnumerable<IDeclarationDeletionTarget> OrderedFullDeletionTargets { private set; get; }
 
-        public IReadOnlyCollection<IDeclarationDeletionTarget> OrderedPartialDeletionTargets { private set; get; }
+        public IOrderedEnumerable<IDeclarationDeletionTarget> OrderedPartialDeletionTargets { private set; get; }
     }
 }

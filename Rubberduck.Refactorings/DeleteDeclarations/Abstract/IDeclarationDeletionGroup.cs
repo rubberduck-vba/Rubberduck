@@ -1,16 +1,17 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.Refactorings
 {
     public interface IDeclarationDeletionGroup
     {
         IEnumerable<Declaration> Declarations { get; }
-        
-        IReadOnlyCollection<IDeclarationDeletionTarget> OrderedFullDeletionTargets { get; }
 
-        IReadOnlyCollection<IDeclarationDeletionTarget> OrderedPartialDeletionTargets { get; }
+        IOrderedEnumerable<IDeclarationDeletionTarget> OrderedFullDeletionTargets { get; }
+
+        IOrderedEnumerable<IDeclarationDeletionTarget> OrderedPartialDeletionTargets { get; }
         
         ParserRuleContext PrecedingNonDeletedContext { set; get; }
 

@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.DeleteDeclarations
 {
-    public abstract class DeclarationDeletionTargetBase
+    public abstract class DeclarationDeletionTargetBase : IComparable<DeclarationDeletionTargetBase>, IComparable
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly HashSet<Declaration> _targets;
@@ -168,6 +168,31 @@ namespace Rubberduck.Refactorings.DeleteDeclarations
             return modifiedContent.EndsWith(eosContent)
                 ? modifiedContent.Substring(0, modifiedContent.Length - eosContent.Length)
                 : modifiedContent;
+        }
+
+        public int CompareTo(DeclarationDeletionTargetBase other)
+        {
+            return other is null ? -1 : CompareTo(other);
+        }
+
+        public int CompareTo(object obj)
+        {
+
+            if (obj != null && !(obj is DeclarationDeletionTargetBase))
+            {
+                throw new ArgumentException("Object must be of type DeclarationDeletionTargetBase.");
+            }
+
+            var other = obj as DeclarationDeletionTargetBase;
+            var thisFirstDeclaration = Declarations.OrderBy(d => d.Selection).FirstOrDefault();
+            var otherFirstDeclaration = other.Declarations.OrderBy(d => d.Selection).FirstOrDefault();
+
+            if (thisFirstDeclaration.Selection < otherFirstDeclaration.Selection)
+            {
+                return -1;
+            }
+
+            return thisFirstDeclaration.Selection == otherFirstDeclaration.Selection ? 0 : 1;
         }
     }
 }
