@@ -51,7 +51,13 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses
             var classModule = (ClassModuleDeclaration)potentialClassModule;
             foreach (var implementedInterfaceName in classModule.SupertypeNames)
             {
-                var expressionContext = _expressionParser.Parse(implementedInterfaceName);
+                if (!TrySanitizeName(implementedInterfaceName, out var sanitizedName))
+                {
+                    Logger.Warn("The interface name '{0}' is insane. Therefore, it cannot be resolved reliably and will be skipped.", implementedInterfaceName);
+                    continue;
+                }
+
+                var expressionContext = _expressionParser.Parse(sanitizedName);
                 var implementedInterface = _bindingService.ResolveType(potentialClassModule, potentialClassModule, expressionContext);
                 if (implementedInterface.Classification != ExpressionClassification.ResolutionFailed)
                 {
@@ -62,6 +68,34 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses
                     Logger.Warn("Failed to resolve interface {0}.", implementedInterfaceName);
                 }
             }
+        }
+
+        private static bool TrySanitizeName(string implementedInterfaceName, out string sanitizedName)
+        {
+            sanitizedName = string.Empty;
+            foreach (var part in implementedInterfaceName.Split('.'))
+            {
+                if (!string.IsNullOrWhiteSpace(sanitizedName))
+                {
+                    sanitizedName += ".";
+                }
+
+                if (part.StartsWith("[") && part.EndsWith("]"))
+                {
+                    sanitizedName += part;
+                    continue;
+                }
+
+                if (part.Contains("[") || part.Contains("]"))
+                {
+                    sanitizedName = null;
+                    break;
+                }
+
+                sanitizedName += "[" + part + "]";
+            }
+
+            return !string.IsNullOrWhiteSpace(sanitizedName);
         }
     }
 }
