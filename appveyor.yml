@@ -64,9 +64,9 @@ test_script:
   # Limit number of visits recorded with threshold to improve performance
   - |
     OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -threshold:10 -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
-    codecov -f "Rubberduck_Coverage.xml" -n "Main Project Coverage" -F unit
+    codecov -f "Rubberduck_Coverage.xml" -n "Main Project Coverage" --flag unit
     OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -threshold:10 -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
-    codecov -f "RubberduckCodeAnalysis_Coverage.xml" -n "Meta Coverage" -F meta
+    codecov -f "RubberduckCodeAnalysis_Coverage.xml" -n "Meta Coverage" --flag meta
     
 # Define the installer-name depending on what branch we're building on
 for:
