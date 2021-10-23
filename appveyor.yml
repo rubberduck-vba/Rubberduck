@@ -69,7 +69,7 @@ test_script:
 
 on_success:
   - ps: |
-        choco install gnupg -y
+        choco install gnupg --no-progress --limit-output --confirm --execution-timeout=60
         $ProgressPreference = 'SilentlyContinue'
         Invoke-WebRequest -Uri https://keybase.io/codecovsecurity/pgp_keys.asc -OutFile codecov.asc
         gpg.exe --import codecov.asc
