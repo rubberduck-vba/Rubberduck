@@ -48,7 +48,7 @@ before_build:
   - development/java/Rubberduck.Parsing/Grammar/gradlew.bat -p development/java/Rubberduck.Parsing/Grammar clean build
   - cinst innosetup --version 6.0.5
   # - cinst codecov
-  - cinst gnupg
+  # - cinst gnupg
   - cinst opencover.portable
   - nuget restore RubberduckMeta.sln
   - nuget restore Rubberduck.sln
@@ -69,6 +69,7 @@ test_script:
 
 on_success:
   - ps: |
+        choco install gnupg -y
         $ProgressPreference = 'SilentlyContinue'
         Invoke-WebRequest -Uri https://keybase.io/codecovsecurity/pgp_keys.asc -OutFile codecov.asc
         gpg.exe --import codecov.asc
