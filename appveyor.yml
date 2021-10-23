@@ -47,7 +47,8 @@ environment:
 before_build:
   - development/java/Rubberduck.Parsing/Grammar/gradlew.bat -p development/java/Rubberduck.Parsing/Grammar clean build
   - cinst innosetup --version 6.0.5
-  - cinst codecov
+  # - cinst codecov
+  - cinst gnupg
   - cinst opencover.portable
   - nuget restore RubberduckMeta.sln
   - nuget restore Rubberduck.sln
@@ -64,10 +65,25 @@ test_script:
   # Limit number of visits recorded with threshold to improve performance
   - |
     OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -threshold:10 -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
-    codecov -f "Rubberduck_Coverage.xml" -n "Main Project Coverage" --flag unit
     OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -threshold:10 -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
-    codecov -f "RubberduckCodeAnalysis_Coverage.xml" -n "Meta Coverage" --flag meta
-    
+
+on_success:
+  - ps: |
+        $ProgressPreference = 'SilentlyContinue'
+        Invoke-WebRequest -Uri https://keybase.io/codecovsecurity/pgp_keys.asc -OutFile codecov.asc
+        gpg.exe --import codecov.asc
+
+        Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
+        Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe.SHA256SUM -Outfile codecov.exe.SHA256SUM
+        Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe.SHA256SUM.sig -Outfile codecov.exe.SHA256SUM.sig
+
+        gpg.exe --verify codecov.exe.SHA256SUM.sig codecov.exe.SHA256SUM
+        If ($(Compare-Object -ReferenceObject  $(($(certUtil -hashfile codecov.exe SHA256)[1], "codecov.exe") -join "  ") -DifferenceObject $(Get-Content codecov.exe.SHA256SUM)).length -eq 0) { echo "SHASUM verified" } Else {exit 1}
+
+        codecov.exe -f "*_Coverage.xml"
+  # codecov -f "Rubberduck_Coverage.xml" -n "Main Project Coverage" --flag unit
+  # codecov -f "RubberduckCodeAnalysis_Coverage.xml" -n "Meta Coverage" --flag meta
+
 # Define the installer-name depending on what branch we're building on
 for:
 - 
