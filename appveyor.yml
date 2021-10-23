@@ -69,17 +69,17 @@ test_script:
 
 on_success:
   - ps: |
-        choco install gnupg --no-progress --limit-output --confirm --execution-timeout=60
+#        choco install gnupg --no-progress --limit-output --confirm --execution-timeout=60
         $ProgressPreference = 'SilentlyContinue'
-        Invoke-WebRequest -Uri https://keybase.io/codecovsecurity/pgp_keys.asc -OutFile codecov.asc
-        gpg.exe --import codecov.asc
+#        Invoke-WebRequest -Uri https://keybase.io/codecovsecurity/pgp_keys.asc -OutFile codecov.asc
+#        gpg.exe --import codecov.asc
 
         Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
-        Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe.SHA256SUM -Outfile codecov.exe.SHA256SUM
-        Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe.SHA256SUM.sig -Outfile codecov.exe.SHA256SUM.sig
+#        Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe.SHA256SUM -Outfile codecov.exe.SHA256SUM
+#        Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe.SHA256SUM.sig -Outfile codecov.exe.SHA256SUM.sig
 
-        gpg.exe --verify codecov.exe.SHA256SUM.sig codecov.exe.SHA256SUM
-        If ($(Compare-Object -ReferenceObject  $(($(certUtil -hashfile codecov.exe SHA256)[1], "codecov.exe") -join "  ") -DifferenceObject $(Get-Content codecov.exe.SHA256SUM)).length -eq 0) { echo "SHASUM verified" } Else {exit 1}
+#        gpg.exe --verify codecov.exe.SHA256SUM.sig codecov.exe.SHA256SUM
+#        If ($(Compare-Object -ReferenceObject  $(($(certUtil -hashfile codecov.exe SHA256)[1], "codecov.exe") -join "  ") -DifferenceObject $(Get-Content codecov.exe.SHA256SUM)).length -eq 0) { echo "SHASUM verified" } Else {exit 1}
 
         codecov.exe -f "*_Coverage.xml"
   # codecov -f "Rubberduck_Coverage.xml" -n "Main Project Coverage" --flag unit
