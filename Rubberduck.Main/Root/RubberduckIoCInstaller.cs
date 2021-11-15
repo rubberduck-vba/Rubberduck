@@ -64,6 +64,7 @@ using Rubberduck.Refactoring.ParseTreeValue;
 using System.IO.Abstractions;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.VBEditor.ComManagement.NonDisposalDecorators;
 
 namespace Rubberduck.Root
 {
@@ -1156,16 +1157,24 @@ namespace Rubberduck.Root
 
         private void RegisterInstances(IWindsorContainer container)
         {
-            container.Register(Component.For<IVBE>().Instance(_vbe));
-            container.Register(Component.For<IAddIn>().Instance(_addin));
-            //note: This registration makes Castle Windsor inject _vbe_CommandBars in all ICommandBars Parent properties.
-            container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars));
+            RegisterComWrapperInstances(container);
+
             container.Register(Component.For<IUiContextProvider>().Instance(UiContextProvider.Instance()).LifestyleSingleton());
             container.Register(Component.For<IVbeEvents>().Instance(VbeEvents.Initialize(_vbe)).LifestyleSingleton());
             container.Register(Component.For<ITempSourceFileHandler>().Instance(_vbe.TempSourceFileHandler).LifestyleSingleton());
             container.Register(Component.For<IPersistencePathProvider>().Instance(PersistencePathProvider.Instance).LifestyleSingleton());
             container.Register(Component.For<IVbeNativeApi>().Instance(_vbeNativeApi).LifestyleSingleton());
             container.Register(Component.For<IBeepInterceptor>().Instance(_beepInterceptor).LifestyleSingleton());
+        }
+
+        private void RegisterComWrapperInstances(IWindsorContainer container)
+        {
+            //note: We register safe com wrappers inside non-disposal decorators to ensure that the disposal is not executed by CW on some random thread.
+            //Instead, the disposal will happen via the ComSafe on the thread executing the add in termination.
+            container.Register(Component.For<IVBE>().Instance(new VbeNonDisposalDecorator<IVBE>(_vbe)));
+            container.Register(Component.For<IAddIn>().Instance(new AddInNonDisposalDecorator<IAddIn>(_addin)));
+            //note: This registration makes Castle Windsor inject _vbe_CommandBars in all ICommandBars Parent properties.
+            container.Register(Component.For<ICommandBars>().Instance(new CommandBarsNonDisposalDecorator<ICommandBars>(_vbe.CommandBars)));
         }
     }
 }
