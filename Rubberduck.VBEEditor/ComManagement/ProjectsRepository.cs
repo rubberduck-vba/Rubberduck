@@ -201,7 +201,9 @@ namespace Rubberduck.VBEditor.ComManagement
 
         public IVBProjects ProjectsCollection()
         {
-            return new VBProjectsNonDisposalDecorator<IVBProjects>(_projectsCollection);
+            return _projectsCollection != null 
+                ? new VBProjectsNonDisposalDecorator<IVBProjects>(_projectsCollection) 
+                : null;
         }
 
         public IEnumerable<(string ProjectId, IVBProject Project)> Projects()
