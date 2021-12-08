@@ -9,17 +9,6 @@ namespace Rubberduck.SmartIndenter
     /// </summary>
     public class SimpleIndenter : ISimpleIndenter
     {
-        public SimpleIndenter(Func<IIndenterSettings> settings)
-        {
-            Settings = settings;
-        }
-
-        /// <summary>
-        /// Gets the indenter settings.
-        /// </summary>
-        protected Func<IIndenterSettings> Settings { get; }
-
-
         /// <summary>
         /// Indents the code contained in the passed string. NOTE: In Rubberduck this overload should only be used on procedures or modules.
         /// </summary>
@@ -28,7 +17,7 @@ namespace Rubberduck.SmartIndenter
         /// </remarks>
         /// <param name="code">The code block to indent</param>
         /// <returns>Indented code lines</returns>
-        public IEnumerable<string> Indent(string code) => Indent(code.Replace("\r", string.Empty).Split('\n'), false);
+        public IEnumerable<string> Indent(string code, IIndenterSettings settings = null) => Indent(code.Replace("\r", string.Empty).Split('\n'), false, settings);
 
         /// <summary>
         /// Indents a range of code lines. NOTE: If inserting procedures, use the forceTrailingNewLines overload to preserve vertical spacing in the module.
@@ -36,7 +25,7 @@ namespace Rubberduck.SmartIndenter
         /// </summary>
         /// <param name="codeLines">Code lines to indent</param>
         /// <returns>Indented code lines</returns>
-        public IEnumerable<string> Indent(IEnumerable<string> codeLines) => Indent(codeLines, false);
+        public IEnumerable<string> Indent(IEnumerable<string> codeLines, IIndenterSettings settings = null) => Indent(codeLines, false, settings);
 
         /// <summary>
         /// Indents a range of code lines. Do not call directly on selections. Use Indent(IVBComponent, Selection) instead.
@@ -44,11 +33,11 @@ namespace Rubberduck.SmartIndenter
         /// <param name="codeLines">Code lines to indent</param>
         /// <param name="forceTrailingNewLines">If true adds a number of blank lines after the last procedure based on VerticallySpaceProcedures settings</param>
         /// <returns>Indented code lines</returns>
-        public IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines) => Indent(codeLines, forceTrailingNewLines, false);
+        public IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines, IIndenterSettings settings = null) => Indent(codeLines, forceTrailingNewLines, false, settings);
 
-        protected IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines, bool procedure)
+        protected IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines, bool procedure, IIndenterSettings settings)
         {
-            var logical = BuildLogicalCodeLines(codeLines, out var settings).ToList();
+            var logical = BuildLogicalCodeLines(codeLines, settings).ToList();
             var indents = 0;
             var start = false;
             var enumStart = false;
@@ -90,12 +79,11 @@ namespace Rubberduck.SmartIndenter
                 enumStart = inEnumType;
             }
 
-            return GenerateCodeLineStrings(logical, forceTrailingNewLines, procedure);
+            return GenerateCodeLineStrings(logical, forceTrailingNewLines, settings, procedure);
         }
 
-        protected IEnumerable<LogicalCodeLine> BuildLogicalCodeLines(IEnumerable<string> lines, out IIndenterSettings settings)
+        protected IEnumerable<LogicalCodeLine> BuildLogicalCodeLines(IEnumerable<string> lines, IIndenterSettings settings)
         {
-            settings = Settings.Invoke();
             var logical = new List<LogicalCodeLine>();
             LogicalCodeLine current = null;
             AbsoluteCodeLine previous = null;
@@ -122,10 +110,9 @@ namespace Rubberduck.SmartIndenter
             return logical;
         }
 
-        protected IEnumerable<string> GenerateCodeLineStrings(IEnumerable<LogicalCodeLine> logical, bool forceTrailingNewLines, bool procedure = false)
+        protected IEnumerable<string> GenerateCodeLineStrings(IEnumerable<LogicalCodeLine> logical, bool forceTrailingNewLines, IIndenterSettings settings, bool procedure = false)
         {
             var output = new List<string>();
-            var settings = Settings.Invoke();
 
             List<LogicalCodeLine> indent;
             if (!procedure && settings.VerticallySpaceProcedures)

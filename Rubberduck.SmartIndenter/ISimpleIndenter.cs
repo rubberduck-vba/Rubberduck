@@ -4,8 +4,8 @@ namespace Rubberduck.SmartIndenter
 {
     public interface ISimpleIndenter
     {
-        IEnumerable<string> Indent(string code);
-        IEnumerable<string> Indent(IEnumerable<string> lines);
-        IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines);
+        IEnumerable<string> Indent(string code, IIndenterSettings settings = null);
+        IEnumerable<string> Indent(IEnumerable<string> lines, IIndenterSettings settings = null);
+        IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines, IIndenterSettings settings = null);
     }
 }

@@ -11,7 +11,6 @@ namespace Rubberduck.SmartIndenter
         private readonly Func<IIndenterSettings> _settings;
 
         public Indenter(IVBE vbe, Func<IIndenterSettings> settings)
-            : base(settings)
         {
             _vbe = vbe;
             _settings = settings;
@@ -151,7 +150,7 @@ namespace Rubberduck.SmartIndenter
                 }
 
                 var codeLines = module.GetLines(1, lineCount).Replace("\r", string.Empty).Split('\n');
-                var indented = Indent(codeLines, true);
+                var indented = Indent(codeLines, true, _settings.Invoke());
 
                 module.DeleteLines(1, lineCount);
                 module.InsertLines(1, string.Join("\r\n", indented));
@@ -179,7 +178,7 @@ namespace Rubberduck.SmartIndenter
                 var codeLines = module.GetLines(selection.StartLine, selection.LineCount).Replace("\r", string.Empty)
                     .Split('\n');
 
-                var indented = Indent(codeLines, false, procedure);
+                var indented = Indent(codeLines, false, procedure, _settings.Invoke());
 
                 var start = selection.StartLine;
                 var lines = selection.LineCount;
