@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Rubberduck.SmartIndenter
 {
-    internal class LogicalCodeLine
+    public class LogicalCodeLine
     {
         private readonly List<AbsoluteCodeLine> _lines = new List<AbsoluteCodeLine>();
         private AbsoluteCodeLine _rebuilt;
