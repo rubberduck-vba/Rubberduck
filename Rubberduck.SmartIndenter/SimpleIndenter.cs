@@ -37,6 +37,11 @@ namespace Rubberduck.SmartIndenter
 
         protected IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines, bool procedure, IIndenterSettings settings)
         {
+            if (settings is null)
+            {
+                settings = new IndenterSettings();
+            }
+
             var logical = BuildLogicalCodeLines(codeLines, settings).ToList();
             var indents = 0;
             var start = false;
