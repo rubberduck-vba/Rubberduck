@@ -16,6 +16,8 @@ namespace Rubberduck.SmartIndenter
             _settings = settings;
         }
 
+        protected override Func<IIndenterSettings> Settings => _settings;
+
         /// <summary>
         /// Indents the procedure selected in the ActiveCodePane. If more than one is selected, the first is indented.
         /// </summary>

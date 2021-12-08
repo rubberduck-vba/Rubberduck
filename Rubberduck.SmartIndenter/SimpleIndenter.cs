@@ -9,6 +9,8 @@ namespace Rubberduck.SmartIndenter
     /// </summary>
     public class SimpleIndenter : ISimpleIndenter
     {
+        protected virtual Func<IIndenterSettings> Settings { get; }
+
         /// <summary>
         /// Indents the code contained in the passed string. NOTE: In Rubberduck this overload should only be used on procedures or modules.
         /// </summary>
@@ -17,7 +19,7 @@ namespace Rubberduck.SmartIndenter
         /// </remarks>
         /// <param name="code">The code block to indent</param>
         /// <returns>Indented code lines</returns>
-        public IEnumerable<string> Indent(string code, IIndenterSettings settings = null) => Indent(code.Replace("\r", string.Empty).Split('\n'), false, settings);
+        public IEnumerable<string> Indent(string code, IIndenterSettings settings = null) => Indent(code.Replace("\r", string.Empty).Split('\n'), false, settings ?? Settings?.Invoke());
 
         /// <summary>
         /// Indents a range of code lines. NOTE: If inserting procedures, use the forceTrailingNewLines overload to preserve vertical spacing in the module.
@@ -25,7 +27,7 @@ namespace Rubberduck.SmartIndenter
         /// </summary>
         /// <param name="codeLines">Code lines to indent</param>
         /// <returns>Indented code lines</returns>
-        public IEnumerable<string> Indent(IEnumerable<string> codeLines, IIndenterSettings settings = null) => Indent(codeLines, false, settings);
+        public IEnumerable<string> Indent(IEnumerable<string> codeLines, IIndenterSettings settings = null) => Indent(codeLines, false, settings ?? Settings?.Invoke());
 
         /// <summary>
         /// Indents a range of code lines. Do not call directly on selections. Use Indent(IVBComponent, Selection) instead.
@@ -33,7 +35,7 @@ namespace Rubberduck.SmartIndenter
         /// <param name="codeLines">Code lines to indent</param>
         /// <param name="forceTrailingNewLines">If true adds a number of blank lines after the last procedure based on VerticallySpaceProcedures settings</param>
         /// <returns>Indented code lines</returns>
-        public IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines, IIndenterSettings settings = null) => Indent(codeLines, forceTrailingNewLines, false, settings);
+        public IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines, IIndenterSettings settings = null) => Indent(codeLines, forceTrailingNewLines, false, settings ?? Settings?.Invoke());
 
         protected IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines, bool procedure, IIndenterSettings settings)
         {
