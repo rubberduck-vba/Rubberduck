@@ -70,6 +70,15 @@ namespace Rubberduck.Resources.Refactorings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;TODO Is this comment still valid? =&gt; .
+        /// </summary>
+        public static string CommentVerification_TODO {
+            get {
+                return ResourceManager.GetString("CommentVerification_TODO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;TODO implement interface member.
         /// </summary>
         public static string ImplementInterface_TODO {

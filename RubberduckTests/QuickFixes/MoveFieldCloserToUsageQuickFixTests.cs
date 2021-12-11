@@ -9,6 +9,14 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.SmartIndenter;
+using RubberduckTests.Settings;
+using Rubberduck.Refactorings.DeleteDeclarations;
+using Rubberduck.Refactorings;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
+using RubberduckTests.Refactoring.DeleteDeclarations;
+using Castle.Windsor;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -17,6 +25,7 @@ namespace RubberduckTests.QuickFixes
     {
         [Test]
         [Category("QuickFixes")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         public void MoveFieldCloserToUsage_QuickFixWorks()
         {
             const string inputCode =
@@ -37,6 +46,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         public void MoveFieldCloserToUsage_QuickFixWorks_SingleLineIfStatement()
         {
             const string inputCode =
@@ -72,6 +82,7 @@ End Sub
 
         [Test]
         [Category("QuickFixes")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         public void MoveFieldCloserToUsage_QuickFixWorks_SingleLineThenStatement()
         {
             const string inputCode =
@@ -93,6 +104,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         public void MoveFieldCloserToUsage_QuickFixWorks_SingleLineElseStatement()
         {
             const string inputCode =
@@ -124,7 +136,11 @@ End Sub";
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
                 var selectionService = MockedSelectionService();
                 var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-                var baseRefactoring = new MoveCloserToUsageRefactoringAction(rewritingManager);
+
+                var deleteDeclarationRefactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+                    .Resolve<DeleteDeclarationsRefactoringAction>();
+
+                var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationRefactoringAction, rewritingManager);
                 var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
                 var quickFix = new MoveFieldCloserToUsageQuickFix(refactoring);
 
