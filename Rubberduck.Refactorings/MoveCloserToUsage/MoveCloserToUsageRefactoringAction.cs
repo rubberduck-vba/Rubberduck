@@ -23,23 +23,27 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             {
                 throw new ArgumentException("Invalid type - VariableDeclaration required");
             }
+            if (!(model.NewDeclarationStatement == Tokens.Dim || model.NewDeclarationStatement == Tokens.Static))
+            {
+                throw new ArgumentException("Invalid value - DeclarationToken required");
+            }
 
-            InsertNewDeclaration(variable, rewriteSession);
+            InsertNewDeclaration(variable, rewriteSession, model.NewDeclarationStatement);
 
             _deleteDeclarationsRefactoringAction.Refactor(new DeleteDeclarationsModel(variable), rewriteSession);
 
             UpdateQualifiedCalls(variable, rewriteSession);
         }
 
-        private void InsertNewDeclaration(VariableDeclaration target, IRewriteSession rewriteSession)
+        private void InsertNewDeclaration(VariableDeclaration target, IRewriteSession rewriteSession, string DeclarationStatement)
         {
             var fieldDeclarationType = target.ParentDeclaration is ModuleDeclaration ? Tokens.Static : Tokens.Dim;
             var subscripts = target.Context.GetDescendent<VBAParser.SubscriptsContext>()?.GetText() ?? string.Empty;
             var identifier = target.IsArray ? $"{target.IdentifierName}({subscripts})" : target.IdentifierName;
 
             var newVariable = target.AsTypeContext is null
-                ? $"{Tokens.Dim} {identifier} {Tokens.As} {Tokens.Variant}"
-                : $"{Tokens.Dim} {identifier} {Tokens.As} {(target.IsSelfAssigned ? Tokens.New + " " : string.Empty)}{target.AsTypeNameWithoutArrayDesignator}";
+                ? $"{DeclarationStatement} {identifier} {Tokens.As} {Tokens.Variant}"
+                : $"{DeclarationStatement} {identifier} {Tokens.As} {(target.IsSelfAssigned ? Tokens.New + " " : string.Empty)}{target.AsTypeNameWithoutArrayDesignator}";
 
             var firstReference = target.References.OrderBy(r => r.Selection.StartLine).First();
 

@@ -6,6 +6,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
     {
         public Declaration Target { get; }
 
+        public string NewDeclarationStatement { get; set; } = Parsing.Grammar.Tokens.Static;
+
         public MoveCloserToUsageModel(Declaration target)
         {
             Target = target;
