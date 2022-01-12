@@ -1,4 +1,6 @@
 ﻿using NLog;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.UI.Command;
 using System;
@@ -16,6 +18,21 @@ namespace Rubberduck.UI.Refactorings.MoveCloserToUsage
             SetNewDeclarationStatementCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), (o) => SetNewDeclarationStatementExecute(o));
         }
 
+        public Declaration Target => Model.Target;
+
+        public string Instructions
+        {
+            get
+            {
+                if (Target == null)
+                {
+                    return RefactoringsUI.MoveCloserToUsageDialog_InstructionsLabelText;
+                }
+
+                return string.Format(RefactoringsUI.MoveCloserToUsageDialog_InstructionsLabelText, Target.IdentifierName);
+            }
+        }
+
         public DelegateCommand SetNewDeclarationStatementCommand { get; }
 
         void SetNewDeclarationStatementExecute(object param)
@@ -26,5 +43,6 @@ namespace Rubberduck.UI.Refactorings.MoveCloserToUsage
             }
 
         }
+
     }
 }

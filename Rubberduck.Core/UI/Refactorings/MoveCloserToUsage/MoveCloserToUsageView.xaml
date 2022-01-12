@@ -21,7 +21,7 @@
         </Grid.RowDefinitions>
         <StackPanel Background="{StaticResource BackgroundLightBrush}">
             <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=MoveCloserToUsageDialog_TitleText}" FontWeight="Bold" />
-            <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=MoveCloserToUsageDialog_InstructionsLabelText}" Margin="5,0" />
+            <TextBlock Text="{Binding Instructions}" Margin="5,0" />
         </StackPanel>
         
         <StackPanel Grid.Row="1" Margin="5,10,10,5">
