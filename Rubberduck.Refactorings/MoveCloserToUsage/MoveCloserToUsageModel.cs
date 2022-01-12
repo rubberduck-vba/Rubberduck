@@ -4,9 +4,19 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
     public class MoveCloserToUsageModel : IRefactoringModel
     {
-        public Declaration Target { get; }
+        private Declaration _target;
+        public Declaration Target
+        {
+            get => _target;
+            set
+            {
+                _target = value;
+                NewDeclarationStatement = Parsing.Grammar.Tokens.Static;    // Static as Default to not affect semantics
+            }
+        }
 
-        public string NewDeclarationStatement { get; set; } = Parsing.Grammar.Tokens.Static;
+
+        public string NewDeclarationStatement { get; set; } 
 
         public MoveCloserToUsageModel(Declaration target)
         {

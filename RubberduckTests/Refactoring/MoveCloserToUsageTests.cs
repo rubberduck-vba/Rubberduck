@@ -21,7 +21,7 @@ using RubberduckTests.Refactoring.DeleteDeclarations;
 namespace RubberduckTests.Refactoring
 {
     [TestFixture]
-    public class MoveCloserToUsageTests : RefactoringTestBase
+    public class MoveCloserToUsageTests : InteractiveRefactoringTestBase<IMoveCloserToUsagePresenter, MoveCloserToUsageModel>
     {
         [Test]
         [Category("Refactorings")]
@@ -1195,7 +1195,19 @@ End Sub";
             }
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
+        //protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
+        //{
+        //    var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+        //    var deletionTargetFactory = new DeclarationDeletionTargetFactory(state);
+
+        //    var deleteDeclarationsRefactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+        //        .Resolve<DeleteDeclarationsRefactoringAction>();
+
+        //    var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationsRefactoringAction, rewritingManager);
+        //    return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
+        //}
+
+        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, RefactoringUserInteraction<IMoveCloserToUsagePresenter, MoveCloserToUsageModel> userInteraction, ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
             var deletionTargetFactory = new DeclarationDeletionTargetFactory(state);
@@ -1204,7 +1216,7 @@ End Sub";
                 .Resolve<DeleteDeclarationsRefactoringAction>();
 
             var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationsRefactoringAction, rewritingManager);
-            return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
+            return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider, userInteraction);
         }
     }
 }

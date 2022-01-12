@@ -25,7 +25,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
             if (!(model.NewDeclarationStatement == Tokens.Dim || model.NewDeclarationStatement == Tokens.Static))
             {
-                throw new ArgumentException("Invalid value - DeclarationToken required");
+                throw new ArgumentException("Invalid value - DeclarationStatement required");
             }
 
             InsertNewDeclaration(variable, rewriteSession, model.NewDeclarationStatement);

@@ -8,18 +8,19 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
-    public class MoveCloserToUsageRefactoring : RefactoringBase
+    public class MoveCloserToUsageRefactoring : InteractiveRefactoringBase<MoveCloserToUsageModel> 
     {
         private readonly IRefactoringAction<MoveCloserToUsageModel> _refactoringAction;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
         public MoveCloserToUsageRefactoring(
-            MoveCloserToUsageRefactoringAction refactoringAction,
+            MoveCloserToUsageRefactoringAction refactoringAction,            
             IDeclarationFinderProvider declarationFinderProvider,
             ISelectionProvider selectionProvider,
-            ISelectedDeclarationProvider selectedDeclarationProvider)
-        :base(selectionProvider)
+            ISelectedDeclarationProvider selectedDeclarationProvider,
+            RefactoringUserInteraction<IMoveCloserToUsagePresenter, MoveCloserToUsageModel> userInteraction)
+        :base(selectionProvider, userInteraction)
         {
             _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;
@@ -39,11 +40,16 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             return selectedDeclaration;
         }
 
-        public override void Refactor(Declaration target)
+        protected override MoveCloserToUsageModel InitializeModel(Declaration target)
         {
             CheckThatTargetIsValid(target);
 
-            MoveCloserToUsage(target);
+            return Model(target);
+        }
+
+        protected override void RefactorImpl(MoveCloserToUsageModel model)
+        {
+            _refactoringAction.Refactor(model);
         }
 
         private void CheckThatTargetIsValid(Declaration target)
@@ -185,10 +191,5 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             return new MoveCloserToUsageModel(target);
         }
 
-        private void MoveCloserToUsage(Declaration target)
-        {
-            var model = Model(target);
-            _refactoringAction.Refactor(model);
-        }
     }
 }

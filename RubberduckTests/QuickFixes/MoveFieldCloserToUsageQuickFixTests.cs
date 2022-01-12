@@ -141,10 +141,10 @@ End Sub";
                     .Resolve<DeleteDeclarationsRefactoringAction>();
 
                 var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationRefactoringAction, rewritingManager);
-                var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
-                var quickFix = new MoveFieldCloserToUsageQuickFix(refactoring);
+                //var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
+                //var quickFix = new MoveFieldCloserToUsageQuickFix(refactoring);
 
-                quickFix.Fix(resultToFix, rewriteSession);
+                //quickFix.Fix(resultToFix, rewriteSession);
 
                 return component.CodeModule.Content();
             }

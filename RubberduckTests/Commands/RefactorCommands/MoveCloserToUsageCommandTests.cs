@@ -116,10 +116,11 @@ End Sub";
                 .Resolve<DeleteDeclarationsRefactoringAction>();
 
             var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationRefactoringAction, rewritingManager);
-            var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
+            //var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
             var notifier = new MoveCloserToUsageFailedNotifier(msgBox);
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
-            return new RefactorMoveCloserToUsageCommand(refactoring, notifier, state, selectionService, selectedDeclarationService);
+            // return new RefactorMoveCloserToUsageCommand(refactoring, notifier, state, selectionService, selectedDeclarationService);
+            return null;
         }
 
         protected override IVBE SetupAllowingExecution()
