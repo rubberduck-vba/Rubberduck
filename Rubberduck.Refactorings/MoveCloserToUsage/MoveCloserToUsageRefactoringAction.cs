@@ -23,12 +23,12 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             {
                 throw new ArgumentException("Invalid type - VariableDeclaration required");
             }
-            if (!(model.NewDeclarationStatement == Tokens.Dim || model.NewDeclarationStatement == Tokens.Static))
+            if (!(model.DeclarationStatement == Tokens.Dim || model.DeclarationStatement == Tokens.Static))
             {
                 throw new ArgumentException("Invalid value - DeclarationStatement required");
             }
 
-            InsertNewDeclaration(variable, rewriteSession, model.NewDeclarationStatement);
+            InsertNewDeclaration(variable, rewriteSession, model.DeclarationStatement);
 
             _deleteDeclarationsRefactoringAction.Refactor(new DeleteDeclarationsModel(variable), rewriteSession);
 
@@ -37,7 +37,6 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         private void InsertNewDeclaration(VariableDeclaration target, IRewriteSession rewriteSession, string DeclarationStatement)
         {
-            var fieldDeclarationType = target.ParentDeclaration is ModuleDeclaration ? Tokens.Static : Tokens.Dim;
             var subscripts = target.Context.GetDescendent<VBAParser.SubscriptsContext>()?.GetText() ?? string.Empty;
             var identifier = target.IsArray ? $"{target.IdentifierName}({subscripts})" : target.IdentifierName;
 

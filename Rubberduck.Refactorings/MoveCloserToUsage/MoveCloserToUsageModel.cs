@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
@@ -11,16 +12,32 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             set
             {
                 _target = value;
-                NewDeclarationStatement = Parsing.Grammar.Tokens.Static;    // Static as Default to not affect semantics
+                DeclarationStatement = DefaultDeclarationStatement();
             }
         }
 
 
-        public string NewDeclarationStatement { get; set; } 
+        public string DeclarationStatement { get; set; } = string.Empty;
 
         public MoveCloserToUsageModel(Declaration target)
         {
             Target = target;
+        }
+
+        private string DefaultDeclarationStatement()
+        {            
+            if (Target.ParentDeclaration is ModuleDeclaration)
+            {
+                return Tokens.Static;
+            }
+            else
+            {
+                //return Target.DeclarationType.ToString();
+                // Get already used declaration Token (Static/Dim)
+                return Tokens.Dim;
+            }
+                
+
         }
     }
 }

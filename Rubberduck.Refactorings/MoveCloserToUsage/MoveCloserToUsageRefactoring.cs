@@ -40,11 +40,28 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             return selectedDeclaration;
         }
 
-        protected override MoveCloserToUsageModel InitializeModel(Declaration target)
+        public override void Refactor(Declaration target)
         {
             CheckThatTargetIsValid(target);
 
-            return Model(target);
+            
+            if (IsDeclarationMovingFromModulLevelToMethodLevel(target))
+            {
+                // Ask User for Declaration Statement Static/Dim
+                Refactor(InitializeModel(target));
+            }
+            else
+            {                
+                MoveCloserToUsage(target);
+            }
+
+            
+        }
+
+        protected override MoveCloserToUsageModel InitializeModel(Declaration target)
+        {
+            var model = Model(target);
+            return model;
         }
 
         protected override void RefactorImpl(MoveCloserToUsageModel model)
@@ -186,10 +203,41 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
         }
 
+        private bool IsDeclarationMovingFromModulLevelToMethodLevel(Declaration target)
+        {
+            var firstReference = target.References.FirstOrDefault();
+            if (firstReference == null)
+            {
+                return false;
+            }
+
+            if (firstReference.ParentScoping.Equals(target.ParentScopeDeclaration))
+            {
+                //The variable is already in the same scope and consequently the identifier already refers to the declaration there.
+                return false;
+            }
+
+            if (target.QualifiedModuleName.Equals(firstReference.QualifiedModuleName))
+            {
+                //The variable is a module variable in the same module.
+                //Since there is no local declaration of the of the same name in the procedure,
+                //the identifier already refers to the declaration inside the method. 
+                return true;
+            }
+
+            return false;
+        }
+
+
         private MoveCloserToUsageModel Model(Declaration target)
         {
             return new MoveCloserToUsageModel(target);
         }
 
+        private void MoveCloserToUsage(Declaration target)
+        {
+            var model = Model(target);
+            _refactoringAction.Refactor(model);
+        }
     }
 }
