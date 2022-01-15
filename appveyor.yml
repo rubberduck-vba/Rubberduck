@@ -153,7 +153,7 @@ deploy:
     prerelease: true
     description: "AppVeyor build on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
     auth_token:
-      secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
+      secure: uGhRa4XBPEEfs6CPJjuJH4ujiXh/KpMT+Jb09gphRsJce2EG1rT+bNn0FC27hXBK
     artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
     on: 
       branch: next
