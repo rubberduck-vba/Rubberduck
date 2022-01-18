@@ -23,7 +23,10 @@ namespace Rubberduck.Parsing.Symbols
             string value,
             ParserRuleContext context, 
             Selection selection, 
-            bool isUserDefined = true)
+            bool isUserDefined = true,
+            ParserRuleContext attributesPassContext = null,
+            Attributes attributes = null
+            )
             :base(
                  qualifiedName, 
                  parentDeclaration, 
@@ -35,12 +38,13 @@ namespace Rubberduck.Parsing.Symbols
                  accessibility,
                  declarationType, 
                  context, 
-                 null,
+                 attributesPassContext,
                  selection,
                  false,
                  asTypeContext,
                  isUserDefined,
-                 annotations)
+                 annotations,
+                 attributes: attributes)
         {
             Expression = value;
         }

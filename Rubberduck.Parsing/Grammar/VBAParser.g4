@@ -102,7 +102,7 @@ moduleDeclarationsElement :
     | defDirective
     | enumerationStmt 
     | eventStmt
-    | constStmt
+    | moduleConstStmt
     | implementsStmt
     | moduleVariableStmt
     | moduleOption
@@ -111,6 +111,11 @@ moduleDeclarationsElement :
 
 moduleVariableStmt :
 	variableStmt
+	(endOfLine attributeStmt)*
+;
+
+moduleConstStmt :
+	constStmt
 	(endOfLine attributeStmt)*
 ;
 

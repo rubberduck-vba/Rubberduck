@@ -287,6 +287,60 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void VariableDescriptionAnnotationWithoutAttributeReturnsResult_Variable()
+        {
+            const string inputCode =
+                @"'@VariableDescription ""Desc""
+Public Foo As String
+";
+
+            var inspectionResults = InspectionResults(inputCode);
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void Variable_DescriptionAnnotationWithAttributeReturnsNoResult_Variable()
+        {
+            const string inputCode =
+                @"'@VariableDescription ""Desc""
+Public Foo As String
+Attribute Foo.VB_VarDescription = ""NotDesc""
+";
+
+            var inspectionResults = InspectionResults(inputCode);
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void VariableDescriptionAnnotationWithoutAttributeReturnsResult_Constant()
+        {
+            const string inputCode =
+                @"'@VariableDescription ""Desc""
+Public Const Foo As String = ""Huh""
+";
+
+            var inspectionResults = InspectionResults(inputCode);
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void Variable_DescriptionAnnotationWithAttributeReturnsNoResult_Constant()
+        {
+            const string inputCode =
+                @"'@VariableDescription ""Desc""
+Public Const Foo As String = ""Huh""
+Attribute Foo.VB_VarDescription = ""NotDesc""
+";
+
+            var inspectionResults = InspectionResults(inputCode);
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ModuleDescriptionAnnotationWithoutAttributeReturnsResult()
         {
             const string inputCode =
