@@ -17,6 +17,8 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using RubberduckTests.Refactoring.DeleteDeclarations;
 using Castle.Windsor;
+using Rubberduck.Parsing.UIContext;
+using System;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -140,11 +142,18 @@ End Sub";
                 var deleteDeclarationRefactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
                     .Resolve<DeleteDeclarationsRefactoringAction>();
 
-                var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationRefactoringAction, rewritingManager);
-                //var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
-                //var quickFix = new MoveFieldCloserToUsageQuickFix(refactoring);
+                var factory = new Mock<IRefactoringPresenterFactory>().Object;
+                var uiDispatcherMock = new Mock<IUiDispatcher>();
+                uiDispatcherMock
+                    .Setup(m => m.Invoke(It.IsAny<Action>()))
+                    .Callback((Action action) => action.Invoke());
+                var userInteraction = new RefactoringUserInteraction<IMoveCloserToUsagePresenter, MoveCloserToUsageModel>(factory, uiDispatcherMock.Object);
 
-                //quickFix.Fix(resultToFix, rewriteSession);
+                var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationRefactoringAction, rewritingManager);
+                var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider, userInteraction);
+                var quickFix = new MoveFieldCloserToUsageQuickFix(refactoring);
+
+                quickFix.Fix(resultToFix, rewriteSession);
 
                 return component.CodeModule.Content();
             }
