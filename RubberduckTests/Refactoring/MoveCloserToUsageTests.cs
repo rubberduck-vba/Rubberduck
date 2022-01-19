@@ -45,7 +45,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar As Boolean
+    Static bar As Boolean
     bar = True
 End Sub";
 
@@ -106,7 +106,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar As Boolean
+    Static bar As Boolean
     bar = True
 End Sub";
 
@@ -131,7 +131,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar As Boolean
+    Static bar As Boolean
 100 bar = True
 End Sub";
 
@@ -159,7 +159,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar As Boolean
+    Static bar As Boolean
     bar = True
 End Sub";
 
@@ -189,7 +189,7 @@ End Sub";
 
             const string expectedClassCode =
                 @"Private Sub Foo()
-Dim bar As Boolean
+Static bar As Boolean
 bar = True
 End Sub";
 
@@ -312,7 +312,7 @@ End Sub";
 Private bay As Date
 
 Private Sub Foo()
-    Dim bat As Boolean
+    Static bat As Boolean
     bat = True
 End Sub";
 
@@ -343,7 +343,7 @@ End Sub";
           bay As Date
 
 Private Sub Foo()
-    Dim bar As Integer
+    Static bar As Integer
     bar = 3
 End Sub";
 
@@ -374,7 +374,7 @@ End Sub";
           bay As Date
 
 Private Sub Foo()
-    Dim bat As Boolean
+    Static bat As Boolean
     bat = True
 End Sub";
 
@@ -405,7 +405,7 @@ End Sub";
           bat As Boolean
 
 Private Sub Foo()
-    Dim bay As Date
+    Static bay As Date
     bay = #1/13/2004#
 End Sub";
 
@@ -527,7 +527,7 @@ End Sub";
 
             const string expectedCode =
                 @"Private Sub Foo(ByRef bat As Boolean)
-    Dim bar As Boolean
+    Static bar As Boolean
     bat = bar
 End Sub";
             var selection = new Selection(1, 1);
@@ -553,7 +553,7 @@ End Sub";
 
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar As Boolean
+    Static bar As Boolean
     Baz bar
 End Sub
 Sub Baz(ByVal bat As Boolean)
@@ -583,7 +583,7 @@ End Sub";
 
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar As Boolean
+    Static bar As Boolean
     Baz True, _
         True, _
         bar
@@ -612,7 +612,7 @@ Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean
 
             // Yeah, this code is a mess.  That is why we got the SmartIndenter
             const string expectedCode =
-                @"Private Sub Foo(): Dim bar As Boolean : Baz True, True, bar: End Sub
+                @"Private Sub Foo(): Static bar As Boolean : Baz True, True, bar: End Sub
 Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean): End Sub";
 
             var actualCode = RefactoredCode(inputCode, selection);
@@ -642,7 +642,7 @@ End Sub";
             const string expectedCode =
                 @"
 Public Sub Test()
-    Dim foo As Long
+    Static foo As Long
     SomeSub someParam:=foo
 End Sub
 
@@ -673,7 +673,7 @@ End Sub";
             var selection = new Selection(1, 1);
             const string expectedCode =
 
-@"Public Sub Test(): Dim foo As Long : SomeSub someParam:=foo: End Sub
+@"Public Sub Test(): Static foo As Long : SomeSub someParam:=foo: End Sub
 
 Public Sub SomeSub(ByVal someParam As Long)
     Debug.Print someParam
@@ -1035,7 +1035,7 @@ End Sub";
             const string expectedCode = @"Public Sub Test()
     Debug.Print ""Some statements between""
     Debug.Print ""Declaration and first usage!""
-    Dim foo As Class1
+    Static foo As Class1
     Set foo = new Class1
     foo.Name = ""FooName""
     foo.OtherProperty = 1626
@@ -1069,7 +1069,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar() As Boolean
+    Static bar() As Boolean
     ReDim bar(0)
     bar(0) = True
 End Sub";
@@ -1095,7 +1095,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar(0) As Boolean
+    Static bar(0) As Boolean
     bar(0) = True
 End Sub";
 
@@ -1120,7 +1120,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar(1 To 42) As Boolean
+    Static bar(1 To 42) As Boolean
     bar(1) = True
 End Sub";
 
@@ -1145,7 +1145,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar(1, 1) As Boolean
+    Static bar(1, 1) As Boolean
     bar(0, 0) = True
 End Sub";
 
@@ -1170,7 +1170,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar As New Collection
+    Static bar As New Collection
     bar.Add 42
 End Sub";
 
@@ -1218,5 +1218,14 @@ End Sub";
             var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationsRefactoringAction, rewritingManager);
             return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider, userInteraction);
         }
+
+        // Method can be passed To RefactoredCode to change Model e.g.
+        // var actualCode = RefactoredCode(inputCode, selection, SetDeclarationStatementToDim);
+        MoveCloserToUsageModel SetDeclarationStatementToDim(MoveCloserToUsageModel model)
+        {
+            model.DeclarationStatement = Tokens.Dim;
+            return model;
+        }
+
     }
 }
