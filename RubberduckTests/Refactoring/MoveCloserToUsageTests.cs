@@ -1178,6 +1178,84 @@ End Sub";
             Assert.AreEqual(expectedCode, actualCode);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_FieldToDim()
+        {
+            //Input
+            const string inputCode =
+                @"Private bar As Boolean
+
+
+Private Sub Foo()
+    bar = True
+End Sub";
+            var selection = new Selection(1, 1);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo()
+    Dim bar As Boolean
+    bar = True
+End Sub";
+            var actualCode = RefactoredCode(inputCode, selection, (m) => AdjustDeclarationStatement(m,Tokens.Dim));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_FieldToStatic()
+        {
+            //Input
+            const string inputCode =
+                @"Private bar As Boolean
+
+
+Private Sub Foo()
+    bar = True
+End Sub";
+            var selection = new Selection(1, 1);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo()
+    Static bar As Boolean
+    bar = True
+End Sub";
+            var actualCode = RefactoredCode(inputCode, selection, (m) => AdjustDeclarationStatement(m, Tokens.Static));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_Static()
+        {
+            //Input
+            const string inputCode =
+                @"Private Sub Foo()
+    Static bar As Boolean
+    Debug.Print ""Some statements between""
+    bar = True
+End Sub";
+            var selection = new Selection(2, 12);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo()
+    Debug.Print ""Some statements between""
+    Static bar As Boolean
+    bar = True
+End Sub";
+            var actualCode = RefactoredCode(inputCode, selection);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
         //Overrides the RefactoringTestBase class version.  MoveCloserToUsage uses the
         //DeleteDeclarationRefactoringAction which has a dedicated CW container to create objects for tests.  
         //The RefactoringTestBase version of NoActiveSelection_Throws uses a null 'state' parameter which CW 
@@ -1195,18 +1273,6 @@ End Sub";
             }
         }
 
-        //protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
-        //{
-        //    var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-        //    var deletionTargetFactory = new DeclarationDeletionTargetFactory(state);
-
-        //    var deleteDeclarationsRefactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
-        //        .Resolve<DeleteDeclarationsRefactoringAction>();
-
-        //    var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationsRefactoringAction, rewritingManager);
-        //    return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
-        //}
-
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, RefactoringUserInteraction<IMoveCloserToUsagePresenter, MoveCloserToUsageModel> userInteraction, ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
@@ -1219,11 +1285,9 @@ End Sub";
             return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider, userInteraction);
         }
 
-        // Method can be passed To RefactoredCode to change Model e.g.
-        // var actualCode = RefactoredCode(inputCode, selection, SetDeclarationStatementToDim);
-        MoveCloserToUsageModel SetDeclarationStatementToDim(MoveCloserToUsageModel model)
+        private static MoveCloserToUsageModel AdjustDeclarationStatement(MoveCloserToUsageModel model, string declarationStatement)
         {
-            model.DeclarationStatement = Tokens.Dim;
+            model.DeclarationStatement = declarationStatement;
             return model;
         }
 
