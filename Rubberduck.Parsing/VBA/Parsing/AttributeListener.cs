@@ -42,6 +42,16 @@ namespace Rubberduck.Parsing.VBA.Parsing
             }
         }
 
+        public override void EnterModuleConstStmt(VBAParser.ModuleConstStmtContext context)
+        {
+            var constantDeclarationStatementList = context.constStmt().constSubStmt();
+            foreach (var constContext in constantDeclarationStatementList)
+            {
+                var constantName = Identifier.GetName(constContext);
+                _membersAllowingAttributes[(constantName, DeclarationType.Constant)] = context;
+            }
+        }
+
         public override void EnterDeclareStmt(VBAParser.DeclareStmtContext context)
         {
             var name = Identifier.GetName(context.identifier());

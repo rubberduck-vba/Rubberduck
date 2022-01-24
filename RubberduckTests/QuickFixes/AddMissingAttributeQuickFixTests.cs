@@ -54,6 +54,44 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        public void MissingVariableAttribute_QuickFixWorks_Variable()
+        {
+            const string inputCode =
+                @"'@VariableDescription ""Desc""
+Public Foo As String
+";
+
+            const string expectedCode =
+                @"'@VariableDescription ""Desc""
+Public Foo As String
+Attribute Foo.VB_VarDescription = ""Desc""
+";
+
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new MissingAttributeInspection(state), CodeKind.AttributesCode);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void MissingVariableAttribute_QuickFixWorks_Constant()
+        {
+            const string inputCode =
+                @"'@VariableDescription ""Desc""
+Public Const Foo As String = ""Huh""
+";
+
+            const string expectedCode =
+                @"'@VariableDescription ""Desc""
+Public Const Foo As String = ""Huh""
+Attribute Foo.VB_VarDescription = ""Desc""
+";
+
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new MissingAttributeInspection(state), CodeKind.AttributesCode);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
         //See issue #5268 at https://github.com/rubberduck-vba/Rubberduck/issues/5268
         public void MissingMemberAttribute_ExcelHotkey_QuickFixWorks()
         {
