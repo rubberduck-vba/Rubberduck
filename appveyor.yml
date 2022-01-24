@@ -134,6 +134,7 @@ artifacts:
     name: MainCoverage
   - path: RubberduckCodeAnalysis_Coverage.xml
     name: AnalysisCoverage
+    
 deploy:
   - provider: GitHub
     tag: RETAGMEWITHAMESSAGE
@@ -142,7 +143,7 @@ deploy:
     prerelease: false
     description: "Built with :heart: by AppVeyor CI on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
     auth_token:
-      secure: uGhRa4XBPEEfs6CPJjuJH4ujiXh/KpMT+Jb09gphRsJce2EG1rT+bNn0FC27hXBK
+      secure: CfT1+dhcyG0rXqVRUsz4C21omXk+35gLP76TpFw5NEBQdbx39tdwSGAxqGY/HZfN
     artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
     on: 
       branch: main
@@ -153,7 +154,7 @@ deploy:
     prerelease: true
     description: "AppVeyor build on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
     auth_token:
-      secure: uGhRa4XBPEEfs6CPJjuJH4ujiXh/KpMT+Jb09gphRsJce2EG1rT+bNn0FC27hXBK
+      secure: CfT1+dhcyG0rXqVRUsz4C21omXk+35gLP76TpFw5NEBQdbx39tdwSGAxqGY/HZfN
     artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
     on: 
       branch: next
