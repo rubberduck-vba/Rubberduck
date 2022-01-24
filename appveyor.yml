@@ -134,6 +134,7 @@ artifacts:
     name: MainCoverage
   - path: RubberduckCodeAnalysis_Coverage.xml
     name: AnalysisCoverage
+    
 deploy:
   - provider: GitHub
     tag: RETAGMEWITHAMESSAGE
