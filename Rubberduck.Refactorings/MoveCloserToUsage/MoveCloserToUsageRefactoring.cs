@@ -188,7 +188,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             if (target.QualifiedModuleName.Equals(firstReference.QualifiedModuleName))
             {
                 //The variable is a module variable in the same module.
-                //Since there is no local declaration of the of the same name in the procedure,
+                //Since there is no local declaration with the same name in the procedure,
                 //the identifier already refers to the declaration inside the method. 
                 return;
             }
@@ -220,7 +220,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             if (target.QualifiedModuleName.Equals(firstReference.QualifiedModuleName))
             {
                 //The variable is a module variable in the same module.
-                //Since there is no local declaration of the of the same name in the procedure,
+                //Since there is no local declaration with the same name in the procedure,
                 //the identifier already refers to the declaration inside the method. 
                 return true;
             }
