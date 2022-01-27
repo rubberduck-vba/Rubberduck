@@ -45,18 +45,19 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             CheckThatTargetIsValid(target);
 
             // Taking Flag of existing Procedure..
+            // Split concerns to avoid running same code twice
             CheckThatThereIsNoOtherSameNameDeclarationInScopeInReferencingMethod(target, out bool moduleVariableRefersToDeclarationInsideMethod);
 
             var model = InitializeModel(target);
 
             if (moduleVariableRefersToDeclarationInsideMethod)
             {
-                // Ask User for Declaration Statement
+                // Ask User for new Declaration Statement
                 Refactor(model);
             }
             else
             {
-                // Non Interactive Refractoring
+                // Direct Refractoring
                 RefactorImpl(model);
             }            
         }
