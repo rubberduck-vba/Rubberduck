@@ -44,23 +44,26 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         {
             CheckThatTargetIsValid(target);
 
-            
-            if (IsDeclarationMovingFromModulLevelToMethodLevel(target))
+            // Taking Flag of existing Procedure..
+            CheckThatThereIsNoOtherSameNameDeclarationInScopeInReferencingMethod(target, out bool moduleVariableRefersToDeclarationInsideMethod);
+
+            var model = InitializeModel(target);
+
+            if (moduleVariableRefersToDeclarationInsideMethod)
             {
-                // Ask User for Declaration Statement Static/Dim
-                Refactor(InitializeModel(target));
+                // Ask User for Declaration Statement
+                Refactor(model);
             }
             else
-            {                
-                MoveCloserToUsage(target);
-            }
-
-            
+            {
+                // Non Interactive Refractoring
+                RefactorImpl(model);
+            }            
         }
 
         protected override MoveCloserToUsageModel InitializeModel(Declaration target)
         {
-            var model = Model(target);
+            var model = new MoveCloserToUsageModel(target);
             return model;
         }
 
@@ -68,7 +71,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         {
             _refactoringAction.Refactor(model);
         }
-
+        
         private void CheckThatTargetIsValid(Declaration target)
         {
             if (target == null)
@@ -156,8 +159,13 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 && Declaration.GetModuleParent(target).DeclarationType != DeclarationType.ProceduralModule;
         }
 
-        private void CheckThatThereIsNoOtherSameNameDeclarationInScopeInReferencingMethod(Declaration target)
+        private void CheckThatThereIsNoOtherSameNameDeclarationInScopeInReferencingMethod(Declaration target) => 
+            CheckThatThereIsNoOtherSameNameDeclarationInScopeInReferencingMethod(target, out _);
+        
+        private void CheckThatThereIsNoOtherSameNameDeclarationInScopeInReferencingMethod(Declaration target, out bool moduleVariableRefersToDeclarationInsideMethod)
         {
+            moduleVariableRefersToDeclarationInsideMethod = false;
+
             var firstReference = target.References.FirstOrDefault();
             if (firstReference == null)
             {
@@ -190,6 +198,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 //The variable is a module variable in the same module.
                 //Since there is no local declaration with the same name in the procedure,
                 //the identifier already refers to the declaration inside the method. 
+                moduleVariableRefersToDeclarationInsideMethod = true;
                 return;
             }
 
@@ -203,41 +212,6 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
         }
 
-        private bool IsDeclarationMovingFromModulLevelToMethodLevel(Declaration target)
-        {
-            var firstReference = target.References.FirstOrDefault();
-            if (firstReference == null)
-            {
-                return false;
-            }
 
-            if (firstReference.ParentScoping.Equals(target.ParentScopeDeclaration))
-            {
-                //The variable is already in the same scope and consequently the identifier already refers to the declaration there.
-                return false;
-            }
-
-            if (target.QualifiedModuleName.Equals(firstReference.QualifiedModuleName))
-            {
-                //The variable is a module variable in the same module.
-                //Since there is no local declaration with the same name in the procedure,
-                //the identifier already refers to the declaration inside the method. 
-                return true;
-            }
-
-            return false;
-        }
-
-
-        private MoveCloserToUsageModel Model(Declaration target)
-        {
-            return new MoveCloserToUsageModel(target);
-        }
-
-        private void MoveCloserToUsage(Declaration target)
-        {
-            var model = Model(target);
-            _refactoringAction.Refactor(model);
-        }
     }
 }
