@@ -1,4 +1,4 @@
-![banner](https://user-images.githubusercontent.com/5751684/113501222-8edfe880-94f1-11eb-99a9-64583e413ef3.png)
+<!-- ![banner](https://user-images.githubusercontent.com/5751684/113501222-8edfe880-94f1-11eb-99a9-64583e413ef3.png) -->
 
 [**Installing**](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing) • [Contributing](https://github.com/rubberduck-vba/Rubberduck/blob/next/CONTRIBUTING.md) • [Attributions](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/Attributions.md) • [Blog](https://rubberduckvba.blog) • [Wiki](https://github.com/rubberduck-vba/Rubberduck/wiki) • [rubberduckvba.com](https://rubberduckvba.com)
 
