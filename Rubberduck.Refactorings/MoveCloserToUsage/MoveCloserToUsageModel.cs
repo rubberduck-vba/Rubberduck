@@ -12,7 +12,6 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             set
             {
                 _target = value;
-                DeclarationStatement = GetDefaultDeclarationStatement();
             }
         }
 
@@ -24,31 +23,5 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             Target = target;
         }
 
-        private string GetDefaultDeclarationStatement()
-        {
-            /*
-             * ToDo:  Use a less dirty Method to determine the original Variable Declaration ("Static" or "Dim" )
-            */
-            var completeDeclaration = Target.Context.Parent.Parent.GetText();
-
-            if (Target.ParentDeclaration is ModuleDeclaration)
-            {
-                return Tokens.Static;                
-            }
-            else if (completeDeclaration.StartsWith(Tokens.Dim) )
-            {
-                return Tokens.Dim;
-            }
-            else if (completeDeclaration.StartsWith(Tokens.Static))
-            {
-                return Tokens.Static;
-            }
-            else
-            {
-                return Tokens.Dim;
-            }
-                
-
-        }
     }
 }

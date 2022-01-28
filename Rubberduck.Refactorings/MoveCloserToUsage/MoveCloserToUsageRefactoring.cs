@@ -6,6 +6,7 @@ using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.MoveCloserToUsage;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
@@ -61,6 +62,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         protected override MoveCloserToUsageModel InitializeModel(Declaration target)
         {
             var model = new MoveCloserToUsageModel(target);
+            model.DeclarationStatement = GetDefaultDeclarationStatement(target);
             return model;
         }
 
@@ -258,6 +260,29 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             return sameNameVariablesInProcedure;
         }
 
+        static private string GetDefaultDeclarationStatement(Declaration target)
+        {
+            /*
+             * ToDo:  Use a less dirty Method to determine the original Variable Declaration ("Static" or "Dim" )
+            */
+            var completeDeclaration = target.Context.Parent.Parent.GetText();
+            
+            if (target.ParentDeclaration is ModuleDeclaration)
+            {
+                return Tokens.Static;
+            }
+            else if (completeDeclaration.StartsWith(Tokens.Dim))
+            {
+                return Tokens.Dim;
+            }
+            else if (completeDeclaration.StartsWith(Tokens.Static))
+            {
+                return Tokens.Static;
+            }
+
+            return Tokens.Dim;
+            
+        }
 
     }
 }
