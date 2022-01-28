@@ -37,9 +37,9 @@ namespace Rubberduck.UI.Refactorings.MoveCloserToUsage
 
         void SetNewDeclarationStatementExecute(object param)
         {
-            if (param is string newdeclarationStatement)
+            if (param is string newDeclarationStatement)
             {
-                Model.DeclarationStatement = newdeclarationStatement;
+                Model.DeclarationStatement = newDeclarationStatement;
             }
 
         }
