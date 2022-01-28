@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Collections.Generic;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
@@ -44,13 +45,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         {
             CheckThatTargetIsValid(target);
 
-            // Taking Flag of existing Procedure..
-            // Split concerns to avoid running same code twice
-            CheckThatThereIsNoOtherSameNameDeclarationInScopeInReferencingMethod(target, out bool moduleVariableRefersToDeclarationInsideMethod);
-
             var model = InitializeModel(target);
-
-            if (moduleVariableRefersToDeclarationInsideMethod)
+            if (DeclarationIsModuleVariableWhichRefersToDeclarationInMethod(target))
             {
                 // Ask User for new Declaration Statement
                 Refactor(model);
@@ -160,13 +156,9 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 && Declaration.GetModuleParent(target).DeclarationType != DeclarationType.ProceduralModule;
         }
 
-        private void CheckThatThereIsNoOtherSameNameDeclarationInScopeInReferencingMethod(Declaration target) => 
-            CheckThatThereIsNoOtherSameNameDeclarationInScopeInReferencingMethod(target, out _);
-        
-        private void CheckThatThereIsNoOtherSameNameDeclarationInScopeInReferencingMethod(Declaration target, out bool moduleVariableRefersToDeclarationInsideMethod)
-        {
-            moduleVariableRefersToDeclarationInsideMethod = false;
 
+        private void CheckThatThereIsNoOtherSameNameDeclarationInScopeInReferencingMethod(Declaration target)
+        {
             var firstReference = target.References.FirstOrDefault();
             if (firstReference == null)
             {
@@ -179,15 +171,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 return;
             }
 
-            var sameNameDeclarationsInModule = _declarationFinderProvider.DeclarationFinder
-                .MatchName(target.IdentifierName)
-                .Where(decl => decl.QualifiedModuleName.Equals(firstReference.QualifiedModuleName))
-                .ToList();
-
-            var sameNameVariablesInProcedure = sameNameDeclarationsInModule
-                .Where(decl => decl.DeclarationType == DeclarationType.Variable
-                               && decl.ParentScopeDeclaration.Equals(firstReference.ParentScoping));
-            var conflictingSameNameVariablesInProcedure = sameNameVariablesInProcedure.FirstOrDefault();
+            var conflictingSameNameVariablesInProcedure = GetSameNameVariablesInProcedure(target).FirstOrDefault();
             if (conflictingSameNameVariablesInProcedure != null)
             {
                 throw new TargetDeclarationConflictsWithPreexistingDeclaration(target,
@@ -199,18 +183,79 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 //The variable is a module variable in the same module.
                 //Since there is no local declaration with the same name in the procedure,
                 //the identifier already refers to the declaration inside the method. 
-                moduleVariableRefersToDeclarationInsideMethod = true;
                 return;
             }
 
             //We know that the target is the only public variable of that name in a different standard module.
-            var sameNameDeclarationWithModuleScope = sameNameDeclarationsInModule
+            var sameNameDeclarationWithModuleScope = GetSameNameDeclarationsInModule(target)
+                .ToList()
                 .Where(decl => decl.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module));
             var conflictingSameNameDeclarationWithModuleScope = sameNameDeclarationWithModuleScope.FirstOrDefault();
             if (conflictingSameNameDeclarationWithModuleScope != null)
             {
                 throw new TargetDeclarationConflictsWithPreexistingDeclaration(target, conflictingSameNameDeclarationWithModuleScope);
             }
+        }
+
+        private bool DeclarationIsModuleVariableWhichRefersToDeclarationInMethod(Declaration target)
+        {
+            var firstReference = target.References.FirstOrDefault();
+            if (firstReference == null)
+            {
+                return false;
+            }
+
+            if (firstReference.ParentScoping.Equals(target.ParentScopeDeclaration))
+            {
+                //The variable is already in the same scope and consequently the identifier already refers to the declaration there.
+                return false;
+            }
+
+            if (GetSameNameVariablesInProcedure(target).FirstOrDefault() != null)
+            {
+                return false;
+            }
+
+            if (target.QualifiedModuleName.Equals(firstReference.QualifiedModuleName))
+            {
+                //The variable is a module variable in the same module.
+                //Since there is no local declaration with the same name in the procedure,
+                //the identifier already refers to the declaration inside the method. 
+                return true;
+            }
+
+            return false;
+        }
+
+        private IEnumerable<Declaration> GetSameNameDeclarationsInModule(Declaration target)
+        {
+            var firstReference = target.References.FirstOrDefault();
+            if (firstReference == null)
+            {
+                return null;
+            }
+
+            var sameNameDeclarationsInModule = _declarationFinderProvider.DeclarationFinder
+                .MatchName(target.IdentifierName)
+                .Where(decl => decl.QualifiedModuleName.Equals(firstReference.QualifiedModuleName));
+
+            return sameNameDeclarationsInModule;
+        }
+
+        private IEnumerable<Declaration> GetSameNameVariablesInProcedure(Declaration target)
+        {
+            var firstReference = target.References.FirstOrDefault();
+            if (firstReference == null)
+            {
+                return null;
+            }
+
+            var sameNameVariablesInProcedure = GetSameNameDeclarationsInModule(target)
+                .ToList()
+                .Where(decl => decl.DeclarationType == DeclarationType.Variable
+                               && decl.ParentScopeDeclaration.Equals(firstReference.ParentScoping));
+
+            return sameNameVariablesInProcedure;
         }
 
 
