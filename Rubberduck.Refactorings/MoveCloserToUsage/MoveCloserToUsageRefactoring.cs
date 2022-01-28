@@ -7,6 +7,7 @@ using Rubberduck.Refactorings.Exceptions.MoveCloserToUsage;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
@@ -262,26 +263,38 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         static private string GetDefaultDeclarationStatement(Declaration target)
         {
-            /*
-             * ToDo:  Use a less dirty Method to determine the original Variable Declaration ("Static" or "Dim" )
-            */
-            var completeDeclaration = target.Context.Parent.Parent.GetText();
-            
-            if (target.ParentDeclaration is ModuleDeclaration)
-            {
-                return Tokens.Static;
-            }
-            else if (completeDeclaration.StartsWith(Tokens.Dim))
-            {
-                return Tokens.Dim;
-            }
-            else if (completeDeclaration.StartsWith(Tokens.Static))
+            if (target.ParentDeclaration is ModuleDeclaration || IsStatic(target))
             {
                 return Tokens.Static;
             }
 
             return Tokens.Dim;
-            
+        }
+
+        //TODO: Add IsStatic member to VariableDeclaration - this is a copy from Rubberduck.Refractorings.AssignmentNotUsedInspection
+        private static bool IsStatic(Declaration declaration)
+        {
+            var ctxt = declaration.Context.GetAncestor<VBAParser.VariableStmtContext>();
+            if (ctxt?.STATIC() != null)
+            {
+                return true;
+            }
+
+            switch (declaration.ParentDeclaration.Context)
+            {
+                case VBAParser.FunctionStmtContext func:
+                    return func.STATIC() != null;
+                case VBAParser.SubStmtContext sub:
+                    return sub.STATIC() != null;
+                case VBAParser.PropertyLetStmtContext let:
+                    return let.STATIC() != null;
+                case VBAParser.PropertySetStmtContext set:
+                    return set.STATIC() != null;
+                case VBAParser.PropertyGetStmtContext get:
+                    return get.STATIC() != null;
+                default:
+                    return false;
+            }
         }
 
     }
