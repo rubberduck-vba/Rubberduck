@@ -158,3 +158,10 @@ deploy:
     artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
     on: 
       branch: next
+
+notifications:
+  - provider: GitHubPullRequest
+    auth_token:
+      secure: CfT1+dhcyG0rXqVRUsz4C21omXk+35gLP76TpFw5NEBQdbx39tdwSGAxqGY/HZfN
+    template: "{{#passed}}:white_check_mark:{{/passed}}{{#failed}}:x:{{/failed}} [Build {{&projectName}} {{buildVersion}} {{status}}]({{buildUrl}}) (commit {{commitUrl}} by @{{&commitAuthorUsername}})"
+    
