@@ -19,6 +19,7 @@ skip_commits:
   - '**/*.md'
   - license
   - License.rtf
+
 branches:
   only:
   - main
