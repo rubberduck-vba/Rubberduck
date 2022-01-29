@@ -55,7 +55,6 @@ before_build:
 build_script:
   - ps: msbuild "C:\projects\rubberduck\Rubberduck.sln" -property:"Version=$env:APPVEYOR_BUILD_VERSION" -verbosity:minimal -logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
  
-
 # TestScript depends on the build matrix to only contain Release cpu
 # Otherwise we might run tests against artifacts that do not exist
 test_script:
