@@ -327,7 +327,7 @@ Public Const Foo As String = ""Huh""
 
         [Test]
         [Category("Inspections")]
-        public void Variable_DescriptionAnnotationWithAttributeReturnsResult_Constant()
+        public void Variable_DescriptionAnnotationWithAttributeReturnsNoResult_Constant()
         {
             const string inputCode =
                 @"'@VariableDescription ""Desc""
@@ -336,7 +336,7 @@ Attribute Foo.VB_VarDescription = ""NotDesc""
 ";
 
             var inspectionResults = InspectionResults(inputCode);
-            Assert.AreEqual(1, inspectionResults.Count());
+            Assert.IsFalse(inspectionResults.Any());
         }
 
         [Test]
