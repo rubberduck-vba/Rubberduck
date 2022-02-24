@@ -141,7 +141,7 @@ deploy:
     release: $(release_name)
     draft: true
     prerelease: false
-    description: "Built with :heart: by AppVeyor CI on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
+    description: "Built with :heart: by AppVeyor CI on [$(appveyor_repo_branch)] - $(appveyor_url)/project/$(appveyor_account_name)/$(appveyor_project_slug)/build/$(appveyor_build_version)"
     auth_token:
       secure: CfT1+dhcyG0rXqVRUsz4C21omXk+35gLP76TpFw5NEBQdbx39tdwSGAxqGY/HZfN
     artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
@@ -152,7 +152,7 @@ deploy:
     release: $(release_name)
     draft: false
     prerelease: true
-    description: "AppVeyor build on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
+    description: "AppVeyor build on [$(appveyor_repo_branch)] - $(appveyor_url)/project/$(appveyor_account_name)/$(appveyor_project_slug)/build/$(appveyor_build_version)"
     auth_token:
       secure: CfT1+dhcyG0rXqVRUsz4C21omXk+35gLP76TpFw5NEBQdbx39tdwSGAxqGY/HZfN
     artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
