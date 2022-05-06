@@ -47,7 +47,12 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             rewriter.Remove(result.Context);
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveOptionBaseStatementQuickFix;
+        public override string Description(IInspectionResult result)
+        {
+            return string.Format(
+                Resources.Inspections.QuickFixes.RemoveRedundantOptionStatementQuickFix,
+                result.Context.GetText());
+        }
 
         public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => false;

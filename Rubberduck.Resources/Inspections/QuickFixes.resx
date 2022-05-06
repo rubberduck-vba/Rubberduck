@@ -312,4 +312,8 @@
   <data name="ReplaceQualifierWithMeQuickFix" xml:space="preserve">
     <value>Replace qualifier with 'Me'</value>
   </data>
+  <data name="RemoveRedundantOptionStatementQuickFix" xml:space="preserve">
+    <value>Remove '{0}' statement	</value>
+    <comment>'{0}' the whole Option-Statement-Context</comment>
+  </data>
 </root>

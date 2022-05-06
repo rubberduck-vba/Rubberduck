@@ -309,4 +309,7 @@
   <data name="AnnotateEntryPointQuickFix" xml:space="preserve">
     <value>@EntryPoint-Annotation hinzufügen</value>
   </data>
+  <data name="RemoveRedundantOptionStatementQuickFix" xml:space="preserve">
+    <value>'{0}'-Anweisung entfernen</value>
+  </data>
 </root>
