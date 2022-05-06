@@ -35,9 +35,9 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// ]]>
     /// </after>
     /// </example>
-    internal sealed class RemoveOptionBaseStatementQuickFix : QuickFixBase
+    internal sealed class RemoveRedundantOptionStatementQuickFix : QuickFixBase
     {
-        public RemoveOptionBaseStatementQuickFix()
+        public RemoveRedundantOptionStatementQuickFix()
             : base(typeof(RedundantOptionInspection))
         {}
 
