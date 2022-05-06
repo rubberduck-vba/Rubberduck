@@ -457,7 +457,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Remove &apos;{0}&apos; statement	 ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Remove &apos;{0}&apos; statement ähnelt.
         /// </summary>
         public static string RemoveRedundantOptionStatementQuickFix {
             get {
