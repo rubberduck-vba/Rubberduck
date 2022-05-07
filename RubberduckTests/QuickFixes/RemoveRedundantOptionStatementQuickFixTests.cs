@@ -7,7 +7,7 @@ using Rubberduck.Parsing.VBA;
 namespace RubberduckTests.QuickFixes
 {
     [TestFixture]
-    public class RemoveOptionBaseStatementQuickFixTests : QuickFixTestBase
+    public class RemoveRedundantOptionStatementQuickFixTests : QuickFixTestBase
     {
         [Test]
         [Category("QuickFixes")]
@@ -63,7 +63,7 @@ Base _
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            return new RemoveOptionBaseStatementQuickFix();
+            return new RemoveRedundantOptionStatementQuickFix();
         }
     }
 }

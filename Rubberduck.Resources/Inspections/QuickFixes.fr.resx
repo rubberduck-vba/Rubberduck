@@ -309,4 +309,7 @@
   <data name="QualifyWithMeQuickFix" xml:space="preserve">
     <value>Qualifier la référence avec 'Me'.</value>
   </data>
+  <data name="RemoveRedundantOptionStatementQuickFix" xml:space="preserve">
+    <value>Supprimer l'instruction '{0}'</value>
+  </data>
 </root>
