@@ -538,4 +538,20 @@ In memoriam, 1972-2018</value>
     <value>'{0}' non è (ancora?) un'annotazione di Rubberduck conosciuta</value>
     <comment>{0} nome annotazione non riconosciuta</comment>
   </data>
+  <data name="IIfSideEffectInspection" xml:space="preserve">
+    <value>'{0}' invocato dalla Funzione 'IIf'</value>
+    <comment>{0} nome del metodo</comment>
+  </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>Accesso al controllo '{0}.{1}' dall'esterno della maschera parent.</value>
+    <comment>{0} nome della UserForm parent; {1} name del controllo</comment>
+  </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>Tentativo di assegnazione alla Proprietà di Sola Lettura '{0}'</value>
+    <comment>{0} Nome della proprietà</comment>
+  </data>
+  <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
+    <value>L'identificatore '{0}' in '{1}' si riferisce in modo sospetto all'istanza predefinita di quel tipo di classe.</value>
+    <comment>{0} nome dell'identificatore; {1} espressione/contesto</comment>
+  </data>
 </root>

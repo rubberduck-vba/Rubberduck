@@ -453,4 +453,16 @@
   <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
     <value>Annotazione non riconosciuta</value>
   </data>
+  <data name="IIfSideEffectInspection" xml:space="preserve">
+    <value>Potenziali effetti collaterali della funzione 'IF'</value>
+  </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>Assegnazione proprietà di sola lettura</value>
+  </data>
+  <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
+    <value>Accesso sospetto a un'istanza predichiarata</value>
+  </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>Accesso a campo controllo pubblico</value>
+  </data>
 </root>
