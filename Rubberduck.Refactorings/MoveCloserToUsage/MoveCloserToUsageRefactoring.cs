@@ -18,7 +18,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
         public MoveCloserToUsageRefactoring(
-            MoveCloserToUsageRefactoringAction refactoringAction,            
++           MoveCloserToUsageRefactoringAction refactoringAction,
             IDeclarationFinderProvider declarationFinderProvider,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider,
@@ -55,7 +55,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
             else
             {
-                // Direct Refractoring
+                // Direct Refactoring
                 RefactorImpl(model);
             }            
         }
@@ -191,7 +191,6 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
             //We know that the target is the only public variable of that name in a different standard module.
             var sameNameDeclarationWithModuleScope = GetSameNameDeclarationsInModule(target)
-                .ToList()
                 .Where(decl => decl.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module));
             var conflictingSameNameDeclarationWithModuleScope = sameNameDeclarationWithModuleScope.FirstOrDefault();
             if (conflictingSameNameDeclarationWithModuleScope != null)
@@ -254,7 +253,6 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
 
             var sameNameVariablesInProcedure = GetSameNameDeclarationsInModule(target)
-                .ToList()
                 .Where(decl => decl.DeclarationType == DeclarationType.Variable
                                && decl.ParentScopeDeclaration.Equals(firstReference.ParentScoping));
 

@@ -17,7 +17,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Refactoring.DeleteDeclarations;
 using RubberduckTests.Settings;
-using System;
 
 namespace RubberduckTests.Commands.RefactorCommands
 {
