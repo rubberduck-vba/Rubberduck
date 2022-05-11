@@ -18,7 +18,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
         public MoveCloserToUsageRefactoring(
-+           MoveCloserToUsageRefactoringAction refactoringAction,
+            MoveCloserToUsageRefactoringAction refactoringAction,
             IDeclarationFinderProvider declarationFinderProvider,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider,

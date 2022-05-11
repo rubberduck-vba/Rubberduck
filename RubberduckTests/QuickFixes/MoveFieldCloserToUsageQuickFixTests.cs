@@ -19,6 +19,7 @@ using RubberduckTests.Refactoring.DeleteDeclarations;
 using Castle.Windsor;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.UI;
+using System;
 
 namespace RubberduckTests.QuickFixes
 {
