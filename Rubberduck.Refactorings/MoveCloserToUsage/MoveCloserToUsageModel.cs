@@ -15,17 +15,12 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
         }
 
-        public string DeclarationStatement { get; set; } = string.Empty;
+        public string DeclarationStatement { get; set; }
 
-        public MoveCloserToUsageModel(VariableDeclaration target)
+        public MoveCloserToUsageModel(VariableDeclaration target, string declarationStatement = null )
         {
             _target = target;
-        }
-
-        public MoveCloserToUsageModel(VariableDeclaration target, string declarationStatement )
-        {
-            _target = target;
-            DeclarationStatement = declarationStatement;
+            DeclarationStatement = declarationStatement ?? string.Empty;
         }
 
     }
