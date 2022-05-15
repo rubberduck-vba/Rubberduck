@@ -5,8 +5,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
     public class MoveCloserToUsageModel : IRefactoringModel
     {
-        private Declaration _target;
-        public Declaration Target
+        private VariableDeclaration _target;
+        public VariableDeclaration Target
         {
             get => _target;
             set
@@ -15,12 +15,17 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
         }
 
-
         public string DeclarationStatement { get; set; } = string.Empty;
 
-        public MoveCloserToUsageModel(Declaration target)
+        public MoveCloserToUsageModel(VariableDeclaration target)
         {
-            Target = target;
+            _target = target;
+        }
+
+        public MoveCloserToUsageModel(VariableDeclaration target, string declarationStatement )
+        {
+            _target = target;
+            DeclarationStatement = declarationStatement;
         }
 
     }

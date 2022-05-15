@@ -8,6 +8,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing;
+using System;
 
 namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
@@ -62,8 +63,12 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         protected override MoveCloserToUsageModel InitializeModel(Declaration target)
         {
-            var model = new MoveCloserToUsageModel(target);
-            model.DeclarationStatement = GetDefaultDeclarationStatement(target);
+            if (!(target is VariableDeclaration variableDeclaration))
+            {
+                throw new ArgumentException("Invalid type - VariableDeclaration required");
+            }
+
+            var model = new MoveCloserToUsageModel(variableDeclaration, GetDefaultDeclarationStatement(target));
             return model;
         }
 
@@ -234,7 +239,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             var firstReference = target.References.FirstOrDefault();
             if (firstReference == null)
             {
-                return null;
+                return Enumerable.Empty<Declaration>();
             }
 
             var sameNameDeclarationsInModule = _declarationFinderProvider.DeclarationFinder
@@ -249,7 +254,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             var firstReference = target.References.FirstOrDefault();
             if (firstReference == null)
             {
-                return null;
+                return Enumerable.Empty<Declaration>();
             }
 
             var sameNameVariablesInProcedure = GetSameNameDeclarationsInModule(target)

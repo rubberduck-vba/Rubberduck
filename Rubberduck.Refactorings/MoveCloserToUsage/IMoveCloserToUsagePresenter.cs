@@ -9,7 +9,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
     public interface IMoveCloserToUsagePresenter : IRefactoringPresenter<MoveCloserToUsageModel>
     {
-        MoveCloserToUsageModel Show(Declaration target);
+        MoveCloserToUsageModel Show(VariableDeclaration target);
         MoveCloserToUsageModel Model { get; }
     }
 }

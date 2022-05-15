@@ -19,10 +19,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         protected override void Refactor(MoveCloserToUsageModel model, IRewriteSession rewriteSession)
         {
-            if (!(model.Target is VariableDeclaration variable))
-            {
-                throw new ArgumentException("Invalid type - VariableDeclaration required");
-            }
+            var variable = model.Target;
             if (!(model.DeclarationStatement == Tokens.Dim || model.DeclarationStatement == Tokens.Static))
             {
                 throw new ArgumentException("Invalid value - DeclarationStatement required");

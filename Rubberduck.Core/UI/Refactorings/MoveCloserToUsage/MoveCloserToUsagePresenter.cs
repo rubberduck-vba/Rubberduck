@@ -19,7 +19,7 @@ namespace Rubberduck.UI.Refactorings.MoveCloserToUsage
         {
         }
 
-        public MoveCloserToUsageModel Show(Declaration target)
+        public MoveCloserToUsageModel Show(VariableDeclaration target)
         {
             if (null == target)
             {
