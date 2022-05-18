@@ -4,16 +4,26 @@ using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using NUnit.Framework;
+using System;
+using Rubberduck.Parsing.Symbols;
+using System.Collections.Generic;
+using RubberduckTests.Mocks;
+using System.Threading;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Parsing.Grammar;
 
 namespace RubberduckTests.Inspections
 {
-    class PublicEnumerationDeclaredWithinWorksheetInspectionTests : InspectionTestsBase
+    class PublicEnumerationDeclaredWithinWorksheetInspectionTests
     {
+        private static string[] _worksheetSuperTypeNames = new string[] { "Worksheet", "_Worksheet" };
+
         [Test]
         [Category("Inspections")]
+        [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
         public void EnumerationDeclaredWithinWorksheet_InspectionName()
         {
-            var inspection = new PublicEnumerationDeclaredWithinWorksheetInspection(null, null);
+            var inspection = new PublicEnumerationDeclaredWithinWorksheetInspection(null);
 
             Assert.AreEqual(nameof(PublicEnumerationDeclaredWithinWorksheetInspection), inspection.Name);
         }
@@ -21,47 +31,23 @@ namespace RubberduckTests.Inspections
         [Test]
         [Category("Inspections")]
         [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
-        [TestCase(ComponentType.Document, false, 1)]
-        [TestCase(ComponentType.Document, true, 1)]
-        [TestCase(ComponentType.StandardModule, false, 0)]
-        [TestCase(ComponentType.StandardModule, true, 0)]
-        [TestCase(ComponentType.ClassModule, false, 0)]
-        [TestCase(ComponentType.ClassModule, true, 0)]
-        [TestCase(ComponentType.UserForm, false, 0)]
-        [TestCase(ComponentType.UserForm, true, 0)]
-        public void Project_with_public_enumeration_flags_enum_declared_within_worksheets(ComponentType componentType, bool isExplicitlyPublic, int expected)
+        [TestCase(ComponentType.StandardModule)]
+        [TestCase(ComponentType.ClassModule)]
+        [TestCase(ComponentType.UserForm)]
+        public void NonDocumentComponentsAreNotFlagged(ComponentType componentType)
         {
-            var accessModifier = isExplicitlyPublic ? "Public " : string.Empty;
-            var code = $@"Option Explicit
-{accessModifier}Enum DeclaredEnum
+
+            var code = 
+@"Option Explicit
+
+Public Enum DeclaredEnum
     wsMember1 = 0
     wsMember1 = 1
 End Enum
 ";
+            var module = new DocumentModuleFake(code, new string[] { });
 
-            var inspectionResults = InspectionResultsForModules(
-                (componentType.ToString(), code, componentType));
-
-            int actual = inspectionResults.Count();
-
-            Assert.AreEqual(expected, actual);
-        }
-
-        [Test]
-        [Category("Inspections")]
-        [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
-        public void Project_with_only_private_worksheet_enumeration_does_not_return_result()
-        {
-            const string worksheetCode = @"Option Explicit
-Private Enum WorksheetEnum
-    wsMember1 = 0
-    wsMember1 = 1
-End Enum
-";
-
-            var inspectionResults = InspectionResultsForModules(
-                ("FirstSheet", worksheetCode, ComponentType.Document));
-
+            var inspectionResults = InspectionResults(module);
             int actual = inspectionResults.Count();
 
             Assert.AreEqual(0, actual);
@@ -70,64 +56,114 @@ End Enum
         [Test]
         [Category("Inspections")]
         [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
-        public void Project_with_public_and_private_enumeration_declared_within_worksheets_returns_only_public_declarations()
+        [TestCase("Public ", 1)]
+        [TestCase("Private ", 0)]
+        [TestCase("", 1)]
+        public void FlagsPublicEnumerationsOnly(string accessibility, int expected)
         {
-            const string explicitPublicDeclaration = @"Option Explicit
-Public Enum WorksheetEnum
-    wsMember1 = 0
-    wsMember2 = 1
-End Enum
-";
-            const string implicitPublicDeclaration = @"Option Explicit
-Enum WorksheetEnum
-    wsMember1 = 0
-    wsMember2 = 1
-End Enum
-";
-            const string privateDeclaration = @"Option Explicit
-Private Enum WorksheetEnum
-    wsMember1 = 0
-    wsMember2 = 1
-End Enum
-";
 
-            var inspectionResults = InspectionResultsForModules(
-                ("FirstPublicSheet", explicitPublicDeclaration, ComponentType.Document),
-                ("FirstPrivateSheet", privateDeclaration, ComponentType.Document),
-                ("SecondPrivateSheet", privateDeclaration, ComponentType.Document),
-                ("SecondPublicSheet", explicitPublicDeclaration, ComponentType.Document),
-                ("ThirdPrivateSheet", privateDeclaration, ComponentType.Document),
-                ("ThirdPublicSheet", implicitPublicDeclaration, ComponentType.Document),
-                ("FourthPublicSheet", implicitPublicDeclaration, ComponentType.Document));
+            var code = 
+$@"Option Explicit
 
+{accessibility}Enum DeclaredEnum
+    wsMember1 = 0
+    wsMember1 = 1
+End Enum
+";
+            var docModuleStub = new DocumentModuleFake(code, _worksheetSuperTypeNames);
+            var inspectionResults = InspectionResults(docModuleStub);
             int actual = inspectionResults.Count();
 
-            Assert.AreEqual(4, actual);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
         [Category("Inspections")]
         [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
-        public void Private_type_declared_within_worksheet_has_no_inspection_result()
+        [TestCase(true, 1)]
+        [TestCase(false, 0)]
+        public void FlagsWorksheetDocumentTypesOnly(bool isWorksheetDoc, int expected)
         {
-            const string code = @"Option Explicit
+            var code = 
+$@"Option Explicit
 
-Private Type THelper
-    Name As String
-    Address As String
-End Type
-
-Private this as THelper
+Public Enum DeclaredEnum
+    wsMember1 = 0
+    wsMember1 = 1
+End Enum
 ";
 
-            var inspectionResults = InspectionResultsForModules(("WorksheetForTest", code, ComponentType.DocObject));
+            var docModuleStub = isWorksheetDoc
+                ? new DocumentModuleFake(code, _worksheetSuperTypeNames)
+                : new DocumentModuleFake(code, new string[] { "NotAWorksheetDocument" });
 
-            Assert.IsFalse(inspectionResults.Any());
+            var inspectionResults = InspectionResults(docModuleStub);
+            int actual = inspectionResults.Count();
+
+            Assert.AreEqual(expected, actual);
         }
 
-        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        [TestCase("_Worksheet")]
+        [TestCase("Worksheet")]
+        [Category("Inspections")]
+        [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
+        public void WorksheetDocument_FlagsOnEachWorksheetSuperTypeName(string superTypeName)
         {
-            return new PublicEnumerationDeclaredWithinWorksheetInspection(state, state.ProjectsProvider);
+            var code = 
+$@"Option Explicit
+
+Public Enum DeclaredEnum
+    wsMember1 = 0
+    wsMember1 = 1
+End Enum
+";
+
+            var docModuleStub = new DocumentModuleFake(code, new string[] { superTypeName });
+            var inspectionResults = InspectionResults(docModuleStub);
+            int actual = inspectionResults.Count();
+
+            Assert.AreEqual(1, actual);
+        }
+
+        private IEnumerable<IInspectionResult> InspectionResults(DocumentModuleFake docModule)
+        {
+            var vbe = MockVbeBuilder.BuildFromModules(docModule.AsTestModuleTuple).Object;
+            return GetInspectionResults(vbe, docModule);
+        }
+
+        private IEnumerable<IInspectionResult> GetInspectionResults(IVBE vbe, DocumentModuleFake testDocument)
+        {
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var inspection = new PublicEnumerationDeclaredWithinWorksheetInspection(state);
+
+                if (testDocument.SuperTypeNames.Any())
+                {
+                    inspection.RetrieveSuperTypeNames = new Func<ClassModuleDeclaration, IEnumerable<string>>((d) => testDocument.SuperTypeNames);
+                }
+
+                return inspection.GetInspectionResults(CancellationToken.None);
+            }
+        }
+
+        /// <summary>
+        /// Wraps a Document module to support faking the ClassModuleDeclaration's SuperTypeNames property
+        /// </summary>
+        private class DocumentModuleFake
+        {
+            private string[] _superTypeNames;
+
+            private string _code;
+
+            public DocumentModuleFake(string code, string[] superTypeNames)
+            {
+                _code = code;
+                _superTypeNames = superTypeNames;
+            }
+
+            public (string, string, ComponentType) AsTestModuleTuple => ("TestDocumentModule", _code, ComponentType.Document);
+
+            public IEnumerable<string> SuperTypeNames => _superTypeNames;
         }
     }
 }
