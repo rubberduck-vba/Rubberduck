@@ -3,8 +3,10 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
-using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
@@ -34,14 +36,24 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// </example>
     internal sealed class PublicEnumerationDeclaredWithinWorksheetInspection : DeclarationInspectionBase
     {
-        public PublicEnumerationDeclaredWithinWorksheetInspection(IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider)
-            : base(declarationFinderProvider, new DeclarationType[] { DeclarationType.Enumeration })
+        private readonly string[] _worksheetSuperTypeNames = new string[] { "Worksheet", "_Worksheet" };
+
+        public PublicEnumerationDeclaredWithinWorksheetInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Enumeration)
         {}
 
-        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
+        protected override bool IsResultDeclaration(Declaration enumeration, DeclarationFinder finder)
         {
-            return declaration.Accessibility != Accessibility.Private
-                && declaration.QualifiedModuleName.ComponentType == ComponentType.Document;
+            if (enumeration.Accessibility != Accessibility.Private
+               && enumeration.QualifiedModuleName.ComponentType == ComponentType.Document)
+            {
+                if (enumeration.ParentDeclaration is ClassModuleDeclaration classModuleDeclaration)
+                {
+                    return RetrieveSuperTypeNames(classModuleDeclaration).Intersect(_worksheetSuperTypeNames).Any();
+                }
+            }
+
+            return false;
         }
 
         protected override string ResultDescription(Declaration declaration)
@@ -49,6 +61,20 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return string.Format(InspectionResults.PublicEnumerationDeclaredWithinWorksheetInspection,
                 declaration.IdentifierName,
                 declaration.ParentScopeDeclaration.IdentifierName);
+        }
+
+        /// <summary>
+        /// Supports property injection for testing. 
+        /// </summary>
+        /// <remarks>
+        /// MockParser does not populate SuperTypes/SuperTypeNames.  RetrieveSuperTypeNames Func allows injection
+        /// of ClassModuleDecularation.SuperTypeNames property results.
+        /// </remarks>
+        public Func<ClassModuleDeclaration, IEnumerable<string>> RetrieveSuperTypeNames { set; private get; } = GetSuperTypeNames;
+
+        private static IEnumerable<string> GetSuperTypeNames(ClassModuleDeclaration classModule)
+        {
+            return classModule.SupertypeNames;
         }
     }
 }
