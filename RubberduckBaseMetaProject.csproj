@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <Company>Rubberduck-VBA</Company>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>net462</TargetFramework>
     <LangVersion>7.2</LangVersion>
     <SolutionDir>$(MSBuildProjectDirectory)</SolutionDir>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
