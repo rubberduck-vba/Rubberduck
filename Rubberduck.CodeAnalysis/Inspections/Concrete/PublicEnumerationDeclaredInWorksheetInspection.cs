@@ -14,8 +14,9 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Identifies public enumerations declared within worksheet modules.
     /// </summary>
     /// <why>
-    /// Copying a worksheet which contains a public Enum declaration will result in an 'Ambiguous name detected' compiler error.
-    /// Declaring Enumerations in Standard or Class modules avoids unintentional duplication of an enumeration declaration.
+    /// Copying a worksheet which contains a public Enum declaration will also create a copy of the Enum declaration.  
+    /// The copied Enum declaration will result in an 'Ambiguous name detected' compiler error.  
+    /// Declaring Enumerations in Standard or Class modules avoids unintentional duplication of an Enum declaration.
     /// </why>
     /// <example hasResult="true">
     /// <module name="WorksheetModule" type="Document Module">
@@ -37,11 +38,11 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// ]]>
     /// </module>
     /// </example>
-    internal sealed class PublicEnumerationDeclaredWithinWorksheetInspection : DeclarationInspectionBase
+    internal sealed class PublicEnumerationDeclaredInWorksheetInspection : DeclarationInspectionBase
     {
         private readonly string[] _worksheetSuperTypeNames = new string[] { "Worksheet", "_Worksheet" };
 
-        public PublicEnumerationDeclaredWithinWorksheetInspection(IDeclarationFinderProvider declarationFinderProvider)
+        public PublicEnumerationDeclaredInWorksheetInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Enumeration)
         {}
 
@@ -61,9 +62,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override string ResultDescription(Declaration declaration)
         {
-            return string.Format(InspectionResults.PublicEnumerationDeclaredWithinWorksheetInspection,
-                declaration.IdentifierName,
-                declaration.ParentScopeDeclaration.IdentifierName);
+            return string.Format(InspectionResults.PublicEnumerationDeclaredInWorksheetInspection,
+                declaration.IdentifierName);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         /// </summary>
         /// <remarks>
         /// MockParser does not populate SuperTypes/SuperTypeNames.  RetrieveSuperTypeNames Func allows injection
-        /// of ClassModuleDecularation.SuperTypeNames property results.
+        /// of ClassModuleDeclaration.SuperTypeNames property results.
         /// </remarks>
         public Func<ClassModuleDeclaration, IEnumerable<string>> RetrieveSuperTypeNames { set; private get; } = GetSuperTypeNames;
 

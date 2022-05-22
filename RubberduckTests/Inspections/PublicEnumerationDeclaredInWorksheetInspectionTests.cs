@@ -14,23 +14,23 @@ using Rubberduck.Parsing.Grammar;
 
 namespace RubberduckTests.Inspections
 {
-    class PublicEnumerationDeclaredWithinWorksheetInspectionTests
+    class PublicEnumerationDeclaredInWorksheetInspectionTests
     {
         private static string[] _worksheetSuperTypeNames = new string[] { "Worksheet", "_Worksheet" };
 
         [Test]
         [Category("Inspections")]
-        [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
+        [Category(nameof(PublicEnumerationDeclaredInWorksheetInspection))]
         public void EnumerationDeclaredWithinWorksheet_InspectionName()
         {
-            var inspection = new PublicEnumerationDeclaredWithinWorksheetInspection(null);
+            var inspection = new PublicEnumerationDeclaredInWorksheetInspection(null);
 
-            Assert.AreEqual(nameof(PublicEnumerationDeclaredWithinWorksheetInspection), inspection.Name);
+            Assert.AreEqual(nameof(PublicEnumerationDeclaredInWorksheetInspection), inspection.Name);
         }
 
         [Test]
         [Category("Inspections")]
-        [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
+        [Category(nameof(PublicEnumerationDeclaredInWorksheetInspection))]
         [TestCase(ComponentType.StandardModule)]
         [TestCase(ComponentType.ClassModule)]
         [TestCase(ComponentType.UserForm)]
@@ -55,7 +55,7 @@ End Enum
 
         [Test]
         [Category("Inspections")]
-        [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
+        [Category(nameof(PublicEnumerationDeclaredInWorksheetInspection))]
         [TestCase("Public ", 1)]
         [TestCase("Private ", 0)]
         [TestCase("", 1)]
@@ -79,7 +79,7 @@ End Enum
 
         [Test]
         [Category("Inspections")]
-        [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
+        [Category(nameof(PublicEnumerationDeclaredInWorksheetInspection))]
         [TestCase(true, 1)]
         [TestCase(false, 0)]
         public void FlagsWorksheetDocumentTypesOnly(bool isWorksheetDoc, int expected)
@@ -106,7 +106,7 @@ End Enum
         [TestCase("_Worksheet")]
         [TestCase("Worksheet")]
         [Category("Inspections")]
-        [Category(nameof(PublicEnumerationDeclaredWithinWorksheetInspection))]
+        [Category(nameof(PublicEnumerationDeclaredInWorksheetInspection))]
         public void WorksheetDocument_FlagsOnEachWorksheetSuperTypeName(string superTypeName)
         {
             var code = 
@@ -135,7 +135,7 @@ End Enum
         {
             using (var state = MockParser.CreateAndParse(vbe))
             {
-                var inspection = new PublicEnumerationDeclaredWithinWorksheetInspection(state);
+                var inspection = new PublicEnumerationDeclaredInWorksheetInspection(state);
 
                 if (testDocument.SuperTypeNames.Any())
                 {
