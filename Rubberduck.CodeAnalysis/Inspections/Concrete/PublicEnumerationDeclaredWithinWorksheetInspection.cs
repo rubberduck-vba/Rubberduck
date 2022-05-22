@@ -14,23 +14,26 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Identifies public enumerations declared within worksheet modules.
     /// </summary>
     /// <why>
-    /// Copying a worksheet which contains a public `Enum` declaration will duplicate the enum resulting in a state which prevents compilation.
+    /// Copying a worksheet which contains a public Enum declaration will result in an 'Ambiguous name detected' compiler error.
+    /// Declaring Enumerations in Standard or Class modules avoids unintentional duplication of an enumeration declaration.
     /// </why>
     /// <example hasResult="true">
-    /// <module name="DocumentModule" type="Document Module">
+    /// <module name="WorksheetModule" type="Document Module">
     /// <![CDATA[
-    /// Public Enum Foo()
-    ///     ' enumeration members
-    /// End Sub
+    /// Public Enum ExampleEnum
+    ///     FirstEnum = 0
+    ///     SecondEnum
+    /// End Enum
     /// ]]>
     /// </module>
     /// </example>
     /// <example hasResult="false">
-    /// <module name="DocumentModule" type="Document Module">
+    /// <module name="WorksheetModule" type="Document Module">
     /// <![CDATA[
-    /// Private Enum Foo()
-    ///     ' enumeration members
-    /// End Sub
+    /// Private Enum ExampleEnum
+    ///     FirstEnum = 0
+    ///     SecondEnum
+    /// End Enum
     /// ]]>
     /// </module>
     /// </example>
