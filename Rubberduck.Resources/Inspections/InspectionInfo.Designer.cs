@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Inspections {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InspectionInfo {
@@ -826,11 +826,11 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copying a worksheet which contains a public `Enum` declaration will duplicate the enum resulting in a state which prevents compilation. Moving the enumeration declaration to a standard module avoids this situation..
+        ///   Looks up a localized string similar to Copying a worksheet which contains a public Enum declaration will also create a copy of the Enum declaration.  The copied declaration will result in an &apos;Ambiguous name detected&apos; compiler error.  Declaring Enumerations in Standard or Class modules avoids unintentional duplication of an Enum declaration..
         /// </summary>
-        public static string PublicEnumerationDeclaredWithinWorksheetInspection {
+        public static string PublicEnumerationDeclaredInWorksheetInspection {
             get {
-                return ResourceManager.GetString("PublicEnumerationDeclaredWithinWorksheetInspection", resourceCulture);
+                return ResourceManager.GetString("PublicEnumerationDeclaredInWorksheetInspection", resourceCulture);
             }
         }
         
