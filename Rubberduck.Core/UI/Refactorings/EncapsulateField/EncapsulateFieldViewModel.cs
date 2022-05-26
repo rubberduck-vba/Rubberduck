@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NLog;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.Resources;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
@@ -138,11 +136,12 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
         public bool SelectedFieldHasEditablePropertyName => !SelectedFieldIsPrivateUDT;
 
-        public bool EnableReadOnlyOption 
-            => !(_masterDetailManager.DetailField?.IsRequiredToBeReadOnly ?? false);
+        public bool EnableReadOnlyOption
+            => !((_masterDetailManager.DetailField?.IsRequiredToBeReadOnly ?? false) 
+                || (_masterDetailManager.DetailField?.IsRequiredToBeReadWrite ?? false));
 
         public string GroupBoxHeaderContent
-            => $"{_masterDetailManager.DetailField?.TargetID ?? string.Empty} {RubberduckUI.EncapsulateField_PropertyName} ";
+            => $"{_masterDetailManager.DetailField?.TargetID ?? string.Empty} {RefactoringsUI.EncapsulateField_PropertyName} ";
 
         private string _validationErrorMessage;
         public string ValidationErrorMessage => _validationErrorMessage;

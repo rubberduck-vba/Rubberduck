@@ -285,9 +285,6 @@
   <data name="EmptyDoWhileBlockInspection" xml:space="preserve">
     <value>Une boucle 'Do...While' vide, qui ne contient aucune instruction exécutable, laisse songeur quant aux intentions de l'auteur. Évitez d'écrire du code qui n'a pas besoin d'être écrit.</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>L'annotation '{0}' est illégale dans ce contexte.</value>
-  </data>
   <data name="RedundantOptionInspection" xml:space="preserve">
     <value>'{0}' n'a aucun effet.</value>
   </data>
@@ -467,5 +464,26 @@ In memoriam, 1972-2018</value>
   </data>
   <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
     <value>L'annotation '{0}' demande moins d'arguments que ce qui est spécifié.</value>
+  </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>Le membre '{0}' référencie implicitement le classeur contenant le projet.</value>
+  </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>Le membre '{0}' référencie implicitement la feuille hôte.</value>
+  </data>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Annotation '{0}' invalide dans ce contexte.</value>
+  </data>
+  <data name="InvalidAnnotationInspection_IncompatibleComponentType" xml:space="preserve">
+    <value>L'annotation '{0}' ne peut être utilisée dans un '{1}'.</value>
+  </data>
+  <data name="InvalidAnnotationInspection_NotInRequiredComponentType" xml:space="preserve">
+    <value>L'annotation '{0}' est utilisée dans un '{1}', mais n'est seulement valide dans un '{2}'.</value>
+  </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>Modificateur ByRef trompeur pour le paramètre '{0}' ({1}).</value>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>'{0}' n'est pas [encore?] une annotation que Rubberduck reconnaît</value>
   </data>
 </root>

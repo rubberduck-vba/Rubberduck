@@ -147,7 +147,7 @@ namespace Rubberduck
 
         private void InitializeAddIn()
         {
-            Splash splash = null;
+            Splash2021 splash = null;
             try
             {
                 if (_isInitialized)
@@ -193,11 +193,7 @@ namespace Rubberduck
 
                 if (_initialSettings?.CanShowSplash ?? false)
                 {
-                    splash = new Splash
-                    {
-                        // note: IVersionCheck.CurrentVersion could return this string.
-                        Version = $"version {Assembly.GetExecutingAssembly().GetName().Version}"
-                    };
+                    splash = new Splash2021(new VersionCheck.VersionCheck(typeof(Splash2021).Assembly.GetName().Version));
                     splash.Show();
                     splash.Refresh();
                 }

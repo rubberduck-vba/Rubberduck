@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Sunburst.NET.Sdk.WPF.Patched/1.0.49">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Product>Rubberduck.Parsing</Product>
     <Description>This assembly contains the parts responsible for turning VBA code into tokens and parse trees.</Description>
@@ -34,6 +34,9 @@
     <Antlr4 Include="Preprocessing\*.g4">
       <CustomToolNamespace>Rubberduck.Parsing.PreProcessing</CustomToolNamespace>
     </Antlr4>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />

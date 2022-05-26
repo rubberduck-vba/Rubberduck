@@ -18,6 +18,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             typeof(CodeExplorerProjectViewModel),
             typeof(CodeExplorerComponentViewModel),
             typeof(CodeExplorerMemberViewModel),
+            typeof(CodeExplorerSubMemberViewModel),
             typeof(CodeExplorerCustomFolderViewModel)
         };
 
@@ -40,12 +41,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _parserStatusProvider = parserStatusProvider;
             _renameFolderCommand = renameFolderCommand;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         public override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             return _parserStatusProvider.Status == ParserState.Ready
                 && (!(parameter is CodeExplorerCustomFolderViewModel folderModel)

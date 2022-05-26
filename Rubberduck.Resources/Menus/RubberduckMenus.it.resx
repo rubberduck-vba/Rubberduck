@@ -1,0 +1,277 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="RubberduckMenu" xml:space="preserve">
+    <value>Ru&amp;bberduck</value>
+  </data>
+  <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
+    <value>Ri&amp;ordina Parametri</value>
+    <comment>TC: different hotkey</comment>
+  </data>
+  <data name="ProjectExplorer_IgnoreProject" xml:space="preserve">
+    <value>Ignora Progetto</value>
+  </data>
+  <data name="ProjectExplorer_UnignoreProject" xml:space="preserve">
+    <value>Non ignorare il Progetto</value>
+  </data>
+  <data name="AddRemoveReferences" xml:space="preserve">
+    <value>Aggiungi/Rimuovi Riferimenti...</value>
+  </data>
+  <data name="AnnotateMenu" xml:space="preserve">
+    <value>Annota</value>
+  </data>
+  <data name="AnnotateMenu_SelectedDeclaration" xml:space="preserve">
+    <value>Dichiarazione Selezionata</value>
+  </data>
+  <data name="AnnotateMenu_SelectedMember" xml:space="preserve">
+    <value>Membro Selezionato</value>
+  </data>
+  <data name="AnnotateMenu_SelectedModule" xml:space="preserve">
+    <value>Modulo Selezionato</value>
+  </data>
+  <data name="ContextMenu_FindAllReferences" xml:space="preserve">
+    <value>&amp;Trova tutti i riferimenti...</value>
+  </data>
+  <data name="ContextMenu_FindSymbol" xml:space="preserve">
+    <value>Trova &amp;simbolo...</value>
+  </data>
+  <data name="ContextMenu_GoToImplementation" xml:space="preserve">
+    <value>Vai all'&amp;implementazione...</value>
+  </data>
+  <data name="ContextMenu_RunSelectedTest" xml:space="preserve">
+    <value>Esegui il test selezionato</value>
+  </data>
+  <data name="ContextMenu_RunSelectedTestModule" xml:space="preserve">
+    <value>Esegui i test nel modulo</value>
+  </data>
+  <data name="FormContextMenu_Rename" xml:space="preserve">
+    <value>Ri&amp;nomina</value>
+  </data>
+  <data name="IndentCurrentModule" xml:space="preserve">
+    <value>&amp;Modulo Corrente</value>
+  </data>
+  <data name="IndentCurrentProcedure" xml:space="preserve">
+    <value>&amp;Procedura Corrente</value>
+  </data>
+  <data name="IndentCurrentProject" xml:space="preserve">
+    <value>Progetto Corrente</value>
+  </data>
+  <data name="NoIndentAnnotation" xml:space="preserve">
+    <value>&amp;Aggiungi '@NoIndent</value>
+  </data>
+  <data name="RefactorMenu_EncapsulateField" xml:space="preserve">
+    <value>&amp;Incapsula Campo</value>
+  </data>
+  <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
+    <value>E&amp;strai Interfaccia</value>
+  </data>
+  <data name="RefactorMenu_ExtractMethod" xml:space="preserve">
+    <value>Estrai &amp;Metodo</value>
+  </data>
+  <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
+    <value>&amp;Implementa Interfaccia</value>
+  </data>
+  <data name="RefactorMenu_IntroduceField" xml:space="preserve">
+    <value>Introduci &amp;Campo</value>
+  </data>
+  <data name="RefactorMenu_PromoteToParameter" xml:space="preserve">
+    <value>Introduci &amp;Parametro</value>
+  </data>
+  <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
+    <value>Sposta più vicino all'&amp;Uso</value>
+  </data>
+  <data name="RefactorMenu_MoveContainingFolder" xml:space="preserve">
+    <value>Sposta la Cartella Contenitore</value>
+  </data>
+  <data name="RefactorMenu_MoveToFolder" xml:space="preserve">
+    <value>Sposta Nella Cartella</value>
+  </data>
+  <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
+    <value>Rimuo&amp;vi Parametro</value>
+  </data>
+  <data name="RefactorMenu_Rename" xml:space="preserve">
+    <value>&amp;Rinomina</value>
+  </data>
+  <data name="RubberduckMenu_About" xml:space="preserve">
+    <value>&amp;A proposito di...</value>
+  </data>
+  <data name="RubberduckMenu_CodeExplorer" xml:space="preserve">
+    <value>Explorer del &amp;Codice</value>
+  </data>
+  <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
+    <value>&amp;Ispezioni del Codice</value>
+  </data>
+  <data name="RubberduckMenu_CodeMetrics" xml:space="preserve">
+    <value>Statistiche del Codice</value>
+  </data>
+  <data name="RubberduckMenu_CodePaneRefactor" xml:space="preserve">
+    <value>&amp;Refactor</value>
+  </data>
+  <data name="RubberduckMenu_Navigate" xml:space="preserve">
+    <value>Na&amp;viga</value>
+  </data>
+  <data name="RubberduckMenu_Refactor" xml:space="preserve">
+    <value>&amp;Refactor</value>
+  </data>
+  <data name="RubberduckMenu_Refresh" xml:space="preserve">
+    <value>Aggiorna</value>
+  </data>
+  <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
+    <value>Rege&amp;x Cerca/Sostituisci</value>
+  </data>
+  <data name="RubberduckMenu_Settings" xml:space="preserve">
+    <value>&amp;Impostazioni</value>
+  </data>
+  <data name="SmartIndenterMenu" xml:space="preserve">
+    <value>In&amp;denta</value>
+  </data>
+  <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>Metodo di Test (&amp;Errore Atteso)</value>
+  </data>
+  <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
+    <value>&amp;Metodo di Test</value>
+  </data>
+  <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
+    <value>M&amp;odulo di Test</value>
+  </data>
+  <data name="TestMenu_RunAllTests" xml:space="preserve">
+    <value>&amp;Esegui tutti i test</value>
+  </data>
+  <data name="TestMenu_TextExplorer" xml:space="preserve">
+    <value>Explorer dei &amp;Test</value>
+  </data>
+  <data name="ToolsMenu" xml:space="preserve">
+    <value>&amp;Strumenti</value>
+  </data>
+  <data name="ToolsMenu_ExportProject" xml:space="preserve">
+    <value>Esporta il Progetto Attivo...</value>
+  </data>
+  <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
+    <value>&amp;Assistente di Regex</value>
+  </data>
+  <data name="ToolsMenu_TodoItems" xml:space="preserve">
+    <value>Elementi To&amp;Do</value>
+  </data>
+  <data name="RubberduckMenu_UnitTests" xml:space="preserve">
+    <value>Unit &amp;Tests</value>
+  </data>
+  <data name="ContextMenu_PeekDefinition" xml:space="preserve">
+    <value>Guarda la definizione</value>
+  </data>
+</root>

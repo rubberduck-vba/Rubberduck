@@ -16,12 +16,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 
-        [SetUp]
-        public void ExecutesBeforeAllTests()
-        {
-            Support.ResetResolver();
-        }
-
         [TestCase(EncapsulateFieldStrategy.UseBackingFields)]
         [TestCase(EncapsulateFieldStrategy.ConvertFieldsToUDTMembers)]
         [Category("Refactorings")]
@@ -39,17 +33,17 @@ Public mTest As Long
             (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                Support.SetupResolver(state, rewritingManager, null);
+                var resolver = Support.SetupResolver(state, rewritingManager);
 
                 var target = state.DeclarationFinder.MatchName("mTest").First();
-                var modelfactory = Support.Resolve<IEncapsulateFieldModelFactory>();
+                var modelfactory = resolver.Resolve<IEncapsulateFieldModelFactory>();
                 var model = modelfactory.Create(target);
 
                 model.EncapsulateFieldStrategy = strategy;
                 var field = model["mTest"];
                 field.PropertyIdentifier = "ATest";
 
-                var previewProvider = Support.Resolve<EncapsulateFieldPreviewProvider>();
+                var previewProvider = resolver.Resolve<EncapsulateFieldPreviewProvider>();
 
                 var firstPreview = previewProvider.Preview(model);
                 StringAssert.Contains("Property Get ATest", firstPreview);
@@ -89,11 +83,10 @@ Private bType As B{MockVbeBuilder.TestModuleName}
             (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                Support.SetupResolver(state, rewritingManager, null);
-
                 var target = state.DeclarationFinder.MatchName("mTest").First();
 
-                var modelfactory = Support.Resolve<IEncapsulateFieldModelFactory>();
+                var resolver = Support.SetupResolver(state, rewritingManager, null);
+                var modelfactory = resolver.Resolve<IEncapsulateFieldModelFactory>();
                 var model = modelfactory.Create(target);
 
                 var field = model["mTest"];
@@ -103,7 +96,7 @@ Private bType As B{MockVbeBuilder.TestModuleName}
                 var test = model.ObjectStateUDTCandidates;
                 Assert.AreEqual(3, test.Count());
 
-                var previewProvider = Support.Resolve<EncapsulateFieldPreviewProvider>();
+                var previewProvider = resolver.Resolve<EncapsulateFieldPreviewProvider>();
 
                 var firstPreview = previewProvider.Preview(model);
                 StringAssert.Contains("Property Get ATest", firstPreview);
@@ -132,12 +125,11 @@ Public mTest As Long
             (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                Support.SetupResolver(state, rewritingManager, null);
-
                 var target = state.DeclarationFinder.MatchName("mTest").First();
 
-                var modelfactory = Support.Resolve<IEncapsulateFieldModelFactory>();
-                var previewProvider = Support.Resolve<EncapsulateFieldPreviewProvider>();
+                var resolver = Support.SetupResolver(state, rewritingManager, null);
+                var modelfactory = resolver.Resolve<IEncapsulateFieldModelFactory>();
+                var previewProvider = resolver.Resolve<EncapsulateFieldPreviewProvider>();
 
                 var model = modelfactory.Create(target);
 
@@ -145,7 +137,7 @@ Public mTest As Long
 
                 var previewResult = previewProvider.Preview(model);
 
-                StringAssert.Contains(RubberduckUI.EncapsulateField_PreviewMarker, previewResult);
+                StringAssert.Contains(RefactoringsUI.EncapsulateField_PreviewMarker, previewResult);
             }
         }
 

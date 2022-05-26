@@ -17,19 +17,22 @@ namespace Rubberduck.Parsing.ComReflection
         public readonly string DefaultSerializationPath;
         private readonly IFileSystem _fileSystem;
 
+        private XmlComProjectSerializer(IFileSystem fileSystem, string defaultPath, string path)
+        {
+            _fileSystem = fileSystem;
+            DefaultSerializationPath = defaultPath;
+            Target = path ?? DefaultSerializationPath;
+        }
+
         public XmlComProjectSerializer(
             IPersistencePathProvider pathProvider,
             IFileSystem fileSystem)
-        {
-            DefaultSerializationPath = pathProvider.DataFolderPath("Declarations");
-            _fileSystem = fileSystem;
-        }
+            : this(fileSystem, pathProvider.DataFolderPath("Declarations"), null)
+        { }
 
-        public XmlComProjectSerializer(IFileSystem filesystem, string path = null)
-        {
-            Target = path ?? DefaultSerializationPath;
-            _fileSystem = filesystem;
-        }
+        public XmlComProjectSerializer(IFileSystem fileSystem, string path)
+            : this(fileSystem, path, path)
+        { }
 
         private static readonly XmlReaderSettings ReaderSettings = new XmlReaderSettings
         {

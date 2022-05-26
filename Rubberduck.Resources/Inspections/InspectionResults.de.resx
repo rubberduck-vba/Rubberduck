@@ -240,7 +240,7 @@
     <value>Ausdruck '{0}' kann zur Kompilierzeit nicht validiert werden.</value>
   </data>
   <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
-    <value>Element'{0}' ist auf dem Interface für '{1}' nicht deklariert.</value>
+    <value>Element '{0}' ist auf dem Interface für '{1}' nicht deklariert.</value>
   </data>
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>Komponente '{0}' verwendet 'Option Base 0'.</value>
@@ -256,9 +256,6 @@
   </data>
   <data name="EmptyIfBlockInspection" xml:space="preserve">
     <value>'If'-Block enthält keine ausführbaren Anweisungen.</value>
-  </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Die Annotation '{0}' ist in diesem Kontext nicht erlaubt.</value>
   </data>
   <data name="RedundantOptionInspection" xml:space="preserve">
     <value>'{0}' hat keine Auswirkung.</value>
@@ -472,5 +469,20 @@ In Memoriam, 1972-2018</value>
   </data>
   <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
     <value>Element '{0}' referenziert implizit auf das umgebende Worksheet-Modul.</value>
+  </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>Irreführender ByRef Modifizierer für den Parameter '{0}' ({1}) benutzt.</value>
+  </data>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Die Annotation '{0}' ist in diesem Kontext nicht zulässig.</value>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>'{0}' ist keine von Rubberduck unterstützte Annotation</value>
+  </data>
+  <data name="InvalidAnnotationInspection_NotInRequiredComponentType" xml:space="preserve">
+    <value>Die Annotation '{0}' wurde in einer Komponente des Typs '{1}' verwendet, kann aber nur in Komponenten des Typs '{2}' verwendet werden.</value>
+  </data>
+  <data name="InvalidAnnotationInspection_IncompatibleComponentType" xml:space="preserve">
+    <value>Die Annotation '{0}' kann nicht in einer Komponente des Typs '{1}' verwendet werden.</value>
   </data>
 </root>

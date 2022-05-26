@@ -139,13 +139,13 @@
     <value>Alle Referenzen finden...</value>
   </data>
   <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
-    <value>Alle &amp;Tests ausführen</value>
+    <value>Alle &amp;Tests durchführen</value>
   </data>
   <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
     <value>Designer öffnen</value>
   </data>
   <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
-    <value>Ordner umschalten</value>
+    <value>Anzeigen von Ordnern umschalten</value>
   </data>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
@@ -160,7 +160,7 @@
     <value>Na&amp;vigieren</value>
   </data>
   <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
-    <value>Style anzeigen</value>
+    <value>Stil anzeigen</value>
   </data>
   <data name="CodeExplorer_NewToolTip" xml:space="preserve">
     <value>Füge eine Komponente zum aktiven Projekt hinzu</value>
@@ -169,7 +169,7 @@
     <value>Klassenmodul (.cls)</value>
   </data>
   <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
-    <value>Wechsele Signatur</value>
+    <value>Anzeige der Signatur umschalten</value>
   </data>
   <data name="CodeExplorer_Remove" xml:space="preserve">
     <value>Entfernen...</value>
@@ -196,10 +196,10 @@
     <value>Einrücken</value>
   </data>
   <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
-    <value>Knoten und alle Kindknoten einklappen</value>
+    <value>Knoten und alle Unterknoten einklappen</value>
   </data>
   <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
-    <value>Knoten und alle Kindknoten aufklappen</value>
+    <value>Knoten und alle Unterknoten aufklappen</value>
   </data>
   <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
     <value>Designer öffnen</value>
@@ -214,7 +214,7 @@
     <value>Modul hinzufügen</value>
   </data>
   <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
-    <value>nach Name</value>
+    <value>Nach Name</value>
   </data>
   <data name="CodeExplorer_Open" xml:space="preserve">
     <value>Öffnen</value>
@@ -283,10 +283,10 @@
     <value>Fehler beim Entfernen von '{0}'</value>
   </data>
   <data name="CodeExplorer_LibraryReferences" xml:space="preserve">
-    <value>Referenzen zu Biblotheken</value>
+    <value>Referenzen zu Bibliotheken</value>
   </data>
   <data name="CodeExplorer_AddExistingFileText" xml:space="preserve">
-    <value>Existierende Dateien...</value>
+    <value>Vorhandene Datei...</value>
   </data>
   <data name="CodeExplorer_Delete" xml:space="preserve">
     <value>Löschen</value>
@@ -330,5 +330,45 @@ Fortfahren?</value>
   </data>
   <data name="CodeExplorer_Annotate" xml:space="preserve">
     <value>Annotation hinzufügen</value>
+  </data>
+  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
+    <value>Es existiert kein Dokumentenmodul namens '{0}', weshalb die Datei '{1}' nicht importiert werden kann.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>Für die Datei '{0}' fehlen die benötigte(n) Binärdatei(en) '{1}' und die Zielkomponente '{2}' existiert noch nicht.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>Für die Datei '{0}' fehlen die benötigte(n) Binärdatei(en) '{1}'.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
+    <value>Mehrere Dateien enthalten Code für die Komponente '{0}'.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
+    <value>Alle Dateien</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
+    <value>VB-Dateien</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
+    <value>Quellcode aus Datei importieren</value>
+  </data>
+  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
+    <value>Die Dateierweiterung der Datei '{0}' wird nicht unterstützt.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>Code _Explorer</value>
+  </data>
+  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+    <value>Navigieren</value>
   </data>
 </root>

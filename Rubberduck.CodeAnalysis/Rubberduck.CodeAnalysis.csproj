@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Sunburst.NET.Sdk.WPF.Patched/1.0.49">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Product>Rubberduck.CodeAnalysis</Product>
     <Description>Assembly Containing the Code Analysis features exposed by Rubberduck</Description>
@@ -61,11 +61,23 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="CodeAnalysisUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CodeAnalysisUI.resx</DependentUpon>
+    </Compile>
     <Compile Update="Properties\CodeInspectionDefaults.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>CodeInspectionDefaults.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="CodeAnalysisUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CodeAnalysisUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Update="Properties\CodeInspectionDefaults.settings">

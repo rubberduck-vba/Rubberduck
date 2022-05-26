@@ -10,14 +10,7 @@ namespace Rubberduck.VBEditor.VbeRuntime
     public class VbeNativeApiAccessor : IVbeNativeApi
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        private static readonly DllVersion Version;
-        private IVbeNativeApi _runtime;
-        
-        static VbeNativeApiAccessor()
-        {
-            Version = DllVersion.Unknown;
-        }
+        private IVbeNativeApi _runtime;        
         
         private static readonly List<(string Name, Type ApiType, DllVersion Version)> VbeApis =new List<(string Dll, Type ApiType, DllVersion Version)>
         {

@@ -246,8 +246,8 @@
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>'Option Base 0' is redundant</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Illegal annotation</value>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Invalid annotation</value>
   </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Missing attribute</value>
@@ -453,5 +453,23 @@
   </data>
   <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
     <value>Public enumeration declared within worksheet</value>
+  </data>
+  <data name="AnnotationInIncompatibleComponentTypeInspection" xml:space="preserve">
+    <value>Annotation in component with incompatible type</value>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>Unrecognized annotation</value>
+  </data>
+  <data name="IIfSideEffectInspection" xml:space="preserve">
+    <value>Potential 'IIf' Function side effects</value>
+  </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>Read-Only Property assignment</value>
+  </data>
+  <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
+    <value>Suspicious access to a predeclared instance</value>
+  </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>Public control field access</value>
   </data>
 </root>

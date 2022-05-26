@@ -331,4 +331,44 @@
   <data name="CodeExplorer_Annotate" xml:space="preserve">
     <value>Anotar</value>
   </data>
+  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
+    <value>No existe ningún documento de módulo con el nombre '{0}'; el arcivo '{1}' no se puede importar.
+
+Importación cancelada.</value>
+  </data>
+  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>Para el archivo '{0}', faltan los archivos binarios '{1}' y el componente destino '{2}' no existía.
+
+Importación cancelada.</value>
+  </data>
+  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>Para el archivo '{0}', faltan los archivos binarios requeridos '{1}'.
+
+Importación cancelada.</value>
+  </data>
+  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
+    <value>Multiples archivos contienen código para el componente '{0}'.
+
+Importación cancelada.</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
+    <value>Todos los archivos</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
+    <value>Archivos VB</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
+    <value>Importar archivos fuente</value>
+  </data>
+  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
+    <value>La extensión del archivo '{0}' no está soportada.
+
+Importación cancelada.</value>
+  </data>
+  <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>_Explorador de código</value>
+  </data>
+  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+    <value>Navegar</value>
+  </data>
 </root>

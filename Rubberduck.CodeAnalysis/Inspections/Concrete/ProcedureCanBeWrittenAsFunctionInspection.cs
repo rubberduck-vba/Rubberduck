@@ -13,8 +13,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Warns about 'Sub' procedures that could be refactored into a 'Function'.
     /// </summary>
     /// <why>
-    /// Idiomatic VB code uses 'Function' procedures to return a single value. If the procedure isn't side-effecting, consider writing is as a
-    /// 'Function' rather than a 'Sub' the returns a result through a 'ByRef' parameter.
+    /// Idiomatic VB code uses 'Function' procedures to return a single value. If the procedure isn't side-effecting, consider writing it as a
+    /// 'Function' rather than a 'Sub' that returns a result through a 'ByRef' parameter.
     /// </why>
     /// <example hasResult="true">
     /// <module name="MyModule" type="Standard Module">
@@ -88,7 +88,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 return false;
             }
 
-            var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, reference.QualifiedModuleName);
+            var argument = argExpression.GetAncestor<VBAParser.ArgumentContext>();
+            var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argument, reference.QualifiedModuleName);
 
             if (parameter == null)
             {

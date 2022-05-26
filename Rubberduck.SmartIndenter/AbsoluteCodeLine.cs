@@ -7,12 +7,15 @@ using System.Text.RegularExpressions;
 
 namespace Rubberduck.SmartIndenter
 {
-    internal class AbsoluteCodeLine
+    public class AbsoluteCodeLine
     {
         private const string StupidLineEnding = ": _";
         private static readonly Regex LineNumberRegex = new Regex(@"^(?<number>(-?\d+)|(&H[0-9A-F]{1,8}))(?<separator>:)?\s+(?<code>.*)", RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);
-        private static readonly Regex EndOfLineCommentRegex = new Regex(@"^(?!(Rem\s)|('))(?<code>[^']*)(\s(?<comment>'.*))$", RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);      
+        private static readonly Regex EndOfLineCommentRegex = new Regex(@"^(?!(Rem\s)|('))(?<code>[^']*)(\s(?<comment>'.*))$", RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);
         private static readonly Regex ProcedureStartRegex = new Regex(@"^(Public\s|Private\s|Friend\s)?(Static\s)?(Sub|Function|Property\s(Let|Get|Set))\s", RegexOptions.IgnoreCase);
+        
+        private static readonly Regex PropertyStartRegex = new Regex(@"^(Public\s|Private\s|Friend\s)?(Static\s)?(Property\s(Let|Get|Set))\s", RegexOptions.IgnoreCase);
+
         private static readonly Regex ProcedureStartIgnoreRegex = new Regex(@"^[LR]?Set\s|^Let\s|^(Public|Private)\sDeclare\s(Function|Sub)", RegexOptions.IgnoreCase);
         private static readonly Regex ProcedureEndRegex = new Regex(@"^End\s(Sub|Function|Property)", RegexOptions.IgnoreCase);
         private static readonly Regex TypeEnumStartRegex = new Regex(@"^(Public\s|Private\s)?(Enum\s|Type\s)", RegexOptions.IgnoreCase);
@@ -178,6 +181,10 @@ namespace Rubberduck.SmartIndenter
             get { return _segments.Any(s => ProcedureStartRegex.IsMatch(s)) && !_segments.Any(s => ProcedureStartIgnoreRegex.IsMatch(s)); }
         }
 
+        public bool IsPropertyStart
+        {
+            get { return _segments.Any(s => PropertyStartRegex.IsMatch(s)); }
+        }
         public bool IsProcedureEnd
         {
             get { return _segments.Any(s => ProcedureEndRegex.IsMatch(s)); }

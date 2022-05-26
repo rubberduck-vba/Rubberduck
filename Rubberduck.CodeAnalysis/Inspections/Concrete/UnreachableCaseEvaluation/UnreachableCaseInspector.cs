@@ -98,23 +98,24 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
 
         private UnreachableCaseInspection.CaseInspectionResultType? InvalidRangeExpressionsType(ICollection<IRangeClauseExpression> rangeClauseExpressions)
         {
-            if (rangeClauseExpressions.Any(expr => expr.IsMismatch))
+            var usableClauses = rangeClauseExpressions.Where(expr => expr != null).ToList();
+            if (usableClauses.Any(expr => expr.IsMismatch))
             {
                 return UnreachableCaseInspection.CaseInspectionResultType.MismatchType;
             }
 
-            if (rangeClauseExpressions.Any(expr => expr.IsOverflow))
+            if (usableClauses.Any(expr => expr.IsOverflow))
             {
                 return UnreachableCaseInspection.CaseInspectionResultType.Overflow;
             }
 
-            if (rangeClauseExpressions.All(expr => expr.IsInherentlyUnreachable))
+            if (usableClauses.All(expr => expr.IsInherentlyUnreachable))
             {
                 return UnreachableCaseInspection.CaseInspectionResultType.InherentlyUnreachable;
             }
 
-            if (rangeClauseExpressions.All(expr =>
-                expr.IsUnreachable || expr.IsMismatch || expr.IsOverflow || expr.IsInherentlyUnreachable))
+            if (usableClauses.All(expr =>
+                expr.IsUnreachable || expr.IsMismatch|| expr.IsOverflow || expr.IsInherentlyUnreachable))
             {
                 return UnreachableCaseInspection.CaseInspectionResultType.Unreachable;
             }
@@ -225,7 +226,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseEvaluation
             VBAParser.SelectCaseStmtContext selectStmt,
             IParseTreeVisitorResults parseTreeValues)
         {
-            var (typeName, value) = SelectExpressionTypeNameAndValue(selectStmt, parseTreeValues);
+            var (typeName, _) = SelectExpressionTypeNameAndValue(selectStmt, parseTreeValues);
             return typeName;
         }
 

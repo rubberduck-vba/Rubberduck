@@ -40,12 +40,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _userInteraction = userInteraction;
             _state = state;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         public override IEnumerable<Type> ApplicableNodeTypes => new[] { typeof(System.ValueTuple<IAnnotation, ICodeExplorerNode>) };
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             if (parameter is System.ValueTuple<IAnnotation, ICodeExplorerNode> data)
             {
@@ -97,9 +97,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public bool CanExecuteForNode(ICodeExplorerNode node)
         {
-            if (!ApplicableNodes.Contains(node.GetType())
-                || !(node is CodeExplorerItemViewModel)
-                || node.Declaration == null)
+            if (node?.Declaration == null
+                || !ApplicableNodes.Contains(node.GetType())
+                || !(node is CodeExplorerItemViewModel))
             {
                 return false;
             }

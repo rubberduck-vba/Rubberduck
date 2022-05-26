@@ -1,0 +1,379 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Command_AddTestModule_Error" xml:space="preserve">
+    <value>Impossibile creare il modulo di test. L'applicazione host può non consentire la creazione di nuovi moduli o il progetto può essere bloccato. Per dettagli, controllare il log.</value>
+  </data>
+  <data name="TestExplorer_AddButtonText" xml:space="preserve">
+    <value>Aggiungi</value>
+  </data>
+  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>Metodo di test (Errore Atteso)</value>
+  </data>
+  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
+    <value>Metodo di test</value>
+  </data>
+  <data name="TestExplorer_AddTestModule" xml:space="preserve">
+    <value>Modulo di test</value>
+  </data>
+  <data name="TestExplorer_AllResults" xml:space="preserve">
+    <value>Tutto</value>
+  </data>
+  <data name="TestExplorer_CategoryName" xml:space="preserve">
+    <value>Categoria</value>
+  </data>
+  <data name="TestExplorer_ContextMenuIgnoreGroup" xml:space="preserve">
+    <value>Ignora tutti i test del gruppo</value>
+  </data>
+  <data name="TestExplorer_ContextMenuIgnoreSelectedTests" xml:space="preserve">
+    <value>Ignora i test selezionati</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunAll" xml:space="preserve">
+    <value>Esegui tutti i test</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunGroup" xml:space="preserve">
+    <value>Esegui tutti i test del gruppo</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunSelected" xml:space="preserve">
+    <value>Eseguiti i test selezionati</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunSingle" xml:space="preserve">
+    <value>Esegui il singolo test</value>
+  </data>
+  <data name="TestExplorer_Duration" xml:space="preserve">
+    <value>Durata</value>
+  </data>
+  <data name="TestExplorer_ContextMenuUnignoreGroup" xml:space="preserve">
+    <value>Non ignorare tutti i test nel gruppo</value>
+  </data>
+  <data name="TestExplorer_ContextMenuUnignoreSelectedTests" xml:space="preserve">
+    <value>Non ignorare tutti i test selezionati</value>
+  </data>
+  <data name="TestExplorer_Filter" xml:space="preserve">
+    <value>Nome del test</value>
+  </data>
+  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
+    <value>Vai alla selezione</value>
+  </data>
+  <data name="TestExplorer_Message" xml:space="preserve">
+    <value>Messaggio</value>
+  </data>
+  <data name="TestExplorer_MethodName" xml:space="preserve">
+    <value>Nome del metodo</value>
+  </data>
+  <data name="TestExplorer_Outcome" xml:space="preserve">
+    <value>Risultato</value>
+  </data>
+  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
+    <value>Modulo</value>
+  </data>
+  <data name="TestExplorer_ResetButtonTooltip" xml:space="preserve">
+    <value>Azzera i risultati di tutti i test</value>
+  </data>
+  <data name="TestExplorer_RunMenuAllTests" xml:space="preserve">
+    <value>Tutti i test</value>
+  </data>
+  <data name="TestExplorer_RunMenuButtonText" xml:space="preserve">
+    <value>Esegui</value>
+  </data>
+  <data name="TestExplorer_RunMenuFailedTests" xml:space="preserve">
+    <value>Test falliti</value>
+  </data>
+  <data name="TestExplorer_RunMenuInconclusiveTests" xml:space="preserve">
+    <value>Test inconcludenti</value>
+  </data>
+  <data name="TestExplorer_RunMenuLastRunTests" xml:space="preserve">
+    <value>Ripeti l'ultima esecuzione</value>
+  </data>
+  <data name="TestExplorer_RunMenuNotRunTests" xml:space="preserve">
+    <value>Non eseguire i test</value>
+  </data>
+  <data name="TestExplorer_RunMenuPassedTests" xml:space="preserve">
+    <value>Test superati</value>
+  </data>
+  <data name="TestExplorer_RunMenuSelectedTests" xml:space="preserve">
+    <value>Test selezionati</value>
+  </data>
+  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
+    <value>{0} Fallito</value>
+  </data>
+  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
+    <value>{0} Inconcludente</value>
+  </data>
+  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
+    <value>{0} Superato</value>
+  </data>
+  <data name="TestExplorer_TestToggle_Ignore" xml:space="preserve">
+    <value>Ignora il test</value>
+  </data>
+  <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
+    <value>Non ignorare il test</value>
+  </data>
+  <data name="TestExplorer_TotalDuration" xml:space="preserve">
+    <value>Durata totale</value>
+  </data>
+  <data name="TestExplorer_Uncategorized" xml:space="preserve">
+    <value>Senza categoria</value>
+  </data>
+  <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
+    <value>Due o più progetti che contengono metodi di test hanno lo stesso nome e nomi di test identici. Rinominarne uno per continuare.</value>
+  </data>
+  <data name="TestExplorerWindow_Caption" xml:space="preserve">
+    <value>Explorer dei Test</value>
+  </data>
+  <data name="TestOutcome_DurationHour" xml:space="preserve">
+    <value>hr</value>
+    <comment>Abbreviazione per ore</comment>
+  </data>
+  <data name="TestOutcome_DurationMillisecond" xml:space="preserve">
+    <value>ms</value>
+    <comment>Abbreviazione per millisecondi</comment>
+  </data>
+  <data name="TestOutcome_DurationMinute" xml:space="preserve">
+    <value>min</value>
+    <comment>Abbreviazione per minuti</comment>
+  </data>
+  <data name="TestOutcome_DurationSecond" xml:space="preserve">
+    <value>sec</value>
+    <comment>Abbreviazione per secondi</comment>
+  </data>
+  <data name="TestOutcome_Failed" xml:space="preserve">
+    <value>Non superato</value>
+  </data>
+  <data name="TestOutcome_Ignored" xml:space="preserve">
+    <value>Ignorato</value>
+  </data>
+  <data name="TestOutcome_RunSummaryFormat" xml:space="preserve">
+    <value>{0} di {1} test run (tempo totale di esecuzione: {2:g})</value>
+    <comment>{0} è il numero di test nell'esecuzione del test, {1} è il totale dei test, {2} è la durata totale</comment>
+  </data>
+  <data name="TestOutcome_Inconclusive" xml:space="preserve">
+    <value>Non concludente</value>
+  </data>
+  <data name="TestOutcome_SummaryCaption" xml:space="preserve">
+    <value>Sommario:</value>
+  </data>
+  <data name="TestOutcome_Unknown" xml:space="preserve">
+    <value>Sconosciuto</value>
+  </data>
+  <data name="TestOutcome_Succeeded" xml:space="preserve">
+    <value>Concluso con successo</value>
+  </data>
+  <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
+    <value>Modifica con il numero dell'errore atteso</value>
+    
+    <comment>Testo del commento.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
+    <value>L'errore atteso non si è verificato</value>
+    
+    <comment>Testo del commento.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
+    <value>Il test ha generato un errore</value>
+    
+    <comment>Testo del commento.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
+    <value>Rinomina il test</value>
+    
+    <comment>TODO testo del commento.</comment>
+  </data>
+  <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
+    <value>Questo metodo è eseguito dopo ogni test nel modulo</value>
+    
+    <comment>Testo del commento.</comment>
+  </data>
+  <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
+    <value>Questo metodo è eseguito prima di ogni test nel modulo.</value>
+    
+    <comment>Testo del commento.</comment>
+  </data>
+  <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
+    <value>Questo metodo è eseguito una volta sola per ogni modulo</value>
+    
+    <comment>Testo del commento.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_Act" xml:space="preserve">
+    <value>Agisci</value>
+    <comment>Testo "Act" all'interno dei commenti per il modello "Act, Arrange, Assert".</comment>
+  </data>
+  <data name="UnitTest_NewMethod_Arrange" xml:space="preserve">
+    <value>Prepara</value>
+    <comment>Testo "Arrange" all'interno dei commenti per il pattern "Act, Arrange, Assert".</comment>
+  </data>
+  <data name="UnitTest_NewMethod_Assert" xml:space="preserve">
+    <value>Asserisci</value>
+    <comment>Testo "Assert" all'interno dei commenti per il pattern "Act, Arrange, Assert".</comment>
+  </data>
+  <data name="UnitTest_NewMethod_BaseName" xml:space="preserve">
+    <value>MetodoTest</value>
+    <comment>Poiché "Sub TestMethod1 ()". Aggiunto anche alla fine dei test Stub, ovvero "Sub FooTestMethod ()". Localizza come un identificatore.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ExpectedError" xml:space="preserve">
+    <value>ErroreAtteso</value>
+    <comment>Identificatore di costante - "Const ErrorePrevisto As Long = 0". Localizza come identificatore.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleCleanupMethod" xml:space="preserve">
+    <value>PuliziaModulo</value>
+    <comment>Nome del metodo per il metodo di pulizia del modulo. Localizza come identificatore.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleInitializeMethod" xml:space="preserve">
+    <value>InizializzaModulo</value>
+    <comment>Nome del metodo per il metodo di inizializzazione del modulo. Localizza come identificatore.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestCleanupMethod" xml:space="preserve">
+    <value>PuliziaTest</value>
+    <comment>Nome del metodo per il metodo di pulizia del test. Localizza come identificatore.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestExitLabel" xml:space="preserve">
+    <value>UscitaTest</value>
+    <comment>Etichetta per test esistenti - localizza come identificatore.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestFailLabel" xml:space="preserve">
+    <value>ErroreTest</value>
+    <comment>Etichetta di destinazione per i test "On Error GoTo TestFallito" - localizzare come identificatore.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestInitializeMethod" xml:space="preserve">
+    <value>InizializzaTest</value>
+    <comment>Nome del metodo per il metodo di inizializzazione del test. Localizza come identificatore.</comment>
+  </data>
+  <data name="UnitTest_NewModule_BaseName" xml:space="preserve">
+    <value>ModuloTest</value>
+    <comment>Nome del modulo di test, es. "ModuloDiTest1". Localizza come identificatore.</comment>
+  </data>
+  <data name="UnitTest_NewModule_DefaultFolder" xml:space="preserve">
+    <value>Test</value>
+    <comment>Nome della cartella predefinita per i nuovi moduli di test.</comment>
+  </data>
+  <data name="UnitTest_NewModule_LateBindConstant" xml:space="preserve">
+    <value>AssociationeTardiva</value>
+    <comment>Costante del precompilatore come in "#If LateBind Then". Localizza come identificatore.</comment>
+  </data>
+  <data name="UnitTest_NewModule_LateBindDirective" xml:space="preserve">
+    <value>TestAssociazioneTardiva</value>
+    <comment>Direttiva del precompilatore, come in "#Const LateBind = LateBindTests". Localizza come identificatore.</comment>
+  </data>
+  <data name="TestOutcome_Fail" xml:space="preserve">
+    <value>Errore</value>
+  </data>
+  <data name="TestExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>Explorer dei _Test</value>
+  </data>
+</root>

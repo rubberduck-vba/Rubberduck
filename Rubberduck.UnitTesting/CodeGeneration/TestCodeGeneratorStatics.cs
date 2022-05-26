@@ -51,9 +51,13 @@ Private Sub {{0}}() {RenameTestTodoComment}
     Assert.Succeed
 
 {TestExitLabel}:
-    Exit Sub
+'@Ignore UnhandledOnErrorResumeNext
+    On Error Resume Next
+
+Exit Sub
 {TestFailLabel}:
     Assert.Fail ""{TestErrorMessage}"" & Err.Number & "" - "" & Err.Description
+    Resume {TestExitLabel}
 End Sub";
 
         private static string TestMethodExpectedErrorTemplate =>

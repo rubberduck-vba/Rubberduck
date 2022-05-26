@@ -6,6 +6,7 @@ using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor;
@@ -140,7 +141,8 @@ namespace RubberduckTests.Inspections
 
             var finder = new DeclarationFinder(
                 new List<Declaration>(), 
-                new List<IParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(), 
+                new Dictionary<QualifiedModuleName, LogicalLineStore>(),
                 new Dictionary<QualifiedModuleName, IFailedResolutionStore>());
             var inspectionResult = new IdentifierReferenceInspectionResult(inspectionMock.Object, string.Empty, finder, identifierReference);
 
@@ -169,7 +171,8 @@ namespace RubberduckTests.Inspections
 
             var finder = new DeclarationFinder(
                 new List<Declaration>(), 
-                new List<IParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(), 
+                new Dictionary<QualifiedModuleName, LogicalLineStore>(),
                 new Dictionary<QualifiedModuleName, IFailedResolutionStore>());
             var inspectionResult = new IdentifierReferenceInspectionResult(inspectionMock.Object, string.Empty, finder, identifierReference);
 

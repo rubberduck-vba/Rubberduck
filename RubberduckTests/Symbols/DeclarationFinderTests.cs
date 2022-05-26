@@ -318,6 +318,85 @@ End Function"
             Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck, conflicts));
         }
 
+        //https://github.com/rubberduck-vba/Rubberduck/issues/5694
+        [Test]
+        [Category("Refactorings")]
+        [Category("Resolver")]
+        public void RenameRefactoring_RenameClassQualifiedMember_NoConflict()
+        {
+            var isConflict = false;
+            var nameToCheck = "ThisIsMyProperty";
+            var moduleContent1 =
+@"
+Option Explicit
+
+Private refdClass As ReferencedClass
+
+Private Sub Class_Initialize()
+    Set refdClass = New ReferencedClass
+End Sub
+
+Public Function ThisIsM|yFunc() As Long
+    ThisIsMyFunc = refdClass.ThisIsMyProperty
+End Function
+";
+
+            var moduleContent2 =
+@"
+Option Explicit
+
+Public Property Get ThisIsMyProperty() As Long
+    ThisIsMyProperty = 5
+End Property        
+";
+
+            var tdo = new AccessibilityTestsDataObject(moduleContent1)
+            {
+                SelectionModuleName = MockVbeBuilder.TestModuleName
+            };
+
+            AddTestComponent(tdo, tdo.SelectionModuleName, ComponentType.ClassModule);
+            AddTestComponent(tdo, "ReferencedClass", moduleContent2, ComponentType.ClassModule);
+            var conflicts = TestConflictingDeclaration(tdo, nameToCheck);
+            Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck, conflicts));
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Resolver")]
+        public void RenameRefactoring_RenameToUnQualifiedModuleMember_HasConflict()
+        {
+            var isConflict = true;
+            var nameToCheck = "ThisIsMyProperty";
+            var moduleContent1 =
+@"
+Option Explicit
+
+Public Function ThisIsM|yFunc() As Long
+    ThisIsMyFunc = ThisIsMyProperty
+End Function
+";
+
+            var moduleContent2 =
+@"
+Option Explicit
+
+Public Property Get ThisIsMyProperty() As Long
+    ThisIsMyProperty = 5
+End Property        
+";
+
+            var tdo = new AccessibilityTestsDataObject(moduleContent1)
+            {
+                SelectionModuleName = MockVbeBuilder.TestModuleName
+            };
+
+            AddTestComponent(tdo, tdo.SelectionModuleName, ComponentType.ClassModule);
+            AddTestComponent(tdo, "ReferencedClass", moduleContent2, ComponentType.StandardModule);
+            var conflicts = TestConflictingDeclaration(tdo, nameToCheck);
+            Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck, conflicts));
+        }
+
         [TestCase("Bar", true)]
         [TestCase("myData", true)]
         [TestCase("mDupData", true)]
@@ -725,7 +804,7 @@ End Sub
                 var expected = declarations.FirstOrDefault(decl => decl.IdentifierName.Equals("expected"));
 
                 var enclosing = declarations.FirstOrDefault(decl => decl.IdentifierName.Equals("Bar"));
-                var context = enclosing?.Context.GetDescendent<VBAParser.ArgumentExpressionContext>();
+                var context = enclosing?.Context.GetDescendent<VBAParser.ArgumentContext>();
                 var actual = state.DeclarationFinder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(context, enclosing);
 
                 Assert.AreEqual(expected, actual);

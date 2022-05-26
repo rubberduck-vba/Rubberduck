@@ -6,6 +6,7 @@ using Rubberduck.SmartIndenter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tokens = Rubberduck.Resources.Tokens;
 
 namespace Rubberduck.Refactorings
 {

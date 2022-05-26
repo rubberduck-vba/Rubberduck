@@ -20,6 +20,7 @@ using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.Rename;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.Refactorings.ReplaceReferences;
 
 namespace RubberduckTests.Refactoring.Rename
 {
@@ -2195,6 +2196,31 @@ End Sub";
             }
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameProject_RenamesQualifiers()
+        {
+            const string newName = "Renamed";
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input = @"
+Public Foo As Long
+Public Sub Test()
+    TestProject.Module1.Foo = 42
+End Sub",
+                Expected = $@"
+Public Foo As Long
+Public Sub Test()
+    Renamed.Module1.Foo = 42
+End Sub",
+            };
+            var tdo = new RenameTestsDataObject("TestProject", DeclarationType.Project, newName);
+            tdo.RefactorParamType = RefactorParams.Declaration;
+            tdo.ProjectName = "TestProject";
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
         #endregion
         #region Rename Enumeration Tests
 
@@ -2493,10 +2519,11 @@ End Sub";
                 RefactoringDialogResult.Execute);
         }
 
-        [Test]
+        [TestCase("UserType", "Module1.NewUserType")]
+        [TestCase("Module1.UserType", "Module1.NewUserType")]
         [Category("Refactorings")]
         [Category("Rename")]
-        public void RenameRefactoring_RenamePublicUDT_ReferenceInDifferentModule()
+        public void RenameRefactoring_RenamePublicUDT_ReferenceInDifferentModule(string originalReference, string expectedReference)
         {
             var tdo = new RenameTestsDataObject(selectedIdentifier: "UserType", newName: "NewUserType");
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
@@ -2521,15 +2548,15 @@ End Type"
             var otherModule = new RenameTestModuleDefinition("Module2", ComponentType.StandardModule)
             {
                 Input =
-                    @"Option Explicit
+                    $@"Option Explicit
 
-Private Sub DoSomething(baz As UserType)
+Private Sub DoSomething(baz As {originalReference})
     MsgBox CStr(baz.bar)
 End Sub",
                 Expected =
-                    @"Option Explicit
+                    $@"Option Explicit
 
-Private Sub DoSomething(baz As NewUserType)
+Private Sub DoSomething(baz As {expectedReference})
     MsgBox CStr(baz.bar)
 End Sub"
             };
@@ -3370,7 +3397,8 @@ End Property";
         {
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
             var componentRename = new RenameComponentOrProjectRefactoringAction(state, state?.ProjectsProvider, state, rewritingManager);
-            var otherRename = new RenameCodeDefinedIdentifierRefactoringAction(state, state?.ProjectsProvider, rewritingManager);
+            var replaceReferencesRefactoringAction = new ReplaceReferencesRefactoringAction(rewritingManager);
+            var otherRename = new RenameCodeDefinedIdentifierRefactoringAction(state, replaceReferencesRefactoringAction, state?.ProjectsProvider,  rewritingManager);
             var baseRefactoring = new RenameRefactoringAction(componentRename, otherRename);
             return new RenameRefactoring(baseRefactoring, userInteraction, state, state?.ProjectsProvider, selectionService, selectedDeclarationService);
         }

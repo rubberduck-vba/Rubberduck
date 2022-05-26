@@ -229,6 +229,23 @@ namespace Rubberduck.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+        <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+        <Key1>D</Key1>
+        <IsEnabled>true</IsEnabled>
+        <HasShiftModifier>true</HasShiftModifier>
+        <HasAltModifier>false</HasAltModifier>
+        <HasCtrlModifier>true</HasCtrlModifier>
+        <CommandTypeName>PeekDefinitionCommand</CommandTypeName>
+        </HotkeySetting>")]
+        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_PeekDefinitionCommand {
+            get {
+                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_PeekDefinitionCommand"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ToDoMarker xmlns:xsi=\"http://www.w3.org" +
             "/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Text=\"TOD" +
             "O\" />")]

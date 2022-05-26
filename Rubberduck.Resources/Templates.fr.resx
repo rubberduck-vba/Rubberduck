@@ -126,4 +126,10 @@
   <data name="PredeclaredClassModule_Name" xml:space="preserve">
     <value>PreclaredClassModule</value>
   </data>
+  <data name="Menu_Warning_CannotFindTemplate_Caption" xml:space="preserve">
+    <value>Fichier gabarit manquant</value>
+  </data>
+  <data name="Menu_Warning_CannotFindTemplate_Message" xml:space="preserve">
+    <value>Impossible de trouver le gabarit pour '{0}'. Le fichier '{1}' peut avoir été déplacé, renommé, ou supprimé.</value>
+  </data>
 </root>

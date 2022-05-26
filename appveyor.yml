@@ -1,8 +1,4 @@
-version: '2.5.1.{build}'
-
-# add nuget api to hosts file, making sure we can actually nuget restore for the build
-hosts:
-  api.nuget.org: 93.184.221.200
+version: '2.5.2.{build}'
 
 # enforce crlf fixing
 init:
@@ -25,12 +21,12 @@ skip_commits:
   - License.rtf
 branches:
   only:
-  - master
+  - main
   - next
 skip_tags: true
 
-# build-matrix: all Release CPUs on VS2017
-image: Visual Studio 2017
+# build-matrix: all Release CPUs on Visual Studio
+image: Visual Studio 2019
 configuration: Release
 platform: Any CPU
 
@@ -42,14 +38,6 @@ cache:
 install:
   set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;C:\Program Files (x86)\Java\jdk1.8.0;%PATH%
 
-# patch version specifiers in the base project
-dotnet_csproj:
-  patch: true
-  # patch version specifier in Core that's non-wildcard to deal with XAML generated code?
-  file: 'RubberduckBaseProject.csproj' # ;*\Rubberduck.Core.csproj'
-  version: '{version}'
-  assembly_version: '{version}'
-
 # set up the environment variables used later in the build process
 environment:
   installer_dir: Rubberduck.Deployment\InnoSetup\Installers\
@@ -58,14 +46,15 @@ environment:
 
 before_build:
   - development/java/Rubberduck.Parsing/Grammar/gradlew.bat -p development/java/Rubberduck.Parsing/Grammar clean build
-  - cinst innosetup -version 5.6.1
-  - cinst codecov
+  - cinst innosetup --version 6.0.5
+  # - cinst codecov
+  # - cinst gnupg
   - cinst opencover.portable
   - nuget restore RubberduckMeta.sln
   - nuget restore Rubberduck.sln
-build:
-  verbosity: minimal
-  project: Rubberduck.sln
+build_script:
+  - ps: msbuild "C:\projects\rubberduck\Rubberduck.sln" -property:"Version=$env:APPVEYOR_BUILD_VERSION" -verbosity:minimal -logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+ 
 
 # TestScript depends on the build matrix to only contain Release cpu
 # Otherwise we might run tests against artifacts that do not exist
@@ -77,8 +66,25 @@ test_script:
   - |
     OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -threshold:10 -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
     OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -threshold:10 -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
-    codecov -f "Rubberduck_Coverage.xml RubberduckCodeAnalysis_Coverage.xml"
-    
+
+on_success:
+  - ps: |
+        $ProgressPreference = 'SilentlyContinue'
+        Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
+        ./codecov.exe -f '*_Coverage.xml'
+#        choco install gnupg --no-progress --limit-output --confirm --execution-timeout=60
+#        Invoke-WebRequest -Uri https://keybase.io/codecovsecurity/pgp_keys.asc -OutFile codecov.asc
+#        gpg.exe --import codecov.asc
+
+#        Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe.SHA256SUM -Outfile codecov.exe.SHA256SUM
+#        Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe.SHA256SUM.sig -Outfile codecov.exe.SHA256SUM.sig
+
+#        gpg.exe --verify codecov.exe.SHA256SUM.sig codecov.exe.SHA256SUM
+#        If ($(Compare-Object -ReferenceObject  $(($(certUtil -hashfile codecov.exe SHA256)[1], "codecov.exe") -join "  ") -DifferenceObject $(Get-Content codecov.exe.SHA256SUM)).length -eq 0) { echo "SHASUM verified" } Else {exit 1}
+
+  # codecov -f "Rubberduck_Coverage.xml" -n "Main Project Coverage" --flag unit
+  # codecov -f "RubberduckCodeAnalysis_Coverage.xml" -n "Meta Coverage" --flag meta
+
 # Define the installer-name depending on what branch we're building on
 for:
 - 
@@ -91,14 +97,14 @@ for:
 - 
   branches:
     only:
-    - master
+    - main
   environment:
     installer_name: Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
     release_name: Rubberduck v%APPVEYOR_BUILD_VERSION%
 - 
   branches:
     except:
-      - master
+      - main
       - next
   environment:
     # fall back to naming the installer something that shows we're in an unexpected state
@@ -107,7 +113,7 @@ for:
 
 # Create Installers to store at appveyor and upload to github
 after_test:
-  - cmd: iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"
+  - cmd: '"C:\Program Files (x86)\Inno Setup 6\iscc.exe" /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"'
   - cmd: move %INSTALLER_DIR%\Rubberduck.Setup.exe %INSTALLER_DIR%\%INSTALLER_NAME%
   - ps: |
       $installer = "$env:INSTALLER_DIR\$env:INSTALLER_NAME"
@@ -128,34 +134,36 @@ artifacts:
     name: MainCoverage
   - path: RubberduckCodeAnalysis_Coverage.xml
     name: AnalysisCoverage
+    
 deploy:
   - provider: GitHub
     tag: RETAGMEWITHAMESSAGE
     release: $(release_name)
     draft: true
     prerelease: false
-    description: "Built with :heart: by AppVeyor CI on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
+    description: "Built with :heart: by AppVeyor CI on [$(appveyor_repo_branch)] - $(appveyor_url)/project/$(appveyor_account_name)/$(appveyor_project_slug)/build/$(appveyor_build_version)"
     auth_token:
-      secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
+      secure: 0cLRsoknGc2aUPyKobv8AnxpwajVJA/GJzsU4F0Jg4KVGLWsPtQaK6pIR+BuiM5v
     artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
     on: 
-      branch: master
+      branch: main
   - provider: GitHub
     tag: Prerelease-v$(appveyor_build_version)
     release: $(release_name)
     draft: false
     prerelease: true
-    description: "AppVeyor build on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
+    description: "AppVeyor build on [$(appveyor_repo_branch)] - $(appveyor_url)/project/$(appveyor_account_name)/$(appveyor_project_slug)/build/$(appveyor_build_version)"
     auth_token:
-      secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
+      secure: 0cLRsoknGc2aUPyKobv8AnxpwajVJA/GJzsU4F0Jg4KVGLWsPtQaK6pIR+BuiM5v
     artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
     on: 
       branch: next
 
-# This is Duga posting stuff to the war room
 notifications:
-  - provider: Webhook
-    url: http://stats.zomis.net/GithubHookSEChatService/hooks/github/payload?roomId=14929
+  - provider: GitHubPullRequest
+    auth_token:
+      secure: 0cLRsoknGc2aUPyKobv8AnxpwajVJA/GJzsU4F0Jg4KVGLWsPtQaK6pIR+BuiM5v
+    template: "{{#passed}}:white_check_mark:{{/passed}}{{#failed}}:x:{{/failed}} [Build {{&projectName}} {{buildVersion}} {{status}}]({{buildUrl}}) (commit {{commitUrl}} by @{{&commitAuthorUsername}})"
     on_build_success: true
     on_build_failure: true
-    on_build_status_changed: false
+    on_build_status_changed: true

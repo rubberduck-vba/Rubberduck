@@ -7,7 +7,6 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
@@ -170,7 +169,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             StatementResolutionContext statementContext = StatementResolutionContext.Undefined,
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false,
-            bool isSetAssignment = false)
+            bool isSetAssignment = false,
+            bool isReDim = false)
         {
             var withExpression = GetInnerMostWithExpression();
             var boundExpression = _bindingService.ResolveDefault(
@@ -191,7 +191,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 _currentParent,
                 isAssignmentTarget,
                 hasExplicitLetStatement, 
-                isSetAssignment);
+                isSetAssignment,
+                isReDim);
         }
 
         private void ResolveType(ParserRuleContext expression)
@@ -259,7 +260,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 // The indexedExpression is the array that is being resized.
                 // We can't treat it as a normal index expression because the semantics are different.
                 // It's not actually a function call but a special statement.
-                ResolveDefault(indexedExpression, false);
+                ResolveDefault(indexedExpression, false, isReDim: true);
                 if (argumentList.argument() != null)
                 {
                     foreach (var positionalArgument in argumentList.argument())

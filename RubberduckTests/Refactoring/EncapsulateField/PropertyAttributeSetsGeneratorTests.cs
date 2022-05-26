@@ -9,14 +9,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     [TestFixture]
     public class PropertyAttributeSetsGeneratorTests
     {
-        private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
-
-        [SetUp]
-        public void ExecutesBeforeAllTests()
-        {
-            Support.ResetResolver();
-        }
-
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
@@ -47,7 +39,8 @@ Private mVehicle As TVehicle
                 var encapsulateTarget = state.AllUserDeclarations.Single(d => d.IdentifierName.Equals("mVehicle"));
                 var objectStateUDTTarget = state.AllUserDeclarations.Single(d => d.IdentifierName.Equals("this"));
 
-                var encapsulateFieldCandidateFactory = Support.Resolve<IEncapsulateFieldCandidateFactory>(state);
+                var encapsulateFieldCandidateFactory = EncapsulateFieldTestSupport.GetResolver(state)
+                    .Resolve<IEncapsulateFieldCandidateFactory>();
 
                 var objStateCandidate = encapsulateFieldCandidateFactory.CreateFieldCandidate(objectStateUDTTarget);
                 var objStateUDT = encapsulateFieldCandidateFactory.CreateObjectStateField(objStateCandidate as IUserDefinedTypeCandidate);
@@ -109,7 +102,8 @@ Private this As ExistingType
                 var encapsulateTarget = state.AllUserDeclarations.Single(d => d.IdentifierName.Equals("mTest"));
                 var objectStateUDTTarget = state.AllUserDeclarations.Single(d => d.IdentifierName.Equals("this"));
 
-                var encapsulateFieldCandidateFactory = Support.Resolve<IEncapsulateFieldCandidateFactory>(state);
+                var encapsulateFieldCandidateFactory = EncapsulateFieldTestSupport.GetResolver(state)
+                    .Resolve<IEncapsulateFieldCandidateFactory>();
 
                 var objStateCandidate = encapsulateFieldCandidateFactory.CreateFieldCandidate(objectStateUDTTarget);
                 var objStateUDT = encapsulateFieldCandidateFactory.CreateObjectStateField(objStateCandidate as IUserDefinedTypeCandidate);

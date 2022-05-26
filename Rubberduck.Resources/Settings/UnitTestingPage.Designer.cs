@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Settings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class UnitTestingPage {
@@ -79,7 +79,7 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type safety:.
+        ///   Looks up a localized string similar to _Type safety:.
         /// </summary>
         public static string UnitTestSettings_AssertMode {
             get {
@@ -88,7 +88,7 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Binding mode:.
+        ///   Looks up a localized string similar to _Binding mode:.
         /// </summary>
         public static string UnitTestSettings_BindingMode {
             get {
@@ -115,7 +115,7 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test method initialization/cleanup.
+        ///   Looks up a localized string similar to Test m_ethod initialization/cleanup.
         /// </summary>
         public static string UnitTestSettings_IncludeTestMethodInitCleanupPrompt {
             get {
@@ -124,7 +124,7 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insert test method stub.
+        ///   Looks up a localized string similar to _Insert test method stub.
         /// </summary>
         public static string UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt {
             get {
@@ -133,7 +133,7 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test module initialization/cleanup.
+        ///   Looks up a localized string similar to Test m_odule initialization/cleanup.
         /// </summary>
         public static string UnitTestSettings_IncludeTestModuleInitCleanupPrompt {
             get {

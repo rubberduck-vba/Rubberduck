@@ -51,7 +51,9 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                    && !declaration.IsWithEvents
                    && !declaration.IsSelfAssigned
                    && !HasUdtType(declaration, finder) // UDT variables don't need to be assigned
-                   && !declaration.References.Any(reference => reference.IsAssignment || IsAssignedByRefArgument(reference.ParentScoping, reference, finder));
+                   && !declaration.References.Any(reference => reference.IsAssignment 
+                                                               || reference.IsReDim //Ignores Variants used as arrays without assignment of an existing one.
+                                                               || IsAssignedByRefArgument(reference.ParentScoping, reference, finder));
         }
 
         private static bool HasUdtType(Declaration declaration, DeclarationFinder finder)
@@ -69,7 +71,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 return false;
             }
 
-            var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, enclosingProcedure);
+            var argument = argExpression.GetAncestor<VBAParser.ArgumentContext>();
+            var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argument, enclosingProcedure);
 
             // note: not recursive, by design.
             return parameter != null

@@ -102,7 +102,7 @@ moduleDeclarationsElement :
     | defDirective
     | enumerationStmt 
     | eventStmt
-    | constStmt
+    | moduleConstStmt
     | implementsStmt
     | moduleVariableStmt
     | moduleOption
@@ -111,6 +111,11 @@ moduleDeclarationsElement :
 
 moduleVariableStmt :
 	variableStmt
+	(endOfLine attributeStmt)*
+;
+
+moduleConstStmt :
+	constStmt
 	(endOfLine attributeStmt)*
 ;
 
@@ -578,7 +583,7 @@ lineSpecialForm : expression whiteSpace ((STEP whiteSpace?)? tuple)?
 	(COMMA whiteSpace? expression? whiteSpace?)?
 	(COMMA whiteSpace? lineSpecialFormOption)?
 ;
-circleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? CIRCLE whiteSpace (STEP whiteSpace?)? tuple (whiteSpace? COMMA whiteSpace? expression)+;
+circleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? CIRCLE whiteSpace (STEP whiteSpace?)? tuple whiteSpace? COMMA whiteSpace? expression (whiteSpace? COMMA whiteSpace? expression?)*;
 scaleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? SCALE whiteSpace tuple whiteSpace? MINUS whiteSpace? tuple;
 pSetSpecialForm : (expression whiteSpace? DOT whiteSpace?)? PSET (whiteSpace STEP)? whiteSpace? tuple whiteSpace? (COMMA whiteSpace? expression)?;
 tuple : LPAREN whiteSpace? expression whiteSpace? COMMA whiteSpace? expression whiteSpace? RPAREN;

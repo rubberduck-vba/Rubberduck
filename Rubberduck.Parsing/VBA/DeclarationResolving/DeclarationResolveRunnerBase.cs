@@ -128,7 +128,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
         protected abstract void ResolveDeclarations(IReadOnlyCollection<QualifiedModuleName> modules, IDictionary<string, ProjectDeclaration> projects, CancellationToken token);
 
-        protected void ResolveDeclarations(QualifiedModuleName module, IParseTree tree, IDictionary<string, ProjectDeclaration> projects, CancellationToken token)
+        protected void ResolveDeclarations(QualifiedModuleName module, IParseTree tree, LogicalLineStore logicalLines, IDictionary<string, ProjectDeclaration> projects, CancellationToken token)
         {
             var stopwatch = Stopwatch.StartNew();
             try
@@ -155,7 +155,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                     _state.AddDeclaration(declaration);
                 }
 
-                var declarationsListener = new DeclarationSymbolsListener(moduleDeclaration, annotationsOnWhiteSpaceLines, attributes, membersAllowingAttributes);
+                var declarationsListener = new DeclarationSymbolsListener(moduleDeclaration, annotationsOnWhiteSpaceLines, logicalLines, attributes, membersAllowingAttributes);
                 ParseTreeWalker.Default.Walk(declarationsListener, tree);
                 foreach (var createdDeclaration in declarationsListener.CreatedDeclarations)
                 {

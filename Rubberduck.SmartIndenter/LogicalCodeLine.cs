@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Rubberduck.SmartIndenter
 {
-    internal class LogicalCodeLine
+    public class LogicalCodeLine
     {
         private readonly List<AbsoluteCodeLine> _lines = new List<AbsoluteCodeLine>();
         private AbsoluteCodeLine _rebuilt;
@@ -13,6 +13,8 @@ namespace Rubberduck.SmartIndenter
 
         public int IndentationLevel { get; set; }
         public bool AtProcedureStart { get; set; }
+        public bool AtPropertyStart { get; set; }
+        public string PropertyIdentifier { get; set; }
         public bool AtEnumTypeStart { get; set; }
         public bool InsideProcedureTypeOrEnum { get; set; }
 
@@ -99,7 +101,12 @@ namespace Rubberduck.SmartIndenter
             get { return _lines.Any(x => x.IsProcedureStart); }
         }
 
-        public bool IsProcudureEnd
+        public bool IsPropertyStart
+        {
+            get { return _lines.Any(x => x.IsPropertyStart); }
+        }
+
+        public bool IsProcedureEnd
         {
             get { return _lines.Any(x => x.IsProcedureEnd); }
         }

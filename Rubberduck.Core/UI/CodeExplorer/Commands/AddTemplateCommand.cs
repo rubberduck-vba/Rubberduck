@@ -46,7 +46,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _projectsProvider = projectsProvider;
             _messageBox = messageBox;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         public override IEnumerable<Type> ApplicableNodeTypes => new[]{typeof(System.ValueTuple<string, ICodeExplorerNode>)};
@@ -62,7 +62,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return EvaluateCanExecute(model);
         }
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             if(parameter is ValueTuple<string, ICodeExplorerNode> data)
             {
@@ -74,9 +74,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool EvaluateCanExecute(ICodeExplorerNode node)
         {
-            if (!ApplicableNodes.Contains(node.GetType())
-                || !(node is CodeExplorerItemViewModel)
-                || node.Declaration == null)
+            if (node?.Declaration == null 
+                || !ApplicableNodes.Contains(node.GetType())
+                || !(node is CodeExplorerItemViewModel))
             {
                 return false;
             }

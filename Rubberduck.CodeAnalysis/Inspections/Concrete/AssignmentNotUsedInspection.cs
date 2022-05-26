@@ -35,6 +35,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     value = otherVar * value
     /// End Sub
     /// ]]>
+    /// </module>
+    /// </example>
     /// <example hasResult="true">
     /// <module name="Module1" type="Standard Module">
     /// <![CDATA[
@@ -81,8 +83,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            return !(IsAssignmentOfNothing(reference)
-                        || IsPotentiallyUsedViaJump(reference, finder));
+            return !(IsAssignmentOfNothing(reference) || IsPotentiallyUsedViaJump(reference, finder));
         }
 
         protected override string ResultDescription(IdentifierReference reference)
@@ -113,8 +114,11 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                         ? FindUnusedAssignmentNodes(tree, localVariable, allAssignmentsAndReferences)
                         : allAssignmentsAndReferences.OfType<AssignmentNode>();
 
-            return unusedAssignmentNodes.Where(n => !IsDescendentOfNeverFlagNode(n))
-                                        .Select(n => n.Reference);
+            var results = unusedAssignmentNodes
+                .Where(n => !IsDescendentOfNeverFlagNode(n))
+                .Select(n => n.Reference);
+
+            return results;
         }
 
         private static IEnumerable<AssignmentNode> FindUnusedAssignmentNodes(INode node, Declaration localVariable, IEnumerable<INode> allAssignmentsAndReferences)
@@ -131,23 +135,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                                                             .Contains(refNode));
 
                 var assignmentsPrecedingReference = assignmentExprNodesWithReference.Any()
-                    ? assignmentExprNodes.TakeWhile(n => n != assignmentExprNodesWithReference.Last())
-                                                .Last()
-                                                .Nodes(new[] { typeof(AssignmentNode) })
-                    : allAssignmentsAndReferences.TakeWhile(n => n != refNode)
+                    ? assignmentExprNodes.TakeWhile(n => n != assignmentExprNodesWithReference.LastOrDefault())
+                                                ?.LastOrDefault()
+                                                ?.Nodes(new[] { typeof(AssignmentNode) })
+                    : allAssignmentsAndReferences.TakeWhile(n => n != refNode && !IsDescendentOfNeverFlagNode(n))
                         .OfType<AssignmentNode>();
 
-                if (assignmentsPrecedingReference.Any())
+                if (assignmentsPrecedingReference?.Any() ?? false)
                 {
-                    usedAssignments.Add(assignmentsPrecedingReference.Last() as AssignmentNode);
+                    usedAssignments.Add(assignmentsPrecedingReference.LastOrDefault() as AssignmentNode);
                 }
             }
 
-            return allAssignmentsAndReferences.OfType<AssignmentNode>()
-                                                .Except(usedAssignments);
+            return allAssignmentsAndReferences.OfType<AssignmentNode>().Except(usedAssignments);
         }
 
-        private static bool IsDescendentOfNeverFlagNode(AssignmentNode assignment)
+        private static bool IsDescendentOfNeverFlagNode(INode assignment)
         {
             return assignment.TryGetAncestorNode<BranchNode>(out _)
                 || assignment.TryGetAncestorNode<LoopNode>(out _);
@@ -205,7 +208,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         private static bool IsPotentiallyUsedAssignment<T>(T jumpContext, IdentifierReference resultCandidate, Dictionary<string, int> labelIdLineNumberPairs) where T : ParserRuleContext
         {
-            int? executionBranchLine = null;
+            int? executionBranchLine;
 
             switch (jumpContext)
             {
@@ -220,9 +223,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                     break;
             }
 
-            return executionBranchLine.HasValue
-                ?   AssignmentIsUsedPriorToExitStmts(resultCandidate, executionBranchLine.Value)
-                :   false;
+            return executionBranchLine.HasValue && AssignmentIsUsedPriorToExitStmts(resultCandidate, executionBranchLine.Value);
         }
 
         private static bool AssignmentIsUsedPriorToExitStmts(IdentifierReference resultCandidate, int executionBranchLine)

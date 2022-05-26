@@ -6,8 +6,8 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Rubberduck.Refactorings;
 using Rubberduck.Parsing.Common;
-using Rubberduck.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -103,7 +103,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private void HandleInvalidSelection(object sender, EventArgs e)
         {
-            MessageBox.Show(RubberduckUI.ExtractMethod_InvalidSelectionMessage, RubberduckUI.ExtractMethod_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show(RefactoringsUI.ExtractMethod_InvalidSelectionMessage, RefactoringsUI.ExtractMethod_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
     }
 }

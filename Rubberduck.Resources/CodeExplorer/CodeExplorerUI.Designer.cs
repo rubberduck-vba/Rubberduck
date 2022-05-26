@@ -426,6 +426,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Navigate.
+        /// </summary>
+        public static string CodeExplorer_NavigateText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_NavigateText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;New.
         /// </summary>
         public static string CodeExplorer_New {
@@ -642,6 +651,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code _Explorer.
+        /// </summary>
+        public static string CodeExplorerWindowSettings_AccessKey {
+            get {
+                return ResourceManager.GetString("CodeExplorerWindowSettings_AccessKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm Delete.
         /// </summary>
         public static string ConfirmBeforeDelete_Caption {
@@ -785,6 +803,88 @@ namespace Rubberduck.Resources.CodeExplorer {
             get {
                 object obj = ResourceManager.GetObject("FolderOpen", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For file &apos;{0}&apos;, the required binary file(s) &apos;{1}&apos; are missing and the target component &apos;{2}&apos; does not already exists.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_BinaryAndComponentDoNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_BinaryAndComponentDoNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For file &apos;{0}&apos;, the requires binary file(s) &apos;{1}&apos; are missing.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_BinaryDoesNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_BinaryDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no existing document module with name &apos;{0}&apos;; file &apos;{1}&apos; cannot be imported.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_DocumentDoesNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_DocumentDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple files contain code for the component &apos;{0}&apos;.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_DuplicateModule {
+            get {
+                return ResourceManager.GetString("ImportCommand_DuplicateModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Files.
+        /// </summary>
+        public static string ImportCommand_OpenDialog_Filter_AllFiles {
+            get {
+                return ResourceManager.GetString("ImportCommand_OpenDialog_Filter_AllFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VB Files.
+        /// </summary>
+        public static string ImportCommand_OpenDialog_Filter_VBFiles {
+            get {
+                return ResourceManager.GetString("ImportCommand_OpenDialog_Filter_VBFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Source Files.
+        /// </summary>
+        public static string ImportCommand_OpenDialog_Title {
+            get {
+                return ResourceManager.GetString("ImportCommand_OpenDialog_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The extension of the file &apos;{0}&apos; is not supported.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_UnsupportedFileExtensions {
+            get {
+                return ResourceManager.GetString("ImportCommand_UnsupportedFileExtensions", resourceCulture);
             }
         }
         

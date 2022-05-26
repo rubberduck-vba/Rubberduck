@@ -8,7 +8,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Parsing.Annotations.Concrete;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -289,7 +289,10 @@ namespace Rubberduck.Parsing.Symbols
             {
                 string literalDescription;
 
-                var memberAttribute = Attributes.SingleOrDefault(a => a.Name == Attributes.MemberAttributeName("VB_Description", IdentifierName));
+                var memberAttribute = Attributes.SingleOrDefault(a => 
+                    a.Name == Attributes.MemberAttributeName("VB_Description", IdentifierName) || 
+                    a.Name == Attributes.MemberAttributeName("VB_VarDescription", IdentifierName));
+
                 if (memberAttribute != null)
                 {
                     literalDescription = memberAttribute.Values.SingleOrDefault() ?? string.Empty;
@@ -303,6 +306,17 @@ namespace Rubberduck.Parsing.Symbols
                     return CorrectlyFormatedDescription(literalDescription);
                 }
 
+                // fallback to description annotation; enables descriptions in document modules and non-synchronized members.
+                var descriptionAnnotation = Annotations.SingleOrDefault(a =>
+                    a.Annotation.GetType() == typeof(DescriptionAnnotation)
+                    || a.Annotation.GetType() == typeof(VariableDescriptionAnnotation)
+                    || a.Annotation.GetType() == typeof(ModuleDescriptionAnnotation));
+
+                if (descriptionAnnotation != null)
+                {
+                    literalDescription = descriptionAnnotation.AnnotationArguments.FirstOrDefault();
+                    return CorrectlyFormatedDescription(literalDescription);
+                }
                 return string.Empty;
             }
         }
@@ -350,7 +364,7 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public void AddReference(
+        public IdentifierReference AddReference(
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent,
@@ -367,7 +381,9 @@ namespace Rubberduck.Parsing.Symbols
             int defaultMemberRecursionDepth = 0,
             bool isArrayAccess = false,
             bool isProcedureCoercion = false,
-            bool isInnerRecursiveDefaultMemberAccess = false
+            bool isInnerRecursiveDefaultMemberAccess = false,
+            IdentifierReference qualifyingReference = null,
+            bool isReDim = false
             )
         {
             var oldReference = _references.FirstOrDefault(r =>
@@ -400,8 +416,11 @@ namespace Rubberduck.Parsing.Symbols
                 defaultMemberRecursionDepth,
                 isArrayAccess,
                 isProcedureCoercion,
-                isInnerRecursiveDefaultMemberAccess);
+                isInnerRecursiveDefaultMemberAccess,
+                qualifyingReference,
+                isReDim);
             _references.AddOrUpdate(newReference, 1, (key, value) => 1);
+            return newReference;
         }
 
         /// <summary>

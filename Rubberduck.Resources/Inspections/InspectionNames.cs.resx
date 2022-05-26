@@ -243,9 +243,6 @@
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>'Option Base 0' je nadbytečná</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Ilegální anotace</value>
-  </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Chybějící atribut</value>
   </data>
@@ -437,5 +434,23 @@
   </data>
   <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
     <value>Návratová hodnota funkce je zahozena.</value>
+  </data>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Ilegální anotace</value>
+  </data>
+  <data name="AnnotationInIncompatibleComponentTypeInspection" xml:space="preserve">
+    <value>Anotace je nekompatibilní s typem komponenty</value>
+  </data>
+  <data name="MisleadingByRefParameterInspection" xml:space="preserve">
+    <value>Zavádějící modifikátor parametru ByRef</value>
+  </data>
+  <data name="ImplicitContainingWorkbookReferenceInspection" xml:space="preserve">
+    <value>Implicitní odkaz na obsahující modul Sešitu</value>
+  </data>
+  <data name="ImplicitContainingWorksheetReferenceInspection" xml:space="preserve">
+    <value>Implicitní odkaz na obsahující modul Listu</value>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>Nerozpoznaná anotace</value>
   </data>
 </root>

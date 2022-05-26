@@ -16,7 +16,7 @@ namespace Rubberduck.UI.AddRemoveReferences
 
         private AddRemoveReferencesViewModel ViewModel => DataContext as AddRemoveReferencesViewModel;
 
-        private void ListView_SynchronizeCurrentSelection_OnGotFocus(object sender, RoutedEventArgs e)
+        private void ListView_SynchronizeCurrentSelection_OnSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             UpdateCurrentSelection((Selector)sender);
 

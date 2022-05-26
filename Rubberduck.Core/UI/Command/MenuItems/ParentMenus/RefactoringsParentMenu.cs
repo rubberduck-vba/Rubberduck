@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Rubberduck.Parsing.UIContext;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public class RefactoringsParentMenu : ParentMenuItemBase
     {
-        public RefactoringsParentMenu(IEnumerable<IMenuItem> items)
-            : base("RubberduckMenu_Refactor", items)
+        public RefactoringsParentMenu(IEnumerable<IMenuItem> items, IUiDispatcher dispatcher)
+            : base(dispatcher,"RubberduckMenu_Refactor", items)
         {
         }
 
@@ -22,7 +23,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         ReorderParameters,
         MoveCloserToUsage,
         EncapsulateField,
-        IntroduceParameter,
+        PromoteToParameter,
         IntroduceField,
         MoveToFolder,
         MoveContainingFolder,

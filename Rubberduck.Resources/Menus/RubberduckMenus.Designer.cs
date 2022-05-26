@@ -19,7 +19,7 @@ namespace Rubberduck.Resources.Menus {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class RubberduckMenus {
@@ -129,6 +129,15 @@ namespace Rubberduck.Resources.Menus {
         public static string ContextMenu_GoToImplementation {
             get {
                 return ResourceManager.GetString("ContextMenu_GoToImplementation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Peek definition.
+        /// </summary>
+        public static string ContextMenu_PeekDefinition {
+            get {
+                return ResourceManager.GetString("ContextMenu_PeekDefinition", resourceCulture);
             }
         }
         
@@ -259,15 +268,6 @@ namespace Rubberduck.Resources.Menus {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Introduce &amp;Parameter.
-        /// </summary>
-        public static string RefactorMenu_IntroduceParameter {
-            get {
-                return ResourceManager.GetString("RefactorMenu_IntroduceParameter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Move Closer To &amp;Usage.
         /// </summary>
         public static string RefactorMenu_MoveCloserToUsage {
@@ -291,6 +291,15 @@ namespace Rubberduck.Resources.Menus {
         public static string RefactorMenu_MoveToFolder {
             get {
                 return ResourceManager.GetString("RefactorMenu_MoveToFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Introduce &amp;Parameter.
+        /// </summary>
+        public static string RefactorMenu_PromoteToParameter {
+            get {
+                return ResourceManager.GetString("RefactorMenu_PromoteToParameter", resourceCulture);
             }
         }
         

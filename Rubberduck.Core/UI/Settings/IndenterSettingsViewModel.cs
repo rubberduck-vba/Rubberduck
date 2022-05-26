@@ -37,6 +37,7 @@ namespace Rubberduck.UI.Settings
             _indentSpaces = config.UserSettings.IndenterSettings.IndentSpaces;
             _spaceProcedures = config.UserSettings.IndenterSettings.VerticallySpaceProcedures;
             _procedureSpacing = config.UserSettings.IndenterSettings.LinesBetweenProcedures;
+            _groupRelatedProperties = config.UserSettings.IndenterSettings.GroupRelatedProperties;
 
             PropertyChanged += IndenterSettingsViewModel_PropertyChanged;
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings(GetCurrentSettings()));
@@ -396,13 +397,28 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private bool _groupRelatedProperties;
+
+        public bool GroupRelatedProperties
+        {
+            get => _groupRelatedProperties;
+            set
+            {
+                if (_groupRelatedProperties != value)
+                {
+                    _groupRelatedProperties = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public string PreviewSampleCode
         {
             get
             {
                 var indenter = new Indenter(null, GetCurrentSettings);
 
-                var lines = RubberduckUI.IndenterSettings_PreviewCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                var lines = IndenterSettingsUI.PreviewCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
                 lines = indenter.Indent(lines).ToArray();
                 return string.Join(Environment.NewLine, lines);
             }
@@ -465,6 +481,7 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.IndenterSettings.IndentSpaces = IndentSpaces;
             config.UserSettings.IndenterSettings.VerticallySpaceProcedures = VerticallySpaceProcedures;
             config.UserSettings.IndenterSettings.LinesBetweenProcedures = LinesBetweenProcedures;
+            config.UserSettings.IndenterSettings.GroupRelatedProperties = GroupRelatedProperties;
         }
 
         public void SetToDefaults(Configuration config)
@@ -497,6 +514,7 @@ namespace Rubberduck.UI.Settings
             IndentSpaces = toLoad.IndentSpaces;
             VerticallySpaceProcedures = toLoad.VerticallySpaceProcedures;
             LinesBetweenProcedures = toLoad.LinesBetweenProcedures;
+            GroupRelatedProperties = toLoad.GroupRelatedProperties;
         }
     }
 }

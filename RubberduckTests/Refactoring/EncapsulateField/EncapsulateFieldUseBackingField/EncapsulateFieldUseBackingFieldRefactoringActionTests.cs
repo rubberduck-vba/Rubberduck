@@ -1,26 +1,24 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Common;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
+using Rubberduck.SmartIndenter;
+using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
+using RubberduckTests.Settings;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackingField
 {
     [TestFixture]
-    public class EncapsulateFieldUseBackingFieldRefactoringActionTests : RefactoringActionTestBase<EncapsulateFieldUseBackingFieldModel>
+    public class EncapsulateFieldUseBackingFieldRefactoringActionTests
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
-
-        [SetUp]
-        public void ExecutesBeforeAllTests()
-        {
-            Support.ResetResolver();
-        }
 
         [TestCase(false, "Name")]
         [TestCase(true, "Name")]
@@ -34,12 +32,12 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
             var target = "fizz";
             var inputCode = $"Public {target} As Integer";
 
-            EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state)
+            EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
             {
-                var modelFactory = Support.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>(state);
-
                 var field = state.DeclarationFinder.MatchName(target).Single();
                 var fieldModel = new FieldEncapsulationModel(field as VariableDeclaration, isReadOnly, propertyIdentifier);
+
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>();
                 return modelFactory.Create( new List<FieldEncapsulationModel>() { fieldModel });
             }
 
@@ -75,9 +73,9 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
             var target = "fizz";
             var inputCode = $"Public {target} As Integer";
 
-            EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state)
+            EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
             {
-                var modelFactory = Support.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>(state);
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>();
                 return modelFactory.Create(Enumerable.Empty<FieldEncapsulationModel>());
             }
 
@@ -85,9 +83,122 @@ namespace RubberduckTests.Refactoring.EncapsulateField.EncapsulateFieldUseBackin
             Assert.AreEqual(refactoredCode, inputCode);
         }
 
-        protected override IRefactoringAction<EncapsulateFieldUseBackingFieldModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
+        [TestCase(true)]
+        [TestCase(false)]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        [Category(nameof(EncapsulateFieldUseBackingFieldRefactoringAction))]
+        public void RespectsGroupRelatedPropertiesIndenterSetting(bool groupRelatedProperties)
         {
-            return Support.Resolve<EncapsulateFieldUseBackingFieldRefactoringAction>(state, rewritingManager);
+            var inputCode =
+@"
+Public mTestField As Long
+Public mTestField1 As Long
+Public mTestField2 As Long
+";
+
+            EncapsulateFieldUseBackingFieldModel modelBuilder(RubberduckParserState state, EncapsulateFieldTestsResolver resolver)
+            {
+                var field = state.AllUserDeclarations.Single(d => d.IdentifierName.Equals("mTestField"));
+                var fieldModel = new FieldEncapsulationModel(field as VariableDeclaration, false);
+
+                var modelFactory = resolver.Resolve<IEncapsulateFieldUseBackingFieldModelFactory>();
+                var model = modelFactory.Create(new List<FieldEncapsulationModel>() { fieldModel });
+                foreach (var candidate in model.EncapsulationCandidates)
+                {
+                    candidate.EncapsulateFlag = true;
+                }
+                return model;
+            }
+
+            var testIndenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.VerticallySpaceProcedures = true;
+                s.LinesBetweenProcedures = 1;
+                s.GroupRelatedProperties = groupRelatedProperties;
+                return s;
+            });
+
+            var refactoredCode = RefactoredCode(inputCode, modelBuilder, testIndenter);
+
+            var lines = refactoredCode.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            var expectedGrouped = new[]
+            {
+                "Public Property Get TestField() As Long",
+                "TestField = mTestField",
+                "End Property",
+                "Public Property Let TestField(ByVal RHS As Long)",
+                "mTestField = RHS",
+                "End Property",
+                "",
+                "Public Property Get TestField1() As Long",
+                "TestField1 = mTestField1",
+                "End Property",
+                "Public Property Let TestField1(ByVal RHS As Long)",
+                "mTestField1 = RHS",
+                "End Property",
+                "",
+                "Public Property Get TestField2() As Long",
+                "TestField2 = mTestField2",
+                "End Property",
+                "Public Property Let TestField2(ByVal RHS As Long)",
+                "mTestField2 = RHS",
+                "End Property",
+                "",
+            };
+
+            var expectedNotGrouped = new[]
+            {
+                "Public Property Get TestField() As Long",
+                "TestField = mTestField",
+                "End Property",
+                "",
+                "Public Property Let TestField(ByVal RHS As Long)",
+                "mTestField = RHS",
+                "End Property",
+                "",
+                "Public Property Get TestField1() As Long",
+                "TestField1 = mTestField1",
+                "End Property",
+                "",
+                "Public Property Let TestField1(ByVal RHS As Long)",
+                "mTestField1 = RHS",
+                "End Property",
+                "",
+                "Public Property Get TestField2() As Long",
+                "TestField2 = mTestField2",
+                "End Property",
+                "",
+                "Public Property Let TestField2(ByVal RHS As Long)",
+                "mTestField2 = RHS",
+                "End Property",
+                "",
+            };
+
+            var idx = 0;
+
+            IList<string> expected = groupRelatedProperties
+                ? expectedGrouped.ToList()
+                : expectedNotGrouped.ToList();
+
+            var refactoredLinesOfInterest = lines.SkipWhile(rl => !rl.Contains(expected[0]));
+
+            Assert.IsTrue(refactoredLinesOfInterest.Any());
+
+            foreach (var line in refactoredLinesOfInterest)
+            {
+                if (!line.Contains("="))
+                {
+                    StringAssert.AreEqualIgnoringCase(expected[idx], line);
+                }
+                idx++;
+            }
+        }
+
+        private string RefactoredCode(string inputCode, Func<RubberduckParserState, EncapsulateFieldTestsResolver, EncapsulateFieldUseBackingFieldModel> modelBuilder, IIndenter indenter = null)
+        {
+            return Support.RefactoredCode<EncapsulateFieldUseBackingFieldRefactoringAction, EncapsulateFieldUseBackingFieldModel>(inputCode, modelBuilder, indenter);
         }
     }
 }

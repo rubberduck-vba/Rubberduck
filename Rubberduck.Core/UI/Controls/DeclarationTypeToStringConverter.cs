@@ -1,8 +1,8 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using Rubberduck.CodeAnalysis;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Controls
 {
@@ -12,7 +12,7 @@ namespace Rubberduck.UI.Controls
         {
             if (value is DeclarationType type)
             {
-                var text = RubberduckUI.ResourceManager.GetString("DeclarationType_" + type, CultureInfo.CurrentUICulture) ?? string.Empty;
+                var text = CodeAnalysisUI.ResourceManager.GetString("DeclarationType_" + type, CultureInfo.CurrentUICulture) ?? string.Empty;
                 return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(text);
             }
 

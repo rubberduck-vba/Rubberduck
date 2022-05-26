@@ -1,13 +1,13 @@
 ﻿using Rubberduck.Interaction;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
-using Rubberduck.Resources;
 using Rubberduck.Refactorings.RemoveParameters;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
     public class RemoveParametersPresenter : RefactoringPresenterBase<RemoveParametersModel>, IRemoveParametersPresenter
     {
-        private static readonly DialogData DialogData = DialogData.Create(RubberduckUI.RemoveParamsDialog_Caption, 395, 494);
+        private static readonly DialogData DialogData = DialogData.Create(RefactoringsUI.RemoveParamsDialog_Caption, 395, 494);
         private readonly IMessageBox _messageBox;
 
         public RemoveParametersPresenter(RemoveParametersModel model,
@@ -33,8 +33,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             switch (Model.Parameters.Count)
             {
                 case 0:
-                    var message = string.Format(RubberduckUI.RemovePresenter_NoParametersError, Model.TargetDeclaration.IdentifierName);
-                    _messageBox.NotifyWarn(message, RubberduckUI.RemoveParamsDialog_TitleText);
+                    var message = string.Format(RefactoringsUI.RemovePresenter_NoParametersError, Model.TargetDeclaration.IdentifierName);
+                    _messageBox.NotifyWarn(message, RefactoringsUI.RemoveParamsDialog_TitleText);
                     return null;
                 case 1:
                     Model.RemoveParameters = Model.Parameters;
@@ -46,14 +46,14 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
         private bool UserConfirmsInterfaceTarget(RemoveParametersModel model)
         {
-            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation,
+            var message = string.Format(RefactoringsUI.Refactoring_TargetIsInterfaceMemberImplementation,
                 model.OriginalTarget.IdentifierName, Model.TargetDeclaration.ComponentName, model.TargetDeclaration.IdentifierName);
             return UserConfirmsNewTarget(message);
         }
 
         private bool UserConfirmsNewTarget(string message)
         {
-            return _messageBox.ConfirmYesNo(message, RubberduckUI.RemoveParamsDialog_TitleText);
+            return _messageBox.ConfirmYesNo(message, RefactoringsUI.RemoveParamsDialog_TitleText);
         }
     }
 }

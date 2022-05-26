@@ -258,8 +258,8 @@
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>Component '{0}' uses 'Option Base 0'.</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Annotation '{0}' is illegal in this context.</value>
+  <data name="InvalidAnnotationInspection" xml:space="preserve">
+    <value>Annotation '{0}' is invalid in this context.</value>
     <comment>{0} annotation name</comment>
   </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
@@ -527,5 +527,33 @@ In memoriam, 1972-2018</value>
   <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
     <value>The public enumeration `{0}` should be declared within a Standard or Class module</value>
     <comment>{0} identifier</comment>
+  </data>
+  <data name="InvalidAnnotationInspection_IncompatibleComponentType" xml:space="preserve">
+    <value>Annotation '{0}' cannot be used in a '{1}'.</value>
+    <comment>{0} Annotation name; {1} annotation component type</comment>
+  </data>
+  <data name="InvalidAnnotationInspection_NotInRequiredComponentType" xml:space="preserve">
+    <value>Annotation '{0}' is used in a '{1}', but is only valid in a '{2}'.</value>
+    <comment>{0} Annotation name; {1} annotation component type; {2} annotation required component type</comment>
+  </data>
+  <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
+    <value>'{0}' is not a recognized Rubberduck annotation (yet?)</value>
+    <comment>{0} Unrecognized annotation name</comment>
+  </data>
+  <data name="IIfSideEffectInspection" xml:space="preserve">
+    <value>'{0}' invoked by 'IIf' Function</value>
+    <comment>{0} method name</comment>
+  </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>Attempt to assign Read-Only Property '{0}'</value>
+    <comment>{0} Property name</comment>
+  </data>
+  <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
+    <value>Identifier '{0}' in '{1}' is suspiciously referring to the default instance of that class type.</value>
+    <comment>{0} identifier name; {1} expression/context</comment>
+  </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>Control '{0}.{1}' is being accessed from outside its parent form.</value>
+    <comment>{0} parent UserForm name; {1} control name</comment>
   </data>
 </root>

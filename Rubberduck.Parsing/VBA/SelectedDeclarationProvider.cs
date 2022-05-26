@@ -13,10 +13,10 @@ namespace Rubberduck.Parsing.VBA
         private readonly ISelectionProvider _selectionProvider;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public SelectedDeclarationProvider(ISelectionProvider selectionProvider, IDeclarationFinderProvider declarationFinderProvider)
+        public SelectedDeclarationProvider(ISelectionProvider selectionProvider, IDeclarationFinderProvider finderProvider)
         {
             _selectionProvider = selectionProvider;
-            _declarationFinderProvider = declarationFinderProvider;
+            _declarationFinderProvider = finderProvider;
         }
 
         public Declaration SelectedDeclaration()
@@ -58,7 +58,7 @@ namespace Rubberduck.Parsing.VBA
 
         public Declaration SelectedDeclaration(QualifiedSelection qualifiedSelection)
         {
-            var finder = _declarationFinderProvider.DeclarationFinder;
+            var finder = _declarationFinderProvider?.DeclarationFinder;
 
             var candidateViaReference = SelectedDeclarationViaReference(qualifiedSelection, finder);
             if (candidateViaReference != null)
@@ -84,13 +84,70 @@ namespace Rubberduck.Parsing.VBA
                 return candidateViaConstantDeclaration;
             }
 
+            var candidateViaArgumentCallSite = SelectedDeclarationViaArgument(qualifiedSelection, finder);
+            if (candidateViaArgumentCallSite != null)
+            {
+                return candidateViaArgumentCallSite;
+            }
+
+            // fallback to the containing member declaration if we're inside a procedure scope
             var candidateViaContainingMember = SelectedMember(qualifiedSelection);
             if (candidateViaContainingMember != null)
             {
                 return candidateViaContainingMember;
             }
 
+            // otherwise fallback to the containing module declaration
             return SelectedModule(qualifiedSelection);
+        }
+
+        private static Declaration SelectedDeclarationViaArgument(QualifiedSelection qualifiedSelection, DeclarationFinder finder)
+        {
+            var members = finder.Members(qualifiedSelection.QualifiedName)
+                .Where(m => (m.DeclarationType.HasFlag(DeclarationType.Procedure) // includes PropertyLet and PropertySet and LibraryProcedure
+                    || m.DeclarationType.HasFlag(DeclarationType.Function)) // includes PropertyGet and LibraryFunction
+                    && !m.DeclarationType.HasFlag(DeclarationType.LibraryFunction)
+                    && !m.DeclarationType.HasFlag(DeclarationType.LibraryProcedure));
+            var enclosingProcedure = members.SingleOrDefault(m => m.Context.GetSelection().Contains(qualifiedSelection.Selection));
+            if (enclosingProcedure == null)
+            {
+                return null;
+            }
+
+            var allArguments = enclosingProcedure.Context.GetDescendents<VBAParser.ArgumentContext>();
+
+            var context = allArguments
+                .Where(arg => arg.missingArgument() == null)
+                .FirstOrDefault(m =>
+                {
+                    var isOnWhitespace = false;
+                    if (m.TryGetPrecedingContext<VBAParser.WhiteSpaceContext>(out var whitespace))
+                    {
+                        isOnWhitespace = whitespace.GetSelection().ContainsFirstCharacter(qualifiedSelection.Selection);
+                    }
+                    return isOnWhitespace || m.GetSelection().ContainsFirstCharacter(qualifiedSelection.Selection);
+                });
+                
+            var skippedArg = allArguments
+                .Where(arg => arg.missingArgument() != null)
+                .FirstOrDefault(m =>
+                {
+                    var isOnWhitespace = false;
+                    if (m.TryGetPrecedingContext<VBAParser.WhiteSpaceContext>(out var whitespace))
+                    {
+                        isOnWhitespace = whitespace.GetSelection().ContainsFirstCharacter(qualifiedSelection.Selection);
+                    }
+                    return isOnWhitespace || m.GetSelection().ContainsFirstCharacter(qualifiedSelection.Selection);
+                });
+
+            context = context ?? skippedArg;
+            if (context != null)
+            {
+                return (Declaration)finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(context, enclosingProcedure)
+                    ?? finder.FindInvokedMemberFromArgumentContext(context, qualifiedSelection.QualifiedName); // fallback to the invoked procedure declaration
+            }
+
+            return null;
         }
 
         private static Declaration SelectedDeclarationViaReference(QualifiedSelection qualifiedSelection, DeclarationFinder finder)
@@ -220,6 +277,13 @@ namespace Rubberduck.Parsing.VBA
                 .UserDeclarations(DeclarationType.Module)
                 .OfType<ModuleDeclaration>()
                 .FirstOrDefault(module => module.QualifiedModuleName.Equals(qualifiedSelection.QualifiedName));
+        }
+
+        public ModuleDeclaration SelectedProjectExplorerModule()
+        {
+            var moduleName = _selectionProvider.ProjectExplorerSelection();
+            return _declarationFinderProvider.DeclarationFinder?
+                .ModuleDeclaration(moduleName) as ModuleDeclaration;
         }
 
         public ProjectDeclaration SelectedProject()

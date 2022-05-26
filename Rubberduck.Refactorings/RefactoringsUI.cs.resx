@@ -1,0 +1,565 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AnnotateDeclarationDialog_AnnotationLabel" xml:space="preserve">
+    <value>Přidat Anotaci:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_AddArgumentButtonLabel" xml:space="preserve">
+    <value>Přidat</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
+    <value>Přidat/Upravit atribut</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentsLabel" xml:space="preserve">
+    <value>Argumenty Anotace:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentTypeHeader" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentValueHeader" xml:space="preserve">
+    <value>Hodnota</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Anotace Deklarace</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_DeclarationLabel" xml:space="preserve">
+    <value>Deklarace k Anotaci:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_Instructions" xml:space="preserve">
+    <value>Vyberte anotaci (a hodnoty) pro přidání deklaraci.</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_RemoveArgumentButtonLabel" xml:space="preserve">
+    <value>Odstranit</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_TitleText" xml:space="preserve">
+    <value>Deklarace Anotace</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_AttributeNameStart" xml:space="preserve">
+    <value>Argumenty anotace typu 'Attribute Name' musejí začínat 'VB_'.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_EmptyArgument" xml:space="preserve">
+    <value>Argumenty anotace nemohou být prázdné.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_InspectionName" xml:space="preserve">
+    <value>Argumenty anotace typu 'Inspection Name' musejí být jméno existující inspekce.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_Newline" xml:space="preserve">
+    <value>Argumenty anotace mohou obsahovat pouze jeden řádek.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
+    <value>Argumenty anotace typu 'Boolean' musejí být buď 'True' nebo 'False'.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
+    <value>Argumenty anotace nesmějí obsahovat 'control' charaktery.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_TooLong" xml:space="preserve">
+    <value>Argumenty anotace nemohou být delší než {0} charakterů.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
+    <value>Argumenty anotace typu 'Attribute Name' nemohou obsahovat mezeru.</value>
+  </data>
+  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
+    <value>Název Inspekce</value>
+  </data>
+  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
+    <value>Atribut</value>
+  </data>
+  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
+    <value>Boolean</value>
+  </data>
+  <data name="AnnotationArgumentType_Number" xml:space="preserve">
+    <value>Číslo</value>
+  </data>
+  <data name="AnnotationArgumentType_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
+    <value>'{0}' je již přístupný v tomto rozsahu.</value>
+  </data>
+  <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
+    <value>{0} Zvaž použití jiného jména.</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
+    <value>Přiřazen ByVal parametr QuickFix - Udělat Lokální Kopii</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Prosím specifikujte název, který se má použít na lokální kopii ByVal {0} '{1}'.</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
+    <value>Specifikujte Název Kopie Lokální Proměnné</value>
+  </data>
+  <data name="EncapsulateField_InstructionText" xml:space="preserve">
+    <value>Prosím, specifikujte jméno vlastnosti, přístupnost parametru a typ 'setteru'.</value>
+  </data>
+  <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
+    <value>Obalit Pole Privátním Typem</value>
+  </data>
+  <data name="EncapsulateField_TitleText" xml:space="preserve">
+    <value>Zapouzdřit Pole</value>
+  </data>
+  <data name="EncapsulateField_SetterType" xml:space="preserve">
+    <value>Typ Setteru:</value>
+  </data>
+  <data name="EncapsulateField_ReadOnlyCheckBoxContent" xml:space="preserve">
+    <value>Pouze ke čtení</value>
+  </data>
+  <data name="EncapsulateField_PropertyName" xml:space="preserve">
+    <value>Jméno Property:</value>
+  </data>
+  <data name="EncapsulateField_PrivateUDTPropertyText" xml:space="preserve">
+    <value>Vytvoří property pro každý UDT člen</value>
+  </data>
+  <data name="EncapsulateField_PreviewMarker" xml:space="preserve">
+    <value>'&lt;===== Změny v deklaraci a vlastnostech nad tímto řádkem =====&gt;</value>
+  </data>
+  <data name="EncapsulateField_Preview" xml:space="preserve">
+    <value>Náhled:</value>
+  </data>
+  <data name="EncapsulateField_ParameterName" xml:space="preserve">
+    <value>Název Parametru:</value>
+  </data>
+  <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
+    <value>Konflikt názvu</value>
+  </data>
+  <data name="EncapsulateField_Caption" xml:space="preserve">
+    <value>Rubberduck - Zapouzdřit Pole</value>
+  </data>
+  <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
+    <value>Nelze zapouzdřit '{0}'. ReDim ({0}) výrok(y) existují v jiných modulech.</value>
+  </data>
+  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
+    <value>Implementovaná třída je 'Public', což nutí interface být také public.
+Jestliže vyžadujete 'Private' interface, změňte instancování třídy na private.
+Privání třída může stále implementovat public (veřejný) interface.</value>
+  </data>
+  <data name="ExtractInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Extrahovat Rozhraní</value>
+  </data>
+  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
+    <value>Instancování</value>
+  </data>
+  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
+    <value>Prosím, specifikujte jméno rozhraní a jeho členy.</value>
+  </data>
+  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
+    <value>Členové</value>
+  </data>
+  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
+    <value>Extrahovat Rozhraní</value>
+  </data>
+  <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
+    <value>Parametry:</value>
+  </data>
+  <data name="ExtractMethod_AccessibilityLabel" xml:space="preserve">
+    <value>Přístupnost:</value>
+  </data>
+  <data name="ExtractMethod_Caption" xml:space="preserve">
+    <value>Rubberduck - Metoda extrakce</value>
+  </data>
+  <data name="ExtractMethod_InstructionsText" xml:space="preserve">
+    <value>Prosím specifikujte jméno metody, return typ a/nebo parametry (pokud je možné aplikovat) a další možnosti.</value>
+  </data>
+  <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
+    <value>Aktuální výběr není platný.</value>
+  </data>
+  <data name="ExtractMethod_OutputNone" xml:space="preserve">
+    <value>(žádné)</value>
+  </data>
+  <data name="ExtractMethod_PreviewLabel" xml:space="preserve">
+    <value>Náhled:</value>
+  </data>
+  <data name="ExtractMethod_ReturnLabel" xml:space="preserve">
+    <value>Vrátit:</value>
+  </data>
+  <data name="ExtractMethod_SetBoxLabel" xml:space="preserve">
+    <value>Nastavit</value>
+  </data>
+  <data name="ExtractMethod_TitleText" xml:space="preserve">
+    <value>Extrahovat metodu</value>
+  </data>
+  <data name="ImplementInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Implementovat Rozhraní</value>
+  </data>
+  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
+    <value>Nebyl vybrán žádný příkaz implementace.</value>
+  </data>
+  <data name="IntroduceField_Caption" xml:space="preserve">
+    <value>Rubberduck - Představ Pole</value>
+  </data>
+  <data name="PromoteToParameter_PromptIfTargetIsInterface" xml:space="preserve">
+    <value>Metoda '{0}' implementuje '{1}.{2}'. Změnit podpis rozhraní? (Rozšíří se na všechny implementace.)</value>
+  </data>
+  <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
+    <value>Cíl '{0}' je již pole.</value>
+  </data>
+  <data name="PromoteToParameter_Caption" xml:space="preserve">
+    <value>Rubberduck - Představ Vlastnost</value>
+  </data>
+  <data name="PromoteToParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
+    <value>Cíl '{0}' není obsažen v metodě.</value>
+  </data>
+  <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">
+    <value>Identifikátory VBA nemohou být prázdné, nebo mít nulovou délku.</value>
+  </data>
+  <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
+    <value>'{0}' nezačíná písmenem.</value>
+  </data>
+  <data name="InvalidNameCriteria_ExceedsMaximumLengthFormat" xml:space="preserve">
+    <value>'{0}' překročil maximální povolenou délku řetězce.</value>
+  </data>
+  <data name="InvalidNameCriteria_InvalidCharactersFormat" xml:space="preserve">
+    <value>'{0}' obsahuje speciální znak(y) jiné než podtržítka.</value>
+  </data>
+  <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
+    <value>'{0}' je vyhrazené klíčové slovo.</value>
+  </data>
+  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
+    <value>Rubberduck - Přesuň na Místo Použití</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
+    <value>Neplatný výběr.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+    <value>Metoda používající '{0}' má již jinou deklaraci '{1}' stejného jména v rozsahu.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
+    <value>'{0}' není nikde použito.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
+    <value>'{0}' není definováno ve stejném projektu, ve kterém je používáno.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
+    <value>'{0}' není definováno ani v komponentě komponenty, ve které je použito, ani ve standardním modulu.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+    <value>'{0}' je globálně přístupno a je využíváno.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
+    <value>'{0}' je vestavěná proměnná.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
+    <value>'{0}' má odkazy ve více metodách.</value>
+  </data>
+  <data name="MoveFolders_SameNameSubfolder" xml:space="preserve">
+    <value>Cílová složka '{0}' již obsahuje podložku '{1}'. Přemístění složky ji sloučí s existující složkou.
+Chcete pokračovat?</value>
+  </data>
+  <data name="MoveFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Prosím specifikujte novou nadřazenou složku '{1}' pro podsložku '{0}'.</value>
+  </data>
+  <data name="MoveFolders_ControlCharacter" xml:space="preserve">
+    <value>Název složky nemůže obsahovat control charaktery, např. nové řádky.</value>
+  </data>
+  <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
+    <value>Jméno složky nemůže být prázdné.</value>
+  </data>
+  <data name="MoveFolders_EmptySubfolderName" xml:space="preserve">
+    <value>Názvy individuálních podsložek nemohou být prázdná.</value>
+  </data>
+  <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
+    <value>Je přesunováno několik složek se tejným jménem. Toto je spojí.
+Chcete pokračovat?</value>
+  </data>
+  <data name="MoveFolders_SameNameSubfolders" xml:space="preserve">
+    <value>Cílová složka '{0}' již obsahuje podsložky '{1}'. Přemístění složek je sloučí s existujícími složkami s korespondujícími jmény.
+Chcete pokračovat?</value>
+  </data>
+  <data name="MoveFoldersDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Přesunout Složky</value>
+  </data>
+  <data name="MoveFoldersDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Prosím specifikujte novou nadřazenou složku pro složky.</value>
+  </data>
+  <data name="MoveFoldersDialog_TitleText" xml:space="preserve">
+    <value>Přesunout Složky</value>
+  </data>
+  <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Prosím specifikujte novou složku pro komponenty.</value>
+  </data>
+  <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Prosím specifikujte novou nadřazenou složku pro složku '{0}'.</value>
+  </data>
+  <data name="MoveToFolderDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Přesunout do Složky</value>
+  </data>
+  <data name="MoveToFolderDialog_FolderLabelText" xml:space="preserve">
+    <value>Složka:</value>
+  </data>
+  <data name="MoveToFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Prosím specifikujte novou složku pro {0} '{1}' ve složce '{2}'.</value>
+  </data>
+  <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
+    <value>Přesunout do Složky</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
+    <value>Typ deklarace cíle '{0}' je '{1}' namísto jednoho z očekávaných '{2}'.</value>
+  </data>
+  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Metoda '{0}' implementuje '{1}.{2}'. Změnit podpis rozhraní? (Rozšíří se na všechny implementace.)</value>
+  </data>
+  <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
+    <value>Komponenta '{0}' by byla ovlivněna refactorováním, avšak její stav v paměti Rubberducku je zastaralý. Prosím obnovte Rubberduck a zkuste to znovu.</value>
+  </data>
+  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
+    <value>Refaktorování může anotovat pouze komponenty, členy a proměnné, avšak cílový objekt má typ '{0}'.</value>
+  </data>
+  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
+    <value>Refaktorování selhalo.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
+    <value>Deklarace typu cíle '{0}' je '{1}' namísto očekávaného '{2}'.</value>
+  </data>
+  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
+    <value>Neexistuje žádný aktivní výběr.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
+    <value>Vybraný cíl nejde refaktorovat.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
+    <value>Cíl nebyl specifikován.</value>
+  </data>
+  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
+    <value>Nelze přerušit Parser k provedení operace refaktoringu.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
+    <value>Cíl není uživatelsky definován.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
+    <value>Cílová deklarace je 'Null'.</value>
+  </data>
+  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
+    <value>Nelze odstranit poslední parametr ze setteru nebo letteru.</value>
+  </data>
+  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Odstranit Parametry</value>
+  </data>
+  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Vyberte parametr a dvojím poklepáním na něj, nebo použitím tlačítek, ho odstraňte nebo obnovte.</value>
+  </data>
+  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
+    <value>Odstranit parametry</value>
+  </data>
+  <data name="Rename_DeclarationType" xml:space="preserve">
+    <value>Přejmenovat {0}</value>
+  </data>
+  <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
+    <value>Přesvědčte se, že máte před přejemnováním vybrán pouze 1 control.</value>
+  </data>
+  <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
+    <value>{0} {1} není možno změnit.</value>
+  </data>
+  <data name="RenameDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Přejmenovat</value>
+  </data>
+  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
+    <value>Přejmenování na '{0}' je ve střetu s existující deklarací '{1}. Přejmenování '{2}' na '{0}' může vyústit v nekompatibilní kód nebo změnu v jeho logice.
+Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
+  </data>
+  <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
+    <value>Nebylo možno přejmenovat {0}.</value>
+  </data>
+  <data name="RenameDialog_Folder" xml:space="preserve">
+    <value>složka</value>
+  </data>
+  <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
+    <value>Složka '{0}' již existuje. Přejmenování '{1}' na '{2}' vyústí ve sloučení s existující složkou.
+Chcete pokračovat?</value>
+  </data>
+  <data name="RenameDialog_FolderLabel" xml:space="preserve">
+    <value>Složka:</value>
+  </data>
+  <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
+    <value>Plná nová složka:</value>
+  </data>
+  <data name="RenameDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Prosím specifikujte nový název pro {0} '{1}'.</value>
+  </data>
+  <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
+    <value>Nebylo možno přejmenovat Člena Rozhraní {0}.</value>
+  </data>
+  <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
+    <value>Ve VBA není možné změnit pouze počáteční písmeno identifikátoru (jazyk ignoruje velká/malá písmena).</value>
+  </data>
+  <data name="RenameDialog_TitleText" xml:space="preserve">
+    <value>Přejmenovat identifikátor</value>
+  </data>
+  <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
+    <value>Přejmenovat složku</value>
+  </data>
+  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
+    <value>Cíl '{0}' je standardní ovladač událostí, který nemůže být přejmenován.</value>
+  </data>
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
+    <value>Cílový control '{0}' nebyl nalezen.</value>
+  </data>
+  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
+    <value>Pro cílový modul '{0}' nebyl nalezen žádný kódový modul.</value>
+  </data>
+  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
+    <value>Metoda '{0}' je EventHandler pro ovládací prvek '{1}'. Přejmenovat lze pouze ovládací prvek. Místo toho přejmenovat '{1}'?</value>
+  </data>
+  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
+    <value>Metoda '{0}' je implementací události '{1}.{2}'. Místo toho přejmenovat událost '{2}'?</value>
+  </data>
+  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Metoda '{0}' implementuje '{1}.{2}'. Přejmenovat člena rozhraní?</value>
+  </data>
+  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
+    <value>V metodě '{0}' nejsou žádné parametry.</value>
+  </data>
+  <data name="ReorderParamsDialog_MoveUpButtonText" xml:space="preserve">
+    <value>Přesunout výše</value>
+  </data>
+  <data name="ReorderParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Přeuspořádat parametry</value>
+  </data>
+  <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Zvol parametr a za použití táhnutí myši nebo pomocí tlačítek ho přesuň výše nebo níže.</value>
+  </data>
+  <data name="ReorderParamsDialog_MoveDownButtonText" xml:space="preserve">
+    <value>Přesunout níže</value>
+  </data>
+  <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
+    <value>Přeuspořádat parametry</value>
+  </data>
+  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
+    <value>V metodě '{0}' je méně než 2 parametry.</value>
+  </data>
+  <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
+    <value>Volitelné parametry musejí být specifikovány na konci seznamu parametrů.</value>
+  </data>
+  <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
+    <value>Nahradit Členy za Členy Rozhraní</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
+    <value>Přeposlat volání členů rozhraní na členy objektů</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToInterfaceMembers" xml:space="preserve">
+    <value>Přeposlat volání členů objektů na členy rozhraní</value>
+  </data>
+  <data name="ExtractInterface_OptionAddEmptyImplementation" xml:space="preserve">
+    <value>Přidat Prázdnou Implementaci</value>
+  </data>
+  <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
+    <value>Možnosti Implementace:</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
+    <value>Argumenty anotace typu 'Number' musejí být validní číslo ve formátu integer nebo float.</value>
+  </data>
+</root>

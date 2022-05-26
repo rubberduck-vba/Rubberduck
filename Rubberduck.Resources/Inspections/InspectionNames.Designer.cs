@@ -61,6 +61,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Annotation in component with incompatible type.
+        /// </summary>
+        public static string AnnotationInIncompatibleComponentTypeInspection {
+            get {
+                return ResourceManager.GetString("AnnotationInIncompatibleComponentTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Late bound WorksheetFunction call..
         /// </summary>
         public static string ApplicationWorksheetFunctionInspection {
@@ -313,11 +322,11 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Illegal annotation.
+        ///   Looks up a localized string similar to Potential &apos;IIf&apos; Function side effects.
         /// </summary>
-        public static string IllegalAnnotationInspection {
+        public static string IIfSideEffectInspection {
             get {
-                return ResourceManager.GetString("IllegalAnnotationInspection", resourceCulture);
+                return ResourceManager.GetString("IIfSideEffectInspection", resourceCulture);
             }
         }
         
@@ -462,6 +471,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string IntegerDataTypeInspection {
             get {
                 return ResourceManager.GetString("IntegerDataTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid annotation.
+        /// </summary>
+        public static string InvalidAnnotationInspection {
+            get {
+                return ResourceManager.GetString("InvalidAnnotationInspection", resourceCulture);
             }
         }
         
@@ -833,6 +851,21 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("PublicEnumerationDeclaredInWorksheetInspection", resourceCulture);
             }
         }
+        ///   Looks up a localized string similar to Public control field access.
+        /// </summary>
+        public static string PublicControlFieldAccessInspection {
+            get {
+                return ResourceManager.GetString("PublicControlFieldAccessInspection", resourceCulture);
+            }
+        }
+        
+        ///   Looks up a localized string similar to Read-Only Property assignment.
+        /// </summary>
+        public static string ReadOnlyPropertyAssignmentInspection {
+            get {
+                return ResourceManager.GetString("ReadOnlyPropertyAssignmentInspection", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Redundant &apos;ByRef&apos; modifier.
@@ -934,6 +967,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Suspicious access to a predeclared instance.
+        /// </summary>
+        public static string SuspiciousPredeclaredInstanceAccessInspection {
+            get {
+                return ResourceManager.GetString("SuspiciousPredeclaredInstanceAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable is used but not assigned..
         /// </summary>
         public static string UnassignedVariableUsageInspection {
@@ -975,6 +1017,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UnreachableCaseInspection {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unrecognized annotation.
+        /// </summary>
+        public static string UnrecognizedAnnotationInspection {
+            get {
+                return ResourceManager.GetString("UnrecognizedAnnotationInspection", resourceCulture);
             }
         }
         

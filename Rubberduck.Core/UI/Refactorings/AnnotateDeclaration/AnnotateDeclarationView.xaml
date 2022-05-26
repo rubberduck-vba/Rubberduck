@@ -47,9 +47,6 @@
             <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Boolean}" CollapseSpecialValue="False" x:Key="BooleanArgumentVisibilityConverter"/>
             <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Inspection}" CollapseSpecialValue="False" x:Key="InspectionArgumentVisibilityConverter"/>
             <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentValueTemplate">
-                <DataTemplate.Resources>
-                    <CollectionViewSource Source="{Binding InspectionNames}" x:Key="InspectionNamesView" />
-                </DataTemplate.Resources>
                 <StackPanel VerticalAlignment="Center">
                     <TextBox Text="{Binding ArgumentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                              Style="{StaticResource TextBoxErrorStyle}"
@@ -86,13 +83,13 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <StackPanel Background="{StaticResource BackgroundLightBrush}">
-            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_TitleText}" FontWeight="Bold"/>
-            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_Instructions}" Margin="5,0,0,10" TextWrapping="Wrap" />
+            <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_TitleText}" FontWeight="Bold"/>
+            <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_Instructions}" Margin="5,0,0,10" TextWrapping="Wrap" />
         </StackPanel>
         <StackPanel Grid.Row="1">
-            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_DeclarationLabel}" FontWeight="DemiBold" />
+            <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_DeclarationLabel}" FontWeight="DemiBold" />
             <TextBlock Text="{Binding Model.Target, Converter={StaticResource DeclarationToQualifiedNameConverter}}" Margin="5,0,0,5" FontWeight="Regular" />
-            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_AnnotationLabel}" FontWeight="DemiBold" />
+            <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_AnnotationLabel}" FontWeight="DemiBold" />
             <ComboBox ItemsSource="{Binding ApplicableAnnotations}"
                       SelectedItem="{Binding Annotation}"
                       IsSynchronizedWithCurrentItem="True"
@@ -103,7 +100,7 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_AdjustAttributeLabel}"
+            <CheckBox Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_AdjustAttributeLabel}"
                       IsChecked="{Binding AdjustAttribute}"
                       Visibility="{Binding ShowAdjustAttributeOption, Converter={StaticResource AdjustAttributeVisibilityConverter}}"
                       Margin="10,0,10,-5"
@@ -119,17 +116,17 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" 
-                   Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentsLabel}" 
+                   Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_ArgumentsLabel}" 
                    FontWeight="DemiBold" 
                    Margin="5,5,0,0" />
             <StackPanel Grid.Column="1" 
                         Orientation="Horizontal">
-                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_AddArgumentButtonLabel}"
+                <Button Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_AddArgumentButtonLabel}"
                         Height="20"
                         Margin="5,2.5"
                         Padding="10,0"
                         Command="{Binding AddAnnotationArgument}"/>
-                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_RemoveArgumentButtonLabel}"
+                <Button Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_RemoveArgumentButtonLabel}"
                         Height="20"
                         Margin="5,2.5"
                         Padding="10,0"
@@ -143,11 +140,11 @@
                   VerticalScrollBarVisibility="Auto"
                   Margin="5,0,5,5">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentTypeHeader}"
+                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_ArgumentTypeHeader}"
                                         CellTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}"
                                         CellEditingTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}"
                                         Width="Auto"/>
-                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=AnnotateDeclarationDialog_ArgumentValueHeader}"
+                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_ArgumentValueHeader}"
                                         CellTemplate="{StaticResource ArgumentValueTemplate}"
                                         CellEditingTemplate="{StaticResource ArgumentValueTemplate}"
                                         Width="*"/>

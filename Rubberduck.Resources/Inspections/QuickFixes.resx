@@ -306,4 +306,14 @@
   <data name="QualifyWithMeQuickFix" xml:space="preserve">
     <value>Qualify reference with 'Me'.</value>
   </data>
+  <data name="AnnotateEntryPointQuickFix" xml:space="preserve">
+    <value>Add @EntryPoint annotation</value>
+  </data>
+  <data name="ReplaceQualifierWithMeQuickFix" xml:space="preserve">
+    <value>Replace qualifier with 'Me'</value>
+  </data>
+  <data name="RemoveRedundantOptionStatementQuickFix" xml:space="preserve">
+    <value>Remove '{0}' statement</value>
+    <comment>'{0}' the whole Option-Statement-Context</comment>
+  </data>
 </root>

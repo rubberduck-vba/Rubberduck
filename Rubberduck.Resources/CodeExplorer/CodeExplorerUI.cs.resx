@@ -334,4 +334,44 @@ Pokračovat?</value>
   <data name="CodeExplorer_Annotate" xml:space="preserve">
     <value>Okomentovat</value>
   </data>
+  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
+    <value>Neexistuje žádný modul dokumentu s názvem '{0}'; soubor '{1}' nelze importovat.
+
+Import přerušen.</value>
+  </data>
+  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>Pro soubor '{0}' chybí požadované binární soubor(y) '{1}' a cílová komponenta '{2}' ještě neexistuje.
+
+Import přerušen.</value>
+  </data>
+  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>U souboru '{0}' chybí požadované binární soubory '{1}'.
+
+Import přerušen.</value>
+  </data>
+  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
+    <value>Kód pro komponentu '{0}' obsahuje více souborů.
+
+Import přerušen.</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
+    <value>Všechny Soubory</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
+    <value>VB Soubory</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
+    <value>Importovat Zdrojové Soubory</value>
+  </data>
+  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
+    <value>Přípona souboru '{0}' není podporována.
+
+Import přerušen.</value>
+  </data>
+  <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>Code _Explorer</value>
+  </data>
+  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+    <value>Navigova</value>
+  </data>
 </root>

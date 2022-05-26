@@ -1,5 +1,8 @@
 using Rubberduck.Resources.Registration;
 using Rubberduck.Parsing.Annotations;
+using System.Collections.Generic;
+using Rubberduck.VBEditor.SafeComWrappers;
+using System.Linq;
 
 namespace Rubberduck.Parsing.Annotations.Concrete
 {
@@ -58,5 +61,8 @@ namespace Rubberduck.Parsing.Annotations.Concrete
         public DefaultMemberAnnotation()
             : base("DefaultMember", AnnotationTarget.Member, "VB_UserMemId", new[] { WellKnownDispIds.Value.ToString() })
         {}
+
+        public override IReadOnlyList<ComponentType> IncompatibleComponentTypes =>
+            base.IncompatibleComponentTypes.Concat(new[] { ComponentType.StandardModule }).Distinct().ToList();
     }
 }

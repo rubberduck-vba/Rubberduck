@@ -126,12 +126,6 @@
   <data name="TodoExplorer_Caption" xml:space="preserve">
     <value>TODO Explorer</value>
   </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Text tokenu:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Seznam tokenu:</value>
-  </data>
   <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
     <value>{0}: {1} - {2}.{3} řádek {4}.</value>
   </data>
@@ -148,7 +142,7 @@
 {1} položek nalezeno.</value>
     <comment>{0}=timestamp; {1}=number</comment>
   </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Text</value>
+  <data name="ToDoExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>T_ODO Explorer</value>
   </data>
 </root>

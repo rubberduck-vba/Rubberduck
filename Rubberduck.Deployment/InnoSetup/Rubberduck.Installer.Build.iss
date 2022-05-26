@@ -6,6 +6,8 @@
 #define BuildDir ExtractFileDir(ExtractFileDir(SourcePath)) + "\bin\"
 #define IncludesDir SourcePath + "Includes\"
 #define GraphicsDir SourcePath + "Graphics\"
+#define WizardImageFilesDir GraphicsDir + "WizardImageFiles\"
+#define WizardSmallImageFilesDir GraphicsDir + "WizardSmallImageFiles\"
 #define AppName "Rubberduck"
 #define AddinDLL "Rubberduck.dll"
 #define Tlb32bit "Rubberduck.x32.tlb"
@@ -15,8 +17,8 @@
 #define Tlb64bitFullPath BuildDir + Tlb64bit
 #define AppVersion GetFileVersion(BuildDir + "Rubberduck.dll")
 #define AppPublisher "Rubberduck"
-#define AppURL "http://rubberduckvba.com"
-#define License IncludesDir + "License.rtf"
+#define AppURL "https://rubberduckvba.com"
+#define License IncludesDir + "eula.rtf"
 #define OutputDirectory SourcePath + "Installers\"
 #define AddinProgId "Rubberduck.Extension"
 #define AddinCLSID "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66"
@@ -26,6 +28,8 @@
 #pragma message "SourcePath: " + SourcePath
 #pragma message "BuildDir: " + BuildDir
 #pragma message "GraphicsDir: " + GraphicsDir
+#pragma message "WizardImageFilesDir: " + WizardImageFilesDir
+#pragma message "WizardSmallImageFilesDir: " + WizardSmallImageFilesDir
 #pragma message "AppName: " + AppName
 #pragma message "AddinDLL: " + AddinDLL
 #pragma message "DllFullPath: " + DllFullPath
@@ -71,21 +75,10 @@ Uninstallable=ShouldCreateUninstaller()
 CreateUninstallRegKey=ShouldCreateUninstaller()
 
 ; should be at least a 55 x 55 bitmap
-WizardSmallImageFile={#GraphicsDir}Rubberduck.Duck.Small.55x55.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.64x68.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.83x80.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.92x97.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.110x106.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.119x123.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.138x140.bmp
+WizardSmallImageFile={#WizardSmallImageFilesDir}Rubberduck.Duck.Small.*.bmp
 
 ; should be at least a 164 x 314 bitmap
-WizardImageFile={#GraphicsDir}Rubberduck.Duck.164x314.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.192x386.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.246x459.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.273x556.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.328x604.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.355x700.bmp
+WizardImageFile={#WizardImageFilesDir}Rubberduck.Duck.*.bmp
 
 [Languages]
 Name: "English"; MessagesFile: "compiler:Default.isl"
@@ -93,6 +86,7 @@ Name: "French"; MessagesFile: "compiler:Languages\French.isl"
 Name: "German"; MessagesFile: "compiler:Languages\German.isl"
 Name: "Czech"; MessagesFile: "compiler:Languages\Czech.isl"
 Name: "Spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
+Name: "Italian"; MessagesFile: "compiler:Languages\Italian.isl"
 
 [Dirs]
 ; Make folder "readonly" to support icons (it does not actually make folder readonly. A weird Windows quirk)
@@ -110,6 +104,9 @@ Source: "{#GraphicsDir}Ducky.ico"; DestDir: "{group}"; Attribs: hidden system; F
 ; Makes it easier to fix VBE registration issues
 Source: "{#IncludesDir}Rubberduck.RegisterAddIn.bat"; DestDir: "{app}"; Flags: ignoreversion replacesameversion;
 Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: ignoreversion replacesameversion;
+
+; 'LegacyWorkload' initial configuration (disables autocompletion and inspections that could spawn too many results in legacy code)
+Source: "{#SourcePath}\WorkloadConfigs\Legacy\rubberduck.config"; DestDir: "{userappdata}\{#AppName}"; Flags: ignoreversion replacesameversion; Check: CheckUseLegacyWorkloadConfig;
 
 [Registry]
 ; DO NOT attempt to register VBE Add-In with this section. It doesn't work
@@ -131,6 +128,7 @@ Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: i
 #include <German.CustomMessages.iss>
 #include <Czech.CustomMessages.iss>
 #include <Spanish.CustomMessages.iss>
+#include <Italian.CustomMessages.iss>
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#AppName}}"; Filename: "{#AppURL}"
@@ -197,6 +195,13 @@ var
   RegisterAddInOptionPage: TInputOptionWizardPage;
 
   ///<remarks>
+  ///Custom page to indicate whether the installer should copy the 'legacy workload'
+  ///initial configuration file to disable certain features and inspections.
+  ///<see cref="RegisterAddIn" />
+  ///</remakrs>
+  WorkloadOptionPage: TInputOptionWizardPage;
+
+  ///<remarks>
   ///Set by the <see cref="RegisterAddInOptionPage" />; should be
   ///read-only normally. When set to true, it is used to check if
   ///elevation is needed for the installer.
@@ -221,6 +226,11 @@ var
   ///function and should be read-only in all other contexts.
   ///</remarks>
   PerUserOnly : Boolean;
+
+  ///<remarks>
+  ///Indicates that the installer should copy the 'legacy workload' initial configuration file.
+  ///</remarks>
+  UseLegacyWorkloadConfig : Boolean;
 
 // External functions section
 
@@ -529,6 +539,14 @@ begin
     result := true;
 end;
 
+function CheckUseLegacyWorkloadConfig():boolean;
+begin
+  if UseLegacyWorkloadConfig then
+    result := true
+  else
+    result := false;
+end;
+
 ///<remarks>
 ///Used by <see cref="RegisterAddIn" />, passing in parameters to actually create
 ///the per-user registry entries to enable VBE addin for that user.
@@ -554,10 +572,9 @@ begin
 end;
 
 ///<remarks>
-///Called after successfully installing, including via the elevated installer
-///to register the VBE addin.
+///Called after successfully installing, including via the elevated installer to register the VBE addin.
 ///</remarks>
-procedure RegisterAddin();
+procedure RegisterAddIn();
 begin
     if IsWin64() then
     begin
@@ -573,7 +590,7 @@ begin
 end;
 
 ///<remarks>
-///Delete registry keys created by <see cref="RegisterAddin" />
+///Delete registry keys created by <see cref="RegisterAddIn" />
 ///</remarks>
 procedure UnregisterAddin();
 begin
@@ -673,8 +690,13 @@ begin
   sUnInstPath := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\' + sAppId + '_is1';
   Log('Looking in registry: ' + sUnInstPath);
   sUnInstallString := '';
-  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
-    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  if RegValueExists(HKLM, sUnInstPath, 'UninstallString') then
+    RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString)
+  else if RegValueExists(HKCU, sUnInstPath, 'UninstallString') then
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString)
+  else
+    sUnInstallString := '';
+
   Log('Result of registry query: ' + sUnInstallString);
   Result := sUnInstallString;
 end;
@@ -742,10 +764,15 @@ begin
   sUnInstallString := GetUninstallString(AppId);
   if sUnInstallString <> '' then begin
     sUnInstallString := RemoveQuotes(sUnInstallString);
-    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
-      Result := 3
+    if FileExists(sUnInstallString) then
+    begin
+      if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+        Result := 3
+      else
+        Result := 2;
+    end
     else
-      Result := 2;
+      Result := 1;
   end else
     Result := 1;
 end;
@@ -776,9 +803,22 @@ begin
     ErrorCode := UnInstallOldVersion(GetAppId(AppMode));
     Log(Format('The result of UninstallOldVersion for %s was %d.', [AppMode, ErrorCode]));
 
-    if ErrorCode <> 3 then
-      MsgBox(ExpandConstant('{cm:UninstallOldVersionFail}'), mbError, MB_OK);
-    result := (ErrorCode = 3);
+    case (ErrorCode) of
+      1:
+        if(IDNO = MsgBox(ExpandConstant('{cm:UninstallOldVersionNotFound}'), mbError, MB_YESNO)) then
+          result := false
+        else
+          result := true;
+      3:
+        result := true;
+      else
+      begin
+        if(IDNO = MsgBox(ExpandConstant('{cm:UninstallOldVersionFail}'), mbError, MB_YESNO)) then
+          result := false
+        else
+          result := true;
+      end
+    end;
   end
     else
   begin
@@ -821,10 +861,9 @@ end;
 ///The second event of installer allow us to customize the wizard by
 ///assessing whether we were launched in elevated context from an
 ///non-elevated installer; <see cref="HasElevateSwitch" />. We then
-///set up the <see cref="InstallForWhoOptionPage" /> and
-///<see cref="RegisterAddInOptionPage" /> pages. In both cases, their
-///behavior differs depending on whether we are elevated, and need to be
-///configured accordingly.
+///set up the custom installer pages. In the case of <see cref="InstallForWhoOptionPage" /> and
+///<see cref="RegisterAddInOptionPage" />, their behavior differs depending on whether we are elevated, 
+///and need to be configured accordingly.
 ///</remarks>
 procedure InitializeWizard();
 begin
@@ -872,6 +911,27 @@ begin
 
   RegisterAddInOptionPage.Add(ExpandConstant('{cm:RegisterAddInButtonCaption}'));
   RegisterAddInOptionPage.Values[0] := true;
+
+  WorkloadOptionPage :=
+    CreateInputOptionPage(
+        wpLicense,
+        ExpandConstant('{cm:UseLegacyWorkloadCaption}'),
+        ExpandConstant('{cm:UseLegacyWorkloadMessage}'),
+        ExpandConstant('{cm:UseLegacyWorkloadDescription}'),
+        false, false);
+
+  if IsUpgradeApp() = NoneIsInstalled then
+  begin
+      WorkloadOptionPage.Add(ExpandConstant('{cm:UseLegacyWorkloadButtonCaption}'))    
+  end
+    else
+  begin
+      WorkloadOptionPage.Add(ExpandConstant('{cm:OverwriteWithLegacyWorkloadButtonCaption}'))    
+  end;
+  
+  WorkloadOptionPage.Values[0] := false;
+
+
 end;
 
 ///<remarks>
@@ -967,6 +1027,7 @@ begin
     Log(Format('AppSuffix: %s', [GetAppSuffix()]));
     Log(Format('ShouldCreateUninstaller: %d', [ShouldCreateUninstaller()]));
     Log(Format('ShouldInstallAllUsers variable: %d', [ShouldInstallAllUsers]));
+    Log(Format('UseLegacyWorkloadConfig variable: %d', [UseLegacyWorkloadConfig]));
 
     if not IsElevated() and ShouldInstallAllUsers then
     begin
@@ -1050,6 +1111,18 @@ begin
     begin
       Log('Addin registration was declined because the user unchecked the checkbox');
     end;
+  end
+    else if CurPageID = WorkloadOptionPage.ID then
+  begin
+    if WorkloadOptionPage.Values[0] then
+    begin
+      Log('Legacy workload initial config was requested and will be copied to the destination folder.');
+    end
+      else
+    begin
+      Log('Skipping legacy workload config because the option was left unchecked.');
+    end;
+	UseLegacyWorkloadConfig := WorkloadOptionPage.Values[0];
   end;
 
   // Re-enable the button disabled at start of procedure

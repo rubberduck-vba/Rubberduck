@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
@@ -13,6 +14,12 @@ namespace RubberduckTests.Inspections
     [TestFixture]
     public class ImplicitActiveWorkbookReferenceInspectionTests : InspectionTestsBase
     {
+        private static readonly IDictionary<string, IEnumerable<string>> DefaultDocumentModuleSupertypeNames = new Dictionary<string, IEnumerable<string>>
+        {
+            ["ThisWorkbook"] = new[] { "Workbook", "_Workbook" },
+            ["Sheet1"] = new[] { "Worksheet", "_Worksheet" }
+        };
+
         [Test]
         [Category("Inspections")]
         public void ImplicitActiveWorkbookReference_ReportsWorksheets()
@@ -39,6 +46,28 @@ End Sub";
 Sub foo()
     Dim sheet As Worksheet
     Set sheet = Application.Worksheets(""Sheet1"")
+End Sub";
+
+            const int expected = 1;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("Workbook")]
+        [TestCase("Worksheet")]
+        [TestCase("Range")]
+        [TestCase("Excel.Workbook")]
+        public void ImplicitActiveWorkbookReference_ExplicitApplicationMember(string typeName)
+        {
+            var inputCode =
+                $@"
+Sub foo()
+    Dim bar As {typeName}
+    Dim sheet As Worksheet
+    Set sheet = bar.Application.Worksheets(""Sheet1"")
 End Sub";
 
             const int expected = 1;
@@ -172,21 +201,10 @@ Sub foo()
     Dim sheet As Worksheet
     Set sheet = Worksheets(""Sheet1"")
 End Sub";
-            var module = ("SomeWorkbook", inputCode, ComponentType.Document);
-            var vbe = MockVbeBuilder.BuildFromModules(module, ReferenceLibrary.Excel).Object;
+            const int expected = 0;
+            var actual = ArrangeAndGetInspectionCount(inputCode, "ThisWorkbook", ComponentType.Document);
 
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                var documentModule = state.DeclarationFinder.UserDeclarations(DeclarationType.Document)
-                    .OfType<DocumentModuleDeclaration>()
-                    .Single();
-                documentModule.AddSupertypeName("Workbook");
-
-                var inspection = InspectionUnderTest(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -199,21 +217,10 @@ Sub foo()
     Dim sheet As Worksheet
     Set sheet = Application.Worksheets(""Sheet1"")
 End Sub";
-            var module = ("SomeWorkbook", inputCode, ComponentType.Document);
-            var vbe = MockVbeBuilder.BuildFromModules(module, ReferenceLibrary.Excel).Object;
+            const int expected = 1;
+            var actual = ArrangeAndGetInspectionCount(inputCode, "ThisWorkbook", ComponentType.Document);
 
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                var documentModule = state.DeclarationFinder.UserDeclarations(DeclarationType.Document)
-                    .OfType<DocumentModuleDeclaration>()
-                    .Single();
-                documentModule.AddSupertypeName("Workbook");
-
-                var inspection = InspectionUnderTest(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -226,21 +233,10 @@ Sub foo()
     Dim sheet As Worksheet
     Set sheet = Worksheets(""Sheet1"")
 End Sub";
-            var module = ("Sheet1", inputCode, ComponentType.Document);
-            var vbe = MockVbeBuilder.BuildFromModules(module, ReferenceLibrary.Excel).Object;
+            const int expected = 1;
+            var actual = ArrangeAndGetInspectionCount(inputCode, "Sheet1", ComponentType.Document);
 
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                var documentModule = state.DeclarationFinder.UserDeclarations(DeclarationType.Document)
-                    .OfType<DocumentModuleDeclaration>()
-                    .Single();
-                documentModule.AddSupertypeName("Worksheet");
-
-                var inspection = InspectionUnderTest(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -262,10 +258,10 @@ End Sub";
             Assert.AreEqual(expected, actual);
         }
 
-        private int ArrangeAndGetInspectionCount(string code)
+        private int ArrangeAndGetInspectionCount(string code, string moduleName = "Module1", ComponentType moduleType = ComponentType.StandardModule)
         {
-            var modules = new(string, string, ComponentType)[] { ("Module1", code, ComponentType.StandardModule) };
-            return InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count();
+            var modules = new(string, string, ComponentType)[] { (moduleName, code, moduleType) };
+            return InspectionResultsForModules(modules, ReferenceLibrary.Excel, documentModuleSupertypeNames: DefaultDocumentModuleSupertypeNames).Count();
         }
 
         [Test]

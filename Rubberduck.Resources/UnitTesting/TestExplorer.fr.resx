@@ -207,9 +207,6 @@
   <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
     <value>Le test a produit une erreur</value>
   </data>
-  <data name="TestOutcome_Failed" xml:space="preserve">
-    <value>Échec</value>
-  </data>
   <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
     <value>Changer le numéro d'erreur</value>
   </data>
@@ -290,5 +287,14 @@
   </data>
   <data name="TestOutcome_DurationMinute" xml:space="preserve">
     <value>min</value>
+  </data>
+  <data name="TestOutcome_Failed" xml:space="preserve">
+    <value>Échec</value>
+  </data>
+  <data name="TestOutcome_Fail" xml:space="preserve">
+    <value>Échec</value>
+  </data>
+  <data name="TestExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>Explorateur de _tests</value>
   </data>
 </root>

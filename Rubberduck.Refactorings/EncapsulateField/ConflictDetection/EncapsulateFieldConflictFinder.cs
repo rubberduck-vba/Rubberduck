@@ -4,7 +4,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
-using Rubberduck.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,7 +90,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 if (field.Declaration.References.Any(rf => rf.QualifiedModuleName != field.QualifiedModuleName
                     && rf.Context.TryGetAncestor<VBAParser.RedimVariableDeclarationContext>(out _)))
                 {
-                    errorMessage = string.Format(RubberduckUI.EncapsulateField_ArrayHasExternalRedimFormat, field.IdentifierName);
+                    errorMessage = string.Format(RefactoringsUI.EncapsulateField_ArrayHasExternalRedimFormat, field.IdentifierName);
                     return (false, errorMessage);
                 }
 
@@ -116,7 +115,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             errorMessage = string.Empty;
             if (HasConflictIdentifiers(field, identifierToCompare))
             {
-                errorMessage = RubberduckUI.EncapsulateField_NameConflictDetected;
+                errorMessage = RefactoringsUI.EncapsulateField_NameConflictDetected;
             }
             return !string.IsNullOrEmpty(errorMessage);
         }
@@ -184,7 +183,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             errorMessage = string.Empty;
             if (objectStateUDT?.ExistingMembers.Any(nm => nm.IdentifierName.IsEquivalentVBAIdentifierTo(identifier)) ?? false)
             {
-                errorMessage = RubberduckUI.EncapsulateField_NameConflictDetected;
+                errorMessage = RefactoringsUI.EncapsulateField_NameConflictDetected;
             }
             return !string.IsNullOrEmpty(errorMessage);
         }
@@ -276,9 +275,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         .Select(f => f.Declaration));
             }
 
+            bool IsQualifedReference(IdentifierReference identifierReference)
+                => identifierReference.Context.Parent is VBAParser.MemberAccessExprContext 
+                    || identifierReference.Context.Parent is VBAParser.WithMemberAccessExprContext;
+
             //Only check IdentifierReferences in the declaring module because encapsulated field 
             //references in other modules will be module-qualified.
-            var candidateLocalReferences = candidate.Declaration.References.Where(rf => rf.QualifiedModuleName == candidate.QualifiedModuleName);
+            var candidateLocalReferences = candidate.Declaration.References.Where(rf => rf.QualifiedModuleName == candidate.QualifiedModuleName
+                && !IsQualifedReference(rf));
 
             var localDeclarationConflictCandidates = membersToEvaluate.Where(localDec => candidateLocalReferences
                .Any(cr => cr.ParentScoping == localDec.ParentScopeDeclaration));

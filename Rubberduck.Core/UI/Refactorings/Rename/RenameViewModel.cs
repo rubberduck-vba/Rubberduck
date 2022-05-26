@@ -7,6 +7,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;
 using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings.Rename
 {
@@ -37,7 +38,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                 }
 
                 var declarationType = RubberduckUI.ResourceManager.GetString("DeclarationType_" + Target.DeclarationType, CultureInfo.CurrentUICulture);
-                return string.Format(RubberduckUI.RenameDialog_InstructionsLabelText, declarationType, Target.IdentifierName);
+                return string.Format(RefactoringsUI.RenameDialog_InstructionsLabelText, declarationType, Target.IdentifierName);
             }
         }
 
@@ -66,7 +67,7 @@ namespace Rubberduck.UI.Refactorings.Rename
             if (!originalName.Equals(NewName)
                 && originalName.Equals(NewName, StringComparison.InvariantCultureIgnoreCase))
             {
-                errors.Add(RubberduckUI.RenameDialog_OnlyCasingDifferent);
+                errors.Add(RefactoringsUI.RenameDialog_OnlyCasingDifferent);
             }
 
             if (errors.Any())
@@ -107,8 +108,8 @@ namespace Rubberduck.UI.Refactorings.Rename
 
         private bool UserConfirmsToProceedWithConflictingName(string newName, Declaration target, Declaration conflictingDeclaration)
         {
-            var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, newName, target.IdentifierName, conflictingDeclaration.QualifiedName.ToString());
-            return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_Caption) ?? false;
+            var message = string.Format(RefactoringsUI.RenameDialog_ConflictingNames, newName, conflictingDeclaration.QualifiedName.ToString(), target.IdentifierName);
+            return _messageBox?.ConfirmYesNo(message, RefactoringsUI.RenameDialog_Caption) ?? false;
         }
     }
 }

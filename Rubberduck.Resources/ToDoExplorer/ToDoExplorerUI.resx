@@ -134,7 +134,7 @@
   </data>
   <data name="TodoSettings_Text" xml:space="preserve">
     <value>Text</value>
-  </data>
+  </data>															
   <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck TODO Items - {0}
 {1} items found.</value>
@@ -150,5 +150,11 @@
   </data>
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>Copy to clipboard</value>
+  </data>
+  <data name="ToDoExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>T_odo Explorer</value>
+  </data>
+    <data name="FilterLabel" xml:space="preserve">
+    <value>Filter:</value>
   </data>
 </root>

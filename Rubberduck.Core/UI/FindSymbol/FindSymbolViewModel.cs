@@ -4,10 +4,13 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.FindSymbol
 {
@@ -19,25 +22,23 @@ namespace Rubberduck.UI.FindSymbol
             DeclarationType.Project
         };
 
-        public FindSymbolViewModel(IEnumerable<Declaration> declarations, DeclarationIconCache cache)
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+
+        public FindSymbolViewModel(IEnumerable<Declaration> declarations)
         {
-            _declarations = declarations;
-            _cache = cache;
-            
+            _declarations = declarations.Where(declaration => !ExcludedTypes.Contains(declaration.DeclarationType)).ToList();
+            GoCommand = new DelegateCommand(Logger, ExecuteGoCommand, CanExecuteGoCommand);
             Search(string.Empty);
         }
 
         public event EventHandler<NavigateCodeEventArgs> Navigate;
 
-        public bool CanExecute()
-        {
-            return _selectedItem != null;
-        }
+        public ICommand GoCommand { get; }
 
-        public void Execute()
-        {
-            OnNavigate();
-        }
+        private bool CanExecuteGoCommand(object param) => _searchString?.Equals(_selectedItem?.IdentifierName, StringComparison.InvariantCultureIgnoreCase) ?? false;
+
+        private void ExecuteGoCommand(object param) => OnNavigate();
+
 
         public void OnNavigate()
         {
@@ -50,7 +51,6 @@ namespace Rubberduck.UI.FindSymbol
         }
 
         private readonly IEnumerable<Declaration> _declarations;
-        private readonly DeclarationIconCache _cache;
 
         private void Search(string value)
         {
@@ -61,7 +61,6 @@ namespace Rubberduck.UI.FindSymbol
             }
 
             var results = GetSearchResultCollectionOfString(value);
-
             MatchResults = new ObservableCollection<SearchResult>(results);
         }
 
@@ -69,10 +68,10 @@ namespace Rubberduck.UI.FindSymbol
         {
             var lower = value.ToLowerInvariant();
             var results = _declarations
-                .Where(declaration => !ExcludedTypes.Contains(declaration.DeclarationType)
-                                      && (string.IsNullOrEmpty(value) || declaration.IdentifierName.ToLowerInvariant().Contains(lower)))
-                .OrderBy(declaration => declaration.IdentifierName.ToLowerInvariant())
-                .Select(declaration => new SearchResult(declaration, _cache[declaration]));
+                .Where(declaration => string.IsNullOrEmpty(value) || declaration.IdentifierName.ToLowerInvariant().Contains(lower))
+                .OrderBy(declaration => declaration.IdentifierName)
+                .Take(30)
+                .Select(declaration => new SearchResult(declaration));
 
             return results;
         }
@@ -83,12 +82,11 @@ namespace Rubberduck.UI.FindSymbol
             get => _searchString;
             set
             {
-                SearchResult firstResult = GetSearchResultCollectionOfString(value).FirstOrDefault();
-                SelectedItem = firstResult;
-
                 if (_searchString != value)
                 {
                     _searchString = value;
+                    OnPropertyChanged();
+
                     Search(value);
                 }
             }
@@ -103,6 +101,7 @@ namespace Rubberduck.UI.FindSymbol
                 if (_selectedItem != value)
                 {
                     _selectedItem = value;
+                    _searchString = value?.IdentifierName;
                     OnPropertyChanged();
                 }
             }
@@ -114,24 +113,7 @@ namespace Rubberduck.UI.FindSymbol
             get => _matchResults;
             set
             {
-                var oldSelectedItem = SelectedItem;
-
                 _matchResults = value;
-
-                // save the selection when the user clicks on one of the drop-down items and the search results are updated
-                if (oldSelectedItem != null)
-                {
-                    var newSelectedItem = value.FirstOrDefault(s => s.Declaration == oldSelectedItem.Declaration);
-
-                    if (newSelectedItem != null)
-                    {
-                        _selectedItem = newSelectedItem;
-                        _searchString = newSelectedItem.IdentifierName;
-                        
-                        OnPropertyChanged("SelectedItem");
-                    }
-                }
-
                 OnPropertyChanged();
             }
         }

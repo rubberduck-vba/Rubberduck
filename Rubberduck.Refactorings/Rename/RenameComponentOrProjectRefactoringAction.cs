@@ -116,7 +116,6 @@ namespace Rubberduck.Refactorings.Rename
             }
         }
 
-        //TODO: Implement renaming references to the project in code.
         private void RenameProject(RenameModel model, IRewriteSession rewriteSession)
         {
             var project = _projectsProvider.Project(model.Target.ProjectId);
@@ -125,6 +124,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 project.Name = model.NewName;
             }
+            RenameReferences(model.Target, model.NewName, rewriteSession);
         }
 
         private void RenameDefinedFormatMembers(RenameModel model, IReadOnlyCollection<Declaration> members, string underscoreFormat, IRewriteSession rewriteSession)

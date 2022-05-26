@@ -1,15 +1,21 @@
 ﻿using Moq;
 using NUnit.Framework;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.DeleteDeclarations;
 using Rubberduck.Refactorings.MoveCloserToUsage;
+using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
+using RubberduckTests.Refactoring.DeleteDeclarations;
+using RubberduckTests.Settings;
 
 namespace RubberduckTests.Commands.RefactorCommands
 {
@@ -17,6 +23,7 @@ namespace RubberduckTests.Commands.RefactorCommands
     public class MoveCloserToUsageCommandTests : RefactorCodePaneCommandTestBase
     {
         [Category("Commands")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Test]
         public void MoveCloserToUsage_CanExecute_Field_NoReferences()
         {
@@ -28,6 +35,7 @@ namespace RubberduckTests.Commands.RefactorCommands
         }
 
         [Category("Commands")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Test]
         public void MoveCloserToUsage_CanExecute_LocalVariable_NoReferences()
         {
@@ -41,6 +49,7 @@ End Property";
         }
 
         [Category("Commands")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Test]
         public void MoveCloserToUsage_CanExecute_Const_NoReferences()
         {
@@ -52,6 +61,7 @@ End Property";
         }
 
         [Category("Commands")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Test]
         public void MoveCloserToUsage_CanExecute_Field()
         {
@@ -66,6 +76,7 @@ End Sub";
         }
 
         [Category("Commands")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Test]
         public void MoveCloserToUsage_CanExecute_LocalVariable()
         {
@@ -80,6 +91,7 @@ End Property";
         }
 
         [Category("Commands")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Test]
         public void MoveCloserToUsage_CanExecute_Const()
         {
@@ -98,7 +110,12 @@ End Sub";
         {
             var msgBox = new Mock<IMessageBox>().Object;
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var baseRefactoring = new MoveCloserToUsageRefactoringAction(rewritingManager);
+
+
+            var deleteDeclarationRefactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+                .Resolve<DeleteDeclarationsRefactoringAction>();
+
+            var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationRefactoringAction, rewritingManager);
             var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
             var notifier = new MoveCloserToUsageFailedNotifier(msgBox);
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);

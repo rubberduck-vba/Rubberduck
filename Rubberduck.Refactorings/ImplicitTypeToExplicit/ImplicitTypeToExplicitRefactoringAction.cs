@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
@@ -26,13 +27,29 @@ namespace Rubberduck.Refactorings.ImplicitTypeToExplicit
 
         public override void Refactor(ImplicitTypeToExplicitModel model, IRewriteSession rewriteSession)
         {
-            var identifierContext = model.Target.Context.GetDescendent<VBAParser.IdentifierContext>();
+            if (!(model.Target.Context is VBAParser.VariableSubStmtContext
+                    || model.Target.Context is VBAParser.ConstSubStmtContext
+                    || model.Target.Context is VBAParser.ArgContext))
+            {
+                throw new ArgumentException($"Invalid target {model.Target.IdentifierName}");
+            }
 
-            var resolver = new ImplicitAsTypeNameResolver(_declarationFinderProvider, _parseTreeValueFactory, model.Target);
-            var asTypeName = InferAsTypeNameForInspectionResult(model.Target, resolver, new AsTypeNamesResultsHandler());
+            var identifierNode = model.Target.Context.GetChild<VBAParser.IdentifierContext>()
+                        ?? model.Target.Context.GetChild<VBAParser.UnrestrictedIdentifierContext>() as ParserRuleContext;
+
+            var insertAfterTarget = model.Target.IsArray
+                ? model.Target.Context.Stop.TokenIndex
+                : identifierNode.Stop.TokenIndex;
+
+            var asTypeName = Tokens.Variant;
+            if (!model.ForceVariantAsType)
+            {
+                var resolver = new ImplicitAsTypeNameResolver(_declarationFinderProvider, _parseTreeValueFactory, model.Target);
+                asTypeName = InferAsTypeNameForInspectionResult(model.Target, resolver, new AsTypeNamesResultsHandler());
+            }
 
             var rewriter = rewriteSession.CheckOutModuleRewriter(model.Target.QualifiedModuleName);
-            rewriter.InsertAfter(identifierContext.Stop.TokenIndex, $" {Tokens.As} {asTypeName}");
+            rewriter.InsertAfter(insertAfterTarget, $" {Tokens.As} {asTypeName}");
         }
 
         private static string InferAsTypeNameForInspectionResult(Declaration target, ImplicitAsTypeNameResolver resolver, AsTypeNamesResultsHandler resultsHandler)
