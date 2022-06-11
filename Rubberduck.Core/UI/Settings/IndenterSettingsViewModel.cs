@@ -38,6 +38,7 @@ namespace Rubberduck.UI.Settings
             _spaceProcedures = config.UserSettings.IndenterSettings.VerticallySpaceProcedures;
             _procedureSpacing = config.UserSettings.IndenterSettings.LinesBetweenProcedures;
             _groupRelatedProperties = config.UserSettings.IndenterSettings.GroupRelatedProperties;
+            _emptyLineHandlingMethod = config.UserSettings.IndenterSettings.EmptyLineHandlingMethod;
 
             PropertyChanged += IndenterSettingsViewModel_PropertyChanged;
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings(GetCurrentSettings()));
