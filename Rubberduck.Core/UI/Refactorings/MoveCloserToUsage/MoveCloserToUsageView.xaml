@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="Rubberduck.UI.Refactorings.MoveCloserToUsage.MoveCloserToUsageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Rubberduck.UI.Refactorings.MoveCloserToUsage"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Controls/ToolBar.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <StackPanel Background="{StaticResource BackgroundLightBrush}">
+            <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=MoveCloserToUsageDialog_TitleText}" FontWeight="Bold" />
+            <TextBlock Text="{Binding Instructions}" Margin="5,0" />
+        </StackPanel>
+        
+        <StackPanel Grid.Row="1" Margin="5,10,10,5">
+            <RadioButton x:Name="StaticRadioButton"
+                         Content="Static"
+                         IsChecked="True"
+                         Height="20"
+                         GroupName="DeclarationStatments"
+                         Command="{Binding SetNewDeclarationStatementCommand}"
+                         CommandParameter="{Binding ElementName=StaticRadioButton, Path=Content}"/>
+            <RadioButton x:Name="DimRadioButton"
+                         Content="Dim"
+                         Height="20"
+                         GroupName="DeclarationStatments"
+                         Command="{Binding SetNewDeclarationStatementCommand}"
+                         CommandParameter="{Binding ElementName=DimRadioButton, Path=Content}"/>
+        </StackPanel>
+
+        <Grid Grid.Row="2" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
+            <Grid HorizontalAlignment="Right"
+                  Margin="5,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                    <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                </Grid.ColumnDefinitions>
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
+                        Grid.Column="0"
+                        Height="20"
+                        Margin="5,0"
+                        Padding="10,0"
+                        IsDefault="True"
+                        Command="{Binding OkButtonCommand}" />
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}"
+                        Grid.Column="1"
+                        Height="20"
+                        Margin="5,0"
+                        Padding="10,0"
+                        IsCancel="True"
+                        Command="{Binding CancelButtonCommand}">
+                </Button>
+            </Grid>
+        </Grid>
+
+    </Grid>
+</UserControl>
