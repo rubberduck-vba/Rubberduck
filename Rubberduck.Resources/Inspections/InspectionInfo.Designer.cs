@@ -844,6 +844,13 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copying a worksheet which contains a public Enum declaration will also create a copy of the Enum declaration.  The copied declaration will result in an &apos;Ambiguous name detected&apos; compiler error.  Declaring Enumerations in Standard or Class modules avoids unintentional duplication of an Enum declaration..
+        /// </summary>
+        public static string PublicEnumerationDeclaredInWorksheetInspection {
+            get {
+                return ResourceManager.GetString("PublicEnumerationDeclaredInWorksheetInspection", resourceCulture);
+            }
+        }
         ///   Looks up a localized string similar to MSForms exposes UserForm controls as public fields; accessing these fields outside the UserForm class breaks encapsulation and needlessly couples code with specific form controls. Consider encapsulating the desired values into their own &apos;model&apos; class, making event handlers in the form manipulate these &apos;model&apos; properties, and then the calling code can query this encapsulated state instead of querying form controls..
         /// </summary>
         public static string PublicControlFieldAccessInspection {

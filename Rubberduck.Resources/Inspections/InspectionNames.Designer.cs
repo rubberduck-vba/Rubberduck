@@ -844,6 +844,13 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Public enumeration declared within worksheet.
+        /// </summary>
+        public static string PublicEnumerationDeclaredInWorksheetInspection {
+            get {
+                return ResourceManager.GetString("PublicEnumerationDeclaredInWorksheetInspection", resourceCulture);
+            }
+        }
         ///   Looks up a localized string similar to Public control field access.
         /// </summary>
         public static string PublicControlFieldAccessInspection {

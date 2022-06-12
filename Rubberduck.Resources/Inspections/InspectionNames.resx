@@ -451,6 +451,9 @@
   <data name="MisleadingByRefParameterInspection" xml:space="preserve">
     <value>Misleading ByRef parameter modifier</value>
   </data>
+  <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
+    <value>Public enumeration declared within worksheet</value>
+  </data>
   <data name="AnnotationInIncompatibleComponentTypeInspection" xml:space="preserve">
     <value>Annotation in component with incompatible type</value>
   </data>
