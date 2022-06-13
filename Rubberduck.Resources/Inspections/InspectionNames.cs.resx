@@ -120,9 +120,6 @@
   <data name="AssignedByValParameterInspection" xml:space="preserve">
     <value>ByVal parametr je přidělen</value>
   </data>
-  <data name="ConstantNotUsedInspection" xml:space="preserve">
-    <value>Konstanta není použita</value>
-  </data>
   <data name="DefaultProjectNameInspection" xml:space="preserve">
     <value>Název projektu není specifikován</value>
   </data>
@@ -180,12 +177,6 @@
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
     <value>Parametr je možné předat jako hodnotu.</value>
   </data>
-  <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Neexistující reference k parametru.</value>
-  </data>
-  <data name="ProcedureNotUsedInspection" xml:space="preserve">
-    <value>Neexistující reference k proceduře.</value>
-  </data>
   <data name="UnassignedVariableUsageInspection" xml:space="preserve">
     <value>Proměnná je použita, avšak není přiřazena.</value>
   </data>
@@ -197,9 +188,6 @@
   </data>
   <data name="VariableNotAssignedInspection" xml:space="preserve">
     <value>Proměnná není přiřazena.</value>
-  </data>
-  <data name="VariableNotUsedInspection" xml:space="preserve">
-    <value>Neexistující reference k proměnné.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>Implicitně proměnná typu 'Variant'</value>
@@ -254,9 +242,6 @@
   </data>
   <data name="RedundantByRefModifierInspection" xml:space="preserve">
     <value>Nadbytečný 'ByRef' modifikátor</value>
-  </data>
-  <data name="LineLabelNotUsedInspection" xml:space="preserve">
-    <value>Štítek řádku není použit</value>
   </data>
   <data name="EmptyElseBlockInspection" xml:space="preserve">
     <value>Prázdný 'Else' blok</value>
