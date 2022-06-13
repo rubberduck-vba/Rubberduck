@@ -184,10 +184,10 @@
     <value>Parameter can be passed by value.</value>
   </data>
   <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Parameter is not referred to.</value>
+    <value>Parameter is not used.</value>
   </data>
   <data name="ProcedureNotUsedInspection" xml:space="preserve">
-    <value>Procedure is not referred to.</value>
+    <value>Procedure/Function/Property is not used.</value>
   </data>
   <data name="UnassignedVariableUsageInspection" xml:space="preserve">
     <value>Variable is used but not assigned.</value>
@@ -202,7 +202,7 @@
     <value>Variable is not assigned.</value>
   </data>
   <data name="VariableNotUsedInspection" xml:space="preserve">
-    <value>Variable is not referred to.</value>
+    <value>Variable is not used.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>Implicitly 'Variant' variable</value>
