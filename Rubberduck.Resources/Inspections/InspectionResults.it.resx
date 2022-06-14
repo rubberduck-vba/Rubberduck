@@ -241,7 +241,6 @@
   </data>
   <data name="ImplicitByRefModifierInspection" xml:space="preserve">
     <value>Il parametro '{0}' viene passato implicitamente per riferimento.</value>
-    
   </data>
   <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
     <value>Nell'espressione '{0}' è presente un accesso implicito al membro predefinito a '{1}'.</value>
@@ -400,9 +399,6 @@
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
     <value>Il parametro '{0}' può essere passato per valore.</value>
   </data>
-  <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Il parametro '{0}' non è mai usato.</value>
-  </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
     <value>La procedura '{0}' può essere scritta come una funzione.</value>
     <comment>{0} Nome procedura</comment>
@@ -423,7 +419,6 @@
   </data>
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Il riferimento all'oggetto '{0}' è istanziato automaticamente.</value>
-    
   </data>
   <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
     <value>Alla variabile '{0}' di tipo dichiarato '{1}' viene impostato un valore assegnato con il tipo dichiarato incompatibile '{2}'.</value>
