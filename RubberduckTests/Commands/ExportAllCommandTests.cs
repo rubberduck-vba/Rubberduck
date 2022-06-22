@@ -330,7 +330,7 @@ namespace RubberduckTests.Commands
                 .Build();
 
             var exportAllCommandStub 
-                = ArrangeFakeExportAllCommand(vbe, CreateMockFolderBrowserFactory(_projectPath, _path));
+                = ArrangeFakeExportAllCommand(vbe, CreateMockFolderBrowserFactory(_projectPath, _path, DialogResult.Cancel));
 
             exportAllCommandStub.SetupFolderExists(_projectPath, !string.IsNullOrWhiteSpace(fileNamePropertyValue));
 
@@ -400,7 +400,7 @@ namespace RubberduckTests.Commands
         [Category("Commands")]
         [Category(nameof(ExportAllCommand))]
         [Test] //User exports 3 projects.  Tests that all project folderpaths are cached
-        public void ExportAllCommand_MultipleProjectFolders()
+        public void ExportAllCommand_ExportMultipleProjectsInSequence()
         {
             //Arrange
             var projects = CreateTestProjectMocks("TestProject1", "TestProject2", "TestProject3");
@@ -409,14 +409,9 @@ namespace RubberduckTests.Commands
             var project2 = projects["TestProject2"];
             var project3 = projects["TestProject3"];
 
-            var project1FullPath = @"C:\Users\Rubberduck\Documents\Subfolder\Project1.xlsm";
-            var project2FullPath = @"C:\Users\Rubberduck\Documents\Subfolder\Project2.xlsm";
-            var project3FullPath = @"C:\Users\Rubberduck\Documents\Subfolder\Project3.xlsm";
-            var workbookFolderpath = Path.GetDirectoryName(project1FullPath);
-
-            project1.SetupGet(m => m.FileName).Returns(project1FullPath);
-            project2.SetupGet(m => m.FileName).Returns(project2FullPath);
-            project3.SetupGet(m => m.FileName).Returns(project3FullPath);
+            project1.SetupGet(m => m.FileName).Returns(@"C:\Users\Rubberduck\Documents\Subfolder\Project1.xlsm");
+            project2.SetupGet(m => m.FileName).Returns(@"C:\Users\Rubberduck\Documents\Subfolder\Project2.xlsm");
+            project3.SetupGet(m => m.FileName).Returns(@"C:\Users\Rubberduck\Documents\Subfolder\Project3.xlsm");
 
             var builder = new MockVbeBuilder();
             var vbe = builder
@@ -429,53 +424,49 @@ namespace RubberduckTests.Commands
             var selected2 = Path.GetDirectoryName(project2.Object.FileName) + "\\Export2";
             var selected3 = Path.GetDirectoryName(project3.Object.FileName) + "\\Export3";
 
-            var mockBrowserFactory1 = CreateMockFolderBrowserFactory(
-                Path.GetDirectoryName(project1FullPath),
-                selected1,
-                DialogResult.OK);
+            var mockFolderBrowserFactory = new Mock<IFileSystemBrowserFactory>();
+            mockFolderBrowserFactory
+                .SetupSequence<IFolderBrowser>(m => m.CreateFolderBrowser(It.IsAny<string>(), true, It.IsAny<string>()))
+                .Returns(CreateMockFolderBrowser(selected1).Object)
+                .Returns(CreateMockFolderBrowser(selected2).Object)
+                .Returns(CreateMockFolderBrowser(selected3).Object);
 
-            var mockBrowserFactory2 = CreateMockFolderBrowserFactory(
-                Path.GetDirectoryName(project2FullPath),
-                selected2,
-                DialogResult.OK);
+            var exportAllCommandStub = ArrangeFakeExportAllCommand(vbe, mockFolderBrowserFactory);
 
-            var mockBrowserFactory3 = CreateMockFolderBrowserFactory(
-                Path.GetDirectoryName(project3FullPath),
-                selected3,
-                DialogResult.OK);
-
-            var exportAllCommandStub = ArrangeFakeExportAllCommand(vbe, mockBrowserFactory1);
+            //Set target folders existence to false in order to reset the initial folder paths to the default value (the workbook folder)
+            exportAllCommandStub.SetupFolderExists(selected1, false);
+            exportAllCommandStub.SetupFolderExists(selected2, false);
+            exportAllCommandStub.SetupFolderExists(selected3, false);
 
             //Act
-            exportAllCommandStub.SetupFolderExists(selected1, true);
 
+            //Get the initial folder which should be the workbook folder
             var initial1BeforeExportAll = exportAllCommandStub.GetInitialFolderBrowserPath(project1.Object);
-            exportAllCommandStub.Execute(project1.Object);
-
-            exportAllCommandStub.InjectFolderBrowserFactory(mockBrowserFactory2.Object);
-            exportAllCommandStub.SetupFolderExists(selected2, true);
-
             var initial2BeforeExportAll = exportAllCommandStub.GetInitialFolderBrowserPath(project2.Object);
-            exportAllCommandStub.Execute(project2.Object);
+            var initial3BeforeExportAll = exportAllCommandStub.GetInitialFolderBrowserPath(project3.Object);
 
-            exportAllCommandStub.InjectFolderBrowserFactory(mockBrowserFactory3.Object);
+            //Restore selected folder existence for the next exports
+            exportAllCommandStub.SetupFolderExists(selected1, true);
+            exportAllCommandStub.SetupFolderExists(selected2, true);
             exportAllCommandStub.SetupFolderExists(selected3, true);
 
-            var initial3BeforeExportAll = exportAllCommandStub.GetInitialFolderBrowserPath(project3.Object);
+            exportAllCommandStub.Execute(project1.Object);
+            exportAllCommandStub.Execute(project2.Object);
             exportAllCommandStub.Execute(project3.Object);
 
-            //Assert
             var initial1AfterExportAll = exportAllCommandStub.GetInitialFolderBrowserPath(project1.Object);
             var initial2AfterExportAll = exportAllCommandStub.GetInitialFolderBrowserPath(project2.Object);
             var initial3AfterExportAll = exportAllCommandStub.GetInitialFolderBrowserPath(project3.Object);
 
-            Assert.AreEqual(initial1BeforeExportAll, workbookFolderpath);
-            Assert.AreEqual(initial2BeforeExportAll, workbookFolderpath);
-            Assert.AreEqual(initial3BeforeExportAll, workbookFolderpath);
+            //Assert
 
-            Assert.AreEqual(selected1, initial1AfterExportAll);
-            Assert.AreEqual(selected2, initial2AfterExportAll);
-            Assert.AreEqual(selected3, initial3AfterExportAll);
+            Assert.AreEqual(_projectPath, initial1BeforeExportAll, "initial1BeforeExportAll failed");
+            Assert.AreEqual(_projectPath, initial2BeforeExportAll, "initial2BeforeExportAll failed");
+            Assert.AreEqual(_projectPath, initial3BeforeExportAll, "initial3BeforeExportAll failed");
+
+            Assert.AreEqual(selected1, initial1AfterExportAll, "initial1AfterExportAll failed");
+            Assert.AreEqual(selected2, initial2AfterExportAll, "initial2AfterExportAll failed");
+            Assert.AreEqual(selected3, initial3AfterExportAll, "initial3AfterExportAll failed");
         }
 
         private Dictionary<string, Mock<IVBProject>> CreateTestProjectMocks(params string[] projectNames)
@@ -499,11 +490,9 @@ namespace RubberduckTests.Commands
         }
 
         private static Mock<IFileSystemBrowserFactory> CreateMockFolderBrowserFactory(string projectPath, 
-            string returnPath, DialogResult dialogResult = DialogResult.Cancel)
+            string returnPath, DialogResult dialogResult)
         {
-            var mockFolderBrowser = new Mock<IFolderBrowser>();
-            mockFolderBrowser.Setup(m => m.SelectedPath).Returns(returnPath);
-            mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(dialogResult);
+            var mockFolderBrowser = CreateMockFolderBrowser(returnPath, dialogResult);
 
             var mockFolderBrowserFactory = new Mock<IFileSystemBrowserFactory>();
             mockFolderBrowserFactory
@@ -512,6 +501,15 @@ namespace RubberduckTests.Commands
 
             return mockFolderBrowserFactory;
         }
+
+        private static Mock<IFolderBrowser> CreateMockFolderBrowser(string selectedFolder, DialogResult dialogResult = DialogResult.OK)
+        {
+            var mockFolderBrowser = new Mock<IFolderBrowser>();
+            mockFolderBrowser.Setup(m => m.SelectedPath).Returns(selectedFolder);
+            mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(dialogResult);
+            return mockFolderBrowser;
+        }
+
 
         private static ExportAllCommand ArrangeExportAllCommand(
             Mock<IVBE> vbe,
@@ -535,20 +533,10 @@ namespace RubberduckTests.Commands
         private static ExportAllCommandFake ArrangeFakeExportAllCommand(
             Mock<IVBE> vbe,
             Mock<IFileSystemBrowserFactory> mockFolderBrowserFactory,
-            Mock<IVbeEvents> vbeEvents,
-            IProjectsProvider projectsProvider)
-        {
-            return new ExportAllCommandFake(vbe.Object, mockFolderBrowserFactory.Object,
-                vbeEvents.Object, projectsProvider);
-        }
-
-        private static ExportAllCommandFake ArrangeFakeExportAllCommand(
-            Mock<IVBE> vbe,
-            Mock<IFileSystemBrowserFactory> mockFolderBrowserFactory,
             IProjectsProvider projectsProvider = null)
         {
-            return ArrangeFakeExportAllCommand(vbe, mockFolderBrowserFactory,
-                MockVbeEvents.CreateMockVbeEvents(vbe), projectsProvider);
+            return new ExportAllCommandFake(vbe.Object, mockFolderBrowserFactory.Object,
+                MockVbeEvents.CreateMockVbeEvents(vbe).Object, projectsProvider);
         }
 
         /// <summary>
@@ -556,23 +544,21 @@ namespace RubberduckTests.Commands
         /// </summary>
         class ExportAllCommandFake : ExportAllCommand
         {
-            private Dictionary<string, bool> _projectExportFolderExists;
+            private static Dictionary<string, bool> _projectExportFolderExists;
 
             public ExportAllCommandFake(IVBE vbe, IFileSystemBrowserFactory browserFactory, 
                 IVbeEvents vbeEvents, IProjectsProvider projectsProvider)
                    : base(vbe, browserFactory, vbeEvents, projectsProvider)
             {
-                _projectExportFolderExists = new Dictionary<string, bool>();
+                if (_projectExportFolderExists is null)
+                {
+                    _projectExportFolderExists = new Dictionary<string, bool>();
+                }
             }
 
             public new string GetDefaultExportFolder(string projectFileName)
             {
                 return base.GetDefaultExportFolder(projectFileName);
-            }
-
-            public void InjectFolderBrowserFactory(IFileSystemBrowserFactory factory)
-            {
-                base._factory = factory;
             }
 
             public void SetupFolderExists(string exportFolderpath, bool folderExists)
