@@ -16,8 +16,7 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly IVBE _vbe;
         private readonly IProjectsProvider _projectsProvider;
 
-        //protected scope to support testing
-        protected IFileSystemBrowserFactory _factory;
+        private readonly IFileSystemBrowserFactory _factory;
 
         private static Dictionary<string,string> _projectExportFolderpaths;
 
