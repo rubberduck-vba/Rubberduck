@@ -15,25 +15,21 @@ namespace Rubberduck.UI.Command.ComCommands
     {
         private readonly IVBE _vbe;
         private readonly IProjectsProvider _projectsProvider;
-
         private readonly IFileSystemBrowserFactory _factory;
-
-        private static Dictionary<string,string> _projectExportFolderpaths;
+        private readonly ProjectToExportFolderMap _projectToExportFolderMap;
 
         public ExportAllCommand(
             IVBE vbe, 
             IFileSystemBrowserFactory folderBrowserFactory, 
             IVbeEvents vbeEvents,
-            IProjectsProvider projectsProvider) 
+            IProjectsProvider projectsProvider,
+            ProjectToExportFolderMap projectToExportFolderMap) 
             : base(vbeEvents)
         {
             _vbe = vbe;
             _factory = folderBrowserFactory;
             _projectsProvider = projectsProvider;
-            if (_projectExportFolderpaths is null)
-            {
-                _projectExportFolderpaths = new Dictionary<string, string>();
-            }
+            _projectToExportFolderMap = projectToExportFolderMap;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
@@ -122,7 +118,7 @@ namespace Rubberduck.UI.Command.ComCommands
 
                 if (result == DialogResult.OK)
                 {
-                    _projectExportFolderpaths[project.FileName] = _folderBrowser.SelectedPath;
+                    _projectToExportFolderMap.AssignProjectExportFolder(project, _folderBrowser.SelectedPath);
                     project.ExportSourceFiles(_folderBrowser.SelectedPath);
                 }
             }
@@ -131,17 +127,16 @@ namespace Rubberduck.UI.Command.ComCommands
         //protected scope to support testing
         protected string GetInitialFolderBrowserPath(IVBProject project)
         {
-            if (!(string.IsNullOrWhiteSpace(project.FileName))
-                && _projectExportFolderpaths.TryGetValue(project.FileName, out string initialFolderBrowserPath))
+            if (_projectToExportFolderMap.TryGetExportPathForProject(project, out string initialFolderBrowserPath))
             {
                 if (FolderExists(initialFolderBrowserPath))
                 {
                     //Return the cached folderpath of the previous ExportAllCommand process
-                    return _projectExportFolderpaths[project.FileName];
+                    return initialFolderBrowserPath;
                 }
 
                 //The folder used in the previous ExportAllComand process no longer exists, remove the cached folderpath
-                _projectExportFolderpaths.Remove(project.FileName);
+                _projectToExportFolderMap.RemoveProject(project);
             }
 
             //The folder of the workbook, or an empty string
@@ -149,7 +144,7 @@ namespace Rubberduck.UI.Command.ComCommands
 
             if (!string.IsNullOrEmpty(initialFolderBrowserPath))
             {
-                _projectExportFolderpaths.Add(project.FileName, initialFolderBrowserPath);
+                _projectToExportFolderMap.AssignProjectExportFolder(project, initialFolderBrowserPath);
             }
 
             return initialFolderBrowserPath;

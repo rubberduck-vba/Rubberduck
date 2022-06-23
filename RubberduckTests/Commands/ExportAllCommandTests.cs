@@ -433,10 +433,9 @@ namespace RubberduckTests.Commands
 
             var exportAllCommandStub = ArrangeFakeExportAllCommand(vbe, mockFolderBrowserFactory);
 
-            //Set target folders existence to false in order to reset the initial folder paths to the default value (the workbook folder)
-            exportAllCommandStub.SetupFolderExists(selected1, false);
-            exportAllCommandStub.SetupFolderExists(selected2, false);
-            exportAllCommandStub.SetupFolderExists(selected3, false);
+            exportAllCommandStub.SetupFolderExists(selected1, true);
+            exportAllCommandStub.SetupFolderExists(selected2, true);
+            exportAllCommandStub.SetupFolderExists(selected3, true);
 
             //Act
 
@@ -444,11 +443,6 @@ namespace RubberduckTests.Commands
             var initial1BeforeExportAll = exportAllCommandStub.GetInitialFolderBrowserPath(project1.Object);
             var initial2BeforeExportAll = exportAllCommandStub.GetInitialFolderBrowserPath(project2.Object);
             var initial3BeforeExportAll = exportAllCommandStub.GetInitialFolderBrowserPath(project3.Object);
-
-            //Restore selected folder existence for the next exports
-            exportAllCommandStub.SetupFolderExists(selected1, true);
-            exportAllCommandStub.SetupFolderExists(selected2, true);
-            exportAllCommandStub.SetupFolderExists(selected3, true);
 
             exportAllCommandStub.Execute(project1.Object);
             exportAllCommandStub.Execute(project2.Object);
@@ -527,7 +521,7 @@ namespace RubberduckTests.Commands
             IProjectsProvider projectsProvider)
         {
             return new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object, 
-                vbeEvents.Object, projectsProvider);
+                vbeEvents.Object, projectsProvider, new ProjectToExportFolderMap());
         }
 
         private static ExportAllCommandFake ArrangeFakeExportAllCommand(
@@ -548,7 +542,7 @@ namespace RubberduckTests.Commands
 
             public ExportAllCommandFake(IVBE vbe, IFileSystemBrowserFactory browserFactory, 
                 IVbeEvents vbeEvents, IProjectsProvider projectsProvider)
-                   : base(vbe, browserFactory, vbeEvents, projectsProvider)
+                   : base(vbe, browserFactory, vbeEvents, projectsProvider, new ProjectToExportFolderMap())
             {
                 if (_projectExportFolderExists is null)
                 {
