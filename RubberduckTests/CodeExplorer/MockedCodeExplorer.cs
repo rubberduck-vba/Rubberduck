@@ -457,7 +457,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementExportAllCommand()
         {
-            ViewModel.ExportAllCommand = new ExportAllCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State.ProjectsProvider);
+            ViewModel.ExportAllCommand = new ExportAllCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State.ProjectsProvider, new ProjectToExportFolderMap());
             return this;
         }
 
