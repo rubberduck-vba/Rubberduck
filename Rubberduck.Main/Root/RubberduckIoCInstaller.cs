@@ -174,6 +174,9 @@ namespace Rubberduck.Root
             RegisterDockablePresenters(container);
             RegisterDockableUserControls(container);
 
+            container.Register(Component.For<ProjectToExportFolderMap>()
+                .LifestyleSingleton());
+
             RegisterCommands(container);
             RegisterCommandMenuItems(container);
             RegisterParentMenus(container);
