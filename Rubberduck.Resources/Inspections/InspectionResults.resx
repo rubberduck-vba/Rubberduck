@@ -176,7 +176,7 @@
     <value>Parameter '{0}' can be passed by value.</value>
   </data>
   <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Parameter '{0}' is never used.</value>
+    <value>Parameter '{0}' is not used.</value>
   </data>
   <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
     <value>Procedure '{0}' can be written as a function.</value>

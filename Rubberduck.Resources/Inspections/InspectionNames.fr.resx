@@ -120,9 +120,6 @@
   <data name="AssignedByValParameterInspection" xml:space="preserve">
     <value>Assignation d'un paramètre passé par valeur (ByVal)</value>
   </data>
-  <data name="ConstantNotUsedInspection" xml:space="preserve">
-    <value>Constante non utilisée</value>
-  </data>
   <data name="DefaultProjectNameInspection" xml:space="preserve">
     <value>Le projet porte le nom assigné par défaut</value>
   </data>
@@ -180,12 +177,6 @@
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
     <value>Le paramètre peut être passé par valeur.</value>
   </data>
-  <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Le paramètre n'est pas utilisé.</value>
-  </data>
-  <data name="ProcedureNotUsedInspection" xml:space="preserve">
-    <value>La procédure n'est pas appelée.</value>
-  </data>
   <data name="UnassignedVariableUsageInspection" xml:space="preserve">
     <value>La variable est utilisée, mais non assignée.</value>
   </data>
@@ -197,9 +188,6 @@
   </data>
   <data name="VariableNotAssignedInspection" xml:space="preserve">
     <value>Une variable est déclarée, mais pas assignée.</value>
-  </data>
-  <data name="VariableNotUsedInspection" xml:space="preserve">
-    <value>La variable n'est pas utilisée.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>Variable implicitement de type 'Variant'</value>
@@ -242,9 +230,6 @@
   </data>
   <data name="EmptyCaseBlockInspection" xml:space="preserve">
     <value>Bloc 'Case' vide</value>
-  </data>
-  <data name="LineLabelNotUsedInspection" xml:space="preserve">
-    <value>Étiquette de ligne inutilisée</value>
   </data>
   <data name="EmptyIfBlockInspection" xml:space="preserve">
     <value>Branche conditionelle vide</value>

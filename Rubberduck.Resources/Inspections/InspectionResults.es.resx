@@ -168,9 +168,6 @@
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
     <value>El parámetro '{0}' se puede pasar por valor.</value>
   </data>
-  <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>El parámetro '{0}' nunca se usa.</value>
-  </data>
   <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
     <value>El procedimiento '{0}' se puede escribir como una función.</value>
   </data>

@@ -132,9 +132,6 @@
   <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
     <value>Assegnazione letterale booleana in condizionale</value>
   </data>
-  <data name="ConstantNotUsedInspection" xml:space="preserve">
-    <value>La costante non è utilizzata</value>
-  </data>
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
     <value>Accesso indicizzato al membro predefinito senza un membro predefinito</value>
   </data>
@@ -258,9 +255,6 @@
   <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
     <value>Carattere di continuazione di riga tra parole chiave</value>
   </data>
-  <data name="LineLabelNotUsedInspection" xml:space="preserve">
-    <value>Etichetta di riga non usata</value>
-  </data>
   <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
     <value>Membro non trovato</value>
   </data>
@@ -351,14 +345,8 @@
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
     <value>Il parametro può essere passato per valore.</value>
   </data>
-  <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Il parametro non ha alcun riferimento.</value>
-  </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
     <value>La procedura può essere scritta come una funzione.</value>
-  </data>
-  <data name="ProcedureNotUsedInspection" xml:space="preserve">
-    <value>Nessun riferimento alla procedura.</value>
   </data>
   <data name="ProcedureRequiredInspection" xml:space="preserve">
     <value>Oggetto senza membro predefinito utilizzato dove è richiesta una procedura</value>
@@ -431,9 +419,6 @@
   </data>
   <data name="VariableNotAssignedInspection" xml:space="preserve">
     <value>La variabile non è assegnata.</value>
-  </data>
-  <data name="VariableNotUsedInspection" xml:space="preserve">
-    <value>La variabile non ha alcun riferimento.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>Variabile implicitamente 'Variant'</value>
