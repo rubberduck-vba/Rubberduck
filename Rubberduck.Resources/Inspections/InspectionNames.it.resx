@@ -450,4 +450,22 @@
   <data name="PublicControlFieldAccessInspection" xml:space="preserve">
     <value>Accesso a campo controllo pubblico</value>
   </data>
+  <data name="VariableNotUsedInspection" xml:space="preserve">
+    <value>La variabile non è usata.</value>
+  </data>
+  <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
+    <value>Enumerazione pubblica dichiarata all'interno di un foglio di lavoro</value>
+  </data>
+  <data name="ProcedureNotUsedInspection" xml:space="preserve">
+    <value>Procedura/Funzione/Proprietà non usata.</value>
+  </data>
+  <data name="ParameterNotUsedInspection" xml:space="preserve">
+    <value>Il parametro non è usato.</value>
+  </data>
+  <data name="LineLabelNotUsedInspection" xml:space="preserve">
+    <value>Etichetta di riga non usata</value>
+  </data>
+  <data name="ConstantNotUsedInspection" xml:space="preserve">
+    <value>La costante non è usata</value>
+  </data>
 </root>

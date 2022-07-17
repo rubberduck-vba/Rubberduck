@@ -562,4 +562,11 @@ Una classe privata riesce ad implementare un'interfaccia pubblica.</value>
   <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
     <value>Gli argomenti dell'annotazione di tipo 'Numero' devono essere un numero valido in formato intero o a virgola mobile.</value>
   </data>
+  <data name="MoveCloserToUsageDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Selezionare il nuovo Tipo di Istruzione di Dichiarazione per '{0}'.</value>
+    <comment>0: Destinazione selezionata</comment>
+  </data>
+  <data name="MoveCloserToUsageDialog_TitleText" xml:space="preserve">
+    <value>Selezione Istruzione di Dichiarazione</value>
+  </data>
 </root>
