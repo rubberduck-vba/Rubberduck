@@ -1027,6 +1027,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos; is not used.
+        /// </summary>
+        public static string UDTMemberNotUsedInspection {
+            get {
+                return ResourceManager.GetString("UDTMemberNotUsedInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable &apos;{0}&apos; is used but not assigned..
         /// </summary>
         public static string UnassignedVariableUsageInspection {
