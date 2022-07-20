@@ -50,7 +50,8 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             : base(typeof(ConstantNotUsedInspection), 
                   typeof(ProcedureNotUsedInspection), 
                   typeof(VariableNotUsedInspection), 
-                  typeof(LineLabelNotUsedInspection))
+                  typeof(LineLabelNotUsedInspection),
+                  typeof(UDTMemberNotUsedInspection))
         {
             _refactoring = refactoringAction;
         }
