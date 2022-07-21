@@ -468,4 +468,7 @@
   <data name="ConstantNotUsedInspection" xml:space="preserve">
     <value>La costante non è usata</value>
   </data>
+  <data name="UDTMemberNotUsedInspection" xml:space="preserve">
+    <value>Membro Tipo Definito dall'Utente non è usato</value>
+  </data>
 </root>

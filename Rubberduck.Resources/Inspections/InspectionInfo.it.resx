@@ -472,4 +472,7 @@ Se il parametro può essere nullo, ignorare questo risultato dell'ispezione; il 
   <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
     <value>La copia di un foglio di lavoro che contiene una dichiarazione Enum pubblica creerà anche una copia della dichiarazione Enum. La dichiarazione copiata provocherà un errore del compilatore "Nome ambiguo rilevato". La dichiarazione di enumerazioni nei moduli Standard o di Classe evita la duplicazione involontaria di una dichiarazione Enum.</value>
   </data>
+  <data name="UDTMemberNotUsedInspection" xml:space="preserve">
+    <value>Un membro Tipo Definito dall'Utente è dichiarato ma non usato. Valuta la possibilità di rimuovere la dichiarazione del membro UDT.</value>
+  </data>
 </root>
