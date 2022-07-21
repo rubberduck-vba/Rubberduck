@@ -472,4 +472,7 @@
   <data name="PublicControlFieldAccessInspection" xml:space="preserve">
     <value>Public control field access</value>
   </data>
+  <data name="UDTMemberNotUsedInspection" xml:space="preserve">
+    <value>User Defined Type member is not used</value>
+  </data>
 </root>
