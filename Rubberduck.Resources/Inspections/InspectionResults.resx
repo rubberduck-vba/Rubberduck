@@ -525,7 +525,7 @@ In memoriam, 1972-2018</value>
     <comment>{0} Parameter, {1} Member</comment>
   </data>
   <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
-    <value>The public enumeration `{0}` should be declared within a Standard or Class module</value>
+    <value>The public enumeration '{0}' should be declared within a Standard or Class module</value>
     <comment>{0} identifier</comment>
   </data>
   <data name="InvalidAnnotationInspection_IncompatibleComponentType" xml:space="preserve">

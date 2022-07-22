@@ -549,4 +549,11 @@ In memoriam, 1972-2018</value>
     <value>L'identificatore '{0}' in '{1}' si riferisce in modo sospetto all'istanza predefinita di quel tipo di classe.</value>
     <comment>{0} nome dell'identificatore; {1} espressione/contesto</comment>
   </data>
+  <data name="ParameterNotUsedInspection" xml:space="preserve">
+    <value>Il parametro '{0}' non è usato.</value>
+  </data>
+  <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
+    <value>L'enumerazione pubblica '{0}' dovrebbe essere dichiarata all'interno di un modulo Standard o di Classe</value>
+    <comment>{0} identificatore</comment>
+  </data>
 </root>
