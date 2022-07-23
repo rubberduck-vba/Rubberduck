@@ -218,7 +218,7 @@
   </data>
   <data name="PageInstructions_GeneralSettings" xml:space="preserve">
     <value>Clicca [{0}] per chiudere la finestra e applicare le modifiche, o [{1}] per annullarle.</value>
-    <comment>{0} è Salva &amp; Chiudi, {1} è Annulla</comment>
+    
   </data>
   <data name="PageInstructions_IndenterSettings" xml:space="preserve">
     <value>Configura le impostazioni di indentazione.</value>
