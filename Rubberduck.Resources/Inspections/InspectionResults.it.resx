@@ -415,7 +415,7 @@
   </data>
   <data name="RedundantOptionInspection" xml:space="preserve">
     <value>'{0}' non ha effetto.</value>
-    <comment>'{0}'  l'intero testo di ModuleOptionContext</comment>
+    <comment>'{0}' l'intero testo di ModuleOptionContext</comment>
   </data>
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Il riferimento all'oggetto '{0}' è istanziato automaticamente.</value>
@@ -539,7 +539,7 @@ In memoriam, 1972-2018</value>
   </data>
   <data name="PublicControlFieldAccessInspection" xml:space="preserve">
     <value>Accesso al controllo '{0}.{1}' dall'esterno della maschera parent.</value>
-    <comment>{0} nome della UserForm parent; {1} name del controllo</comment>
+    <comment>{0} nome della UserForm parent; {1} nome del controllo</comment>
   </data>
   <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
     <value>Tentativo di assegnazione alla Proprietà di Sola Lettura '{0}'</value>

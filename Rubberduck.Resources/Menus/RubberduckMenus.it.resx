@@ -122,7 +122,7 @@
   </data>
   <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
     <value>Ri&amp;ordina Parametri</value>
-    <comment>TC: different hotkey</comment>
+    
   </data>
   <data name="ProjectExplorer_IgnoreProject" xml:space="preserve">
     <value>Ignora Progetto</value>
