@@ -342,7 +342,7 @@ namespace RubberduckTests.SmartIndenter
             var indenter = new Indenter(null, () =>
             {
                 var s = IndenterSettingsTests.GetMockIndenterSettings();
-                s.IgnoreOperatorsInContinuations = false;
+                s.IgnoreOperatorsInContinuations = true;
                 return s;
             });
             var actual = indenter.Indent(code);
