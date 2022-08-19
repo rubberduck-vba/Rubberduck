@@ -179,5 +179,31 @@ namespace RubberduckTests.SmartIndenter
             var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
+
+        // https://github.com/rubberduck-vba/Rubberduck/issues/6007
+        [Test]
+        [Category("Indenter")]
+        public void CommentWithColon()
+        {
+            var code = new[]
+            {
+                "Sub foo()",
+                "   ' : loop",
+                "' bar",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub foo()",
+                "    ' : loop",
+                "    ' bar",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings()); 
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
     }
 }
