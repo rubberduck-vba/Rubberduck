@@ -47,6 +47,10 @@ namespace Rubberduck.SmartIndenter
             get
             {
                 RebuildContinuedLine();
+                if (_rebuilt.ContainsOnlyComment)
+                {
+                    return 0;
+                }
                 return _rebuilt.Segments.Count() < 2
                     ? _rebuilt.NextLineIndents
                     : _rebuilt.Segments.Select(s => new AbsoluteCodeLine(s, _settings)).Select(a => a.NextLineIndents).Sum();
