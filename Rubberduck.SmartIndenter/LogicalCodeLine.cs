@@ -224,7 +224,7 @@ namespace Rubberduck.SmartIndenter
                         {
                             var finished = _alignment.Count == stackPos + 1;                            
                             var token =_alignment.Pop();
-                            if (token.Type == AlignmentTokenType.Function && token.NestingDepth == _nestingDepth - 1)
+                            if (token.NestingDepth < _nestingDepth )
                             {
                                 _alignment.Push(token);
                                 finished = true;
