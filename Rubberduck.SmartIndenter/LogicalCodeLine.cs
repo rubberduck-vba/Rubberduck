@@ -51,9 +51,16 @@ namespace Rubberduck.SmartIndenter
                 {
                     return 0;
                 }
-                return _rebuilt.Segments.Count() < 2
+                var indents = _rebuilt.Segments.Count() < 2
                     ? _rebuilt.NextLineIndents
                     : _rebuilt.Segments.Select(s => new AbsoluteCodeLine(s, _settings)).Select(a => a.NextLineIndents).Sum();
+
+                if (_rebuilt.ContaisIfThenWithColon)
+                {
+                    indents--;
+                }
+                return indents;
+
             }
         }
 

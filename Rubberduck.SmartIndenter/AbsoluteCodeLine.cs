@@ -26,6 +26,7 @@ namespace Rubberduck.SmartIndenter
         private static readonly Regex PrecompilerInRegex = new Regex(@"^#(Else)?If\s.+Then$|^#Else$", RegexOptions.IgnoreCase);
         private static readonly Regex PrecompilerOutRegex = new Regex(@"^#ElseIf\s.+Then|^#Else$|#End\sIf$", RegexOptions.IgnoreCase);
         private static readonly Regex SingleLineElseIfRegex = new Regex(@"^ElseIf\s.*\sThen\s.*", RegexOptions.IgnoreCase);
+        private static readonly Regex IfThenWithColonRegex = new Regex(@"If\s.*\sThen:\s", RegexOptions.IgnoreCase);
 
         private readonly IIndenterSettings _settings;
         private int _lineNumber;
@@ -191,6 +192,8 @@ namespace Rubberduck.SmartIndenter
         }
 
         public bool IsEmpty => Original.Trim().Length == 0;
+
+        public bool ContaisIfThenWithColon => IfThenWithColonRegex.IsMatch(_code);
 
         public int NextLineIndents
         {
