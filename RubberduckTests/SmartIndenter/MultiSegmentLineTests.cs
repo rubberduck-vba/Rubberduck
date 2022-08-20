@@ -90,18 +90,16 @@ namespace RubberduckTests.SmartIndenter
             var code = new[]
             {
                 "Public Sub Test()",
-                "If Foo = 42 Then: Bar = Foo: Else",
+                "If Foo = 42 Then: Bar = Foo: Else Baz = Bar",
                 "Baz = Foo",
-                "End If",
                 "End Sub"
             };
 
             var expected = new[]
             {
                 "Public Sub Test()",
-                "    If Foo = 42 Then: Bar = Foo: Else",
-                "        Baz = Foo",
-                "    End If",
+                "    If Foo = 42 Then: Bar = Foo: Else Baz = Bar",
+                "    Baz = Foo",
                 "End Sub"
             };
 
