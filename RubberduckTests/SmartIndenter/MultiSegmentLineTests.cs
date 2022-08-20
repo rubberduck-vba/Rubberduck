@@ -83,6 +83,7 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
+        // https://github.com/rubberduck-vba/Rubberduck/issues/5929
         [Test]        // Broken in VB6 SmartIndenter.
         [Category("Indenter")]
         public void IfThenElseOnSameLineWorks()
