@@ -143,7 +143,7 @@ deploy:
     prerelease: false
     description: "Built with :heart: by AppVeyor CI on [$(appveyor_repo_branch)] - $(appveyor_url)/project/$(appveyor_account_name)/$(appveyor_project_slug)/build/$(appveyor_build_version)"
     auth_token:
-      secure: 0cLRsoknGc2aUPyKobv8AnxpwajVJA/GJzsU4F0Jg4KVGLWsPtQaK6pIR+BuiM5v
+      secure: u35muMYtyWA+6H6bNdV6Htm/WAoMSkRXSu3jOAYApVr40sz2faVaNmMyXu/0G9Qc
     artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
     on: 
       branch: main
@@ -154,7 +154,7 @@ deploy:
     prerelease: true
     description: "AppVeyor build on [$(appveyor_repo_branch)] - $(appveyor_url)/project/$(appveyor_account_name)/$(appveyor_project_slug)/build/$(appveyor_build_version)"
     auth_token:
-      secure: 0cLRsoknGc2aUPyKobv8AnxpwajVJA/GJzsU4F0Jg4KVGLWsPtQaK6pIR+BuiM5v
+      secure: u35muMYtyWA+6H6bNdV6Htm/WAoMSkRXSu3jOAYApVr40sz2faVaNmMyXu/0G9Qc
     artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
     on: 
       branch: next
@@ -162,7 +162,7 @@ deploy:
 notifications:
   - provider: GitHubPullRequest
     auth_token:
-      secure: 0cLRsoknGc2aUPyKobv8AnxpwajVJA/GJzsU4F0Jg4KVGLWsPtQaK6pIR+BuiM5v
+      secure: u35muMYtyWA+6H6bNdV6Htm/WAoMSkRXSu3jOAYApVr40sz2faVaNmMyXu/0G9Qc
     template: "{{#passed}}:white_check_mark:{{/passed}}{{#failed}}:x:{{/failed}} [Build {{&projectName}} {{buildVersion}} {{status}}]({{buildUrl}}) (commit {{commitUrl}} by @{{&commitAuthorUsername}})"
     on_build_success: true
     on_build_failure: true
