@@ -55,7 +55,7 @@ namespace Rubberduck.SmartIndenter
                     ? _rebuilt.NextLineIndents
                     : _rebuilt.Segments.Select(s => new AbsoluteCodeLine(s, _settings)).Select(a => a.NextLineIndents).Sum();
 
-                if (_rebuilt.ContaisIfThenWithColonNoElse)
+                if (_rebuilt.ContainsIfThenWithColonNoElse)
                 {
                     indents--;
                 }
