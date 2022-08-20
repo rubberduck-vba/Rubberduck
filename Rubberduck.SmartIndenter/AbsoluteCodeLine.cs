@@ -193,7 +193,7 @@ namespace Rubberduck.SmartIndenter
 
         public bool IsEmpty => Original.Trim().Length == 0;
 
-        public bool ContaisIfThenWithColonNoElse => IfThenWithColonNoElseRegex.IsMatch(_code);
+        public bool ContainsIfThenWithColonNoElse => IfThenWithColonNoElseRegex.IsMatch(_code);
 
         public int NextLineIndents
         {
