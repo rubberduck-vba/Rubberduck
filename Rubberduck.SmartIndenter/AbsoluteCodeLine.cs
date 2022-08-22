@@ -16,7 +16,7 @@ namespace Rubberduck.SmartIndenter
         
         private static readonly Regex PropertyStartRegex = new Regex(@"^(Public\s|Private\s|Friend\s)?(Static\s)?(Property\s(Let|Get|Set))\s", RegexOptions.IgnoreCase);
 
-        private static readonly Regex ProcedureStartIgnoreRegex = new Regex(@"^[LR]?Set\s|^Let\s|^(Public|Private)\sDeclare\s(Function|Sub)", RegexOptions.IgnoreCase);
+        private static readonly Regex ProcedureStartIgnoreRegex = new Regex(@"^[LR]?Set\s|^Let\s|^(Public\s|Private\s)?Declare\s(PtrSafe\s)?(Function|Sub)", RegexOptions.IgnoreCase);
         private static readonly Regex ProcedureEndRegex = new Regex(@"^End\s(Sub|Function|Property)", RegexOptions.IgnoreCase);
         private static readonly Regex TypeEnumStartRegex = new Regex(@"^(Public\s|Private\s)?(Enum\s|Type\s)", RegexOptions.IgnoreCase);
         private static readonly Regex TypeEnumEndRegex = new Regex(@"^End\s(Enum|Type)", RegexOptions.IgnoreCase);
