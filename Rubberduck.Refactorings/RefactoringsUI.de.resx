@@ -568,4 +568,10 @@ Wollen Sie fortfahren?</value>
   <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
     <value>Optionale Parameter müssen am Ende der Parameterliste deklariert werden.</value>
   </data>
+  <data name="MoveCloserToUsageDialog_TitleText" xml:space="preserve">
+    <value>Deklarations-Anweisung auswählen</value>
+  </data>
+  <data name="MoveCloserToUsageDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Bitte wählen Sie die zu verwendende Deklarations-Anweisung für '{0}' aus.</value>
+  </data>
 </root>

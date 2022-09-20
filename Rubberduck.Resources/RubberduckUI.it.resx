@@ -704,4 +704,7 @@ La finestra è stata visualizzata perché è abilitata la verifica di versione. 
   <data name="PeekDefinition_DefaultDescription" xml:space="preserve">
     <value>(nessuna annotazione o attributo di descrizione)</value>
   </data>
+  <data name="CommandDescription_PeekDefinitionCommand" xml:space="preserve">
+    <value>Guarda la definizione</value>
+  </data>
 </root>

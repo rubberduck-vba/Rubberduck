@@ -457,4 +457,22 @@ Se il parametro può essere nullo, ignorare questo risultato dell'ispezione; il 
   <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
     <value>Un commento è stato analizzato come annotazione sintatticamente valida, ma non riconosciuto come tipo di annotazione supportato.</value>
   </data>
+  <data name="IIfSideEffectInspection" xml:space="preserve">
+    <value>Tutti gli argomenti di qualsiasi chiamata di funzione/procedura sono sempre valutati prima che la funzione sia invocata in modo che i rispettivi valori possano essere passati come parametri. Comunque, il comportamento della funzione IIf a volte viene frainteso credendo che SOLO l'espressione 'ParteVera' o SOLO l'espressione 'ParteFalsa' venga valutata in base al risultato della prima espressione di argomento. Di conseguenza, la funzione IIf può essere una fonte di effetti collaterali ed errori imprevisti se l'utente non tiene conto del fatto che entrambi gli argomenti ParteVera e ParteFalsa sono sempre valutati.</value>
+  </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>MSForms espone i controlli UserForm come campi pubblici; l'accesso a questi campi al di fuori della classe UserForm rompe l'incapsulamento e accoppia inutilmente il codice a controlli su maschera specifici. Considerare di incapsulare i valori desiderati nella propria classe 'modello', facendo in modo che i gestori di eventi nella maschera manipolino queste proprietà del 'modello' e quindi il codice chiamante possa interrogare questo stato incapsulato invece di interrogare i controlli della maschera.</value>
+  </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>In generale, l'editor VBE rileva questo tipo di errore e non compila. Tuttavia, esistono alcuni scenari in cui l'errore è ignorato dal compilatore ed è generato un errore in fase di esecuzione. Per evitare un errore durante l'esecuzione, implementare la Proprietà o la Subroutine mancante. </value>
+  </data>
+  <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
+    <value>Sebbene un'istanza predefinita potrebbe essere intenzionale, è una fonte comune di bug e dovrebbe essere evitata. Utilizza il qualificatore 'Me' per fare riferimento esplicitamente all'istanza corrente ed eliminare qualsiasi ambiguità.</value>
+  </data>
+  <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
+    <value>La copia di un foglio di lavoro che contiene una dichiarazione Enum pubblica creerà anche una copia della dichiarazione Enum. La dichiarazione copiata provocherà un errore del compilatore "Nome ambiguo rilevato". La dichiarazione di enumerazioni nei moduli Standard o di Classe evita la duplicazione involontaria di una dichiarazione Enum.</value>
+  </data>
+  <data name="UDTMemberNotUsedInspection" xml:space="preserve">
+    <value>Un membro Tipo Definito dall'Utente è dichiarato ma non usato. Valuta la possibilità di rimuovere la dichiarazione del membro UDT.</value>
+  </data>
 </root>

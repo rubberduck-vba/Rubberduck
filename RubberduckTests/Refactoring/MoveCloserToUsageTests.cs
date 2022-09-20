@@ -11,14 +11,21 @@ using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.MoveCloserToUsage;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
+using Rubberduck.Refactorings.DeleteDeclarations;
+using Rubberduck.SmartIndenter;
+using RubberduckTests.Settings;
+using System;
+using Rubberduck.Parsing.Grammar;
+using RubberduckTests.Refactoring.DeleteDeclarations;
 
 namespace RubberduckTests.Refactoring
 {
     [TestFixture]
-    public class MoveCloserToUsageTests : RefactoringTestBase
+    public class MoveCloserToUsageTests : InteractiveRefactoringTestBase<IMoveCloserToUsagePresenter, MoveCloserToUsageModel>
     {
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ModuleVariable_ClearsResidualNewLines()
         {
@@ -38,7 +45,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar As Boolean
+    Static bar As Boolean
     bar = True
 End Sub";
 
@@ -48,6 +55,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_LocalVariable_ClearsResidualNewLines()
         {
@@ -81,6 +89,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_Field()
         {
@@ -97,7 +106,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar As Boolean
+    Static bar As Boolean
     bar = True
 End Sub";
 
@@ -107,6 +116,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_LineNumbers()
         {
@@ -121,7 +131,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar As Boolean
+    Static bar As Boolean
 100 bar = True
 End Sub";
 
@@ -131,6 +141,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_Field_MultipleLines()
         {
@@ -148,7 +159,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar As Boolean
+    Static bar As Boolean
     bar = True
 End Sub";
 
@@ -158,6 +169,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_FieldInOtherClass()
         {
@@ -177,7 +189,7 @@ End Sub";
 
             const string expectedClassCode =
                 @"Private Sub Foo()
-Dim bar As Boolean
+Static bar As Boolean
 bar = True
 End Sub";
 
@@ -194,6 +206,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_Variable()
         {
@@ -220,25 +233,26 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_VariableWithLineNumbers()
         {
-            //Input
-            const string inputCode =
-                @"Private Sub Foo()
-1   Dim bar As Boolean
-2   Dim bat As Integer
-3   bar = True
+            var indent = "   ";
+
+            var inputCode =
+                $@"Private Sub Foo()
+1{indent}Dim bar As Boolean
+2{indent}Dim bat As Integer
+3{indent}bar = True
 End Sub";
             var selection = new Selection(4, 6, 4, 8);
 
-            //Expectation
-            const string expectedCode =
-                @"Private Sub Foo()
-1   
-2   Dim bat As Integer
-    Dim bar As Boolean
-3   bar = True
+            var expectedCode =
+                $@"Private Sub Foo()
+1{indent}
+2{indent}Dim bat As Integer
+{indent} Dim bar As Boolean
+3{indent}bar = True
 End Sub";
 
             var actualCode = RefactoredCode(inputCode, selection);
@@ -247,6 +261,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_Variable_MultipleLines()
         {
@@ -276,6 +291,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFields_MoveSecond()
         {
@@ -296,7 +312,7 @@ End Sub";
 Private bay As Date
 
 Private Sub Foo()
-    Dim bat As Boolean
+    Static bat As Boolean
     bat = True
 End Sub";
 
@@ -306,6 +322,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveFirst()
         {
@@ -326,7 +343,7 @@ End Sub";
           bay As Date
 
 Private Sub Foo()
-    Dim bar As Integer
+    Static bar As Integer
     bar = 3
 End Sub";
 
@@ -336,6 +353,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveSecond()
         {
@@ -356,7 +374,7 @@ End Sub";
           bay As Date
 
 Private Sub Foo()
-    Dim bat As Boolean
+    Static bat As Boolean
     bat = True
 End Sub";
 
@@ -366,6 +384,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveLast()
         {
@@ -386,7 +405,7 @@ End Sub";
           bat As Boolean
 
 Private Sub Foo()
-    Dim bay As Date
+    Static bay As Date
     bay = #1/13/2004#
 End Sub";
 
@@ -396,6 +415,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveFirst()
         {
@@ -428,6 +448,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveSecond()
         {
@@ -460,6 +481,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveLast()
         {
@@ -492,6 +514,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_Assignment()
         {
@@ -504,7 +527,7 @@ End Sub";
 
             const string expectedCode =
                 @"Private Sub Foo(ByRef bat As Boolean)
-    Dim bar As Boolean
+    Static bar As Boolean
     bat = bar
 End Sub";
             var selection = new Selection(1, 1);
@@ -515,6 +538,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_PassAsParam()
         {
@@ -529,7 +553,7 @@ End Sub";
 
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar As Boolean
+    Static bar As Boolean
     Baz bar
 End Sub
 Sub Baz(ByVal bat As Boolean)
@@ -542,6 +566,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_PassAsParam_ReferenceIsNotFirstLine()
         {
@@ -558,7 +583,7 @@ End Sub";
 
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar As Boolean
+    Static bar As Boolean
     Baz True, _
         True, _
         bar
@@ -573,6 +598,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsSeparatedWithColon()
         {
@@ -586,7 +612,7 @@ Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean
 
             // Yeah, this code is a mess.  That is why we got the SmartIndenter
             const string expectedCode =
-                @"Private Sub Foo(): Dim bar As Boolean : Baz True, True, bar: End Sub
+                @"Private Sub Foo(): Static bar As Boolean : Baz True, True, bar: End Sub
 Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean): End Sub";
 
             var actualCode = RefactoredCode(inputCode, selection);
@@ -595,6 +621,7 @@ Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_WorksWithNamedParameters()
         {
@@ -615,7 +642,7 @@ End Sub";
             const string expectedCode =
                 @"
 Public Sub Test()
-    Dim foo As Long
+    Static foo As Long
     SomeSub someParam:=foo
 End Sub
 
@@ -629,6 +656,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_WorksWithNamedParametersAndStatementSeparators()
         {
@@ -645,7 +673,7 @@ End Sub";
             var selection = new Selection(1, 1);
             const string expectedCode =
 
-@"Public Sub Test(): Dim foo As Long : SomeSub someParam:=foo: End Sub
+@"Public Sub Test(): Static foo As Long : SomeSub someParam:=foo: End Sub
 
 Public Sub SomeSub(ByVal someParam As Long)
     Debug.Print someParam
@@ -657,6 +685,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void IntroduceFieldRefactoring_PassInTarget_NonVariable()
         {
@@ -673,6 +702,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void IntroduceFieldRefactoring_DeclarationOfInvalidTypeSelected()
         {
@@ -690,6 +720,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_NoReferences()
         {
@@ -706,6 +737,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferencedInMultipleProcedures()
         {
@@ -726,6 +758,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_VariableWithSameNameAlreadyExistsInProcedure()
         {
@@ -753,6 +786,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ModuleVariableWithSameNameAlreadyExists()
         {
@@ -780,6 +814,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_NonPrivateInNonStandardModule()
         {
@@ -802,6 +837,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_TargetInDifferentNonStandardModule()
         {
@@ -829,6 +865,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_TargetInDifferentProject()
         {
@@ -874,6 +911,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_TargetNotUserDefined()
         {
@@ -911,6 +949,7 @@ End Sub";
 
         [Test]
         [Category("Move Closer")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Refactorings")]
         public void MoveCloser_RespectsMemberAccess_ContextOwners()
         {
@@ -952,6 +991,7 @@ End Sub";
 
         [Test]
         [Category("Move Closer")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Refactorings")]
         public void MoveCloser_RespectsObjectProperties_InUsages()
         {
@@ -995,7 +1035,7 @@ End Sub";
             const string expectedCode = @"Public Sub Test()
     Debug.Print ""Some statements between""
     Debug.Print ""Declaration and first usage!""
-    Dim foo As Class1
+    Static foo As Class1
     Set foo = new Class1
     foo.Name = ""FooName""
     foo.OtherProperty = 1626
@@ -1013,6 +1053,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_DynamicArray()
         {
@@ -1028,7 +1069,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar() As Boolean
+    Static bar() As Boolean
     ReDim bar(0)
     bar(0) = True
 End Sub";
@@ -1039,6 +1080,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_FixedArray()
         {
@@ -1053,7 +1095,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar(0) As Boolean
+    Static bar(0) As Boolean
     bar(0) = True
 End Sub";
 
@@ -1063,6 +1105,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_FixedArrayBounded()
         {
@@ -1077,7 +1120,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar(1 To 42) As Boolean
+    Static bar(1 To 42) As Boolean
     bar(1) = True
 End Sub";
 
@@ -1087,6 +1130,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultiDimensionalArray()
         {
@@ -1101,7 +1145,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar(1, 1) As Boolean
+    Static bar(1, 1) As Boolean
     bar(0, 0) = True
 End Sub";
 
@@ -1111,6 +1155,7 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
         [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_SelfAssigned()
         {
@@ -1125,7 +1170,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-    Dim bar As New Collection
+    Static bar As New Collection
     bar.Add 42
 End Sub";
 
@@ -1133,11 +1178,118 @@ End Sub";
             Assert.AreEqual(expectedCode, actualCode);
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_FieldToDim()
+        {
+            //Input
+            const string inputCode =
+                @"Private bar As Boolean
+
+
+Private Sub Foo()
+    bar = True
+End Sub";
+            var selection = new Selection(1, 1);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo()
+    Dim bar As Boolean
+    bar = True
+End Sub";
+            var actualCode = RefactoredCode(inputCode, selection, (m) => AdjustDeclarationStatement(m,Tokens.Dim));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_FieldToStatic()
+        {
+            //Input
+            const string inputCode =
+                @"Private bar As Boolean
+
+
+Private Sub Foo()
+    bar = True
+End Sub";
+            var selection = new Selection(1, 1);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo()
+    Static bar As Boolean
+    bar = True
+End Sub";
+            var actualCode = RefactoredCode(inputCode, selection, (m) => AdjustDeclarationStatement(m, Tokens.Static));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(DeleteDeclarationsRefactoringAction))]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_Static()
+        {
+            //Input
+            const string inputCode =
+                @"Private Sub Foo()
+    Static bar As Boolean
+    Debug.Print ""Some statements between""
+    bar = True
+End Sub";
+            var selection = new Selection(2, 12);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo()
+    Debug.Print ""Some statements between""
+    Static bar As Boolean
+    bar = True
+End Sub";
+            var actualCode = RefactoredCode(inputCode, selection);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        //Overrides the RefactoringTestBase class version.  MoveCloserToUsage uses the
+        //DeleteDeclarationRefactoringAction which has a dedicated CW container to create objects for tests.  
+        //The RefactoringTestBase version of NoActiveSelection_Throws uses a null 'state' parameter which CW 
+        //cannot abide.
+        [Test]
+        [Category("Refactorings")]
+        public override void NoActiveSelection_Throws()
+        {
+            var testVbe = TestVbe(string.Empty, out _);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(testVbe);
+            using (state)
+            {
+                var refactoring = TestRefactoring(rewritingManager, state, initialSelection: null);
+                Assert.Throws<NoActiveSelectionException>(() => refactoring.Refactor());
+            }
+        }
+
+        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, RefactoringUserInteraction<IMoveCloserToUsagePresenter, MoveCloserToUsageModel> userInteraction, ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var baseRefactoring = new MoveCloserToUsageRefactoringAction(rewritingManager);
-            return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
+            var deletionTargetFactory = new DeclarationDeletionTargetFactory(state);
+
+            var deleteDeclarationsRefactoringAction = new DeleteDeclarationsTestsResolver(state, rewritingManager)
+                .Resolve<DeleteDeclarationsRefactoringAction>();
+
+            var baseRefactoring = new MoveCloserToUsageRefactoringAction(deleteDeclarationsRefactoringAction, rewritingManager);
+            return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider, userInteraction);
         }
+
+        private static MoveCloserToUsageModel AdjustDeclarationStatement(MoveCloserToUsageModel model, string declarationStatement)
+        {
+            model.DeclarationStatement = declarationStatement;
+            return model;
+        }
+
     }
 }

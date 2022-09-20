@@ -309,4 +309,7 @@
   <data name="QualifyWithMeQuickFix" xml:space="preserve">
     <value>Kvalifikujte 'Me' reference.</value>
   </data>
+  <data name="RemoveRedundantOptionStatementQuickFix" xml:space="preserve">
+    <value>Odstraň prohlášení '{0}'</value>
+  </data>
 </root>

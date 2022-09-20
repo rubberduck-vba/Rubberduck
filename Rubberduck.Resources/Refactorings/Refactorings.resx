@@ -121,6 +121,10 @@
     <value>RHS</value>
     <comment>VBA identifier; should not be translated</comment>
   </data>
+  <data name="CommentVerification_TODO" xml:space="preserve">
+    <value>'TODO Is this comment still valid? =&gt; </value>
+    <comment>VBA code (comment)</comment>
+  </data>
   <data name="ImplementInterface_TODO" xml:space="preserve">
     <value>'TODO implement interface member</value>
     <comment>VBA code (comment)</comment>

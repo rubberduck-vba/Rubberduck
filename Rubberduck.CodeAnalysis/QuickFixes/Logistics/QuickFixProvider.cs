@@ -59,17 +59,17 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Logistics
                 && !result.DisabledQuickFixes.Contains(fix.GetType().Name);
         }
 
-        public void Fix(IQuickFix fix, IInspectionResult result)
+        public void Fix(IQuickFix quickFix, IInspectionResult result)
         {
-            if (!CanFix(fix, result))
+            if (!CanFix(quickFix, result))
             {
                 return;
             }
 
-            var rewriteSession = RewriteSession(fix.TargetCodeKind);
+            var rewriteSession = RewriteSession(quickFix.TargetCodeKind);
             try
             {
-                fix.Fix(result, rewriteSession);
+                quickFix.Fix(result, rewriteSession);
             }
             catch (RewriteFailedException)
             {
@@ -78,24 +78,24 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Logistics
             Apply(rewriteSession);
         }
 
-        public void Fix(IQuickFix fix, IEnumerable<IInspectionResult> resultsToFix)
+        public void Fix(IQuickFix quickFix, IEnumerable<IInspectionResult> resultsToFix)
         {
-            var results = resultsToFix.ToList();
+            var fixableResults = resultsToFix.Where(r => CanFix(quickFix, r)).ToList();
 
-            if (!results.Any())
+            if (!fixableResults.Any())
             {
                 return;
             }
 
-            var rewriteSession = RewriteSession(fix.TargetCodeKind);
-            foreach (var result in results)
-            {
-                if (!CanFix(fix, result))
-                {
-                    continue;
-                }
+            var rewriteSession = RewriteSession(quickFix.TargetCodeKind);
 
-                fix.Fix(result, rewriteSession);
+            try
+            {
+                quickFix.Fix(fixableResults, rewriteSession);
+            }
+            catch (RewriteFailedException)
+            {
+                _failureNotifier.NotifyQuickFixExecutionFailure(rewriteSession.Status);
             }
             Apply(rewriteSession);
         }

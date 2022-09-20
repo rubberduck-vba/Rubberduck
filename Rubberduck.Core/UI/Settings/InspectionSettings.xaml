@@ -65,7 +65,7 @@
                                        Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_FilterByDescription}" />
                                 <controls:SearchBox x:Name="searchBox"
                                                     Width="100"
-                                                    Text="{Binding InspectionSettingsDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="26" />
+                                                    Text="{Binding InspectionSettingsDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" Height="26" />
                                 <Border Width="10" />
                                 <Label Target="{Binding ElementName=severity}"
                                        Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_FilterBySeverity}" />

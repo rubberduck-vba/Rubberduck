@@ -176,7 +176,7 @@
     <value>Parameter '{0}' can be passed by value.</value>
   </data>
   <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Parameter '{0}' is never used.</value>
+    <value>Parameter '{0}' is not used.</value>
   </data>
   <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
     <value>Procedure '{0}' can be written as a function.</value>
@@ -523,6 +523,10 @@ In memoriam, 1972-2018</value>
   <data name="MisleadingByRefParameterInspection" xml:space="preserve">
     <value>Misleading ByRef modifier used for parameter '{0}' ({1}).</value>
     <comment>{0} Parameter, {1} Member</comment>
+  </data>
+  <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
+    <value>The public enumeration '{0}' should be declared within a Standard or Class module</value>
+    <comment>{0} identifier</comment>
   </data>
   <data name="InvalidAnnotationInspection_IncompatibleComponentType" xml:space="preserve">
     <value>Annotation '{0}' cannot be used in a '{1}'.</value>

@@ -469,4 +469,10 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="PublicControlFieldAccessInspection" xml:space="preserve">
     <value>MSForms exposes UserForm controls as public fields; accessing these fields outside the UserForm class breaks encapsulation and needlessly couples code with specific form controls. Consider encapsulating the desired values into their own 'model' class, making event handlers in the form manipulate these 'model' properties, and then the calling code can query this encapsulated state instead of querying form controls.</value>
   </data>
+  <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
+    <value>Copying a worksheet which contains a public Enum declaration will also create a copy of the Enum declaration.  The copied declaration will result in an 'Ambiguous name detected' compiler error.  Declaring Enumerations in Standard or Class modules avoids unintentional duplication of an Enum declaration.</value>
+  </data>
+  <data name="UDTMemberNotUsedInspection" xml:space="preserve">
+    <value>A User Defined Type (UDT) member is declared but not used.  Consider removing the UDT member declaration.</value>
+  </data>
 </root>

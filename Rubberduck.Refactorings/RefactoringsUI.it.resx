@@ -134,6 +134,7 @@
   </data>
   <data name="AnnotationArgument_ValidationError_TooLong" xml:space="preserve">
     <value>Gli argomenti dell'annotazione non possono essere più lunghi di {0} caratteri.</value>
+    <comment>Sono ammessi al massimo {0} caratteri</comment>
   </data>
   <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
     <value>Gli argomenti dell'annotazione non devono contenere caratteri di controllo.</value>
@@ -188,15 +189,18 @@
   </data>
   <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
     <value>{0} Considerare di scegliere un nome diverso.</value>
+    <comment>{0} = Nome del messaggio non significativo</comment>
   </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' è già accessibile in questo scope.</value>
+    <comment>{0} = nome della variabile proposto.</comment>
   </data>
   <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
     <value>Specificare il Nome della Variabile Locale Copia</value>
   </data>
   <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
     <value>Specificare un nome da usare per la copia locale di ByVal {0} '{1}'.</value>
+    <comment>0: TipoDichiarazione; 1: NomeIdentificatore</comment>
   </data>
   <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
     <value>Parametro assegnato con ByVal Soluzione veloce - Creare una Copia Locale</value>
@@ -206,6 +210,7 @@
   </data>
   <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
     <value>Meno di due parametri nel metodo '{0}'.</value>
+    <comment>0: Destinazione selezionata</comment>
   </data>
   <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
     <value>Riordina i parametri</value>
@@ -224,21 +229,27 @@
   </data>
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>Il metodo '{0}' implementa '{1}.{2}'. Rinominare il membro dell'interfaccia?</value>
+    <comment>0: Destinazione selezionata; 1: Nome dell'Interfaccia; 2: Nome del membro dell'interfaccia</comment>
   </data>
   <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
     <value>Il metodo '{0}' è un'implementazione dell'evento '{1}.{2}'. Rinominare l'evento '{2}'?</value>
+    <comment>0: Identificatore di destinazione selezionato; 1: Evento Superiore; 2: Nome evento</comment>
   </data>
   <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
     <value>Il metodo '{0}' un è EventHandler per il controllo '{1}'. Solo il controllo può essere rinominato. Rinominare '{1}'?</value>
+    <comment>0: Identificatore di destinazione selezionato; 1: Nome del Controllo</comment>
   </data>
   <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
     <value>Nessun modulo di codice trovato per il modulo di destinazione '{0}'.</value>
+    <comment>{0}: nome del modulo</comment>
   </data>
   <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
     <value>Controllo di destinazione '{0}' non trovato.</value>
+    <comment>{0}: nome del controllo</comment>
   </data>
   <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
     <value>La destinazione '{0}' è un gestore d'evento standard, che non può essere rinominato.</value>
+    <comment>{0}: nome della destinazione</comment>
   </data>
   <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
     <value>Rinomina cartella</value>
@@ -254,6 +265,7 @@
   </data>
   <data name="RenameDialog_InstructionsLabelText" xml:space="preserve">
     <value>Specificare il nuovo nome per {0} '{1}'.</value>
+    <comment>0: TipoDichiarazione; 1: NomeIdentificatore</comment>
   </data>
   <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
     <value>Nuova cartella completa:</value>
@@ -264,6 +276,7 @@
   <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
     <value>La cartella '{0}' esiste già. Rinominare '{1}' in '{2}' la unirà con la cartella esistente.
 Continuare?</value>
+    <comment>{0} nuovo nome completo della cartella; {1} parte della cartella da rinominare; {2} nuova parte del nome della cartella</comment>
   </data>
   <data name="RenameDialog_Folder" xml:space="preserve">
     <value>cartella</value>
@@ -274,12 +287,14 @@ Continuare?</value>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
     <value>'{0}' è in conflitto con il nome della dichiarazione esistente '{1}'. Rinominare '{2}' in '{0}' può rendere il codice non compilabile o modificarne la logica.
 Procedere con la ridenominazione?</value>
+    <comment>{0}: NuovoNome {1}: dichiarazione in conflitto {2}: NomeCorrente</comment>
   </data>
   <data name="RenameDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Rinomina</value>
   </data>
   <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
     <value>{0} {1} non può essere modificato.</value>
+    <comment>0: TipoDichiarazione; 1: NomeIdentificatore</comment>
   </data>
   <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
     <value>Assicurarsi che esattamente 1 controllo sia selezionato prima di rinominare.</value>
@@ -289,6 +304,7 @@ Procedere con la ridenominazione?</value>
   </data>
   <data name="RemovePresenter_NoParametersError" xml:space="preserve">
     <value>Nessun parametro nel metodo '{0}'.</value>
+    <comment>0: Destinazione selezionata</comment>
   </data>
   <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
     <value>Rimuovi i parametri</value>
@@ -310,6 +326,7 @@ Procedere con la ridenominazione?</value>
   </data>
   <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
     <value>La destinazione non è di tipo definito dall'utente.</value>
+    <comment>{0}: nome della destinazione</comment>
   </data>
   <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
     <value>Non è stata specificata la destinazione.</value>
@@ -322,27 +339,33 @@ Procedere con la ridenominazione?</value>
   </data>
   <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
     <value>Il tipo dichiarazione di destinazione '{0}' è '{1}' invece di '{2}' atteso.</value>
+    <comment>{0}: nome di destinazione; {1}: tipo dichiarazione reale; {2}: tipi dichiarazione attesi</comment>
   </data>
   <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
     <value>Il tipo dichiarazione di destinazione '{0}' è '{1}' invece di '{2}' atteso.</value>
+    <comment>{0}: nome di destinazione; {1}: tipo dichiarazione reale; {2}: tipo dichiarazione atteso</comment>
   </data>
   <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
     <value>Refactoring non riuscito.</value>
   </data>
   <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
     <value>Il refactoring può solo annotare componenti, membri e variabili, ma la destinazione ha è di tipo '{0}'.</value>
+    <comment>{0} tipo dichiarazione</comment>
   </data>
   <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
     <value>Il componente '{0}' sarebbe oggetto di refactoring, ma il suo stato nella memoria di Rubberduck è superato. Aggiorna Rubberduck e riprova.</value>
+    <comment>{0} modulo superato</comment>
   </data>
   <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>Il metodo '{0}' implementa '{1}.{2}'. Modificare la firma dell'interfaccia? (Si propagherà a tutte le implementazioni.)</value>
+    <comment>0: Destinazione selezionata; 1: Nome dell'interfaccia; 2: Nome del membro dell'interfaccia</comment>
   </data>
   <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
     <value>Sposta nella cartella</value>
   </data>
   <data name="MoveToFolderDialog_InstructionsLabelText" xml:space="preserve">
     <value>Specificare una nuova cartella per {0} '{1}' nella cartella '{2}'.</value>
+    <comment>{0} TipoDichiarazione; {1} NomeIdentificatore; {2} cartella corrente</comment>
   </data>
   <data name="MoveToFolderDialog_FolderLabelText" xml:space="preserve">
     <value>Cartella:</value>
@@ -355,18 +378,22 @@ Procedere con la ridenominazione?</value>
   </data>
   <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
     <value>Il metodo che usa '{0}' ha già la dichiarazione '{1}' con lo stesso nome nell'area di validità.</value>
+    <comment>{0}: Nome della Variabile; {1}: nome della Dichiarazione in conflitto</comment>
   </data>
   <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
     <value>'{0}' non è usato.</value>
+    <comment>{0}: Nome della Variabile</comment>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
     <value>'{0}' non è definito nello stesso progetto in cui è usato.</value>
+    <comment>{0}: Nome della Variabile</comment>
   </data>
   <data name="MoveToFolderDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Sposta nella cartella</value>
   </data>
   <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
     <value>Specificare la nuova cartella superiore per la cartella '{0}'.</value>
+    <comment>{0} cartella</comment>
   </data>
   <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
     <value>Specificare la nuova cartella per i componenti.</value>
@@ -383,10 +410,12 @@ Procedere con la ridenominazione?</value>
   <data name="MoveFolders_SameNameSubfolders" xml:space="preserve">
     <value>La cartella di destinazione '{0}' contiene già sottocartelle '{1}'. Spostando le cartelle queste saranno unite con le cartelle esistenti con il nome corrispondente.
 Procedere?</value>
+    <comment>{0} cartella di destinazione; {1} sottocartella</comment>
   </data>
   <data name="MoveFolders_SameNameSubfolder" xml:space="preserve">
     <value>La cartella di destinazione '{0}' contiene già una sottocartella '{1}'. Spostare la cartella questa sarà unirà con la cartella esistente.
 Procedere?</value>
+    <comment>{0} cartella di destinazione; {1} sottocartella</comment>
   </data>
   <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
     <value>Più cartelle con lo stesso nome stanno per essere spostate. Questo le unirà.
@@ -406,42 +435,53 @@ Continuare?</value>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' ha riferimenti in più metodi.</value>
+    <comment>{0}: Nome della Variabile</comment>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
     <value>'{0}' è built-in.</value>
+    <comment>{0}: Nome della Variabile</comment>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
     <value>'{0}' è un membro pubblico di una classe, maschera o documento.</value>
+    <comment>{0}: Nome della Variabile</comment>
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
     <value>'{0}' non è definito né nel componente in cui è usato né in un modulo standard.</value>
+    <comment>{0}: Nome della Variabile</comment>
   </data>
   <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
     <value>'{0}' è una parola riservata.</value>
+    <comment>{0} = nome dell'elemento del codice</comment>
   </data>
   <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">
     <value>Gli identificatori VBA non possono essere nulli o a lunghezza zero.</value>
   </data>
   <data name="InvalidNameCriteria_InvalidCharactersFormat" xml:space="preserve">
     <value>'{0}' contiene uno o più caratteri speciali diversi dal trattino basso.</value>
+    <comment>{0} = nome dell'elemento del codice</comment>
   </data>
   <data name="InvalidNameCriteria_ExceedsMaximumLengthFormat" xml:space="preserve">
     <value>'{0}' eccede la lunghezza massima consentita per una stringa.</value>
+    <comment>{0} = nome dell'elemento del codice</comment>
   </data>
   <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
     <value>'{0}' non inizia con una lettera.</value>
+    <comment>{0} = nome dell'elemento del codice</comment>
   </data>
   <data name="PromoteToParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
     <value>La destinazione '{0}' non è contenuta in un metodo.</value>
+    <comment>{0}: nome della destinazione</comment>
   </data>
   <data name="PromoteToParameter_PromptIfTargetIsInterface" xml:space="preserve">
     <value>Il metodo '{0}' implementa '{1}.{2}'. Modificare la firma dell'interfaccia? (Si propagherà a tutte le implementazioni.)</value>
+    <comment>0: Destinazione selezionata; 1: Nome dell'interfaccia; 2: Nome del membro dell'interfaccia</comment>
   </data>
   <data name="PromoteToParameter_Caption" xml:space="preserve">
     <value>Rubberduck - Introduci Parametro</value>
   </data>
   <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
     <value>La destinazione '{0}' è già un campo.</value>
+    <comment>{0}: nome della destinazione</comment>
   </data>
   <data name="IntroduceField_Caption" xml:space="preserve">
     <value>Rubberduck - Introduci Campo</value>
@@ -555,11 +595,19 @@ Una classe privata riesce ad implementare un'interfaccia pubblica.</value>
   </data>
   <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
     <value>Impossibile incapsulare '{0}'. Istruzione/i ReDim({0}) presente/i in altri moduli.</value>
+    <comment>{0} = NomeIdentificatore del campo selezionato</comment>
   </data>
   <data name="AnnotationArgumentType_Text" xml:space="preserve">
     <value>Testo</value>
   </data>
   <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
     <value>Gli argomenti dell'annotazione di tipo 'Numero' devono essere un numero valido in formato intero o a virgola mobile.</value>
+  </data>
+  <data name="MoveCloserToUsageDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Selezionare il nuovo Tipo di Istruzione di Dichiarazione per '{0}'.</value>
+    <comment>0: Destinazione selezionata</comment>
+  </data>
+  <data name="MoveCloserToUsageDialog_TitleText" xml:space="preserve">
+    <value>Selezione Istruzione di Dichiarazione</value>
   </data>
 </root>

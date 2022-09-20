@@ -294,7 +294,7 @@ namespace Rubberduck.UI.ToDoItems
         {
             var markers = _configService.Read().UserSettings.ToDoListSettings.ToDoMarkers;
             return markers.Where(marker => !string.IsNullOrEmpty(marker.Text)
-                                         && Regex.IsMatch(comment.CommentText, @"\b" + Regex.Escape(marker.Text) + @"\b", RegexOptions.IgnoreCase))
+                                         && Regex.IsMatch(comment.CommentText, @"^\s*" + Regex.Escape(marker.Text) + @"\b", RegexOptions.IgnoreCase))
                            .Select(marker => new ToDoItem(marker.Text, comment));
         }
 

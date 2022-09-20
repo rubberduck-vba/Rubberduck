@@ -55,6 +55,22 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Abstract
         public virtual CodeKind TargetCodeKind => CodeKind.CodePaneCode;
 
         public abstract void Fix(IInspectionResult result, IRewriteSession rewriteSession);
+
+        /// <summary>
+        /// FixMany defers the enumeration of inspection results to the QuickFix 
+        /// </summary>
+        /// <remarks>
+        /// The default implementation enumerates the results collection calling Fix() for each result.
+        /// Override this funcion when a QuickFix needs operate on results as a group (e.g., RemoveUnusedDeclarationQuickFix)
+        /// </remarks>
+        public virtual void Fix(IReadOnlyCollection<IInspectionResult> results, IRewriteSession rewriteSession)
+        {
+            foreach (var result in results)
+            {
+                Fix(result, rewriteSession);
+            }
+        }
+
         public abstract string Description(IInspectionResult result);
 
         public abstract bool CanFixMultiple { get; }

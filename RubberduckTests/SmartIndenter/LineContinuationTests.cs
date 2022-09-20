@@ -29,6 +29,28 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
+        // https://github.com/rubberduck-vba/Rubberduck/issues/4795
+        [Test]
+        [Category("Indenter")]
+        public void DeclarationPtrSafeLineAlignsCorrectly()
+        {
+            var code = new[]
+            {
+                @"Private Declare PtrSafe Function Foo Lib ""bar.dll"" _",
+                 "(x As Long y As Long) As LongPtr"
+            };
+
+            var expected = new[]
+            {
+                @"Private Declare PtrSafe Function Foo Lib ""bar.dll"" _",
+                 "                                 (x As Long y As Long) As LongPtr"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
         [Test]
         [Category("Indenter")]
         public void FunctionParametersAlignCorrectly()
@@ -342,7 +364,7 @@ namespace RubberduckTests.SmartIndenter
             var indenter = new Indenter(null, () =>
             {
                 var s = IndenterSettingsTests.GetMockIndenterSettings();
-                s.IgnoreOperatorsInContinuations = false;
+                s.IgnoreOperatorsInContinuations = true;
                 return s;
             });
             var actual = indenter.Indent(code);

@@ -852,6 +852,16 @@ namespace Rubberduck.Resources.Inspections {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Copying a worksheet which contains a public Enum declaration will also create a copy of the Enum declaration.  The copied declaration will result in an &apos;Ambiguous name detected&apos; compiler error.  Declaring Enumerations in Standard or Class modules avoids unintentional duplication of an Enum declaration..
+        /// </summary>
+        public static string PublicEnumerationDeclaredInWorksheetInspection {
+            get {
+                return ResourceManager.GetString("PublicEnumerationDeclaredInWorksheetInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to In general, the VBE editor catches this type of error and will not compile.  However, there are a few scenarios where the error is overlooked by the compiler and an error is generated at runtime.  To avoid a runtime error, implement the missing Property or Subroutine. .
         /// </summary>
         public static string ReadOnlyPropertyAssignmentInspection {
@@ -965,6 +975,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string SuspiciousPredeclaredInstanceAccessInspection {
             get {
                 return ResourceManager.GetString("SuspiciousPredeclaredInstanceAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A User Defined Type (UDT) member is declared but not used.  Consider removing the UDT member declaration..
+        /// </summary>
+        public static string UDTMemberNotUsedInspection {
+            get {
+                return ResourceManager.GetString("UDTMemberNotUsedInspection", resourceCulture);
             }
         }
         

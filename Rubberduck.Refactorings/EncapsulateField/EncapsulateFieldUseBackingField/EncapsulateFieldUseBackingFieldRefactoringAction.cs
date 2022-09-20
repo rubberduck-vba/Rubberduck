@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Refactorings.EncapsulateFieldInsertNewCode;
+using Rubberduck.Refactorings.DeleteDeclarations;
 
 namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
 {
@@ -16,6 +17,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
     {
         private readonly ICodeOnlyRefactoringAction<ReplaceDeclarationIdentifierModel> _replaceDeclarationIdentifiers;
         private readonly ICodeOnlyRefactoringAction<EncapsulateFieldInsertNewCodeModel> _encapsulateFieldInsertNewCodeRefactoringAction;
+        private readonly ICodeOnlyRefactoringAction<DeleteDeclarationsModel> _deleteDeclarationsRefactoringAction;
         private readonly INewContentAggregatorFactory _newContentAggregatorFactory;
         private readonly IEncapsulateFieldReferenceReplacerFactory _encapsulateFieldReferenceReplacerFactory;
 
@@ -28,6 +30,7 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
         {
             _replaceDeclarationIdentifiers = refactoringActionsProvider.ReplaceDeclarationIdentifiers;
             _encapsulateFieldInsertNewCodeRefactoringAction = refactoringActionsProvider.EncapsulateFieldInsertNewCode;
+            _deleteDeclarationsRefactoringAction = refactoringActionsProvider.DeleteDeclarations;
             _newContentAggregatorFactory = newContentAggregatorFactory;
             _encapsulateFieldReferenceReplacerFactory = encapsulateFieldReferenceReplacerFactory;
         }
@@ -55,9 +58,9 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
 
         private void ModifyFields(EncapsulateFieldUseBackingFieldModel model, List<IEncapsulateFieldCandidate> publicFieldsToRemove, IRewriteSession rewriteSession)
         {
-            var rewriter = rewriteSession.CheckOutModuleRewriter(model.QualifiedModuleName);
-            rewriter.RemoveVariables(publicFieldsToRemove.Select(f => f.Declaration)
-                .Cast<VariableDeclaration>());
+            var deletionsModel = new DeleteDeclarationsModel(publicFieldsToRemove.Select(f => f.Declaration));
+            
+            _deleteDeclarationsRefactoringAction.Refactor(deletionsModel, rewriteSession);
 
             var retainedFieldDeclarations = model.SelectedFieldCandidates
                 .Except(publicFieldsToRemove)
@@ -65,6 +68,8 @@ namespace Rubberduck.Refactorings.EncapsulateFieldUseBackingField
 
             if (retainedFieldDeclarations.Any())
             {
+                var rewriter = rewriteSession.CheckOutModuleRewriter(model.QualifiedModuleName);
+
                 MakeImplicitDeclarationTypeExplicit(retainedFieldDeclarations, rewriter);
 
                 SetPrivateVariableVisiblity(retainedFieldDeclarations, rewriter);

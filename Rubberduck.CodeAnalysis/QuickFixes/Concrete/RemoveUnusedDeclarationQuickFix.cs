@@ -2,6 +2,12 @@ using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings.DeleteDeclarations;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 {
@@ -31,7 +37,6 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// Option Explicit
     /// 
     /// Public Sub DoSomething()
-    ///     
     ///     Debug.Print 42
     /// End Sub
     /// ]]>
@@ -39,17 +44,30 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// </example>
     internal sealed class RemoveUnusedDeclarationQuickFix : QuickFixBase
     {
-        public RemoveUnusedDeclarationQuickFix()
+        private readonly ICodeOnlyRefactoringAction<DeleteDeclarationsModel> _refactoring;
+
+        public RemoveUnusedDeclarationQuickFix(DeleteDeclarationsRefactoringAction refactoringAction)
             : base(typeof(ConstantNotUsedInspection), 
                   typeof(ProcedureNotUsedInspection), 
                   typeof(VariableNotUsedInspection), 
-                  typeof(LineLabelNotUsedInspection))
-        {}
+                  typeof(LineLabelNotUsedInspection),
+                  typeof(UDTMemberNotUsedInspection))
+        {
+            _refactoring = refactoringAction;
+        }
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var rewriter = rewriteSession.CheckOutModuleRewriter(result.Target.QualifiedModuleName);
-            rewriter.Remove(result.Target);
+            var model = new DeleteDeclarationsModel(result.Target);
+
+            _refactoring.Refactor(model, rewriteSession);
+        }
+
+        public override void Fix(IReadOnlyCollection<IInspectionResult> results, IRewriteSession rewriteSession)
+        {
+            var model = new DeleteDeclarationsModel(results.Select(r => r.Target));
+
+            _refactoring.Refactor(model, rewriteSession);
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveUnusedDeclarationQuickFix;

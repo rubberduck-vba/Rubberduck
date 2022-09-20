@@ -34,11 +34,21 @@ namespace Rubberduck.Parsing.VBA.Parsing
 
         public override void EnterModuleVariableStmt(VBAParser.ModuleVariableStmtContext context)
         {
-            var variableDeclarationStatemenList = context.variableStmt().variableListStmt().variableSubStmt();
-            foreach (var variableContext in variableDeclarationStatemenList)
+            var variableDeclarationStatementList = context.variableStmt().variableListStmt().variableSubStmt();
+            foreach (var variableContext in variableDeclarationStatementList)
             {
                 var variableName = Identifier.GetName(variableContext);
                 _membersAllowingAttributes[(variableName, DeclarationType.Variable)] = context;
+            }
+        }
+
+        public override void EnterModuleConstStmt(VBAParser.ModuleConstStmtContext context)
+        {
+            var constantDeclarationStatementList = context.constStmt().constSubStmt();
+            foreach (var constContext in constantDeclarationStatementList)
+            {
+                var constantName = Identifier.GetName(constContext);
+                _membersAllowingAttributes[(constantName, DeclarationType.Constant)] = context;
             }
         }
 
@@ -159,18 +169,28 @@ namespace Rubberduck.Parsing.VBA.Parsing
 
             var scopeName = attributeNameParts[0]; 
 
-            //Might be an attribute for the enclosing procedure, function or poperty.
+            //Might be an attribute for the enclosing procedure, function or property.
             if (_currentScopeAttributes != null && scopeName.Equals(_currentScope.scopeIdentifier, StringComparison.OrdinalIgnoreCase))
             {
                 AddOrUpdateAttribute(_currentScopeAttributes, attributeName, context);
                 return;
             }
 
+            //Member attributes
+            //Due to the VBA naming rules, a name can only refer to either a variable or constant.
+
             //Member variable attributes
             var moduleVariableScope = (scopeName, DeclarationType.Variable);
             if (_membersAllowingAttributes.TryGetValue(moduleVariableScope, out _))
             {
                 AddOrUpdateAttribute(moduleVariableScope, attributeName, context);
+            }
+
+            //Member constant attributes
+            var moduleConstantScope = (scopeName, DeclarationType.Constant);
+            if (_membersAllowingAttributes.TryGetValue(moduleConstantScope, out _))
+            {
+                AddOrUpdateAttribute(moduleConstantScope, attributeName, context);
             }
         }
 
