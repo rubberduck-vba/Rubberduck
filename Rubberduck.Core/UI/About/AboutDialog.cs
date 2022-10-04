@@ -5,7 +5,7 @@ namespace Rubberduck.UI.About
 {
     public partial class AboutDialog : Form
     {
-        public AboutDialog(IVersionCheck versionCheck, IWebNavigator web) : this()
+        public AboutDialog(IVersionCheckService versionCheck, IWebNavigator web) : this()
         {
             ViewModel = new AboutControlViewModel(versionCheck, web);
         }

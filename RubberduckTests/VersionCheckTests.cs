@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Rubberduck.Interaction;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.VersionCheck;
 
@@ -24,16 +25,16 @@ namespace RubberduckTests
             return new Configuration(settings);
         }
 
-        private VersionCheckCommand CreateSUT(Configuration config, Version currentVersion, Version latestVersion, out Mock<IMessageBox> mockPrompt, out Mock<IVersionCheck> mockService)
+        private VersionCheckCommand CreateSUT(Configuration config, Version currentVersion, Version latestVersion, out Mock<IMessageBox> mockPrompt, out Mock<IVersionCheckService> mockService)
         {
             mockPrompt = new Mock<IMessageBox>();
             mockPrompt.Setup(m => m.Question(It.IsAny<string>(), It.IsAny<string>()));
 
-            var mockProcess = new Mock<IExternalProcess>();
+            var mockNavigator = new Mock<IWebNavigator>();
             var mockConfig = new Mock<IConfigurationService<Configuration>>();
             mockConfig.Setup(m => m.Read()).Returns(() => config);
 
-            mockService = new Mock<IVersionCheck>();
+            mockService = new Mock<IVersionCheckService>();
             
             mockService.Setup(m => m.CurrentVersion)
                        .Returns(() => currentVersion);
@@ -41,7 +42,7 @@ namespace RubberduckTests
             mockService.Setup(m => m.GetLatestVersionAsync(It.IsAny<GeneralSettings>(), It.IsAny<CancellationToken>()))
                        .ReturnsAsync(() => latestVersion);
 
-            return new VersionCheckCommand(mockService.Object, mockPrompt.Object, mockProcess.Object, mockConfig.Object);
+            return new VersionCheckCommand(mockService.Object, mockPrompt.Object, mockNavigator.Object, mockConfig.Object);
         }
 
         [Test]

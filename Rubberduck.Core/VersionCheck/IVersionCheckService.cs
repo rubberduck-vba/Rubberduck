@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.VersionCheck
 {
-    public interface IVersionCheck
+    public interface IVersionCheckService
     {
         Task<Version> GetLatestVersionAsync(GeneralSettings settings, CancellationToken token = default);
         Version CurrentVersion { get; }

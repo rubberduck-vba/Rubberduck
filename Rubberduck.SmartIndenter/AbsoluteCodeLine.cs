@@ -288,7 +288,7 @@ namespace Rubberduck.SmartIndenter
                     return _escaper.UnescapeIndented(string.Format("{0}{1}{2}{3}", code, new string(' ', Math.Max(position - code.Length, 1)),
                                                      EndOfLineComment, _stupidLineEnding ? StupidLineEnding : string.Empty));
                 case EndOfLineCommentStyle.SameGap:
-                    var uncommented = Original.Substring(0, position - 1);
+                    var uncommented = Original.Substring(0, Math.Max(0, position - 1));
                     return _escaper.UnescapeIndented(string.Format("{0}{1}{2}{3}", code, new string(' ', uncommented.Length - uncommented.TrimEnd().Length + 1), 
                                                      EndOfLineComment, _stupidLineEnding ? StupidLineEnding : string.Empty));
                 case EndOfLineCommentStyle.StandardGap:

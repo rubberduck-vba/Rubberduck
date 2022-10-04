@@ -12,10 +12,10 @@ namespace Rubberduck.UI.About
 {
     public class AboutControlViewModel
     {
-        private readonly IVersionCheck _version;
+        private readonly IVersionCheckService _version;
         private readonly IWebNavigator _web;
 
-        public AboutControlViewModel(IVersionCheck version, IWebNavigator web)
+        public AboutControlViewModel(IVersionCheckService version, IWebNavigator web)
         {
             _version = version;
             _web = web;

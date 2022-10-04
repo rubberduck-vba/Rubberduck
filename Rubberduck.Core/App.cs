@@ -26,7 +26,7 @@ namespace Rubberduck
         private readonly IConfigurationService<Configuration> _configService;
         private readonly IAppMenu _appMenus;
         private readonly IRubberduckHooks _hooks;
-        private readonly IVersionCheck _version;
+        private readonly IVersionCheckService _version;
         private readonly CommandBase _checkVersionCommand;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -38,7 +38,7 @@ namespace Rubberduck
             IConfigurationService<Configuration> configService,
             IAppMenu appMenus,
             IRubberduckHooks hooks,
-            IVersionCheck version,
+            IVersionCheckService version,
             CommandBase checkVersionCommand,
             IFileSystem filesystem)
         {

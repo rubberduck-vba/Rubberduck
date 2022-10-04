@@ -5,9 +5,8 @@ using Rubberduck.Settings;
 using Rubberduck.Interaction;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
-using Rubberduck.VersionCheck;
-
-namespace Rubberduck.UI.Command
+/*
+namespace Rubberduck.VersionCheck
 {
     public class VersionCheckCommand : CommandBase
     {
@@ -68,3 +67,4 @@ namespace Rubberduck.UI.Command
         }
     }
 }
+*/

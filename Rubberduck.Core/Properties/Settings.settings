@@ -2,138 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Rubberduck.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="DefaultHotkey_IndentCurrentModuleCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;Key1&gt;M&lt;/Key1&gt;
-  &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
-  &lt;HasShiftModifier&gt;false&lt;/HasShiftModifier&gt;
-  &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
-  &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
-  &lt;CommandTypeName&gt;IndentCurrentModuleCommand&lt;/CommandTypeName&gt;
-&lt;/HotkeySetting&gt;</Value>
-    </Setting>
-    <Setting Name="DefaultHotkey_CodePaneRefactorRenameCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;Key1&gt;R&lt;/Key1&gt;
-  &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
-  &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
-  &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
-  &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
-  &lt;CommandTypeName&gt;CodePaneRefactorRenameCommand&lt;/CommandTypeName&gt;
-&lt;/HotkeySetting&gt;</Value>
-    </Setting>
-    <Setting Name="DefaultHotkey_RefactorEncapsulateFieldCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;Key1&gt;F&lt;/Key1&gt;
-  &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
-  &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
-  &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
-  &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
-  &lt;CommandTypeName&gt;RefactorEncapsulateFieldCommand&lt;/CommandTypeName&gt;
-&lt;/HotkeySetting&gt;</Value>
-    </Setting>
-    <Setting Name="DefaultHotkey_RefactorExtractMethodCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;Key1&gt;M&lt;/Key1&gt;
-  &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
-  &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
-  &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
-  &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
-  &lt;CommandTypeName&gt;RefactorExtractMethodCommand&lt;/CommandTypeName&gt;
-&lt;/HotkeySetting&gt;</Value>
-    </Setting>
-    <Setting Name="DefaultHotkey_RefactorMoveCloserToUsageCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;Key1&gt;C&lt;/Key1&gt;
-  &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
-  &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
-  &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
-  &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
-  &lt;CommandTypeName&gt;RefactorMoveCloserToUsageCommand&lt;/CommandTypeName&gt;
-&lt;/HotkeySetting&gt;</Value>
-    </Setting>
-    <Setting Name="DefaultHotkey_CodeExplorerCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;Key1&gt;R&lt;/Key1&gt;
-  &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
-  &lt;HasShiftModifier&gt;false&lt;/HasShiftModifier&gt;
-  &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
-  &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
-  &lt;CommandTypeName&gt;CodeExplorerCommand&lt;/CommandTypeName&gt;
-&lt;/HotkeySetting&gt;</Value>
-    </Setting>
-    <Setting Name="DefaultHotkey_ExportAllCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;Key1&gt;E&lt;/Key1&gt;
-  &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
-  &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
-  &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
-  &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
-  &lt;CommandTypeName&gt;ExportAllCommand&lt;/CommandTypeName&gt;
-&lt;/HotkeySetting&gt;</Value>
-    </Setting>
-    <Setting Name="DefaultHotkey_FindSymbolCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;Key1&gt;T&lt;/Key1&gt;
-  &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
-  &lt;HasShiftModifier&gt;false&lt;/HasShiftModifier&gt;
-  &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
-  &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
-  &lt;CommandTypeName&gt;FindSymbolCommand&lt;/CommandTypeName&gt;
-&lt;/HotkeySetting&gt;</Value>
-    </Setting>
-    <Setting Name="DefaultHotkey_IndentCurrentProcedureCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;Key1&gt;P&lt;/Key1&gt;
-  &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
-  &lt;HasShiftModifier&gt;false&lt;/HasShiftModifier&gt;
-  &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
-  &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
-  &lt;CommandTypeName&gt;IndentCurrentProcedureCommand&lt;/CommandTypeName&gt;
-&lt;/HotkeySetting&gt;</Value>
-    </Setting>
-    <Setting Name="DefaultHotkey_InspectionResultsCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;Key1&gt;I&lt;/Key1&gt;
-  &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
-  &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
-  &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
-  &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
-  &lt;CommandTypeName&gt;InspectionResultsCommand&lt;/CommandTypeName&gt;
-&lt;/HotkeySetting&gt;</Value>
-    </Setting>
-    <Setting Name="DefaultHotkey_ReparseCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;Key1&gt;`&lt;/Key1&gt;
-  &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
-  &lt;HasShiftModifier&gt;false&lt;/HasShiftModifier&gt;
-  &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
-  &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
-  &lt;CommandTypeName&gt;ReparseCommand&lt;/CommandTypeName&gt;
-&lt;/HotkeySetting&gt;</Value>
-    </Setting>
-    <Setting Name="DefaultHotkey_TestExplorerCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;Key1&gt;T&lt;/Key1&gt;
-  &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
-  &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
-  &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
-  &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
-  &lt;CommandTypeName&gt;TestExplorerCommand&lt;/CommandTypeName&gt;
-&lt;/HotkeySetting&gt;</Value>
-    </Setting>
     <Setting Name="DefaultHotkey_PeekDefinitionCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
         &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
@@ -145,84 +13,241 @@
         &lt;CommandTypeName&gt;PeekDefinitionCommand&lt;/CommandTypeName&gt;
         &lt;/HotkeySetting&gt;</Value>
     </Setting>
+    <Setting Name="DefaultHotkey_IndentCurrentModuleCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
+      <Value Profile="(Default)">
+          &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;Key1&gt;M&lt;/Key1&gt;
+            &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
+            &lt;HasShiftModifier&gt;false&lt;/HasShiftModifier&gt;
+            &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
+            &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
+            &lt;CommandTypeName&gt;IndentCurrentModuleCommand&lt;/CommandTypeName&gt;
+          &lt;/HotkeySetting&gt;
+        </Value>
+    </Setting>
+    <Setting Name="DefaultHotkey_CodePaneRefactorRenameCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
+      <Value Profile="(Default)">
+          &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;Key1&gt;R&lt;/Key1&gt;
+            &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
+            &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
+            &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
+            &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
+            &lt;CommandTypeName&gt;CodePaneRefactorRenameCommand&lt;/CommandTypeName&gt;
+          &lt;/HotkeySetting&gt;
+        </Value>
+    </Setting>
+    <Setting Name="DefaultHotkey_RefactorEncapsulateFieldCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
+      <Value Profile="(Default)">
+          &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;Key1&gt;F&lt;/Key1&gt;
+            &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
+            &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
+            &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
+            &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
+            &lt;CommandTypeName&gt;RefactorEncapsulateFieldCommand&lt;/CommandTypeName&gt;
+          &lt;/HotkeySetting&gt;
+        </Value>
+    </Setting>
+    <Setting Name="DefaultHotkey_RefactorExtractMethodCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
+      <Value Profile="(Default)">
+          &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;Key1&gt;M&lt;/Key1&gt;
+            &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
+            &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
+            &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
+            &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
+            &lt;CommandTypeName&gt;RefactorExtractMethodCommand&lt;/CommandTypeName&gt;
+          &lt;/HotkeySetting&gt;
+        </Value>
+    </Setting>
+    <Setting Name="DefaultHotkey_RefactorMoveCloserToUsageCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
+      <Value Profile="(Default)">
+          &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;Key1&gt;C&lt;/Key1&gt;
+            &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
+            &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
+            &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
+            &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
+            &lt;CommandTypeName&gt;RefactorMoveCloserToUsageCommand&lt;/CommandTypeName&gt;
+          &lt;/HotkeySetting&gt;
+        </Value>
+    </Setting>
+    <Setting Name="DefaultHotkey_CodeExplorerCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
+      <Value Profile="(Default)">
+          &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;Key1&gt;R&lt;/Key1&gt;
+            &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
+            &lt;HasShiftModifier&gt;false&lt;/HasShiftModifier&gt;
+            &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
+            &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
+            &lt;CommandTypeName&gt;CodeExplorerCommand&lt;/CommandTypeName&gt;
+          &lt;/HotkeySetting&gt;
+        </Value>
+    </Setting>
+    <Setting Name="DefaultHotkey_ExportAllCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
+      <Value Profile="(Default)">
+          &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;Key1&gt;E&lt;/Key1&gt;
+            &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
+            &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
+            &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
+            &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
+            &lt;CommandTypeName&gt;ExportAllCommand&lt;/CommandTypeName&gt;
+          &lt;/HotkeySetting&gt;
+        </Value>
+    </Setting>
+    <Setting Name="DefaultHotkey_FindSymbolCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
+      <Value Profile="(Default)">
+          &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;Key1&gt;T&lt;/Key1&gt;
+            &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
+            &lt;HasShiftModifier&gt;false&lt;/HasShiftModifier&gt;
+            &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
+            &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
+            &lt;CommandTypeName&gt;FindSymbolCommand&lt;/CommandTypeName&gt;
+          &lt;/HotkeySetting&gt;
+        </Value>
+    </Setting>
+    <Setting Name="DefaultHotkey_IndentCurrentProcedureCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
+      <Value Profile="(Default)">
+          &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;Key1&gt;P&lt;/Key1&gt;
+            &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
+            &lt;HasShiftModifier&gt;false&lt;/HasShiftModifier&gt;
+            &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
+            &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
+            &lt;CommandTypeName&gt;IndentCurrentProcedureCommand&lt;/CommandTypeName&gt;
+          &lt;/HotkeySetting&gt;
+        </Value>
+    </Setting>
+    <Setting Name="DefaultHotkey_InspectionResultsCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
+      <Value Profile="(Default)">
+          &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;Key1&gt;I&lt;/Key1&gt;
+            &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
+            &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
+            &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
+            &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
+            &lt;CommandTypeName&gt;InspectionResultsCommand&lt;/CommandTypeName&gt;
+          &lt;/HotkeySetting&gt;
+        </Value>
+    </Setting>
+    <Setting Name="DefaultHotkey_ReparseCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
+      <Value Profile="(Default)">
+          &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;Key1&gt;`&lt;/Key1&gt;
+            &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
+            &lt;HasShiftModifier&gt;false&lt;/HasShiftModifier&gt;
+            &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
+            &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
+            &lt;CommandTypeName&gt;ReparseCommand&lt;/CommandTypeName&gt;
+          &lt;/HotkeySetting&gt;
+        </Value>
+    </Setting>
+    <Setting Name="DefaultHotkey_TestExplorerCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
+      <Value Profile="(Default)">
+          &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;Key1&gt;T&lt;/Key1&gt;
+            &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
+            &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
+            &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
+            &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
+            &lt;CommandTypeName&gt;TestExplorerCommand&lt;/CommandTypeName&gt;
+          &lt;/HotkeySetting&gt;
+        </Value>
+    </Setting>
     <Setting Name="ToDoMarker_ToDo" Type="Rubberduck.Settings.ToDoMarker" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ToDoMarker xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Text="TODO" /&gt;</Value>
+      <Value Profile="(Default)">
+          &lt;ToDoMarker xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Text="TODO" /&gt;
+        </Value>
     </Setting>
     <Setting Name="ToDoMarker_Note" Type="Rubberduck.Settings.ToDoMarker" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ToDoMarker xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Text="NOTE" /&gt;</Value>
+      <Value Profile="(Default)">
+          &lt;ToDoMarker xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Text="NOTE" /&gt;
+        </Value>
     </Setting>
     <Setting Name="ToDoMarker_Bug" Type="Rubberduck.Settings.ToDoMarker" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ToDoMarker xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Text="BUG" /&gt;</Value>
+      <Value Profile="(Default)">
+          &lt;ToDoMarker xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Text="BUG" /&gt;
+        </Value>
     </Setting>
     <Setting Name="WindowSettings" Type="Rubberduck.Settings.WindowSettings" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;WindowSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;CodeExplorerVisibleOnStartup&gt;false&lt;/CodeExplorerVisibleOnStartup&gt;
-  &lt;CodeInspectionsVisibleOnStartup&gt;false&lt;/CodeInspectionsVisibleOnStartup&gt;
-  &lt;TestExplorerVisibleOnStartup&gt;false&lt;/TestExplorerVisibleOnStartup&gt;
-  &lt;TodoExplorerVisibleOnStartup&gt;false&lt;/TodoExplorerVisibleOnStartup&gt;
-  &lt;CodeExplorer_SortByName&gt;true&lt;/CodeExplorer_SortByName&gt;
-  &lt;CodeExplorer_SortByCodeOrder&gt;false&lt;/CodeExplorer_SortByCodeOrder&gt;
-  &lt;CodeExplorer_GroupByType&gt;false&lt;/CodeExplorer_GroupByType&gt;
-&lt;/WindowSettings&gt;</Value>
+      <Value Profile="(Default)">
+          &lt;WindowSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;CodeExplorerVisibleOnStartup&gt;false&lt;/CodeExplorerVisibleOnStartup&gt;
+            &lt;CodeInspectionsVisibleOnStartup&gt;false&lt;/CodeInspectionsVisibleOnStartup&gt;
+            &lt;TestExplorerVisibleOnStartup&gt;false&lt;/TestExplorerVisibleOnStartup&gt;
+            &lt;TodoExplorerVisibleOnStartup&gt;false&lt;/TodoExplorerVisibleOnStartup&gt;
+            &lt;CodeExplorer_SortByName&gt;true&lt;/CodeExplorer_SortByName&gt;
+            &lt;CodeExplorer_SortByCodeOrder&gt;false&lt;/CodeExplorer_SortByCodeOrder&gt;
+            &lt;CodeExplorer_GroupByType&gt;false&lt;/CodeExplorer_GroupByType&gt;
+          &lt;/WindowSettings&gt;
+        </Value>
     </Setting>
     <Setting Name="GeneralSettings" Type="Rubberduck.Settings.GeneralSettings" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;GeneralSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;Language Code="en-US" /&gt;
-  &lt;CanShowSplash&gt;true&lt;/CanShowSplash&gt;
-  &lt;CanCheckVersion&gt;true&lt;/CanCheckVersion&gt;
-  &lt;CompileBeforeParse&gt;true&lt;/CompileBeforeParse&gt;
-  &lt;IsSmartIndenterPrompted&gt;false&lt;/IsSmartIndenterPrompted&gt;
-  &lt;IsAutoSaveEnabled&gt;false&lt;/IsAutoSaveEnabled&gt;
-  &lt;AutoSavePeriod&gt;10&lt;/AutoSavePeriod&gt;
-  &lt;UserEditedLogLevel&gt;false&lt;/UserEditedLogLevel&gt;
-  &lt;MinimumLogLevel&gt;0&lt;/MinimumLogLevel&gt;
-  &lt;SetDpiUnaware&gt;false&lt;/SetDpiUnaware&gt;
-  &lt;EnableExperimentalFeatures /&gt;
-&lt;/GeneralSettings&gt;</Value>
+      <Value Profile="(Default)">
+          &lt;GeneralSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;Language Code="en-US" /&gt;
+            &lt;CanShowSplash&gt;true&lt;/CanShowSplash&gt;
+            &lt;CanCheckVersion&gt;true&lt;/CanCheckVersion&gt;
+            &lt;CompileBeforeParse&gt;true&lt;/CompileBeforeParse&gt;
+            &lt;IsSmartIndenterPrompted&gt;false&lt;/IsSmartIndenterPrompted&gt;
+            &lt;IsAutoSaveEnabled&gt;false&lt;/IsAutoSaveEnabled&gt;
+            &lt;AutoSavePeriod&gt;10&lt;/AutoSavePeriod&gt;
+            &lt;UserEditedLogLevel&gt;false&lt;/UserEditedLogLevel&gt;
+            &lt;MinimumLogLevel&gt;0&lt;/MinimumLogLevel&gt;
+            &lt;SetDpiUnaware&gt;false&lt;/SetDpiUnaware&gt;
+            &lt;EnableExperimentalFeatures /&gt;
+          &lt;/GeneralSettings&gt;
+        </Value>
     </Setting>
     <Setting Name="AutoCompleteSettings" Type="Rubberduck.Settings.AutoCompleteSettings" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;AutoCompleteSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" IsEnabled="true"&gt;
-  &lt;SmartConcat IsEnabled="true"&gt;
-    &lt;ConcatVbNewLineModifier&gt;None&lt;/ConcatVbNewLineModifier&gt;
-    &lt;ConcatMaxLines&gt;25&lt;/ConcatMaxLines&gt;
-  &lt;/SmartConcat&gt;
-  &lt;SelfClosingPairs IsEnabled="true" /&gt;
-  &lt;BlockCompletion IsEnabled="false" CompleteOnEnter="false" CompleteOnTab="false" /&gt;
-&lt;/AutoCompleteSettings&gt;</Value>
+      <Value Profile="(Default)">
+          &lt;AutoCompleteSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" IsEnabled="true"&gt;
+            &lt;SmartConcat IsEnabled="true"&gt;
+              &lt;ConcatVbNewLineModifier&gt;None&lt;/ConcatVbNewLineModifier&gt;
+              &lt;ConcatMaxLines&gt;25&lt;/ConcatMaxLines&gt;
+            &lt;/SmartConcat&gt;
+            &lt;SelfClosingPairs IsEnabled="true" /&gt;
+            &lt;BlockCompletion IsEnabled="true" CompleteOnEnter="true" CompleteOnTab="true" /&gt;
+          &lt;/AutoCompleteSettings&gt;
+        </Value>
     </Setting>
     <Setting Name="ToDoGridViewColumnInfo_Description" Type="Rubberduck.Settings.ToDoGridViewColumnInfo" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ToDoGridViewColumnInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;DisplayIndex&gt;0&lt;/DisplayIndex&gt;
-  &lt;Width /&gt;
-&lt;/ToDoGridViewColumnInfo&gt;</Value>
+      <Value Profile="(Default)">
+          &lt;ToDoGridViewColumnInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;DisplayIndex&gt;0&lt;/DisplayIndex&gt;
+            &lt;Width /&gt;
+          &lt;/ToDoGridViewColumnInfo&gt;
+        </Value>
     </Setting>
     <Setting Name="ToDoGridViewColumnInfo_Project" Type="Rubberduck.Settings.ToDoGridViewColumnInfo" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ToDoGridViewColumnInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;DisplayIndex&gt;1&lt;/DisplayIndex&gt;
-  &lt;Width /&gt;
-&lt;/ToDoGridViewColumnInfo&gt;</Value>
+      <Value Profile="(Default)">
+          &lt;ToDoGridViewColumnInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;DisplayIndex&gt;1&lt;/DisplayIndex&gt;
+            &lt;Width /&gt;
+          &lt;/ToDoGridViewColumnInfo&gt;
+        </Value>
     </Setting>
     <Setting Name="ToDoGridViewColumnInfo_Module" Type="Rubberduck.Settings.ToDoGridViewColumnInfo" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ToDoGridViewColumnInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;DisplayIndex&gt;2&lt;/DisplayIndex&gt;
-  &lt;Width /&gt;
-&lt;/ToDoGridViewColumnInfo&gt;</Value>
+      <Value Profile="(Default)">
+          &lt;ToDoGridViewColumnInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;DisplayIndex&gt;2&lt;/DisplayIndex&gt;
+            &lt;Width /&gt;
+          &lt;/ToDoGridViewColumnInfo&gt;
+        </Value>
     </Setting>
     <Setting Name="ToDoGridViewColumnInfo_LineNumber" Type="Rubberduck.Settings.ToDoGridViewColumnInfo" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ToDoGridViewColumnInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;DisplayIndex&gt;3&lt;/DisplayIndex&gt;
-  &lt;Width /&gt;
-&lt;/ToDoGridViewColumnInfo&gt;</Value>
+      <Value Profile="(Default)">
+          &lt;ToDoGridViewColumnInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;DisplayIndex&gt;3&lt;/DisplayIndex&gt;
+            &lt;Width /&gt;
+          &lt;/ToDoGridViewColumnInfo&gt;
+        </Value>
+    </Setting>
+    <Setting Name="WebApiBaseUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">https://api.rubberduckvba.com/api/v1</Value>
     </Setting>
   </Settings>
 </SettingsFile>
