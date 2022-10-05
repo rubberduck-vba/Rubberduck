@@ -123,6 +123,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         {
             private readonly string _name;
             private bool _result;
+            private bool _inFunctionReturnWithExpression;
 
             public FunctionReturnValueAssignmentLocator(string name)
             {
@@ -134,18 +135,34 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 base.VisitBlock(context);
                 return _result;
             }
+            public override bool VisitWithStmt(VBAParser.WithStmtContext context)
+            {
+                var oldInFunctionReturnWithExpression = _inFunctionReturnWithExpression;
+                _inFunctionReturnWithExpression = context.expression().GetText() == _name;
+                base.VisitWithStmt(context);
+                _inFunctionReturnWithExpression = oldInFunctionReturnWithExpression;
+                return _result;
+            }
 
             public override bool VisitLetStmt(VBAParser.LetStmtContext context)
             {
-                var leftmost = context.lExpression().GetChild(0).GetText();
-                _result = _result || leftmost == _name;
+                var LHS = context.lExpression();
+                var leftmost = LHS.GetChild(0).GetText();
+                _result = _result 
+                    || leftmost == _name 
+                    || (_inFunctionReturnWithExpression 
+                        && LHS is VBAParser.WithMemberAccessExprContext);
                 return _result;
             }
 
             public override bool VisitSetStmt(VBAParser.SetStmtContext context)
             {
-                var leftmost = context.lExpression().GetChild(0).GetText();
-                _result = _result || leftmost == _name;
+                var LHS = context.lExpression();
+                var leftmost = LHS.GetChild(0).GetText();
+                _result = _result
+                    || leftmost == _name
+                    || (_inFunctionReturnWithExpression
+                        && LHS is VBAParser.WithMemberAccessExprContext);
                 return _result;
             }
         }
