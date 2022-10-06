@@ -162,6 +162,24 @@ End {procedureType}
             StringAssert.Contains($"{targetName} As {expectedType}", refactoredCode);
         }
 
+        [TestCase("5 & 5", "String")]
+        [TestCase("Null & Null", "Variant")]
+        [TestCase(@"Null & ""Test""", "String")]
+        [TestCase("5 & Null", "String")]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void ConstantTypedByConcatOp(string expression, string expectedType)
+        {
+            var targetName = "MY_CONSTANT";
+            var inputCode =
+$@"
+Public Const MY_CONSTANT = {expression}
+
+";
+            var refactoredCode = RefactoredCode(inputCode, NameAndDeclarationTypeTuple(targetName));
+            StringAssert.Contains($"{targetName} As {expectedType}", refactoredCode);
+        }
+
         private static (string, DeclarationType) NameAndDeclarationTypeTuple(string name)
             => (name, DeclarationType.Constant);
     }
