@@ -1,4 +1,5 @@
 using System.Linq;
+using Antlr4.Runtime.Tree;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -122,31 +123,58 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         private class FunctionReturnValueAssignmentLocator : VBAParserBaseVisitor<bool>
         {
             private readonly string _name;
-            private bool _result;
+            private bool _inFunctionReturnWithExpression;
 
             public FunctionReturnValueAssignmentLocator(string name)
             {
                 _name = name;
+                _inFunctionReturnWithExpression = false;
             }
 
-            public override bool VisitBlock(VBAParser.BlockContext context)
+            protected override bool DefaultResult => false;
+
+            protected override bool ShouldVisitNextChild(IRuleNode node, bool currentResult)
             {
-                base.VisitBlock(context);
-                return _result;
+                return !currentResult;
+            }
+
+            //This is actually the default implementation, but for explicities sake stated here.
+            protected override bool AggregateResult(bool aggregate, bool nextResult)
+            {
+                return nextResult;
+            }
+
+            public override bool VisitWithStmt(VBAParser.WithStmtContext context)
+            {
+                var oldInFunctionReturnWithExpression = _inFunctionReturnWithExpression;
+                _inFunctionReturnWithExpression = context.expression().GetText() == _name;
+                var result = base.VisitWithStmt(context);
+                _inFunctionReturnWithExpression = oldInFunctionReturnWithExpression;
+                return result;
             }
 
             public override bool VisitLetStmt(VBAParser.LetStmtContext context)
             {
-                var leftmost = context.lExpression().GetChild(0).GetText();
-                _result = _result || leftmost == _name;
-                return _result;
+                var LHS = context.lExpression();
+                if (_inFunctionReturnWithExpression
+                        && LHS is VBAParser.WithMemberAccessExprContext)
+                {
+                    return true;
+                }
+                var leftmost = LHS.GetChild(0).GetText();
+                return leftmost == _name;
             }
 
             public override bool VisitSetStmt(VBAParser.SetStmtContext context)
             {
-                var leftmost = context.lExpression().GetChild(0).GetText();
-                _result = _result || leftmost == _name;
-                return _result;
+                var LHS = context.lExpression();
+                if (_inFunctionReturnWithExpression
+                        && LHS is VBAParser.WithMemberAccessExprContext)
+                {
+                    return true;
+                }
+                var leftmost = LHS.GetChild(0).GetText();
+                return leftmost == _name;
             }
         }
     }
