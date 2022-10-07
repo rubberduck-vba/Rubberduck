@@ -529,7 +529,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 _asTypeDeclaration = value;
                 IsSelfAssigned = IsSelfAssigned || (DeclarationType == DeclarationType.Variable &&
-                                 AsTypeDeclaration.DeclarationType == DeclarationType.UserDefinedType);
+                                 AsTypeDeclaration?.DeclarationType == DeclarationType.UserDefinedType);
             }
         }
 
