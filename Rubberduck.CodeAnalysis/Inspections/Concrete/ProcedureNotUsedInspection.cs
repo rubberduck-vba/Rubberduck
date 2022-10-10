@@ -19,9 +19,9 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Shape object in the host document: in such cases the inspection result should be ignored.
     /// </why>
     /// <remarks>
-    /// Not all unused procedures can/should be removed: ignore any inspection results for 
-    /// event handler procedures and interface members that Rubberduck isn't recognizing as such, or annotate them with @EntryPoint.
+    /// Not all unused procedures can/should be removed: ignore any inspection results for event handler procedures or annotate them with @EntryPoint.
     /// Members that are annotated with @EntryPoint (or @ExcelHotkey) are not flagged by this inspection, regardless of the presence or absence of user code references.
+    /// Moreover, unused public members of exposed class modules will not be reported. 
     /// </remarks>
     /// <example hasResult="true">
     /// <module name="Module1" type="Standard Module">
@@ -144,12 +144,28 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                    && !finder.FindEventHandlers().Contains(declaration)
                    && !IsClassLifeCycleHandler(declaration)
                    && !(declaration is ModuleBodyElementDeclaration member 
-                        && (member.IsInterfaceMember 
-                            || member.IsInterfaceImplementation))
+                        && member.IsInterfaceImplementation)
                    && !declaration.Annotations
                        .Any(pta => pta.Annotation is ITestAnnotation) 
                    && !IsDocumentEventHandler(declaration)
-                   && !IsEntryPoint(declaration);
+                   && !IsEntryPoint(declaration)
+                   && !IsPublicInExposedClass(declaration);
+        }
+
+        private static bool IsPublicInExposedClass(Declaration procedure)
+        {
+            if(!(procedure.Accessibility == Accessibility.Public
+                    || procedure.Accessibility == Accessibility.Global))
+            {
+                return false;
+            }
+
+            if(!(Declaration.GetModuleParent(procedure) is ClassModuleDeclaration classParent))
+            {
+                return false;
+            }
+
+            return classParent.IsExposed;
         }
 
         private static bool IsEntryPoint(Declaration procedure) => 
