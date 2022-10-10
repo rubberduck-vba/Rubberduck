@@ -45,7 +45,24 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             return declaration?.Context != null 
-                   && !declaration.References.Any();
+                   && !declaration.References.Any()
+                   && !IsPublicInExposedClass(declaration);
+        }
+
+        private static bool IsPublicInExposedClass(Declaration procedure)
+        {
+            if (!(procedure.Accessibility == Accessibility.Public
+                    || procedure.Accessibility == Accessibility.Global))
+            {
+                return false;
+            }
+
+            if (!(Declaration.GetModuleParent(procedure) is ClassModuleDeclaration classParent))
+            {
+                return false;
+            }
+
+            return classParent.IsExposed;
         }
 
         protected override string ResultDescription(Declaration declaration)
