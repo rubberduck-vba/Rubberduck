@@ -33,10 +33,12 @@ namespace Rubberduck.UI.Converters
                 textBlock.TextWrapping = TextWrapping.Wrap;
 
                 var input = item.ResultText.Replace(' ', nonBreakingSpace);
-                if (item.HighlightIndex.HasValue)
+                if (item.HighlightIndex.HasValue
+                    && item.HighlightIndex.Value.EndColumn < input.Length   // if we do not check this, any inconsistent input will crash the host.
+                    && item.HighlightIndex.Value.StartColumn < input.Length)
                 {
                     var highlight = item.HighlightIndex.Value;
-                    if (highlight.StartColumn > 0)
+                    if (highlight.StartColumn > 0) 
                     {
                         var preRun = new Run(input.Substring(0, highlight.StartColumn))
                         {
