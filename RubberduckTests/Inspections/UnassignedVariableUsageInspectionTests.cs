@@ -98,6 +98,171 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void IgnoresReDimDefinedArrays()
+        {
+            const string code = @"
+Sub Foo()
+    ReDim bar(2) As String
+    bar(1) = ""value""
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void IgnoresArrayReDimAfterRedim()
+        {
+            const string code = @"
+Sub Foo()
+    Dim bar As Variant
+    ReDim bar(1 To 10)
+    ReDim bar(11 To 1220)
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void IgnoresArrayReDimOnRedimDefinedArray()
+        {
+            const string code = @"
+Sub Foo()
+    ReDim bar(1 To 10)
+    ReDim bar(11 To 1220)
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        // ref issue #5990
+        public void IgnoresUsageOfArrayInBoundsAfterRedim()
+        {
+            const string code = @"
+Sub TEST()
+    Dim i, arr
+    ReDim arr(2)
+    arr(0) = Array(""aaa"", ""bbbb"")
+    arr(1) = Array(""ccc"", ""dddd"")
+    arr(2) = Array(""eee"", ""ffff"")
+    For i = LBound(arr) To UBound(arr) ' I get two ""Variable 'arr' is used but not assigned."" here
+        '...
+    Next
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _, referenceStdLibs: true).Object;
+            Assert.AreEqual(0, InspectionResults(vbe).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void IgnoresUsageOfArrayInBounds()
+        {
+            const string code = @"
+Sub TEST()
+    Dim i, arr(2)
+    arr(0) = Array(""aaa"", ""bbbb"")
+    arr(1) = Array(""ccc"", ""dddd"")
+    arr(2) = Array(""eee"", ""ffff"")
+    For i = LBound(arr) To UBound(arr)
+        '...
+    Next
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _, referenceStdLibs: true).Object;
+            Assert.AreEqual(0, InspectionResults(vbe).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void IgnoresUsageOfReDimDefinedArrayInBounds()
+        {
+            const string code = @"
+Sub TEST()
+    Dim i
+    ReDim arr(2)
+    arr(0) = Array(""aaa"", ""bbbb"")
+    arr(1) = Array(""ccc"", ""dddd"")
+    arr(2) = Array(""eee"", ""ffff"")
+    For i = LBound(arr) To UBound(arr)
+        '...
+    Next
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _, referenceStdLibs: true).Object;
+            Assert.AreEqual(0, InspectionResults(vbe).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void IgnoresUsageOfVariantArrayAsFunctionArgumentAfterRedim()
+        {
+            const string code = @"
+Private Function Foo(arg As Variant) As Variant
+    Foo = arg
+End Function
+
+Sub Baz()
+    Dim bar
+    ReDim bar(2)
+    bar(0) = 1
+    bar(1) = 2
+    bar(2) = 3
+    Dim fooBar As Variant
+    fooBar = Foo(bar)
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void IgnoresUsageOfArrayAsFunctionArgument()
+        {
+            const string code = @"
+Private Function Foo(arg As Variant) As Variant
+    Foo = arg
+End Function
+
+Sub Baz()
+    Dim bar(2)
+    bar(0) = 1
+    bar(1) = 2
+    bar(2) = 3
+    Dim fooBar As Variant
+    fooBar = Foo(bar)
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ResultForUsageOfVariantArrayAsFunctionArgumentBeforeRedim()
+        {
+            const string code = @"
+Private Function Foo(arg As Variant) As Variant
+    Foo = arg
+End Function
+
+Sub Baz()
+    Dim bar
+    Dim fooBar As Variant
+    fooBar = Foo(bar)
+    ReDim bar(2)
+    bar(0) = 1
+    bar(1) = 2
+    bar(2) = 3
+End Sub
+";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void DoNotIgnoreIndexedPropertyAccess_Let()
         {
             const string code = @"

@@ -15,11 +15,16 @@ namespace RubberduckTests.Inspections
     {
         [Test]
         [Category("Inspections")]
-        public void ProcedureNotUsed_ReturnsResult()
+        [TestCase("Sub", "")]
+        [TestCase("Function", "")]
+        [TestCase("Property", " Get")]
+        [TestCase("Property", " Let")]
+        [TestCase("Property", " Set")]
+        public void ProcedureNotUsed_ReturnsResult(string memberType, string memberTypeExtension)
         {
-            const string inputCode =
-                @"Private Sub Foo()
-End Sub";
+            var inputCode =
+                $@"Private {memberType}{memberTypeExtension} Foo(arg As Variant)
+End {memberType}";
 
             Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
@@ -82,13 +87,127 @@ End Sub";
 Private Sub IClass1_DoSomething(ByVal a As Integer)
 End Sub";
 
-            var modules = new(string, string, ComponentType)[]
+            var modules = new (string, string, ComponentType)[]
             {
                 ("IClass1", inputCode1, ComponentType.ClassModule),
                 ("Class1", inputCode2, ComponentType.ClassModule),
             };
 
-            Assert.AreEqual(0, InspectionResultsForModules(modules).Count(result => result.Target.DeclarationType == DeclarationType.Procedure));
+            var relevantResults = InspectionResultsForModules(modules)
+                .Where(result => result.Target.DeclarationType == DeclarationType.Procedure
+                    && result.Target.QualifiedModuleName.ComponentName == "Class1");
+
+            Assert.AreEqual(0, relevantResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ProcedureNotUsed_ReturnsResult_ImplementedInterfaceMethod()
+        {
+            const string inputCode1 =
+                @"Public Sub DoSomething(ByVal a As Integer)
+End Sub";
+            const string inputCode2 =
+                @"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal a As Integer)
+End Sub";
+
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("IClass1", inputCode1, ComponentType.ClassModule),
+                ("Class1", inputCode2, ComponentType.ClassModule),
+            };
+
+            var results = InspectionResultsForModules(modules);
+            var relevantResults = results
+                .Where(result => result.Target.DeclarationType == DeclarationType.Procedure
+                    && result.Target.QualifiedModuleName.ComponentName == "IClass1");
+
+            Assert.AreEqual(1, relevantResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ProcedureNotUsed_ReturnsResult_MarkedInterfaceMethod()
+        {
+            const string inputCode1 =
+                @"
+'@Interface
+
+Public Sub DoSomething(ByVal a As Integer)
+End Sub
+";
+
+
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("IClass1", inputCode1, ComponentType.ClassModule)
+            };
+
+            var results = InspectionResultsForModules(modules);
+            var relevantResults = results
+                .Where(result => result.Target.DeclarationType == DeclarationType.Procedure
+                    && result.Target.QualifiedModuleName.ComponentName == "IClass1");
+
+            Assert.AreEqual(1, relevantResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("Sub", "")]
+        [TestCase("Function", "")]
+        [TestCase("Property", " Get")]
+        [TestCase("Property", " Let")]
+        [TestCase("Property", " Set")]
+        public void ProcedureNotUsed_DoesNotReturnResult_ExposedClass_Public(string memberType, string memberTypeExtension)
+        {
+            var inputCode =
+                $@"
+Attribute VB_Exposed = True
+
+Public {memberType}{memberTypeExtension} Foo(arg As Variant)
+End {memberType}";
+
+            Assert.AreEqual(0, InspectionResultsForModules(("Class1", inputCode, ComponentType.ClassModule)).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("Sub", "")]
+        [TestCase("Function", "")]
+        [TestCase("Property", " Get")]
+        [TestCase("Property", " Let")]
+        [TestCase("Property", " Set")]
+        public void ProcedureNotUsed_ReturnsResult_ExposedClass_Private(string memberType, string memberTypeExtension)
+        {
+            var inputCode =
+                $@"
+Attribute VB_Exposed = True
+
+Private {memberType}{memberTypeExtension} Foo(arg As Variant)
+End {memberType}";
+
+            Assert.AreEqual(1, InspectionResultsForModules(("Class1", inputCode, ComponentType.ClassModule)).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("Sub", "")]
+        [TestCase("Function", "")]
+        [TestCase("Property", " Get")]
+        [TestCase("Property", " Let")]
+        [TestCase("Property", " Set")]
+        public void ProcedureNotUsed_ReturnsResult_ExposedClass_Friend(string memberType, string memberTypeExtension)
+        {
+            var inputCode =
+                $@"
+Attribute VB_Exposed = True
+
+Friend {memberType}{memberTypeExtension} Foo(arg As Variant)
+End {memberType}";
+
+            Assert.AreEqual(1, InspectionResultsForModules(("Class1", inputCode, ComponentType.ClassModule)).Count());
         }
 
         [Test]
