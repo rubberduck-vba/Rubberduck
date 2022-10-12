@@ -7,6 +7,6 @@
         NamingAndConventionsIssues,
         CodeQualityIssues,
         Performance,
-        Uncategorized
+        Uncategorized,
     }
 }
