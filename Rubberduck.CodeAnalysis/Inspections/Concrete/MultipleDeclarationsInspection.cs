@@ -20,6 +20,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Dim foo As Long, bar As Long
     /// ]]>
     /// </module>
+    /// </example>
+    /// <example hasResult="true">
     /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Dim foo , bar As Long
