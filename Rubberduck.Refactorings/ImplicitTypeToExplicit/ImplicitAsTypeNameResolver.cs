@@ -13,6 +13,7 @@ namespace Rubberduck.Refactorings.ImplicitTypeToExplicit
     {
         private readonly LiteralExprContextToAsTypeNameConverter _literalExprContextEvaluator;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ConcatOpContextResolver _concatOpContextResolver;
         private readonly Declaration _target;
 
         public ImplicitAsTypeNameResolver(IDeclarationFinderProvider declarationFinderProvider,
@@ -21,6 +22,8 @@ namespace Rubberduck.Refactorings.ImplicitTypeToExplicit
             _declarationFinderProvider = declarationFinderProvider;
             _literalExprContextEvaluator = new LiteralExprContextToAsTypeNameConverter(parseTreeValueFactory);
             _target = target;
+
+            _concatOpContextResolver = new ConcatOpContextResolver(declarationFinderProvider);
         }
 
         public List<string> InferAsTypeNames(IReadOnlyCollection<VBAParser.LiteralExprContext> tContexts) 
@@ -28,6 +31,11 @@ namespace Rubberduck.Refactorings.ImplicitTypeToExplicit
 
         public List<string> InferAsTypeNames(IReadOnlyCollection<VBAParser.NewExprContext> tContexts) 
             => tContexts.Select(c => c.GetChild<VBAParser.LExprContext>()?.GetText() ?? string.Empty).ToList();
+
+        public List<string> InferAsTypeNames(IReadOnlyCollection<VBAParser.ConcatOpContext> tContexts)
+        {
+            return _concatOpContextResolver.InferAsTypeNames(tContexts);
+        }
 
         public List<string> InferAsTypeNames(IReadOnlyCollection<VBAParser.LetStmtContext> tContexts)
         {

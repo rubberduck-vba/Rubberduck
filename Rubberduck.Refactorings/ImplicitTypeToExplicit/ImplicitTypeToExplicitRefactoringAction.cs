@@ -101,8 +101,9 @@ namespace Rubberduck.Refactorings.ImplicitTypeToExplicit
 
             var lExprContext = context.GetChild<VBAParser.LExprContext>();
             var litExprContext = context.GetChild<VBAParser.LiteralExprContext>();
+            var concatExprContext = context.GetChild<VBAParser.ConcatOpContext>();
 
-            if (lExprContext is null && litExprContext is null)
+            if (lExprContext is null && litExprContext is null && concatExprContext is null)
             {
                 //Declarations that have a default value expression (Constants and Optional parameters) 
                 //must resolve to an AsTypeName. Expressions are indeterminant and result assigning the Variant type
@@ -118,6 +119,11 @@ namespace Rubberduck.Refactorings.ImplicitTypeToExplicit
             if (litExprContext != null)
             {
                 resultsHandler.AddCandidates(nameof(VBAParser.LiteralExprContext), resolver.InferAsTypeNames(new List<VBAParser.LiteralExprContext>() { litExprContext }));
+            }
+
+            if (concatExprContext != null)
+            {
+                resultsHandler.AddCandidates(nameof(VBAParser.ConcatOpContext), resolver.InferAsTypeNames(new List<VBAParser.ConcatOpContext>() { concatExprContext }));
             }
         }
 
@@ -138,20 +144,28 @@ namespace Rubberduck.Refactorings.ImplicitTypeToExplicit
 
             //Until a unified Expression engine is available, the following are the only ParserRuleContext
             //Subclasses that are evaluated.
-            var newExprContexts = AssignmentRHSContexts<VBAParser.NewExprContext>();
-            var lExprContexts = AssignmentRHSContexts<VBAParser.LExprContext>();
-            var litExprContexts = AssignmentRHSContexts<VBAParser.LiteralExprContext>();
+            var newExprContexts = AssignmentRHSContexts<VBAParser.NewExprContext>().ToList();
+            var lExprContexts = AssignmentRHSContexts<VBAParser.LExprContext>().ToList();
+            var litExprContexts = AssignmentRHSContexts<VBAParser.LiteralExprContext>().ToList();
+            var concatExprContexts = AssignmentRHSContexts<VBAParser.ConcatOpContext>().ToList();
 
-            if (assignmentContextsToEvaluate.Count() == newExprContexts.Count + lExprContexts.Count + litExprContexts.Count)
+            var countOfAllContexts = SumContextCounts<VBAParser.ExpressionContext>(
+                newExprContexts, lExprContexts, litExprContexts, concatExprContexts);
+
+            if (assignmentContextsToEvaluate.Count() == countOfAllContexts)
             {
                 resultsHandler.AddCandidates(nameof(VBAParser.NewExprContext), resolver.InferAsTypeNames(newExprContexts));
                 resultsHandler.AddCandidates(nameof(VBAParser.LExprContext), resolver.InferAsTypeNames(lExprContexts));
                 resultsHandler.AddCandidates(nameof(VBAParser.LiteralExprContext), resolver.InferAsTypeNames(litExprContexts));
+                resultsHandler.AddCandidates(nameof(VBAParser.ConcatOpContext), resolver.InferAsTypeNames(concatExprContexts));
                 return;
             }
 
             resultsHandler.AddIndeterminantResult();
         }
+
+        private static long SumContextCounts<T>(params IEnumerable<T>[] contextLists) where T : VBAParser.ExpressionContext
+            => contextLists.Sum(c => c.Count());
 
         private static void InferTypeNamesFromAssignmentRHSUsage(Declaration target, ImplicitAsTypeNameResolver resolver, AsTypeNamesResultsHandler resultsHandler)
         {

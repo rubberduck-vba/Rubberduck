@@ -249,6 +249,41 @@ End Sub";
             StringAssert.Contains(expectedArgList, refactoredCode);
         }
 
+        [TestCase("5 & 5", "String")]
+        [TestCase("Null & Null", "Variant")]
+        [TestCase(@"Null & ""Test""", "String")]
+        [TestCase(@"5 & Null", "String")]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void ParameterWithDefaultValue_ConcatExpression(string expression, string expected)
+        {
+            var targetName = "fizz";
+            var inputCode =
+$@"
+Sub Test(Optional ByVal fizz = {expression})
+End Sub";
+
+            var refactoredCode = RefactoredCode(inputCode, NameAndDeclarationTypeTuple(targetName));
+            StringAssert.Contains($"{targetName} As {expected}", refactoredCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void ParameterAssignedWithinProcedure_ConcatExpression()
+        {
+            var targetName = "fizz";
+            var expectedType = "String";
+            var inputCode =
+@"
+Sub Test(ByVal countSuffix As Long,  fizz)
+    fizz = ""Test"" & countSuffix
+End Sub";
+
+            var refactoredCode = RefactoredCode(inputCode, NameAndDeclarationTypeTuple(targetName));
+            StringAssert.Contains($"{targetName} As {expectedType}", refactoredCode);
+        }
+
         (string, DeclarationType) NameAndDeclarationTypeTuple(string name)
             => (name, DeclarationType.Parameter);
     }
