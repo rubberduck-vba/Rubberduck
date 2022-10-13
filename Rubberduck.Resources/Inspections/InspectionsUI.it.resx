@@ -156,7 +156,7 @@
   <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
     <value>Opportunità del linguaggio</value>
   </data>
-  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
+  <data name="CodeInspectionSettings_NamingAndConventionsIssues" xml:space="preserve">
     <value>Problemi di manutenibilità e leggibilità</value>
   </data>
   <data name="CodeInspectionSettings_Performance" xml:space="preserve">

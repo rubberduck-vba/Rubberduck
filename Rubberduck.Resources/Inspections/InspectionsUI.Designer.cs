@@ -99,9 +99,9 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Maintainability and Readability Issues.
         /// </summary>
-        public static string CodeInspectionSettings_MaintainabilityAndReadabilityIssues {
+        public static string CodeInspectionSettings_NamingAndConventionsIssues {
             get {
-                return ResourceManager.GetString("CodeInspectionSettings_MaintainabilityAndReadabilityIssues", resourceCulture);
+                return ResourceManager.GetString("CodeInspectionSettings_NamingAndConventionsIssues", resourceCulture);
             }
         }
         
