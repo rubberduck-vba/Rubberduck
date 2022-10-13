@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Resources;
 using Rubberduck.SmartIndenter;
 using System;
@@ -37,7 +38,8 @@ namespace Rubberduck.Refactorings
         /// <summary>
         /// Generates a Property Get codeblock based on the prototype declaration 
         /// </summary>
-        /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
+        /// <param name="prototype">DeclarationType with flags: Variable, Constant,
+        /// UserDefinedTypeMember, Function, or Property</param>
         /// <param name="content">Member body content.</param>
         /// <param name="parameterIdentifier">Defaults to '<paramref name="propertyIdentifier"/>Value' unless otherwise specified</param>
         bool TryBuildPropertyGetCodeBlock(Declaration prototype,
@@ -49,7 +51,8 @@ namespace Rubberduck.Refactorings
         /// <summary>
         /// Generates a Property Let codeblock based on the prototype declaration 
         /// </summary>
-        /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
+        /// <param name="prototype">DeclarationType with flags: Variable, Constant,
+        /// UserDefinedTypeMember, Function, or Property</param>
         /// <param name="content">Member body content.</param>
         /// <param name="parameterIdentifier">Defaults to 'RHS' unless otherwise specified</param>
         bool TryBuildPropertyLetCodeBlock(Declaration prototype,
@@ -62,7 +65,8 @@ namespace Rubberduck.Refactorings
         /// <summary>
         /// Generates a Property Set codeblock based on the prototype declaration 
         /// </summary>
-        /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
+        /// <param name="prototype">DeclarationType with flags: Variable, Constant,
+        /// UserDefinedTypeMember, Function, or Property</param>
         /// <param name="content">Member body content.</param>
         /// <param name="parameterIdentifier">Defaults to 'RHS' unless otherwise specified</param>
         bool TryBuildPropertySetCodeBlock(Declaration prototype,
@@ -79,8 +83,12 @@ namespace Rubberduck.Refactorings
         /// <remarks>
         /// No validation or conflict analysis is applied to the identifiers.
         /// </remarks>
-        /// <param name="memberPrototypes">DeclarationTypes with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
-        bool TryBuildUserDefinedTypeDeclaration(string udtIdentifier, IEnumerable<(Declaration Prototype, string UDTMemberIdentifier)> memberPrototypes, out string declaration, Accessibility accessibility = Accessibility.Private);
+        /// <param name="memberPrototypes">DeclarationTypes with flags: Variable, Constant, 
+        /// UserDefinedTypeMember, Function, or Property</param>
+        bool TryBuildUserDefinedTypeDeclaration(string udtIdentifier, 
+            IEnumerable<(Declaration Prototype, string UDTMemberIdentifier)> memberPrototypes, 
+            out string codeBlock, 
+            Accessibility accessibility = Accessibility.Private);
 
         /// <summary>
         /// Generates a <c>UserDefinedTypeMember</c> declaration expression based on the prototype declaration
@@ -88,8 +96,9 @@ namespace Rubberduck.Refactorings
         /// <remarks>
         /// No validation or conflict analysis is applied to the identifiers.
         /// </remarks>
-        /// <param name="prototype">DeclarationType with flags: Variable, Constant, UserDefinedTypeMember, or Function</param>
-        bool TryBuildUDTMemberDeclaration(Declaration prototype, string identifier, out string declaration);
+        /// <param name="prototype">DeclarationType with flags: Variable, Constant, 
+        /// UserDefinedTypeMember, Function, or Property</param>
+        bool TryBuildUDTMemberDeclaration(Declaration prototype, string identifier, out string codeBlock);
 
         IIndenter Indenter { get; }
     }
@@ -119,53 +128,115 @@ namespace Rubberduck.Refactorings
             return string.Join(Environment.NewLine, Indenter.Indent(string.Concat(elements)));
         }
 
-        public bool TryBuildPropertyGetCodeBlock(Declaration prototype, string propertyIdentifier, out string codeBlock, Accessibility accessibility = Accessibility.Public, string content = null)
-            => TryBuildPropertyBlockFromTarget(prototype, DeclarationType.PropertyGet, propertyIdentifier, out codeBlock, accessibility, content);
+        public bool TryBuildPropertyGetCodeBlock(Declaration prototype, 
+            string propertyIdentifier, 
+            out string codeBlock, 
+            Accessibility accessibility = Accessibility.Public, 
+            string content = null)
 
-        public bool TryBuildPropertyLetCodeBlock(Declaration prototype, string propertyIdentifier, out string codeBlock, Accessibility accessibility = Accessibility.Public, string content = null, string parameterIdentifier = null)
-            => TryBuildPropertyBlockFromTarget(prototype, DeclarationType.PropertyLet, propertyIdentifier, out codeBlock, accessibility, content, parameterIdentifier);
+            => TryBuildPropertyBlockFromPrototype(prototype, DeclarationType.PropertyGet, 
+                propertyIdentifier, out codeBlock, accessibility, content);
 
-        public bool TryBuildPropertySetCodeBlock(Declaration prototype, string propertyIdentifier, out string codeBlock, Accessibility accessibility = Accessibility.Public, string content = null, string parameterIdentifier = null)
-            => TryBuildPropertyBlockFromTarget(prototype, DeclarationType.PropertySet, propertyIdentifier, out codeBlock, accessibility, content, parameterIdentifier);
+        public bool TryBuildPropertyLetCodeBlock(Declaration prototype, 
+            string propertyIdentifier, out string codeBlock, 
+            Accessibility accessibility = Accessibility.Public, 
+            string content = null, string valueParameterIdentifier = null)
 
-        private bool TryBuildPropertyBlockFromTarget<T>(T prototype, DeclarationType letSetGetType, string propertyIdentifier, out string codeBlock, Accessibility accessibility, string content = null, string parameterIdentifier = null) where T : Declaration
+            => TryBuildPropertyBlockFromPrototype(prototype, DeclarationType.PropertyLet,
+                propertyIdentifier, out codeBlock, accessibility, content, valueParameterIdentifier);
+
+        public bool TryBuildPropertySetCodeBlock(Declaration prototype,
+            string propertyIdentifier, out string codeBlock,
+            Accessibility accessibility = Accessibility.Public,
+            string content = null, string valueParameterIdentifier = null)
+
+            => TryBuildPropertyBlockFromPrototype(prototype, DeclarationType.PropertySet,
+                propertyIdentifier, out codeBlock, accessibility, content, valueParameterIdentifier);
+
+        private bool TryBuildPropertyBlockFromPrototype(Declaration prototype, 
+            DeclarationType letSetGetTypeToCreate, string propertyIdentifier, 
+            out string codeBlock, Accessibility accessibility, 
+            string memberBody = null, string valueParameterIdentifier = null)
+
         {
             codeBlock = string.Empty;
-            if (!letSetGetType.HasFlag(DeclarationType.Property)
-                || !IsValidPrototypeDeclarationType(prototype.DeclarationType))
+            if (!IsValidPrototypeDeclarationType(prototype.DeclarationType))
             {
                 return false;
             }
 
-            var propertyValueParam = parameterIdentifier ?? Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
+            var methodName = $"{TypeToken(letSetGetTypeToCreate)} {propertyIdentifier}";
 
-            //TODO: Improve generated Array properties
-            //Add logic to conditionally return Arrays or Variant depending on Office version.
-            //Ability to return an Array from a Function or Property was added in Office 2000 http://www.cpearson.com/excel/passingandreturningarrays.htm
-            var asType = prototype.IsArray
-                ? $"{Tokens.Variant}"
-                : IsEnumField(prototype) && prototype.AsTypeDeclaration.Accessibility.Equals(Accessibility.Private)
-                    ? $"{Tokens.Long}"
-                    : $"{prototype.AsTypeName}";
+            var propertyImplementation = memberBody ?? DefaultPropertyImplementation();
 
-            var asTypeClause = $"{Tokens.As} {asType}";
-
-            var paramMechanism = IsUserDefinedType(prototype) ? Tokens.ByRef : Tokens.ByVal;
-
-            var letSetParamExpression = $"{paramMechanism} {propertyValueParam} {asTypeClause}";
-
-            codeBlock = letSetGetType.HasFlag(DeclarationType.PropertyGet)
-                ? string.Join(Environment.NewLine, $"{AccessibilityToken(accessibility)} {TypeToken(letSetGetType)} {propertyIdentifier}() {asTypeClause}", content, EndStatement(letSetGetType))
-                : string.Join(Environment.NewLine, $"{AccessibilityToken(accessibility)} {TypeToken(letSetGetType)} {propertyIdentifier}({letSetParamExpression})", content, EndStatement(letSetGetType));
+            if (letSetGetTypeToCreate.HasFlag(DeclarationType.PropertyGet))
+            {
+                codeBlock = CreateGetPropertyBlock(prototype, accessibility, methodName, propertyImplementation);
+            }
+            else
+            {
+                codeBlock = CreateLetSetPropertyBlock(prototype, letSetGetTypeToCreate,
+                    accessibility, methodName, valueParameterIdentifier, memberBody ?? propertyImplementation);
+            }
 
             codeBlock = string.Join(Environment.NewLine, Indenter.Indent(codeBlock));
             return true;
         }
 
+        private static string CreateLetSetPropertyBlock(Declaration prototype, DeclarationType declarationTypeToCreate,
+            Accessibility accessibility, string methodName, string valueParameterIdentifier, string memberBody)
+        {
+            var paramMechanism = prototype.IsUserDefinedType() ? Tokens.ByRef : Tokens.ByVal;
+
+            var asTypeClause = $"{Tokens.As} {PrototypeToPropertyAsTypeName(prototype)}";
+
+            var valueParameterName = valueParameterIdentifier
+                ?? Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
+
+            var valueParameterExpression = $"{paramMechanism} {valueParameterName} {asTypeClause}";
+
+            var parameters = prototype is IParameterizedDeclaration pDec
+                ? pDec.Parameters.Select(GetParameterExpression).ToList()
+                : new List<string>();
+
+            parameters.Add(valueParameterExpression);
+
+            var parameterList = string.Join(", ", parameters);
+
+            var codeBlock = string.Join(
+                Environment.NewLine,
+                $"{AccessibilityToken(accessibility)} {methodName}({parameterList})",
+                memberBody,
+                EndStatement(declarationTypeToCreate));
+
+            return codeBlock;
+        }
+
+        private static string CreateGetPropertyBlock(Declaration prototype, Accessibility accessibility,
+            string methodName, string memberBody)
+        {
+            var parameters = prototype is IParameterizedDeclaration parameterizedDeclaration
+                ? parameterizedDeclaration.Parameters
+                    .TakeWhile(p => p != parameterizedDeclaration.Parameters.Last())
+                    .Select(GetParameterExpression)
+                : Enumerable.Empty<string>();
+            
+            var parameterList = string.Join(", ", parameters);
+
+            var asTypeClause = $"{Tokens.As} {PrototypeToPropertyAsTypeName(prototype)}";
+
+            return string.Join(
+                Environment.NewLine,
+                $"{AccessibilityToken(accessibility)} {methodName}({parameterList}) {asTypeClause}",
+                memberBody,
+                EndStatement(DeclarationType.PropertyGet));
+        }
+
         public string ImprovedFullMemberSignature(ModuleBodyElementDeclaration declaration)
             => ImprovedFullMemberSignatureInternal(declaration, declaration.Accessibility);
 
-        private string ImprovedFullMemberSignatureInternal(ModuleBodyElementDeclaration declaration, Accessibility accessibility, string newIdentifier = null)
+        private string ImprovedFullMemberSignatureInternal(ModuleBodyElementDeclaration declaration,
+            Accessibility accessibility, string newIdentifier = null)
         {
             var asTypeName = string.IsNullOrEmpty(declaration.AsTypeName)
                 ? string.Empty
@@ -212,7 +283,7 @@ namespace Rubberduck.Refactorings
 
             if (forceExplicitByValAccess
                 && (string.IsNullOrEmpty(paramMechanism) || paramMechanism.Equals(Tokens.ByRef))
-                && !IsUserDefinedType(parameter))
+                && !parameter.IsUserDefinedType())
             {
                 paramMechanism = Tokens.ByVal;
             }
@@ -258,14 +329,30 @@ namespace Rubberduck.Refactorings
         private static string TypeToken(DeclarationType declarationType)
             => _declarationTypeTokens[declarationType].TypeToken;
 
-        public bool TryBuildUserDefinedTypeDeclaration(string udtIdentifier, IEnumerable<(Declaration Prototype, string UDTMemberIdentifier)> memberPrototypes, out string declaration, Accessibility accessibility = Accessibility.Private)
+        private static string GetParameterExpression(ParameterDeclaration parameterDeclaration)
+        {
+            var parameterMechanism = 
+                ((VBAParser.ArgContext)parameterDeclaration.Context).BYVAL() == null 
+                    ? Tokens.ByRef 
+                    : Tokens.ByVal;
+
+            return string.Format("{0} {1} As {2}",
+                parameterMechanism,
+                parameterDeclaration.IdentifierName,
+                parameterDeclaration.AsTypeName);
+        }
+
+        public bool TryBuildUserDefinedTypeDeclaration(string udtIdentifier, 
+            IEnumerable<(Declaration Prototype, string UDTMemberIdentifier)> memberPrototypes, 
+            out string codeBlock, 
+            Accessibility accessibility = Accessibility.Private)
         {
             if (udtIdentifier is null
                 ||!memberPrototypes.Any()
                 || memberPrototypes.Any(p => p.Prototype is null || p.UDTMemberIdentifier is null)
                 || memberPrototypes.Any(mp => !IsValidPrototypeDeclarationType(mp.Prototype.DeclarationType)))
             {
-                declaration = string.Empty;
+                codeBlock = string.Empty;
                 return false;
             }
 
@@ -277,14 +364,14 @@ namespace Rubberduck.Refactorings
 
             blockLines.Add($"{Tokens.End} {Tokens.Type}");
 
-            declaration = string.Join(Environment.NewLine, Indenter.Indent(blockLines));
+            codeBlock = string.Join(Environment.NewLine, Indenter.Indent(blockLines));
 
             return true;
         }
 
-        public bool TryBuildUDTMemberDeclaration(Declaration prototype, string udtMemberIdentifier, out string declaration)
+        public bool TryBuildUDTMemberDeclaration(Declaration prototype, string udtMemberIdentifier, out string codeBlock)
         {
-            declaration = string.Empty;
+            codeBlock = string.Empty;
 
             if (udtMemberIdentifier is null
                 || prototype is null
@@ -293,49 +380,81 @@ namespace Rubberduck.Refactorings
                 return false;
             }
 
-            declaration = BuildUDTMemberDeclaration(udtMemberIdentifier, prototype);
+            codeBlock = BuildUDTMemberDeclaration(udtMemberIdentifier, prototype);
             return true;
         }
 
         private static string BuildUDTMemberDeclaration(string udtMemberIdentifier, Declaration prototype)
         {
-            var identifierExpression = udtMemberIdentifier;
+            var asTypeName = prototype.AsTypeName;
+
             if (prototype.IsArray)
             {
-                identifierExpression = prototype.Context.TryGetChildContext<VBAParser.SubscriptsContext>(out var ctxt)
+                var identifierExpression = prototype.Context.TryGetChildContext<VBAParser.SubscriptsContext>(out var ctxt)
                     ? $"{udtMemberIdentifier}({ctxt.GetText()})"
                     : $"{udtMemberIdentifier}()";
+                
+                return $"{identifierExpression} {Tokens.As} {asTypeName}";
             }
 
-            return $"{identifierExpression} {Tokens.As} {prototype.AsTypeName}";
+            if (prototype.IsMutatorProperty())
+            {
+                asTypeName = AsTypeNameFromMutatorProperty(prototype);
+            }
+
+            return $"{udtMemberIdentifier} {Tokens.As} {asTypeName}";
+        }
+
+        private static string PrototypeToPropertyAsTypeName(Declaration prototype)
+        {
+            //TODO: Improve generated Array properties
+            //Add logic to conditionally return Arrays or Variant depending on Office version.
+            //Ability to return an Array from a Function or 
+            //Property was added in Office 2000 http://www.cpearson.com/excel/passingandreturningarrays.htm
+            
+            if (prototype.IsArray)
+            {
+                return Tokens.Variant;
+            }
+
+            if (prototype.IsMutatorProperty())
+            {
+                return AsTypeNameFromMutatorProperty(prototype);
+            }
+
+            return prototype.IsEnumField()
+                ? EnumerationToPropertyAsTypeName(prototype)
+                : prototype.AsTypeName;
+        }
+
+        private static string AsTypeNameFromMutatorProperty(Declaration prototype)
+        {
+            var paramDeclaration = prototype as IParameterizedDeclaration;
+            return paramDeclaration.Parameters.Last().AsTypeName;
         }
 
         private static string AccessibilityToken(Accessibility accessibility)
             => accessibility.Equals(Accessibility.Implicit)
                 ? Tokens.Public
-                : $"{accessibility.ToString()}";
+                : $"{accessibility}";
 
         private static bool IsValidPrototypeDeclarationType(DeclarationType declarationType)
         {
             return declarationType.HasFlag(DeclarationType.Variable)
                 || declarationType.HasFlag(DeclarationType.UserDefinedTypeMember)
                 || declarationType.HasFlag(DeclarationType.Constant)
-                || declarationType.HasFlag(DeclarationType.Function);
+                || declarationType.HasFlag(DeclarationType.Function)
+                || declarationType.HasFlag(DeclarationType.Property);
         }
 
-        private static bool IsEnumField(VariableDeclaration declaration)
-            => IsMemberVariable(declaration)
-                && (declaration.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.Enumeration) ?? false);
+        private static string EnumerationToPropertyAsTypeName(Declaration enumeration) 
+            => enumeration.AsTypeDeclaration.HasPrivateAccessibility()
+                ? Tokens.Long
+                : enumeration.AsTypeName;
 
-        private static bool IsEnumField(Declaration declaration)
-            => IsMemberVariable(declaration)
-                && (declaration.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.Enumeration) ?? false);
+        private string DefaultPropertyImplementation()
+            => $"    {Tokens.Err}.Raise 5 " +
+                $"{Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyImplementation}";
 
-        private static bool IsUserDefinedType(Declaration declaration)
-            => (declaration.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.UserDefinedType) ?? false);
-
-        private static bool IsMemberVariable(Declaration declaration)
-            => declaration.DeclarationType.HasFlag(DeclarationType.Variable)
-                && !declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
     }
 }
