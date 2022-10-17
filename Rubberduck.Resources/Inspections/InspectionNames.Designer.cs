@@ -862,6 +862,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Public implementations of interfaces and event handlers should be Private.
+        /// </summary>
+        public static string PublicImplementationShouldBePrivateInspection {
+            get {
+                return ResourceManager.GetString("PublicImplementationShouldBePrivateInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Read-Only Property assignment.
         /// </summary>
         public static string ReadOnlyPropertyAssignmentInspection {

@@ -862,6 +862,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The default (Public) interface of a class module should not expose the implementation of other interfaces or event handler procedures..
+        /// </summary>
+        public static string PublicImplementationShouldBePrivateInspection {
+            get {
+                return ResourceManager.GetString("PublicImplementationShouldBePrivateInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to In general, the VBE editor catches this type of error and will not compile.  However, there are a few scenarios where the error is overlooked by the compiler and an error is generated at runtime.  To avoid a runtime error, implement the missing Property or Subroutine. .
         /// </summary>
         public static string ReadOnlyPropertyAssignmentInspection {
