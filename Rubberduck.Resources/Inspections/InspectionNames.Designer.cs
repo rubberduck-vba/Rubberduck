@@ -862,7 +862,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Public implementations of interfaces and event handlers should be Private.
+        ///   Looks up a localized string similar to Implementations of interfaces and event handlers should be Private.
         /// </summary>
         public static string PublicImplementationShouldBePrivateInspection {
             get {
