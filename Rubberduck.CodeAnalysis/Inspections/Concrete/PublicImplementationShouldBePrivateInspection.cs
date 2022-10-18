@@ -14,6 +14,66 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags Interface implementation members and EventHandlers with Public scope.
+    /// </summary>
+    /// <why>
+    /// The default (Public) interface of a class module should not expose the implementation of other interfaces or event handler procedures.
+    /// If the implementation of an interface member or event handler is useful for a class to expose, it should do so using
+    /// a dedicated Public member rather than changing the interface member or event handler scope from 'Private' to 'Public'.
+    /// </why>
+    /// <example hasResult="true">
+    /// <module name="MyClassModule" type="Class Module">
+    /// <![CDATA[
+    /// Implements ISomething   'ISomething defines procedure "DoSomething"
+    /// 
+    /// Public Sub ISomething_DoSomething(ByVal someValue As Long)
+    ///     Debug.Print someValue
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="true">
+    /// <module name="MyClassModule" type="Class Module">
+    /// <![CDATA[
+    /// Private WithEvents abc As MyEvent   'MyEvent defines a "MyValueChanged" event
+    /// 
+    /// Public Sub abc_MyValueChanged(ByVal newVal As Long)
+    ///     Debug.Print newVal
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="true">
+    /// <module name="MyClassModule" type="Class Module">
+    /// <![CDATA[
+    /// 'Code found in the "ThisWorkbook" Document
+    /// Public Sub Workbook_Open()
+    ///     Debug.Print "Workbook was opened"
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="false">
+    /// <module name="MyClassModule" type="Class Module">
+    /// <![CDATA[
+    /// Implements ISomething   'ISomething defines procedure "DoSomething"
+    /// 
+    /// Private Sub ISomething_DoSomething(ByVal someValue As Long)
+    ///     Debug.Print someValue
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="false">
+    /// <module name="MyClassModule" type="Class Module">
+    /// <![CDATA[
+    /// Public Sub Do_Something(ByVal someValue As Long)
+    ///     Debug.Print someValue
+    /// End Sub
+    /// ]]>
+    /// </module>
+
     internal sealed class PublicImplementationShouldBePrivateInspection : DeclarationInspectionBase
     {
         public PublicImplementationShouldBePrivateInspection(IDeclarationFinderProvider declarationFinderProvider)
