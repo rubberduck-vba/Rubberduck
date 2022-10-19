@@ -1506,19 +1506,21 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private HashSet<Declaration> FindAllDocumentEventHandlers()
         {
             var documents = DeclarationsWithType(DeclarationType.Document).OfType<DocumentModuleDeclaration>();
-            var documentScopes = documents.Select(doc => doc.Scope).ToHashSet();
             var documentTypes = documents.SelectMany(doc => doc.Supertypes).ToHashSet();
-            var events = BuiltInDeclarations(DeclarationType.Event).Where(e => documentTypes.Contains(e.ParentDeclaration));
-            var handlerScopes = events.Select(e => $"{e.QualifiedModuleName.Name}_{e.IdentifierName}".ToLowerInvariant()).ToHashSet();
-            var handlerNames = handlerScopes.Select(e => e.Substring(e.LastIndexOf('.') + 1)).ToHashSet();
+            var events = BuiltInDeclarations(DeclarationType.Event).OfType<EventDeclaration>().Where(e => documentTypes.Contains(e.ParentDeclaration));
+            var handlerNames = events.Select(e => (Event:e, HandlerName:$"{e.QualifiedModuleName.ComponentName}_{e.IdentifierName}".ToLowerInvariant())).ToHashSet();
 
             var procedures = UserDeclarations(DeclarationType.Procedure)
                 .Where(procedure => procedure.ParentDeclaration is DocumentModuleDeclaration);
 
-            var handlers = procedures
-                .Where(procedure => handlerNames.Contains(procedure.IdentifierName.ToLowerInvariant()) 
-                    && documentScopes.Contains(procedure.ParentScope));
-            return handlers.ToHashSet();
+            var candidates = procedures.Where(procedure => handlerNames.Select(e => e.HandlerName).Contains(procedure.IdentifierName.ToLowerInvariant()))
+                .Select(c => (CandidateHandler: c as SubroutineDeclaration, Event: handlerNames.Single(h => h.HandlerName.EndsWith(c.IdentifierName)).Event));
+
+            var handlers = candidates.Where(candidate => candidate.CandidateHandler.Parameters.Count == candidate.Event.Parameters.Count
+                && Enumerable.SequenceEqual(candidate.CandidateHandler.Parameters.Select(p => p.FullAsTypeName), 
+                                            candidate.Event.Parameters.Select(p => p.FullAsTypeName)));
+            
+            return handlers.Select(h => h.CandidateHandler).Cast<Declaration>().ToHashSet();
         }
 
         private HashSet<Declaration> FindAllFormEventHandlers()
