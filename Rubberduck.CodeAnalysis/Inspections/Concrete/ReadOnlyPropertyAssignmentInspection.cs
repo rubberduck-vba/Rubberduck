@@ -102,7 +102,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         {
             if (!reference.Declaration.DeclarationType.HasFlag(DeclarationType.Property)
                 //Ignore expressions found within Property declaration contexts
-                || reference.Declaration.Context.Contains(reference.Context))
+                || (reference.Declaration.Context?.Contains(reference.Context) ?? false))
             {
                 return false;
             }

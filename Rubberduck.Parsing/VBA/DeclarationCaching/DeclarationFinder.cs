@@ -1480,7 +1480,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 )
                 .Concat(_handlersByWithEventsField.Value.AllValues())
                 .Concat(FindFormControlEventHandlers())
-                .Concat(FindFormEventHandlers());
+                .Concat(FindFormEventHandlers())
+                .Concat(FindAllDocumentEventHandlers());
             return handlers.ToHashSet();
 
             // Local functions to help break up the complex logic in finding built-in handlers
@@ -1490,7 +1491,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                            item.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase) ||
                            item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase));
             }
-
+            
             bool IsHostSpecificHandler(Declaration item)
             {
                 return _hostApp?.AutoMacroIdentifiers.Any(i =>
@@ -1502,10 +1503,28 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
         }
 
+        private HashSet<Declaration> FindAllDocumentEventHandlers()
+        {
+            var documents = DeclarationsWithType(DeclarationType.Document).OfType<DocumentModuleDeclaration>();
+            var documentScopes = documents.Select(doc => doc.Scope).ToHashSet();
+            var documentTypes = documents.SelectMany(doc => doc.Supertypes).ToHashSet();
+            var events = BuiltInDeclarations(DeclarationType.Event).Where(e => documentTypes.Contains(e.ParentDeclaration));
+            var handlerScopes = events.Select(e => $"{e.QualifiedModuleName.Name}_{e.IdentifierName}".ToLowerInvariant()).ToHashSet();
+            var handlerNames = handlerScopes.Select(e => e.Substring(e.LastIndexOf('.') + 1)).ToHashSet();
+
+            var procedures = UserDeclarations(DeclarationType.Procedure)
+                .Where(procedure => procedure.ParentDeclaration is DocumentModuleDeclaration);
+
+            var handlers = procedures
+                .Where(procedure => handlerNames.Contains(procedure.IdentifierName.ToLowerInvariant()) 
+                    && documentScopes.Contains(procedure.ParentScope));
+            return handlers.ToHashSet();
+        }
+
         private HashSet<Declaration> FindAllFormEventHandlers()
         {
-            var forms = DeclarationsWithType(DeclarationType.ClassModule).
-                Where(declaration => declaration.QualifiedModuleName.ComponentType == ComponentType.UserForm);
+            var forms = DeclarationsWithType(DeclarationType.ClassModule)
+                .Where(declaration => declaration.QualifiedModuleName.ComponentType == ComponentType.UserForm);
             var formScopes = forms
                 .Select(form => form.Scope)
                 .ToHashSet();
