@@ -475,4 +475,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="UDTMemberNotUsedInspection" xml:space="preserve">
     <value>A User Defined Type (UDT) member is declared but not used.  Consider removing the UDT member declaration.</value>
   </data>
+  <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
+    <value>The default (Public) interface of a class module should not expose the implementation of other interfaces or event handler procedures.</value>
+  </data>
 </root>

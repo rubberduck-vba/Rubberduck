@@ -556,4 +556,8 @@ In memoriam, 1972-2018</value>
     <value>Control '{0}.{1}' is being accessed from outside its parent form.</value>
     <comment>{0} parent UserForm name; {1} control name</comment>
   </data>
+  <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
+    <value>Member '{0}' should be Private</value>
+    <comment>{0} Member Identifier</comment>
+  </data>
 </root>

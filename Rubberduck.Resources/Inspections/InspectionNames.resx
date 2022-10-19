@@ -475,4 +475,7 @@
   <data name="UDTMemberNotUsedInspection" xml:space="preserve">
     <value>User Defined Type member is not used</value>
   </data>
+  <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
+    <value>Implementations of interfaces and event handlers should be Private</value>
+  </data>
 </root>
