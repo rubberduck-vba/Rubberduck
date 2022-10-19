@@ -85,7 +85,7 @@
             </Style>
             <Style x:Key="SelectableText" TargetType="{x:Type TextBox}">
                 <Setter Property="Margin" Value="2" />
-                <Setter Property="Foreground" Value ="{x:Static SystemColors.GrayTextBrush}" />
+                <Setter Property="Foreground" Value ="{DynamicResource {x:Static SystemColors.GrayTextBrush}}" />
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="IsReadOnly" Value="True" />
@@ -94,8 +94,8 @@
             </Style>
             <Style x:Key="BorderStyle" TargetType="{x:Type Border}">
                 <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}" />
-                <Setter Property="Background" Value="{x:Static SystemColors.ControlBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrush}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrush}}" />
                 <Setter Property="Padding" Value="2" />
             </Style>
         </ResourceDictionary>
@@ -106,12 +106,12 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <DockPanel Grid.Row="0" Dock="Top" Background="{x:Static SystemColors.WindowBrush}">
+        <DockPanel Grid.Row="0" Dock="Top" Background="{DynamicResource {x:Static SystemColors.WindowBrush}}">
             <Label DockPanel.Dock="Top" Content="{Binding ProjectCaption}" FontWeight="Bold" />
             <TextBlock DockPanel.Dock="Top" Text="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=SubCaption}" Margin="10,0,0,10" />
         </DockPanel>
-        <Border Grid.Row="1" Background="{x:Static SystemColors.ControlLightBrush}">
-            <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ControlLightBrush}" Margin="5">
+        <Border Grid.Row="1" Background="{DynamicResource {x:Static SystemColors.ControlLightBrush}}">
+            <Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrush}}" Margin="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -152,8 +152,8 @@
                             </TabItem.Header>
                         </TabItem>
                     </TabControl>
-                    <Button Grid.Row="0" Height="24" Background="{x:Static SystemColors.ControlBrush}" Margin="0,0,10,0"
-                            BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Width="100" HorizontalAlignment="Right"
+                    <Button Grid.Row="0" Height="24" Background="{DynamicResource {x:Static SystemColors.ControlBrush}}" Margin="0,0,10,0"
+                            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrush}}" Width="100" HorizontalAlignment="Right"
                             Command="{Binding BrowseCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image Margin="0,0,5,0" Height="16" Source="{StaticResource BrowseIcon}" />
@@ -171,13 +171,13 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Border Grid.Row="0" Grid.Column="0"
-                                Background="{x:Static SystemColors.ControlBrush}"
-                                BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" 
+                                Background="{DynamicResource {x:Static SystemColors.ControlBrush}}"
+                                BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrush}}" 
                                 BorderThickness="1" 
                                 Margin="0,5" 
                                 Padding="2">
                             <controls:SearchBox x:Name="SearchBox" Grid.Column="0"
-                                                Background="{x:Static SystemColors.WindowBrush}"
+                                                Background="{DynamicResource {x:Static SystemColors.WindowBrush}}"
                                                 Width="Auto"
                                                 Text="{Binding Search, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                 Hint="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=SearchPlaceholder}" />
@@ -398,13 +398,13 @@
                                 <TextBox x:Name="Description"
                                          Grid.Row="0" Grid.Column="0" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.Description, Mode=OneWay}" />
                                 <Label Grid.Row="0" Grid.Column="1"  
-                                       Foreground="{x:Static SystemColors.GrayTextBrush}" 
+                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrush}}" 
                                        VerticalAlignment="Center" 
                                        Content="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=Version}" />
                                 <TextBox x:Name="Version"
                                          Grid.Row="0" Grid.Column="2" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.Version, Mode=OneWay}" />
                                 <Label Grid.Row="0" Grid.Column="3"  
-                                       Foreground="{x:Static SystemColors.GrayTextBrush}" 
+                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrush}}" 
                                        VerticalAlignment="Center" 
                                        Content="{Resx ResxName=Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesUI, Key=Locale}" />
                                 <TextBox x:Name="LocaleName"
@@ -418,7 +418,7 @@
             </Border>
         </Border>
 
-        <Border Grid.Row="2" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
+        <Border Grid.Row="2" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrush}}" Grid.IsSharedSizeScope="True">
             <Grid HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition SharedSizeGroup="DialogButtons" MinWidth="100" />
