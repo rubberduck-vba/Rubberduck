@@ -24,7 +24,7 @@ namespace RubberduckTests
             return new Configuration(settings);
         }
 
-        private VersionCheckCommand CreateSUT(Configuration config, Version currentVersion, Version latestVersion, out Mock<IMessageBox> mockPrompt, out Mock<IVersionCheck> mockService)
+        private VersionCheckCommand CreateSUT(Configuration config, Version currentVersion, Version latestVersion, out Mock<IMessageBox> mockPrompt, out Mock<IVersionCheckService> mockService)
         {
             mockPrompt = new Mock<IMessageBox>();
             mockPrompt.Setup(m => m.Question(It.IsAny<string>(), It.IsAny<string>()));
@@ -33,7 +33,7 @@ namespace RubberduckTests
             var mockConfig = new Mock<IConfigurationService<Configuration>>();
             mockConfig.Setup(m => m.Read()).Returns(() => config);
 
-            mockService = new Mock<IVersionCheck>();
+            mockService = new Mock<IVersionCheckService>();
             
             mockService.Setup(m => m.CurrentVersion)
                        .Returns(() => currentVersion);

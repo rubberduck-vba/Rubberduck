@@ -28,12 +28,12 @@ namespace Rubberduck.UI.Command
 
     public class VersionCheckCommand : CommandBase
     {
-        private readonly IVersionCheck _versionCheck;
+        private readonly IVersionCheckService _versionCheck;
         private readonly IMessageBox _prompt;
         private readonly IExternalProcess _process;
         IConfigurationService<Configuration> _config;
 
-        public VersionCheckCommand(IVersionCheck versionCheck, IMessageBox prompt, IExternalProcess process, IConfigurationService<Configuration> config)
+        public VersionCheckCommand(IVersionCheckService versionCheck, IMessageBox prompt, IExternalProcess process, IConfigurationService<Configuration> config)
         {
             _versionCheck = versionCheck;
             _prompt = prompt;
