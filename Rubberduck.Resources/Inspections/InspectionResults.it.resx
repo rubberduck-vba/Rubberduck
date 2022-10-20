@@ -556,4 +556,8 @@ In memoriam, 1972-2018</value>
     <value>L'enumerazione pubblica '{0}' dovrebbe essere dichiarata all'interno di un modulo Standard o di Classe</value>
     <comment>{0} identificatore</comment>
   </data>
+  <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
+    <value>Il Membro {0} dovrebbe essere Private</value>
+    <comment>{0} Identificatore del Membro</comment>
+  </data>
 </root>

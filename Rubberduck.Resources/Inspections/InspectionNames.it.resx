@@ -471,4 +471,7 @@
   <data name="UDTMemberNotUsedInspection" xml:space="preserve">
     <value>Membro Tipo Definito dall'Utente non è usato</value>
   </data>
+  <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
+    <value>Le implementazioni di interfacce e gestori di eventi dovrebbero essere Private</value>
+  </data>
 </root>
