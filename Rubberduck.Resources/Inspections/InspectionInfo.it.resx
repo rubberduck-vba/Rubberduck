@@ -475,4 +475,7 @@ Se il parametro può essere nullo, ignorare questo risultato dell'ispezione; il 
   <data name="UDTMemberNotUsedInspection" xml:space="preserve">
     <value>Un membro Tipo Definito dall'Utente è dichiarato ma non usato. Valuta la possibilità di rimuovere la dichiarazione del membro UDT.</value>
   </data>
+  <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
+    <value>L'interfaccia predefinita (Public) di un modulo di classe non dovrebbe esporre l'implementazione di altre interfacce o procedure di gestione degli eventi.</value>
+  </data>
 </root>
