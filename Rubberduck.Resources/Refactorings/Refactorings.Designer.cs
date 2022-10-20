@@ -61,6 +61,15 @@ namespace Rubberduck.Resources.Refactorings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;TODO implement member.
+        /// </summary>
+        public static string CodeBuilder_DefaultPropertyImplementation {
+            get {
+                return ResourceManager.GetString("CodeBuilder_DefaultPropertyImplementation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to RHS.
         /// </summary>
         public static string CodeBuilder_DefaultPropertyRHSParam {
