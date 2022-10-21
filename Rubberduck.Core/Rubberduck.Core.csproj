@@ -77,6 +77,7 @@
     <PackageReference Include="HtmlAgilityPack">
       <Version>1.8.4</Version>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog">
       <Version>4.5.10</Version>
     </PackageReference>

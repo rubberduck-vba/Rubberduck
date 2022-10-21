@@ -11,7 +11,7 @@ namespace Rubberduck.UI
             InitializeComponent();
         }
 
-        public Splash2021(IVersionCheck versionCheck) : this()
+        public Splash2021(IVersionCheckService versionCheck) : this()
         {
             VersionLabel.Text = string.Format(Resources.RubberduckUI.Rubberduck_AboutBuild, versionCheck.VersionString);
             VersionLabel.Parent = pictureBox1;
