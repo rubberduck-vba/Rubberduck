@@ -100,28 +100,29 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            if (!reference.Declaration.DeclarationType.HasFlag(DeclarationType.Property)
-                //Ignore expressions found within Property declaration contexts
-                || reference.Declaration.Context.Contains(reference.Context))
+            if (!reference.Declaration.DeclarationType.HasFlag(DeclarationType.Property))
             {
                 return false;
             }
 
+            //Ignore assignment expressions found within Property Get declaration contexts
+            if (!IsReadOnlyPropertyReference(reference, finder)
+                || (reference.Declaration.Context?.Contains(reference.Context) ?? false))
+            {
+                return false;
+            }
+
+            return reference.IsAssignment;
+        }
+
+        private bool IsReadOnlyPropertyReference(IdentifierReference reference, DeclarationFinder finder)
+        {
             var propertyDeclarations = finder.MatchName(reference.Declaration.IdentifierName)
                 .Where(d => d.DeclarationType.HasFlag(DeclarationType.Property)
                     && d.QualifiedModuleName == reference.QualifiedModuleName);
 
-            if (reference.IsSetAssignment)
-            {
-                return !propertyDeclarations.Any(pd => pd.DeclarationType.HasFlag(DeclarationType.PropertySet));
-            }
-
-            if (reference.IsAssignment && !reference.IsSetAssignment)
-            {
-                return !propertyDeclarations.Any(pd => pd.DeclarationType.HasFlag(DeclarationType.PropertyLet));
-            }
-
-            return false;
+            return propertyDeclarations.Count() == 1
+                && propertyDeclarations.First().DeclarationType.HasFlag(DeclarationType.PropertyGet);
         }
 
         protected override string ResultDescription(IdentifierReference reference)
