@@ -107,7 +107,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
             //Ignore assignment expressions found within Property Get declaration contexts
             if (!IsReadOnlyPropertyReference(reference, finder)
-                || (reference.Declaration.Context?.Contains(reference.Context) ?? false))
+                || reference.Declaration.Context.Contains(reference.Context))
             {
                 return false;
             }

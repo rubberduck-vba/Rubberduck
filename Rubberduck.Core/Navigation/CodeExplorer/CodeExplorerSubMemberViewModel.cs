@@ -11,14 +11,11 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.UserDefinedTypeMember
         };
 
-        private readonly string _signature = string.Empty;
+        private string _signature = string.Empty;
 
         public CodeExplorerSubMemberViewModel(ICodeExplorerNode parent, Declaration declaration) : base(parent, declaration)
         {
-            if (Declaration is ValuedDeclaration value && !string.IsNullOrEmpty(value.Expression))
-            {
-                _signature = $" = {value.Expression}";
-            }
+            UpdateSignature();
         }
 
         public override string Name => Declaration?.IdentifierName ?? string.Empty;
@@ -30,6 +27,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             var signature = _signature;
 
             base.Synchronize(ref updated);
+            UpdateSignature();
             if (Declaration is null || _signature.Equals(signature))
             {
                 return;
@@ -37,6 +35,18 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             // Signature changed - update the UI.
             OnNameChanged();
+        }
+
+        private void UpdateSignature()
+        {
+            if (Declaration is ValuedDeclaration value && !string.IsNullOrEmpty(value.Expression))
+            {
+                _signature = $" = {value.Expression}";
+            }
+            else
+            {
+                _signature = "";
+            }
         }
 
         public override Comparer<ICodeExplorerNode> SortComparer =>

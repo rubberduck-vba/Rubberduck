@@ -1480,7 +1480,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 )
                 .Concat(_handlersByWithEventsField.Value.AllValues())
                 .Concat(FindFormControlEventHandlers())
-                .Concat(FindFormEventHandlers());
+                .Concat(FindFormEventHandlers())
+                .Concat(FindAllDocumentEventHandlers());
             return handlers.ToHashSet();
 
             // Local functions to help break up the complex logic in finding built-in handlers
@@ -1490,7 +1491,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                            item.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase) ||
                            item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase));
             }
-
+            
             bool IsHostSpecificHandler(Declaration item)
             {
                 return _hostApp?.AutoMacroIdentifiers.Any(i =>
@@ -1502,10 +1503,30 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
         }
 
+        private HashSet<Declaration> FindAllDocumentEventHandlers()
+        {
+            var documents = DeclarationsWithType(DeclarationType.Document).OfType<DocumentModuleDeclaration>();
+            var documentTypes = documents.SelectMany(doc => doc.Supertypes).ToHashSet();
+            var events = BuiltInDeclarations(DeclarationType.Event).OfType<EventDeclaration>().Where(e => documentTypes.Contains(e.ParentDeclaration));
+            var handlerNames = events.Select(e => (Event:e, HandlerName:$"{e.QualifiedModuleName.ComponentName}_{e.IdentifierName}".ToLowerInvariant())).ToHashSet();
+
+            var procedures = UserDeclarations(DeclarationType.Procedure)
+                .Where(procedure => procedure.ParentDeclaration is DocumentModuleDeclaration);
+
+            var candidates = procedures.Where(procedure => handlerNames.Select(e => e.HandlerName).Contains(procedure.IdentifierName.ToLowerInvariant()))
+                .Select(c => (CandidateHandler: c as SubroutineDeclaration, Event: handlerNames.Single(h => h.HandlerName.EndsWith(c.IdentifierName)).Event));
+
+            var handlers = candidates.Where(candidate => candidate.CandidateHandler.Parameters.Count == candidate.Event.Parameters.Count
+                && Enumerable.SequenceEqual(candidate.CandidateHandler.Parameters.Select(p => p.FullAsTypeName), 
+                                            candidate.Event.Parameters.Select(p => p.FullAsTypeName)));
+            
+            return handlers.Select(h => h.CandidateHandler).Cast<Declaration>().ToHashSet();
+        }
+
         private HashSet<Declaration> FindAllFormEventHandlers()
         {
-            var forms = DeclarationsWithType(DeclarationType.ClassModule).
-                Where(declaration => declaration.QualifiedModuleName.ComponentType == ComponentType.UserForm);
+            var forms = DeclarationsWithType(DeclarationType.ClassModule)
+                .Where(declaration => declaration.QualifiedModuleName.ComponentType == ComponentType.UserForm);
             var formScopes = forms
                 .Select(form => form.Scope)
                 .ToHashSet();
