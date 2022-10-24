@@ -232,8 +232,17 @@ namespace Rubberduck
         {
             var version = _version.CurrentVersion;
             GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
-            var osProductName = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName", "").ToString();
-            var osReleaseId = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "").ToString();
+            string osProductName = "";
+            string osReleaseId = "";
+            try
+            {
+                osProductName = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName", "").ToString();
+                osReleaseId = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "").ToString();
+            }
+            catch
+            {
+                Logger.Debug("Failure to read OS version from registry. Logged version will be incomplete.");
+            }
 
             var headers = new List<string>
             {
