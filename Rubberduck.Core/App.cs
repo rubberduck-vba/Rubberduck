@@ -17,6 +17,7 @@ using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
 using Rubberduck.SettingsProvider;
 using System.IO.Abstractions;
+using Microsoft.Win32;
 
 namespace Rubberduck
 {
@@ -231,11 +232,13 @@ namespace Rubberduck
         {
             var version = _version.CurrentVersion;
             GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
+            var osProductName = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName", "").ToString();
+            var osReleaseId = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "").ToString();
 
             var headers = new List<string>
             {
                 $"\r\n\tRubberduck version {version} loading:",
-                $"\tOperating System: {Environment.OSVersion.VersionString} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}"
+                $"\tOperating System: {osProductName} {osReleaseId} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")} ({Environment.OSVersion.VersionString})"
             };
             try
             {
