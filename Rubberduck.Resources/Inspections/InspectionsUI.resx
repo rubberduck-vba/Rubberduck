@@ -150,7 +150,7 @@
   <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
     <value>Language Opportunities</value>
   </data>
-  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
+  <data name="CodeInspectionSettings_NamingAndConventionsIssues" xml:space="preserve">
     <value>Maintainability and Readability Issues</value>
   </data>
   <data name="CodeInspectionSettings_Performance" xml:space="preserve">

@@ -19,7 +19,7 @@ namespace RubberduckTests.Settings
                 {
                     new CodeInspectionSetting("DoNotShowInspection", "Do not show me", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.DoNotShow),
                     new CodeInspectionSetting("HintInspection", "I'm a hint", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Hint),
-                    new CodeInspectionSetting("SuggestionInspection", "I'm a suggestion", CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Suggestion),
+                    new CodeInspectionSetting("SuggestionInspection", "I'm a suggestion", CodeInspectionType.NamingAndConventionsIssues, CodeInspectionSeverity.Suggestion),
                     new CodeInspectionSetting("WarningInspection", "I'm a warning", CodeInspectionType.CodeQualityIssues),
                     new CodeInspectionSetting("NondefaultSeverityInspection", "I do not have my original severity", CodeInspectionType.LanguageOpportunities,CodeInspectionSeverity.DoNotShow),
                     new CodeInspectionSetting("ErrorInspection", "FIX ME!", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error)
@@ -39,7 +39,7 @@ namespace RubberduckTests.Settings
                 {
                     new CodeInspectionSetting("DoNotShowInspection", "Do not show me", CodeInspectionType.LanguageOpportunities),
                     new CodeInspectionSetting("HintInspection", "I'm a hint", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Suggestion),
-                    new CodeInspectionSetting("SuggestionInspection", "I'm a suggestion", CodeInspectionType.MaintainabilityAndReadabilityIssues, CodeInspectionSeverity.Hint),
+                    new CodeInspectionSetting("SuggestionInspection", "I'm a suggestion", CodeInspectionType.NamingAndConventionsIssues, CodeInspectionSeverity.Hint),
                     new CodeInspectionSetting("WarningInspection", "I'm a warning", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error),
                     new CodeInspectionSetting("NondefaultSeverityInspection", "I do not have my original severity", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Error),
                     new CodeInspectionSetting("ErrorInspection", "FIX ME!", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.DoNotShow)
