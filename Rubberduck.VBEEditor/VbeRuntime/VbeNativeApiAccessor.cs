@@ -111,5 +111,10 @@ namespace Rubberduck.VBEditor.VbeRuntime
         {
             _runtime.Beep();
         }
+
+        public float Rnd(IntPtr number)
+        {
+            return _runtime.Rnd(number);
+        }
     }
 }

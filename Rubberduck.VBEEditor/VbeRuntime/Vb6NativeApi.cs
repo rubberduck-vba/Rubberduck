@@ -96,5 +96,13 @@ namespace Rubberduck.VBEditor.VBERuntime
         {
             rtcBeep();
         }
+
+        [DllImport(_dllName, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.R4)]
+        private static extern float rtcRandomNext(IntPtr number);
+        public float Rnd(IntPtr number)
+        {
+            return rtcRandomNext(number);
+        }
     }
 }

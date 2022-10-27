@@ -86,6 +86,7 @@ namespace Rubberduck.UnitTesting
         public IFake Now => RetrieveOrCreateFunction<Now>();
         public IFake Time => RetrieveOrCreateFunction<Time>();
         public IFake Date => RetrieveOrCreateFunction<Date>();
+        public IFake Rnd => RetrieveOrCreateFunction<Rnd>();
 
         #endregion
     }

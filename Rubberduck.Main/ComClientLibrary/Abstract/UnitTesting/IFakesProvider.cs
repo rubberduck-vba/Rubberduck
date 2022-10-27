@@ -79,5 +79,9 @@ namespace Rubberduck.UnitTesting
         [DispId(17)]
         [Description("Configures VBA.DateTime.Date calls.")]
         IFake Date { get; }
+
+        [DispId(18)]
+        [Description("Configures VBA.Math.Rnd calls.")]
+        IFake Rnd { get; }
     }
 }

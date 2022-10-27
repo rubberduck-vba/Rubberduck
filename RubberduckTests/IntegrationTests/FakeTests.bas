@@ -375,3 +375,42 @@ TestExit:
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
+'@TestMethod
+Public Sub RndWorks()
+    On Error GoTo TestFail
+
+    Dim return1 As Single
+    Dim return2 As Single
+    With Fakes.Rnd
+        .Returns 0.1
+        .ReturnsWhen "Number", 1, 0.99
+
+        return1 = Rnd()
+        Assert.IsTrue return1 = 0.1
+
+        return2 = Rnd(1)
+        Assert.IsTrue return2 = 0.99
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub RndPassthroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Rnd
+        .Passthrough = True
+        Debug.Print Rnd()
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.number & " - " & Err.Description
+End Sub

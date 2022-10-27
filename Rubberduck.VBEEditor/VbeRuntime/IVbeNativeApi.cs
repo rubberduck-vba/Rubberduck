@@ -17,5 +17,6 @@ namespace Rubberduck.VBEditor.VbeRuntime
         void MakeDir(IntPtr path);
         void RemoveDir(IntPtr path);
         void Beep();
+        float Rnd(IntPtr number);
     }
 }
