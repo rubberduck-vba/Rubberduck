@@ -10,7 +10,7 @@ using System.Linq;
 namespace RubberduckTests.Grammar
 {
     [TestFixture]
-    public class ParserRuleContextExtensionTests
+    public class ParserRuleContextExtensionsTests
     {
         private List<Declaration> _allTestingDeclarations;
         private List<Declaration> AllTestingDeclarations
