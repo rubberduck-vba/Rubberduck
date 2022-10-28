@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace RubberduckTests.Grammar
 {
     [TestFixture]
-    public class ParserRuleContextExtensionNullArgumentsTests
+    public class ParserRuleContextExtensionsNullArgumentsTests
     {
         [Test]
         [Category("Inspections")]
