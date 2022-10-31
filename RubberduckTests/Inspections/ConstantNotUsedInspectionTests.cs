@@ -125,6 +125,37 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        // See issue #6042 at https://github.com/rubberduck-vba/Rubberduck/issues/6042
+        public void ConstantNotUsed_DoesNotReturnResult_UsedOnlyInArrayUpperBound()
+        {
+            var inputCode =
+                $@"
+Sub Test1()
+    Const MY_CONST As Byte = 5
+    Dim tmpArr(1 To MY_CONST) As Variant           
+    Dim tmpArr(1 To MY_CONST)                      
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ConstantNotUsed_DoesNotReturnResult_UsedOnlyInArrayLowerBound()
+        {
+            var inputCode =
+                $@"
+Sub Test1()
+    Const MY_CONST As Byte = 5
+    Dim tmpArr(MY_CONST To 1) As Variant           
+    Dim tmpArr(MY_CONST To 1)                      
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         //See issue #4994 at https://github.com/rubberduck-vba/Rubberduck/issues/4994
         public void ConstantNotUsed_ConstantOnlyUsedInMidStatement_DoesNotReturnResult()
         {

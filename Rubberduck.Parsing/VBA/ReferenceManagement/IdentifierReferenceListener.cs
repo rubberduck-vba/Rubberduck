@@ -106,6 +106,10 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         {
             _resolver.Resolve(context);
         }
+        public override void EnterSubscripts(VBAParser.SubscriptsContext context)
+        {
+            _resolver.Resolve(context);
+        }
 
         public override void EnterWithStmt(VBAParser.WithStmtContext context)
         {
