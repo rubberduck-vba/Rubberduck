@@ -390,9 +390,9 @@ namespace Rubberduck.Refactorings
 
             if (prototype.IsArray)
             {
-                var identifierExpression = prototype.Context.TryGetChildContext<VBAParser.SubscriptsContext>(out var ctxt)
-                    ? $"{udtMemberIdentifier}({ctxt.GetText()})"
-                    : $"{udtMemberIdentifier}()";
+                var identifierExpression = prototype.Context.TryGetChildContext<VBAParser.ArrayDimContext>(out var ctxt)
+                    ? $"{udtMemberIdentifier}{ctxt.GetText()}"
+                    : $"{udtMemberIdentifier}()";   // This should never happen.
                 
                 return $"{identifierExpression} {Tokens.As} {asTypeName}";
             }

@@ -124,17 +124,6 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             }
         }
 
-        public void Resolve(VBAParser.SubscriptsContext context)
-        {
-            foreach (var subscript in context.subscript())
-            {
-                foreach (var bound in subscript.expression())
-                { 
-                    ResolveDefault(bound, true);
-                }
-            }
-        }
-
         public void Resolve(VBAParser.OnErrorStmtContext context)
         {
             if (context.expression() == null)
