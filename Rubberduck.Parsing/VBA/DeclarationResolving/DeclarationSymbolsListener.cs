@@ -688,7 +688,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 : SymbolList.TypeHintToTypeName[typeHint];
             var withEvents = context.WITHEVENTS() != null;
             var isAutoObject = asTypeClause != null && asTypeClause.NEW() != null;
-            bool isArray = context.LPAREN() != null;
+            bool isArray = context.arrayDim() != null;
             AddDeclaration(
                 CreateDeclaration(
                     name,

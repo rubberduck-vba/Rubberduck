@@ -34,7 +34,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         private void InsertNewDeclaration(VariableDeclaration target, IRewriteSession rewriteSession, string DeclarationStatement)
         {
-            var subscripts = target.Context.GetDescendent<VBAParser.SubscriptsContext>()?.GetText() ?? string.Empty;
+            var subscripts = target.Context.GetDescendent<VBAParser.BoundsListContext>()?.GetText() ?? string.Empty;
             var identifier = target.IsArray ? $"{target.IdentifierName}({subscripts})" : target.IdentifierName;
 
             var newVariable = target.AsTypeContext is null
