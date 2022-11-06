@@ -1,16 +1,16 @@
-using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
 using NUnit.Framework;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using RubberduckTests.Mocks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RubberduckTests.Grammar
 {
     [TestFixture]
-    public class ParserRuleContextExtensionTests
+    public class ParserRuleContextExtensionsTests
     {
         private List<Declaration> _allTestingDeclarations;
         private List<Declaration> AllTestingDeclarations
@@ -54,40 +54,45 @@ End Function";
             }
         }
 
-        [TestCase("selectCase3Arg", ExpectedResult = true)]
-        [TestCase("firstArg", ExpectedResult = false)]
+        [TestCase("selectCase3Arg", true)]
+        [TestCase("firstArg", false)]
         [Category("Inspections")]
-        public bool ParserRuleCtxtExt_HasParentType(string identifer)
+        [Category(nameof(ParserRuleContextExtensions))]
+        public void ParserRuleCtxtExt_HasParentType(string identifer, bool expected)
         {
             var testArg = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals(identifer)).First();
-            var result = testArg.Context.IsDescendentOf<VBAParser.SelectCaseStmtContext>();
-            return result;
+
+            var actual = testArg.Context.IsDescendentOf<VBAParser.SelectCaseStmtContext>();
+            Assert.AreEqual(expected, actual);
         }
 
-        [TestCase("selectCase3", ExpectedResult = true)]
-        [TestCase("selectCase1", ExpectedResult = false)]
+        [TestCase("selectCase3", true)]
+        [TestCase("selectCase1", false)]
         [Category("Inspections")]
-        public bool ParserRuleCtxtExt_HasParentOfSameType(string contextID)
+        [Category(nameof(ParserRuleContextExtensions))]
+        public void ParserRuleCtxtExt_HasParentOfSameType(string contextID, bool expected)
         {
-            bool result = false;
+            var actual = false;
 
             var testIdDecs = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals(contextID));
             if (testIdDecs.Any())
             {
                 var refs = testIdDecs.First().References;
                 var testCtxt = (ParserRuleContext)refs.Where(rf => rf.Context.Parent.Parent.Parent is VBAParser.SelectCaseStmtContext).First().Context.Parent.Parent.Parent;
-                result = testCtxt.IsDescendentOf<VBAParser.SelectCaseStmtContext>();
+                actual = testCtxt.IsDescendentOf<VBAParser.SelectCaseStmtContext>();
             }
-            return result;
+            
+            Assert.AreEqual(expected, actual);
         }
 
-        [TestCase("selectCase3", "selectCase1", ExpectedResult = true)]
-        [TestCase("selectCase1", "selectCase3", ExpectedResult = false)]
-        [TestCase("selectCase3", "selectCase3", ExpectedResult = false)]
+        [TestCase("selectCase3", "selectCase1", true)]
+        [TestCase("selectCase1", "selectCase3", false)]
+        [TestCase("selectCase3", "selectCase3", false)]
         [Category("Inspections")]
-        public bool ParserRuleCtxtExt_IsDescendentOf_ByContext(string contextID, string parentContextID)
+        [Category(nameof(ParserRuleContextExtensions))]
+        public void ParserRuleCtxtExt_IsDescendentOf_ByContext(string contextID, string parentContextID, bool expected)
         {
-            bool result = false;
+            var actual = false;
             var parentIdDec = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals(parentContextID)).First();
             var parentCtxt = (VBAParser.SelectCaseStmtContext)parentIdDec.References.Where(rf => rf.Context.Parent.Parent.Parent is VBAParser.SelectCaseStmtContext).First().Context.Parent.Parent.Parent;
 
@@ -96,25 +101,28 @@ End Function";
             {
                 var refs = testIdDecs.First().References;
                 var testCtxt = (ParserRuleContext)refs.Where(rf => rf.Context.Parent.Parent.Parent is VBAParser.SelectCaseStmtContext).First().Context.Parent.Parent.Parent;
-                result = testCtxt.IsDescendentOf(parentCtxt);
+                actual = testCtxt.IsDescendentOf(parentCtxt);
             }
-            return result;
-        }
 
+            Assert.AreEqual(expected, actual);
+        }
 
         [Test]
         [Category("Inspections")]
+        [Category(nameof(ParserRuleContextExtensions))]
         public void ParserRuleCtxtExt_IsDescendentOf_ByType_False()
         {
             var selectCase3Arg = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals("selectCase3Arg")).First();
+
             var result = selectCase3Arg.Context.IsDescendentOf<VBAParser.SubStmtContext>();
             Assert.AreEqual(false, result);
         }
 
-        [TestCase("Foo", PRCExtensionTestContextTypes.SelectStmtCtxt, ExpectedResult = 3)]
-        [TestCase("Foo", PRCExtensionTestContextTypes.PowOpCtxt, ExpectedResult = 0)]
+        [TestCase("Foo", PRCExtensionTestContextTypes.SelectStmtCtxt, 3)]
+        [TestCase("Foo", PRCExtensionTestContextTypes.PowOpCtxt, 0)]
         [Category("Inspections")]
-        public int ParserRuleCtxtExt_GetDescendents(string parentName, PRCExtensionTestContextTypes descendentType)
+        [Category(nameof(ParserRuleContextExtensions))]
+        public void ParserRuleCtxtExt_GetDescendents(string parentName, PRCExtensionTestContextTypes descendentType, long expected)
         {
             var parentContext = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals("Foo")).First().Context;
             var descendents = new List<ParserRuleContext>();
@@ -126,13 +134,16 @@ End Function";
             {
                 descendents = parentContext.GetDescendents<VBAParser.PowOpContext>().Select(desc => (ParserRuleContext)desc).ToList();
             }
-            return descendents.Count();
+
+            var actual = descendents.Count();
+            Assert.AreEqual(expected, actual);
         }
 
-        [TestCase("Foo", PRCExtensionTestContextTypes.SelectStmtCtxt, ExpectedResult = true)]
-        [TestCase("Foo", PRCExtensionTestContextTypes.PowOpCtxt, ExpectedResult = false)]
+        [TestCase("Foo", PRCExtensionTestContextTypes.SelectStmtCtxt, true)]
+        [TestCase("Foo", PRCExtensionTestContextTypes.PowOpCtxt, false)]
         [Category("Inspections")]
-        public bool ParserRuleCtxtExt_GetDescendent(string parentName, PRCExtensionTestContextTypes descendentType)
+        [Category(nameof(ParserRuleContextExtensions))]
+        public void ParserRuleCtxtExt_GetDescendent(string parentName, PRCExtensionTestContextTypes descendentType, bool expected)
         {
             var parentContext = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals(parentName)).First().Context;
             ParserRuleContext descendent = null;
@@ -144,13 +155,16 @@ End Function";
             {
                 descendent = parentContext.GetDescendent<VBAParser.PowOpContext>();
             }
-            return descendent != null;
+
+            var actual = descendent != null;
+            Assert.AreEqual(expected, actual);
         }
 
-        [TestCase("selectCase3Arg", PRCExtensionTestContextTypes.SelectStmtCtxt, ExpectedResult = true)]
-        [TestCase("selectCase3Arg", PRCExtensionTestContextTypes.PowOpCtxt, ExpectedResult = false)]
+        [TestCase("selectCase3Arg", PRCExtensionTestContextTypes.SelectStmtCtxt, true)]
+        [TestCase("selectCase3Arg", PRCExtensionTestContextTypes.PowOpCtxt, false)]
         [Category("Inspections")]
-        public bool ParserRuleCtxtExt_GetAncestor(string name, PRCExtensionTestContextTypes ancestorType)
+        [Category(nameof(ParserRuleContextExtensions))]
+        public void ParserRuleCtxtExt_GetAncestor(string name, PRCExtensionTestContextTypes ancestorType, bool expected)
         {
             var context = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals(name)).First().Context;
             ParserRuleContext ancestor = null;
@@ -162,26 +176,31 @@ End Function";
             {
                 ancestor = context.GetAncestor<VBAParser.PowOpContext>();
             }
-            return ancestor != null;
+
+            var actual = ancestor != null;
+            Assert.AreEqual(expected, actual);
         }
 
-        [TestCase("selectCase3Arg", "Foo", ExpectedResult = true)]
-        [TestCase("selectCase3Arg", "selectCase1", ExpectedResult = false)]
+        [TestCase("selectCase3Arg", "Foo", true)]
+        [TestCase("selectCase3Arg", "selectCase1", false)]
         [Category("Inspections")]
-        public bool ParserRuleCtxtExt_IsDescendentOf_ByContext2(string contextName, string parentName)
+        [Category(nameof(ParserRuleContextExtensions))]
+        public void ParserRuleCtxtExt_IsDescendentOf_ByContext2(string contextName, string parentName, bool expected)
         {
             var descendentCandidate = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals(contextName)).First().Context;
             var parentCandidate = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals(parentName)).First().Context;
-            var result = descendentCandidate.IsDescendentOf(parentCandidate);
-            return result;
+            
+            var actual = descendentCandidate.IsDescendentOf(parentCandidate);
+            Assert.AreEqual(expected, actual);
         }
 
         public enum PRCExtensionTestContextTypes {SelectStmtCtxt, AsTypeCtxt, PowOpCtxt };
 
-        [TestCase("selectCase3Arg", PRCExtensionTestContextTypes.SelectStmtCtxt, ExpectedResult = false)]
-        [TestCase("selectCase3Arg", PRCExtensionTestContextTypes.AsTypeCtxt, ExpectedResult = true)]
+        [TestCase("selectCase3Arg", PRCExtensionTestContextTypes.SelectStmtCtxt, false)]
+        [TestCase("selectCase3Arg", PRCExtensionTestContextTypes.AsTypeCtxt, true)]
         [Category("Inspections")]
-        public bool ParserRuleCtxtExt_GetChild(string parentContextName, PRCExtensionTestContextTypes ctxtType)
+        [Category(nameof(ParserRuleContextExtensions))]
+        public void ParserRuleCtxtExt_GetChild(string parentContextName, PRCExtensionTestContextTypes ctxtType, bool expected)
         {
             ParserRuleContext result = null;
             var parentContext = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals(parentContextName)).First().Context;
@@ -193,7 +212,9 @@ End Function";
             {
                 result = parentContext.GetChild<VBAParser.AsTypeClauseContext>();
             }
-            return result != null;
+
+            var actual = result != null;
+            Assert.AreEqual(expected, actual);
         }
 
         private IEnumerable<Declaration> GetAllUserDeclarations(string inputCode)
