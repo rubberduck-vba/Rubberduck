@@ -105,6 +105,8 @@ namespace Rubberduck.Refactorings
 
     public class CodeBuilder : ICodeBuilder
     {
+        private const string paramSeparator = ", ";
+
         public CodeBuilder(IIndenter indenter)
         {
             Indenter = indenter;
@@ -137,21 +139,41 @@ namespace Rubberduck.Refactorings
             => TryBuildPropertyBlockFromPrototype(prototype, DeclarationType.PropertyGet, 
                 propertyIdentifier, out codeBlock, accessibility, content);
 
-        public bool TryBuildPropertyLetCodeBlock(Declaration prototype, 
-            string propertyIdentifier, out string codeBlock, 
-            Accessibility accessibility = Accessibility.Public, 
+        public bool TryBuildPropertyLetCodeBlock(Declaration prototype,
+            string propertyIdentifier, out string codeBlock,
+            Accessibility accessibility = Accessibility.Public,
             string content = null, string valueParameterIdentifier = null)
+        {
+            codeBlock = string.Empty;
+            if (IsMutatorPropertyForObjectType(prototype))
+            {
+                return false;
+            }
 
-            => TryBuildPropertyBlockFromPrototype(prototype, DeclarationType.PropertyLet,
-                propertyIdentifier, out codeBlock, accessibility, content, valueParameterIdentifier);
+            return TryBuildPropertyBlockFromPrototype(prototype, DeclarationType.PropertyLet,
+                           propertyIdentifier, out codeBlock, accessibility, content, valueParameterIdentifier);
+        }
 
         public bool TryBuildPropertySetCodeBlock(Declaration prototype,
             string propertyIdentifier, out string codeBlock,
             Accessibility accessibility = Accessibility.Public,
             string content = null, string valueParameterIdentifier = null)
+        {
+            codeBlock = string.Empty;
+            if (prototype.IsMutatorProperty())
+            {
+                var prototypeAsTypeName = AsTypeNameFromMutatorProperty(prototype);
+                if (!(prototypeAsTypeName == Tokens.Variant
+                        || IsMutatorPropertyForObjectType(prototype)))
 
-            => TryBuildPropertyBlockFromPrototype(prototype, DeclarationType.PropertySet,
-                propertyIdentifier, out codeBlock, accessibility, content, valueParameterIdentifier);
+                {
+                    return false;
+                }
+            }
+
+            return TryBuildPropertyBlockFromPrototype(prototype, DeclarationType.PropertySet,
+                           propertyIdentifier, out codeBlock, accessibility, content, valueParameterIdentifier);
+        }
 
         private bool TryBuildPropertyBlockFromPrototype(Declaration prototype, 
             DeclarationType letSetGetTypeToCreate, string propertyIdentifier, 
@@ -186,22 +208,7 @@ namespace Rubberduck.Refactorings
         private static string CreateLetSetPropertyBlock(Declaration prototype, DeclarationType declarationTypeToCreate,
             Accessibility accessibility, string methodName, string valueParameterIdentifier, string memberBody)
         {
-            var paramMechanism = prototype.IsUserDefinedType() ? Tokens.ByRef : Tokens.ByVal;
-
-            var asTypeClause = $"{Tokens.As} {PrototypeToPropertyAsTypeName(prototype)}";
-
-            var valueParameterName = valueParameterIdentifier
-                ?? Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
-
-            var valueParameterExpression = $"{paramMechanism} {valueParameterName} {asTypeClause}";
-
-            var parameters = prototype is IParameterizedDeclaration pDec
-                ? pDec.Parameters.Select(GetParameterExpression).ToList()
-                : new List<string>();
-
-            parameters.Add(valueParameterExpression);
-
-            var parameterList = string.Join(", ", parameters);
+            var parameterList = CreateLetSetParameterList(prototype, valueParameterIdentifier);
 
             var codeBlock = string.Join(
                 Environment.NewLine,
@@ -221,7 +228,7 @@ namespace Rubberduck.Refactorings
                     .Select(GetParameterExpression)
                 : Enumerable.Empty<string>();
             
-            var parameterList = string.Join(", ", parameters);
+            var parameterList = string.Join(paramSeparator, parameters);
 
             var asTypeClause = $"{Tokens.As} {PrototypeToPropertyAsTypeName(prototype)}";
 
@@ -268,7 +275,7 @@ namespace Rubberduck.Refactorings
                             && !declaration.DeclarationType.Equals(DeclarationType.PropertyGet)));
             }
 
-            return $"{string.Join(", ", arguments)}";
+            return $"{string.Join(paramSeparator, arguments)}";
         }
 
         private static string BuildParameterDeclaration(ParameterDeclaration parameter, bool forceExplicitByValAccess)
@@ -432,6 +439,35 @@ namespace Rubberduck.Refactorings
             var paramDeclaration = prototype as IParameterizedDeclaration;
             return paramDeclaration.Parameters.Last().AsTypeName;
         }
+
+        private static string CreateLetSetParameterList(Declaration prototype, string valueParameterIdentifier = null)
+        {
+            if (prototype.IsMutatorProperty())
+            {
+                var parameterizedDeclaration = prototype as IParameterizedDeclaration;
+                return string.Join(paramSeparator, parameterizedDeclaration.Parameters.Select(GetParameterExpression));
+            }
+
+            var paramMechanism = prototype.IsUserDefinedType() ? Tokens.ByRef : Tokens.ByVal;
+
+            var asTypeClause = $"{Tokens.As} {PrototypeToPropertyAsTypeName(prototype)}";
+
+            var valueParameterName = valueParameterIdentifier
+                ?? Resources.Refactorings.Refactorings.CodeBuilder_DefaultPropertyRHSParam;
+
+            var parameters = prototype is IParameterizedDeclaration pDec
+                ? pDec.Parameters.Select(GetParameterExpression).ToList() //Property Get prototype
+                : new List<string>(); //Variable, UDT Member, Function prototypes
+
+            var valueParameterExpression = $"{paramMechanism} {valueParameterName} {asTypeClause}";
+            parameters.Add(valueParameterExpression);
+
+            return string.Join(paramSeparator, parameters);
+        }
+
+        private static bool IsMutatorPropertyForObjectType(Declaration prototype) 
+            => prototype.IsMutatorProperty() 
+                && prototype is IParameterizedDeclaration pd && pd.Parameters.Last().IsObject;
 
         private static string AccessibilityToken(Accessibility accessibility)
             => accessibility.Equals(Accessibility.Implicit)
