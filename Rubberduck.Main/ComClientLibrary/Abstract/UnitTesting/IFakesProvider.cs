@@ -83,5 +83,17 @@ namespace Rubberduck.UnitTesting
         [DispId(18)]
         [Description("Configures VBA.Math.Rnd calls.")]
         IFake Rnd { get; }
+
+        [DispId(19)]
+        [Description("Configures VBA.Iteraction.DeleteSetting calls.")]
+        IStub DeleteSetting { get; }
+
+        [DispId(20)]
+        [Description("Configures VBA.Iteraction.SaveSetting calls.")]
+        IStub SaveSetting { get; }
+
+        [DispId(21)]
+        [Description("Configures VBA.Iteraction.GetSetting calls.")]
+        IFake GetSetting { get; }
     }
 }

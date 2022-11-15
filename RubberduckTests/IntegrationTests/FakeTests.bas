@@ -1,7 +1,7 @@
 Attribute VB_Name = "FakeTests"
 Option Explicit
 
-Option OnPrivate Module
+Option Private Module
 
 'HERE BE DRAGONS.  Save your work in ALL open windows.
 '@TestModule
@@ -261,7 +261,7 @@ Public Sub NowFakePassThroughWorks()
 
     With Fakes.Now
         .Returns #1/1/2018 9:00:00 AM#
-        .Passthrough = True
+        .PassThrough = True
         Assert.IsTrue Now <> #1/1/2018 9:00:00 AM#
         .Verify.Once
     End With
@@ -293,7 +293,7 @@ Public Sub TimeFakePassThroughWorks()
 
     With Fakes.Time
         .Returns #9:00:00 AM#
-        .Passthrough = True
+        .PassThrough = True
         Assert.IsTrue Time <> #9:00:00 AM#
         .Verify.Once
     End With
@@ -326,7 +326,7 @@ Public Sub DateFakePassThroughWorks()
 
     With Fakes.Date
         .Returns #1/1/1993#
-        .Passthrough = True
+        .PassThrough = True
         Assert.IsTrue Date <> #1/1/1993#
         .Verify.Once
     End With
@@ -396,7 +396,7 @@ Public Sub RndWorks()
 TestExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Test raised an error: #" & Err.number & " - " & Err.Description
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
 '@TestMethod
@@ -404,7 +404,7 @@ Public Sub RndPassthroughWorks()
     On Error GoTo TestFail
 
     With Fakes.Rnd
-        .Passthrough = True
+        .PassThrough = True
         Debug.Print Rnd()
         .Verify.Once
     End With
@@ -412,5 +412,46 @@ Public Sub RndPassthroughWorks()
 TestExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Test raised an error: #" & Err.number & " - " & Err.Description
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
+'@TestMethod
+Public Sub GetSettingFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.GetSetting
+        .Returns "Fakes work!"
+        Dim retVal As String
+        retVal = GetSetting("MyApp", "MySection", "MyKey")
+        .Verify.Once
+        .Verify.Parameter "appname", "MyApp"
+        .Verify.Parameter "section", "MySection"
+        .Verify.Parameter "key", "MyKey"
+        Assert.IsTrue GetSetting("MyApp", "MySection", "MyKey") = "Fakes work!"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub GetSettingFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.GetSetting
+        .PassThrough = True
+        GetSetting "MyApp", "MySection", "MyKey"
+        .Verify.Once
+        .Verify.Parameter "appname", "MyApp"
+        .Verify.Parameter "section", "MySection"
+        .Verify.Parameter "key", "MyKey"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+

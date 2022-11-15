@@ -1,7 +1,7 @@
 Attribute VB_Name = "StubTests"
-Option Explicit On
+Option Explicit
 
-Option OnPrivate Module
+Option Private Module
 
 'HERE BE DRAGONS.  Save your work in ALL open windows.
 '@TestModule
@@ -133,21 +133,21 @@ TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
-'@TestMethod
-Public Sub RmDirStubPassThroughWorks()
-    On Error GoTo TestFail
-
-    With Fakes.RmDir
-        .PassThrough = True
-        RmDir "C:\Test\Foo"
-        .Verify.Once
-    End With
-
-TestExit:
-    Exit Sub
-TestFail:
-    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
+''@TestMethod
+'Public Sub RmDirStubPassThroughWorks()
+'    On Error GoTo TestFail
+'
+'    With Fakes.RmDir
+'        .PassThrough = True
+'        RmDir "C:\Test\Foo"
+'        .Verify.Once
+'    End With
+'
+'TestExit:
+'    Exit Sub
+'TestFail:
+'    Assert.Fail "Test raised an error: #" & Err.number & " - " & Err.Description
+'End Sub
 
 '@TestMethod
 Public Sub ChDirStubWorks()
@@ -170,6 +170,7 @@ Public Sub ChDirStubPassThroughWorks()
 
     With Fakes.ChDir
         .PassThrough = True
+        ChDrive "C"
         ChDir "C:\Test"
         .Verify.Once
         Assert.IsTrue CurDir$ = "C:\Test"
@@ -212,3 +213,75 @@ TestExit:
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
+'@TestMethod
+Public Sub SaveSettingStubWorks()
+    On Error GoTo TestFail
+
+    With Fakes.SaveSetting
+        SaveSetting "MyApp", "MySection", "MyKey", "MySetting"
+        .Verify.Once
+        .Verify.Parameter "appname", "MyApp"
+        .Verify.Parameter "section", "MySection"
+        .Verify.Parameter "key", "MyKey"
+        .Verify.Parameter "setting", "MySetting"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub SaveSettingStubPassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.SaveSetting
+        .PassThrough = True
+        SaveSetting "MyApp", "MySection", "MyKey", "MySetting"
+        .Verify.Once
+        Assert.IsTrue GetSetting("MyApp", "MySection", "MyKey") = "MySetting"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub DeleteSettingStubWorks()
+    On Error GoTo TestFail
+
+    With Fakes.DeleteSetting
+        DeleteSetting "MyApp", "MySection", "MyKey"
+        .Verify.Once
+        .Verify.Parameter "appname", "MyApp"
+        .Verify.Parameter "section", "MySection"
+        .Verify.Parameter "key", "MyKey"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub DeleteSettingStubPassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.DeleteSetting
+        .PassThrough = True
+        DeleteSetting "MyApp", "MySection", "MyKey"
+        .Verify.Once
+        Assert.IsTrue GetSetting("MyApp", "MySection", "MyKey") = vbNullString
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+

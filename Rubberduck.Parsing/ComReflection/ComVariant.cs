@@ -50,13 +50,13 @@ namespace Rubberduck.Parsing.ComReflection
 
         [DataContract]
         [StructLayout(LayoutKind.Sequential)]
-        private struct Variant
+        public struct Variant
         {
             public readonly ushort vt;
             private readonly ushort wReserved1;
             private readonly ushort wReserved2;
             private readonly ushort wReserved3;
-            private readonly int data01;
+            public readonly int data01;
             private readonly int data02;
         }
 

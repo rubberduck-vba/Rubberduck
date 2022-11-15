@@ -87,7 +87,9 @@ namespace Rubberduck.UnitTesting
         public IFake Time => RetrieveOrCreateFunction<Time>();
         public IFake Date => RetrieveOrCreateFunction<Date>();
         public IFake Rnd => RetrieveOrCreateFunction<Rnd>();
-
+        public IStub DeleteSetting => RetrieveOrCreateFunction<DeleteSetting>();
+        public IStub SaveSetting => RetrieveOrCreateFunction<SaveSetting>();
+        public IFake GetSetting => RetrieveOrCreateFunction<GetSetting>();
         #endregion
     }
 }

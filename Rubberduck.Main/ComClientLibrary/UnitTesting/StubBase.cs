@@ -11,11 +11,12 @@ namespace Rubberduck.UnitTesting
 
         #region Internal
 
-        protected void InjectDelegate(Delegate callbackDelegate, IntPtr procAddress)
+        protected LocalHook InjectDelegate(Delegate callbackDelegate, IntPtr procAddress)
         {
             var hook = LocalHook.Create(procAddress, callbackDelegate, null);
             hook.ThreadACL.SetInclusiveACL(new[] { 0 });
             _hooks.Add(hook);
+            return hook;
         }
 
         protected Verifier Verifier { get; } = new Verifier();
