@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Common;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.SmartIndenter;
@@ -354,6 +353,170 @@ End {procType.endStmt}
             Assert.IsTrue(tryResult, "TryBuildPropertyGetCodeBlock(...) returned false");
 
             StringAssert.Contains(expected, result);
+        }
+
+        //Creating a Set from a Set prototype typicaly needs a new name
+        [TestCase(DeclarationType.PropertySet, "NewSetProperty")]
+        [TestCase(DeclarationType.PropertyLet, null)]
+        [Category(nameof(CodeBuilder))]
+        public void PropertySetFromPropertyMutator(DeclarationType prototypeDeclarationType, string propertyName)
+        {
+            (string procType, string endStmt) = ProcedureTypeIdentifier(prototypeDeclarationType);
+
+            string inputCode =
+$@"
+Public {procType} {_defaultPropertyIdentifier}(ByVal RHS As Variant)
+End Property
+";
+
+            var prototype = GetPrototypeDeclaration<ModuleBodyElementDeclaration>(
+                inputCode, _defaultPropertyIdentifier, prototypeDeclarationType);
+
+            var tryResult = CreateCodeBuilder().TryBuildPropertySetCodeBlock(
+                prototype, propertyName ?? _defaultPropertyIdentifier,
+                out var result, prototype.Accessibility);
+
+            Assert.IsTrue(tryResult,
+                "TryBuildPropertySetCodeBlock(...) returned false");
+
+            var expected =
+                $"Public Property Set {propertyName ?? _defaultPropertyIdentifier}(ByVal RHS As Variant)";
+
+            StringAssert.Contains(expected, result);
+        }
+
+        //Creating a Set from a Set prototype typicaly needs a new name
+        [TestCase(DeclarationType.PropertySet, "NewSetProperty")]
+        [TestCase(DeclarationType.PropertyLet, null)]
+        [Category(nameof(CodeBuilder))]
+        public void PropertySetFromParameterizedPropertyMutator(DeclarationType prototypeDeclarationType, string propertyName)
+        {
+            (string procType, string endStmt) = ProcedureTypeIdentifier(prototypeDeclarationType);
+
+            string inputCode =
+$@"
+Public {procType} {_defaultPropertyIdentifier}(ByVal index1 As Long, ByVal index2 As Long, ByVal RHS As Variant)
+End Property
+";
+
+            var prototype = GetPrototypeDeclaration<ModuleBodyElementDeclaration>(
+                inputCode, _defaultPropertyIdentifier, prototypeDeclarationType);
+
+            var tryResult = CreateCodeBuilder().TryBuildPropertySetCodeBlock(
+                prototype, propertyName ?? _defaultPropertyIdentifier,
+                out var result, prototype.Accessibility);
+
+            Assert.IsTrue(tryResult,
+                "TryBuildPropertySetCodeBlock(...) returned false");
+
+            var expected =
+                $"Public Property Set {propertyName ?? _defaultPropertyIdentifier}(ByVal index1 As Long, ByVal index2 As Long, ByVal RHS As Variant)";
+
+            StringAssert.Contains(expected, result);
+        }
+
+        //Creating a Let from a Let prototype typicaly needs a new name
+        [TestCase(DeclarationType.PropertyLet, "NewLetProperty")]
+        [TestCase(DeclarationType.PropertySet, null)]
+        [Category(nameof(CodeBuilder))]
+        public void PropertyLetFromPropertyMutator(DeclarationType prototypeDeclarationType, string propertyName)
+        {
+            (string procType, string endStmt) = ProcedureTypeIdentifier(prototypeDeclarationType);
+
+            string inputCode =
+$@"
+Public {procType} {_defaultPropertyIdentifier}(ByVal RHS As Variant)
+End Property
+";
+
+            var prototype = GetPrototypeDeclaration<ModuleBodyElementDeclaration>(
+                inputCode, _defaultPropertyIdentifier, prototypeDeclarationType);
+
+            var tryResult = CreateCodeBuilder().TryBuildPropertyLetCodeBlock(
+                prototype, propertyName ?? _defaultPropertyIdentifier,
+                out var result, prototype.Accessibility);
+
+            Assert.IsTrue(tryResult,
+                "TryBuildPropertyLetCodeBlock(...) returned false");
+
+            var expected =
+                $"Public Property Let {propertyName ?? _defaultPropertyIdentifier}(ByVal RHS As Variant)";
+
+            StringAssert.Contains(expected, result);
+        }
+
+        //Creating a Let from a Let prototype typicaly needs a new name
+        [TestCase(DeclarationType.PropertyLet, "NewLetProperty")]
+        [TestCase(DeclarationType.PropertySet, null)]
+        [Category(nameof(CodeBuilder))]
+        public void PropertyLetFromParameterizedPropertyMutator(DeclarationType prototypeDeclarationType, string propertyName)
+        {
+            (string procType, string endStmt) = ProcedureTypeIdentifier(prototypeDeclarationType);
+
+            string inputCode =
+$@"
+Public {procType} {_defaultPropertyIdentifier}(ByVal index1 As Long, ByVal index2 As Long, ByVal RHS As Variant)
+End Property
+";
+
+            var prototype = GetPrototypeDeclaration<ModuleBodyElementDeclaration>(
+                inputCode, _defaultPropertyIdentifier, prototypeDeclarationType);
+
+            var tryResult = CreateCodeBuilder().TryBuildPropertyLetCodeBlock(
+                prototype, propertyName ?? _defaultPropertyIdentifier,
+                out var result, prototype.Accessibility);
+
+            Assert.IsTrue(tryResult,
+                "TryBuildPropertyLetCodeBlock(...) returned false");
+
+            var expected =
+                $"Public Property Let {propertyName ?? _defaultPropertyIdentifier}(ByVal index1 As Long, ByVal index2 As Long, ByVal RHS As Variant)";
+
+            StringAssert.Contains(expected, result);
+        }
+
+        [Test]
+        [Category(nameof(CodeBuilder))]
+        public void PropertyLetFromObjectPropertySet_ReturnsFalse()
+        {
+            (string procType, string endStmt) = ProcedureTypeIdentifier(DeclarationType.PropertySet);
+
+            string inputCode =
+$@"
+Public {procType} {_defaultPropertyIdentifier}(ByVal RHS As Collection)
+End Property
+";
+
+            var prototype = GetPrototypeDeclaration<ModuleBodyElementDeclaration>(
+                inputCode, _defaultPropertyIdentifier, DeclarationType.PropertySet);
+
+            var tryResult = CreateCodeBuilder().TryBuildPropertyLetCodeBlock(
+                prototype, _defaultPropertyIdentifier,
+                out var result, prototype.Accessibility);
+
+            Assert.IsFalse(tryResult);
+        }
+
+        [Test]
+        [Category(nameof(CodeBuilder))]
+        public void PropertySetFromSimpleValueTypePropertyLet_ReturnsFalse()
+        {
+            (string procType, string endStmt) = ProcedureTypeIdentifier(DeclarationType.PropertyLet);
+
+            string inputCode =
+$@"
+Public {procType} {_defaultPropertyIdentifier}(ByVal RHS As Long)
+End Property
+";
+
+            var prototype = GetPrototypeDeclaration<ModuleBodyElementDeclaration>(
+                inputCode, _defaultPropertyIdentifier, DeclarationType.PropertyLet);
+
+            var tryResult = CreateCodeBuilder().TryBuildPropertySetCodeBlock(
+                prototype, _defaultPropertyIdentifier,
+                out var result, prototype.Accessibility);
+
+            Assert.IsFalse(tryResult);
         }
 
         [TestCase("fizz", DeclarationType.Variable, "Integer")]
