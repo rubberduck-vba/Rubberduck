@@ -95,5 +95,9 @@ namespace Rubberduck.UnitTesting
         [DispId(21)]
         [Description("Configures VBA.Iteraction.GetSetting calls.")]
         IFake GetSetting { get; }
+
+        [DispId(22)]
+        [Description("Configures VBA.Math.Randomize calls.")]
+        IStub Randomize { get; }
     }
 }

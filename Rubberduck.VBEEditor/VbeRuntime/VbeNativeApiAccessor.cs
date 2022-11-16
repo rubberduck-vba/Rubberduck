@@ -52,69 +52,9 @@ namespace Rubberduck.VBEditor.VbeRuntime
 
         public string DllName => _runtime?.DllName ?? DetermineVersion()?.DllName;
 
-        public float GetTimer()
-        {
-            return _runtime.GetTimer();
-        }
-
-        public void GetDateVar(out object retval)
-        {
-            _runtime.GetDateVar(out retval);
-        }
-
-        public void GetPresentDate(out object retVal)
-        {
-            _runtime.GetPresentDate(out retVal);
-        }
-
-        public double Shell(IntPtr pathname, short windowstyle)
-        {
-            return _runtime.Shell(pathname, windowstyle);
-        }
-
-        public void GetTimeVar(out object retVal)
-        {
-            _runtime.GetTimeVar(out retVal);
-        }
-
-        public void ChangeDir(IntPtr path)
-        {
-            _runtime.ChangeDir(path);
-        }
-
-        public void ChangeDrive(IntPtr driveletter)
-        {
-            _runtime.ChangeDrive(driveletter);
-        }
-
-        public void KillFiles(IntPtr pathname)
-        {
-            _runtime.KillFiles(pathname);
-        }
-
-        public void MakeDir(IntPtr path)
-        {
-            _runtime.MakeDir(path);
-        }
-
-        public void RemoveDir(IntPtr path)
-        {
-            _runtime.RemoveDir(path);
-        }
-
         public int DoEvents()
         {
             return _runtime.DoEvents();
-        }
-
-        public void Beep()
-        {
-            _runtime.Beep();
-        }
-
-        public float Rnd(IntPtr number)
-        {
-            return _runtime.Rnd(number);
         }
     }
 }

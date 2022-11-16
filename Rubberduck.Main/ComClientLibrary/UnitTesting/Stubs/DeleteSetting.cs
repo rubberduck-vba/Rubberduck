@@ -7,13 +7,11 @@ namespace Rubberduck.UnitTesting
 {
     internal class DeleteSetting : StubBase
     {
-        private readonly IntPtr origAddr;
         public DeleteSetting()
         {
             var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcDeleteSetting");
 
-            var hook = InjectDelegate(new DeleteSettingDelegate(DeleteSettingCallback), processAddress);
-            origAddr = hook.HookBypassAddress;
+            InjectDelegate(new DeleteSettingDelegate(DeleteSettingCallback), processAddress);
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
@@ -21,7 +19,7 @@ namespace Rubberduck.UnitTesting
 
         public void DeleteSettingCallback(IntPtr appName, ComVariant.Variant section, ComVariant.Variant key)
         {
-            OnCallBack(true);
+            OnCallBack();
 
             var appNameArg = Marshal.PtrToStringBSTR(appName);
             var sectionArg = Marshal.PtrToStringBSTR((IntPtr)section.data01);
@@ -32,7 +30,7 @@ namespace Rubberduck.UnitTesting
             TrackUsage("key", keyArg, Tokens.String);
             if (PassThrough)
             {
-                var nativeCall = Marshal.GetDelegateForFunctionPointer<DeleteSettingDelegate>(origAddr);
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<DeleteSettingDelegate>(NativeFunctionAddress);
                 nativeCall(appName, section, key);
             }
         }

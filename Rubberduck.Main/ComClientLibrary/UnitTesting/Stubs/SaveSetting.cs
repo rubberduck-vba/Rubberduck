@@ -6,13 +6,11 @@ namespace Rubberduck.UnitTesting
 {
     internal class SaveSetting : StubBase
     {
-        private readonly IntPtr origAddr;
         public SaveSetting()
         {
             var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcSaveSetting");
 
-            var hook = InjectDelegate(new SaveSettingDelegate(SaveSettingCallback), processAddress);
-            origAddr = hook.HookBypassAddress;
+            InjectDelegate(new SaveSettingDelegate(SaveSettingCallback), processAddress);
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
@@ -20,7 +18,7 @@ namespace Rubberduck.UnitTesting
 
         public void SaveSettingCallback(IntPtr appName, IntPtr section, IntPtr key, IntPtr setting)
         {
-            OnCallBack(true);
+            OnCallBack();
 
             var appNameArg = Marshal.PtrToStringBSTR(appName);
             var sectionArg = Marshal.PtrToStringBSTR(section);
@@ -33,7 +31,7 @@ namespace Rubberduck.UnitTesting
             TrackUsage("setting", settingArg, Tokens.String);
             if (PassThrough)
             {
-                var nativeCall = Marshal.GetDelegateForFunctionPointer<SaveSettingDelegate>(origAddr);
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<SaveSettingDelegate>(NativeFunctionAddress);
                 nativeCall(appName, section, key, setting);
             }
         }

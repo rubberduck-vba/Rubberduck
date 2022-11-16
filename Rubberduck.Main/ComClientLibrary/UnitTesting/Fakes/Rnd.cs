@@ -31,7 +31,8 @@ namespace Rubberduck.UnitTesting.Fakes
             TrackUsage("number", number);
             if (PassThrough)
             {
-                return VbeProvider.VbeNativeApi.Rnd(number);
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<RndDelegate>(NativeFunctionAddress);
+                return nativeCall(number);
             }
             return Convert.ToSingle(ReturnValue ?? 0);
         } 

@@ -36,7 +36,8 @@ namespace Rubberduck.UnitTesting.Fakes
 
             if (PassThrough)
             {
-                return Convert.ToDouble(VbeProvider.VbeNativeApi.Shell(pathname, windowstyle));
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<ShellDelegate>(NativeFunctionAddress);
+                return Convert.ToDouble(nativeCall(pathname, windowstyle));
             }
             return Convert.ToDouble(ReturnValue ?? 0);
         }

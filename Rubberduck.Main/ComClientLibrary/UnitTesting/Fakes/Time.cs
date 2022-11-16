@@ -24,9 +24,8 @@ namespace Rubberduck.UnitTesting.Fakes
             }
             if (PassThrough)
             {
-                object result;
-                VbeProvider.VbeNativeApi.GetTimeVar(out result);
-                Marshal.GetNativeVariantForObject(result, retVal);
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<TimeDelegate>(NativeFunctionAddress);
+                nativeCall(retVal);
                 return;
             }
             Marshal.GetNativeVariantForObject(ReturnValue ?? 0, retVal);

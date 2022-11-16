@@ -7,13 +7,11 @@ namespace Rubberduck.UnitTesting.Fakes
 {
     internal class GetSetting : FakeBase
     {
-        private readonly IntPtr origAddr;
         public GetSetting()
         {
             var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcGetSetting");
 
-            var hook = InjectDelegate(new GetSettingDelegate(GetSettingCallback), processAddress);
-            origAddr = hook.HookBypassAddress;
+            InjectDelegate(new GetSettingDelegate(GetSettingCallback), processAddress);
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
@@ -22,7 +20,7 @@ namespace Rubberduck.UnitTesting.Fakes
 
         public string GetSettingCallback(IntPtr appName, IntPtr section, IntPtr key, ComVariant.Variant defaultVal)
         {
-            OnCallBack(true);
+            OnCallBack();
 
             var appNameArg = Marshal.PtrToStringBSTR(appName);
             var sectionArg = Marshal.PtrToStringBSTR(section);
@@ -34,7 +32,7 @@ namespace Rubberduck.UnitTesting.Fakes
             TrackUsage("default", defaultArg, Tokens.String); // Can't name argument as per VBA function description but keep for tracking
             if (PassThrough)
             {
-                var nativeCall = Marshal.GetDelegateForFunctionPointer<GetSettingDelegate>(origAddr);
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<GetSettingDelegate>(NativeFunctionAddress);
                 return nativeCall(appName, section, key, defaultVal);
             }
 

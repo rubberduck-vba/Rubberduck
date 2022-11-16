@@ -90,6 +90,7 @@ namespace Rubberduck.UnitTesting
         public IStub DeleteSetting => RetrieveOrCreateFunction<DeleteSetting>();
         public IStub SaveSetting => RetrieveOrCreateFunction<SaveSetting>();
         public IFake GetSetting => RetrieveOrCreateFunction<GetSetting>();
+        public IStub Randomize => RetrieveOrCreateFunction<Randomize>();
         #endregion
     }
 }
