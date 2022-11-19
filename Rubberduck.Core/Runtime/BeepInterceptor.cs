@@ -74,7 +74,6 @@ namespace Rubberduck.Runtime
 
             if (!e.Handled)
             {
-                //_vbeApi.Beep();
                 nativeCall();
             }
         }

@@ -285,3 +285,106 @@ TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
+'@TestMethod
+Public Sub RandomizeStubWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Randomize
+        Randomize 0.5
+        .Verify.Once
+        .Verify.Parameter "number", 0.5
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub RandomizeStubPassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Randomize
+        .PassThrough = True
+        Randomize
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub SetAttrFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.SetAttr
+        SetAttr "C:\Test\dummy.txt", vbHidden + vbReadOnly
+        .Verify.Once
+        .Verify.Parameter "pathname", "C:\Test\dummy.txt"
+        .Verify.Parameter "attributes", CInt(vbHidden + vbReadOnly)
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub SetAttrFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.SetAttr
+        .PassThrough = True
+        SetAttr "C:\Test\dummy.txt", vbHidden + vbReadOnly
+        .Verify.Once
+        .Verify.Parameter "pathname", "C:\Test\dummy.txt"
+        .Verify.Parameter "attributes", CInt(vbHidden + vbReadOnly)
+        Assert.IsTrue GetAttr("C:\Test\dummy.txt") = vbHidden + vbReadOnly
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub FileCopyFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.FileCopy
+        FileCopy "C:\Test\dummy.txt", "C:\Test\copied.txt"
+        .Verify.Once
+        .Verify.Parameter "oldpathname", "C:\Test\dummy.txt"
+        .Verify.Parameter "newpathname", "C:\Test\copied.txt"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub FileCopyFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.FileCopy
+        .PassThrough = True
+        FileCopy "C:\Test\dummy.txt", "C:\Test\copied.txt"
+        .Verify.Once
+        .Verify.Parameter "oldpathname", "C:\Test\dummy.txt"
+        .Verify.Parameter "newpathname", "C:\Test\copied.txt"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+

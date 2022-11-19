@@ -13,11 +13,11 @@ namespace Rubberduck.UnitTesting
     public interface IFakesProvider
     {
         [DispId(1)]
-        [Description("Configures VBA.Interactions.MsgBox calls.")]
+        [Description("Configures VBA.Interaction.MsgBox calls.")]
         IFake MsgBox { get; }
 
         [DispId(2)]
-        [Description("Configures VBA.Interactions.InputBox calls.")]
+        [Description("Configures VBA.Interaction.InputBox calls.")]
         IFake InputBox { get; }
 
         [DispId(3)]
@@ -99,5 +99,41 @@ namespace Rubberduck.UnitTesting
         [DispId(22)]
         [Description("Configures VBA.Math.Randomize calls.")]
         IStub Randomize { get; }
+
+        [DispId(23)]
+        [Description("Configures VBA.Iteraction.GetAllSettings calls.")]
+        IFake GetAllSettings { get; }
+
+        [DispId(24)]
+        [Description("Configures VBA.FileSystem.SetAttr calls.")]
+        IStub SetAttr { get; }
+
+        [DispId(25)]
+        [Description("Configures VBA.FileSystem.GetAttr calls.")]
+        IFake GetAttr { get; }
+
+        [DispId(26)]
+        [Description("Configures VBA.FileSystem.FileLen calls.")]
+        IFake FileLen { get; }
+
+        [DispId(27)]
+        [Description("Configures VBA.FileSystem.FileDateTime calls.")]
+        IFake FileDateTime { get; }
+
+        [DispId(28)]
+        [Description("Configures VBA.FileSystem.FreeFile calls.")]
+        IFake FreeFile { get; }
+
+        [DispId(29)]
+        [Description("Configures VBA.Information.IMEStatus calls.")]
+        IFake IMEStatus { get; }
+
+        [DispId(30)]
+        [Description("Configures VBA.FileSystem.Dir calls.")]
+        IFake Dir { get; }
+
+        [DispId(31)]
+        [Description("Configures VBA.FileSystem.FileCopy calls.")]
+        IStub FileCopy { get; }
     }
 }

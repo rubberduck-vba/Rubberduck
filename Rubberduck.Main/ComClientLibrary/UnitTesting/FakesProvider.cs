@@ -91,6 +91,15 @@ namespace Rubberduck.UnitTesting
         public IStub SaveSetting => RetrieveOrCreateFunction<SaveSetting>();
         public IFake GetSetting => RetrieveOrCreateFunction<GetSetting>();
         public IStub Randomize => RetrieveOrCreateFunction<Randomize>();
+        public IFake GetAllSettings => RetrieveOrCreateFunction<GetAllSettings>();
+        public IStub SetAttr => RetrieveOrCreateFunction<SetAttr>();
+        public IFake GetAttr => RetrieveOrCreateFunction<GetAttr>();
+        public IFake FileLen => RetrieveOrCreateFunction<FileLen>();
+        public IFake FileDateTime => RetrieveOrCreateFunction<FileDateTime>();
+        public IFake FreeFile => RetrieveOrCreateFunction<FreeFile>();
+        public IFake IMEStatus => RetrieveOrCreateFunction<IMEStatus>();
+        public IFake Dir => RetrieveOrCreateFunction<Dir>();
+        public IStub FileCopy => RetrieveOrCreateFunction<FileCopy>();
         #endregion
     }
 }
