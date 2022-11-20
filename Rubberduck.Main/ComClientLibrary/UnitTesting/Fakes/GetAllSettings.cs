@@ -14,7 +14,6 @@ namespace Rubberduck.UnitTesting.Fakes
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
-        //[return: MarshalAs(UnmanagedType.SafeArray, SafeArraySubType=VarEnum.VT_BSTR)]
         private delegate void GetAllSettingsDelegate(IntPtr retVal, IntPtr appName, IntPtr section);
 
         public void GetAllSettingsCallback(IntPtr retVal, IntPtr appName, IntPtr section)
@@ -31,7 +30,7 @@ namespace Rubberduck.UnitTesting.Fakes
                 nativeCall(retVal, appName, section);
                 return;
             }
-            Marshal.GetNativeVariantForObject(ReturnValue ?? 0, retVal); // ReturnValue ?? IntPtr.Zero;
+            Marshal.GetNativeVariantForObject(ReturnValue ?? 0, retVal);
         }
     }
 }

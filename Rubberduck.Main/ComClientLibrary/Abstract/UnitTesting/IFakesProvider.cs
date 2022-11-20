@@ -85,15 +85,15 @@ namespace Rubberduck.UnitTesting
         IFake Rnd { get; }
 
         [DispId(19)]
-        [Description("Configures VBA.Iteraction.DeleteSetting calls.")]
+        [Description("Configures VBA.Interaction.DeleteSetting calls.")]
         IStub DeleteSetting { get; }
 
         [DispId(20)]
-        [Description("Configures VBA.Iteraction.SaveSetting calls.")]
+        [Description("Configures VBA.Interaction.SaveSetting calls.")]
         IStub SaveSetting { get; }
 
         [DispId(21)]
-        [Description("Configures VBA.Iteraction.GetSetting calls.")]
+        [Description("Configures VBA.Interaction.GetSetting calls.")]
         IFake GetSetting { get; }
 
         [DispId(22)]
@@ -101,7 +101,7 @@ namespace Rubberduck.UnitTesting
         IStub Randomize { get; }
 
         [DispId(23)]
-        [Description("Configures VBA.Iteraction.GetAllSettings calls.")]
+        [Description("Configures VBA.Interaction.GetAllSettings calls.")]
         IFake GetAllSettings { get; }
 
         [DispId(24)]

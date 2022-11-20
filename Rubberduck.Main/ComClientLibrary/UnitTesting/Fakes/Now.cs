@@ -18,9 +18,9 @@ namespace Rubberduck.UnitTesting.Fakes
         public void NowCallback(IntPtr retVal)
         {
             OnCallBack(true);
-            if (!TrySetReturnValue())                          // specific invocation
+            if (!TrySetReturnValue())
             {
-                TrySetReturnValue(true);                       // any invocation
+                TrySetReturnValue(true);
             }
             if (PassThrough)
             {

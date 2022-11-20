@@ -19,9 +19,9 @@ namespace Rubberduck.UnitTesting.Fakes
         public short IMEStatusCallback()
         {
             OnCallBack(true);
-            if (!TrySetReturnValue())                          // specific invocation
+            if (!TrySetReturnValue())
             {
-                TrySetReturnValue(true);                       // any invocation
+                TrySetReturnValue(true);
             }
 
             if (PassThrough)
