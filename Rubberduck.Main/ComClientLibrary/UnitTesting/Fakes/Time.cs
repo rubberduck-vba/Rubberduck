@@ -24,8 +24,10 @@ namespace Rubberduck.UnitTesting.Fakes
             }
             if (PassThrough)
             {
+                FakesProvider.SuspendFake("Now");
                 var nativeCall = Marshal.GetDelegateForFunctionPointer<TimeDelegate>(NativeFunctionAddress);
                 nativeCall(retVal);
+                FakesProvider.ResumeFake("Now");
                 return;
             }
             Marshal.GetNativeVariantForObject(ReturnValue ?? 0, retVal);
