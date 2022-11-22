@@ -729,3 +729,48 @@ TestExit:
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
+'@TestMethod
+Public Sub TestIssue4476()
+    On Error GoTo TestFail
+    
+    'Arrange:
+    Fakes.Now.PassThrough = True
+    Fakes.Date.PassThrough = True
+    
+    'Act:
+    Debug.Print Now
+    Debug.Print Date '<== KA-BOOOM
+    
+    'Assert:
+    Fakes.Now.Verify.AtLeastOnce
+    Fakes.Date.Verify.AtLeastOnce
+    
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub TestIssue5944()
+    On Error GoTo TestFail
+        
+    Fakes.InputBox.Returns 20
+    Fakes.MsgBox.Returns 20
+    
+    Dim inputBoxReturnValue As String
+    Dim msgBoxReturnValue As Integer
+    
+    inputBoxReturnValue = InputBox("Dummy")
+    msgBoxReturnValue = MsgBox("Dummy")
+    
+    Fakes.MsgBox.Verify.Once
+    Fakes.InputBox.Verify.Once
+    
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
