@@ -22,7 +22,8 @@ namespace Rubberduck.UnitTesting
             TrackUsage("pathname", pathname);
             if (PassThrough)
             {
-                VbeProvider.VbeNativeApi.KillFiles(pathname);
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<KillDelegate>(NativeFunctionAddress);
+                nativeCall(pathname);
             }
         }
     }

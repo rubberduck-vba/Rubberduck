@@ -4,13 +4,13 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.UnitTesting.Fakes
 {
-    internal class Timer : FakeBase
+    internal class Rnd : FakeBase
     {
-        public Timer()
+        public Rnd()
         {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcGetTimer");
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcRandomNext");
 
-            InjectDelegate(new TimerDelegate(TimerCallback), processAddress);
+            InjectDelegate(new RndDelegate(RndCallback), processAddress);
         }
 
         private readonly ValueTypeConverter<float> _converter = new ValueTypeConverter<float>();
@@ -22,16 +22,17 @@ namespace Rubberduck.UnitTesting.Fakes
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.R4)]
-        private delegate float TimerDelegate();
+        private delegate float RndDelegate(IntPtr inVal);
 
-        public float TimerCallback()
+        public float RndCallback(IntPtr number)
         {
             OnCallBack(true);
 
+            TrackUsage("number", number);
             if (PassThrough)
             {
-                var nativeCall = Marshal.GetDelegateForFunctionPointer<TimerDelegate>(NativeFunctionAddress);
-                return nativeCall();
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<RndDelegate>(NativeFunctionAddress);
+                return nativeCall(number);
             }
             return Convert.ToSingle(ReturnValue ?? 0);
         } 

@@ -25,7 +25,8 @@ namespace Rubberduck.UnitTesting
             TrackUsage("path", pathArg, Tokens.String);
             if (PassThrough)
             {
-                VbeProvider.VbeNativeApi.MakeDir(path);
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<MkDirDelegate>(NativeFunctionAddress);
+                nativeCall(path);
             }
         }
     }
