@@ -37,11 +37,11 @@ namespace Rubberduck.UnitTesting
             CodeIsUnderTest = true;
         }
 
-        public static void SuspendFake(String typename)
+        public static void SuspendFake(Type type)
         {
             foreach (var fake in ActiveFakes.Values)
             {
-                if (fake.GetType().Name == typename)
+                if (fake.GetType() == type)
                 {
                     fake.DisableHook();
                     return;
@@ -49,11 +49,11 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        public static void ResumeFake(String typename)
+        public static void ResumeFake(Type type)
         {
             foreach (var fake in ActiveFakes.Values)
             {
-                if (fake.GetType().Name == typename)
+                if (fake.GetType() == type)
                 {
                     fake.EnableHook();
                     return;
