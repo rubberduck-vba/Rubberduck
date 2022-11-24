@@ -53,6 +53,21 @@ namespace Rubberduck.UnitTesting
             }
         }
 
+        public void DisableHook()
+        {
+            foreach (var hook in _hooks)
+            {
+                hook.ThreadACL.SetExclusiveACL(new[] { 0 });
+            }
+        }
+        public void EnableHook()
+        {
+            foreach (var hook in _hooks)
+            {
+                hook.ThreadACL.SetInclusiveACL(new[] { 0 });
+            }
+        }
+
         public virtual void Dispose()
         {
             foreach (var hook in _hooks)

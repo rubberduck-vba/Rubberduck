@@ -37,6 +37,30 @@ namespace Rubberduck.UnitTesting
             CodeIsUnderTest = true;
         }
 
+        public static void SuspendFake(Type type)
+        {
+            foreach (var fake in ActiveFakes.Values)
+            {
+                if (fake.GetType() == type)
+                {
+                    fake.DisableHook();
+                    return;
+                }
+            }
+        }
+
+        public static void ResumeFake(Type type)
+        {
+            foreach (var fake in ActiveFakes.Values)
+            {
+                if (fake.GetType() == type)
+                {
+                    fake.EnableHook();
+                    return;
+                }
+            }
+        }
+
         public void StopTest()
         {           
             foreach (var fake in ActiveFakes.Values)
