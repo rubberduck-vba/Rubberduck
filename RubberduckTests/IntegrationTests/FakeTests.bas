@@ -737,14 +737,16 @@ Public Sub TestIssue4476()
     'Arrange:
     Fakes.Now.PassThrough = True
     Fakes.Date.PassThrough = True
+    Dim retVal As Variant
     
     'Act:
-    Debug.Print Now
-    Debug.Print Date '<== KA-BOOOM
+    retVal = Now
+    retVal = Date '<== KA-BOOOM
+    retVal = Now 'ensure fake reinstated
     
     'Assert:
-    Fakes.Now.Verify.AtLeastOnce
-    Fakes.Date.Verify.AtLeastOnce
+    Fakes.Now.Verify.Exactly 2
+    Fakes.Date.Verify.Once
     
 TestExit:
     Exit Sub

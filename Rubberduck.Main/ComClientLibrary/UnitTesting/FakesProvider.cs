@@ -55,7 +55,7 @@ namespace Rubberduck.UnitTesting
             {
                 if (fake.GetType().Name == typename)
                 {
-                    fake.DisableHook();
+                    fake.EnableHook();
                     return;
                 }
             }
