@@ -116,11 +116,11 @@ $@"#If {LateBindConstName} Then
 #End If";
 
         private static string TestModuleTemplate =>
-$@"{{0}}Option Explicit
-Option Private Module
-
-'@TestModule
+$@"{{0}}'@TestModule
 '@Folder(""{DefaultTestFolder}"")
+
+Option Explicit
+Option Private Module
 
 {{1}}
 
