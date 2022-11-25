@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UnitTesting.CodeGeneration
@@ -116,11 +116,12 @@ $@"#If {LateBindConstName} Then
 #End If";
 
         private static string TestModuleTemplate =>
-$@"{{0}}Option Explicit
-Option Private Module
-
-'@TestModule
+$@"'@TestModule
 '@Folder(""{DefaultTestFolder}"")
+
+{{0}}
+Option Explicit
+Option Private Module
 
 {{1}}
 
