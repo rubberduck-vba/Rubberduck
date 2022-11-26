@@ -44,16 +44,16 @@ Private Sub {{0}}() {RenameTestTodoComment}
     On Error GoTo {TestFailLabel}
     
     {ArrangeComment}
-
+    
     {ActComment}
-
+    
     '{AssertLabel}:
     Assert.Succeed
 
 {TestExitLabel}:
 '@Ignore UnhandledOnErrorResumeNext
     On Error Resume Next
-
+    
 Exit Sub
 {TestFailLabel}:
     Assert.Fail ""{TestErrorMessage}"" & Err.Number & "" - "" & Err.Description
@@ -67,9 +67,9 @@ Private Sub {{0}}() {RenameTestTodoComment}
     On Error GoTo {TestFailLabel}
     
     {ArrangeComment}
-
+    
     {ActComment}
-
+    
 {AssertLabel}:
     Assert.Fail ""{ExpectedErrorFailMessage}""
 
