@@ -125,5 +125,7 @@ namespace Rubberduck.UnitTesting
         public IFake Dir => RetrieveOrCreateFunction<Dir>();
         public IStub FileCopy => RetrieveOrCreateFunction<FileCopy>();
         #endregion
+
+        public IParams Params { get; } = new Params();
     }
 }
