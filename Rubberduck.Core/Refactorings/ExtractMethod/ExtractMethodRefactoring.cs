@@ -1,7 +1,9 @@
 using System;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -12,60 +14,67 @@ namespace Rubberduck.Refactorings.ExtractMethod
     /// </summary>
     public class ExtractMethodRefactoring : IRefactoring
     {
+        private readonly IVBE _vbe;
         private readonly ICodeModule _codeModule;
-        private Func<QualifiedSelection?, string, IExtractMethodModel> _createMethodModel;
-        private IExtractMethodExtraction _extraction;
-        private Action<object> _onParseRequest;
-        
+        private readonly IIndenter _indenter;
+        private readonly RubberduckParserState _state;
+
+        // TODO: encapsulate the model. See the TODO in command class
+        private QualifiedSelection selection;
+        public ExtractMethodSelectionValidation Validator;
+
         public ExtractMethodRefactoring(
-            ICodeModule codeModule,
-            Action<Object> onParseRequest,
-            Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel,
-            IExtractMethodExtraction extraction)
+            IVBE vbe,
+            IIndenter indenter,
+            RubberduckParserState state
+        )
         {
-            _codeModule = codeModule;
-            _createMethodModel = createMethodModel;
-            _extraction = extraction;
-            _onParseRequest = onParseRequest;
+            _vbe = vbe;
+            _codeModule = _vbe.ActiveCodePane.CodeModule;
+            _indenter = indenter;
+            _state = state;
         }
 
         public void Refactor()
         {
-            // TODO : move all this presenter code out
-            /*
-            var presenter = _factory.Create();
-            if (presenter == null)
+            if (!_codeModule.GetQualifiedSelection().HasValue)
             {
                 OnInvalidSelection();
                 return;
             }
 
-            */
-            var qualifiedSelection = _codeModule.GetQualifiedSelection();
-            if (!qualifiedSelection.HasValue)
+            selection = _codeModule.GetQualifiedSelection().Value;
+            
+            var model = new ExtractMethodModel(_state, selection, Validator.SelectedContexts, _indenter, _codeModule);
+            var presenter = ExtractMethodPresenter.Create(model);
+
+            if (presenter == null)
             {
                 return;
             }
 
-            var selection = qualifiedSelection.Value.Selection;
-            var selectedCode = _codeModule.GetLines(selection);
-            var model = _createMethodModel(qualifiedSelection, selectedCode);
+            model = presenter.Show();
             if (model == null)
             {
                 return;
             }
 
-            /*
-            var success = presenter.Show(model,_createProc);
-            if (!success)
+            QualifiedSelection? oldSelection;
+            if (!_codeModule.IsWrappingNullReference)
+            {
+                oldSelection = _codeModule.GetQualifiedSelection();
+            }
+            else
             {
                 return;
             }
-            */
 
-            _extraction.Apply(_codeModule, model, selection);
+            if (oldSelection.HasValue)
+            {
+                _codeModule.CodePane.Selection = oldSelection.Value.Selection;
+            }
 
-            _onParseRequest(this);
+            model.State.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)
