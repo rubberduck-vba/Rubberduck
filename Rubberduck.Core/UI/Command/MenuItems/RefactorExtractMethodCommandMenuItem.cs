@@ -6,7 +6,6 @@ using Rubberduck.UI.Command.Refactorings;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-    [Disabled]
     public class RefactorExtractMethodCommandMenuItem : CommandMenuItemBase
     {
         public RefactorExtractMethodCommandMenuItem(RefactorExtractMethodCommand command) 

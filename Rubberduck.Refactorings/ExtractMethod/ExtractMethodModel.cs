@@ -85,7 +85,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             if (string.IsNullOrWhiteSpace(NewMethodName))
             {
-                NewMethodName = RubberduckUI.ExtractMethod_DefaultNewMethodName;
+                NewMethodName = "ExtractMethod_DefaultNewMethodName"; //RefactoringsUI.ExtractMethod_DefaultNewMethodName
             }
 
             SelectedCode = string.Join(Environment.NewLine, SelectedContexts.Select(c => c.GetText()));
@@ -176,7 +176,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 }
                 strings.Add(
                     $@"{Tokens.Private} {(isFunction ? Tokens.Function : Tokens.Sub)} {
-                            NewMethodName ?? RubberduckUI.ExtractMethod_DefaultNewMethodName
+                            NewMethodName ?? "ExtractMethod_DefaultNewMethodName" //RefactoringsUI.ExtractMethod_DefaultNewMethodName
                         }({string.Join(", ", _parametersToExtract)}) {returnType}");
                 strings.AddRange(_variablesToExtract);
                 if (_variablesToExtract.Any())

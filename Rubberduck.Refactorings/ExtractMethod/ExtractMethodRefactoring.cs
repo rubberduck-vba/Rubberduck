@@ -24,13 +24,14 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public ExtractMethodSelectionValidation Validator;
 
         public ExtractMethodRefactoring(
+            ICodeModule codeModule,
             IVBE vbe,
             IIndenter indenter,
             RubberduckParserState state
         )
         {
             _vbe = vbe;
-            _codeModule = _vbe.ActiveCodePane.CodeModule;
+            _codeModule = codeModule;
             _indenter = indenter;
             _state = state;
         }
@@ -46,14 +47,15 @@ namespace Rubberduck.Refactorings.ExtractMethod
             selection = _codeModule.GetQualifiedSelection().Value;
             
             var model = new ExtractMethodModel(_state, selection, Validator.SelectedContexts, _indenter, _codeModule);
-            var presenter = ExtractMethodPresenter.Create(model);
-
+            //var presenter = new ExtractMethodPresenter(view, _indenter);
+            ExtractMethodPresenter presenter = null;
             if (presenter == null)
             {
                 return;
             }
 
-            model = presenter.Show();
+            //model = presenter.Show(model, extractMethodProc); //TODO - restore user interface
+            model = null;
             if (model == null)
             {
                 return;

@@ -1,25 +1,36 @@
-﻿using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.ExtractMethod;
+﻿using Rubberduck.SmartIndenter;
+using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
-    public class ExtractMethodPresenter : RefactoringPresenter<ExtractMethodModel, ExtractMethodDialog, ExtractMethodViewModel>
+    public interface IExtractMethodPresenter
     {
-        public ExtractMethodPresenter(ExtractMethodModel model, ExtractMethodDialog view, ExtractMethodViewModel viewModel) : base(model, view, viewModel) { }
-        
-        /*
-        public ExtractMethodModel Show()
+        bool Show(IExtractMethodModel model, IExtractMethodProc createProc);
+    }
+
+    public class ExtractMethodPresenter : IExtractMethodPresenter
+    {
+        private readonly IExtractMethodDialog _view;
+        private readonly IIndenter _indenter;
+
+        public ExtractMethodPresenter(IExtractMethodDialog view, IIndenter indenter)
         {
-            PrepareView(_model);
-
-            if (_view.ShowDialog() != DialogResult.OK)
-            {
-                return null;
-            }
-
-            return _model;
+            _view = view;
+            _indenter = indenter;
         }
+        public bool Show(IExtractMethodModel methodModel, IExtractMethodProc extractMethodProc)
+        {
+            return false;
+            //PrepareView(_model);
 
+            //if (_view.ShowDialog() != DialogResult.OK)
+            //{
+            //    return null;
+            //}
+
+            //return _model;
+        }
+        /*
         private void PrepareView(ExtractMethodModel extractedMethodModel)
         {
             _view.ViewModel.OldMethodName = extractedMethodModel.SourceMember.IdentifierName;

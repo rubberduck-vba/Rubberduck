@@ -31,10 +31,18 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public IEnumerable<VBAParser.BlockStmtContext> SelectedContexts => _finalResults;
 
+        private static readonly DeclarationType[] ProcedureTypes =
+        {
+            DeclarationType.Procedure,
+            DeclarationType.Function,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
         public bool ValidateSelection(QualifiedSelection qualifiedSelection)
         {
             var selection = qualifiedSelection.Selection;
-            var procedures = _declarations.Where(d => d.ComponentName == qualifiedSelection.QualifiedName.ComponentName && d.IsUserDefined && (DeclarationExtensions.ProcedureTypes.Contains(d.DeclarationType)));
+            var procedures = _declarations.Where(d => d.ComponentName == qualifiedSelection.QualifiedName.ComponentName && d.IsUserDefined && (ProcedureTypes.Contains(d.DeclarationType)));
             var declarations = procedures as IList<Declaration> ?? procedures.ToList();
             Declaration ProcOfLine(int sl) => declarations.FirstOrDefault(d => d.Context.Start.Line < sl && d.Context.Stop.EndLine() > sl);
 

@@ -27,7 +27,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
     public class ExtractMethodParameter : INotifyPropertyChanged
     {
         private const string ArrayDim = "()";
-        public static readonly string NoneLabel = RubberduckUI.ExtractMethod_OutputNone;
+        public static readonly string NoneLabel = RefactoringsUI.ExtractMethod_OutputNone;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -107,7 +107,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public static ExtractMethodParameter None => new ExtractMethodParameter(string.Empty,
             ExtractMethodParameterType.PrivateLocalVariable,
-            RubberduckUI.ExtractMethod_NoneSelected, false);
+            "ExtractMethod_NoneSelected", false);  //RefactoringsUI.ExtractMethod_NoneSelected, false); //TODO - setup resources
 
         public static Dictionary<ExtractMethodParameterType, string> ParameterTypes
         {
@@ -117,27 +117,27 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 {
                     {
                         ExtractMethodParameterType.PrivateLocalVariable,
-                        RubberduckUI.ExtractParameterNewType_PrivateLocalVariable
+                        "Private local variable" //RefactoringsUI.ExtractParameterNewType_PrivateLocalVariable //TODO - setup resources
                     },
                     {
                         ExtractMethodParameterType.StaticLocalVariable,
-                        RubberduckUI.ExtractParameterNewType_StaticLocalVariable
+                        "Static local variable" //RefactoringsUI.ExtractParameterNewType_StaticLocalVariable
                     },
                     {
                         ExtractMethodParameterType.PrivateModuleField,
-                        RubberduckUI.ExtractParameterNewType_PrivateModuleField
+                        "Private module field" //RefactoringsUI.ExtractParameterNewType_PrivateModuleField
                     },
                     {
                         ExtractMethodParameterType.PublicModuleField,
-                        RubberduckUI.ExtractParameterNewType_PublicModuleField
+                        "Public module field" //RefactoringsUI.ExtractParameterNewType_PublicModuleField
                     },
                     {
                         ExtractMethodParameterType.ByRefParameter,
-                        RubberduckUI.ExtractParameterNewType_ByRefParameter
+                        "ByRef parameter" //RefactoringsUI.ExtractParameterNewType_ByRefParameter
                     },
                     {
                         ExtractMethodParameterType.ByValParameter,
-                        RubberduckUI.ExtractParameterNewType_ByValParameter
+                        "ByVal parameter" //RefactoringsUI.ExtractParameterNewType_ByValParameter
                     }
                 };
 

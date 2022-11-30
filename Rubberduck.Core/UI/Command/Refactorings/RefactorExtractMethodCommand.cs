@@ -5,35 +5,40 @@ using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Refactorings;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
-    [ComVisible(false)]
     public class RefactorExtractMethodCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly IRefactoringFactory<ExtractMethodRefactoring> _refactoringFactory;
+        private readonly IVBE _vbe;
 
-        public RefactorExtractMethodCommand(
-            IVBE vbe, 
-            RubberduckParserState state, 
-            IRefactoringFactory<ExtractMethodRefactoring> refactoringFactory)
-            : base (vbe)
+        //public RefactorExtractMethodCommand(
+        //    IVBE vbe,
+        //    RubberduckParserState state,
+        //    IRefactoringFactory<ExtractMethodRefactoring> refactoringFactory)
+        //    : base(vbe)
+        public RefactorExtractMethodCommand(ExtractMethodRefactoring refactoring, IRefactoringFailureNotifier failureNotifier, IParserStatusProvider parserStatusProvider, IVBE vbe, RubberduckParserState state)
+            : base(refactoring, failureNotifier, parserStatusProvider)
         {
             _state = state;
-            _refactoringFactory = refactoringFactory;
+            //_refactoringFactory = refactoringFactory;
+            _vbe = vbe;
         }
 
-        public override RubberduckHotkey Hotkey => RubberduckHotkey.RefactorExtractMethod;
+        //public override RubberduckHotkey Hotkey => RubberduckHotkey.RefactorExtractMethod;
 
-        protected override bool EvaluateCanExecute(object parameter)
+        //protected override bool EvaluateCanExecute(object parameter)
+        protected bool EvaluateCanExecute(object parameter)
         {
-            if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+            if (_vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
             {
                 return false;
             }
 
-            var pane = Vbe.ActiveCodePane;
+            var pane = _vbe.ActiveCodePane;
             var module = pane.CodeModule;
             {
                 var qualifiedSelection = pane.GetQualifiedSelection();
@@ -51,14 +56,14 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            var qualifiedSelection = Vbe.ActiveCodePane.GetQualifiedSelection();
+            var qualifiedSelection = _vbe.ActiveCodePane.GetQualifiedSelection();
 
             if (qualifiedSelection == null)
             {
                 return;
             }
 
-            var pane = Vbe.ActiveCodePane;
+            var pane = _vbe.ActiveCodePane;
             if (pane == null)
             {
                 return;
