@@ -135,5 +135,10 @@ namespace Rubberduck.UnitTesting
         [DispId(31)]
         [Description("Configures VBA.FileSystem.FileCopy calls.")]
         IStub FileCopy { get; }
+
+
+        [DispId(255)]
+        [Description("Gets an interface exposing the parameter names for all parameterized fakes.")]
+        IParams Params { get; }
     }
 }
