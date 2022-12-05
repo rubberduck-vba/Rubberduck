@@ -6,142 +6,167 @@ using Rubberduck.Refactorings;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
+using Rubberduck.VBEditor.Utility;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
-    public class RefactorExtractMethodCommand : RefactorCommandBase
+    public class RefactorExtractMethodCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly IRefactoringFactory<ExtractMethodRefactoring> _refactoringFactory;
         private readonly IVBE _vbe;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
+        private readonly ISelectionProvider _selectionProvider;
 
-        //public RefactorExtractMethodCommand(
-        //    IVBE vbe,
-        //    RubberduckParserState state,
-        //    IRefactoringFactory<ExtractMethodRefactoring> refactoringFactory)
-        //    : base(vbe)
-        public RefactorExtractMethodCommand(ExtractMethodRefactoring refactoring, IRefactoringFailureNotifier failureNotifier, IParserStatusProvider parserStatusProvider, IVBE vbe, RubberduckParserState state)
-            : base(refactoring, failureNotifier, parserStatusProvider)
+        public RefactorExtractMethodCommand(
+            ExtractMethodRefactoring refactoring, 
+            ExtractMethodFailedNotifier failureNotifier, 
+            RubberduckParserState state, 
+            ISelectionProvider selectionProvider, 
+            ISelectedDeclarationProvider selectedDeclarationProvider)
+            : base(refactoring, failureNotifier, selectionProvider, state)
         {
             _state = state;
-            //_refactoringFactory = refactoringFactory;
-            _vbe = vbe;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
+            _selectionProvider = selectionProvider;
+
+            AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
-
-        //public override RubberduckHotkey Hotkey => RubberduckHotkey.RefactorExtractMethod;
-
-        //protected override bool EvaluateCanExecute(object parameter)
-        protected bool EvaluateCanExecute(object parameter)
+        private bool SpecializedEvaluateCanExecute(object parameter)
         {
-            if (_vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+            var member = _selectedDeclarationProvider.SelectedDeclaration();
+            var moduleContext = _selectedDeclarationProvider.SelectedModule().Context;
+            var moduleName = _selectedDeclarationProvider.SelectedModule().QualifiedModuleName;
+
+            if (member == null || _state.IsNewOrModified(member.QualifiedModuleName) || !_selectionProvider.Selection(moduleName).HasValue)
             {
                 return false;
             }
 
-            var pane = _vbe.ActiveCodePane;
-            var module = pane.CodeModule;
-            {
-                var qualifiedSelection = pane.GetQualifiedSelection();
-                if (!qualifiedSelection.HasValue || module.IsWrappingNullReference)
-                {
-                    return false;
-                }
+            return true;
+            //var parameters = _state.DeclarationFinder
+            //    .UserDeclarations(DeclarationType.Parameter)
+            //    .Where(item => member.Equals(item.ParentScopeDeclaration))
+            //    .ToList();
+
+            //return member.DeclarationType == DeclarationType.PropertyLet
+            //        || member.DeclarationType == DeclarationType.PropertySet
+            //    ? parameters.Count > 2
+            //    : parameters.Count > 1;
+        }
+
+        //protected bool EvaluateCanExecute(object parameter)
+        //{
+        //    if (_vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+        //    {
+        //        return false;
+        //    }
+
+        //    var pane = _vbe.ActiveCodePane;
+        //    var module = pane.CodeModule;
+        //    {
+        //        var qualifiedSelection = pane.GetQualifiedSelection();
+        //        if (!qualifiedSelection.HasValue || module.IsWrappingNullReference)
+        //        {
+        //            return false;
+        //        }
                 
-                var validator = new ExtractMethodSelectionValidation(_state.AllDeclarations, module);
-                var canExecute = validator.ValidateSelection(qualifiedSelection.Value);
+        //        var validator = new ExtractMethodSelectionValidation(_state.AllDeclarations, module);
+        //        var canExecute = validator.ValidateSelection(qualifiedSelection.Value);
 
-                return canExecute;
-            }
-        }
+        //        return canExecute;
+        //    }
+        //}
 
-        protected override void OnExecute(object parameter)
-        {
-            var qualifiedSelection = _vbe.ActiveCodePane.GetQualifiedSelection();
+        //protected override void OnExecute(object parameter)
+        //{
+        //    var qualifiedSelection = _vbe.ActiveCodePane.GetQualifiedSelection();
 
-            if (qualifiedSelection == null)
-            {
-                return;
-            }
+        //    if (qualifiedSelection == null)
+        //    {
+        //        return;
+        //    }
 
-            var pane = _vbe.ActiveCodePane;
-            if (pane == null)
-            {
-                return;
-            }
+        //    var pane = _vbe.ActiveCodePane;
+        //    if (pane == null)
+        //    {
+        //        return;
+        //    }
             
-            var module = pane.CodeModule;
-            var selection = module.GetQualifiedSelection();
+        //    var module = pane.CodeModule;
+        //    var selection = module.GetQualifiedSelection();
 
-            if (selection == null)
-            {
-                return;
-            }
+        //    if (selection == null)
+        //    {
+        //        return;
+        //    }
 
-            var validator = new ExtractMethodSelectionValidation(_state.AllDeclarations, module);
-            var canExecute = validator.ValidateSelection(qualifiedSelection.Value);
+        //    var validator = new ExtractMethodSelectionValidation(_state.AllDeclarations, module);
+        //    var canExecute = validator.ValidateSelection(qualifiedSelection.Value);
 
-            if (!canExecute)
-            {
-                return;
-            }
+        //    if (!canExecute)
+        //    {
+        //        return;
+        //    }
 
-            /* TODO: Refactor the section to make command ignorant of data
-             * This section needs to be refactored. The way it is, the command knows too much
-             * about the validator and the refactoring. Getting data from validator should
-             * be refactoring's responsibility, which implies the validation is refactoring's
-             * responsiblity. Note where indicated.
-             */
+        //    /* TODO: Refactor the section to make command ignorant of data
+        //     * This section needs to be refactored. The way it is, the command knows too much
+        //     * about the validator and the refactoring. Getting data from validator should
+        //     * be refactoring's responsibility, which implies the validation is refactoring's
+        //     * responsiblity. Note where indicated.
+        //     */
 
 
-            var refactoring = _refactoringFactory.Create();
-            refactoring.Validator = validator; //TODO: Refactor
-            refactoring.Refactor(selection.Value);
-            _refactoringFactory.Release(refactoring);
+        //    var refactoring = _refactoringFactory.Create();
+        //    refactoring.Validator = validator; //TODO: Refactor
+        //    refactoring.Refactor(selection.Value);
+        //    _refactoringFactory.Release(refactoring);
 
-            /*
-            using (var view = new ExtractMethodDialog(new ExtractMethodViewModel()))
-            {
-                var factory = new ExtractMethodPresenterFactory(Vbe, view, _indenter, _state, qualifiedSelection.Value);
-                var refactoring = new ExtractMethodRefactoring(Vbe, module, factory);
-                refactoring.Refactor(qualifiedSelection.Value);
-            }
-            */
+        //    /*
+        //    using (var view = new ExtractMethodDialog(new ExtractMethodViewModel()))
+        //    {
+        //        var factory = new ExtractMethodPresenterFactory(Vbe, view, _indenter, _state, qualifiedSelection.Value);
+        //        var refactoring = new ExtractMethodRefactoring(Vbe, module, factory);
+        //        refactoring.Refactor(qualifiedSelection.Value);
+        //    }
+        //    */
 
-            /*
-            {
-                Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel = (qs, code) =>
-                {
-                    if (qs == null)
-                    {
-                        return null;
-                    }
-                    //TODO: Pull these even further back;
-                    //      and implement with IProvider<IExtractMethodRule>
-                    var rules = new List<IExtractMethodRule>
-                    {
-                        new ExtractMethodRuleInSelection(),
-                        new ExtractMethodRuleIsAssignedInSelection(),
-                        new ExtractMethodRuleUsedAfter(),
-                        new ExtractMethodRuleUsedBefore()
-                    };
+        //    /*
+        //    {
+        //        Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel = (qs, code) =>
+        //        {
+        //            if (qs == null)
+        //            {
+        //                return null;
+        //            }
+        //            //TODO: Pull these even further back;
+        //            //      and implement with IProvider<IExtractMethodRule>
+        //            var rules = new List<IExtractMethodRule>
+        //            {
+        //                new ExtractMethodRuleInSelection(),
+        //                new ExtractMethodRuleIsAssignedInSelection(),
+        //                new ExtractMethodRuleUsedAfter(),
+        //                new ExtractMethodRuleUsedBefore()
+        //            };
 
-                    var paramClassify = new ExtractMethodParameterClassification(rules);
+        //            var paramClassify = new ExtractMethodParameterClassification(rules);
 
-                    var extractedMethod = new ExtractedMethod();
-                    var extractedMethodModel = new ExtractMethodModel(extractedMethod, paramClassify);
-                    extractedMethodModel.extract(declarations, qs.Value, code);
-                    return extractedMethodModel;
-                };
+        //            var extractedMethod = new ExtractedMethod();
+        //            var extractedMethodModel = new ExtractMethodModel(extractedMethod, paramClassify);
+        //            extractedMethodModel.extract(declarations, qs.Value, code);
+        //            return extractedMethodModel;
+        //        };
 
-                var extraction = new ExtractMethodExtraction();
-                // bug: access to disposed closure - todo: make ExtractMethodRefactoring request reparse like everyone else.
-                Action<object> parseRequest = obj => _state.OnParseRequested(obj); 
+        //        var extraction = new ExtractMethodExtraction();
+        //        // bug: access to disposed closure - todo: make ExtractMethodRefactoring request reparse like everyone else.
+        //        Action<object> parseRequest = obj => _state.OnParseRequested(obj); 
 
-                var refactoring = new ExtractMethodRefactoring(module, parseRequest, createMethodModel, extraction);
-                refactoring.InvalidSelection += HandleInvalidSelection;
-                refactoring.Refactor();
-            }
-            */
-        }
+        //        var refactoring = new ExtractMethodRefactoring(module, parseRequest, createMethodModel, extraction);
+        //        refactoring.InvalidSelection += HandleInvalidSelection;
+        //        refactoring.Refactor();
+        //    }
+        //    */
+        //}
     }
 }

@@ -9,6 +9,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -16,15 +17,17 @@ namespace Rubberduck.Refactorings.ExtractMethod
 {
     public class ExtractMethodSelectionValidation : IExtractMethodSelectionValidation
     {
-        private readonly ICodeModule _codeModule;
+//        private readonly ICodeModule _codeModule;
+        private readonly IProjectsProvider _projectsProvider;
         private readonly IEnumerable<Declaration> _declarations;
         private List<Tuple<ParserRuleContext, string>> _invalidContexts = new List<Tuple<ParserRuleContext, string>>();
         private List<VBAParser.BlockStmtContext> _finalResults = new List<VBAParser.BlockStmtContext>();
 
-        public ExtractMethodSelectionValidation(IEnumerable<Declaration> declarations, ICodeModule codeModule)
+        public ExtractMethodSelectionValidation(IEnumerable<Declaration> declarations, IProjectsProvider projectsProvider)
         {
             _declarations = declarations;
-            _codeModule = codeModule;
+            _projectsProvider = projectsProvider;
+//            _codeModule = codeModule;
         }
 
         public IEnumerable<Tuple<ParserRuleContext, string>> InvalidContexts => _invalidContexts;
@@ -102,9 +105,12 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             if (!_invalidContexts.Any())
             {
-                if (_codeModule.ContainsCompilationDirectives(selection))
+                using (var component = _projectsProvider.Component(qualifiedSelection.QualifiedName))
                 {
-                    return false;
+                    if (component.CodeModule.ContainsCompilationDirectives(selection))
+                    {
+                        return false;
+                    }
                 }
                 // We've proved that there are no invalid statements contained in the selection. However, we need to analyze
                 // the statements to ensure they are not partial selections.
