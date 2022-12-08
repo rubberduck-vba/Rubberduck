@@ -105,57 +105,74 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 .OrderBy(d => d.Selection.StartLine)
                 .ThenBy(d => d.Selection.StartColumn);
             var referencesOfDeclarationsInSelection = (from dec in declarationsInSelection select dec.References).ToArray(); //debug purposes
-            //var declarationsInEnclosingProcedure = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-            //    .Where(d => (d.));
+
             var sourceMethodParameters = ((IParameterizedDeclaration)TargetMethod).Parameters;
             var sourceMethodSelection = new QualifiedSelection(Selection.QualifiedName, 
                 new Selection(TargetMethod.Context.Start.Line, TargetMethod.Context.Start.Column, TargetMethod.Context.Stop.Line, TargetMethod.Context.Stop.Column));
+
+            //TODO - refactor below and declarationsInSelection to generic declarations in selection method if stay consistent
             var declarationsInParentMethod = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(d => (sourceMethodSelection.Selection.Contains(d.Selection) &&
                              d.QualifiedName.QualifiedModuleName == sourceMethodSelection.QualifiedName))
                 .OrderBy(d => d.Selection.StartLine)
                 .ThenBy(d => d.Selection.StartColumn);
 
-            var stopper = 10;
-            //List of all variables accessed/referenced in the selection (don't need but part of finding ones we are interested in)
-
             //List of "inbound" variables. Parent procedure parameters + explicit dims which get referenced inside the selection.
-            //Ideally excluding those declared
+            //Ideally excluding those declared but not assigned before the selection. Refinement to change this later
+            //No need to check if reference is outside of method because just dealing with local parameters and declarations
+            //Add function reference if it is a function?
+            //Would ideally identify variables assigned before the selection, not just declared. Could assume any reference before the selection is an assignment?
+            //TODO - add case where reference earlier in the same line as where the selection starts (unusual but could exist if using colons to separate multiple statements)
+            var inboundParameters = sourceMethodParameters.Where(d => (d.References.Any(r => Selection.Selection.Contains(r.Selection))));
+            var inboundLocalVariables = declarationsInParentMethod.Where(d => (d.References.Any(r => Selection.Selection.Contains(r.Selection))) &&
+                                                                              (d.References.Any(r => r.Selection.EndLine < Selection.Selection.StartLine)));
+            var inboundVariables = inboundParameters.Concat(inboundLocalVariables);
 
             //List of "outbound" variables. Any variables assigned a value in the selection which are then referenced after the selection
+            var outboundVariables = sourceMethodParameters.Concat(declarationsInParentMethod)
+                .Where(d => (d.References.Any(r => Selection.Selection.Contains(r.Selection))) && (d.References.Any(r => r.Selection.StartLine > Selection.Selection.EndLine)));
 
-            //List of "inbound" only variables (to be passed ByVal)
+            //Set up parameters
+            Parameters = new ObservableCollection<ExtractMethodParameter>();
 
-            //List of "outbound" only variables (to be passed ByRef OR set as a return value)
+            foreach (var declaration in inboundVariables.Union(outboundVariables))
+            {
+                if (inboundVariables.Contains(declaration) && !outboundVariables.Contains(declaration))
+                {
+                    //List of "inbound" only variables (to be passed ByVal)
+                    Parameters.Add(new ExtractMethodParameter(declaration.AsTypeNameWithoutArrayDesignator,
+                                                              ExtractMethodParameterType.ByValParameter,
+                                                              declaration.IdentifierName, declaration.IsArray, false));
+                }
+                else if (inboundVariables.Contains(declaration))
+                {
+                    //List of "inbound" and "outbound" variables (to be passed ByRef)
+                    Parameters.Add(new ExtractMethodParameter(declaration.AsTypeNameWithoutArrayDesignator,
+                                                              ExtractMethodParameterType.ByRefParameter,
+                                                              declaration.IdentifierName, declaration.IsArray, false));
+                }
+                else
+                {
+                    //List of "outbound" only variables (to be passed ByRef OR set as a return value)
+                    Parameters.Add(new ExtractMethodParameter(declaration.AsTypeNameWithoutArrayDesignator,
+                                                              ExtractMethodParameterType.ByRefParameter,
+                                                              declaration.IdentifierName, declaration.IsArray, true));
+                }
+            }
+            var stopper = 10;
 
-            //List of "inbound" and "outbound" variables (to be passed ByRef)
+
+
+
 
             //List of neither "inbound" or "outbound" (need the declaration copied inside the selection OR moved if careful but can leave inspections to pick up unnecessary declarations)
             //Only applies if the list of inbound variables excludes those declared but not assigned before the selection
 
         }
-        
+
         public string SelectedCode { get; private set; }
 
-        private ObservableCollection<ExtractMethodParameter> _parameters;
-        public ObservableCollection<ExtractMethodParameter> Parameters
-        {
-            get
-            {
-                if (_parameters == null || !_parameters.Any())
-                {
-                    _parameters = new ObservableCollection<ExtractMethodParameter>();
-                    foreach (var declaration in SourceVariables)
-                    {
-                        _parameters.Add(new ExtractMethodParameter(declaration.AsTypeNameWithoutArrayDesignator,
-                            ExtractMethodParameterType.ByRefParameter,
-                            declaration.IdentifierName, declaration.IsArray));
-                    }
-                }
-                return _parameters;
-            }
-            set => _parameters = value;
-        }
+        public ObservableCollection<ExtractMethodParameter> Parameters { get; private set; }
 
         public string PreviewCode
         {

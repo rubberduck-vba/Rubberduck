@@ -31,17 +31,19 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ExtractMethodParameter(string typeName, ExtractMethodParameterType parameterType, string name, bool isArray)
+        public ExtractMethodParameter(string typeName, ExtractMethodParameterType parameterType, string name, bool isArray, bool canReturn)
         {
             Name = name ?? NoneLabel;
             TypeName = typeName;
             ParameterType = parameterType;
             IsArray = isArray;
+            CanReturn = canReturn;
         }
 
         public string Name { get; set; }
 
         public string TypeName { get; set; }
+        public bool CanReturn { get; set; }
         
         private ExtractMethodParameterType _parameterType;
         public ExtractMethodParameterType ParameterType
@@ -89,7 +91,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     accessibility = Tokens.Public;
                     break;
                 case ExtractMethodParameterType.ByRefParameter:
-                    accessibility = string.Empty;
+                    accessibility = Tokens.ByRef;
                     break;
                 case ExtractMethodParameterType.ByValParameter:
                     accessibility = Tokens.ByVal;
@@ -107,7 +109,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public static ExtractMethodParameter None => new ExtractMethodParameter(string.Empty,
             ExtractMethodParameterType.PrivateLocalVariable,
-            "ExtractMethod_NoneSelected", false);  //RefactoringsUI.ExtractMethod_NoneSelected, false); //TODO - setup resources
+            "ExtractMethod_NoneSelected", false, false);  //RefactoringsUI.ExtractMethod_NoneSelected, false); //TODO - setup resources
 
         public static Dictionary<ExtractMethodParameterType, string> ParameterTypes
         {
@@ -147,12 +149,12 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public static bool operator ==(ExtractMethodParameter left, ExtractMethodParameter right)
         {
-            return left?.TypeName == right?.TypeName && left?.Name == right?.Name;
+            return left?.TypeName == right?.TypeName && left?.Name == right?.Name && left?.IsArray == right?.IsArray && left?.CanReturn == right?.CanReturn;
         }
 
         public static bool operator !=(ExtractMethodParameter left, ExtractMethodParameter right)
         {
-            return !(left?.TypeName == right?.TypeName && left?.Name == right?.Name);
+            return !(left?.TypeName == right?.TypeName && left?.Name == right?.Name && left?.IsArray == right?.IsArray && left?.CanReturn == right?.CanReturn);
         }
     }
 }

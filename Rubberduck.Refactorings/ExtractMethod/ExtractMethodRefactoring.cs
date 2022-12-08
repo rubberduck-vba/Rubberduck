@@ -68,7 +68,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             return _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
         }
 
-        public void Refactor()
+        override public void Refactor()
         {
             //if (!_codeModule.GetQualifiedSelection().HasValue)
             //{
@@ -111,7 +111,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             //model.State.OnParseRequested(this);
         }
 
-        public void Refactor(QualifiedSelection target)
+        public override void Refactor(QualifiedSelection target)
         {
             //var pane = _codeModule.CodePane;
             //{
@@ -120,7 +120,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             //}
         }
 
-        public void Refactor(Declaration target)
+        public override void Refactor(Declaration target)
         {
             OnInvalidSelection();
         }
