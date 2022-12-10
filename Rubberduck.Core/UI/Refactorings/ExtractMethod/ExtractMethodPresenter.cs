@@ -1,43 +1,35 @@
-﻿using Rubberduck.SmartIndenter;
+﻿using NLog;
+using Rubberduck.Interaction;
+using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
-    public class ExtractMethodPresenter : IExtractMethodPresenter
+    internal class ExtractMethodPresenter : RefactoringPresenterBase<ExtractMethodModel>, IExtractMethodPresenter
     {
-        private readonly IExtractMethodDialog _view;
-        private readonly IIndenter _indenter;
+        private static readonly DialogData DialogData = DialogData.Create(RefactoringsUI.ExtractMethod_Caption, 200, 500); //TODO - get appropriate size
 
-        public ExtractMethodPresenter(IExtractMethodDialog view, IIndenter indenter)
+        private readonly IMessageBox _messageBox;
+
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+        public ExtractMethodPresenter(ExtractMethodModel model,
+            IRefactoringDialogFactory dialogFactory, IMessageBox messageBox) : 
+            base(DialogData, model, dialogFactory)
         {
-            _view = view;
-            _indenter = indenter;
+            _messageBox = messageBox;
         }
 
-        public ExtractMethodModel Model => throw new System.NotImplementedException();
-
-        public bool Show(IExtractMethodModel methodModel, IExtractMethodProc extractMethodProc)
+        override public ExtractMethodModel Show()
         {
-            return false;
-            //PrepareView(_model);
-
-            //if (_view.ShowDialog() != DialogResult.OK)
-            //{
-            //    return null;
-            //}
-
-            //return _model;
+            //TODO - test not cancelled or other invalid output?
+            return base.Show();
         }
 
-        public ExtractMethodModel Show()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        ExtractMethodModel IExtractMethodPresenter.Show(IExtractMethodModel methodModel, IExtractMethodProc extractMethodProc)
-        {
-            throw new System.NotImplementedException();
-        }
+        //ExtractMethodModel IExtractMethodPresenter.Show(IExtractMethodModel methodModel, IExtractMethodProc extractMethodProc)
+        //{
+        //    throw new System.NotImplementedException();
+        //}
         /*
 private void PrepareView(ExtractMethodModel extractedMethodModel)
 {

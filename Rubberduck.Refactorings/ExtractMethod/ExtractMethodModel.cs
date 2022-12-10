@@ -8,9 +8,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
-using Rubberduck.UI;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -19,10 +17,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
         private List<string> _fieldsToExtract;
         private List<string> _parametersToExtract;
         private List<string> _variablesToExtract;
+        private IIndenter _indenter;
 
         public IEnumerable<ParserRuleContext> SelectedContexts { get; }
         public QualifiedSelection Selection { get; }
-
+        public IEnumerable<string> ComponentNames =>
+            _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Member).Where(d => d.ComponentName == Selection.QualifiedName.ComponentName)
+                .Select(d => d.IdentifierName);
         public string SourceMethodName { get; private set; }
         public Declaration TargetMethod { get; set; }
         public IEnumerable<Declaration> SourceVariables { get; private set; }
@@ -35,11 +36,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
             set => _returnParameter = value ?? ExtractMethodParameter.None;
         }
 
-        //public bool ModuleContainsCompilationDirectives { get; private set; }
+        public bool ModuleContainsCompilationDirectives { get; set; }
+        
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        public ExtractMethodModel(IDeclarationFinderProvider declarationFinderProvider, IEnumerable<ParserRuleContext> selectedContexts, QualifiedSelection selection, Declaration target)
+        public ExtractMethodModel(IDeclarationFinderProvider declarationFinderProvider, IEnumerable<ParserRuleContext> selectedContexts, QualifiedSelection selection, Declaration target, IIndenter indenter)
         {
             _declarationFinderProvider = declarationFinderProvider;
+            _indenter = indenter;
             SelectedContexts = selectedContexts;
             Selection = selection;
             TargetMethod = target;
@@ -85,8 +88,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
 
             SelectedCode = string.Join(Environment.NewLine, SelectedContexts.Select(c => c.GetText()));
-
-            //ModuleContainsCompilationDirectives = CodeModule.ContainsCompilationDirectives();
 
             SourceVariables = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(d => ((Selection.Selection.Contains(d.Selection) &&
@@ -172,7 +173,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public string SelectedCode { get; private set; }
 
-        public ObservableCollection<ExtractMethodParameter> Parameters { get; private set; }
+        public ObservableCollection<ExtractMethodParameter> Parameters { get; set; }
 
         public string PreviewCode
         {
@@ -182,7 +183,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 _parametersToExtract = new List<string>();
                 _variablesToExtract = new List<string>();
 
-                foreach (var parameter in Parameters)
+                foreach (var parameter in Parameters.Where(p => p != ReturnParameter))
                 {
                     switch (parameter.ParameterType)
                     {
@@ -192,7 +193,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                             break;
                         case ExtractMethodParameterType.ByRefParameter:
                         case ExtractMethodParameterType.ByValParameter:
-                            _parametersToExtract.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclaration));
+                            _parametersToExtract.Add(parameter.ToString()); // ExtractMethodParameterFormat.DimOrParameterDeclaration));
                             break;
                         case ExtractMethodParameterType.PrivateLocalVariable:
                         case ExtractMethodParameterType.StaticLocalVariable:
@@ -238,7 +239,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     strings.Add($"{NewMethodName} = {ReturnParameter.Name}");
                 }
                 strings.Add($"{Tokens.End} {(isFunction ? Tokens.Function : Tokens.Sub)}");
-                return string.Join(Environment.NewLine, strings); //Indenter.Indent(strings)); //Pass to indenter
+                _indenter.Indent(strings);
+                return string.Join(Environment.NewLine, strings); 
             }
         }
     }

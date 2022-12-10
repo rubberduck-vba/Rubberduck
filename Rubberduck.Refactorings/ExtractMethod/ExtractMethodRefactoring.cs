@@ -2,11 +2,14 @@ using System;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.ComManagement;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -22,6 +25,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         private readonly IRefactoringAction<ExtractMethodModel> _refactoringAction;
         private readonly ISelectionProvider _selectionProvider;
         private readonly IProjectsProvider _projectsProvider;
+        private readonly IIndenter _indenter;
         public ExtractMethodSelectionValidation Validator { get; set; }
 
         public ExtractMethodRefactoring(
@@ -30,7 +34,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
             RefactoringUserInteraction<IExtractMethodPresenter, ExtractMethodModel> userInteraction,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider,
-            IProjectsProvider projectsProvider)
+            IProjectsProvider projectsProvider,
+            IIndenter indenter)
         : base(selectionProvider, userInteraction)
         {
             _refactoringAction = refactoringAction;
@@ -38,6 +43,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _selectionProvider = selectionProvider;
             _projectsProvider = projectsProvider;
+            _indenter = indenter;
         }
         protected override ExtractMethodModel InitializeModel(Declaration target)
         {
@@ -49,7 +55,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
             if (Validator.ValidateSelection(_selectionProvider.ActiveSelection().GetValueOrDefault()))
             {
-                var model = new ExtractMethodModel(_declarationFinderProvider, Validator.SelectedContexts, _selectionProvider.ActiveSelection().GetValueOrDefault(), target);
+                var model = new ExtractMethodModel(_declarationFinderProvider, Validator.SelectedContexts, _selectionProvider.ActiveSelection().GetValueOrDefault(), target, _indenter);
+                model.ModuleContainsCompilationDirectives = Validator.ContainsCompilerDirectives;
                 return model;
             }
             else
@@ -113,11 +120,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public override void Refactor(QualifiedSelection target)
         {
-            //var pane = _codeModule.CodePane;
-            //{
-            //    pane.Selection = target.Selection;
-            //    Refactor();
-            //}
+            var _declarations = _declarationFinderProvider.DeclarationFinder.AllUserDeclarations;
+            var selection = target.Selection;
+            var procedures = _declarations.Where(d => d.ComponentName == target.QualifiedName.ComponentName && d.IsUserDefined && (ExtractMethodSelectionValidation.ProcedureTypes.Contains(d.DeclarationType)));
+            var declarations = procedures as IList<Declaration> ?? procedures.ToList();
+            Declaration ProcOfLine(int sl) => declarations.FirstOrDefault(d => d.Context.Start.Line < sl && d.Context.Stop.EndLine() > sl);
+            var targetProc = ProcOfLine(selection.StartLine);
+            Refactor(InitializeModel(targetProc));
         }
 
         public override void Refactor(Declaration target)

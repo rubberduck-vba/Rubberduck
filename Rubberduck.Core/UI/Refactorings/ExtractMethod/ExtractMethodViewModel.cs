@@ -4,20 +4,30 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Forms;
 using NLog;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
 {
-    public class ExtractMethodViewModel : ViewModelBase, IRefactoringViewModel<ExtractMethodModel>
+    public class ExtractMethodViewModel : RefactoringViewModelBase<ExtractMethodModel>
     {
-        public ExtractMethodViewModel()
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly IMessageBox _messageBox;
+
+        public RubberduckParserState State { get; }
+
+        public ExtractMethodViewModel(RubberduckParserState state, ExtractMethodModel model, IMessageBox messageBox)
+            : base(model)
         {
-            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
-            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
+            State = state;
+            _declarationFinderProvider = state;
+            _messageBox = messageBox;
+            _model = model;
         }
 
         private bool _wired;
@@ -55,9 +65,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             OnPropertyChanged(nameof(PreviewCode));
         }
 
-        public IEnumerable<string> ComponentNames =>
-            Model.State.DeclarationFinder.UserDeclarations(DeclarationType.Member).Where(d => d.ComponentName == Model.CodeModule.Name)
-                .Select(d => d.IdentifierName);
+        public IEnumerable<string> ComponentNames => Model.ComponentNames;
 
         public string NewMethodName
         {
@@ -88,7 +96,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         }
 
         public string SourceMethodName => Model.SourceMethodName;
-        public string PreviewCaption => string.Format(RubberduckUI.ExtractMethod_CodePreviewCaption, SourceMethodName);
+        public string PreviewCaption => string.Format("ExtractMethod_CodePreviewCaption", SourceMethodName); //RefactoringsUI.ExtractMethod_CodePreviewCaption
         public string PreviewCode => Model.PreviewCode;
         public IEnumerable<ExtractMethodParameter> Inputs;
         public IEnumerable<ExtractMethodParameter> Outputs;
@@ -111,31 +119,29 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
         public bool DisplayCompilationConstantWarning => !Model.ModuleContainsCompilationDirectives;
 
-        public event EventHandler<DialogResult> OnWindowClosed;
-        private void DialogCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
-        private void DialogOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
-        
-        public CommandBase OkButtonCommand { get; }
-        public CommandBase CancelButtonCommand { get; }
+        protected override void DialogOk()
+        {
+            base.DialogOk();
+        }
 
         private ExtractMethodModel _model;
-        public ExtractMethodModel Model
-        {
-            get => _model;
-            set
-            {
-                _model = value;
-                // Note: some of the property change will cascade
-                // so we do not need to call all possible properties
-                // depending on the Model.
-                OnPropertyChanged(nameof(NewMethodName));
-                OnPropertyChanged(nameof(ReturnParameter));
-                OnPropertyChanged(nameof(Parameters));
-                if (!_wired)
-                {
-                    WireParameterEvents();
-                }
-            }
-        }
+        //public ExtractMethodModel Model
+        //{
+        //    get => _model;
+        //    set
+        //    {
+        //        _model = value;
+        //        // Note: some of the property change will cascade
+        //        // so we do not need to call all possible properties
+        //        // depending on the Model.
+        //        OnPropertyChanged(nameof(NewMethodName));
+        //        OnPropertyChanged(nameof(ReturnParameter));
+        //        OnPropertyChanged(nameof(Parameters));
+        //        if (!_wired)
+        //        {
+        //            WireParameterEvents();
+        //        }
+        //    }
+        //}
     }
 }

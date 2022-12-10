@@ -34,7 +34,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public IEnumerable<VBAParser.BlockStmtContext> SelectedContexts => _finalResults;
 
-        private static readonly DeclarationType[] ProcedureTypes =
+        public static readonly DeclarationType[] ProcedureTypes =
         {
             DeclarationType.Procedure,
             DeclarationType.Function,
@@ -42,24 +42,30 @@ namespace Rubberduck.Refactorings.ExtractMethod
             DeclarationType.PropertyLet,
             DeclarationType.PropertySet
         };
-        public bool ValidateSelection(QualifiedSelection qualifiedSelection)
+        private Declaration ProcDeclaration(QualifiedSelection qualifiedSelection, int lineOfInterest)
         {
             var selection = qualifiedSelection.Selection;
             var procedures = _declarations.Where(d => d.ComponentName == qualifiedSelection.QualifiedName.ComponentName && d.IsUserDefined && (ProcedureTypes.Contains(d.DeclarationType)));
             var declarations = procedures as IList<Declaration> ?? procedures.ToList();
             Declaration ProcOfLine(int sl) => declarations.FirstOrDefault(d => d.Context.Start.Line < sl && d.Context.Stop.EndLine() > sl);
+            return ProcOfLine(lineOfInterest);
+        }
+            
+        public bool ValidateSelection(QualifiedSelection qualifiedSelection)
+        {
+            var selection = qualifiedSelection.Selection;
 
             var startLine = selection.StartLine;
             var endLine = selection.EndLine;
 
             // End of line is easy
-            var procEnd = ProcOfLine(endLine);
+            var procEnd = ProcDeclaration(qualifiedSelection, endLine);
             if (procEnd == null)
             {
                 return false;
             }
 
-            var procStart = ProcOfLine(startLine);
+            var procStart = ProcDeclaration(qualifiedSelection, startLine);
             if (procStart == null)
             {
                 return false;
@@ -109,7 +115,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 {
                     if (component.CodeModule.ContainsCompilationDirectives(selection))
                     {
-                        return false;
+                        ContainsCompilerDirectives = true;
+                        //return false;
                     }
                 }
                 // We've proved that there are no invalid statements contained in the selection. However, we need to analyze
@@ -123,6 +130,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
             return false;
         }
+
+        public bool ContainsCompilerDirectives { get; set; }
 
         /// <summary>
         /// The function ensure that we return only top-level BlockStmtContexts that
