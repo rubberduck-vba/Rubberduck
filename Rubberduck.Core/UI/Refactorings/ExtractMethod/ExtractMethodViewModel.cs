@@ -96,7 +96,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         }
 
         public string SourceMethodName => Model.SourceMethodName;
-        public string PreviewCaption => string.Format("ExtractMethod_CodePreviewCaption", SourceMethodName); //RefactoringsUI.ExtractMethod_CodePreviewCaption
+        public string PreviewCaption => string.Format(RefactoringsUI.ExtractMethod_CodePreviewCaption, SourceMethodName);
         public string PreviewCode => Model.PreviewCode;
         public IEnumerable<ExtractMethodParameter> Inputs;
         public IEnumerable<ExtractMethodParameter> Outputs;

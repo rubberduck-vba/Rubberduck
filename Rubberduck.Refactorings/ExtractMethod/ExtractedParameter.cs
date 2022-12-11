@@ -12,7 +12,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             ByVal
         }
 
-        public static readonly string None = RefactoringsUI.ExtractMethod_OutputNone;
+        public static readonly string None = RefactoringsUI.ExtractMethod_NoneSelected;
 
         public ExtractedParameter(string typeName, PassedBy passedBy, string name = null)
         {

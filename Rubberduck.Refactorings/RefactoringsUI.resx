@@ -291,7 +291,7 @@ A private class can still implement a public interface.</value>
   <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
     <value>The current selection is not valid.</value>
   </data>
-  <data name="ExtractMethod_OutputNone" xml:space="preserve">
+  <data name="ExtractMethod_NoneSelected" xml:space="preserve">
     <value>(none)</value>
   </data>
   <data name="ExtractMethod_PreviewLabel" xml:space="preserve">
@@ -618,5 +618,24 @@ Do you want to proceed?</value>
   <data name="MoveCloserToUsageDialog_InstructionsLabelText" xml:space="preserve">
     <value>Select the new Type of Declaration Statement for '{0}'.</value>
     <comment>0: Selected target</comment>
+  </data>
+  <data name="ExtractMethod_CompilationDirectivesWarning" xml:space="preserve">
+    <value>Selected code contains compiler directives. Extracting this code may cause breaking changes.</value>
+  </data>
+  <data name="ExtractMethod_ReturnTypeSelection" xml:space="preserve">
+    <value>Select variable to use as return value of new function. Select None to make a sub.</value>
+  </data>
+  <data name="ExtractMethod_CodePreviewCaption" xml:space="preserve">
+    <value>Preview of method extracted from '{0}'</value>
+    <comment>0: Source method</comment>
+  </data>
+  <data name="ExtractMethod_DefaultNewMethodName" xml:space="preserve">
+    <value>NewMethod</value>
+  </data>
+  <data name="ExtractParameterNewType_ByRefParameter" xml:space="preserve">
+    <value>Parameter passed by reference</value>
+  </data>
+  <data name="ExtractParameterNewType_ByValParameter" xml:space="preserve">
+    <value>Parameter passed by value</value>
   </data>
 </root>

@@ -7,7 +7,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 {
     internal class ExtractMethodPresenter : RefactoringPresenterBase<ExtractMethodModel>, IExtractMethodPresenter
     {
-        private static readonly DialogData DialogData = DialogData.Create(RefactoringsUI.ExtractMethod_Caption, 200, 500); //TODO - get appropriate size
+        private static readonly DialogData DialogData = DialogData.Create(RefactoringsUI.ExtractMethod_Caption, 600, 600); //TODO - get appropriate size
 
         private readonly IMessageBox _messageBox;
 

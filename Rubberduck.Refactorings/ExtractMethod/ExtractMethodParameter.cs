@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
 using System.ComponentModel;
 
 namespace Rubberduck.Refactorings.ExtractMethod
@@ -27,7 +26,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
     public class ExtractMethodParameter : INotifyPropertyChanged
     {
         private const string ArrayDim = "()";
-        public static readonly string NoneLabel = RefactoringsUI.ExtractMethod_OutputNone;
+        public static readonly string NoneLabel = RefactoringsUI.ExtractMethod_NoneSelected;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -109,7 +108,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public static ExtractMethodParameter None => new ExtractMethodParameter(string.Empty,
             ExtractMethodParameterType.PrivateLocalVariable,
-            "ExtractMethod_NoneSelected", false, false);  //RefactoringsUI.ExtractMethod_NoneSelected, false); //TODO - setup resources
+            RefactoringsUI.ExtractMethod_NoneSelected, false, false);
 
         public static Dictionary<ExtractMethodParameterType, string> ParameterTypes
         {
@@ -135,11 +134,11 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     },
                     {
                         ExtractMethodParameterType.ByRefParameter,
-                        "ByRef parameter" //RefactoringsUI.ExtractParameterNewType_ByRefParameter
+                        RefactoringsUI.ExtractParameterNewType_ByRefParameter
                     },
                     {
                         ExtractMethodParameterType.ByValParameter,
-                        "ByVal parameter" //RefactoringsUI.ExtractParameterNewType_ByValParameter
+                        RefactoringsUI.ExtractParameterNewType_ByValParameter
                     }
                 };
 

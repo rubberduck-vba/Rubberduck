@@ -7,7 +7,7 @@
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:em="clr-namespace:Rubberduck.Refactorings.ExtractMethod"
              mc:Ignorable="d" 
-             d:DesignHeight="400"  d:DesignWidth="300">
+             d:DesignHeight="400"  d:DesignWidth="600">
     <UserControl.Resources>
         <BitmapImage x:Key="WarningIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation-white.png" />
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
@@ -86,8 +86,8 @@
                     <RowDefinition Height="25" />
                     <RowDefinition Height="45" />
                 </Grid.RowDefinitions>
-                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractMethod_TitleText}" FontWeight="Bold" />
-                <TextBlock Grid.Row="1" Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractMethod_InstructionsText}"
+                <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractMethod_TitleText}" FontWeight="Bold" />
+                <TextBlock Grid.Row="1" Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractMethod_InstructionsText}"
                            Margin="5,0" />
                 <Grid Grid.Row="2" Visibility="{Binding DisplayCompilationConstantWarning, Converter={StaticResource BoolToHiddenVisibility}}"
                       HorizontalAlignment="Stretch"
@@ -101,7 +101,7 @@
                            Margin="5"
                            VerticalAlignment="Top" />
                     <StackPanel Grid.Column="1">
-                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractMethod_CompilationDirectivesWarning}" 
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractMethod_CompilationDirectivesWarning}" 
                                    Margin="5,0,8,0"
                                    TextWrapping="Wrap" />
                     </StackPanel>
@@ -134,7 +134,7 @@
                     <RowDefinition Height="25" />
                     <RowDefinition Height="25" />
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractMethodReturnTypeSelection}" />
+                <Label Grid.Row="0" Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractMethod_ReturnTypeSelection}" />
                 <ComboBox Grid.Row="1"
                          Margin="5,2,0,0"
                          Height="22"
@@ -148,7 +148,7 @@
         </StackPanel>
         <DockPanel Grid.Row="2" Dock="Top">
             <Grid>
-                <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractMethod_ParametersLabel}"
+                <GroupBox Header="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractMethod_ParametersLabel}"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Stretch"
                       Margin="0">
