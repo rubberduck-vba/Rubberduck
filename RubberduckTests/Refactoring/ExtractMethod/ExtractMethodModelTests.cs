@@ -1,4 +1,148 @@
-//using System;
+using System;
+using NUnit.Framework;
+using Rubberduck.Refactorings.ExtractMethod;
+using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.VBEditor.Utility;
+using Rubberduck.SmartIndenter;
+using RubberduckTests.Settings;
+
+namespace RubberduckTests.Refactoring.ExtractMethod
+{
+    [TestFixture]
+    public class ExtractMethodTests : InteractiveRefactoringTestBase<IExtractMethodPresenter, ExtractMethodModel>
+    {
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void ExtractMethodRefactoring_InboundOnlyWithoutPreassignment()
+        {
+            var inputCode = @"Sub Test
+    Dim a As Integer
+    a = 10
+End Sub";
+            var selection = new Selection(3, 5, 3, 11);
+            var expectedNewMethodCode = @"Private Sub NewMethod()
+    Dim a As Integer
+    a = 10
+End Sub";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.PreviewCode;
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void ExtractMethodRefactoring_InboundOnlyWithPreassignment()
+        {
+            var inputCode = @"Sub Test
+    Dim a As Integer
+    a = 10
+    Debug.Print a
+End Sub";
+            var selection = new Selection(4, 5, 4, 18);
+            var expectedNewMethodCode = @"Private Sub NewMethod(ByVal a As Integer)
+    Debug.Print a
+End Sub";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.PreviewCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void ExtractMethodRefactoring_InboundAndOutbound()
+        {
+            var inputCode = @"Sub Test
+    Dim a As Integer
+    a = 10
+    a = a + 10
+    Debug.Print a
+End Sub";
+            var selection = new Selection(4, 5, 4, 15);
+            var expectedNewMethodCode = @"Private Sub NewMethod(ByRef a As Integer)
+    a = a + 10
+End Sub";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.PreviewCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void ExtractMethodRefactoring_Parameterless()
+        {
+            var inputCode = @"Sub Test
+    Dim a As Integer
+    a = 10
+    a = a + 10
+    Debug.Print a
+End Sub";
+            var selection = new Selection(2, 1, 5, 18);
+            var expectedNewMethodCode = @"Private Sub NewMethod()
+    Dim a As Integer
+    a = 10
+    a = a + 10
+    Debug.Print a
+End Sub";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.PreviewCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void ExtractMethodRefactoring_OutboundOnly()
+        {
+            var inputCode = @"Sub Test
+    Dim a As Integer
+    a = 10
+    a = a + 10
+    Debug.Print a
+End Sub";
+            var selection = new Selection(2, 1, 3, 11);
+            var expectedNewMethodCode = @"Private Sub NewMethod(ByRef a As Integer)
+    Dim a As Integer
+    a = 10
+End Sub";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.PreviewCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+        }
+
+
+        //TODO - add objects types, including Dim a As New Object
+        //TODO - add changes to original function return value (or raise error if too complex)
+        //TODO - add validator checks (separate test file)
+        //TODO - multivariable declaration on one line
+        //TODO - 
+
+        protected override IRefactoring TestRefactoring(
+            IRewritingManager rewritingManager,
+            RubberduckParserState state,
+            RefactoringUserInteraction<IExtractMethodPresenter, ExtractMethodModel> userInteraction,
+            ISelectionService selectionService)
+        {
+            var refactoringAction = new ExtractMethodRefactoringAction(rewritingManager);
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
+            return new ExtractMethodRefactoring(refactoringAction, state, userInteraction, selectionService, selectedDeclarationService, state?.ProjectsProvider, indenter);
+        }
+    }
+}
+        
+        //using System;
 //using System.Collections.Generic;
 //using System.Diagnostics;
 //using System.Linq;

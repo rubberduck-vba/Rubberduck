@@ -638,4 +638,13 @@ Do you want to proceed?</value>
   <data name="ExtractParameterNewType_ByValParameter" xml:space="preserve">
     <value>Parameter passed by value</value>
   </data>
+  <data name="ExtractMethod_ParameterAssignmentTypeColumnHeader" xml:space="preserve">
+    <value>Pass by type</value>
+  </data>
+  <data name="ExtractMethod_ParameterDataTypeColumnHeader" xml:space="preserve">
+    <value>Data type</value>
+  </data>
+  <data name="ExtractMethod_ParameterNameColumnHeader" xml:space="preserve">
+    <value>Name</value>
+  </data>
 </root>

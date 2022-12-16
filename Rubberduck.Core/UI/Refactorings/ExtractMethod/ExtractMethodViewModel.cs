@@ -16,7 +16,6 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 {
     public class ExtractMethodViewModel : RefactoringViewModelBase<ExtractMethodModel>
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IMessageBox _messageBox;
 
         public RubberduckParserState State { get; }
@@ -25,7 +24,6 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             : base(model)
         {
             State = state;
-            _declarationFinderProvider = state;
             _messageBox = messageBox;
             _model = model;
         }
@@ -83,8 +81,8 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             new[]
             {
                 ExtractMethodParameter.None
-            }.Union(Parameters);
-        
+            }.Union(Parameters.Where(p => p.CanReturn));
+
         public ExtractMethodParameter ReturnParameter
         {
             get => Model.ReturnParameter ?? ExtractMethodParameter.None;
@@ -97,7 +95,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
         public string SourceMethodName => Model.SourceMethodName;
         public string PreviewCaption => string.Format(RefactoringsUI.ExtractMethod_CodePreviewCaption, SourceMethodName);
-        public string PreviewCode => Model.PreviewCode;
+        public string PreviewCode => Model.PreviewCode; //Model.ReplacementCode + Environment.NewLine + Model.PreviewCode; //any way to get a divider for showing both sections of code in one textbox?
         public IEnumerable<ExtractMethodParameter> Inputs;
         public IEnumerable<ExtractMethodParameter> Outputs;
         public IEnumerable<ExtractMethodParameter> Locals;

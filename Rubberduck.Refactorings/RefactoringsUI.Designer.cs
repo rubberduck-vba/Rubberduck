@@ -639,6 +639,33 @@ namespace Rubberduck.Refactorings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pass by type.
+        /// </summary>
+        public static string ExtractMethod_ParameterAssignmentTypeColumnHeader {
+            get {
+                return ResourceManager.GetString("ExtractMethod_ParameterAssignmentTypeColumnHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data type.
+        /// </summary>
+        public static string ExtractMethod_ParameterDataTypeColumnHeader {
+            get {
+                return ResourceManager.GetString("ExtractMethod_ParameterDataTypeColumnHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string ExtractMethod_ParameterNameColumnHeader {
+            get {
+                return ResourceManager.GetString("ExtractMethod_ParameterNameColumnHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameters:.
         /// </summary>
         public static string ExtractMethod_ParametersLabel {

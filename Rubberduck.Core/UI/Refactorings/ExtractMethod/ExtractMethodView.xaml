@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <BitmapImage x:Key="WarningIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation-white.png" />
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
-        <CollectionViewSource x:Key="ParameterTypes" Source="{StaticResource em:ExtractMethodParameter.ParameterTypes}" />
+        <!-- <CollectionViewSource x:Key="ParameterTypes" Source="{StaticResource em:ExtractMethodParameter.ParameterTypes}" /> -->
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
             <GradientStop Color="#FF9BDDFB" Offset="1"/>
@@ -159,11 +159,11 @@
                             CanUserDeleteRows="False"
                             CanUserReorderColumns="False"
                             CanUserResizeColumns="True"
-                            IsReadOnly="False"
+                            IsReadOnly="True"
                             IsSynchronizedWithCurrentItem="True"
                             SelectionMode="Single"
                             CanUserAddRows="False"
-                            HeadersVisibility="None"
+                            HeadersVisibility="Column"
                             GridLinesVisibility="All"
                             VerticalScrollBarVisibility="Auto"
                             HorizontalScrollBarVisibility="Auto"
@@ -179,23 +179,35 @@
                                 <Setter Property="Background" Value="Transparent" />
                             </Style>
                         </DataGrid.CellStyle>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="IsHitTestVisible" Value="False"/>
+                            </Style>
+                        </DataGrid.RowStyle>
                         <DataGrid.Columns>
-                            <DataGridComboBoxColumn 
+                            <!--<DataGridComboBoxColumn 
                             SelectedValueBinding="{Binding ParameterType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            ItemsSource="{Binding ParameterTypes}"
+                            ItemsSource="{Binding Source={x:Static extractMethod:ExtractMethodParameter.ParameterTypes}}"
                             SelectedValuePath="Key"
                             DisplayMemberPath="Value"
                             Width="*"
                             EditingElementStyle="{StaticResource DropDownCellStyle}"
-                            IsReadOnly="False" />
-                            <!--ItemsSource="{Binding Source={x:Static extractMethod:ExtractMethodParameter.ParameterTypes}}" -->
+                            IsReadOnly="False" /> -->
+                            <DataGridTextColumn 
+                            Binding="{Binding ParameterType}"
+                            Header="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractMethod_ParameterAssignmentTypeColumnHeader}"
+                            Width="*"
+                            IsReadOnly="True"
+                            SortMemberPath="ParameterTypeText" />
                             <DataGridTextColumn 
                             Binding="{Binding Name}"
+                            Header="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractMethod_ParameterNameColumnHeader}"
                             Width="*"
                             IsReadOnly="True"
                             SortMemberPath="Name" />
                             <DataGridTextColumn
                             Binding="{Binding TypeName}"
+                            Header="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractMethod_ParameterDataTypeColumnHeader}"
                             Width="*"
                             IsReadOnly="True" />
                         </DataGrid.Columns>

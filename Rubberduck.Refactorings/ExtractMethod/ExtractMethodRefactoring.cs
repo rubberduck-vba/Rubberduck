@@ -55,8 +55,10 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
             if (Validator.ValidateSelection(_selectionProvider.ActiveSelection().GetValueOrDefault()))
             {
-                var model = new ExtractMethodModel(_declarationFinderProvider, Validator.SelectedContexts, _selectionProvider.ActiveSelection().GetValueOrDefault(), target, _indenter);
-                model.ModuleContainsCompilationDirectives = Validator.ContainsCompilerDirectives;
+                var model = new ExtractMethodModel(_declarationFinderProvider, Validator.SelectedContexts, _selectionProvider.ActiveSelection().GetValueOrDefault(), target, _indenter)
+                {
+                    ModuleContainsCompilationDirectives = Validator.ContainsCompilerDirectives
+                };
                 return model;
             }
             else
@@ -77,49 +79,15 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         override public void Refactor()
         {
-            //if (!_codeModule.GetQualifiedSelection().HasValue)
-            //{
-            //    OnInvalidSelection();
-            //    return;
-            //}
-
-            //selection = _codeModule.GetQualifiedSelection().Value;
-            
-            //var model = new ExtractMethodModel(_state, selection, Validator.SelectedContexts, _indenter, _codeModule);
-            ////var presenter = new ExtractMethodPresenter(view, _indenter);
-            //ExtractMethodPresenter presenter = null;
-            //if (presenter == null)
-            //{
-            //    return;
-            //}
-
-            ////model = presenter.Show(model, extractMethodProc); //TODO - restore user interface
-            //model = null;
-            //if (model == null)
-            //{
-            //    return;
-            //}
-
-            //QualifiedSelection? oldSelection;
-            //if (!_codeModule.IsWrappingNullReference)
-            //{
-            //    oldSelection = _codeModule.GetQualifiedSelection();
-            //}
-            //else
-            //{
-            //    return;
-            //}
-
-            //if (oldSelection.HasValue)
-            //{
-            //    _codeModule.CodePane.Selection = oldSelection.Value.Selection;
-            //}
-
-            //model.State.OnParseRequested(this);
+            Refactor(_selectionProvider.ActiveSelection().GetValueOrDefault());
         }
 
         public override void Refactor(QualifiedSelection target)
         {
+            if (_declarationFinderProvider == null)
+            {
+                throw new NoActiveSelectionException();
+            }
             var _declarations = _declarationFinderProvider.DeclarationFinder.AllUserDeclarations;
             var selection = target.Selection;
             var procedures = _declarations.Where(d => d.ComponentName == target.QualifiedName.ComponentName && d.IsUserDefined && (ExtractMethodSelectionValidation.ProcedureTypes.Contains(d.DeclarationType)));
@@ -131,6 +99,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public override void Refactor(Declaration target)
         {
+            CheckWhetherValidTarget(target);
             OnInvalidSelection();
         }
         private void CheckWhetherValidTarget(Declaration target)
@@ -145,29 +114,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 throw new TargetDeclarationNotUserDefinedException(target);
             }
         }
-        private void ExtractMethod()
-        {
-
-            #region to be put back when allow subs and functions
-            /* Remove this entirely for now.
-            // assumes these are declared *before* the selection...
-            var offset = 0;
-            foreach (var declaration in model.DeclarationsToMove.OrderBy(e => e.Selection.StartLine))
-            {
-                var target = new Selection(
-                    declaration.Selection.StartLine - offset,
-                    declaration.Selection.StartColumn,
-                    declaration.Selection.EndLine - offset,
-                    declaration.Selection.EndColumn);
-
-                _codeModule.DeleteLines(target);
-                offset += declaration.Selection.LineCount;
-            }
-            */
-            #endregion
-
-        }
-
 
         /// <summary>
         /// An event that is raised when refactoring is not possible due to an invalid selection.
@@ -175,11 +121,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public event EventHandler InvalidSelection;
         private void OnInvalidSelection()
         {
-            var handler = InvalidSelection;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            InvalidSelection?.Invoke(this, EventArgs.Empty);
         }
 
     }

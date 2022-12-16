@@ -14,10 +14,10 @@ namespace Rubberduck.Refactorings.ExtractMethod
 {
     public class ExtractMethodModel : IRefactoringModel
     {
-        private List<string> _fieldsToExtract;
         private List<string> _parametersToExtract;
-        private List<string> _variablesToExtract;
-        private IIndenter _indenter;
+        private IEnumerable<Declaration> _declarationsToMoveOut;
+        private IEnumerable<Declaration> _declarationsToMoveIn;
+        private readonly IIndenter _indenter;
 
         public IEnumerable<ParserRuleContext> SelectedContexts { get; }
         public QualifiedSelection Selection { get; }
@@ -26,7 +26,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 .Select(d => d.IdentifierName);
         public string SourceMethodName { get; private set; }
         public Declaration TargetMethod { get; set; }
-        public IEnumerable<Declaration> SourceVariables { get; private set; }
+        //public IEnumerable<Declaration> SourceVariables { get; private set; }
         public string NewMethodName { get; set; }
 
         private ExtractMethodParameter _returnParameter;
@@ -51,70 +51,42 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         private void Setup()
         {
-            var topContext = SelectedContexts.First();
             ParserRuleContext stmtContext = null;
-            var currentContext = (RuleContext)topContext;
-            do {
-                switch (currentContext)
-                {
-                    case VBAParser.FunctionStmtContext stmt:
-                        stmtContext = stmt;
-                        SourceMethodName = stmt.functionName().GetText();
-                        break;
-                    case VBAParser.SubStmtContext stmt:
-                        stmtContext = stmt;
-                        SourceMethodName = stmt.subroutineName().GetText();
-                        break;
-                    case VBAParser.PropertyGetStmtContext stmt:
-                        stmtContext = stmt;
-                        SourceMethodName = stmt.functionName().GetText();
-                        break;
-                    case VBAParser.PropertyLetStmtContext stmt:
-                        stmtContext = stmt;
-                        SourceMethodName = stmt.subroutineName().GetText();
-                        break;
-                    case VBAParser.PropertySetStmtContext stmt:
-                        stmtContext = stmt;
-                        SourceMethodName = stmt.subroutineName().GetText();
-                        break;
-                }
-                currentContext = currentContext.Parent;
-            }
-            while (currentContext != null && stmtContext == null) ;
+            stmtContext = GetStatementContext(stmtContext);
 
             if (string.IsNullOrWhiteSpace(NewMethodName))
             {
-                NewMethodName = RefactoringsUI.ExtractMethod_DefaultNewMethodName;
+                NewMethodName = RefactoringsUI.ExtractMethod_DefaultNewMethodName; //Check for conflicts - see other document for example code
             }
 
             SelectedCode = string.Join(Environment.NewLine, SelectedContexts.Select(c => c.GetText()));
 
-            SourceVariables = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(d => ((Selection.Selection.Contains(d.Selection) &&
-                             d.QualifiedName.QualifiedModuleName == Selection.QualifiedName)) ||
-                            d.References.Any(r =>
-                                r.QualifiedModuleName.ComponentName == Selection.QualifiedName.ComponentName
-                                && r.QualifiedModuleName.ComponentName ==
-                                d.QualifiedName.QualifiedModuleName.ComponentName
-                                && Selection.Selection.Contains(r.Selection)))
-                .OrderBy(d => d.Selection.StartLine)
-                .ThenBy(d => d.Selection.StartColumn);
+            //SourceVariables = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+            //    .Where(d => (Selection.Selection.Contains(d.Selection) &&
+            //                 d.QualifiedName.QualifiedModuleName == Selection.QualifiedName) ||
+            //                d.References.Any(r =>
+            //                    r.QualifiedModuleName.ComponentName == Selection.QualifiedName.ComponentName
+            //                    && r.QualifiedModuleName.ComponentName ==
+            //                    d.QualifiedName.QualifiedModuleName.ComponentName
+            //                    && Selection.Selection.Contains(r.Selection)))
+            //    .OrderBy(d => d.Selection.StartLine)
+            //    .ThenBy(d => d.Selection.StartColumn);
 
             var declarationsInSelection = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(d => (Selection.Selection.Contains(d.Selection) &&
-                             d.QualifiedName.QualifiedModuleName == Selection.QualifiedName))
+                .Where(d => Selection.Selection.Contains(d.Selection) &&
+                            d.QualifiedName.QualifiedModuleName == Selection.QualifiedName)
                 .OrderBy(d => d.Selection.StartLine)
                 .ThenBy(d => d.Selection.StartColumn);
             var referencesOfDeclarationsInSelection = (from dec in declarationsInSelection select dec.References).ToArray(); //debug purposes
 
             var sourceMethodParameters = ((IParameterizedDeclaration)TargetMethod).Parameters;
-            var sourceMethodSelection = new QualifiedSelection(Selection.QualifiedName, 
+            var sourceMethodSelection = new QualifiedSelection(Selection.QualifiedName,
                 new Selection(TargetMethod.Context.Start.Line, TargetMethod.Context.Start.Column, TargetMethod.Context.Stop.Line, TargetMethod.Context.Stop.Column));
 
             //TODO - refactor below and declarationsInSelection to generic declarations in selection method if stay consistent
             var declarationsInParentMethod = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(d => (sourceMethodSelection.Selection.Contains(d.Selection) &&
-                             d.QualifiedName.QualifiedModuleName == sourceMethodSelection.QualifiedName))
+                .Where(d => sourceMethodSelection.Selection.Contains(d.Selection) &&
+                            d.QualifiedName.QualifiedModuleName == sourceMethodSelection.QualifiedName)
                 .OrderBy(d => d.Selection.StartLine)
                 .ThenBy(d => d.Selection.StartColumn);
 
@@ -124,14 +96,14 @@ namespace Rubberduck.Refactorings.ExtractMethod
             //Add function reference if it is a function?
             //Would ideally identify variables assigned before the selection, not just declared. Could assume any reference before the selection is an assignment?
             //TODO - add case where reference earlier in the same line as where the selection starts (unusual but could exist if using colons to separate multiple statements)
-            var inboundParameters = sourceMethodParameters.Where(d => (d.References.Any(r => Selection.Selection.Contains(r.Selection))));
-            var inboundLocalVariables = declarationsInParentMethod.Where(d => (d.References.Any(r => Selection.Selection.Contains(r.Selection))) &&
-                                                                              (d.References.Any(r => r.Selection.EndLine < Selection.Selection.StartLine)));
+            var inboundParameters = sourceMethodParameters.Where(d => d.References.Any(r => Selection.Selection.Contains(r.Selection)));
+            var inboundLocalVariables = declarationsInParentMethod.Where(d => d.References.Any(r => Selection.Selection.Contains(r.Selection)) &&
+                                                                              d.References.Any(r => r.Selection.EndLine < Selection.Selection.StartLine));
             var inboundVariables = inboundParameters.Concat(inboundLocalVariables);
 
             //List of "outbound" variables. Any variables assigned a value in the selection which are then referenced after the selection
             var outboundVariables = sourceMethodParameters.Concat(declarationsInParentMethod)
-                .Where(d => (d.References.Any(r => Selection.Selection.Contains(r.Selection))) && (d.References.Any(r => r.Selection.StartLine > Selection.Selection.EndLine)));
+                .Where(d => d.References.Any(r => Selection.Selection.Contains(r.Selection)) && d.References.Any(r => r.Selection.StartLine > Selection.Selection.EndLine));
 
             //Set up parameters
             Parameters = new ObservableCollection<ExtractMethodParameter>();
@@ -160,87 +132,136 @@ namespace Rubberduck.Refactorings.ExtractMethod
                                                               declaration.IdentifierName, declaration.IsArray, true));
                 }
             }
-            var stopper = 10;
 
+            //Variables to have declarations moved out of the selection
+            // - where declaration is in the selection and it is a ByRef variable i.e. intersection of declarations in selection and outbound
+            _declarationsToMoveOut = declarationsInSelection.Intersect(outboundVariables);
 
-
-
+            //Variables to have declarations moved into the selection
+            // - where declaration is before the selection but only references are inside the selection
+            _declarationsToMoveIn = declarationsInParentMethod.Except(declarationsInSelection)
+                                    .Where(d => d.References.Any(r => Selection.Selection.Contains(r.Selection)) &&
+                                           !d.References.Any(r => r.Selection.EndLine < Selection.Selection.StartLine) &&
+                                           !d.References.Any(r => r.Selection.StartLine > Selection.Selection.EndLine));
 
             //List of neither "inbound" or "outbound" (need the declaration copied inside the selection OR moved if careful but can leave inspections to pick up unnecessary declarations)
             //Only applies if the list of inbound variables excludes those declared but not assigned before the selection
+            SelectedCodeToExtract = string.Join(Environment.NewLine, SelectedContexts.Except(from dec in _declarationsToMoveOut select dec.Context).Select(c => c.GetText()));
+        }
 
+        private ParserRuleContext GetStatementContext(ParserRuleContext stmtContext)
+        {
+            var topContext = SelectedContexts.First();
+            var currentContext = (RuleContext)topContext;
+            do
+            {
+                switch (currentContext)
+                {
+                    case VBAParser.FunctionStmtContext stmt:
+                        stmtContext = stmt;
+                        SourceMethodName = stmt.functionName().GetText();
+                        break;
+                    case VBAParser.SubStmtContext stmt:
+                        stmtContext = stmt;
+                        SourceMethodName = stmt.subroutineName().GetText();
+                        break;
+                    case VBAParser.PropertyGetStmtContext stmt:
+                        stmtContext = stmt;
+                        SourceMethodName = stmt.functionName().GetText();
+                        break;
+                    case VBAParser.PropertyLetStmtContext stmt:
+                        stmtContext = stmt;
+                        SourceMethodName = stmt.subroutineName().GetText();
+                        break;
+                    case VBAParser.PropertySetStmtContext stmt:
+                        stmtContext = stmt;
+                        SourceMethodName = stmt.subroutineName().GetText();
+                        break;
+                }
+                currentContext = currentContext.Parent;
+            }
+            while (currentContext != null && stmtContext == null);
+            return stmtContext;
         }
 
         public string SelectedCode { get; private set; }
 
+        //Code excluding declarations that are to be moved out of the selection
+        public string SelectedCodeToExtract { get; private set; }
+
         public ObservableCollection<ExtractMethodParameter> Parameters { get; set; }
 
+        private IEnumerable<ExtractMethodParameter> ArgumentsToPass => from p in Parameters where p != ReturnParameter select p;
+
+        public string ReplacementCode
+        {
+            get
+            {
+                var strings = new List<string>();
+
+                //TODO - find indentation of first line of selection and add same number of spaces to all lines added after the first
+
+                foreach (var dec in _declarationsToMoveOut)
+                {
+                    //go from variableSubStmt to variableListStmt to variableStmt
+                    strings.Add(dec.Context.Parent.Parent.GetText());
+                    //TODO - handle case of variable list having multiple parts (if not excluded by validator)
+                }
+
+                // Make call to new method
+                var argList = string.Join(",", from p in ArgumentsToPass select p.Name);
+
+                if (ReturnParameter == ExtractMethodParameter.None)
+                {
+                    strings.Add($"{NewMethodName} {argList}");
+                }
+                else
+                {
+                    //TODO - make sure can handle setting of objects if return type is an object
+                    strings.Add($"{ReturnParameter.Name} = {NewMethodName}({argList})");
+                }
+
+                return string.Join(Environment.NewLine, strings);
+            }
+        }
         public string PreviewCode
         {
             get
             {
-                _fieldsToExtract = new List<string>();
                 _parametersToExtract = new List<string>();
-                _variablesToExtract = new List<string>();
 
-                foreach (var parameter in Parameters.Where(p => p != ReturnParameter))
-                {
-                    switch (parameter.ParameterType)
-                    {
-                        case ExtractMethodParameterType.PublicModuleField:
-                        case ExtractMethodParameterType.PrivateModuleField:
-                            _fieldsToExtract.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
-                            break;
-                        case ExtractMethodParameterType.ByRefParameter:
-                        case ExtractMethodParameterType.ByValParameter:
-                            _parametersToExtract.Add(parameter.ToString()); // ExtractMethodParameterFormat.DimOrParameterDeclaration));
-                            break;
-                        case ExtractMethodParameterType.PrivateLocalVariable:
-                        case ExtractMethodParameterType.StaticLocalVariable:
-                            _variablesToExtract.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
-                            break;
-                        default:
-                            throw new InvalidOperationException("Invalid value for ExtractParameterNewType");
-                    }
-                }
+                _parametersToExtract.AddRange(from p in ArgumentsToPass select p.ToString());
 
                 var isFunction = ReturnParameter != ExtractMethodParameter.None;
 
-                /* 
-                   string.Empty are used to create blank lines
-                   as the joins will create a newline each line.
-                */
-
                 var strings = new List<string>();
+                // string.Empty are used to create blank lines as the joins will create a newline each line.
+                strings.Add(string.Empty);
+                strings.Add(string.Empty);
                 var returnType = string.Empty;
                 if (isFunction)
                 {
                     returnType = string.Concat(Tokens.As, " ",
                         ReturnParameter.ToString(ExtractMethodParameterFormat.ReturnDeclaration) ?? Tokens.Variant);
                 }
-                if (_fieldsToExtract.Any())
-                {
-                    strings.AddRange(_fieldsToExtract);
-                    strings.Add(string.Empty);
-                }
                 strings.Add(
                     $@"{Tokens.Private} {(isFunction ? Tokens.Function : Tokens.Sub)} {
                             NewMethodName ?? RefactoringsUI.ExtractMethod_DefaultNewMethodName
                         }({string.Join(", ", _parametersToExtract)}) {returnType}");
-                strings.AddRange(_variablesToExtract);
-                if (_variablesToExtract.Any())
+                foreach (var dec in _declarationsToMoveIn)
                 {
-                    strings.Add(string.Empty);
+                    //go from variableSubStmt to variableListStmt to variableStmt
+                    strings.Add(dec.Context.Parent.Parent.GetText());
+                    //TODO - handle case of variable list having multiple parts (if not excluded by validator)
                 }
-                strings.AddRange(SelectedCode.Split(new[] {Environment.NewLine}, StringSplitOptions.None));
+                strings.AddRange(SelectedCodeToExtract.Split(new[] {Environment.NewLine}, StringSplitOptions.None));
                 if (isFunction)
                 {
                     strings.Add(string.Empty);
                     strings.Add($"{NewMethodName} = {ReturnParameter.Name}");
                 }
                 strings.Add($"{Tokens.End} {(isFunction ? Tokens.Function : Tokens.Sub)}");
-                _indenter.Indent(strings);
-                return string.Join(Environment.NewLine, strings); 
+                return string.Join(Environment.NewLine, _indenter.Indent(strings));
             }
         }
     }

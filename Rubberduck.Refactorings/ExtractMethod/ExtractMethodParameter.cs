@@ -3,15 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Grammar;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
     public enum ExtractMethodParameterType
     {
-        PrivateLocalVariable,
-        StaticLocalVariable,
-        PrivateModuleField,
-        PublicModuleField,
         ByRefParameter,
         ByValParameter
     }
@@ -42,8 +39,23 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public string Name { get; set; }
 
         public string TypeName { get; set; }
+        public string ParameterTypeText
+        {
+            get
+            {
+                switch (ParameterType)
+                {
+                    case ExtractMethodParameterType.ByRefParameter:
+                        return Tokens.ByRef;
+                    case ExtractMethodParameterType.ByValParameter:
+                        return Tokens.ByVal;
+                    default:
+                        return string.Empty;
+                }
+            }
+        }
         public bool CanReturn { get; set; }
-        
+
         private ExtractMethodParameterType _parameterType;
         public ExtractMethodParameterType ParameterType
         {
@@ -77,18 +89,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
             string accessibility;
             switch (ParameterType)
             {
-                case ExtractMethodParameterType.PrivateLocalVariable:
-                    accessibility = Tokens.Dim;
-                    break;
-                case ExtractMethodParameterType.StaticLocalVariable:
-                    accessibility = Tokens.Static;
-                    break;
-                case ExtractMethodParameterType.PrivateModuleField:
-                    accessibility = Tokens.Private;
-                    break;
-                case ExtractMethodParameterType.PublicModuleField:
-                    accessibility = Tokens.Public;
-                    break;
                 case ExtractMethodParameterType.ByRefParameter:
                     accessibility = Tokens.ByRef;
                     break;
@@ -106,9 +106,16 @@ namespace Rubberduck.Refactorings.ExtractMethod
             return string.Concat(accessibility, Name, IsArray ? ArrayDim : string.Empty, " ", Tokens.As, " ", TypeName);
         }
 
+
         public static ExtractMethodParameter None => new ExtractMethodParameter(string.Empty,
-            ExtractMethodParameterType.PrivateLocalVariable,
+            ExtractMethodParameterType.ByValParameter,
             RefactoringsUI.ExtractMethod_NoneSelected, false, false);
+
+        public static ObservableCollection<ExtractMethodParameterType> AllowableTypes = new ObservableCollection<ExtractMethodParameterType>
+            {
+                ExtractMethodParameterType.ByRefParameter,
+                ExtractMethodParameterType.ByValParameter
+            };
 
         public static Dictionary<ExtractMethodParameterType, string> ParameterTypes
         {
@@ -116,22 +123,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 var dict = new Dictionary<ExtractMethodParameterType, string>
                 {
-                    {
-                        ExtractMethodParameterType.PrivateLocalVariable,
-                        "Private local variable" //RefactoringsUI.ExtractParameterNewType_PrivateLocalVariable //TODO - setup resources
-                    },
-                    {
-                        ExtractMethodParameterType.StaticLocalVariable,
-                        "Static local variable" //RefactoringsUI.ExtractParameterNewType_StaticLocalVariable
-                    },
-                    {
-                        ExtractMethodParameterType.PrivateModuleField,
-                        "Private module field" //RefactoringsUI.ExtractParameterNewType_PrivateModuleField
-                    },
-                    {
-                        ExtractMethodParameterType.PublicModuleField,
-                        "Public module field" //RefactoringsUI.ExtractParameterNewType_PublicModuleField
-                    },
                     {
                         ExtractMethodParameterType.ByRefParameter,
                         RefactoringsUI.ExtractParameterNewType_ByRefParameter
@@ -148,12 +139,33 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public static bool operator ==(ExtractMethodParameter left, ExtractMethodParameter right)
         {
-            return left?.TypeName == right?.TypeName && left?.Name == right?.Name && left?.IsArray == right?.IsArray && left?.CanReturn == right?.CanReturn;
+            return left?.ParameterType == right?.ParameterType && left?.TypeName == right?.TypeName && left?.Name == right?.Name && left?.IsArray == right?.IsArray && left?.CanReturn == right?.CanReturn;
         }
 
         public static bool operator !=(ExtractMethodParameter left, ExtractMethodParameter right)
         {
-            return !(left?.TypeName == right?.TypeName && left?.Name == right?.Name && left?.IsArray == right?.IsArray && left?.CanReturn == right?.CanReturn);
+            return !(left?.ParameterType == right?.ParameterType && left?.TypeName == right?.TypeName && left?.Name == right?.Name && left?.IsArray == right?.IsArray && left?.CanReturn == right?.CanReturn);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ExtractMethodParameter parameter &&
+                   Name == parameter.Name &&
+                   TypeName == parameter.TypeName &&
+                   CanReturn == parameter.CanReturn &&
+                   ParameterType == parameter.ParameterType &&
+                   IsArray == parameter.IsArray;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 1661774273;
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Name);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(TypeName);
+            hashCode = (hashCode * -1521134295) + CanReturn.GetHashCode();
+            hashCode = (hashCode * -1521134295) + ParameterType.GetHashCode();
+            hashCode = (hashCode * -1521134295) + IsArray.GetHashCode();
+            return hashCode;
         }
     }
 }
