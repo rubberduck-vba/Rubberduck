@@ -27,18 +27,20 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ExtractMethodParameter(string typeName, ExtractMethodParameterType parameterType, string name, bool isArray, bool canReturn)
+        public ExtractMethodParameter(string typeName, ExtractMethodParameterType parameterType, string name, bool isArray, bool isObject, bool canReturn)
         {
             Name = name ?? NoneLabel;
             TypeName = typeName;
             ParameterType = parameterType;
             IsArray = isArray;
             CanReturn = canReturn;
+            IsObject = isObject;
         }
 
         public string Name { get; set; }
 
         public string TypeName { get; set; }
+
         public string ParameterTypeText
         {
             get
@@ -68,6 +70,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
         }
 
         public bool IsArray { get; set; }
+
+        public bool IsObject { get; set; }
 
         public string ToString(ExtractMethodParameterFormat format)
         {
@@ -109,7 +113,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public static ExtractMethodParameter None => new ExtractMethodParameter(string.Empty,
             ExtractMethodParameterType.ByValParameter,
-            RefactoringsUI.ExtractMethod_NoneSelected, false, false);
+            RefactoringsUI.ExtractMethod_NoneSelected, false, false, false);
 
         public static ObservableCollection<ExtractMethodParameterType> AllowableTypes = new ObservableCollection<ExtractMethodParameterType>
             {
@@ -139,12 +143,22 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public static bool operator ==(ExtractMethodParameter left, ExtractMethodParameter right)
         {
-            return left?.ParameterType == right?.ParameterType && left?.TypeName == right?.TypeName && left?.Name == right?.Name && left?.IsArray == right?.IsArray && left?.CanReturn == right?.CanReturn;
+            return left?.ParameterType == right?.ParameterType &&
+                   left?.TypeName == right?.TypeName &&
+                   left?.Name == right?.Name &&
+                   left?.IsArray == right?.IsArray &&
+                   left?.CanReturn == right?.CanReturn &&
+                   left?.IsObject == right?.IsObject;
         }
 
         public static bool operator !=(ExtractMethodParameter left, ExtractMethodParameter right)
         {
-            return !(left?.ParameterType == right?.ParameterType && left?.TypeName == right?.TypeName && left?.Name == right?.Name && left?.IsArray == right?.IsArray && left?.CanReturn == right?.CanReturn);
+            return !(left?.ParameterType == right?.ParameterType &&
+                     left?.TypeName == right?.TypeName &&
+                     left?.Name == right?.Name &&
+                     left?.IsArray == right?.IsArray &&
+                     left?.CanReturn == right?.CanReturn &&
+                     left?.IsObject == right?.IsObject);
         }
 
         public override bool Equals(object obj)
@@ -154,7 +168,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
                    TypeName == parameter.TypeName &&
                    CanReturn == parameter.CanReturn &&
                    ParameterType == parameter.ParameterType &&
-                   IsArray == parameter.IsArray;
+                   IsArray == parameter.IsArray &&
+                   IsObject == parameter.IsObject;
         }
 
         public override int GetHashCode()
@@ -165,6 +180,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             hashCode = (hashCode * -1521134295) + CanReturn.GetHashCode();
             hashCode = (hashCode * -1521134295) + ParameterType.GetHashCode();
             hashCode = (hashCode * -1521134295) + IsArray.GetHashCode();
+            hashCode = (hashCode * -1521134295) + IsObject.GetHashCode();
             return hashCode;
         }
     }

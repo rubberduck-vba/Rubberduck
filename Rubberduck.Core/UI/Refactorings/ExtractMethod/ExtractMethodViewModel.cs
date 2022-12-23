@@ -95,7 +95,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
         public string SourceMethodName => Model.SourceMethodName;
         public string PreviewCaption => string.Format(RefactoringsUI.ExtractMethod_CodePreviewCaption, SourceMethodName);
-        public string PreviewCode => Model.PreviewCode; //Model.ReplacementCode + Environment.NewLine + Model.PreviewCode; //any way to get a divider for showing both sections of code in one textbox?
+        public string PreviewCode => Model.NewMethodCode; //Model.ReplacementCode + Environment.NewLine + Model.PreviewCode; //any way to get a divider for showing both sections of code in one textbox?
         public IEnumerable<ExtractMethodParameter> Inputs;
         public IEnumerable<ExtractMethodParameter> Outputs;
         public IEnumerable<ExtractMethodParameter> Locals;

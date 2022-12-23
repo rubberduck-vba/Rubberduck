@@ -1,12 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Antlr4.Runtime.Misc;
-using Rubberduck.Common;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Parsing;
-using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -20,7 +15,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public override void Refactor(ExtractMethodModel model, IRewriteSession rewriteSession)
         {
-            var selection = model.Selection;
+            var selection = model.QualifiedSelection;
             var selectedContexts = model.SelectedContexts;
 
             var rewriter = rewriteSession.CheckOutModuleRewriter(selection.QualifiedName);
@@ -28,7 +23,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             var endIndex = selectedContexts.Last().Stop.TokenIndex;
             var selectionInterval = new Interval(startIndex, endIndex);
 
-            rewriter.InsertAfter(model.TargetMethod.Context.Stop.TokenIndex, model.PreviewCode);
+            rewriter.InsertAfter(model.TargetMethod.Context.Stop.TokenIndex, Environment.NewLine + model.NewMethodCode);
             rewriter.Replace(selectionInterval, model.ReplacementCode);
         }
     }

@@ -17,7 +17,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
 {
     public class ExtractMethodSelectionValidation : IExtractMethodSelectionValidation
     {
-//        private readonly ICodeModule _codeModule;
         private readonly IProjectsProvider _projectsProvider;
         private readonly IEnumerable<Declaration> _declarations;
         private List<Tuple<ParserRuleContext, string>> _invalidContexts = new List<Tuple<ParserRuleContext, string>>();
@@ -27,7 +26,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
         {
             _declarations = declarations;
             _projectsProvider = projectsProvider;
-//            _codeModule = codeModule;
         }
 
         public IEnumerable<Tuple<ParserRuleContext, string>> InvalidContexts => _invalidContexts;
@@ -51,24 +49,25 @@ namespace Rubberduck.Refactorings.ExtractMethod
             return ProcOfLine(lineOfInterest);
         }
             
-        public bool ValidateSelection(QualifiedSelection qualifiedSelection)
+        public bool IsSelectionValid(QualifiedSelection qualifiedSelection)
         {
             var selection = qualifiedSelection.Selection;
 
             var startLine = selection.StartLine;
             var endLine = selection.EndLine;
 
-            // End of line is easy
             var procEnd = ProcDeclaration(qualifiedSelection, endLine);
             if (procEnd == null)
             {
                 return false;
+                //TODO - add invalid context so can report reason for failure
             }
 
             var procStart = ProcDeclaration(qualifiedSelection, startLine);
             if (procStart == null)
             {
                 return false;
+                //TODO - add invalid context so can report reason for failure
             }
 
             var procStartContext = procStart.Context;
@@ -92,6 +91,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     procEndOfSignature = setStmt.endOfStatement();
                     break;
                 default:
+                    //TODO - add invalid context so can report reason for failure
                     return false;
             }
             
@@ -100,8 +100,9 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 || procEndOfSignature.Start.Line == selection.StartLine && procEndOfSignature.Start.Column < selection.StartColumn)
                 ))
                 return false;
+            //TODO - add invalid context so can report reason for failure
 
-            
+
             /* At this point, we know the selection is within a single procedure. We need to validate that the user's
              * selection in fact contain only BlockStmt and not other stuff that might not be so extractable.
              */
@@ -284,7 +285,18 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     return base.VisitCombinedLabels(context);
                 }
 
-                return VisitCombinedLabels(context);
+                return base.VisitCombinedLabels(context);
+            }
+
+            public override IEnumerable<VBAParser.BlockStmtContext> VisitStandaloneLineNumberLabel([NotNull] VBAParser.StandaloneLineNumberLabelContext context)
+            {
+                if (_qualifiedSelection.Selection.Contains(context))
+                {
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Line Label statement"));
+                    return null;
+                }
+
+                return base.VisitStandaloneLineNumberLabel(context);
             }
 
             public override IEnumerable<VBAParser.BlockStmtContext> VisitOnGoSubStmt([NotNull] VBAParser.OnGoSubStmtContext context)
@@ -295,7 +307,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     return null;
                 }
 
-                return VisitOnGoSubStmt(context);
+                return base.VisitOnGoSubStmt(context);
             }
 
             public override IEnumerable<VBAParser.BlockStmtContext> VisitOnGoToStmt([NotNull] VBAParser.OnGoToStmtContext context)
@@ -306,7 +318,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     return null;
                 }
 
-                return VisitOnGoToStmt(context);
+                return base.VisitOnGoToStmt(context);
             }
 
             public override IEnumerable<VBAParser.BlockStmtContext> VisitResumeStmt([NotNull] VBAParser.ResumeStmtContext context)
@@ -328,7 +340,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     return null;
                 }
 
-                return VisitReturnStmt(context);
+                return base.VisitReturnStmt(context);
             }
         }
     }

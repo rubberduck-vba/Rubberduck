@@ -53,7 +53,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 throw new TargetDeclarationIsNullException();
             }
-            if (Validator.ValidateSelection(_selectionProvider.ActiveSelection().GetValueOrDefault()))
+            if (Validator.IsSelectionValid(_selectionProvider.ActiveSelection().GetValueOrDefault()))
             {
                 var model = new ExtractMethodModel(_declarationFinderProvider, Validator.SelectedContexts, _selectionProvider.ActiveSelection().GetValueOrDefault(), target, _indenter)
                 {

@@ -2,54 +2,61 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
     public class ExtractedMethod : IExtractedMethod
     {
-        private const string NEW_METHOD = "NewMethod";
-
-        public string MethodName { get; set; }
+        public string MethodName { get => GetNewMethodName(); }
+        public string NewMethodNameBase { get; set; }
         public Accessibility Accessibility { get; set; }
         public bool SetReturnValue { get; set; }
         public ExtractMethodParameter ReturnValue { get; set; }
         public IEnumerable<ExtractMethodParameter> Parameters { get; set; }
-
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        public ExtractedMethod(IDeclarationFinderProvider declarationFinderProvider)
+        {
+            _declarationFinderProvider = declarationFinderProvider;
+            NewMethodNameBase = RefactoringsUI.ExtractMethod_DefaultNewMethodName;
+        }
         public virtual string NewMethodCall()
         {
-            if (String.IsNullOrWhiteSpace(MethodName))
-            {
-                MethodName = NEW_METHOD;
-            }
-            string result = "" + MethodName;
-            string argList;
-            if (Parameters.Any())
-            {
-                argList = String.Join(", ", Parameters.Select(p => p.Name));
-                result += " " + argList;
-            }
-            return result;
+            return string.Empty; //TODO - move logic over from model
+            //if (string.IsNullOrWhiteSpace(MethodName))
+            //{
+            //    MethodName = NewMethodNameBase;
+            //}
+            //string result = "" + MethodName;
+            //string argList;
+            //if (Parameters.Any())
+            //{
+            //    argList = string.Join(", ", Parameters.Select(p => p.Name));
+            //    result += " " + argList;
+            //}
+            //return result;
         }
-        public string getNewMethodName(IEnumerable<Declaration> declarations)
+        public string GetNewMethodName()
         {
-            var newMethodName = NEW_METHOD;
+            var newMethodName = NewMethodNameBase;
 
             var newMethodInc = 0;
             // iterate until we have a non-clashing method name.
-            while (isConflictingName(declarations, newMethodName))
+            while (IsConflictingName(newMethodName))
             {
                 newMethodInc++;
-                newMethodName = NEW_METHOD + newMethodInc;
+                newMethodName = NewMethodNameBase + newMethodInc;
             }
             return newMethodName;
         }
 
-        public bool isConflictingName(IEnumerable<Declaration> declarations, string methodName)
+        public bool IsConflictingName(string methodName)
         {
+            IEnumerable<Declaration> declarations = _declarationFinderProvider.DeclarationFinder.AllUserDeclarations;
             var existingName = declarations.FirstOrDefault(d =>
                         Enumerable.Contains(ProcedureTypes, d.DeclarationType)
                     && d.IdentifierName.Equals(methodName));
-            return (existingName != null);
+            return existingName != null;
         }
 
         public static readonly DeclarationType[] ProcedureTypes =
