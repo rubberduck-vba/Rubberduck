@@ -9,6 +9,7 @@ using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.SmartIndenter;
 using RubberduckTests.Settings;
+using Rubberduck.Refactorings.Exceptions.ExtractMethod;
 
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
@@ -378,13 +379,82 @@ End Sub";
             Assert.AreEqual(expectedReplacementCode, replacementCode);
         }
 
+        [Test(Description = "Inbound only reference normally would be ByVal but not allowed for array variables")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void AvoidNewMethodNameClash()
+        {
+            var inputCode = @"
+Sub Test
+    Dim a As Integer
+    a = 10
+    Debug.Print a
+End Sub
+
+Sub AnotherSub
+End Sub
+
+Sub AnotherSub1
+End Sub";
+            var selection = new Selection(4, 1, 4, 11);
+            var expectedNewMethodCode = @"
+Private Sub AnotherSub2(ByRef a As Integer)
+    a = 10
+End Sub";
+            var expectedReplacementCode = @"
+    AnotherSub2 a";
+            var model = InitialModel(inputCode, selection, true);
+            model.NewMethodName = "AnotherSub";
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
 
 
-        //TODO - test for valid method name
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void ThrowsWhenNeedToMoveMultivariableDeclaration()
+        {
+            var inputCode = @"
+Sub Test
+    Dim b As Integer, a As Integer
+    a = 10
+    a = a + 10
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 1, 4, 11);
+            var model = InitialModel(inputCode, selection, true);
+            Assert.Throws(typeof(UnableToMoveVariableDeclarationException), () => { var _ = model.NewMethodCode; } );
+        }
+
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void ThrowsWhenModifyingReturnValueOfFunction()
+        {
+            var inputCode = @"
+Function Test(ByVal i As Integer) As Integer
+    Dim a As Integer
+    if i > 0 Then
+        i = i - 1
+        a = Test(i) 'Recursive type call
+    End If
+    Test = 10 'Setting return value complicates things
+End Function";
+            var selection = new Selection(4, 1, 8, 55);
+            Assert.Throws(typeof(InvalidTargetSelectionException), () => {
+                var model = InitialModel(inputCode, selection, true);
+            });
+        }
+
+
         //TODO - add Dim a As New Object with declaration copied/split
         //TODO - add changes to original function return value (or raise error if too complex)
-        //TODO - multivariable declaration on one line
-        //TODO - exception testing
+        //TODO - exception testing to cover all exception types (and message???)
 
         protected override IRefactoring TestRefactoring(
             IRewritingManager rewritingManager,

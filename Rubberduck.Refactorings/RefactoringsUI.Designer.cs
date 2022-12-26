@@ -621,7 +621,8 @@ namespace Rubberduck.Refactorings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The current selection is not valid..
+        ///   Looks up a localized string similar to The current selection is not valid:
+        ///{0}.
         /// </summary>
         public static string ExtractMethod_InvalidSelectionMessage {
             get {
@@ -716,6 +717,15 @@ namespace Rubberduck.Refactorings {
         public static string ExtractMethod_TitleText {
             get {
                 return ResourceManager.GetString("ExtractMethod_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to move variable declaration.
+        /// </summary>
+        public static string ExtractMethod_UnableToMoveVariableDeclarationMessage {
+            get {
+                return ResourceManager.GetString("ExtractMethod_UnableToMoveVariableDeclarationMessage", resourceCulture);
             }
         }
         

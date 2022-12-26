@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.ExtractMethod;
-using Rubberduck.Parsing;
-using System.Text.RegularExpressions;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -28,9 +28,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public IEnumerable<string> ComponentNames =>
             _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Member).Where(d => d.ComponentName == QualifiedSelection.QualifiedName.ComponentName)
                 .Select(d => d.IdentifierName);
-        public string SourceMethodName { get; private set; }
+        public string SourceMethodName { get => TargetMethod.IdentifierName; }
         public Declaration TargetMethod { get; set; }
-        //public IEnumerable<Declaration> SourceVariables { get; private set; }
         public string NewMethodName
         {
             get => extractedMethod.MethodName;
@@ -61,47 +60,27 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         private void Setup()
         {
-            //if (string.IsNullOrWhiteSpace(NewMethodName))
-            //{
-            //    NewMethodName = RefactoringsUI.ExtractMethod_DefaultNewMethodName; //Check for conflicts - see other document for example code
-            //}
+            var functionReturnValueAssignments = TargetMethod.References
+                .Where(r => QualifiedSelection.Selection.Contains(r.Selection) &&
+                    (r.IsAssignment || r.IsSetAssignment));
+            if (functionReturnValueAssignments.Count() != 0)
+            {
+                var firstSelection = functionReturnValueAssignments.FirstOrDefault().QualifiedSelection;
+                var message = "Selection modifies the return value of the enclosing function"; //TODO - get from resx
+                throw new InvalidTargetSelectionException(firstSelection, message);
+            }
 
             SelectedCode = string.Join(Environment.NewLine, SelectedContexts.Select(c => c.GetText()));
 
-            //SourceVariables = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-            //    .Where(d => (Selection.Selection.Contains(d.Selection) &&
-            //                 d.QualifiedName.QualifiedModuleName == Selection.QualifiedName) ||
-            //                d.References.Any(r =>
-            //                    r.QualifiedModuleName.ComponentName == Selection.QualifiedName.ComponentName
-            //                    && r.QualifiedModuleName.ComponentName ==
-            //                    d.QualifiedName.QualifiedModuleName.ComponentName
-            //                    && Selection.Selection.Contains(r.Selection)))
-            //    .OrderBy(d => d.Selection.StartLine)
-            //    .ThenBy(d => d.Selection.StartColumn);
-
-            var declarationsInSelection = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(d => QualifiedSelection.Selection.Contains(d.Selection) &&
-                            d.QualifiedName.QualifiedModuleName == QualifiedSelection.QualifiedName)
-                .OrderBy(d => d.Selection.StartLine)
-                .ThenBy(d => d.Selection.StartColumn);
-            var referencesOfDeclarationsInSelection = (from dec in declarationsInSelection select dec.References).ToArray(); //debug purposes
+            var declarationsInSelection = GetDeclarationsInSelection(QualifiedSelection);
 
             var sourceMethodParameters = ((IParameterizedDeclaration)TargetMethod).Parameters;
             var sourceMethodSelection = new QualifiedSelection(QualifiedSelection.QualifiedName,
                 new Selection(TargetMethod.Context.Start.Line, TargetMethod.Context.Start.Column, TargetMethod.Context.Stop.Line, TargetMethod.Context.Stop.Column));
 
-            //TODO - refactor below and declarationsInSelection to generic declarations in selection method if stay consistent
-            var declarationsInParentMethod = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(d => sourceMethodSelection.Selection.Contains(d.Selection) &&
-                            d.QualifiedName.QualifiedModuleName == sourceMethodSelection.QualifiedName)
-                .OrderBy(d => d.Selection.StartLine)
-                .ThenBy(d => d.Selection.StartColumn);
+            var declarationsInParentMethod = GetDeclarationsInSelection(sourceMethodSelection);
 
             //List of "inbound" variables. Parent procedure parameters + explicit dims which get referenced inside the selection.
-            //Ideally excluding those declared but not assigned before the selection. Refinement to change this later
-            //No need to check if reference is outside of method because just dealing with local parameters and declarations
-            //Add function reference if it is a function?
-            //Would ideally identify variables assigned before the selection, not just declared. Could assume any reference before the selection is an assignment?
             //TODO - add case where reference earlier in the same line as where the selection starts (unusual but could exist if using colons to separate multiple statements)
             var inboundParameters = sourceMethodParameters.Where(d => d.References.Any(r => QualifiedSelection.Selection.Contains(r.Selection)));
             var inboundLocalVariables = declarationsInParentMethod.Where(d => d.References.Any(r => QualifiedSelection.Selection.Contains(r.Selection)) &&
@@ -112,7 +91,33 @@ namespace Rubberduck.Refactorings.ExtractMethod
             var outboundVariables = sourceMethodParameters.Concat(declarationsInParentMethod)
                 .Where(d => d.References.Any(r => QualifiedSelection.Selection.Contains(r.Selection)) && d.References.Any(r => r.Selection.StartLine > QualifiedSelection.Selection.EndLine));
 
-            //Set up parameters
+            SetUpParameters(inboundVariables, outboundVariables);
+
+            //Variables to have declarations moved out of the selection
+            // - where declaration is in the selection and it is a ByRef variable i.e. intersection of declarations in selection and outbound
+            _declarationsToMoveOut = declarationsInSelection.Intersect(outboundVariables)
+                .OrderByDescending(d => d.Selection.StartLine)
+                .ThenByDescending(d => d.Selection.StartColumn);
+
+            //Variables to have declarations moved into the selection
+            // - where declaration is before the selection but only references are inside the selection
+            _declarationsToMoveIn = declarationsInParentMethod.Except(declarationsInSelection)
+                                    .Where(d => d.References.Any(r => QualifiedSelection.Selection.Contains(r.Selection)) &&
+                                           !d.References.Any(r => r.Selection.EndLine < QualifiedSelection.Selection.StartLine) &&
+                                           !d.References.Any(r => r.Selection.StartLine > QualifiedSelection.Selection.EndLine));
+        }
+
+        private IOrderedEnumerable<Declaration> GetDeclarationsInSelection(QualifiedSelection qualifiedSelection)
+        {
+            return _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+                .Where(d => qualifiedSelection.Selection.Contains(d.Selection) &&
+                            d.QualifiedName.QualifiedModuleName == qualifiedSelection.QualifiedName)
+                .OrderBy(d => d.Selection.StartLine)
+                .ThenBy(d => d.Selection.StartColumn);
+        }
+
+        private void SetUpParameters(IEnumerable<Declaration> inboundVariables, IEnumerable<Declaration> outboundVariables)
+        {
             Parameters = new ObservableCollection<ExtractMethodParameter>();
 
             foreach (var declaration in inboundVariables.Union(outboundVariables))
@@ -149,24 +154,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
                                                           paramType, declaration.IdentifierName,
                                                           declaration.IsArray, declaration.IsObject, canReturn));
             }
-
-            //Variables to have declarations moved out of the selection
-            // - where declaration is in the selection and it is a ByRef variable i.e. intersection of declarations in selection and outbound
-            _declarationsToMoveOut = declarationsInSelection.Intersect(outboundVariables)
-                .OrderByDescending(d => d.Selection.StartLine)
-                .ThenByDescending(d => d.Selection.StartColumn);
-
-            //Variables to have declarations moved into the selection
-            // - where declaration is before the selection but only references are inside the selection
-            _declarationsToMoveIn = declarationsInParentMethod.Except(declarationsInSelection)
-                                    .Where(d => d.References.Any(r => QualifiedSelection.Selection.Contains(r.Selection)) &&
-                                           !d.References.Any(r => r.Selection.EndLine < QualifiedSelection.Selection.StartLine) &&
-                                           !d.References.Any(r => r.Selection.StartLine > QualifiedSelection.Selection.EndLine));
-
-            //List of neither "inbound" or "outbound" (need the declaration copied inside the selection OR moved if careful but can leave inspections to pick up unnecessary declarations)
-            //Only applies if the list of inbound variables excludes those declared but not assigned before the selection
-            //????
-
         }
 
         public string SelectedCode { get; private set; }
@@ -213,7 +200,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     //1) Go up to Block ancester
                     //2) Find BlockStmt enclosing the declaration
                     //3) Check if preceding or following BlockStmts (if exist) are on the same line (preceding.Stop or following.Start)
-                    //4) Throw error or rebuild line
+                    //4) preceding blocks seem okay except for indentation. following blocks
 
 
                     //Remove declaration range from selected code
@@ -333,6 +320,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         private string FrontPadding(VBAParser.BlockStmtContext context)
         {
+            //TODO - starts from block statement but that could be following another statement e.g. a = 1 : b = 2, so better to find whole line
             var paddingChars = context.Start.Column;
             if (paddingChars > 0)
             {

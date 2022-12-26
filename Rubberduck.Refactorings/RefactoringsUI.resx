@@ -289,7 +289,9 @@ A private class can still implement a public interface.</value>
     <value>Please specify method name, return type and/or parameters (if applicable), and other options.</value>
   </data>
   <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
-    <value>The current selection is not valid.</value>
+    <value>The current selection is not valid:
+{0}</value>
+    <comment>0: Specific reason for not being valid</comment>
   </data>
   <data name="ExtractMethod_NoneSelected" xml:space="preserve">
     <value>(none)</value>
@@ -646,5 +648,8 @@ Do you want to proceed?</value>
   </data>
   <data name="ExtractMethod_ParameterNameColumnHeader" xml:space="preserve">
     <value>Name</value>
+  </data>
+  <data name="ExtractMethod_UnableToMoveVariableDeclarationMessage" xml:space="preserve">
+    <value>Unable to move variable declaration</value>
   </data>
 </root>

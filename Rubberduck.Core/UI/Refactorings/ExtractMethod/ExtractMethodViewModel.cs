@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Forms;
-using NLog;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractMethod;
-using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
 {
@@ -25,7 +22,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         {
             State = state;
             _messageBox = messageBox;
-            _model = model;
+            //_model = model;
         }
 
         private bool _wired;
@@ -121,25 +118,5 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         {
             base.DialogOk();
         }
-
-        private ExtractMethodModel _model;
-        //public ExtractMethodModel Model
-        //{
-        //    get => _model;
-        //    set
-        //    {
-        //        _model = value;
-        //        // Note: some of the property change will cascade
-        //        // so we do not need to call all possible properties
-        //        // depending on the Model.
-        //        OnPropertyChanged(nameof(NewMethodName));
-        //        OnPropertyChanged(nameof(ReturnParameter));
-        //        OnPropertyChanged(nameof(Parameters));
-        //        if (!_wired)
-        //        {
-        //            WireParameterEvents();
-        //        }
-        //    }
-        //}
     }
 }

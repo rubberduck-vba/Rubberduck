@@ -173,8 +173,5 @@ End Sub";
                 Assert.AreEqual(expected, actual);
             }
         }
-
-
-        //On ... GoSub, On ... GoTo
     }
 }

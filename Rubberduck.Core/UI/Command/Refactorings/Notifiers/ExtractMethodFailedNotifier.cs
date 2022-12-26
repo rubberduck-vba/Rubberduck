@@ -19,7 +19,10 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             {
                 case UnableToMoveVariableDeclarationException unableToMoveVariableDeclaration:
                     Logger.Warn(unableToMoveVariableDeclaration);
-                    return RefactoringsUI.ExtractMethod_InvalidSelectionMessage; //TODO - improve this message
+                    return RefactoringsUI.ExtractMethod_UnableToMoveVariableDeclarationMessage; //TODO - improve this message to show declaration
+                case InvalidTargetSelectionException invalidTargetSelection:
+                    return string.Format(RefactoringsUI.ExtractMethod_InvalidSelectionMessage, invalidTargetSelection.Message);
+                //case 
                 default:
                     return base.Message(exception);
             }
