@@ -451,9 +451,69 @@ End Function";
             });
         }
 
+        [Test(Description = "Handle indenting and splitting of code when two statements in one colon-separated line")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void FindCorrectIndentingForReplacementCode()
+        {
+            var inputCode = @"
+Sub Test
+    Dim a As Integer: Dim b As Integer
+    a = 10
+    b = 12
+    Debug.Print a + b
+End Sub";
+            var selection = new Selection(3, 23, 6, 22);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod()
+    Dim a As Integer
+    Dim b As Integer
+    a = 10
+    b = 12
+    Debug.Print a + b
+End Sub";
+            var expectedReplacementCode = @"
+    NewMethod";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+
+        [Test(Description = "Two references to a variable in the same line, only one extracted")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void SplitOutLogicalStatementFromMultistatementLine()
+        {
+            var inputCode = @"
+Sub splitter()
+    Dim a As Integer
+    Dim b As Integer
+    b = 10: b = b + 10
+    a = b
+    Debug.Print a
+End Sub";
+            var selection = new Selection(5, 13, 6, 10);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByVal b As Integer, ByRef a As Integer)
+    b = b + 10
+    a = b
+End Sub";
+            var expectedReplacementCode = @"
+    NewMethod b, a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
 
         //TODO - add Dim a As New Object with declaration copied/split
-        //TODO - add changes to original function return value (or raise error if too complex)
         //TODO - exception testing to cover all exception types (and message???)
 
         protected override IRefactoring TestRefactoring(

@@ -83,13 +83,19 @@ namespace Rubberduck.Refactorings.ExtractMethod
             //List of "inbound" variables. Parent procedure parameters + explicit dims which get referenced inside the selection.
             //TODO - add case where reference earlier in the same line as where the selection starts (unusual but could exist if using colons to separate multiple statements)
             var inboundParameters = sourceMethodParameters.Where(d => d.References.Any(r => QualifiedSelection.Selection.Contains(r.Selection)));
-            var inboundLocalVariables = declarationsInParentMethod.Where(d => d.References.Any(r => QualifiedSelection.Selection.Contains(r.Selection)) &&
-                                                                              d.References.Any(r => r.Selection.EndLine < QualifiedSelection.Selection.StartLine));
+            var inboundLocalVariables = declarationsInParentMethod
+                .Where(d => d.References.Any(r => QualifiedSelection.Selection.Contains(r.Selection)) &&
+                       (d.References.Any(r => r.Selection.EndLine < QualifiedSelection.Selection.StartLine ||
+                                        (r.Selection.EndLine == QualifiedSelection.Selection.StartLine &&
+                                         r.Selection.EndColumn < QualifiedSelection.Selection.StartColumn))));
             var inboundVariables = inboundParameters.Concat(inboundLocalVariables);
 
             //List of "outbound" variables. Any variables assigned a value in the selection which are then referenced after the selection
             var outboundVariables = sourceMethodParameters.Concat(declarationsInParentMethod)
-                .Where(d => d.References.Any(r => QualifiedSelection.Selection.Contains(r.Selection)) && d.References.Any(r => r.Selection.StartLine > QualifiedSelection.Selection.EndLine));
+                .Where(d => d.References.Any(r => QualifiedSelection.Selection.Contains(r.Selection)) &&
+                                (d.References.Any(r => r.Selection.StartLine > QualifiedSelection.Selection.EndLine ||
+                                                 (r.Selection.StartLine == QualifiedSelection.Selection.EndLine &&
+                                                  r.Selection.StartColumn > QualifiedSelection.Selection.EndColumn))));
 
             SetUpParameters(inboundVariables, outboundVariables);
 
@@ -103,8 +109,12 @@ namespace Rubberduck.Refactorings.ExtractMethod
             // - where declaration is before the selection but only references are inside the selection
             _declarationsToMoveIn = declarationsInParentMethod.Except(declarationsInSelection)
                                     .Where(d => d.References.Any(r => QualifiedSelection.Selection.Contains(r.Selection)) &&
-                                           !d.References.Any(r => r.Selection.EndLine < QualifiedSelection.Selection.StartLine) &&
-                                           !d.References.Any(r => r.Selection.StartLine > QualifiedSelection.Selection.EndLine));
+                                           !d.References.Any(r => r.Selection.EndLine < QualifiedSelection.Selection.StartLine ||
+                                                            (r.Selection.EndLine == QualifiedSelection.Selection.StartLine &&
+                                                             r.Selection.EndColumn < QualifiedSelection.Selection.StartColumn)) &&
+                                           !d.References.Any(r => r.Selection.StartLine > QualifiedSelection.Selection.EndLine ||
+                                                            (r.Selection.StartLine == QualifiedSelection.Selection.EndLine &&
+                                                             r.Selection.StartColumn > QualifiedSelection.Selection.EndColumn)));
         }
 
         private IOrderedEnumerable<Declaration> GetDeclarationsInSelection(QualifiedSelection qualifiedSelection)
@@ -157,6 +167,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         }
 
         public string SelectedCode { get; private set; }
+        private int SelectionIndentation;
 
         //Code excluding declarations that are to be moved out of the selection
         public string SelectedCodeToExtract 
@@ -170,10 +181,21 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 //TODO - create way to map selection to the string or confirm that commented out code above works (including whitespace)
 
                 var targetMethodSelection = TargetMethod.Selection;
-                var selectionCode = targetMethodCode.Skip(QualifiedSelection.Selection.StartLine - targetMethodSelection.StartLine)
-                                                    .Take(QualifiedSelection.Selection.EndLine - QualifiedSelection.Selection.StartLine + 1)
-                                                    .ToList();
                 var selectionToExtract = QualifiedSelection.Selection;
+                var selectionCode = targetMethodCode.Skip(selectionToExtract.StartLine - targetMethodSelection.StartLine)
+                                                    .Take(selectionToExtract.EndLine - selectionToExtract.StartLine + 1)
+                                                    .ToList();
+                SelectionIndentation = selectionCode[0].Length - selectionCode[0].TrimStart(' ').Length;
+                //Handle first and last lines of selection.
+                //As a start, detect if code on those lines that is not in the selection and throw error
+                if (selectionToExtract.StartColumn > 1)
+                {
+                    selectionCode[0] = selectionCode[0].Substring(selectionToExtract.StartColumn - 1);
+                }
+                if (selectionToExtract.EndColumn < targetMethodCode[selectionToExtract.EndLine - selectionToExtract.StartLine].Length)
+                {
+                    selectionCode[selectionCode.Count - 1] = selectionCode[selectionCode.Count - 1].Substring(0, selectionToExtract.EndColumn - 1);
+                }
 
                 foreach (var decl in _declarationsToMoveOut.Except(_declarationsToMoveOut.Where(d => d.IdentifierName == ReturnParameter.Name)))
                 {
@@ -207,17 +229,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     selectionCode.RemoveAt(startLine - selectionToExtract.StartLine);
                 }
 
-                //TODO - Handle first and last lines of selection. Could be affected by previous moves, so need better approach using parse tree.
-                //As a start, detect if code on those lines that is not in the selection and throw error
-                //if (selectionToExtract.StartColumn > 1)
-                //{
-                //    selectionCode[0] = selectionCode[0].Substring(selectionToExtract.StartColumn - 1);
-                //}
-                //if (selectionToExtract.EndColumn < targetMethodCode[selectionToExtract.EndLine - selectionToExtract.StartLine].Length)
-                //{
-                //    selectionCode[selectionCode.Count - 1] = selectionCode[selectionCode.Count - 1].Substring(0, selectionToExtract.EndColumn);
-                //}
-
                 //var selectionsToMoveOut = (from dec in _declarationsToMoveOut 
                 //                           orderby dec.Selection.StartLine, dec.Selection.StartColumn 
                 //                           select dec.Selection);
@@ -234,16 +245,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             get
             {
                 var strings = new List<string> { string.Empty };
-                string indentation;
-                if (SelectedContexts.First().GetType() == typeof(VBAParser.BlockStmtContext))
-                {
-                    indentation = FrontPadding((VBAParser.BlockStmtContext)SelectedContexts.First());
-                }
-                else
-                {
-                    var enclosingStatementContext = SelectedContexts.First().GetAncestor<VBAParser.BlockStmtContext>();
-                    indentation = FrontPadding(enclosingStatementContext);                    
-                }
+                var indentation = new string(' ', SelectionIndentation);
 
                 foreach (var dec in _declarationsToMoveOut)
                 {
@@ -259,7 +261,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 }
 
                 // Make call to new method
-                var argList = string.Join(",", from p in ArgumentsToPass select p.Name);
+                var argList = string.Join(", ", from p in ArgumentsToPass select p.Name);
 
                 if (ReturnParameter == ExtractMethodParameter.None)
                 {
@@ -315,20 +317,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 var indentedStrings = new List<string> { string.Empty }.Concat(_indenter.Indent(strings));
 
                 return string.Join(Environment.NewLine, indentedStrings);
-            }
-        }
-
-        private string FrontPadding(VBAParser.BlockStmtContext context)
-        {
-            //TODO - starts from block statement but that could be following another statement e.g. a = 1 : b = 2, so better to find whole line
-            var paddingChars = context.Start.Column;
-            if (paddingChars > 0)
-            {
-                return new string(' ', paddingChars);
-            }
-            else
-            {
-                return string.Empty;
             }
         }
 
