@@ -90,9 +90,6 @@
       <HintPath>..\libs\Office.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="stdole">
-      <HintPath>$(MSBuildProgramFiles32)\Common Files\microsoft shared\MSEnv\PublicAssemblies\stdole.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
@@ -109,5 +106,6 @@
     <PackageReference Include="NLog.Schema">
       <Version>4.5.10</Version>
     </PackageReference>
+    <PackageReference Include="stdole" Version="7.0.3300" />
   </ItemGroup>
 </Project>
