@@ -8,20 +8,6 @@
     <AssemblyName>Rubberduck.Deployment.Build</AssemblyName>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseMetaProject.csproj" />
-  <!-- 
-    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll"
-    
-<![CDATA[
-System.IntPtr ptr = System.IntPtr.Zero;
-
-if(System.Runtime.InteropServices.Marshal.SizeOf(ptr) == 8)
-	Bitness = "x64";
-else if(System.Runtime.InteropServices.Marshal.SizeOf(ptr) == 4)
-	Bitness = "x32";
-else
-	Bitness = "Unknown";
-]]>    
-  -->
   <UsingTask
     TaskName="GetMSBuildBitness"
     TaskFactory="CodeTaskFactory"
