@@ -16,6 +16,7 @@ namespace Rubberduck.UnitTesting
             var hook = LocalHook.Create(procAddress, callbackDelegate, null);
             hook.ThreadACL.SetInclusiveACL(new[] { 0 });
             _hooks.Add(hook);
+            NativeFunctionAddress = hook.HookBypassAddress;
         }
 
         protected Verifier Verifier { get; } = new Verifier();
@@ -23,6 +24,7 @@ namespace Rubberduck.UnitTesting
         internal bool Throws { get; set; }
         internal string ErrorDescription { get; set; }
         internal int ErrorNumber { get; set; }
+        protected IntPtr NativeFunctionAddress { get; set; }
 
         protected void TrackUsage(string parameter, IntPtr value)
         {
@@ -48,6 +50,21 @@ namespace Rubberduck.UnitTesting
             if (Throws)
             {
                 AssertHandler.RaiseVbaError(ErrorNumber, ErrorDescription);
+            }
+        }
+
+        public void DisableHook()
+        {
+            foreach (var hook in _hooks)
+            {
+                hook.ThreadACL.SetExclusiveACL(new[] { 0 });
+            }
+        }
+        public void EnableHook()
+        {
+            foreach (var hook in _hooks)
+            {
+                hook.ThreadACL.SetInclusiveACL(new[] { 0 });
             }
         }
 

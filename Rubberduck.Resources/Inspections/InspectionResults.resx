@@ -176,7 +176,7 @@
     <value>Parameter '{0}' can be passed by value.</value>
   </data>
   <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Parameter '{0}' is never used.</value>
+    <value>Parameter '{0}' is not used.</value>
   </data>
   <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
     <value>Procedure '{0}' can be written as a function.</value>
@@ -524,6 +524,10 @@ In memoriam, 1972-2018</value>
     <value>Misleading ByRef modifier used for parameter '{0}' ({1}).</value>
     <comment>{0} Parameter, {1} Member</comment>
   </data>
+  <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
+    <value>The public enumeration '{0}' should be declared within a Standard or Class module</value>
+    <comment>{0} identifier</comment>
+  </data>
   <data name="InvalidAnnotationInspection_IncompatibleComponentType" xml:space="preserve">
     <value>Annotation '{0}' cannot be used in a '{1}'.</value>
     <comment>{0} Annotation name; {1} annotation component type</comment>
@@ -551,5 +555,9 @@ In memoriam, 1972-2018</value>
   <data name="PublicControlFieldAccessInspection" xml:space="preserve">
     <value>Control '{0}.{1}' is being accessed from outside its parent form.</value>
     <comment>{0} parent UserForm name; {1} control name</comment>
+  </data>
+  <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
+    <value>Member '{0}' should be Private</value>
+    <comment>{0} Member Identifier</comment>
   </data>
 </root>

@@ -102,7 +102,7 @@ moduleDeclarationsElement :
     | defDirective
     | enumerationStmt 
     | eventStmt
-    | constStmt
+    | moduleConstStmt
     | implementsStmt
     | moduleVariableStmt
     | moduleOption
@@ -111,6 +111,11 @@ moduleDeclarationsElement :
 
 moduleVariableStmt :
 	variableStmt
+	(endOfLine attributeStmt)*
+;
+
+moduleConstStmt :
+	constStmt
 	(endOfLine attributeStmt)*
 ;
 
@@ -556,7 +561,7 @@ constantExpression : expression;
 
 variableStmt : (DIM | STATIC | visibility) whiteSpace variableListStmt;
 variableListStmt : variableSubStmt (whiteSpace? COMMA whiteSpace? variableSubStmt)*;
-variableSubStmt : (WITHEVENTS whiteSpace)? identifier (whiteSpace? LPAREN whiteSpace? (subscripts whiteSpace?)? RPAREN)? (whiteSpace asTypeClause)?;
+variableSubStmt : (WITHEVENTS whiteSpace)? identifier (whiteSpace? arrayDim)? (whiteSpace asTypeClause)?;
 
 whileWendStmt : 
     WHILE whiteSpace expression endOfStatement 
@@ -583,10 +588,6 @@ scaleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? SCALE whiteSpace tu
 pSetSpecialForm : (expression whiteSpace? DOT whiteSpace?)? PSET (whiteSpace STEP)? whiteSpace? tuple whiteSpace? (COMMA whiteSpace? expression)?;
 tuple : LPAREN whiteSpace? expression whiteSpace? COMMA whiteSpace? expression whiteSpace? RPAREN;
 lineSpecialFormOption : {EqualsStringIgnoringCase(TextOf(TokenAtRelativePosition(1)),"b","bf")}? unrestrictedIdentifier;
-
-subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
-
-subscript : (expression whiteSpace TO whiteSpace)? expression;
 
 unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
 legalLabelIdentifier : { !IsTokenType(TokenTypeAtRelativePosition(1),DOEVENTS,END,CLOSE,ELSE,LOOP,NEXT,RANDOMIZE,REM,RESUME,RETURN,STOP,WEND)}? identifier | markerKeyword;

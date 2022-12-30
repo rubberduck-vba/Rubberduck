@@ -241,7 +241,6 @@
   </data>
   <data name="ImplicitByRefModifierInspection" xml:space="preserve">
     <value>Il parametro '{0}' viene passato implicitamente per riferimento.</value>
-    
   </data>
   <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
     <value>Nell'espressione '{0}' è presente un accesso implicito al membro predefinito a '{1}'.</value>
@@ -400,9 +399,6 @@
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
     <value>Il parametro '{0}' può essere passato per valore.</value>
   </data>
-  <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Il parametro '{0}' non è mai usato.</value>
-  </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
     <value>La procedura '{0}' può essere scritta come una funzione.</value>
     <comment>{0} Nome procedura</comment>
@@ -419,11 +415,10 @@
   </data>
   <data name="RedundantOptionInspection" xml:space="preserve">
     <value>'{0}' non ha effetto.</value>
-    <comment>'{0}'  l'intero testo di ModuleOptionContext</comment>
+    <comment>'{0}' l'intero testo di ModuleOptionContext</comment>
   </data>
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Il riferimento all'oggetto '{0}' è istanziato automaticamente.</value>
-    
   </data>
   <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
     <value>Alla variabile '{0}' di tipo dichiarato '{1}' viene impostato un valore assegnato con il tipo dichiarato incompatibile '{2}'.</value>
@@ -537,5 +532,32 @@ In memoriam, 1972-2018</value>
   <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
     <value>'{0}' non è (ancora?) un'annotazione di Rubberduck conosciuta</value>
     <comment>{0} nome annotazione non riconosciuta</comment>
+  </data>
+  <data name="IIfSideEffectInspection" xml:space="preserve">
+    <value>'{0}' invocato dalla Funzione 'IIf'</value>
+    <comment>{0} nome del metodo</comment>
+  </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>Accesso al controllo '{0}.{1}' dall'esterno della maschera parent.</value>
+    <comment>{0} nome della UserForm parent; {1} nome del controllo</comment>
+  </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>Tentativo di assegnazione alla Proprietà di Sola Lettura '{0}'</value>
+    <comment>{0} Nome della proprietà</comment>
+  </data>
+  <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
+    <value>L'identificatore '{0}' in '{1}' si riferisce in modo sospetto all'istanza predefinita di quel tipo di classe.</value>
+    <comment>{0} nome dell'identificatore; {1} espressione/contesto</comment>
+  </data>
+  <data name="ParameterNotUsedInspection" xml:space="preserve">
+    <value>Il parametro '{0}' non è usato.</value>
+  </data>
+  <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
+    <value>L'enumerazione pubblica '{0}' dovrebbe essere dichiarata all'interno di un modulo Standard o di Classe</value>
+    <comment>{0} identificatore</comment>
+  </data>
+  <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
+    <value>Il Membro {0} dovrebbe essere Private</value>
+    <comment>{0} Identificatore del Membro</comment>
   </data>
 </root>

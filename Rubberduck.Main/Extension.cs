@@ -193,7 +193,7 @@ namespace Rubberduck
 
                 if (_initialSettings?.CanShowSplash ?? false)
                 {
-                    splash = new Splash2021(new VersionCheck.VersionCheck(typeof(Splash2021).Assembly.GetName().Version));
+                    splash = new Splash2021(new VersionCheck.VersionCheckService(typeof(Splash2021).Assembly.GetName().Version));
                     splash.Show();
                     splash.Refresh();
                 }

@@ -9,23 +9,32 @@ using Rubberduck.Resources.Inspections;
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
-    /// Flags declaration statements spanning multiple physical lines of code.
+    /// Flags declaration statements declaring multiple variables.
     /// </summary>
     /// <why>
-    /// Declaration statements should generally declare a single variable.
+    /// Declaration statements should generally declare a single variable. 
+    /// Although this inspection does not take variable types into account, it is a common mistake to only declare an explicit type on the last variable in a list.
     /// </why>
     /// <example hasResult="true">
     /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
-    /// Dim foo As Long, bar As Long
+    /// 'note: RowNumber is untyped / implicitly Variant
+    /// Dim RowNumber, ColumnNumber As Long
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
+    /// <![CDATA[
+    /// Dim RowNumber As Long, ColumnNumber As Long
     /// ]]>
     /// </module>
     /// </example>
     /// <example hasResult="false">
     /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
-    /// Dim foo As Long 
-    /// Dim bar As Long 
+    /// Dim RowNumber As Long 
+    /// Dim ColumnNumber As Long 
     /// ]]>
     /// </module>
     /// </example>

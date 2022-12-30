@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Rubberduck.SmartIndenter
 {
-    internal class LogicalCodeLine
+    public class LogicalCodeLine
     {
         private readonly List<AbsoluteCodeLine> _lines = new List<AbsoluteCodeLine>();
         private AbsoluteCodeLine _rebuilt;
@@ -47,9 +47,20 @@ namespace Rubberduck.SmartIndenter
             get
             {
                 RebuildContinuedLine();
-                return _rebuilt.Segments.Count() < 2
+                if (_rebuilt.ContainsOnlyComment)
+                {
+                    return 0;
+                }
+                var indents = _rebuilt.Segments.Count() < 2
                     ? _rebuilt.NextLineIndents
                     : _rebuilt.Segments.Select(s => new AbsoluteCodeLine(s, _settings)).Select(a => a.NextLineIndents).Sum();
+
+                if (_rebuilt.ContainsIfThenWithColonNoElse)
+                {
+                    indents--;
+                }
+                return indents;
+
             }
         }
 
@@ -191,7 +202,7 @@ namespace Rubberduck.SmartIndenter
             return _lines.Aggregate(string.Empty, (x, y) => x + y.ToString());
         }
 
-        private static readonly Regex StartIgnoreRegex = new Regex(@"^(\d*\s)?\s*[LR]?Set\s|^(\d*\s)?\s*Let\s|^(\d*\s)?\s*(Public|Private)\sDeclare\s(Function|Sub)|^(\d*\s+)", RegexOptions.IgnoreCase);
+        private static readonly Regex StartIgnoreRegex = new Regex(@"^(\d*\s)?\s*[LR]?Set\s|^(\d*\s)?\s*Let\s|^(\d*\s)?\s*(Public\s|Private\s)?Declare\s(PtrSafe\s)?(Function|Sub)|^(\d*\s+)", RegexOptions.IgnoreCase);
         private readonly Stack<AlignmentToken> _alignment = new Stack<AlignmentToken>();
         private int _nestingDepth;
 
@@ -220,7 +231,7 @@ namespace Rubberduck.SmartIndenter
                         {
                             var finished = _alignment.Count == stackPos + 1;                            
                             var token =_alignment.Pop();
-                            if (token.Type == AlignmentTokenType.Function && token.NestingDepth == _nestingDepth - 1)
+                            if (token.NestingDepth < _nestingDepth )
                             {
                                 _alignment.Push(token);
                                 finished = true;

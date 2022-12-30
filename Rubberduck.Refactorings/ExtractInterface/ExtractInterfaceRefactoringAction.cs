@@ -117,7 +117,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var interfaceAnnotation = new InterfaceAnnotation();
             var interfaceAnnotationText = $"'@{interfaceAnnotation.Name}{Environment.NewLine}";
 
-            return $"{optionExplicit}{Environment.NewLine}{folderAnnotationText}{exposedAnnotationText}{interfaceAnnotationText}{Environment.NewLine}{interfaceMembers}";
+            return $"{folderAnnotationText}{exposedAnnotationText}{interfaceAnnotationText}{Environment.NewLine}{optionExplicit}{Environment.NewLine}{interfaceMembers}";
         }
 
         private static string ExposedInterfaceHeader(string interfaceName)
@@ -358,7 +358,7 @@ Attribute VB_Exposed = True";
         private static bool IsParameterlessPropertyGet(ModuleBodyElementDeclaration member)
             => member.DeclarationType.Equals(DeclarationType.PropertyGet) && member.Parameters.Count == 0;
 
-        private static List<Declaration> SelectedDeclarations(ExtractInterfaceModel model) 
+        private static List<Declaration> SelectedDeclarations(ExtractInterfaceModel model)
             => model.SelectedMembers.Select(m => m.Member).ToList();
 
         private static List<Declaration> MembersWithExternalReferences(ExtractInterfaceModel model)

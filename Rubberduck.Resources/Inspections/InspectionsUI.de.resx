@@ -153,7 +153,7 @@
   <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
     <value>Nicht Anzeigen</value>
   </data>
-  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
+  <data name="CodeInspectionSettings_NamingAndConventionsIssues" xml:space="preserve">
     <value>Wartbarkeits- und Leserlichkeitsprobleme</value>
   </data>
   <data name="CodeInspectionSeverity_Warning" xml:space="preserve">

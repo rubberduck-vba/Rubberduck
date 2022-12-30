@@ -9,6 +9,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes
     public interface IQuickFix
     {
         void Fix(IInspectionResult result, IRewriteSession rewriteSession);
+        void Fix(IReadOnlyCollection<IInspectionResult> results, IRewriteSession rewriteSession);
         string Description(IInspectionResult result);
 
         bool CanFixMultiple { get; }

@@ -345,6 +345,40 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
         }
 
+        [Category("Unit Testing")]
+        [Test]
+        public void NotSequenceEqualShouldSucceedWithDifferentRanks()
+        {
+            var assert = new AssertClass();
+
+            int[] lengthsArray2D = new int[2] { 2, 2 };
+            Array myArray2D = Array.CreateInstance(typeof(Int32), lengthsArray2D);
+            int length1Darray = 4;
+            Array myArray1D = Array.CreateInstance(typeof(Int32), length1Darray);
+
+            assert.NotSequenceEquals(myArray2D, myArray1D);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("Unit Testing")]
+        [Test]
+        public void NotSequenceEqualShouldSucceedWithDifferentLowerBounds()
+        {
+            var assert = new AssertClass();
+
+            int[] lengthsArray1 = new int[1] { 2 };
+            int[] boundsArray1 = new int[1] { 0 };
+            Array arrayZeroBased = Array.CreateInstance(typeof(Int32),lengthsArray1, boundsArray1);
+            int[] lengthsArray2 = new int[1] { 2 };
+            int[] boundsArray2 = new int[1] { -1 };
+            Array arrayNegative1Based = Array.CreateInstance(typeof(Int32), lengthsArray2, boundsArray2);
+
+            assert.NotSequenceEquals(arrayZeroBased, arrayNegative1Based);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
         private static Type GetComObjectType() => Type.GetTypeFromProgID("Scripting.FileSystemObject");
         private object GetComObject() => Activator.CreateInstance(GetComObjectType());
     }

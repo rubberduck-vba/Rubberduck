@@ -18,7 +18,7 @@ namespace Rubberduck.UnitTesting
 
             if (PassThrough)
             {
-                VbeProvider.VbeNativeApi.Beep();
+                _interceptor.NativeCall();
             }
 
             e.Handled = true;

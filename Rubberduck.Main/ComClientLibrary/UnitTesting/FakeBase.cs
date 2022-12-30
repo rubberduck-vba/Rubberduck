@@ -75,7 +75,7 @@ namespace Rubberduck.UnitTesting
 
         #region IFake
 
-        private static readonly List<ReturnValueInfo> ReturnValues = new List<ReturnValueInfo>();
+        private readonly List<ReturnValueInfo> ReturnValues = new List<ReturnValueInfo>();
         public virtual void Returns(object value, int invocation = FakesProvider.AllInvocations)
         {
             ReturnValues.Add(new ReturnValueInfo(invocation, string.Empty, string.Empty, value));

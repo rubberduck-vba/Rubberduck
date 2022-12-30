@@ -1,7 +1,7 @@
 Attribute VB_Name = "FakeTests"
 Option Explicit
 
-Option OnPrivate Module
+Option Private Module
 
 'HERE BE DRAGONS.  Save your work in ALL open windows.
 '@TestModule
@@ -261,7 +261,7 @@ Public Sub NowFakePassThroughWorks()
 
     With Fakes.Now
         .Returns #1/1/2018 9:00:00 AM#
-        .Passthrough = True
+        .PassThrough = True
         Assert.IsTrue Now <> #1/1/2018 9:00:00 AM#
         .Verify.Once
     End With
@@ -293,7 +293,7 @@ Public Sub TimeFakePassThroughWorks()
 
     With Fakes.Time
         .Returns #9:00:00 AM#
-        .Passthrough = True
+        .PassThrough = True
         Assert.IsTrue Time <> #9:00:00 AM#
         .Verify.Once
     End With
@@ -326,7 +326,7 @@ Public Sub DateFakePassThroughWorks()
 
     With Fakes.Date
         .Returns #1/1/1993#
-        .Passthrough = True
+        .PassThrough = True
         Assert.IsTrue Date <> #1/1/1993#
         .Verify.Once
     End With
@@ -375,3 +375,404 @@ TestExit:
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
+'@TestMethod
+Public Sub RndWorks()
+    On Error GoTo TestFail
+
+    Dim return1 As Single
+    Dim return2 As Single
+    With Fakes.Rnd
+        .Returns 0.1
+        .ReturnsWhen "Number", 1, 0.99
+
+        return1 = Rnd()
+        Assert.IsTrue return1 = 0.1
+
+        return2 = Rnd(1)
+        Assert.IsTrue return2 = 0.99
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub RndPassthroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Rnd
+        .PassThrough = True
+        Debug.Print Rnd()
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub GetSettingFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.GetSetting
+        .Returns "Fakes work!"
+        Dim retVal As String
+        retVal = GetSetting("MyApp", "MySection", "MyKey")
+        .Verify.Once
+        .Verify.Parameter "appname", "MyApp"
+        .Verify.Parameter "section", "MySection"
+        .Verify.Parameter "key", "MyKey"
+        Assert.IsTrue retVal = "Fakes work!"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub GetSettingFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.GetSetting
+        .PassThrough = True
+        GetSetting "MyApp", "MySection", "MyKey"
+        .Verify.Once
+        .Verify.Parameter "appname", "MyApp"
+        .Verify.Parameter "section", "MySection"
+        .Verify.Parameter "key", "MyKey"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub GetAllSettingsFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.GetAllSettings
+        Dim fakeReturn As Variant
+        ReDim fakeReturn(0 To 1, 0 To 1)
+        fakeReturn(0, 0) = "Fake key 1"
+        fakeReturn(0, 1) = "Fake setting 1"
+        fakeReturn(1, 0) = "Fake key 2"
+        fakeReturn(1, 1) = "Fake setting 2"
+        .Returns fakeReturn
+        
+        Dim retVal As Variant
+        retVal = GetAllSettings("MyApp", "MySection")
+        .Verify.Once
+        .Verify.Parameter "appname", "MyApp"
+        .Verify.Parameter "section", "MySection"
+        Assert.IsTrue retVal(0, 0) = fakeReturn(0, 0)
+        Assert.IsTrue retVal(0, 1) = fakeReturn(0, 1)
+        Assert.IsTrue retVal(1, 0) = fakeReturn(1, 0)
+        Assert.IsTrue retVal(1, 1) = fakeReturn(1, 1)
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub GetAllSettingsFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.GetAllSettings
+        .PassThrough = True
+        GetAllSettings "MyApp", "MySection"
+        .Verify.Once
+        .Verify.Parameter "appname", "MyApp"
+        .Verify.Parameter "section", "MySection"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub GetAttrFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.GetAttr
+        .Returns vbHidden + vbReadOnly
+        Dim retVal As Integer
+        retVal = GetAttr("C:\Test\dummy.txt")
+        .Verify.Once
+        .Verify.Parameter "pathname", "C:\Test\dummy.txt"
+        Assert.IsTrue retVal = (vbHidden + vbReadOnly)
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub GetAttrFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.GetAttr
+        .PassThrough = True
+        Dim retVal As Integer
+        retVal = GetAttr("C:\Test\dummy.txt")
+        .Verify.Once
+        .Verify.Parameter "pathname", "C:\Test\dummy.txt"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub FileLenFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.FileLen
+        .Returns 1234
+        Dim retVal As Integer
+        retVal = FileLen("C:\Test\dummy.txt")
+        .Verify.Once
+        .Verify.Parameter "pathname", "C:\Test\dummy.txt"
+        Assert.IsTrue retVal = 1234
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub FileLenFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.FileLen
+        .PassThrough = True
+        Dim retVal As Integer
+        retVal = FileLen("C:\Test\dummy.txt")
+        .Verify.Once
+        .Verify.Parameter "pathname", "C:\Test\dummy.txt"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub FileDateTimeFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.FileDateTime
+        .Returns DateSerial(2022, 11, 6) + TimeSerial(12, 0, 0)
+        Dim retVal As Double
+        retVal = FileDateTime("C:\Test\dummy.txt")
+        .Verify.Once
+        .Verify.Parameter "pathname", "C:\Test\dummy.txt"
+        Assert.IsTrue retVal = DateSerial(2022, 11, 6) + TimeSerial(12, 0, 0)
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub FileDateTimeFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.FileDateTime
+        .PassThrough = True
+        Dim retVal As Double
+        retVal = FileDateTime("C:\Test\dummy.txt")
+        .Verify.Once
+        .Verify.Parameter "pathname", "C:\Test\dummy.txt"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub IMEStatusFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.IMEStatus
+        .Returns vbIMEModeAlpha
+        Dim retVal As Integer
+        retVal = IMEStatus()
+        .Verify.Once
+        Assert.IsTrue retVal = vbIMEModeAlpha
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub IMEStatusFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.IMEStatus
+        .PassThrough = True
+        Dim retVal As Integer
+        retVal = IMEStatus()
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub FreeFileFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.FreeFile
+        .Returns 300
+        Dim retVal As Integer
+        retVal = FreeFile(1)
+        .Verify.Once
+        .Verify.Parameter "rangenumber", 1
+        Assert.IsTrue retVal = 300
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub FreeFileFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.FreeFile
+        .PassThrough = True
+        Dim retVal As Integer
+        retVal = FreeFile()
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub DirFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Dir
+        .Returns "File1.txt", 1
+        .Returns "File2.txt", 2
+        .Returns "", 3
+        Dim retVal As String
+        retVal = Dir("C:\Nothing", vbHidden)
+        .Verify.Once
+        .Verify.Parameter "pathname", "C:\Nothing"
+        .Verify.Parameter "attributes", CInt(vbHidden)
+        Assert.IsTrue retVal = "File1.txt"
+        retVal = Dir()
+        Assert.IsTrue retVal = "File2.txt"
+        retVal = Dir()
+        Assert.IsTrue retVal = ""
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub DirFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Dir
+        .PassThrough = True
+        Dim retVal As String
+        retVal = Dir("C:\Test")
+        .Verify.Once
+        .Verify.Parameter "pathname", "C:\Test"
+        .Verify.Parameter "attributes", 0
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub TestIssue4476()
+    On Error GoTo TestFail
+    
+    'Arrange:
+    Fakes.Now.PassThrough = True
+    Fakes.Date.PassThrough = True
+    Dim retVal As Variant
+    
+    'Act:
+    retVal = Now
+    retVal = Date '<== KA-BOOOM
+    retVal = Now 'ensure fake reinstated
+    
+    'Assert:
+    Fakes.Now.Verify.Exactly 2
+    Fakes.Date.Verify.Once
+    
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub TestIssue5944()
+    On Error GoTo TestFail
+        
+    Fakes.InputBox.Returns 20
+    Fakes.MsgBox.Returns 20
+    
+    Dim inputBoxReturnValue As String
+    Dim msgBoxReturnValue As Integer
+    
+    inputBoxReturnValue = InputBox("Dummy")
+    msgBoxReturnValue = MsgBox("Dummy")
+    
+    Fakes.MsgBox.Verify.Once
+    Fakes.InputBox.Verify.Once
+    
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+

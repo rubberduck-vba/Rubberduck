@@ -17,7 +17,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// </summary>
     /// <inspections>
     /// <inspection name="NonReturningFunctionInspection" />
-    /// <inspection name="FunctionReturnValueNotUsedInspection" />
+    /// <inspection name="FunctionReturnValueAlwaysDiscardedInspection" />
     /// </inspections>
     /// <canfix multiple="true" procedure="false" module="true" project="false" all="false" />
     /// <example>

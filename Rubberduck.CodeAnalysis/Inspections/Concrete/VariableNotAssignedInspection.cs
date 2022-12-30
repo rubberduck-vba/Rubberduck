@@ -53,7 +53,24 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                    && !HasUdtType(declaration, finder) // UDT variables don't need to be assigned
                    && !declaration.References.Any(reference => reference.IsAssignment 
                                                                || reference.IsReDim //Ignores Variants used as arrays without assignment of an existing one.
-                                                               || IsAssignedByRefArgument(reference.ParentScoping, reference, finder));
+                                                               || IsAssignedByRefArgument(reference.ParentScoping, reference, finder))
+                   && !IsPublicInExposedClass(declaration);
+        }
+
+        private static bool IsPublicInExposedClass(Declaration procedure)
+        {
+            if (!(procedure.Accessibility == Accessibility.Public
+                    || procedure.Accessibility == Accessibility.Global))
+            {
+                return false;
+            }
+
+            if (!(Declaration.GetModuleParent(procedure) is ClassModuleDeclaration classParent))
+            {
+                return false;
+            }
+
+            return classParent.IsExposed;
         }
 
         private static bool HasUdtType(Declaration declaration, DeclarationFinder finder)

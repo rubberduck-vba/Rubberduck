@@ -688,7 +688,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 : SymbolList.TypeHintToTypeName[typeHint];
             var withEvents = context.WITHEVENTS() != null;
             var isAutoObject = asTypeClause != null && asTypeClause.NEW() != null;
-            bool isArray = context.LPAREN() != null;
+            bool isArray = context.arrayDim() != null;
             AddDeclaration(
                 CreateDeclaration(
                     name,
@@ -721,6 +721,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             var value = context.expression().GetText();
             var constStmt = (VBAParser.ConstStmtContext)context.Parent;
 
+            var key = (name, DeclarationType.Constant);
+            _attributes.TryGetValue(key, out var attributes);
+            _membersAllowingAttributes.TryGetValue(key, out var attributesPassContext);
+
             var declaration = new ValuedDeclaration(
                 new QualifiedMemberName(_qualifiedModuleName, name),
                 _parentDeclaration,
@@ -733,7 +737,9 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 DeclarationType.Constant,
                 value,
                 context,
-                identifier.GetSelection());
+                identifier.GetSelection(),
+                attributesPassContext: attributesPassContext,
+                attributes: attributes);
 
             AddDeclaration(declaration);
         }

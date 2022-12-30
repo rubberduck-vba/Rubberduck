@@ -18,15 +18,16 @@ namespace Rubberduck.UnitTesting.Fakes
         public void TimeCallback(IntPtr retVal)
         {
             OnCallBack(true);
-            if (!TrySetReturnValue())                          // specific invocation
+            if (!TrySetReturnValue())
             {
-                TrySetReturnValue(true);                       // any invocation
+                TrySetReturnValue(true);
             }
             if (PassThrough)
             {
-                object result;
-                VbeProvider.VbeNativeApi.GetTimeVar(out result);
-                Marshal.GetNativeVariantForObject(result, retVal);
+                FakesProvider.SuspendFake(typeof(Now));
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<TimeDelegate>(NativeFunctionAddress);
+                nativeCall(retVal);
+                FakesProvider.ResumeFake(typeof(Now));
                 return;
             }
             Marshal.GetNativeVariantForObject(ReturnValue ?? 0, retVal);

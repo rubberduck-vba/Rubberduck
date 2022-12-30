@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -328,11 +328,11 @@ BEGIN
 END
 Attribute VB_Name = ""IClass""
 Attribute VB_Exposed = True
-Option Explicit
-
 '@Folder(""MyFolder.MySubFolder"")
 '@Exposed
 '@Interface
+
+Option Explicit
 
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub

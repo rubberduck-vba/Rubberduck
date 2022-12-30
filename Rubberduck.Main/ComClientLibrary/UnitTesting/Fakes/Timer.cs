@@ -30,7 +30,8 @@ namespace Rubberduck.UnitTesting.Fakes
 
             if (PassThrough)
             {
-                return VbeProvider.VbeNativeApi.GetTimer();
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<TimerDelegate>(NativeFunctionAddress);
+                return nativeCall();
             }
             return Convert.ToSingle(ReturnValue ?? 0);
         } 

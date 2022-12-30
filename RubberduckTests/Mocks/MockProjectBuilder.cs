@@ -217,8 +217,8 @@ namespace RubberduckTests.Mocks
 
             result.Setup(m => m.Remove(It.IsAny<IVBComponent>())).Callback((IVBComponent c) =>
             {
-                _componentsMock.Remove(_componentsMock.First(m => m.Object == c));
-                _codeModuleMocks.Remove(_codeModuleMocks.First(m => m.Object.Parent == c));
+                _componentsMock.Remove(_componentsMock.First(m => m.Object.QualifiedModuleName == c.QualifiedModuleName));
+                _codeModuleMocks.Remove(_codeModuleMocks.First(m => m.Object.Parent.QualifiedModuleName == c.QualifiedModuleName));
             });
 
             result.Setup(m => m.Import(It.IsAny<string>())).Callback((string s) =>

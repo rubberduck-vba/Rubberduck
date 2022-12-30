@@ -808,7 +808,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter is not referred to..
+        ///   Looks up a localized string similar to Parameter is not used..
         /// </summary>
         public static string ParameterNotUsedInspection {
             get {
@@ -826,7 +826,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Procedure is not referred to..
+        ///   Looks up a localized string similar to Procedure/Function/Property is not used..
         /// </summary>
         public static string ProcedureNotUsedInspection {
             get {
@@ -852,6 +852,25 @@ namespace Rubberduck.Resources.Inspections {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Public enumeration declared within worksheet.
+        /// </summary>
+        public static string PublicEnumerationDeclaredInWorksheetInspection {
+            get {
+                return ResourceManager.GetString("PublicEnumerationDeclaredInWorksheetInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implementations of interfaces and event handlers should be Private.
+        /// </summary>
+        public static string PublicImplementationShouldBePrivateInspection {
+            get {
+                return ResourceManager.GetString("PublicImplementationShouldBePrivateInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Read-Only Property assignment.
         /// </summary>
         public static string ReadOnlyPropertyAssignmentInspection {
@@ -965,6 +984,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string SuspiciousPredeclaredInstanceAccessInspection {
             get {
                 return ResourceManager.GetString("SuspiciousPredeclaredInstanceAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Defined Type member is not used.
+        /// </summary>
+        public static string UDTMemberNotUsedInspection {
+            get {
+                return ResourceManager.GetString("UDTMemberNotUsedInspection", resourceCulture);
             }
         }
         
@@ -1086,7 +1114,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable is not referred to..
+        ///   Looks up a localized string similar to Variable is not used..
         /// </summary>
         public static string VariableNotUsedInspection {
             get {

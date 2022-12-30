@@ -194,6 +194,129 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        //ref issue #5964
+        public void NonReturningFunction_NoResult_AssignmenToUDTMembersInWithBlock()
+        {
+            const string inputCode = @"
+Private Type tipo
+    one As Long
+    two As Long
+End Type
+
+Function assigner() As tipo
+    With assigner
+        .one = 1
+        .two = 2
+    End With
+End Function
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        //ref issue #5964
+        public void NonReturningFunction_NoResult_AssignmenToUDTMembersInWithBlock_NestedWith_Inside()
+        {
+            const string inputCode = @"
+Private Type tipo
+    one As Long
+    two As Long
+End Type
+
+Function assigner() As tipo
+    Dim bar As tipo
+    With bar
+        .one = 3
+        .two = 2
+        With assigner
+            .one = 1
+            .two = 2
+        End With
+    End With
+End Function
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        //ref issue #5964
+        public void NonReturningFunction_NoResult_AssignmenToUDTMembersInWithBlock_NestedWith_Start()
+        {
+            const string inputCode = @"
+Private Type tipo
+    one As Long
+    two As Long
+End Type
+
+Function assigner() As tipo
+    Dim bar As tipo
+    With assigner
+        .one = 3
+        .two = 2
+        With bar
+            .one = 1
+            .two = 2
+        End With
+    End With
+End Function
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        //ref issue #5964
+        public void NonReturningFunction_NoResult_AssignmenToUDTMembersInWithBlock_NestedWith_End()
+        {
+            const string inputCode = @"
+Private Type tipo
+    one As Long
+    two As Long
+End Type
+
+Function assigner() As tipo
+    Dim bar As tipo
+    With assigner
+        With bar
+            .one = 1
+            .two = 2
+        End With
+        .one = 3
+        .two = 2
+    End With
+End Function
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        //ref issue #5964
+        public void NonReturningFunction_OneResult_AssignmenToUDTMembersOfOtherVariableInNestedWith()
+        {
+            const string inputCode = @"
+Private Type tipo
+    one As Long
+    two As Long
+End Type
+
+Function assigner() As tipo
+    Dim bar As tipo
+    With assigner
+        With bar
+            .one = 1
+            .two = 2
+        End With
+    End With
+End Function
+";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void NonReturningFunction_ReturnsResult_InterfaceImplementation()
         {
             //Input

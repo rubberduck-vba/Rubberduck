@@ -844,7 +844,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is never used..
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is not used..
         /// </summary>
         public static string ParameterNotUsedInspection {
             get {
@@ -888,6 +888,25 @@ namespace Rubberduck.Resources.Inspections {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to The public enumeration &apos;{0}&apos; should be declared within a Standard or Class module.
+        /// </summary>
+        public static string PublicEnumerationDeclaredInWorksheetInspection {
+            get {
+                return ResourceManager.GetString("PublicEnumerationDeclaredInWorksheetInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; should be Private.
+        /// </summary>
+        public static string PublicImplementationShouldBePrivateInspection {
+            get {
+                return ResourceManager.GetString("PublicImplementationShouldBePrivateInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attempt to assign Read-Only Property &apos;{0}&apos;.
         /// </summary>
         public static string ReadOnlyPropertyAssignmentInspection {

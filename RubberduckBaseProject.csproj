@@ -1,4 +1,4 @@
-<Project Skd="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <!--
     We're specifying the Sdk here to make sure appveyor correctly recognizes this as a .NET Core project
     Unfortunately this generates the warning MSB4011, because the including projects already define an Sdk
@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <Company>Rubberduck-VBA</Company>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>net462</TargetFramework>
     <LangVersion>7.2</LangVersion>
     <SolutionDir>$(MSBuildProjectDirectory)</SolutionDir>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>

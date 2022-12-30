@@ -612,4 +612,11 @@ Do you want to proceed?</value>
   <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
     <value>Annotation arguments of type 'Number' have to be a valid number in integer or floating point format.</value>
   </data>
+  <data name="MoveCloserToUsageDialog_TitleText" xml:space="preserve">
+    <value>Select Declaration Statement</value>
+  </data>
+  <data name="MoveCloserToUsageDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Select the new Type of Declaration Statement for '{0}'.</value>
+    <comment>0: Selected target</comment>
+  </data>
 </root>

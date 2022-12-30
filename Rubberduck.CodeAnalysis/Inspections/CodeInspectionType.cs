@@ -4,8 +4,9 @@
     {
         RubberduckOpportunities,
         LanguageOpportunities,
-        MaintainabilityAndReadabilityIssues,
+        NamingAndConventionsIssues,
         CodeQualityIssues,
         Performance,
+        Uncategorized,
     }
 }

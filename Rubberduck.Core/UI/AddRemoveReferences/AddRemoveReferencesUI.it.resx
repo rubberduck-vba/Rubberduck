@@ -131,6 +131,7 @@
   </data>
   <data name="BrowseFilterAccess" xml:space="preserve">
     <value>Database di Microsoft Access({0})|{0}</value>
+    <comment>{0} = elenco delle estensioni delimitato da punto e virgola nel formato *.ext</comment>
   </data>
   <data name="BrowseFilterActiveX" xml:space="preserve">
     <value>Controlli ActiveX (*.ocx)|*.ocx</value>
@@ -140,33 +141,40 @@
   </data>
   <data name="BrowseFilterExcel" xml:space="preserve">
     <value>File di Microsoft Excel ({0})|{0}</value>
+    <comment>{0} = elenco delle estensioni delimitato da punto e virgola nel formato *.ext</comment>
   </data>
   <data name="BrowseFilterExecutable" xml:space="preserve">
     <value>File eseguibili (*.exe;*.dll)|*.exe;*.dll</value>
   </data>
   <data name="BrowseFilterOutlook" xml:space="preserve">
     <value>File VBA di Outlook ({0})|{0}</value>
+    <comment>{0} = elenco delle estensioni delimitato da punto e virgola nel formato *.ext</comment>
   </data>
   <data name="BrowseFilterPowerPoint" xml:space="preserve">
     <value>File Addin di PowerPoint({0})|{0}</value>
+    <comment>{0} = elenco delle estensioni delimitato da punto e virgola nel formato *.ext</comment>
   </data>
   <data name="BrowseFilterPublisher" xml:space="preserve">
     <value>File di Publisher ({0}|{0}</value>
+    <comment>{0} = elenco delle estensioni delimitato da punto e virgola nel formato *.ext</comment>
   </data>
   <data name="BrowseFilterTypes" xml:space="preserve">
     <value>Tipi Libreria (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll</value>
   </data>
   <data name="BrowseFilterVisio" xml:space="preserve">
     <value>Tutti i file di Visio ({0})|{0}</value>
+    <comment>{0} = elenco delle estensioni delimitato da punto e virgola nel formato *.ext</comment>
   </data>
   <data name="BrowseFilterWord" xml:space="preserve">
     <value>Documenti di Word ({0})|{0}</value>
+    <comment>{0} = elenco delle estensioni delimitato da punto e virgola nel formato *.ext</comment>
   </data>
   <data name="Caption" xml:space="preserve">
     <value>Aggiungi/Rimuovi Riferimento...</value>
   </data>
   <data name="CaptionTemplate" xml:space="preserve">
     <value>Aggiungi/Rimuovi Riferimenti - {0}</value>
+    <comment>{0} = Nome del progetto</comment>
   </data>
   <data name="DefaultLocale" xml:space="preserve">
     <value>Standard</value>
