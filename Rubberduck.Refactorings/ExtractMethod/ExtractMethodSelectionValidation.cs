@@ -89,7 +89,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     procEndOfSignature = setStmt.endOfStatement();
                     break;
                 default:
-                    _invalidContexts.Add(Tuple.Create(procStartContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionNotInRecognisedProcedure);
+                    _invalidContexts.Add(Tuple.Create(procStartContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionNotInRecognisedProcedure));
                     return false;
             }
 
