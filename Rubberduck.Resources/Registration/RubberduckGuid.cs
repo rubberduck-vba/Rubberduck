@@ -26,6 +26,33 @@
         public const string IFakeGuid = UnitTestingGuidspace + "DF" + GuidSuffix;
         public const string IVerifyGuid = UnitTestingGuidspace + "E0" + GuidSuffix;
         public const string IStubGuid = UnitTestingGuidspace + "E1" + GuidSuffix;
+        public const string IParamsGuid = UnitTestingGuidspace + "E2" + GuidSuffix;
+
+        public const string ParamsClassGuid = UnitTestingGuidspace + "40" + GuidSuffix;
+        public const string ParamsMsgBoxGuid = UnitTestingGuidspace + "41" + GuidSuffix;
+        public const string ParamsInputBoxGuid = UnitTestingGuidspace + "42" + GuidSuffix;
+        public const string ParamsEnvironGuid = UnitTestingGuidspace + "44" + GuidSuffix;
+        public const string ParamsShellGuid = UnitTestingGuidspace + "47" + GuidSuffix;
+        public const string ParamsSendKeysGuid = UnitTestingGuidspace + "48" + GuidSuffix;
+        public const string ParamsKillGuid = UnitTestingGuidspace + "49" + GuidSuffix;
+        public const string ParamsMkDirGuid = UnitTestingGuidspace + "4A" + GuidSuffix;
+        public const string ParamsRmDirGuid = UnitTestingGuidspace + "4B" + GuidSuffix;
+        public const string ParamsChDirGuid = UnitTestingGuidspace + "4C" + GuidSuffix;
+        public const string ParamsChDriveGuid = UnitTestingGuidspace + "4D" + GuidSuffix;
+        public const string ParamsCurDirGuid = UnitTestingGuidspace + "4E" + GuidSuffix;
+        public const string ParamsRndGuid = UnitTestingGuidspace + "52" + GuidSuffix;
+        public const string ParamsDeleteSettingGuid = UnitTestingGuidspace + "53" + GuidSuffix;
+        public const string ParamsSaveSettingGuid = UnitTestingGuidspace + "54" + GuidSuffix;
+        public const string ParamsGetSettingGuid = UnitTestingGuidspace + "55" + GuidSuffix;
+        public const string ParamsRandomizeGuid = UnitTestingGuidspace + "56" + GuidSuffix;
+        public const string ParamsGetAllSettingsGuid = UnitTestingGuidspace + "57" + GuidSuffix;
+        public const string ParamsSetAttrGuid = UnitTestingGuidspace + "58" + GuidSuffix;
+        public const string ParamsGetAttrGuid = UnitTestingGuidspace + "59" + GuidSuffix;
+        public const string ParamsFileLenGuid = UnitTestingGuidspace + "5A" + GuidSuffix;
+        public const string ParamsFileDateTimeGuid = UnitTestingGuidspace + "5B" + GuidSuffix;
+        public const string ParamsFreeFileGuid = UnitTestingGuidspace + "5C" + GuidSuffix;
+        public const string ParamsDirGuid = UnitTestingGuidspace + "5E" + GuidSuffix;
+        public const string ParamsFileCopyGuid = UnitTestingGuidspace + "5F" + GuidSuffix;
 
         // Rubberduck API Guids:
         private const string ApiGuidspace = "69E0F7";
