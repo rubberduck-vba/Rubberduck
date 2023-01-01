@@ -20,7 +20,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         private readonly IProjectsProvider _projectsProvider;
         private readonly IEnumerable<Declaration> _declarations;
         private List<Tuple<ParserRuleContext, string>> _invalidContexts = new List<Tuple<ParserRuleContext, string>>();
-        private List<VBAParser.BlockStmtContext> _finalResults = new List<VBAParser.BlockStmtContext>();
+        private List<VBABaseParserRuleContext> _finalResults = new List<VBABaseParserRuleContext>();
 
         public ExtractMethodSelectionValidation(IEnumerable<Declaration> declarations, IProjectsProvider projectsProvider)
         {
@@ -30,7 +30,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public IEnumerable<Tuple<ParserRuleContext, string>> InvalidContexts => _invalidContexts;
 
-        public IEnumerable<VBAParser.BlockStmtContext> SelectedContexts => _finalResults;
+        public IEnumerable<VBABaseParserRuleContext> SelectedContexts => _finalResults;
 
         public static readonly DeclarationType[] ProcedureTypes =
         {
@@ -59,15 +59,15 @@ namespace Rubberduck.Refactorings.ExtractMethod
             var procEnd = ProcDeclaration(qualifiedSelection, endLine);
             if (procEnd == null)
             {
+                _invalidContexts.Add(Tuple.Create(null as ParserRuleContext, "Selection does not end inside a recognised procedure"));
                 return false;
-                //TODO - add invalid context so can report reason for failure
             }
 
             var procStart = ProcDeclaration(qualifiedSelection, startLine);
             if (procStart == null)
             {
+                _invalidContexts.Add(Tuple.Create(null as ParserRuleContext, "Selection does not start inside a recognised procedure"));
                 return false;
-                //TODO - add invalid context so can report reason for failure
             }
 
             var procStartContext = procStart.Context;
@@ -91,7 +91,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     procEndOfSignature = setStmt.endOfStatement();
                     break;
                 default:
-                    //TODO - add invalid context so can report reason for failure
+                    _invalidContexts.Add(Tuple.Create(null as ParserRuleContext, "Selection is not in a recognised procedure type"));
                     return false;
             }
             
@@ -108,6 +108,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
              */
             var visitor = new ExtractValidatorVisitor(qualifiedSelection, _invalidContexts);
             var results = visitor.Visit(procStartContext);
+            var endOfStatementContexts = visitor.EndOfStatementContexts;
+            endOfStatementContexts.Add(procEndOfSignature);
             _invalidContexts = visitor.InvalidContexts;
 
             if (!_invalidContexts.Any())
@@ -126,7 +128,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 // The visitor will not return the results in a sorted manner, so we need to arrange the contexts in the same order.
                 var blockStmtContexts = results as IList<VBAParser.BlockStmtContext> ?? results.ToList();
                 var sorted = blockStmtContexts.OrderBy(context => context.Start.StartIndex);
-                ContextIsContainedOnce(sorted, ref _finalResults, qualifiedSelection);
+                ContextIsContainedOnce(sorted, endOfStatementContexts, ref _finalResults, qualifiedSelection);
                 return blockStmtContexts.Any() && !_invalidContexts.Any() && _finalResults.Any();
             }
             return false;
@@ -135,17 +137,16 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public bool ContainsCompilerDirectives { get; set; }
 
         /// <summary>
-        /// The function ensure that we return only top-level BlockStmtContexts that
-        /// exists within an user's selection, excluding any nested BlockStmtContexts
-        /// which are also "selected" and thus ensure that we build an unique list 
-        /// of BlockStmtContexts that corresponds to the user's selection. The function
-        /// also will validate there are no overlapping selections which could be invalid.
+        /// The function ensure that we return only top-level BlockStmtContexts and EndOfStatements that
+        /// exist within a user's selection, excluding any nested contexts which are also "selected" and 
+        /// thus ensure that we build an unique list of contexts that corresponds to the user's selection.
+        /// The function will also validate that there are no overlapping selections which could be invalid.
         /// </summary>
-        /// <param name="sortedResults">The context to test</param>
+        /// <param name="sortedResults">The BlockStmtContexts to test</param>
+        /// <param name="endOfStatementContexts">The endOfStatementContexts to test</param>
         /// <param name="aggregate">The list of contexts we already added to verify we are not adding one of its children or itself more than once</param>
         /// <param name="qualifiedSelection"></param>
-        /// <returns>Boolean with true indicating that it's the first time we encountered a context in a user's selection and we can safely add it to the list</returns>
-        private void ContextIsContainedOnce(IEnumerable<VBAParser.BlockStmtContext> sortedResults, ref List<VBAParser.BlockStmtContext> aggregate, QualifiedSelection qualifiedSelection)
+        private void ContextIsContainedOnce(IEnumerable<VBAParser.BlockStmtContext> sortedResults, IEnumerable<VBAParser.EndOfStatementContext> endOfStatementContexts, ref List<VBABaseParserRuleContext> aggregate, QualifiedSelection qualifiedSelection)
         {
             foreach (var context in sortedResults)
             {
@@ -163,10 +164,22 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     // part of inner If/End If block and a part of the outermost If/End If block should be illegal).
                     if (qualifiedSelection.Selection.Overlaps(context.GetSelection()) && !qualifiedSelection.Selection.IsContainedIn(context))
                     {
-                        _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method must contain selection that represents a set of complete statements. It cannot extract a part of statement."));
+                        _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method must contain selection that represents a set of complete statements. It cannot extract a part of a statement."));
                     }
                 }
             }
+            foreach (var context in endOfStatementContexts.OrderBy(c => c.Start.StartIndex))
+            {
+                if (qualifiedSelection.Selection.Contains(context))
+                {
+                    if (!aggregate.Any(otherContext => otherContext.GetSelection().Contains(context) && context != otherContext))
+                    {
+                        aggregate.Add(context);
+                    }
+                }
+            }
+            //Final sort in case any blank or comment only lines before the first block statements
+            aggregate.Sort((a, b) => a.Start.StartIndex.CompareTo(b.Start.StartIndex));
         }
 
         private class ExtractValidatorVisitor : VBAParserBaseVisitor<IEnumerable<VBAParser.BlockStmtContext>>
@@ -177,12 +190,21 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 _qualifiedSelection = qualifiedSelection;
                 InvalidContexts = invalidContexts;
+                EndOfStatementContexts = new List<VBAParser.EndOfStatementContext>();
             }
 
             public List<Tuple<ParserRuleContext, string>> InvalidContexts { get; }
+            public List<VBAParser.EndOfStatementContext> EndOfStatementContexts { get; }
 
             protected override IEnumerable<VBAParser.BlockStmtContext> DefaultResult => new List<VBAParser.BlockStmtContext>();
-            
+            public override IEnumerable<VBAParser.BlockStmtContext> VisitEndOfStatement([NotNull] VBAParser.EndOfStatementContext context)
+            {
+                if (_qualifiedSelection.Selection.Contains(context))
+                {
+                    EndOfStatementContexts.Add(context);
+                }
+                return base.VisitEndOfStatement(context);
+            }
             public override IEnumerable<VBAParser.BlockStmtContext> VisitBlockStmt([NotNull] VBAParser.BlockStmtContext context)
             {
                 var children = base.VisitBlockStmt(context);

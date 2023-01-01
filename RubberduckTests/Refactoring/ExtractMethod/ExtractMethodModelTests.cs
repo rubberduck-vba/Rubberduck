@@ -19,7 +19,7 @@ namespace RubberduckTests.Refactoring.ExtractMethod
         [Test]
         [Category("Refactorings")]
         [Category("ExtractMethod")]
-        public void InboundOnlyWithoutPreassignment()
+        public void InboundOnlyWithoutPreassignmentCopiesDeclaration()
         {
             var inputCode = @"
 Sub Test
@@ -44,7 +44,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("ExtractMethod")]
-        public void InboundOnlyWithPreassignment()
+        public void InboundOnlyWithPreassignmentPassesByVal()
         {
             var inputCode = @"
 Sub Test
@@ -70,7 +70,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("ExtractMethod")]
-        public void InboundAndOutbound()
+        public void InboundAndOutboundPassByRef()
         {
             var inputCode = @"
 Sub Test
@@ -97,7 +97,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("ExtractMethod")]
-        public void Parameterless()
+        public void ParameterlessWorks()
         {
             var inputCode = @"
 Sub Test
@@ -127,7 +127,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("ExtractMethod")]
-        public void OutboundOnly()
+        public void OutboundOnlyMovesDeclaration()
         {
             var inputCode = @"
 Sub Test
@@ -156,7 +156,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("ExtractMethod")]
-        public void InboundOnlyWithoutPreassignmentObject()
+        public void InboundOnlyWithoutPreassignmentForObject()
         {
             var inputCode = @"
 Sub Test
@@ -181,7 +181,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("ExtractMethod")]
-        public void InboundOnlyWithPreassignmentObject()
+        public void InboundOnlyWithPreassignmentForObject()
         {
             var inputCode = @"
 Sub Test
@@ -208,7 +208,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("ExtractMethod")]
-        public void InboundAndOutboundObject()
+        public void InboundAndOutboundForObject()
         {
             var inputCode = @"
 Sub Test
@@ -235,7 +235,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("ExtractMethod")]
-        public void ParameterlessObject()
+        public void ParameterlessForObject()
         {
             var inputCode = @"
 Sub Test
@@ -265,7 +265,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("ExtractMethod")]
-        public void OutboundOnlyObject()
+        public void OutboundOnlyForObject()
         {
             var inputCode = @"
 Sub Test
@@ -483,7 +483,6 @@ End Sub";
         }
 
 
-
         [Test(Description = "Two references to a variable in the same line, only one extracted")]
         [Category("Refactorings")]
         [Category("ExtractMethod")]
@@ -513,8 +512,208 @@ End Sub";
             Assert.AreEqual(expectedReplacementCode, replacementCode);
         }
 
-        //TODO - add Dim a As New Object with declaration copied/split
-        //TODO - exception testing to cover all exception types (and message???)
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void OutboundOnlyForDimAsNewObject()
+        {
+            var inputCode = @"
+Sub Test
+    Dim a As New Collection
+    a.Add 1
+    Debug.Print a(1)
+End Sub";
+            var selection = new Selection(3, 1, 4, 12);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Collection)
+    a.Add 1
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As New Collection
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+        [Test(Description = "Selected comments at start and end of selection get copied")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void CommentsGetCopiedToNewMethod()
+        {
+            var inputCode = @"
+Sub CopiesComment()
+    'Start comment
+    Dim a As Integer
+    a = 1
+    'End comment
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 1, 6, 17);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Integer)
+    'Start comment
+    a = 1
+    'End comment
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As Integer
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+        [Test(Description = "Preserve statement preceeding the declaration to move")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void DeclarationToMoveAfterStatementOnSameLine()
+        {
+            var inputCode = @"
+Sub Test()
+    Debug.Print 0: Dim a As Integer
+    a = 1
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 1, 4, 10);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Integer)
+    Debug.Print 0
+    a = 1
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As Integer
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+        [Test(Description = "Preserve statement following the declaration to move")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void DeclarationToMoveBeforeStatementOnSameLine()
+        {
+            var inputCode = @"
+Sub Test()
+    Dim a As Integer: Debug.Print 0
+    a = 1
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 1, 4, 10);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Integer)
+    Debug.Print 0
+    a = 1
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As Integer
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+        [Test(Description = "Preserve statements surrounding the declaration to move")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void DeclarationToMoveExtractedFromMiddleOfLine()
+        {
+            var inputCode = @"
+Sub Test()
+    Debug.Print 0: Dim a As Integer: Debug.Print 1
+    a = 1
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 1, 4, 10);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Integer)
+    Debug.Print 0: Debug.Print 1
+    a = 1
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As Integer
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+        [Test(Description = "Removing a declaration from a partially selected line with other code as well")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void DeclarationToMoveExtractedFromPartiallySelectedMultiStatementLine()
+        {
+            var inputCode = @"
+Sub Test()
+    Debug.Print 0: Dim a As Integer: Debug.Print 1
+    a = 1
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 20, 4, 10);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Integer)
+    Debug.Print 1
+    a = 1
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As Integer
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+        [Test(Description = "Cut parts from a single multi-statement line and move declaration")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void DeclarationToMoveExtractedFromPartiallySelectedMultiStatementSingleLine()
+        {
+            var inputCode = @"
+Sub Test()
+    Debug.Print 0: Dim a As Integer: a = 0: Debug.Print 1
+    a = 1
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 20, 3, 43);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Integer)
+    a = 0
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As Integer
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
 
         protected override IRefactoring TestRefactoring(
             IRewritingManager rewritingManager,

@@ -68,39 +68,51 @@ namespace Rubberduck.Parsing
         /// <returns>Boolean with true indicating that the selections overlaps</returns>
         public static bool Overlaps(this Selection thisSelection, Selection selection)
         {
-            if (thisSelection.StartLine == selection.EndLine)
-            {
-                if (thisSelection.StartColumn <= selection.EndColumn)
-                    return true;
-            }
-            else if(thisSelection.EndLine == selection.EndLine)
-            {
-                if (thisSelection.EndColumn <= selection.EndColumn)
-                    return true;
-            }
-
-            if (thisSelection.EndLine == selection.StartLine)
-            {
-                if (thisSelection.EndColumn >= selection.StartColumn)
-                    return true;
-            }
-            else if(thisSelection.StartLine == selection.StartLine)
-            {
-                if (thisSelection.StartColumn <= selection.StartColumn)
-                    return true;
-            }
-
-            if (thisSelection.StartLine < selection.EndLine && thisSelection.EndLine > selection.StartLine)
-            {
+            var startFirstSelection = new Selection(thisSelection.StartLine, thisSelection.StartColumn);
+            var endFirstSelection = new Selection(thisSelection.EndLine, thisSelection.EndColumn);
+            if (selection.Contains(startFirstSelection) || selection.Contains(endFirstSelection))
                 return true;
-            }
 
-            if (thisSelection.EndLine > selection.StartLine && thisSelection.StartLine < selection.EndLine)
-            {
+            var startSecondSelection = new Selection(selection.StartLine, selection.StartColumn);
+            var endSecondSelection = new Selection(selection.EndLine, selection.EndColumn);
+            if (thisSelection.Contains(startSecondSelection) || thisSelection.Contains(endSecondSelection))
                 return true;
-            }
 
-            return false; 
+            return false;
+
+            //if (thisSelection.StartLine == selection.EndLine)
+            //{
+            //    if (thisSelection.StartColumn <= selection.EndColumn)
+            //        return true;
+            //}
+            //else if(thisSelection.EndLine == selection.EndLine)
+            //{
+            //    if (thisSelection.EndColumn <= selection.EndColumn)
+            //        return true;
+            //}
+
+            //if (thisSelection.EndLine == selection.StartLine)
+            //{
+            //    if (thisSelection.EndColumn >= selection.StartColumn)
+            //        return true;
+            //}
+            //else if(thisSelection.StartLine == selection.StartLine)
+            //{
+            //    if (thisSelection.StartColumn <= selection.StartColumn)
+            //        return true;
+            //}
+
+            //if (thisSelection.StartLine < selection.EndLine && thisSelection.EndLine > selection.StartLine)
+            //{
+            //    return true;
+            //}
+
+            //if (thisSelection.EndLine > selection.StartLine && thisSelection.StartLine < selection.EndLine)
+            //{
+            //    return true;
+            //}
+
+            //return false; 
         }
     }
 }

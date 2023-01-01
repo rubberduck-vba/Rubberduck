@@ -70,8 +70,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 throw new InvalidTargetSelectionException(firstSelection, message);
             }
 
-            SelectedCode = string.Join(Environment.NewLine, SelectedContexts.Select(c => c.GetText()));
-
             var declarationsInSelection = GetDeclarationsInSelection(QualifiedSelection);
 
             var sourceMethodParameters = ((IParameterizedDeclaration)TargetMethod).Parameters;
@@ -119,9 +117,12 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         private IOrderedEnumerable<Declaration> GetDeclarationsInSelection(QualifiedSelection qualifiedSelection)
         {
+            //Had to add check for declaration type name is VariableDeclaration despite already filtering on 
+            //DeclarationType.Variable. This is due to Debug.Print being picked up for some reason!
             return _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(d => qualifiedSelection.Selection.Contains(d.Selection) &&
-                            d.QualifiedName.QualifiedModuleName == qualifiedSelection.QualifiedName)
+                            d.QualifiedName.QualifiedModuleName == qualifiedSelection.QualifiedName &&
+                            d.GetType().Name == "VariableDeclaration")
                 .OrderBy(d => d.Selection.StartLine)
                 .ThenBy(d => d.Selection.StartColumn);
         }
@@ -166,7 +167,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
         }
 
-        public string SelectedCode { get; private set; }
         private int SelectionIndentation;
 
         //Code excluding declarations that are to be moved out of the selection
@@ -174,29 +174,34 @@ namespace Rubberduck.Refactorings.ExtractMethod
         {
             get
             {
-                //TODO *** ANY WAY TO USE MOVE CLOSER TO USAGE REFACTORING CODE??? ***
-
                 var targetMethodCode = TargetMethod.Context.GetText().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-                //var originalCode = string.Join(Environment.NewLine, SelectedContexts.Select(c => c.GetText()));
-                //TODO - create way to map selection to the string or confirm that commented out code above works (including whitespace)
-
                 var targetMethodSelection = TargetMethod.Selection;
                 var selectionToExtract = QualifiedSelection.Selection;
                 var selectionCode = targetMethodCode.Skip(selectionToExtract.StartLine - targetMethodSelection.StartLine)
                                                     .Take(selectionToExtract.EndLine - selectionToExtract.StartLine + 1)
                                                     .ToList();
                 SelectionIndentation = selectionCode[0].Length - selectionCode[0].TrimStart(' ').Length;
-                //Handle first and last lines of selection.
-                //As a start, detect if code on those lines that is not in the selection and throw error
+
+                //Remove any code on the first and last lines of selection that isn't inside the selection
+                var firstLineStartExcludedTo = selectionToExtract.StartColumn - 1;
+                var firstLineWasPruned = false;
                 if (selectionToExtract.StartColumn > 1)
                 {
-                    selectionCode[0] = selectionCode[0].Substring(selectionToExtract.StartColumn - 1);
+                    selectionCode[0] = selectionCode[0].Substring(firstLineStartExcludedTo);
+                    firstLineWasPruned = true;
                 }
-                if (selectionToExtract.EndColumn < targetMethodCode[selectionToExtract.EndLine - selectionToExtract.StartLine].Length)
+                var lastLineEndExcludedFrom = selectionToExtract.EndColumn - 1;
+                if (firstLineWasPruned && selectionToExtract.StartLine == selectionToExtract.EndLine)
                 {
-                    selectionCode[selectionCode.Count - 1] = selectionCode[selectionCode.Count - 1].Substring(0, selectionToExtract.EndColumn - 1);
+                    lastLineEndExcludedFrom -= firstLineStartExcludedTo;
                 }
-
+                var lastLineWasPruned = false;
+                if (selectionToExtract.EndColumn < targetMethodCode[selectionToExtract.EndLine - targetMethodSelection.StartLine].Length)
+                {
+                    selectionCode[selectionCode.Count - 1] = selectionCode[selectionCode.Count - 1].Substring(0, lastLineEndExcludedFrom);
+                    lastLineWasPruned = true;
+                }
+                //Remove code for declarations that need to be moved out of the selection to stay in the parent method
                 foreach (var decl in _declarationsToMoveOut.Except(_declarationsToMoveOut.Where(d => d.IdentifierName == ReturnParameter.Name)))
                 {
                     var variableListStmt = (VBAParser.VariableListStmtContext)decl.Context.Parent;
@@ -218,21 +223,77 @@ namespace Rubberduck.Refactorings.ExtractMethod
                         throw new UnableToMoveVariableDeclarationException(decl);
                     }
 
-                    //TODO - Check if multiple block statements on the same line
-                    //1) Go up to Block ancester
-                    //2) Find BlockStmt enclosing the declaration
-                    //3) Check if preceding or following BlockStmts (if exist) are on the same line (preceding.Stop or following.Start)
-                    //4) preceding blocks seem okay except for indentation. following blocks
-
-
+                    int declLineStartPrunedAmount = (startLine == selectionToExtract.StartLine && firstLineWasPruned) ? firstLineStartExcludedTo : 0;
+                    int declLineEndPrunedAmount = (startLine == selectionToExtract.EndLine && lastLineWasPruned) ? lastLineEndExcludedFrom : 0;
                     //Remove declaration range from selected code
-                    selectionCode.RemoveAt(startLine - selectionToExtract.StartLine);
+                    RemoveDeclaration(decl, selectionCode, startLine - selectionToExtract.StartLine, declLineStartPrunedAmount, declLineEndPrunedAmount);
                 }
 
-                //var selectionsToMoveOut = (from dec in _declarationsToMoveOut 
-                //                           orderby dec.Selection.StartLine, dec.Selection.StartColumn 
-                //                           select dec.Selection);
                 return string.Join(Environment.NewLine, selectionCode);
+            }
+        }
+
+        private void RemoveDeclaration(Declaration decl, List<string> selectionCode, int declCodeIndex, int declLineStartPrunedAmount, int declLineEndPrunedAmount)
+        {
+            //Search for other BlockStatements on the same line if need to just cut out the declaration
+            string leftPart = string.Empty;
+            string rightPart = string.Empty;
+            int cutFrom = 0;
+            int cutTo = selectionCode[declCodeIndex].Length;
+            var declBlockStmtContext = decl.Context.GetAncestor<VBAParser.BlockStmtContext>();
+            VBAParser.EndOfStatementContext precedingContext;
+            VBAParser.BlockStmtContext precedingBlockStmtContext;
+            bool hasPrior = false;
+            if (declBlockStmtContext.TryGetPrecedingContext(out precedingContext))
+            {
+                if (precedingContext.TryGetPrecedingContext(out precedingBlockStmtContext))
+                {
+                    if (precedingBlockStmtContext.Stop.Line == declBlockStmtContext.Start.Line &&
+                        QualifiedSelection.Contains(new QualifiedSelection(QualifiedSelection.QualifiedName, precedingBlockStmtContext.GetSelection())))
+                    {
+                        hasPrior = true;
+                        //start of cut to exclude end of statement (i.e. colon separator) following previous block statement
+                        cutFrom = precedingBlockStmtContext.Stop.EndColumn();
+                        leftPart = selectionCode[declCodeIndex].Substring(0, cutFrom);
+                    }
+                }
+            }
+
+            VBAParser.EndOfStatementContext followingContext;
+            VBAParser.BlockStmtContext followingBlockStmtContext;
+            bool hasFollower = false;
+            if (declBlockStmtContext.TryGetFollowingContext(out followingContext))
+            {
+                if (followingContext.TryGetFollowingContext(out followingBlockStmtContext))
+                {
+                    if (followingBlockStmtContext.Start.Line == declBlockStmtContext.Stop.Line &&
+                        QualifiedSelection.Contains(new QualifiedSelection(QualifiedSelection.QualifiedName, followingBlockStmtContext.GetSelection())))
+                    {
+                        hasFollower = true;
+                        //end of cut to just go up to end of block statement to be cut, preserving following end of statement
+                        //unless the declaration to move was the first block statement of the line and so we need to remove
+                        //the end of statement context too to avoid starting a line with a colon
+                        if (hasPrior)
+                        {
+                            cutTo = declBlockStmtContext.Stop.EndColumn() - declLineStartPrunedAmount;
+                        }
+                        else
+                        {
+                            cutTo = followingContext.Stop.EndColumn() - declLineStartPrunedAmount;
+                        }
+                        rightPart = selectionCode[declCodeIndex].Substring(cutTo, selectionCode[declCodeIndex].Length - cutTo);
+                    }
+                }
+            }
+
+            if (hasFollower || hasPrior)
+            {
+                selectionCode[declCodeIndex] = leftPart + rightPart;
+            }
+            else
+            {
+                //No other code found, remove whole line
+                selectionCode.RemoveAt(declCodeIndex);
             }
         }
 

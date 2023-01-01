@@ -64,7 +64,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             else
             {
                 throw new InvalidTargetSelectionException(_selectionProvider.ActiveSelection().GetValueOrDefault(), 
-                                                          Validator.InvalidContexts.FirstOrDefault().Item2);
+                                                          Validator.InvalidContexts.FirstOrDefault()?.Item2 ?? string.Empty);
             }
         }
 

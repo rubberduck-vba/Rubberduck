@@ -2,6 +2,7 @@
 using System.Linq;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -24,7 +25,9 @@ namespace Rubberduck.Refactorings.ExtractMethod
             var selectionInterval = new Interval(startIndex, endIndex);
 
             rewriter.InsertAfter(model.TargetMethod.Context.Stop.TokenIndex, Environment.NewLine + model.NewMethodCode);
-            rewriter.Replace(selectionInterval, model.ReplacementCode);
+            rewriter.Replace(selectionInterval, model.ReplacementCode + Environment.NewLine);
+
+            rewriter.Selection = new Selection(selection.Selection.StartLine, selection.Selection.StartColumn);
         }
     }
 }

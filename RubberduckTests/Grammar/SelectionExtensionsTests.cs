@@ -841,5 +841,31 @@ End Sub : 'Lame comment!
             selection = new Selection(8, 1, 8, 2);
             Assert.IsFalse(selection.Overlaps(contexts.ElementAt(0).GetSelection()));  // innermost If block
         }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
+        [TestCase(1, 1, 1, 10, Description = "Partial overlap at boundary")]
+        [TestCase(1, 20, 1, 30, Description = "Partial overlap at boundary")]
+        [TestCase(1, 1, 1, 30, Description = "Selection contained in new selection")]
+        [TestCase(1, 15, 1, 15, Description = "New selection contained in selection")]
+        public void Single_Line_Selection_Overlaps_Other_Selection(int startLine, int startColumn, int endLine, int endColumn)
+        {
+            var selection = new Selection(1, 10, 1, 20);
+            var newSelection = new Selection(startLine, startColumn, endLine, endColumn);
+            Assert.IsTrue(selection.Overlaps(newSelection));
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
+        [TestCase(1, 1, 1, 9, Description = "New selection up to edge of current selection")]
+        [TestCase(1, 21, 1, 30, Description = "New selection immediately after current selection")]
+        public void Single_Line_Selection_Doesnt_Overlap_Other_Selection(int startLine, int startColumn, int endLine, int endColumn)
+        {
+            var selection = new Selection(1, 10, 1, 20);
+            var newSelection = new Selection(startLine, startColumn, endLine, endColumn);
+            Assert.IsFalse(selection.Overlaps(newSelection));
+        }
     }
 }
