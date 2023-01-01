@@ -79,40 +79,6 @@ namespace Rubberduck.Parsing
                 return true;
 
             return false;
-
-            //if (thisSelection.StartLine == selection.EndLine)
-            //{
-            //    if (thisSelection.StartColumn <= selection.EndColumn)
-            //        return true;
-            //}
-            //else if(thisSelection.EndLine == selection.EndLine)
-            //{
-            //    if (thisSelection.EndColumn <= selection.EndColumn)
-            //        return true;
-            //}
-
-            //if (thisSelection.EndLine == selection.StartLine)
-            //{
-            //    if (thisSelection.EndColumn >= selection.StartColumn)
-            //        return true;
-            //}
-            //else if(thisSelection.StartLine == selection.StartLine)
-            //{
-            //    if (thisSelection.StartColumn <= selection.StartColumn)
-            //        return true;
-            //}
-
-            //if (thisSelection.StartLine < selection.EndLine && thisSelection.EndLine > selection.StartLine)
-            //{
-            //    return true;
-            //}
-
-            //if (thisSelection.EndLine > selection.StartLine && thisSelection.StartLine < selection.EndLine)
-            //{
-            //    return true;
-            //}
-
-            //return false; 
         }
     }
 }
