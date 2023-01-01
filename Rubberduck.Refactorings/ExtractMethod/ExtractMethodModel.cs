@@ -66,7 +66,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             if (functionReturnValueAssignments.Count() != 0)
             {
                 var firstSelection = functionReturnValueAssignments.FirstOrDefault().QualifiedSelection;
-                var message = "Selection modifies the return value of the enclosing function"; //TODO - get from resx
+                var message = RefactoringsUI.ExtractMethod_InvalidMessageSelectionModifiesParentFunctionReturn;
                 throw new InvalidTargetSelectionException(firstSelection, message);
             }
 

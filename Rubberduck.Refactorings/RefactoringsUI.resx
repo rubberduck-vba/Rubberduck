@@ -652,4 +652,55 @@ Do you want to proceed?</value>
   <data name="ExtractMethod_UnableToMoveVariableDeclarationMessage" xml:space="preserve">
     <value>Unable to move variable declaration</value>
   </data>
+  <data name="ExtractMethod_InvalidMessageSelectionEndsOutsideProcedure" xml:space="preserve">
+    <value>Selection does not end inside a recognised procedure</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionHasEndStatement" xml:space="preserve">
+    <value>Extract method cannot extract code that contains an End statement.</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionHasErrorStatement" xml:space="preserve">
+    <value>Extract method cannot extract code that contains an Error statement.</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionHasExitStatement" xml:space="preserve">
+    <value>Extract method cannot extract code that contains an Exit statement.</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionHasGoSubStatement" xml:space="preserve">
+    <value>Extract method cannot extract code that contains a GoSub statement.</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionHasGoToStatement" xml:space="preserve">
+    <value>Extract method cannot extract code that contains a GoTo statement.</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionHasLineLabelStatement" xml:space="preserve">
+    <value>Extract method cannot extract code that contains a line label.</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionHasOnErrorStatement" xml:space="preserve">
+    <value>Extract method cannot extract code that contains an On Error statement.</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionHasOnGosubStatement" xml:space="preserve">
+    <value>Extract method cannot extract code that contains an On ... GoSub statement.</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionHasOnGoToStatement" xml:space="preserve">
+    <value>Extract method cannot extract code that contains an On ... GoTo statement.</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionHasResumeStatement" xml:space="preserve">
+    <value>Extract method cannot extract code that contains a Resume statement.</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionHasReturnStatement" xml:space="preserve">
+    <value>Extract method cannot extract code that contains a Return statement.</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionModifiesParentFunctionReturn" xml:space="preserve">
+    <value>The selected code modifies the return value of the function it is in</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionMoreThanSingleProcedure" xml:space="preserve">
+    <value>Selection covers move than a single procedure</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionNotInRecognisedProcedure" xml:space="preserve">
+    <value>Selection is not in a recognised procedure type</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionNotSetOfCompleteStatements" xml:space="preserve">
+    <value>Extract method must contain selection that represents a set of complete statements. It cannot extract a part of a statement.</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionStartsOutsideProcedure" xml:space="preserve">
+    <value>Selection does not start inside a recognised procedure</value>
+  </data>
 </root>

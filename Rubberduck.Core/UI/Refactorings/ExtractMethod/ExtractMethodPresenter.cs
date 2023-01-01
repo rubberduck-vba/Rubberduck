@@ -22,7 +22,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         override public ExtractMethodModel Show()
         {
-            //TODO - test not cancelled or other invalid output?
             return base.Show();
         }
     }

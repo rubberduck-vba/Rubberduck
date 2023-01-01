@@ -22,19 +22,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
         }
         public virtual string NewMethodCall()
         {
-            return string.Empty; //TODO - move logic over from model
-            //if (string.IsNullOrWhiteSpace(MethodName))
-            //{
-            //    MethodName = NewMethodNameBase;
-            //}
-            //string result = "" + MethodName;
-            //string argList;
-            //if (Parameters.Any())
-            //{
-            //    argList = string.Join(", ", Parameters.Select(p => p.Name));
-            //    result += " " + argList;
-            //}
-            //return result;
+            //functionality inside ExtractMethodModel for now
+            return string.Empty;
         }
         public string GetNewMethodName()
         {

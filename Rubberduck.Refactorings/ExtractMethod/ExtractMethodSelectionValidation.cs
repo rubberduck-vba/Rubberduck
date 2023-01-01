@@ -4,14 +4,12 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
-using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -59,14 +57,14 @@ namespace Rubberduck.Refactorings.ExtractMethod
             var procEnd = ProcDeclaration(qualifiedSelection, endLine);
             if (procEnd == null)
             {
-                _invalidContexts.Add(Tuple.Create(null as ParserRuleContext, "Selection does not end inside a recognised procedure"));
+                _invalidContexts.Add(Tuple.Create(null as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionEndsOutsideProcedure));
                 return false;
             }
 
             var procStart = ProcDeclaration(qualifiedSelection, startLine);
             if (procStart == null)
             {
-                _invalidContexts.Add(Tuple.Create(null as ParserRuleContext, "Selection does not start inside a recognised procedure"));
+                _invalidContexts.Add(Tuple.Create(null as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionStartsOutsideProcedure));
                 return false;
             }
 
@@ -91,17 +89,18 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     procEndOfSignature = setStmt.endOfStatement();
                     break;
                 default:
-                    _invalidContexts.Add(Tuple.Create(null as ParserRuleContext, "Selection is not in a recognised procedure type"));
+                    _invalidContexts.Add(Tuple.Create(procStartContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionNotInRecognisedProcedure);
                     return false;
             }
-            
+
             if (!(procEnd.QualifiedSelection.Equals(procStart.QualifiedSelection)
                 && (procEndOfSignature.Start.Line < selection.StartLine
                 || procEndOfSignature.Start.Line == selection.StartLine && procEndOfSignature.Start.Column < selection.StartColumn)
                 ))
+            {
+                _invalidContexts.Add(Tuple.Create(null as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionMoreThanSingleProcedure));
                 return false;
-            //TODO - add invalid context so can report reason for failure
-
+            }
 
             /* At this point, we know the selection is within a single procedure. We need to validate that the user's
              * selection in fact contain only BlockStmt and not other stuff that might not be so extractable.
@@ -119,7 +118,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     if (component.CodeModule.ContainsCompilationDirectives(selection))
                     {
                         ContainsCompilerDirectives = true;
-                        //return false;
                     }
                 }
                 // We've proved that there are no invalid statements contained in the selection. However, we need to analyze
@@ -164,7 +162,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     // part of inner If/End If block and a part of the outermost If/End If block should be illegal).
                     if (qualifiedSelection.Selection.Overlaps(context.GetSelection()) && !qualifiedSelection.Selection.IsContainedIn(context))
                     {
-                        _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method must contain selection that represents a set of complete statements. It cannot extract a part of a statement."));
+                        _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionNotSetOfCompleteStatements));
                     }
                 }
             }
@@ -226,7 +224,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an Error statement."));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasErrorStatement));
                     return null;
                 }
 
@@ -237,7 +235,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an End statement."));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasEndStatement));
                     return null;
                 }
 
@@ -248,7 +246,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an Exit statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasExitStatement));
                     return null;
                 }
 
@@ -259,7 +257,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a GoSub statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasGoSubStatement));
                     return null;
                 }
 
@@ -270,7 +268,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a GoTo statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasGoToStatement));
                     return null;
                 }
 
@@ -281,7 +279,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On Error statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasOnErrorStatement));
                     return null;
                 }
 
@@ -292,7 +290,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Line Label statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasLineLabelStatement));
                     return null;
                 }
 
@@ -303,7 +301,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Line Label statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasLineLabelStatement));
                     return base.VisitCombinedLabels(context);
                 }
 
@@ -314,7 +312,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Line Label statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasLineLabelStatement));
                     return null;
                 }
 
@@ -325,7 +323,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On ... GoSub statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasOnGosubStatement));
                     return null;
                 }
 
@@ -336,7 +334,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On ... GoTo statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasOnGoToStatement));
                     return null;
                 }
 
@@ -347,7 +345,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Resume statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasResumeStatement));
                     return null;
                 }
 
@@ -358,7 +356,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Return statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasReturnStatement));
                     return null;
                 }
 

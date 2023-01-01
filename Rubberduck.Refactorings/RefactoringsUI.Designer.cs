@@ -621,6 +621,159 @@ namespace Rubberduck.Refactorings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selection does not end inside a recognised procedure.
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionEndsOutsideProcedure {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionEndsOutsideProcedure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract method cannot extract code that contains an End statement..
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionHasEndStatement {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionHasEndStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract method cannot extract code that contains an Error statement..
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionHasErrorStatement {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionHasErrorStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract method cannot extract code that contains an Exit statement..
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionHasExitStatement {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionHasExitStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract method cannot extract code that contains a GoSub statement..
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionHasGoSubStatement {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionHasGoSubStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract method cannot extract code that contains a GoTo statement..
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionHasGoToStatement {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionHasGoToStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract method cannot extract code that contains a line label..
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionHasLineLabelStatement {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionHasLineLabelStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract method cannot extract code that contains an On Error statement..
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionHasOnErrorStatement {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionHasOnErrorStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract method cannot extract code that contains an On ... GoSub statement..
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionHasOnGosubStatement {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionHasOnGosubStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract method cannot extract code that contains an On ... GoTo statement..
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionHasOnGoToStatement {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionHasOnGoToStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract method cannot extract code that contains a Resume statement..
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionHasResumeStatement {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionHasResumeStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract method cannot extract code that contains a Return statement..
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionHasReturnStatement {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionHasReturnStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected code modifies the return value of the function it is in.
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionModifiesParentFunctionReturn {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionModifiesParentFunctionReturn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selection covers move than a single procedure.
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionMoreThanSingleProcedure {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionMoreThanSingleProcedure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selection is not in a recognised procedure type.
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionNotInRecognisedProcedure {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionNotInRecognisedProcedure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract method must contain selection that represents a set of complete statements. It cannot extract a part of a statement..
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionNotSetOfCompleteStatements {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionNotSetOfCompleteStatements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selection does not start inside a recognised procedure.
+        /// </summary>
+        public static string ExtractMethod_InvalidMessageSelectionStartsOutsideProcedure {
+            get {
+                return ResourceManager.GetString("ExtractMethod_InvalidMessageSelectionStartsOutsideProcedure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The current selection is not valid:
         ///{0}.
         /// </summary>
