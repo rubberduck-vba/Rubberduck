@@ -224,7 +224,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasErrorStatement));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, string.Format(RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement, "Error")));
                     return null;
                 }
 
@@ -235,7 +235,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasEndStatement));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, string.Format(RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement, "End")));
                     return null;
                 }
 
@@ -246,7 +246,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasExitStatement));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, string.Format(RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement, "Exit")));
                     return null;
                 }
 
@@ -257,7 +257,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasGoSubStatement));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, string.Format(RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement, "GoSub")));
                     return null;
                 }
 
@@ -268,7 +268,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasGoToStatement));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, string.Format(RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement, "GoTo")));
                     return null;
                 }
 
@@ -279,7 +279,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasOnErrorStatement));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, string.Format(RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement, "On Error")));
                     return null;
                 }
 
@@ -290,7 +290,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasLineLabelStatement));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, string.Format(RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement, "line label")));
                     return null;
                 }
 
@@ -301,7 +301,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasLineLabelStatement));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, string.Format(RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement, "line label")));
                     return base.VisitCombinedLabels(context);
                 }
 
@@ -312,7 +312,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasLineLabelStatement));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, string.Format(RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement, "line label")));
                     return null;
                 }
 
@@ -323,7 +323,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasOnGosubStatement));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, string.Format(RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement, "On...GoSub")));
                     return null;
                 }
 
@@ -334,7 +334,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasOnGoToStatement));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, string.Format(RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement, "On...GoTo")));
                     return null;
                 }
 
@@ -345,7 +345,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasResumeStatement));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, string.Format(RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement, "Resume")));
                     return null;
                 }
 
@@ -356,7 +356,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasReturnStatement));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, string.Format(RefactoringsUI.ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement, "Return")));
                     return null;
                 }
 
