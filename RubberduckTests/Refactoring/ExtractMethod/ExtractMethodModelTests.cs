@@ -307,6 +307,7 @@ End Sub";
             var selection = new Selection(4, 5, 4, 11);
             var expectedNewMethodCode = @"
 Private Function NewMethod() As Integer
+    Dim a As Integer
     a = 10
 
     NewMethod = a

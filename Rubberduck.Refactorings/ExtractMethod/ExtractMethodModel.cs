@@ -79,7 +79,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
             var declarationsInParentMethod = GetDeclarationsInSelection(sourceMethodSelection);
 
             //List of "inbound" variables. Parent procedure parameters + explicit dims which get referenced inside the selection.
-            //TODO - add case where reference earlier in the same line as where the selection starts (unusual but could exist if using colons to separate multiple statements)
             var inboundParameters = sourceMethodParameters.Where(d => d.References.Any(r => QualifiedSelection.Selection.Contains(r.Selection)));
             var inboundLocalVariables = declarationsInParentMethod
                 .Where(d => d.References.Any(r => QualifiedSelection.Selection.Contains(r.Selection)) &&
@@ -161,9 +160,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     paramType = ExtractMethodParameterType.ByRefParameter;
                     canReturn = true;
                 }
-                Parameters.Add(new ExtractMethodParameter(declaration.AsTypeNameWithoutArrayDesignator,
-                                                          paramType, declaration.IdentifierName,
-                                                          declaration.IsArray, declaration.IsObject, canReturn));
+                Parameters.Add(new ExtractMethodParameter(declaration, paramType, canReturn));
             }
         }
 
@@ -362,9 +359,15 @@ namespace Rubberduck.Refactorings.ExtractMethod
                         }({string.Join(", ", _parametersToExtract)}) {returnType}");
                 foreach (var dec in _declarationsToMoveIn)
                 {
-                    //go from variableSubStmt to variableListStmt to variableStmt
-                    strings.Add(dec.Context.Parent.Parent.GetText());
+                    strings.Add(dec.Context.GetAncestor<VBAParser.VariableStmtContext>().GetText());
                     //TODO - handle case of variable list having multiple parts (if not excluded by validator)
+                }
+                if (isFunction)
+                {
+                    if (!QualifiedSelection.Selection.Contains(ReturnParameter.Declaration.Context))
+                    {
+                        strings.Add(ReturnParameter.Declaration.Context.GetAncestor<VBAParser.VariableStmtContext>().GetText());
+                    }
                 }
                 strings.AddRange(SelectedCodeToExtract.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
                 if (isFunction)

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Rubberduck.Parsing.Grammar;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using Rubberduck.Parsing.Symbols;
+using System.Xml.Linq;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -27,16 +29,28 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ExtractMethodParameter(string typeName, ExtractMethodParameterType parameterType, string name, bool isArray, bool isObject, bool canReturn)
+        public ExtractMethodParameter(Declaration declaration, ExtractMethodParameterType parameterType, bool canReturn)
         {
-            Name = name ?? NoneLabel;
-            TypeName = typeName;
             ParameterType = parameterType;
-            IsArray = isArray;
             CanReturn = canReturn;
-            IsObject = isObject;
+            Declaration = declaration;
+            if (declaration == null)
+            {
+                Name = NoneLabel;
+                TypeName = string.Empty;
+                IsArray = false;
+                IsObject = false;
+            }
+            else
+            {
+                Name = declaration.IdentifierName;
+                TypeName = declaration.AsTypeNameWithoutArrayDesignator;
+                IsArray = declaration.IsArray;
+                IsObject = declaration.IsObject;
+            }
         }
 
+        public Declaration Declaration { get; }
         public string Name { get; set; }
 
         public string TypeName { get; set; }
@@ -111,9 +125,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         }
 
 
-        public static ExtractMethodParameter None => new ExtractMethodParameter(string.Empty,
-            ExtractMethodParameterType.ByValParameter,
-            RefactoringsUI.ExtractMethod_NoneSelected, false, false, false);
+        public static ExtractMethodParameter None => new ExtractMethodParameter(null, ExtractMethodParameterType.ByValParameter, false);
 
         public static ObservableCollection<ExtractMethodParameterType> AllowableTypes = new ObservableCollection<ExtractMethodParameterType>
             {
@@ -144,43 +156,31 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public static bool operator ==(ExtractMethodParameter left, ExtractMethodParameter right)
         {
             return left?.ParameterType == right?.ParameterType &&
-                   left?.TypeName == right?.TypeName &&
-                   left?.Name == right?.Name &&
-                   left?.IsArray == right?.IsArray &&
                    left?.CanReturn == right?.CanReturn &&
-                   left?.IsObject == right?.IsObject;
+                   left?.Declaration == right?.Declaration;
         }
 
         public static bool operator !=(ExtractMethodParameter left, ExtractMethodParameter right)
         {
             return !(left?.ParameterType == right?.ParameterType &&
-                     left?.TypeName == right?.TypeName &&
-                     left?.Name == right?.Name &&
-                     left?.IsArray == right?.IsArray &&
                      left?.CanReturn == right?.CanReturn &&
-                     left?.IsObject == right?.IsObject);
+                     left?.Declaration == right?.Declaration);
         }
 
         public override bool Equals(object obj)
         {
             return obj is ExtractMethodParameter parameter &&
-                   Name == parameter.Name &&
-                   TypeName == parameter.TypeName &&
                    CanReturn == parameter.CanReturn &&
                    ParameterType == parameter.ParameterType &&
-                   IsArray == parameter.IsArray &&
-                   IsObject == parameter.IsObject;
+                   Declaration == parameter.Declaration;
         }
 
         public override int GetHashCode()
         {
             int hashCode = 1661774273;
-            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Name);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(TypeName);
             hashCode = (hashCode * -1521134295) + CanReturn.GetHashCode();
             hashCode = (hashCode * -1521134295) + ParameterType.GetHashCode();
-            hashCode = (hashCode * -1521134295) + IsArray.GetHashCode();
-            hashCode = (hashCode * -1521134295) + IsObject.GetHashCode();
+            hashCode = (hashCode * -1521134295) + (Declaration == null ? 0 : Declaration.GetHashCode());
             return hashCode;
         }
     }
