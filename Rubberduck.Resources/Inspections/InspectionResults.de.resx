@@ -482,4 +482,25 @@ In Memoriam, 1972-2018</value>
   <data name="InvalidAnnotationInspection_IncompatibleComponentType" xml:space="preserve">
     <value>Die Annotation '{0}' kann nicht in einer Komponente des Typs '{1}' verwendet werden.</value>
   </data>
+  <data name="ParameterNotUsedInspection" xml:space="preserve">
+    <value>Parameter '{0}' wird nicht verwendet.</value>
+  </data>
+  <data name="IIfSideEffectInspection" xml:space="preserve">
+    <value>'{0}' wird durch die 'IIf'-Funktion aufgerufen</value>
+  </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>Auf das Steuerelement '{0}.{1}' wird von außerhalb seines Eltern(Parent)-Formulars zugegriffen. </value>
+  </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>Versuch die Nur Lesen (Read only)-Eigenschaft '{0}' zu verändern.</value>
+  </data>
+  <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
+    <value>Element '{0}' sollte 'Private' sein.</value>
+  </data>
+  <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
+    <value>Bezeichnung '{0}' in '{1}' verweist verdächtigerweise auf die Standardinstanz dieses Klassentyps. </value>
+  </data>
+  <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
+    <value>Die öffentliche (Public) Enumeration '{0}' sollte in einem Standard- oder Klassenmodule erfolgen</value>
+  </data>
 </root>

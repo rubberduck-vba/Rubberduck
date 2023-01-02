@@ -671,4 +671,22 @@ Import abgebrochen.</value>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>Die Auswahl ist keine Variable.</value>
   </data>
+  <data name="CloseButtonText" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="Language_IT" xml:space="preserve">
+    <value>Italienisch</value>
+  </data>
+  <data name="TestExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck Testergebnis - {0}</value>
+  </data>
+  <data name="PeekDefinition_DefaultDescription" xml:space="preserve">
+    <value>(keine Anmerkungsbeschreibung oder -attribut)</value>
+  </data>
+  <data name="PeekDefinitionCommandText" xml:space="preserve">
+    <value>Vorschaudefinition</value>
+  </data>
+  <data name="CommandDescription_PeekDefinitionCommand" xml:space="preserve">
+    <value>Vorschaudefinition</value>
+  </data>
 </root>
