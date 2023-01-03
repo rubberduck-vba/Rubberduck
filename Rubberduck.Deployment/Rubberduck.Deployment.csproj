@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Product>Rubberduck.Deployment</Product>
-    <Copyright>Copyright © 2018-2019</Copyright>
+    <Copyright>Copyright © 2018-2023</Copyright>
     <ProjectGuid>{4B9BD3FE-DDC8-4842-BC3D-B8EF43011F0C}</ProjectGuid>
     <RootNamespace>Rubberduck.Deployment</RootNamespace>
     <AssemblyName>Rubberduck.Deployment</AssemblyName>

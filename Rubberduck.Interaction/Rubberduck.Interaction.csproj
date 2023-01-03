@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Copyright>Copyright © 2018-2019</Copyright>
+    <Copyright>Copyright © 2018-2023</Copyright>
     <Product>Rubberduck.Interaction</Product>
     <Title>Rubberduck.Interaction</Title>
     <ProjectGuid>{AC54B7FB-170D-4DA6-A30B-8CAD182F0E6B}</ProjectGuid>

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Title>Rubberduck.UnitTesting</Title>
     <Product>Rubberduck.UnitTesting</Product>
-    <Copyright>Copyright © 2018-2019</Copyright>
+    <Copyright>Copyright © 2018-2023</Copyright>
     <ProjectGuid>{68F55404-32CA-4414-96B8-E284F3B1F846}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
