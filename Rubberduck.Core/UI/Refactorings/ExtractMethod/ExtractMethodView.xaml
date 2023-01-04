@@ -5,13 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
-             xmlns:em="clr-namespace:Rubberduck.Refactorings.ExtractMethod"
              mc:Ignorable="d" 
-             d:DesignHeight="400"  d:DesignWidth="600">
+             d:DesignHeight="600"  d:DesignWidth="600">
     <UserControl.Resources>
         <BitmapImage x:Key="WarningIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation-white.png" />
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
-        <!-- <CollectionViewSource x:Key="ParameterTypes" Source="{StaticResource em:ExtractMethodParameter.ParameterTypes}" /> -->
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
             <GradientStop Color="#FF9BDDFB" Offset="1"/>
@@ -185,14 +183,6 @@
                             </Style>
                         </DataGrid.RowStyle>
                         <DataGrid.Columns>
-                            <!--<DataGridComboBoxColumn 
-                            SelectedValueBinding="{Binding ParameterType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            ItemsSource="{Binding Source={x:Static extractMethod:ExtractMethodParameter.ParameterTypes}}"
-                            SelectedValuePath="Key"
-                            DisplayMemberPath="Value"
-                            Width="*"
-                            EditingElementStyle="{StaticResource DropDownCellStyle}"
-                            IsReadOnly="False" /> -->
                             <DataGridTextColumn 
                             Binding="{Binding ParameterType}"
                             Header="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractMethod_ParameterAssignmentTypeColumnHeader}"
@@ -223,9 +213,12 @@
                 </Grid.RowDefinitions>
                 <Label 
                     Grid.Row="0"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Left"
                     Content="{Binding PreviewCaption}" />
                 <controls:BindableTextEditor 
                     Grid.Row="1"
+                    Height="200"
                     Margin="0,5,5,5"
                     AllowDrop="False"
                     FontFamily="Courier New"
