@@ -814,9 +814,9 @@ namespace Rubberduck.Root
         {
             var items = new List<Type>
             {
+                typeof(TestExplorerCommandMenuItem),
                 typeof(CodeExplorerCommandMenuItem),
                 typeof(CodeMetricsCommandMenuItem),
-                typeof(TestExplorerCommandMenuItem),
                 typeof(ToDoExplorerCommandMenuItem)
             };
 
