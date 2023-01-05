@@ -531,6 +531,7 @@ namespace Rubberduck.Root
                 typeof(UnitTestingParentMenu),
                 typeof(SmartIndenterParentMenu),
                 typeof(ToolsParentMenu),
+                typeof(WindowParentMenu),
                 typeof(RefactoringsParentMenu),
                 typeof(NavigateParentMenu)
             };
@@ -717,6 +718,7 @@ namespace Rubberduck.Root
             RegisterParentMenu<SmartIndenterParentMenu>(container, SmartIndenterMenuItems());
             RegisterParentMenu<AnnotateParentMenu>(container, AnnotateMenuItems());
             RegisterParentMenu<ToolsParentMenu>(container, ToolsMenuItems());
+            RegisterParentMenu<WindowParentMenu>(container, WindowMenuItems());
         }
 
         private void RegisterParentMenu<TParentMenu>(IWindsorContainer container, Type[] menuItemTypes) where TParentMenu : IParentMenuItem
@@ -804,6 +806,20 @@ namespace Rubberduck.Root
                 typeof(ToolMenuAddRemoveReferencesCommandMenuItem)
             };
             
+            return items.ToArray();
+        }
+
+
+        private Type[] WindowMenuItems()
+        {
+            var items = new List<Type>
+            {
+                typeof(TestExplorerCommandMenuItem),
+                typeof(CodeExplorerCommandMenuItem),
+                typeof(CodeMetricsCommandMenuItem),
+                typeof(ToDoExplorerCommandMenuItem)
+            };
+
             return items.ToArray();
         }
 

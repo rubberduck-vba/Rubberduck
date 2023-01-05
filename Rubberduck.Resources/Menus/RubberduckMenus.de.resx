@@ -270,4 +270,7 @@
   <data name="ProjectExplorer_UnignoreProject" xml:space="preserve">
     <value>Projekt verarbeiten</value>
   </data>
+  <data name="WindowMenu" xml:space="preserve">
+    <value>&amp;Fenster</value>
+  </data>
 </root>
