@@ -8,9 +8,9 @@ namespace Rubberduck.Refactorings.ExtractMethod
         void extract(IEnumerable<Declaration> declarations, QualifiedSelection selection, string selectedCode);
         IExtractedMethod Method { get; }
         IEnumerable<Declaration> DeclarationsToMove { get; }
-        IEnumerable<ExtractedParameter> Inputs { get; }
+        IEnumerable<ExtractMethodParameter> Inputs { get; }
         IEnumerable<Declaration> Locals { get; }
-        IEnumerable<ExtractedParameter> Outputs { get; }
+        IEnumerable<ExtractMethodParameter> Outputs { get; }
         string SelectedCode { get; }
         QualifiedSelection Selection { get; }
         Declaration SourceMember { get; }
