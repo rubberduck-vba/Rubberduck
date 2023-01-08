@@ -289,9 +289,11 @@ A private class can still implement a public interface.</value>
     <value>Please specify method name, return type and/or parameters (if applicable), and other options.</value>
   </data>
   <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
-    <value>The current selection is not valid.</value>
+    <value>The current selection is not valid:
+{0}</value>
+    <comment>0: Specific reason for not being valid</comment>
   </data>
-  <data name="ExtractMethod_OutputNone" xml:space="preserve">
+  <data name="ExtractMethod_NoneSelected" xml:space="preserve">
     <value>(none)</value>
   </data>
   <data name="ExtractMethod_PreviewLabel" xml:space="preserve">
@@ -618,5 +620,58 @@ Do you want to proceed?</value>
   <data name="MoveCloserToUsageDialog_InstructionsLabelText" xml:space="preserve">
     <value>Select the new Type of Declaration Statement for '{0}'.</value>
     <comment>0: Selected target</comment>
+  </data>
+  <data name="ExtractMethod_CompilationDirectivesWarning" xml:space="preserve">
+    <value>Selected code contains compiler directives. Extracting this code may cause breaking changes.</value>
+  </data>
+  <data name="ExtractMethod_ReturnTypeSelection" xml:space="preserve">
+    <value>Select variable to use as return value of new function. Select None to make a sub.</value>
+  </data>
+  <data name="ExtractMethod_CodePreviewCaption" xml:space="preserve">
+    <value>Preview of method extracted from '{0}'</value>
+    <comment>0: Source method</comment>
+  </data>
+  <data name="ExtractMethod_DefaultNewMethodName" xml:space="preserve">
+    <value>NewMethod</value>
+  </data>
+  <data name="ExtractParameterNewType_ByRefParameter" xml:space="preserve">
+    <value>Parameter passed by reference</value>
+  </data>
+  <data name="ExtractParameterNewType_ByValParameter" xml:space="preserve">
+    <value>Parameter passed by value</value>
+  </data>
+  <data name="ExtractMethod_ParameterAssignmentTypeColumnHeader" xml:space="preserve">
+    <value>Pass by type</value>
+  </data>
+  <data name="ExtractMethod_ParameterDataTypeColumnHeader" xml:space="preserve">
+    <value>Data type</value>
+  </data>
+  <data name="ExtractMethod_ParameterNameColumnHeader" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ExtractMethod_UnableToMoveVariableDeclarationMessage" xml:space="preserve">
+    <value>Unable to move variable declaration</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionEndsOutsideProcedure" xml:space="preserve">
+    <value>Selection does not end inside a recognised procedure</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement" xml:space="preserve">
+    <value>Extract method cannot extract code that contains '{0}' statements.</value>
+    <comment>0: statement type that cannot be refactored</comment>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionModifiesParentFunctionReturn" xml:space="preserve">
+    <value>The selected code modifies the return value of the function it is in</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionMoreThanSingleProcedure" xml:space="preserve">
+    <value>Selection covers move than a single procedure</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionNotInRecognisedProcedure" xml:space="preserve">
+    <value>Selection is not in a recognised procedure type</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionNotSetOfCompleteStatements" xml:space="preserve">
+    <value>Extract method must contain selection that represents a set of complete statements. It cannot extract a part of a statement.</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionStartsOutsideProcedure" xml:space="preserve">
+    <value>Selection does not start inside a recognised procedure</value>
   </data>
 </root>

@@ -1,480 +1,731 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using NUnit.Framework;
-using Moq;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.VBEditor.Utility;
+using Rubberduck.SmartIndenter;
+using RubberduckTests.Settings;
+using Rubberduck.Refactorings.Exceptions.ExtractMethod;
 
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
     [TestFixture]
-    public class ExtractMethodModelTests
+    public class ExtractMethodTests : InteractiveRefactoringTestBase<IExtractMethodPresenter, ExtractMethodModel>
     {
-
-        #region variableInternalAndOnlyUsedInternally
-        private readonly string internalVariable = @"
-Option explicit
-Public Sub CodeWithDeclaration()
-    Dim x as long
-    Dim z as long
-
-    x = 1 + 2
-    DebugPrint ""something""                   '8:
-    Dim y as long  
-    y = x + 1
-    x = 2
-    DebugPrint y                               '12:
-
-    y = x
-    DebugPrint y
-    z = 1
-
-End Sub
-Public Sub DebugPrint(byval g as long)
-End Sub
-                                               '21:
-
-";
-        private readonly string selectedCode = @"
-y = x + 1 
-x = 2
-Debug.Print y";
-        #endregion
-
-        //private readonly List<IExtractMethodRule> emRules = new List<IExtractMethodRule>(){
-        //    new ExtractMethodRuleInSelection(),
-        //    new ExtractMethodRuleIsAssignedInSelection(),
-        //    new ExtractMethodRuleUsedBefore(),
-        //    new ExtractMethodRuleUsedAfter(),
-        //    new ExtractMethodRuleExternalReference()};
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void InboundOnlyWithoutPreassignmentCopiesDeclaration()
+        {
+            var inputCode = @"
+Sub Test
+    Dim a As Integer
+    a = 10
+End Sub";
+            var selection = new Selection(4, 5, 4, 11);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod()
+    Dim a As Integer
+    a = 10
+End Sub";
+            var expectedReplacementCode = @"
+    NewMethod";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
 
         [Test]
-        [Category("ExtractMethodModelTests")]
-        public void ShouldClassifyDeclarations()
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void InboundOnlyWithPreassignmentPassesByVal()
         {
-            using (var state = MockParser.ParseString(internalVariable, out QualifiedModuleName qualifiedModuleName))
-            {
-                var declarations = state.AllDeclarations;
+            var inputCode = @"
+Sub Test
+    Dim a As Integer
+    a = 10
+    Debug.Print a
+End Sub";
+            var selection = new Selection(5, 5, 5, 18);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByVal a As Integer)
+    Debug.Print a
+End Sub";
+            var expectedReplacementCode = @"
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
 
-                var selection = new Selection(8, 1, 12, 24);
-                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-
-                var extractedMethod = new Mock<IExtractedMethod>();
-                var extractedMethodProc = new Mock<IExtractMethodProc>();
-                var paramClassify = new Mock<IExtractMethodParameterClassification>();
-
-                var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-                SUT.extract(declarations, qSelection.Value, selectedCode);
-
-                paramClassify.Verify(
-                    pc => pc.classifyDeclarations(qSelection.Value, It.IsAny<Declaration>()),
-                    Times.Exactly(3));
-            }
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
         }
 
-        [TestFixture]
-        public class WhenExtractingFromASelection : ExtractedMethodTests
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void InboundAndOutboundPassByRef()
         {
-            private readonly string inputCode = @"
-Option explicit
-Public Sub CodeWithDeclaration()
-    Dim x as long
-    Dim y as long
-    Dim z as long
+            var inputCode = @"
+Sub Test
+    Dim a As Integer
+    a = 10
+    a = a + 10
+    Debug.Print a
+End Sub";
+            var selection = new Selection(5, 5, 5, 15);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Integer)
+    a = a + 10
+End Sub";
+            var expectedReplacementCode = @"
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
 
-    x = 1 + 2
-    DebugPrint x
-    y = x + 1       '10
-    x = 2
-    DebugPrint y    '12
-
-    z = x
-    DebugPrint z
-
-End Sub
-Public Sub DebugPrint(byval g as long)
-End Sub
-
-
-";
-            private readonly string selectedCode = @"
-y = x + 1 
-x = 2
-Debug.Print y";
-
-            [TestFixture]
-            public class WhenTheSelectionIsNotWithinAMethod : WhenExtractingFromASelection
-            {
-                [Test]
-                [Category("ExtractMethodModelTests")]
-                public void ShouldThrowAnException()
-                {
-                    using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
-                    {
-                        var declarations = state.AllDeclarations;
-
-                        var selection = new Selection(21, 1, 22, 17);
-                        QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-
-                        var extractedMethod = new Mock<IExtractedMethod>();
-                        var paramClassify = new Mock<IExtractMethodParameterClassification>();
-                        var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-
-                        //Act - Assert
-                        Assert.Catch<InvalidOperationException>(() => SUT.extract(declarations, qSelection.Value, selectedCode));
-                    }
-                }
-
-            }
-
-            [Test]
-            [Category("ExtractMethodModelTests")]
-            public void ShouldProvideAListOfDimsNoLongerNeededInTheContainingMethod()
-            {
-                using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
-                {
-                    var declarations = state.AllDeclarations;
-
-                    var selection = new Selection(10, 1, 12, 17);
-                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-                    var extractDecl = declarations.Where(x => x.IdentifierName.Equals("y"));
-
-                    var emr = new Mock<IExtractMethodRule>();
-                    var extractedMethod = new Mock<IExtractedMethod>();
-                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
-                    paramClassify.Setup(pc => pc.DeclarationsToMove).Returns(extractDecl);
-                    var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-                    SUT.extract(declarations, qSelection.Value, selectedCode);
-
-                    Assert.AreEqual(1, SUT.DeclarationsToMove.Count());
-                    Assert.IsTrue(SUT.DeclarationsToMove.Contains(extractDecl.First()), "The selectionToRemove should contain the Declaration being moved");
-
-                }
-            }
-
-            [Test]
-            [Category("ExtractMethodModelTests")]
-            public void ShouldProvideTheSelectionOfLinesOfToRemove()
-            {
-                using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
-                {
-                    var declarations = state.AllDeclarations;
-
-                    var selection = new Selection(10, 2, 12, 17);
-                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-
-                    var emr = new Mock<IExtractMethodRule>();
-                    var extractedMethod = new Mock<IExtractedMethod>();
-                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
-                    var extractDecl = declarations.Where(x => x.IdentifierName.Equals("y"));
-                    paramClassify.Setup(pc => pc.DeclarationsToMove).Returns(extractDecl);
-                    var extractedMethodModel = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-
-                    //Act
-                    extractedMethodModel.extract(declarations, qSelection.Value, selectedCode);
-
-                    //Assert
-                    var actual = extractedMethodModel.RowsToRemove;
-                    var yDimSelection = new Selection(5, 9, 5, 10);
-                    var expected = new[] { selection, yDimSelection }
-                        .Select(x => new Selection(x.StartLine, 1, x.EndLine, 1));
-                    var missing = expected.Except(actual);
-                    var extra = actual.Except(expected);
-                    missing.ToList().ForEach(x => Trace.WriteLine(string.Format("missing item {0}", x)));
-                    extra.ToList().ForEach(x => Trace.WriteLine(string.Format("extra item {0}", x)));
-
-                    Assert.AreEqual(expected.Count(), actual.Count(), "Selection To Remove doesn't have the right number of members");
-                    expected.ToList().ForEach(s => Assert.IsTrue(actual.Contains(s), string.Format("selection {0} missing from actual SelectionToRemove", s)));
-
-                }
-            }
-
-            [Test]
-            [Category("ExtractMethodModelTests")]
-            public void ShouldProvideTheExtractMethodCaller()
-            {
-                using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
-                {
-                    var declarations = state.AllDeclarations;
-
-                    var selection = new Selection(10, 1, 12, 17);
-                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-
-                    var emr = new Mock<IExtractMethodRule>();
-                    var extractedMethod = new Mock<IExtractedMethod>();
-                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
-                    var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-
-
-                    var x = SUT.NewMethodCall;
-
-                    extractedMethod.Verify(em => em.NewMethodCall());
-
-
-                }
-            }
-
-            [Test]
-            [Category("ExtractMethodModelTests")]
-            public void ShouldProvideThePositionForTheMethodCall()
-            {
-                using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
-                {
-                    var declarations = state.AllDeclarations;
-
-                    var selection = new Selection(10, 1, 12, 17);
-                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-
-                    var emr = new Mock<IExtractMethodRule>();
-                    var extractedMethod = new Mock<IExtractedMethod>();
-                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
-                    var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-                    SUT.extract(declarations, qSelection.Value, selectedCode);
-
-                    var expected = new Selection(10, 1, 10, 1);
-                    var actual = SUT.PositionForMethodCall;
-
-                    Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual);
-                }
-            }
-
-            [Test]
-            [Category("ExtractMethodModelTests")]
-            public void ShouldProvideThePositionForTheNewMethod()
-            {
-                using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
-                {
-                    var declarations = state.AllDeclarations;
-
-                    var selection = new Selection(10, 1, 12, 17);
-                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-
-                    var emr = new Mock<IExtractMethodRule>();
-                    var extractedMethod = new Mock<IExtractedMethod>();
-                    var extractedMethodProc = new Mock<IExtractMethodProc>();
-                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
-                    var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-                    //Act
-                    SUT.extract(declarations, qSelection.Value, selectedCode);
-
-                    //Assert
-                    var expected = new Selection(18, 1, 18, 1);
-                    var actual = SUT.PositionForNewMethod;
-
-                    Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual);
-
-                }
-            }
-
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
         }
 
-        [TestFixture]
-        public class WhenLocalVariableConstantIsInternal
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void ParameterlessWorks()
         {
+            var inputCode = @"
+Sub Test
+    Dim a As Integer
+    a = 10
+    a = a + 10
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 1, 6, 18);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod()
+    Dim a As Integer
+    a = 10
+    a = a + 10
+    Debug.Print a
+End Sub";
+            var expectedReplacementCode = @"
+    NewMethod";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
 
-            [Test]
-            [Category("ExtractMethodModelTests")]
-            public void ShouldExcludeVariableInSignature()
-            {
-
-                #region inputCode
-                var inputCode = @"
-Option explicit
-Public Sub CodeWithDeclaration()
-    Dim x as long
-    Dim y as long
-    Dim z as long
-
-    x = 1 + 2
-    DebugPrint x
-    y = x + 1
-    x = 2
-    DebugPrint y
-
-    z = x
-    DebugPrint z
-
-End Sub
-Public Sub DebugPrint(byval g as long)
-End Sub
-
-
-";
-
-                var selectedCode = @"
-y = x + 1 
-x = 2
-Debug.Print y";
-
-                #endregion
-
-                using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
-                {
-                    var declarations = state.AllDeclarations;
-
-                    var selection = new Selection(10, 1, 12, 17);
-                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-                    var extractedMethod = new Mock<IExtractedMethod>();
-                    extractedMethod.Setup(em => em.NewMethodCall())
-                        .Returns("NewMethod x");
-                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
-
-                    var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-
-                    //Act
-                    SUT.extract(declarations, qSelection.Value, selectedCode);
-
-                    //Assert
-                    var actual = SUT.Method.NewMethodCall();
-                    var expected = "NewMethod x";
-
-                    Assert.AreEqual(expected, actual);
-                }
-            }
-
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
         }
 
-        [TestFixture]
-        public class WhenSplittingSelection
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void OutboundOnlyMovesDeclaration()
         {
+            var inputCode = @"
+Sub Test
+    Dim a As Integer
+    a = 10
+    a = a + 10
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 1, 4, 11);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Integer)
+    a = 10
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As Integer
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
 
-            [Test]
-            [Category("ExtractMethodModelTests")]
-            public void ShouldSplitTheCodeAroundTheDefinition()
-            {
-
-                #region inputCode
-                var inputCode = @"
-Option explicit
-Public Sub CodeWithDeclaration()
-    Dim x as long
-    Dim y as long
-
-    x = 1 + 2             
-    DebugPrint x                      '8
-    y = x + 1
-    Dim z as long                     '10
-    z = x
-    DebugPrint z                      '12
-    x = 2                             
-    DebugPrint y
-
-
-End Sub
-Public Sub DebugPrint(byval g as long)
-End Sub
-
-
-";
-
-                #endregion
-
-                #region whatItShouldLookLike
-                /*
-public sub NewMethod(ByVal x as long, ByRef y as long)
-    Dim z as long
-    DebugPrint x
-    y = x + 1             
-    z = x
-    DebugPrint z
-end sub
-*/
-                #endregion
-
-                using (var state = MockParser.ParseString(inputCode, out QualifiedModuleName qualifiedModuleName))
-                {
-                    var declarations = state.AllDeclarations;
-                    var selection = new Selection(8, 1, 12, 50);
-                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-                    var extractedMethod = new Mock<IExtractedMethod>();
-                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
-                    var yDecl = declarations.Where(decl => decl.IdentifierName.Equals("z"));
-                    var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-                    //Act
-                    var actual = SUT.SplitSelection(selection, declarations);
-                    //Assert
-                    var selection1 = new Selection(8, 1, 9, 1);
-                    var selection2 = new Selection(11, 1, 12, 1);
-
-                    Assert.AreEqual(selection1, actual.First(), "Top selection does not match");
-                    Assert.AreEqual(selection2, actual.Skip(1).First(), "Bottom selection does not match");
-
-                }
-            }
-
-
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
         }
 
-        [TestFixture]
-        public class GroupByConsecutiveTests
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void InboundOnlyWithoutPreassignmentForObject()
         {
-
-            [Test]
-            [Category("ExtractMethodModelTests")]
-            public void TestSelection()
-            {
-                IEnumerable<int> list = new List<int> { 2, 3, 4, 6, 8, 9, 10, 12, 13, 15 };
-                var grouped = list.GroupByMissing(x => (x + 1), (x, y) => new Selection(x, 1, y, 1), (x, y) => y - x);
-            }
-
-            [Test]
-            [Category("ExtractMethodModelTests")]
-            public void IsUnordered()
-            {
-                IEnumerable<int> list = new List<int> { 2, 3, 4, 6, 7, 9, 8, 12, 13, 15 };
-
-                Assert.Catch<ArgumentException>(() =>
-                    list.GroupByMissing(x => (x + 1), (x, y) => Tuple.Create(x, y), (x, y) => y - x).ToList());
-            }
-
-            [Test]
-            [Category("ExtractMethodModelTests")]
-            public void EmptyList()
-            {
-                IEnumerable<int> list = new List<int> { };
-                var grouped = list.GroupByMissing(x => (x + 1), (x, y) => Tuple.Create(x, y), (x, y) => y - x).ToList();
-                Assert.AreEqual(0, grouped.Count());
-            }
-
-            [Test]
-            [Category("ExtractMethodModelTests")]
-            public void ListOfSingleItem()
-            {
-                IEnumerable<int> list = new List<int> { 2 };
-                var grouped = list.GroupByMissing(x => (x + 1), (x, y) => Tuple.Create(x, y), (x, y) => y - x).ToList();
-
-                foreach (var group in grouped)
-                {
-                    Trace.WriteLine(group);
-                }
-                Assert.IsTrue(grouped.Contains(Tuple.Create(2, 2)));
-                Assert.AreEqual(1, grouped.Count());
-            }
-
-            [Test]
-            [Category("ExtractMethodModelTests")]
-            public void TestingUsefulList()
-            {
-                IEnumerable<int> list = new List<int> { 2, 3, 4, 6, 8, 9, 10, 12, 13, 15 };
-                var grouped = list.GroupByMissing(x => (x + 1), (x, y) => Tuple.Create(x, y), (x, y) => y - x).ToList();
-
-                foreach (var group in grouped)
-                {
-                    Trace.WriteLine(group);
-                }
-                Assert.IsTrue(grouped.Contains(Tuple.Create(2, 4)));
-                Assert.IsTrue(grouped.Contains(Tuple.Create(6, 6)));
-                Assert.IsTrue(grouped.Contains(Tuple.Create(8, 10)));
-                Assert.IsTrue(grouped.Contains(Tuple.Create(12, 13)));
-                Assert.IsTrue(grouped.Contains(Tuple.Create(15, 15)));
-                Assert.AreEqual(5, grouped.Count());
-            }
-
+            var inputCode = @"
+Sub Test
+    Dim a As Object
+    Set a = New Collection
+End Sub";
+            var selection = new Selection(4, 5, 4, 27);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod()
+    Dim a As Object
+    Set a = New Collection
+End Sub";
+            var expectedReplacementCode = @"
+    NewMethod";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void InboundOnlyWithPreassignmentForObject()
+        {
+            var inputCode = @"
+Sub Test
+    Dim a As Object
+    Set a = New Collection
+    a.Add 1
+    Debug.Print a(1)
+End Sub";
+            var selection = new Selection(6, 5, 6, 21);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByVal a As Object)
+    Debug.Print a(1)
+End Sub";
+            var expectedReplacementCode = @"
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void InboundAndOutboundForObject()
+        {
+            var inputCode = @"
+Sub Test
+    Dim a As New Collection
+    a.Add 1
+    a(1) = a(1) + 10
+    Debug.Print a(1)
+End Sub";
+            var selection = new Selection(5, 5, 5, 21);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Collection)
+    a(1) = a(1) + 10
+End Sub";
+            var expectedReplacementCode = @"
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void ParameterlessForObject()
+        {
+            var inputCode = @"
+Sub Test
+    Dim a As New Collection
+    a.Add 1
+    a(1) = a(1) + 10
+    Debug.Print a(1)
+End Sub";
+            var selection = new Selection(3, 1, 6, 21);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod()
+    Dim a As New Collection
+    a.Add 1
+    a(1) = a(1) + 10
+    Debug.Print a(1)
+End Sub";
+            var expectedReplacementCode = @"
+    NewMethod";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void OutboundOnlyForObject()
+        {
+            var inputCode = @"
+Sub Test
+    Dim a As Object
+    Set a = New Collection
+    a.Add 1
+    a(1) = a(1) + 10
+    Debug.Print a(1)
+End Sub";
+            var selection = new Selection(3, 1, 5, 12);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Object)
+    Set a = New Collection
+    a.Add 1
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As Object
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void FunctionWorksForValueType()
+        {
+            var inputCode = @"
+Sub Test
+    Dim a As Integer
+    a = 10
+    Debug.Print a
+End Sub";
+            var selection = new Selection(4, 5, 4, 11);
+            var expectedNewMethodCode = @"
+Private Function NewMethod() As Integer
+    Dim a As Integer
+    a = 10
+
+    NewMethod = a
+End Function";
+            var expectedReplacementCode = @"
+    a = NewMethod()";
+            var model = InitialModel(inputCode, selection, true);
+            model.ReturnParameter = model.Parameters[0];
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void FunctionWorksForObjectType()
+        {
+            var inputCode = @"
+Sub Test
+    Dim a As New Collection
+    a.Add 10
+    Debug.Print a.Count
+End Sub";
+            var selection = new Selection(3, 1, 4, 13);
+            var expectedNewMethodCode = @"
+Private Function NewMethod() As Collection
+    Dim a As New Collection
+    a.Add 10
+
+    Set NewMethod = a
+End Function";
+            var expectedReplacementCode = @"
+    Dim a As New Collection
+    Set a = NewMethod()";
+            var model = InitialModel(inputCode, selection, true);
+            model.ReturnParameter = model.Parameters[0];
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+        [Test(Description = "Inbound only reference normally would be ByVal but not allowed for array variables")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void ArrayCannotBeByVal()
+        {
+            var inputCode = @"
+Sub Test
+    Dim a(0 To 0) As Integer
+    a(0) = 10
+    Debug.Print a(0)
+End Sub";
+            var selection = new Selection(5, 5, 5, 21);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a() As Integer)
+    Debug.Print a(0)
+End Sub";
+            var expectedReplacementCode = @"
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+        [Test(Description = "Inbound only reference normally would be ByVal but not allowed for array variables")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void AvoidNewMethodNameClash()
+        {
+            var inputCode = @"
+Sub Test
+    Dim a As Integer
+    a = 10
+    Debug.Print a
+End Sub
+
+Sub AnotherSub
+End Sub
+
+Sub AnotherSub1
+End Sub";
+            var selection = new Selection(4, 1, 4, 11);
+            var expectedNewMethodCode = @"
+Private Sub AnotherSub2(ByRef a As Integer)
+    a = 10
+End Sub";
+            var expectedReplacementCode = @"
+    AnotherSub2 a";
+            var model = InitialModel(inputCode, selection, true);
+            model.NewMethodName = "AnotherSub";
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void ThrowsWhenNeedToMoveMultivariableDeclaration()
+        {
+            var inputCode = @"
+Sub Test
+    Dim b As Integer, a As Integer
+    a = 10
+    a = a + 10
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 1, 4, 11);
+            var model = InitialModel(inputCode, selection, true);
+            Assert.Throws(typeof(UnableToMoveVariableDeclarationException), () => { var _ = model.NewMethodCode; } );
+        }
+
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void ThrowsWhenModifyingReturnValueOfFunction()
+        {
+            var inputCode = @"
+Function Test(ByVal i As Integer) As Integer
+    Dim a As Integer
+    if i > 0 Then
+        i = i - 1
+        a = Test(i) 'Recursive type call
+    End If
+    Test = 10 'Setting return value complicates things
+End Function";
+            var selection = new Selection(4, 1, 8, 55);
+            Assert.Throws(typeof(InvalidTargetSelectionException), () => {
+                var model = InitialModel(inputCode, selection, true);
+            });
+        }
+
+        [Test(Description = "Handle indenting and splitting of code when two statements in one colon-separated line")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void FindCorrectIndentingForReplacementCode()
+        {
+            var inputCode = @"
+Sub Test
+    Dim a As Integer: Dim b As Integer
+    a = 10
+    b = 12
+    Debug.Print a + b
+End Sub";
+            var selection = new Selection(3, 23, 6, 22);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod()
+    Dim a As Integer
+    Dim b As Integer
+    a = 10
+    b = 12
+    Debug.Print a + b
+End Sub";
+            var expectedReplacementCode = @"
+    NewMethod";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+        [Test(Description = "Two references to a variable in the same line, only one extracted")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void SplitOutLogicalStatementFromMultistatementLine()
+        {
+            var inputCode = @"
+Sub splitter()
+    Dim a As Integer
+    Dim b As Integer
+    b = 10: b = b + 10
+    a = b
+    Debug.Print a
+End Sub";
+            var selection = new Selection(5, 13, 6, 10);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByVal b As Integer, ByRef a As Integer)
+    b = b + 10
+    a = b
+End Sub";
+            var expectedReplacementCode = @"
+    NewMethod b, a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void OutboundOnlyForDimAsNewObject()
+        {
+            var inputCode = @"
+Sub Test
+    Dim a As New Collection
+    a.Add 1
+    Debug.Print a(1)
+End Sub";
+            var selection = new Selection(3, 1, 4, 12);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Collection)
+    a.Add 1
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As New Collection
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+        [Test(Description = "Selected comments at start and end of selection get copied")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void CommentsGetCopiedToNewMethod()
+        {
+            var inputCode = @"
+Sub CopiesComment()
+    'Start comment
+    Dim a As Integer
+    a = 1
+    'End comment
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 1, 6, 17);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Integer)
+    'Start comment
+    a = 1
+    'End comment
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As Integer
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+        [Test(Description = "Preserve statement preceeding the declaration to move")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void DeclarationToMoveAfterStatementOnSameLine()
+        {
+            var inputCode = @"
+Sub Test()
+    Debug.Print 0: Dim a As Integer
+    a = 1
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 1, 4, 10);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Integer)
+    Debug.Print 0
+    a = 1
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As Integer
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+        [Test(Description = "Preserve statement following the declaration to move")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void DeclarationToMoveBeforeStatementOnSameLine()
+        {
+            var inputCode = @"
+Sub Test()
+    Dim a As Integer: Debug.Print 0
+    a = 1
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 1, 4, 10);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Integer)
+    Debug.Print 0
+    a = 1
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As Integer
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+        [Test(Description = "Preserve statements surrounding the declaration to move")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void DeclarationToMoveExtractedFromMiddleOfLine()
+        {
+            var inputCode = @"
+Sub Test()
+    Debug.Print 0: Dim a As Integer: Debug.Print 1
+    a = 1
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 1, 4, 10);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Integer)
+    Debug.Print 0: Debug.Print 1
+    a = 1
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As Integer
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+        [Test(Description = "Removing a declaration from a partially selected line with other code as well")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void DeclarationToMoveExtractedFromPartiallySelectedMultiStatementLine()
+        {
+            var inputCode = @"
+Sub Test()
+    Debug.Print 0: Dim a As Integer: Debug.Print 1
+    a = 1
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 20, 4, 10);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Integer)
+    Debug.Print 1
+    a = 1
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As Integer
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+
+        [Test(Description = "Cut parts from a single multi-statement line and move declaration")]
+        [Category("Refactorings")]
+        [Category("ExtractMethod")]
+        public void DeclarationToMoveExtractedFromPartiallySelectedMultiStatementSingleLine()
+        {
+            var inputCode = @"
+Sub Test()
+    Debug.Print 0: Dim a As Integer: a = 0: Debug.Print 1
+    a = 1
+    Debug.Print a
+End Sub";
+            var selection = new Selection(3, 20, 3, 43);
+            var expectedNewMethodCode = @"
+Private Sub NewMethod(ByRef a As Integer)
+    a = 0
+End Sub";
+            var expectedReplacementCode = @"
+    Dim a As Integer
+    NewMethod a";
+            var model = InitialModel(inputCode, selection, true);
+            var newMethodCode = model.NewMethodCode;
+
+            Assert.AreEqual(expectedNewMethodCode, newMethodCode);
+            var replacementCode = model.ReplacementCode;
+            Assert.AreEqual(expectedReplacementCode, replacementCode);
+        }
+
+        protected override IRefactoring TestRefactoring(
+            IRewritingManager rewritingManager,
+            RubberduckParserState state,
+            RefactoringUserInteraction<IExtractMethodPresenter, ExtractMethodModel> userInteraction,
+            ISelectionService selectionService)
+        {
+            var refactoringAction = new ExtractMethodRefactoringAction(rewritingManager);
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
+            return new ExtractMethodRefactoring(refactoringAction, state, userInteraction, selectionService, selectedDeclarationService, state?.ProjectsProvider, indenter);
+        }
     }
 }

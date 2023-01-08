@@ -9,6 +9,13 @@ namespace Rubberduck.Refactorings.Exceptions
             TargetSelection = targetSelection;
         }
 
+        public InvalidTargetSelectionException(QualifiedSelection targetSelection, string message)
+        {
+            TargetSelection = targetSelection;
+            Message = message;
+        }
+
         public QualifiedSelection TargetSelection { get; }
+        public override string Message { get; }
     }
 }
