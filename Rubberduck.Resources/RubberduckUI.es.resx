@@ -686,4 +686,16 @@ Importación cancelada.</value>
     <value>La selección no es una variable.</value>
     <comment>Utilizado tanto en Introducir parámetro como en Introducir campo</comment>
   </data>
+  <data name="CommandDescription_PeekDefinitionCommand" xml:space="preserve">
+    <value>Ver definición</value>
+  </data>
+  <data name="PeekDefinitionCommandText" xml:space="preserve">
+    <value>Ver definición</value>
+  </data>
+  <data name="CloseButtonText" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
+  <data name="DeclarationType_Document" xml:space="preserve">
+    <value>documento</value>
+  </data>
 </root>
