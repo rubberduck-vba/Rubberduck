@@ -58,7 +58,7 @@ namespace Rubberduck.Deployment.Build
         /// Full path to NetFX SDK directory
         /// </summary>
         [Required]
-        public string NetToolsDir { get; set; }
+        public string TlbToolDir { get; set; }
 
         /// <summary>
         /// Full path to WiX SDK directory
@@ -147,7 +147,7 @@ namespace Rubberduck.Deployment.Build
             var sb = new StringBuilder();
             sb.AppendLine("Parameters provided:")
               .AppendLine($"          Config: {Config}")
-              .AppendLine($"     NetToolsDir: {NetToolsDir}")
+              .AppendLine($"      TlbToolDir: {TlbToolDir}")
               .AppendLine($"     WixToolsDir: {WixToolsDir}")
               .AppendLine($"       SourceDir: {SourceDir}")
               .AppendLine($"       TargetDir: {TargetDir}")
@@ -308,10 +308,10 @@ namespace Rubberduck.Deployment.Build
 
         private void CompileWithTlbExp(DllFileParameters parameters)
         {
-            var command = $"\"{NetToolsDir}tlbexp.exe\" \"{parameters.SourceDll}\" /win32 /out:\"{parameters.SourceTlb32}\"";
+            var command = $"\"{TlbToolDir}tlbexp.exe\" \"{parameters.SourceDll}\" /win32 /out:\"{parameters.SourceTlb32}\"";
             ExecuteTask(command);
 
-            command = $"\"{NetToolsDir}tlbexp.exe\" \"{parameters.SourceDll}\" /win64 /out:\"{parameters.SourceTlb64}\"";
+            command = $"\"{TlbToolDir}tlbexp.exe\" \"{parameters.SourceDll}\" /win64 /out:\"{parameters.SourceTlb64}\"";
             ExecuteTask(command);
         }
 

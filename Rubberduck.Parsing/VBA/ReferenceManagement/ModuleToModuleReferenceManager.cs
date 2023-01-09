@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Rubberduck.InternalApi.Extensions;
+using System.Linq;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
 

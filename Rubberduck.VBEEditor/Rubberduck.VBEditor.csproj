@@ -22,13 +22,17 @@
     <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="stdole">
+      <Version>17.2.32505.113</Version>
+    </PackageReference>
     <PackageReference Include="NLog">
-      <Version>4.5.10</Version>
+      <Version>5.1.1</Version>
     </PackageReference>
     <PackageReference Include="NLog.Schema">
-      <Version>4.5.10</Version>
+      <Version>5.1.1</Version>
     </PackageReference>
-    <PackageReference Include="stdole" Version="7.0.3300" />
+    <PackageReference Include="stdole" Version="17.4.33103.184" />
     <PackageReference Include="System.ValueTuple">
       <Version>4.5.0</Version>
     </PackageReference>

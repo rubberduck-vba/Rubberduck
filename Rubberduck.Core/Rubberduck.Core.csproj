@@ -13,6 +13,8 @@
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
     <UseWpf>true</UseWpf>
     <UseWindowsForms>true</UseWindowsForms>
+    <!-- FIXME we shouldn't be using resources in this? -->
+    <GenerateResourceUsePreserializedResources>True</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
@@ -65,26 +67,26 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime">
-      <Version>4.6.4</Version>
+      <Version>4.6.6</Version>
     </PackageReference>
     <PackageReference Include="AvalonEdit">
-      <Version>5.0.4</Version>
+      <Version>6.2.0.78</Version>
     </PackageReference>
     <PackageReference Include="EasyHook">
-      <Version>2.7.6684</Version>
+      <Version>2.7.7097</Version>
     </PackageReference>
-    <PackageReference Include="gong-wpf-dragdrop" Version="1.1.0" />
+    <PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
     <PackageReference Include="HtmlAgilityPack">
-      <Version>1.8.4</Version>
+      <Version>1.11.46</Version>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="NLog">
-      <Version>4.5.10</Version>
+      <Version>5.1.1</Version>
     </PackageReference>
     <PackageReference Include="NLog.Schema">
-      <Version>4.5.10</Version>
+      <Version>5.1.1</Version>
     </PackageReference>
-    <PackageReference Include="System.IO.Abstractions" Version="12.2.1" />
+    <PackageReference Include="System.IO.Abstractions" Version="19.1.5" />
     <PackageReference Include="System.ValueTuple">
       <Version>4.5.0</Version>
     </PackageReference>

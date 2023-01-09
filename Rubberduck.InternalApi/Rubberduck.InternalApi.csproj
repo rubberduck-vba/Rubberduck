@@ -13,7 +13,7 @@
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <ItemGroup>
-    <PackageReference Include="System.IO.Abstractions" Version="12.2.1" />
+    <PackageReference Include="System.IO.Abstractions" Version="19.1.5" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 </Project>

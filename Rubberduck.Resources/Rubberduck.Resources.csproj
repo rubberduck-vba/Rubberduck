@@ -5,11 +5,17 @@
     <Product>Rubberduck.Resources</Product>
     <Copyright>Copyright © 2018-2019</Copyright>
     <ProjectGuid>{1B84B387-F7C4-4876-9BDF-C644C365359A}</ProjectGuid>
+    <GenerateResourceUsePreserializedResources>True</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <NoWarn>1701;1702;1591;4011;1001;7035;1053</NoWarn>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
+
+  <ItemGroup>
+    <PackageReference Include="System.Resources.Extensions" Version="7.0.0" />
+  </ItemGroup>
+
   <ItemGroup>
     <Resource Include="**\*.png" Exclude="$(IntermediateOutputPath)\**" />
     <Resource Include="**\*.bmp" Exclude="$(IntermediateOutputPath)\**" />

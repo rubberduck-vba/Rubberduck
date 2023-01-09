@@ -20,11 +20,5 @@ namespace Rubberduck.InternalApi.Extensions
             var hashSet = new HashSet<TKey>();
             return source.Where(item => hashSet.Add(keySelector(item)));
         }
-
-        //See http://stackoverflow.com/questions/3471899/how-to-convert-linq-results-to-hashset-or-hashedset
-        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source)
-        {
-            return new HashSet<T>(source);
-        }
     }
 }

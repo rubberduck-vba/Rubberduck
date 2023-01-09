@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime">
-      <Version>4.6.4</Version>
+      <Version>4.6.6</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

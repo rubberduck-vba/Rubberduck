@@ -30,14 +30,14 @@ else
     </Task>
   </UsingTask>
   <ItemGroup>
-    <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Build.Tasks.v4.0" />
-    <Reference Include="Microsoft.Build.Utilities.v4.0">
-      <HintPath>$(MSBuildBinPath)\Microsoft.Build.Utilities.v4.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Setup.Configuration.Interop">
-      <HintPath>VisualStudioSetup\Microsoft.VisualStudio.Setup.Configuration.Interop.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Microsoft.Build.Framework" Version="14.3.0" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="14.3.0" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="14.3.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Setup.Configuration.Interop" Version="1.8.24" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="OleWoo\x32\olewoo.dll" />
+    <Reference Include="OleWoo\x32\olewoo_interop.dll" />
   </ItemGroup>
   <Target Name="BeforeBuild">
     <GetMSBuildBitness>
