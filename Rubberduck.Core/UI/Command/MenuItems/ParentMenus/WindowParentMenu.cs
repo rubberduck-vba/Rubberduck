@@ -15,9 +15,9 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
     public enum WindowMenuItemDisplayOrder
     {
-         TestExplorer,
-         CodeExplorer,
-         CodeMetrics,
-         ToDoExplorer
+        CodeExplorer,
+        CodeMetrics,
+        TestExplorer,
+        ToDoExplorer
     }
 }
