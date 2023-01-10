@@ -24,7 +24,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="stdole">
-      <Version>17.2.32505.113</Version>
+      <Version>7.0.3300</Version>
     </PackageReference>
     <PackageReference Include="NLog">
       <Version>5.1.1</Version>
@@ -32,7 +32,6 @@
     <PackageReference Include="NLog.Schema">
       <Version>5.1.1</Version>
     </PackageReference>
-    <PackageReference Include="stdole" Version="17.4.33103.184" />
     <PackageReference Include="System.ValueTuple">
       <Version>4.5.0</Version>
     </PackageReference>

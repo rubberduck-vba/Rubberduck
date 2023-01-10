@@ -5,7 +5,7 @@
     <Product>Rubberduck.Resources</Product>
     <Copyright>Copyright © 2018-2019</Copyright>
     <ProjectGuid>{1B84B387-F7C4-4876-9BDF-C644C365359A}</ProjectGuid>
-    <GenerateResourceUsePreserializedResources>True</GenerateResourceUsePreserializedResources>
+    <GenerateResourceUsePreserializedResources>false</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <NoWarn>1701;1702;1591;4011;1001;7035;1053</NoWarn>
@@ -78,5 +78,10 @@
     <Compile Update="UnitTesting\TestExplorer.Designer.cs">
       <DesignTime>True</DesignTime>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Templates.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
