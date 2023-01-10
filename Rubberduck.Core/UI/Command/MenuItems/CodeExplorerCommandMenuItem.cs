@@ -16,4 +16,14 @@ namespace Rubberduck.UI.Command.MenuItems
         public override string Key => "RubberduckMenu_CodeExplorer";
         public override int DisplayOrder => (int)NavigationMenuItemDisplayOrder.CodeExplorer;
     }
+
+    public class WindowsCodeExplorerCommandMenuItem : CodeExplorerCommandMenuItem
+    {
+        public WindowsCodeExplorerCommandMenuItem(CodeExplorerCommand command)
+            : base(command)
+        { }
+
+        public override int DisplayOrder => (int)WindowMenuItemDisplayOrder.CodeExplorer;
+    }
+
 }

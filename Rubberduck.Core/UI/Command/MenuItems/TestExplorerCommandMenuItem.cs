@@ -13,4 +13,14 @@ namespace Rubberduck.UI.Command.MenuItems
         public override string Key => "TestMenu_TextExplorer";
         public override int DisplayOrder => (int)UnitTestingMenuItemDisplayOrder.TestExplorer;
     }
+
+    internal class WindowsTestExplorerCommandMenuItem : TestExplorerCommandMenuItem
+    {
+        public WindowsTestExplorerCommandMenuItem(TestExplorerCommand command)
+            : base(command)
+        {
+        }
+
+        public override int DisplayOrder => (int)WindowMenuItemDisplayOrder.TestExplorer;
+    }
 }

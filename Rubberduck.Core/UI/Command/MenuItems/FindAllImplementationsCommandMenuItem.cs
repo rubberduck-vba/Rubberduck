@@ -35,4 +35,13 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override int DisplayOrder => (int)ProjectExplorerContextMenuItemDisplayOrder.FindAllImplementations;
     }
+
+    public class WindowsFindAllImplementationsCommandMenuItem : FindAllImplementationsCommandMenuItemBase
+    {
+        public WindowsFindAllImplementationsCommandMenuItem(ProjectExplorerFindAllImplementationsCommand command)
+            : base(command)
+        { }
+
+        public override int DisplayOrder => (int)WindowMenuItemDisplayOrder.FindAllImplementations;
+    }
 }
