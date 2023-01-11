@@ -81,6 +81,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _uiDispatcher = uiDispatcher;
             _vbe = vbe;
             _templateProvider = templateProvider;
+            _templateProvider.Load("");
             _externalRemoveCommand = removeCommand;
             Annotations = annotations.ToList();
 
