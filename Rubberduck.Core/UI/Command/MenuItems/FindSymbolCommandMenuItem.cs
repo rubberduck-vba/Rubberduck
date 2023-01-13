@@ -38,4 +38,13 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override int DisplayOrder => (int)ProjectExplorerContextMenuItemDisplayOrder.FindSymbol;
     }
+
+    public class WindowsFindSymbolCommandMenuItem : FindSymbolCommandMenuItemBase
+    {
+        public WindowsFindSymbolCommandMenuItem(FindSymbolCommand command)
+            : base(command)
+        { }
+
+        public override int DisplayOrder => (int)WindowMenuItemDisplayOrder.FindSymbol;
+    }
 }

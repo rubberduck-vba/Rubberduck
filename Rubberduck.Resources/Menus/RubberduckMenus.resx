@@ -274,4 +274,7 @@
   <data name="ContextMenu_PeekDefinition" xml:space="preserve">
     <value>Peek definition</value>
   </data>
+  <data name="WindowMenu" xml:space="preserve">
+    <value>&amp;Windows</value>
+  </data>
 </root>
