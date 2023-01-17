@@ -547,4 +547,40 @@ Una clase privada puede asimismo implementar una interfaz pública.</value>
   <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
     <value>Los parámetros opcionales deben especificarse al final de la lista de parámetros.</value>
   </data>
+  <data name="MoveCloserToUsageDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Seleccione el nuevo tipo de declaración para '{0}'.</value>
+  </data>
+  <data name="ExtractMethod_CompilationDirectivesWarning" xml:space="preserve">
+    <value>El código seleccionado contiene directivas del compilador. Extraer este código puede causar errores.</value>
+  </data>
+  <data name="MoveCloserToUsageDialog_TitleText" xml:space="preserve">
+    <value>Seleccione la declaración</value>
+  </data>
+  <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
+    <value>Reemplace los miembros con miembros de la interfaz</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
+    <value>Reenvíe llamadas de miembros de interfaz a miembros de objeto</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToInterfaceMembers" xml:space="preserve">
+    <value>Reenvíe llamadas de miembros de objeto a miembros de interfaz</value>
+  </data>
+  <data name="ExtractInterface_OptionAddEmptyImplementation" xml:space="preserve">
+    <value>Agregue una implementación vacía</value>
+  </data>
+  <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
+    <value>Opciones de Implementación</value>
+  </data>
+  <data name="ExtractMethod_NoneSelected" xml:space="preserve">
+    <value>(ninguno)</value>
+  </data>
+  <data name="ExtractInterface_Public" xml:space="preserve">
+    <value>Público</value>
+  </data>
+  <data name="ExtractInterface_Private" xml:space="preserve">
+    <value>Privado</value>
+  </data>
+  <data name="ExtractMethod_ParameterDataTypeColumnHeader" xml:space="preserve">
+    <value>Tipo de dato</value>
+  </data>
 </root>
