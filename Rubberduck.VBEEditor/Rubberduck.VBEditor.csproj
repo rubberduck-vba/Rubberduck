@@ -5,7 +5,7 @@
     <AssemblyName>Rubberduck.VBEditor</AssemblyName>
     <Title>Rubberduck.VBEditor</Title>
     <Product>Rubberduck.VBEditor</Product>
-    <Copyright>Copyright © 2015-2019</Copyright>
+    <Copyright>Copyright © 2015-2023</Copyright>
     <ProjectGuid>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

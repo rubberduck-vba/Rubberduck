@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Product>Rubberduck.Parsing</Product>
     <Description>This assembly contains the parts responsible for turning VBA code into tokens and parse trees.</Description>
-    <Copyright>Copyright © 2015-2019</Copyright>
+    <Copyright>Copyright © 2015-2023</Copyright>
     <AssemblyName>Rubberduck.Parsing</AssemblyName>
     <Title>Rubberduck.Parsing</Title>
     <RootNamespace>Rubberduck.Parsing</RootNamespace>

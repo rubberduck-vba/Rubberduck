@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Title>Rubberduck.RegexAssistant</Title>
     <Product>Rubberduck.RegexAssistant</Product>
-    <Copyright>Copyright © 2016-2019</Copyright>
+    <Copyright>Copyright © 2016-2023</Copyright>
     <ProjectGuid>{40CC03E3-756C-4674-AF07-384115DEAEE2}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
