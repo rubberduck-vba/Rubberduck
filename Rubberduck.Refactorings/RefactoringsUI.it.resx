@@ -507,11 +507,9 @@ Continuare?</value>
   <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
     <value>Parametri:</value>
   </data>
-  <data name="ExtractMethod_OutputNone" xml:space="preserve">
-    <value>(nessuno)</value>
-  </data>
   <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
-    <value>La selezione corrente non è valida.</value>
+    <value>La selezione corrente non è valida: {0}</value>
+    <comment>0: Motivo specifico per non essere valida</comment>
   </data>
   <data name="ExtractMethod_InstructionsText" xml:space="preserve">
     <value>Specificare il nome del metodo, tipo da restituire e/o i parametri (se applicabili), ed altre opzioni.</value>
@@ -609,5 +607,61 @@ Una classe privata riesce ad implementare un'interfaccia pubblica.</value>
   </data>
   <data name="MoveCloserToUsageDialog_TitleText" xml:space="preserve">
     <value>Selezione Istruzione di Dichiarazione</value>
+  </data>
+  <data name="ExtractMethod_NoneSelected" xml:space="preserve">
+    <value>(nessuno)</value>
+  </data>
+  <data name="ExtractParameterNewType_ByValParameter" xml:space="preserve">
+    <value>Parametro passato per valore</value>
+  </data>
+  <data name="ExtractParameterNewType_ByRefParameter" xml:space="preserve">
+    <value>Parametro passato per riferimento</value>
+  </data>
+  <data name="ExtractMethod_UnableToMoveVariableDeclarationMessage" xml:space="preserve">
+    <value>Impossibile sposare la dichiarazione di variabile</value>
+  </data>
+  <data name="ExtractMethod_ReturnTypeSelection" xml:space="preserve">
+    <value>Selezionare la variabile da usare come valore di ritorno di una nuova funzione. Selezionare Nessuna per creare una sub.</value>
+  </data>
+  <data name="ExtractMethod_ParameterNameColumnHeader" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="ExtractMethod_ParameterDataTypeColumnHeader" xml:space="preserve">
+    <value>Tipo di dato</value>
+  </data>
+  <data name="ExtractMethod_ParameterAssignmentTypeColumnHeader" xml:space="preserve">
+    <value>Passare per tipo</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionStartsOutsideProcedure" xml:space="preserve">
+    <value>La selezione non inizia dentro una procedura riconosciuta</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement" xml:space="preserve">
+    <value>Il metodo di estrazione non può estrarre codice che contiene istruzioni '{0}'.</value>
+    <comment>0: tipo istruzione che non può essere rifattorizzato</comment>
+  </data>
+  <data name="ExtractMethod_CodePreviewCaption" xml:space="preserve">
+    <value>Anteprima del metodo estratto da '{0}'</value>
+    <comment>0: Metodo d'origine</comment>
+  </data>
+  <data name="ExtractMethod_CompilationDirectivesWarning" xml:space="preserve">
+    <value>Il codice selezionato contiene direttive di compilazione. L'estrazione di questo codice può causare modifiche sostanziali.</value>
+  </data>
+  <data name="ExtractMethod_DefaultNewMethodName" xml:space="preserve">
+    <value>NuovoMetodo</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionEndsOutsideProcedure" xml:space="preserve">
+    <value>La selezione non termina dentro una procedura riconosciuta</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionModifiesParentFunctionReturn" xml:space="preserve">
+    <value>Il codice selezionato modifica il valore restituito dalla funzione in cui si trova</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionMoreThanSingleProcedure" xml:space="preserve">
+    <value>La selezione comprende più di una procedura singola</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionNotInRecognisedProcedure" xml:space="preserve">
+    <value>La selezione non è riconosciuta come un tipo procedura</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionNotSetOfCompleteStatements" xml:space="preserve">
+    <value>Il metodo di estrazione deve contenere una selezione che rappresenta un insieme di istruzioni complete. Non può estrarre una parte di un'istruzione.</value>
   </data>
 </root>
