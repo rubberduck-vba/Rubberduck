@@ -663,7 +663,7 @@ Do you want to proceed?</value>
     <value>The selected code modifies the return value of the function it is in</value>
   </data>
   <data name="ExtractMethod_InvalidMessageSelectionMoreThanSingleProcedure" xml:space="preserve">
-    <value>Selection covers move than a single procedure</value>
+    <value>Selection covers more than a single procedure</value>
   </data>
   <data name="ExtractMethod_InvalidMessageSelectionNotInRecognisedProcedure" xml:space="preserve">
     <value>Selection is not in a recognised procedure type</value>
