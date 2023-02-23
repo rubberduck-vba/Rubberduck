@@ -26,7 +26,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <StackPanel Background="{StaticResource BackgroundLightBrush}">
+        <StackPanel Background="{DynamicResource BackgroundLightBrush}">
             <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ReorderParamsDialog_TitleText}" FontWeight="Bold" />
             <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ReorderParamsDialog_InstructionsLabelText}"
                        Margin="5,0" />
@@ -45,7 +45,7 @@
                      SelectedIndex="0"
                      Name="ParameterGrid"
                      AllowDrop="True"
-                     ItemContainerStyle="{StaticResource PrettyListBoxItem}"
+                     ItemContainerStyle="{DynamicResource PrettyListBoxItem}"
                      Drop="ParameterGrid_Drop"
                      DragEnter="ParameterGrid_DragEnter"
                      PreviewMouseMove="ParameterGrid_PreviewMouseMove"
@@ -69,11 +69,11 @@
                         Margin="5,5,5,0"
                         Padding="5,0"
                         HorizontalContentAlignment="Left"
-                        IsEnabled="{Binding ElementName=ParameterGrid, Path=SelectedIndex, Converter={StaticResource IndexIsNotZero}}"
+                        IsEnabled="{Binding ElementName=ParameterGrid, Path=SelectedIndex, Converter={DynamicResource IndexIsNotZero}}"
                         Command="{Binding MoveParameterUpCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="{StaticResource MoveUpImage}" />
+                        <Image Source="{DynamicResource MoveUpImage}" />
                         <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ReorderParamsDialog_MoveUpButtonText}" />
                     </StackPanel>
                 </Button>
@@ -88,7 +88,7 @@
                         <Style TargetType="Button">
                             <Setter Property="IsEnabled">
                                 <Setter.Value>
-                                    <MultiBinding Converter="{StaticResource IndexIsNotLast}">
+                                    <MultiBinding Converter="{DynamicResource IndexIsNotLast}">
                                         <Binding ElementName="ParameterGrid" Path="SelectedIndex" />
                                         <Binding Path="Parameters.Count" />
                                     </MultiBinding>
@@ -97,7 +97,7 @@
                         </Style>
                     </Button.Style>
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="{StaticResource MoveDownImage}" />
+                        <Image Source="{DynamicResource MoveDownImage}" />
                         <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ReorderParamsDialog_MoveDownButtonText}" />
                     </StackPanel>
                 </Button>
@@ -106,8 +106,8 @@
             <Expander Grid.Row="1"
                       Grid.ColumnSpan="2"
                       IsExpanded="True"
-                      Background="{StaticResource ExpanderBackgroundBrush}"
-                      BorderBrush="{StaticResource ExpanderBorderBrush}"
+                      Background="{DynamicResource ExpanderBackgroundBrush}"
+                      BorderBrush="{DynamicResource ExpanderBorderBrush}"
                       Margin="5,0,5,5">
                 <Expander.Header>
                     <Label FontWeight="SemiBold">
