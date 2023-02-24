@@ -21,7 +21,7 @@
             </Style>
         </Style.Resources>
         <Setter Property="BorderThickness" Value="0,.5,0,0" />
-        <Setter Property="BorderBrush" Value="{StaticResource ExpanderBorderBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ExpanderBorderBrush}" />
         <Setter Property="Height" Value="26" />
         <Setter Property="TextBlock.FontWeight" Value="Normal" />
         <Style.Triggers>
@@ -33,7 +33,7 @@
                     <Condition Property="IsSelected" Value="True" />
                     <Condition Property="Selector.IsSelectionActive" Value="True" />
                 </MultiTrigger.Conditions>
-                <Setter Property="BorderBrush" Value="{StaticResource HighlightBorderActiveBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource HighlightBorderActiveBrush}"/>
                 <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
             </MultiTrigger>
             <MultiTrigger>
@@ -41,7 +41,7 @@
                     <Condition Property="IsSelected" Value="True" />
                     <Condition Property="Selector.IsSelectionActive" Value="False" />
                 </MultiTrigger.Conditions>
-                <Setter Property="BorderBrush" Value="{StaticResource HighlightInactiveBorderBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource HighlightInactiveBorderBrush}"/>
                 <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
             </MultiTrigger>
         </Style.Triggers>
@@ -68,9 +68,9 @@
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BlackBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BlackBrush}"/>
         <Setter Property="BorderThickness" Value="0,.5,0,0"/>
-        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+        <Setter Property="FocusVisualStyle" Value="{DynamicResource FocusVisual}"/>
         <Setter Property="Height" Value="26" />
         <Setter Property="Template">
             <Setter.Value>
@@ -83,8 +83,8 @@
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsMouseOver" Value="True"/>
                             </MultiTrigger.Conditions>
-                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource MouseOverBackgroundBrush}"/>
-                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource MouseOverBorderBrush}"/>
+                            <Setter Property="Background" TargetName="Bd" Value="{DynamicResource MouseOverBackgroundBrush}"/>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="{DynamicResource MouseOverBorderBrush}"/>
                         </MultiTrigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
@@ -92,8 +92,8 @@
                                 <Condition Property="IsSelected" Value="True"/>
                             </MultiTrigger.Conditions>
                             <Setter Property="BorderThickness" Value="1.5" />
-                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource HighlightInactiveBorderBrush}"/>
+                            <Setter Property="Background" TargetName="Bd" Value="{DynamicResource Item.SelectedInactive.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="{DynamicResource HighlightInactiveBorderBrush}"/>
                         </MultiTrigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
@@ -101,8 +101,8 @@
                                 <Condition Property="IsSelected" Value="True"/>
                             </MultiTrigger.Conditions>
                             <Setter Property="BorderThickness" Value="1.5" />
-                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource HighlightBorderActiveBrush}"/>
+                            <Setter Property="Background" TargetName="Bd" Value="{DynamicResource Item.SelectedActive.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="{DynamicResource HighlightBorderActiveBrush}"/>
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
@@ -126,7 +126,7 @@
                 <ControlTemplate x:Name="TextBoxErrorTemplate">
                     <Grid>
                         <AdornedElementPlaceholder Grid.Row="0"/>
-                        <Image Source="{StaticResource InvalidTextImage}"
+                        <Image Source="{DynamicResource InvalidTextImage}"
                                Height="16"
                                Margin="0,-8,-8,0"
                                HorizontalAlignment="Right"

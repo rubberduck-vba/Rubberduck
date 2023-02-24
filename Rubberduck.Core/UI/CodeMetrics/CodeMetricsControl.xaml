@@ -38,7 +38,7 @@
 
         <TreeView x:Name="ProjectTree"
                   Grid.RowSpan="2" Grid.Column="0"
-                  Background="{StaticResource BackgroundLightBrush}"
+                  Background="{DynamicResource BackgroundLightBrush}"
                   HorizontalContentAlignment="Stretch"
                   ItemsSource="{Binding Projects}"
                   BorderThickness="0,1"
@@ -50,18 +50,18 @@
                             <Setter Property="BorderThickness" Value="1.5"/>
                             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWay}" />
-                            <Setter Property="Visibility" Value="{Binding Filtered, Mode=OneWay, Converter={StaticResource BoolToHiddenVisibility}}" />
+                            <Setter Property="Visibility" Value="{Binding Filtered, Mode=OneWay, Converter={DynamicResource BoolToHiddenVisibility}}" />
                             <Setter Property="HorizontalAlignment" Value="Left" />
                             <Style.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="BorderBrush" Value="{StaticResource HighlightBorderActiveBrush}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource HighlightBorderActiveBrush}"/>
                                 </Trigger>
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
                                         <Condition Property="IsSelected" Value="True"/>
                                         <Condition Property="IsSelectionActive" Value="False"/>
                                     </MultiTrigger.Conditions>
-                                    <Setter Property="BorderBrush" Value="{StaticResource HighlightInactiveBorderBrush}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource HighlightInactiveBorderBrush}"/>
                                 </MultiTrigger>
                             </Style.Triggers>
                             <Style.Resources>
@@ -72,15 +72,15 @@
                         </Style>
                     </HierarchicalDataTemplate.ItemContainerStyle>
                     <HierarchicalDataTemplate.Resources>
-                        <Style x:Key="TreeViewItemStyleModified" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TreeViewItemStyle}">
+                        <Style x:Key="TreeViewItemStyleModified" TargetType="{x:Type TextBlock}" BasedOn="{DynamicResource TreeViewItemStyle}">
                             <Setter Property="Text" Value="{Binding NameWithSignature}" />
                         </Style>
                     </HierarchicalDataTemplate.Resources>
                     <StackPanel Orientation="Horizontal">
                         <Grid>
-                            <Image Style="{StaticResource ToolbarIconStyle}">
+                            <Image Style="{DynamicResource ToolbarIconStyle}">
                                 <Image.Source>
-                                    <MultiBinding Converter="{StaticResource NodeToIcon}">
+                                    <MultiBinding Converter="{DynamicResource NodeToIcon}">
                                         <MultiBinding.Bindings>
                                             <Binding RelativeSource="{RelativeSource Self}" Path="DataContext"/>
                                             <Binding Path="Declaration" />
@@ -89,9 +89,9 @@
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>
-                            <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}" />
+                            <Image Source="{Binding Declaration, Converter={DynamicResource AccessibilityToIcon}}" Style="{DynamicResource ToolbarIconStyle}" />
                         </Grid>
-                        <TextBlock Style="{StaticResource TreeViewItemStyleModified}" />
+                        <TextBlock Style="{DynamicResource TreeViewItemStyleModified}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
@@ -129,9 +129,9 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <controls:EmptyUIRefresh Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Visibility="{Binding Unparsed, Converter={StaticResource BoolToVisibility}}" />
+        <controls:EmptyUIRefresh Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Visibility="{Binding Unparsed, Converter={DynamicResource BoolToVisibility}}" />
 
-        <controls:BusyIndicator Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={DynamicResource BoolToVisibility}}" />
     </Grid>
 </UserControl>
 
