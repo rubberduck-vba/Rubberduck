@@ -316,4 +316,7 @@
     <value>Remove '{0}' statement</value>
     <comment>'{0}' the whole Option-Statement-Context</comment>
   </data>
+  <data name="RenameDeclarationQuickFix" xml:space="preserve">
+    <value>Rename {0}</value>
+  </data>
 </root>

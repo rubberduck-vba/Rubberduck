@@ -48,11 +48,6 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             rewriter.InsertAfter(result.Context.Stop.TokenIndex, "$");
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return string.Format(Resources.Inspections.QuickFixes.UseTypedFunctionQuickFix, result.Context.GetText(), GetNewSignature(result.Context));
-        }
-
         private static string GetNewSignature(ParserRuleContext context)
         {
             Debug.Assert(context != null);
@@ -62,6 +57,11 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
                 var isIdentifierNode = member is VBAParser.IdentifierContext;
                 return current + member.GetText() + (isIdentifierNode ? "$" : string.Empty);
             });
+        }
+
+        public override string Description(IInspectionResult result)
+        {
+            return string.Format(Resources.Inspections.QuickFixes.UseTypedFunctionQuickFix, result.Context.GetText(), GetNewSignature(result.Context));
         }
 
         public override bool CanFixMultiple => true;

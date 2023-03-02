@@ -312,4 +312,7 @@
   <data name="RemoveRedundantOptionStatementQuickFix" xml:space="preserve">
     <value>Supprimer l'instruction '{0}'</value>
   </data>
+  <data name="RenameDeclarationQuickFix" xml:space="preserve">
+    <value>Renommer {0}</value>
+  </data>
 </root>

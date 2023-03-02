@@ -47,10 +47,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             rewriter.InsertBefore(context.Start.TokenIndex, $"{Tokens.Me}.");
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return Resources.Inspections.QuickFixes.QualifyWithMeQuickFix;
-        }
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.QualifyWithMeQuickFix;
 
         public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => true;

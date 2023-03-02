@@ -315,4 +315,7 @@
   <data name="ReplaceQualifierWithMeQuickFix" xml:space="preserve">
     <value>Sostituire il qualificatore con 'Me'</value>
   </data>
+  <data name="RenameDeclarationQuickFix" xml:space="preserve">
+    <value>Rinomina {0}</value>
+  </data>
 </root>

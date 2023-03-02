@@ -47,6 +47,14 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// </example>
     internal class ExpandBangNotationQuickFix : QuickFixBase
     {
+        private readonly string NonIdentifierCharacters = "[](){}\r\n\t.,'\"\\ |!@#$%^&*-+:=; ";
+        private readonly string AdditionalNonFirstIdentifierCharacters = "0123456789_";
+
+        private static readonly Dictionary<string, string> DefaultMemberOverrides = new Dictionary<string, string>
+        {
+            ["Excel.Range._Default"] = "Item"
+        };
+
         private readonly IDeclarationFinderProvider _declarationFinderProvider; 
 
         public ExpandBangNotationQuickFix(IDeclarationFinderProvider declarationFinderProvider)
@@ -121,24 +129,12 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
                 || AdditionalNonFirstIdentifierCharacters.Contains(declarationName[0]); ;
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return Resources.Inspections.QuickFixes.ExpandBangNotationQuickFix;
-        }
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.ExpandBangNotationQuickFix;
 
         public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;
         public override bool CanFixInProject => true;
         public override bool CanFixAll => true;
-
-        private readonly string NonIdentifierCharacters = "[](){}\r\n\t.,'\"\\ |!@#$%^&*-+:=; ";
-        private readonly string AdditionalNonFirstIdentifierCharacters = "0123456789_";
-
-        private static readonly Dictionary<string, string> DefaultMemberOverrides = new Dictionary<string, string>
-        {
-            ["Excel.Range._Default"] = "Item"
-        };
-
     }
 }
