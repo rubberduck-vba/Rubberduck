@@ -89,6 +89,6 @@ Rubberduck isn't a lightweight add-in and consumes a large amount of memory. So 
 - **Review inspection settings**: there are *many* inspections, and some of them may produce *a lot* of results if they're directly targeting something that's part of your coding style. Spawning tens of thousands of inspection results can significantly degrade performance.
 - **Avoid late binding**: Rubberduck cannot resolve identifier references and thus cannot understand the code as well if even the VBA compiler is deferring all validations to run-time. Declare and return explicit data types, and cast from `Object` and `Variant` to a more specific type whenever possible.
 
-Join us on our [Discord server](https://discord.gg/EmbYjbPr) for support, questions, contributions, or just to come and say hi!
+Join us on our [Discord server](https://discord.gg/5Nbb8j6R) for support, questions, contributions, or just to come and say hi!
 
 For more information please see [Getting Started](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/GettingStarted.md) in the project's wiki, and follow the project's blog for project updates and advanced VBA OOP reading material.
