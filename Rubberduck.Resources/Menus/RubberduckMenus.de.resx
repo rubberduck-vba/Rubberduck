@@ -270,7 +270,12 @@
   <data name="ProjectExplorer_UnignoreProject" xml:space="preserve">
     <value>Projekt verarbeiten</value>
   </data>
+<<<<<<< HEAD
   <data name="WindowMenu" xml:space="preserve">
     <value>&amp;Fenster</value>
+=======
+  <data name="ContextMenu_PeekDefinition" xml:space="preserve">
+    <value>Vorschaudefinition</value>
+>>>>>>> 4802014a6 (Add missing German translation)
   </data>
 </root>

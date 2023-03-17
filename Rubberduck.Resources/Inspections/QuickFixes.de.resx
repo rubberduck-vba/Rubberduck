@@ -312,4 +312,7 @@
   <data name="RemoveRedundantOptionStatementQuickFix" xml:space="preserve">
     <value>'{0}'-Anweisung entfernen</value>
   </data>
+  <data name="ReplaceQualifierWithMeQuickFix" xml:space="preserve">
+    <value>Ersetze Bezeichner durch 'Me'</value>
+  </data>
 </root>
