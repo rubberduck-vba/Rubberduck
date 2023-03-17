@@ -144,7 +144,7 @@
     <value>T_oDo Liste</value>
   </data>
   <data name="FilterLabel" xml:space="preserve">
-    <value>FIlter:</value>
+    <value>Filter:</value>
   </data>
   <data name="TodoSettings_Text" xml:space="preserve">
     <value>Text</value>

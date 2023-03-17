@@ -445,7 +445,7 @@
     <value>Konstante wird nicht verwendet</value>
   </data>
   <data name="IIfSideEffectInspection" xml:space="preserve">
-    <value>Mögliche Seiteneffekte der 'IIf'-Funktion</value>
+    <value>Mögliche Nebeneffekte der 'IIf'-Funktion</value>
   </data>
   <data name="LineLabelNotUsedInspection" xml:space="preserve">
     <value>Zeilenbezeichnung wird nicht verwendet</value>
@@ -454,7 +454,7 @@
     <value>Variable wird nicht verwendet.</value>
   </data>
   <data name="ProcedureNotUsedInspection" xml:space="preserve">
-    <value>Prozedur/Funktion/Property wird nicht benutzt.</value>
+    <value>Prozedur/Funktion/Eigenschaft wird nicht benutzt.</value>
   </data>
   <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
     <value>Implementierungen von Interfaces und Ereignis-Handlern sollten Private sein.</value>
@@ -475,6 +475,6 @@
     <value>Benutzerdefinierter Typ wird nicht verwendet</value>
   </data>
   <data name="PublicControlFieldAccessInspection" xml:space="preserve">
-    <value>Öffentlicher Steuerelement Zugriff</value>
+    <value>Öffentlicher Steuerelementzugriff</value>
   </data>
 </root>

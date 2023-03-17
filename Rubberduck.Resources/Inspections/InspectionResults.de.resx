@@ -492,7 +492,7 @@ In Memoriam, 1972-2018</value>
     <value>Auf das Steuerelement '{0}.{1}' wird von außerhalb seines Eltern(Parent)-Formulars zugegriffen. </value>
   </data>
   <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
-    <value>Versuch die Nur Lesen (Read only)-Eigenschaft '{0}' zu verändern.</value>
+    <value>Versuch, die "Nur Lesen"-Eigenschaft '{0}' zu verändern.</value>
   </data>
   <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
     <value>Element '{0}' sollte 'Private' sein.</value>
