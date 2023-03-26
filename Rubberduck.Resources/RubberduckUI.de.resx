@@ -684,9 +684,9 @@ Import abgebrochen.</value>
     <value>(keine Anmerkungsbeschreibung oder -attribut)</value>
   </data>
   <data name="PeekDefinitionCommandText" xml:space="preserve">
-    <value>Vorschaudefinition</value>
+    <value>Vorschau</value>
   </data>
   <data name="CommandDescription_PeekDefinitionCommand" xml:space="preserve">
-    <value>Vorschaudefinition</value>
+    <value>Vorschau</value>
   </data>
 </root>

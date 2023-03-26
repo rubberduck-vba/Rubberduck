@@ -460,7 +460,7 @@
     <value>Implementierungen von Interfaces und Ereignis-Handlern sollten Private sein.</value>
   </data>
   <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
-    <value>Nur Lesen (Read only) Eigenschaftzuweisung</value>
+    <value>Schreibgeschützt-Eigenschaftzuweisung</value>
   </data>
   <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
     <value>Public Enumerations Deklaration innerhalb eines Arbeitsblattes</value>
