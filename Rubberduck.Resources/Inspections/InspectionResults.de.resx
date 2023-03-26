@@ -128,7 +128,7 @@
     <comment>{0} Procedure name</comment>
   </data>
   <data name="IdentifierNameInspection" xml:space="preserve">
-    <value>Überlegen Sie '{1}' ({0}) umzubenennen.</value>
+    <value>Ziehen Sie in Erwägung, {0} '{1}' umzubenennen.</value>
   </data>
   <data name="WriteOnlyPropertyInspection" xml:space="preserve">
     <value>Eigenschaft '{0}' hat keinen Getter.</value>

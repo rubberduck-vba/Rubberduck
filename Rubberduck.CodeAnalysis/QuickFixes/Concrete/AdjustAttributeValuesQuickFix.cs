@@ -85,9 +85,9 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             _attributesUpdater.UpdateAttribute(rewriteSession, declaration, attributeName, attributeValuesFromAnnotation, oldValues: attributeValues);
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.AdjustAttributeValuesQuickFix;
-
         public override CodeKind TargetCodeKind => CodeKind.AttributesCode;
+
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.AdjustAttributeValuesQuickFix;
 
         public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => true;

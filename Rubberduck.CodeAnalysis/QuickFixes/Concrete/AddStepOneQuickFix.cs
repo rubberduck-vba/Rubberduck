@@ -42,17 +42,6 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             : base(typeof(StepIsNotSpecifiedInspection))
         {}
 
-        public override bool CanFixMultiple => true;
-        public override bool CanFixInProcedure => true;
-        public override bool CanFixInModule => true;
-        public override bool CanFixInProject => true;
-        public override bool CanFixAll => true;
-
-        public override string Description(IInspectionResult result)
-        {
-            return Resources.Inspections.QuickFixes.AddStepOneQuickFix;
-        }
-
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
@@ -76,5 +65,13 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 
             throw new InvalidOperationException();
         }
+
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.AddStepOneQuickFix;
+
+        public override bool CanFixMultiple => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
+        public override bool CanFixAll => true;
     }
 }

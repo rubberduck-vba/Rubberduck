@@ -194,14 +194,6 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             }
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.IntegerDataTypeQuickFix;
-
-        public override bool CanFixMultiple => true;
-        public override bool CanFixInProcedure => true;
-        public override bool CanFixInModule => true;
-        public override bool CanFixInProject => true;
-        public override bool CanFixAll => true;
-
         private static int GetParameterIndex(VBAParser.ArgContext context)
         {
             return Array.IndexOf(((VBAParser.ArgListContext)context.Parent).arg().ToArray(), context);
@@ -212,5 +204,13 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             var typeHintContext = ((ParserRuleContext)context).GetDescendent<VBAParser.TypeHintContext>();
             rewriter.Replace(typeHintContext, "&");
         }
+
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.IntegerDataTypeQuickFix;
+
+        public override bool CanFixMultiple => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
+        public override bool CanFixAll => true;
     }
 }

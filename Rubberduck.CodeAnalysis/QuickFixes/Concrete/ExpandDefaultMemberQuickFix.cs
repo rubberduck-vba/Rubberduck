@@ -51,6 +51,19 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// </example>
     internal class ExpandDefaultMemberQuickFix : QuickFixBase
     {
+        private string NonIdentifierCharacters = "[](){}\r\n\t.,'\"\\ |!@#$%^&*-+:=; ";
+        private string AdditionalNonFirstIdentifierCharacters = "0123456789_";
+
+        private static readonly Dictionary<string, string> DefaultMemberBaseOverrides = new Dictionary<string, string>
+        {
+            ["Excel.Range._Default"] = "Item"
+        };
+
+        private static readonly Dictionary<string, Dictionary<int, string>> DefaultMemberArgumentNumberOverrides = new Dictionary<string, Dictionary<int, string>>
+        {
+            ["Excel.Range._Default"] = new Dictionary<int, string> { [0] = "Value" }
+        };
+
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
         public ExpandDefaultMemberQuickFix(IDeclarationFinderProvider declarationFinderProvider)
@@ -165,28 +178,12 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return Resources.Inspections.QuickFixes.ExpandDefaultMemberQuickFix;
-        }
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.ExpandDefaultMemberQuickFix;
 
         public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;
         public override bool CanFixInProject => true;
         public override bool CanFixAll => true;
-
-        private string NonIdentifierCharacters = "[](){}\r\n\t.,'\"\\ |!@#$%^&*-+:=; ";
-        private string AdditionalNonFirstIdentifierCharacters = "0123456789_";
-
-        private static readonly Dictionary<string, string> DefaultMemberBaseOverrides = new Dictionary<string, string>
-        {
-            ["Excel.Range._Default"] = "Item"
-        };
-
-        private static readonly Dictionary<string, Dictionary<int, string>> DefaultMemberArgumentNumberOverrides = new Dictionary<string, Dictionary<int, string>>
-        {
-            ["Excel.Range._Default"] = new Dictionary<int, string>{[0] = "Value"}
-        };
     }
 }
