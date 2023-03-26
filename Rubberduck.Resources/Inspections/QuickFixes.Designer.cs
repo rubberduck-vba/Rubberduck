@@ -529,6 +529,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Rename {0} ähnelt.
+        /// </summary>
+        public static string RenameDeclarationQuickFix {
+            get {
+                return ResourceManager.GetString("RenameDeclarationQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Replace &apos;Rem&apos; usage with a single-quote comment marker ähnelt.
         /// </summary>
         public static string ReplaceCommentMarkerQuickFix {

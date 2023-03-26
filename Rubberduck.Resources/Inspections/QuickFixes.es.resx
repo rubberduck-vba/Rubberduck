@@ -303,4 +303,7 @@
   <data name="RemoveRedundantOptionStatementQuickFix" xml:space="preserve">
     <value>Eliminar la declaración '{0}'</value>
   </data>
+  <data name="RenameDeclarationQuickFix" xml:space="preserve">
+    <value>Renombrar {0}</value>
+  </data>
 </root>

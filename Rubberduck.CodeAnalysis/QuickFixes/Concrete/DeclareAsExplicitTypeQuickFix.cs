@@ -84,18 +84,17 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             _refactoring = refactoringAction;
         }
 
-        public override bool CanFixMultiple => true;
-        public override bool CanFixInProcedure => false;
-        public override bool CanFixInModule => true;
-        public override bool CanFixInProject => true;
-        public override bool CanFixAll => true;
-
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             _refactoring.Refactor(new ImplicitTypeToExplicitModel(result.Target), rewriteSession);
         }
 
-        public override string Description(IInspectionResult result)
-            => Resources.Inspections.QuickFixes.DeclareAsExplicitTypeQuickFix;
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.DeclareAsExplicitTypeQuickFix;
+
+        public override bool CanFixMultiple => true;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
+        public override bool CanFixAll => true;
     }
 }

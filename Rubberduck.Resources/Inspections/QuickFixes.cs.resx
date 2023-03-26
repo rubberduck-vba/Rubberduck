@@ -312,4 +312,7 @@
   <data name="RemoveRedundantOptionStatementQuickFix" xml:space="preserve">
     <value>Odstraň prohlášení '{0}'</value>
   </data>
+  <data name="RenameDeclarationQuickFix" xml:space="preserve">
+    <value>Přejmenovat {0}</value>
+  </data>
 </root>

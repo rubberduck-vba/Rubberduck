@@ -77,14 +77,6 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             InsertLocalVariableDeclarationAndAssignment(rewriter, result.Target, localIdentifier);
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.AssignedByValParameterMakeLocalCopyQuickFix;
-
-        public override bool CanFixMultiple => false;
-        public override bool CanFixInProcedure => false;
-        public override bool CanFixInModule => false;
-        public override bool CanFixInProject => false;
-        public override bool CanFixAll => false;
-
         private string PromptForLocalVariableName(Declaration target)
         {
             IAssignedByValParameterQuickFixDialog view = null;
@@ -165,5 +157,14 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             rewriter.Remove(endOfStmtCtxt);
             rewriter.InsertAfter(insertCtxt.Stop.TokenIndex, $"{endOfStmtCtxtComment}{endOfStmtCtxtEndFormat}{localVariableDeclaration}" + $"{endOfStmtCtxtEndFormat}{localVariableAssignment}{endOfStmtCtxtEndFormat}");
         }
+
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.AssignedByValParameterMakeLocalCopyQuickFix;
+
+        public override bool CanFixMultiple => false;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => false;
+        public override bool CanFixInProject => false;
+        public override bool CanFixAll => false;
+
     }
 }

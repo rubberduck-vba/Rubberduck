@@ -52,12 +52,6 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             _annotationUpdater = annotationUpdater;
         }
 
-        public override bool CanFixMultiple => true;
-        public override bool CanFixInProcedure => false;
-        public override bool CanFixInModule => true;
-        public override bool CanFixInProject => true;
-        public override bool CanFixAll => true;
-
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var module = result.QualifiedSelection.QualifiedName;
@@ -101,5 +95,11 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.IgnoreInModuleQuickFix;
+
+        public override bool CanFixMultiple => true;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
+        public override bool CanFixAll => true;
     }
 }

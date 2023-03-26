@@ -56,8 +56,6 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             }
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.PassParameterByValueQuickFix;
-
         private void FixMethods(Declaration target, IRewriteSession rewriteSession)
         {
             var declarationParameters =
@@ -110,6 +108,8 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
                 rewriter.InsertBefore(context.unrestrictedIdentifier().Start.TokenIndex, "ByVal ");
             }
         }
+
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.PassParameterByValueQuickFix;
 
         public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => true;

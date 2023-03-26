@@ -53,10 +53,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             rewriter.Replace(context.Start, Tokens.Me);
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return Resources.Inspections.QuickFixes.ReplaceQualifierWithMeQuickFix;
-        }
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.ReplaceQualifierWithMeQuickFix;
 
         public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => true;
