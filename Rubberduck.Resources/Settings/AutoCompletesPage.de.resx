@@ -136,7 +136,7 @@
     <value>Blockvervollständigung</value>
   </data>
   <data name="ConcatVbNewLine" xml:space="preserve">
-    <value>Durch Ctrl+RETURN mit 'vbNewLine' verketten.</value>
+    <value>Durch Strg+Eingabe mit 'vbNewLine' verketten</value>
   </data>
   <data name="EnableAutocompleteLabel" xml:space="preserve">
     <value>Autovervollständigung aktivieren</value>

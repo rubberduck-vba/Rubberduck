@@ -273,4 +273,7 @@
   <data name="WindowMenu" xml:space="preserve">
     <value>&amp;Fenster</value>
   </data>
+  <data name="ContextMenu_PeekDefinition" xml:space="preserve">
+    <value>Vorschaudefinition</value>
+  </data>
 </root>

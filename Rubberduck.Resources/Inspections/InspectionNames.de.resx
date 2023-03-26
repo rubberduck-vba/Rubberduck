@@ -441,4 +441,40 @@
   <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
     <value>Unbekannte Annotation</value>
   </data>
+  <data name="ConstantNotUsedInspection" xml:space="preserve">
+    <value>Konstante wird nicht verwendet</value>
+  </data>
+  <data name="IIfSideEffectInspection" xml:space="preserve">
+    <value>Mögliche Nebeneffekte der 'IIf'-Funktion</value>
+  </data>
+  <data name="LineLabelNotUsedInspection" xml:space="preserve">
+    <value>Zeilenbezeichnung wird nicht verwendet</value>
+  </data>
+  <data name="VariableNotUsedInspection" xml:space="preserve">
+    <value>Variable wird nicht verwendet.</value>
+  </data>
+  <data name="ProcedureNotUsedInspection" xml:space="preserve">
+    <value>Prozedur/Funktion/Eigenschaft wird nicht benutzt.</value>
+  </data>
+  <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
+    <value>Implementierungen von Interfaces und Ereignis-Handlern sollten Private sein.</value>
+  </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>Schreibgeschützt-Eigenschaftzuweisung</value>
+  </data>
+  <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
+    <value>Public Enumerations Deklaration innerhalb eines Arbeitsblattes</value>
+  </data>
+  <data name="ParameterNotUsedInspection" xml:space="preserve">
+    <value>Parameter wird nicht genutzt.</value>
+  </data>
+  <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
+    <value>Verdächtiger Zugriff auf eine vordefinierte Instanz.</value>
+  </data>
+  <data name="UDTMemberNotUsedInspection" xml:space="preserve">
+    <value>Benutzerdefinierter Typ wird nicht verwendet</value>
+  </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>Öffentlicher Steuerelementzugriff</value>
+  </data>
 </root>
