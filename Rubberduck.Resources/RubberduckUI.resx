@@ -811,4 +811,10 @@ Import aborted.</value>
   <data name="CommandDescription_PeekDefinitionCommand" xml:space="preserve">
     <value>Peek definition</value>
   </data>
+  <data name="Indenter_ContinueIndentWithoutAnnotations" xml:space="preserve">
+    <value>Rubberduck needs a refresh to respect @NoIndent-Annotations. Continue Indent and ignore @NoIndent-Annotations?</value>
+  </data>
+  <data name="Indenter_ContinueIndentWithoutAnnotations_DialogCaption" xml:space="preserve">
+    <value>Continue Indent without @NoIndent?</value>
+  </data>
 </root>

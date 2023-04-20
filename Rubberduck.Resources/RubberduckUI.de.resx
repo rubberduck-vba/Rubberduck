@@ -689,4 +689,10 @@ Import abgebrochen.</value>
   <data name="CommandDescription_PeekDefinitionCommand" xml:space="preserve">
     <value>Vorschau</value>
   </data>
+  <data name="Indenter_ContinueIndentWithoutAnnotations_DialogCaption" xml:space="preserve">
+    <value>Einrückung ohne @NoIndent fortsetzen?</value>
+  </data>
+  <data name="Indenter_ContinueIndentWithoutAnnotations" xml:space="preserve">
+    <value>Rubberduck muss zum Beachten der @NoIndent-Annotation aktualisiert werden. Einrückung ohne Beachtung der @NoIndent-Annotationen fortsetzen?</value>
+  </data>
 </root>

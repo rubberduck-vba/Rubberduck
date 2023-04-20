@@ -1,4 +1,5 @@
 using Moq;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
@@ -31,7 +32,12 @@ namespace RubberduckTests.Commands
 
         internal static IndentCurrentModuleCommand ArrangeIndentCurrentModuleCommand(Mock<IVBE> vbe, RubberduckParserState state, IIndenter indenter, Mock<IVbeEvents> vbeEvents)
         {
-            return new IndentCurrentModuleCommand(vbe.Object, indenter, state, vbeEvents.Object);
+            return ArrangeIndentCurrentModuleCommand(vbe, state, indenter, MockVbeEvents.CreateMockVbeEvents(vbe), new Mock<IMessageBox>());
+        }
+
+        internal static IndentCurrentModuleCommand ArrangeIndentCurrentModuleCommand(Mock<IVBE> vbe, RubberduckParserState state, IIndenter indenter, Mock<IVbeEvents> vbeEvents, Mock<IMessageBox> messageBox)
+        {
+            return new IndentCurrentModuleCommand(vbe.Object, indenter, state, vbeEvents.Object, messageBox.Object);
         }
 
         internal static NoIndentAnnotationCommand ArrangeNoIndentAnnotationCommand(Mock<IVBE> vbe, RubberduckParserState state, IRewritingManager rewritingManager)
