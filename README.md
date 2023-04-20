@@ -1,13 +1,14 @@
 <!-- ![banner](https://user-images.githubusercontent.com/5751684/113501222-8edfe880-94f1-11eb-99a9-64583e413ef3.png) -->
-
 [**Installing**](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing) • [Contributing](https://github.com/rubberduck-vba/Rubberduck/blob/next/CONTRIBUTING.md) • [Attributions](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/Attributions.md) • [Blog](https://rubberduckvba.blog) • [Wiki](https://github.com/rubberduck-vba/Rubberduck/wiki) • [rubberduckvba.com](https://rubberduckvba.com)
+
+<a href='https://ko-fi.com/N4N2IWEIG' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Support us on ko-fi.com' /></a>
 
 ## Build Status
 
-|Branch     | Build Status | Release notes &amp; Download Links | Donate |
-|------------|--------------|-|:---:|
-| **main** | ![main branch build status][mainBuildStatus] | [latest release](https://github.com/rubberduck-vba/Rubberduck/releases/latest) | <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=UY5K5X36B7T2S&currency_code=CAD&source=url"><img alt="Donate via PayPal" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a>|
-| **next**   | ![next branch build status][nextBuildStatus] | [pre-releases](https://github.com/rubberduck-vba/Rubberduck/releases) | <p>via PayPal</p><sup>Pays for website and blog hosting fees. Donations in excess of our needs are going to <a href="https://mssociety.ca/">Multiple Sclerosis Society of Canada</a>.</sup> |
+|Branch     | Build Status | Release notes &amp; Download Links |
+|------------|--------------|-|
+| **main** | ![main branch build status][mainBuildStatus] | [latest release](https://github.com/rubberduck-vba/Rubberduck/releases/latest) |
+| **next**   | ![next branch build status][nextBuildStatus] | [pre-releases](https://github.com/rubberduck-vba/Rubberduck/releases) | 
 
 [nextBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/next?svg=true
 [mainBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/main?svg=true
