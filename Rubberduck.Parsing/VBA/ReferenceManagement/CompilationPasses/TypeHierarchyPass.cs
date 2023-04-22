@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using NLog;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Symbols;
@@ -51,7 +52,13 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses
             var classModule = (ClassModuleDeclaration)potentialClassModule;
             foreach (var implementedInterfaceName in classModule.SupertypeNames)
             {
-                var expressionContext = _expressionParser.Parse(implementedInterfaceName);
+                if (!TrySanitizeName(implementedInterfaceName, out var sanitizedName))
+                {
+                    Logger.Warn("The interface name '{0}' is unsanitizable. Therefore, it cannot be resolved reliably and will be skipped.", implementedInterfaceName);
+                    continue;
+                }
+
+                var expressionContext = _expressionParser.Parse(sanitizedName);
                 var implementedInterface = _bindingService.ResolveType(potentialClassModule, potentialClassModule, expressionContext);
                 if (implementedInterface.Classification != ExpressionClassification.ResolutionFailed)
                 {
@@ -61,6 +68,53 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses
                 {
                     Logger.Warn("Failed to resolve interface {0}.", implementedInterfaceName);
                 }
+            }
+        }
+
+        private StringBuilder sb = new StringBuilder();
+        private bool TrySanitizeName(string implementedInterfaceName, out string sanitizedName)
+        {
+            sanitizedName = string.Empty;
+            sb.Clear();
+
+            foreach (var part in implementedInterfaceName.Split('.'))
+            {
+                sanitizedName = sb.ToString();
+                if (!string.IsNullOrWhiteSpace(sanitizedName))
+                {
+                    sb.Append(".");
+                }
+
+                if (part.StartsWith("[") && part.EndsWith("]"))
+                {
+                    sb.Append(part);
+                    continue;
+                }
+
+                if (part.Contains("[") || part.Contains("]"))
+                {
+                    sb.Clear();
+                    break;
+                }
+
+                sb.Append("[" + part + "]");
+            }
+
+            if (string.IsNullOrWhiteSpace(sanitizedName))
+            {
+                if (sb.Length == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    sanitizedName = sb.ToString();
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
             }
         }
     }
