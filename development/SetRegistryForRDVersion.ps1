@@ -17,7 +17,7 @@ $extensionClsid = "69E0F697-43F0-3B33-B105-9B8188A6F040"
 $dockableToolWindowClsid = "69E0F699-43F0-3B33-B105-9B8188A6F040"
 
 $script:rd3Version = "3.0.0.0"
-$script:rd2Version = "2.5.2.0"
+$script:rd2Version = "2.5.9.0"
 
 #There are currently(4/23) 2 registry keys to be added for RD3: 
 #Rubberduck.Extension and Rubberduck.DockableToolWindow
