@@ -2,9 +2,10 @@
 using Rubberduck.Settings;
 using System;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Octokit;
+using System.Net;
 
 namespace Rubberduck.VersionCheck
 {
@@ -29,6 +30,8 @@ namespace Rubberduck.VersionCheck
 
             try
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
                 return settings.IncludePreRelease 
                     ? await GetGitHubNext() 
                     : await GetGitHubMain();
@@ -43,38 +46,27 @@ namespace Rubberduck.VersionCheck
         public bool IsDebugBuild { get; }
         public string VersionString { get; }
 
+        private const string GitHubOrgName = "rubberduck-vba";
+        private const string GitHubRepoName = "Rubberduck";
+        private const string UserAgentProductName = "Rubberduck";
+        private GitHubClient GetGitHubClient() => new GitHubClient(new ProductHeaderValue(UserAgentProductName, CurrentVersion.ToString(3)));
+
         private async Task<Version> GetGitHubMain()
         {
-            var url = new Uri("https://github.com/repos/rubberduck-vba/Rubberduck/releases/latest");
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("rubberduck.version-check"));
-                using (var response = await client.GetAsync(url))
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var tagName = (string)JsonConvert.DeserializeObject<dynamic>(content).tag_name;
+            var client = GetGitHubClient();
+            var response = await client.Repository.Release.GetLatest(GitHubOrgName, GitHubRepoName);
+            var tagName = response.TagName;
 
-                    // assumes a tag name like "v2.5.3.0"
-                    return new Version(tagName.Substring("v".Length));
-                }
-            }
+            return new Version(tagName.Substring("v".Length));
         }
 
         private async Task<Version> GetGitHubNext()
         {
-            var url = new Uri("https://github.com/repos/rubberduck-vba/Rubberduck/releases");
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("rubberduck.version-check"));
-                using (var response = await client.GetAsync(url))
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var tagName = (string)JsonConvert.DeserializeObject<dynamic>(content)[0].tag_name;
+            var client = GetGitHubClient();
+            var response = await client.Repository.Release.GetAll(GitHubOrgName, GitHubRepoName);
+            var tagName = response.FirstOrDefault()?.TagName ?? "Prerelease-v0.0.0";
 
-                    // assumes a tag name like "Prerelease-v2.5.2.1234"
-                    return new Version(tagName.Substring("Prerelease-v".Length));
-                }
-            }
+            return new Version(tagName.Substring("Prerelease-v".Length));
         }
     }
 }
