@@ -57,7 +57,7 @@ All references to any identifier, whether defined in your project or any of its 
 
 ### Static Code Analysis, Refactorings
 
-Rubberduck analyses your code in various configurable ways and can help avoid beginner mistakes, keep a consistent programming style, and find all sorts of potential bugs and problems. Many code inspections were implemented due to frequently-asked [VBA questions on Stack Overflow](https://stackoverflow.com/questions/tagged/vba),and on many occasions, an automatic quick-fix is available.
+Rubberduck analyses your code in various configurable ways and can help avoid beginner mistakes, keep a consistent programming style, and find all sorts of potential bugs and problems. Many code inspections were implemented due to frequently-asked [VBA questions on Stack Overflow](https://stackoverflow.com/questions/tagged/vba), and on many occasions, an automatic quick-fix is available.
 
 Rename variables to meaningful identifiers without worrying about breaking something. Promote local variables to parameters, extract interfaces and methods from a selection, encapsulate fields into properties, reorder and/or delete parameters, and automatically update all callers.
 
