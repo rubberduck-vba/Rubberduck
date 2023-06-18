@@ -775,7 +775,7 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        private static readonly Uri _inspectionsHomeUrl = new Uri("https://rubberduckvba.com/inspections");
+        private static readonly Uri _inspectionsHomeUrl = new Uri("https://rubberduckvba.com/features/summary?name=inspections");
 
         public Uri InspectionDetailsUrl => _selectedInspection == null 
             ? _inspectionsHomeUrl 
