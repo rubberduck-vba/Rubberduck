@@ -13,7 +13,7 @@
                 <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             
-            <BitmapImage x:Key="RD" UriSource="pack://application:,,,/Rubberduck.Resources;component/Rubberduck.png" />
+            <BitmapImage x:Key="RD" UriSource="pack://application:,,,/Rubberduck.Resources;component/Rubberduck_Banner.png" />
             <Style x:Key="NormalLabel" TargetType="TextBlock">
                 <Style.Setters>
                     <Setter Property="FontFamily" Value="Segoe UI" />
@@ -76,7 +76,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0"  Grid.Column="0" Grid.ColumnSpan="3" Margin="10">
+        <Border Grid.Row="0"  Grid.Column="0" Grid.ColumnSpan="3" Margin="10" BorderThickness="0,1" BorderBrush="Black">
             <Image Source="{StaticResource RD}" Stretch="Uniform" />
         </Border>
         <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource SectionBorder}">
