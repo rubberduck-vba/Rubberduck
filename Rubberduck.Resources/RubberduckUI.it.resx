@@ -707,4 +707,10 @@ La finestra è stata visualizzata perché è abilitata la verifica di versione. 
   <data name="CommandDescription_PeekDefinitionCommand" xml:space="preserve">
     <value>Guarda la definizione</value>
   </data>
+  <data name="Indenter_ContinueIndentWithoutAnnotations" xml:space="preserve">
+    <value>Rubberduck ha bisogno di un aggiornamento per rispettare le annotazioni @NoIndent. Continuare ad indentare e ad ignorare le annotazioni @NoIndent?</value>
+  </data>
+  <data name="Indenter_ContinueIndentWithoutAnnotations_DialogCaption" xml:space="preserve">
+    <value>Continuare Indentazione senza @NoIndent?</value>
+  </data>
 </root>
