@@ -71,7 +71,8 @@ on_success:
   - ps: |
         $ProgressPreference = 'SilentlyContinue'
         Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
-        ./codecov.exe -f '*_Coverage.xml'
+        ./codecov.exe -f 'Rubberduck_Coverage.xml' -X search
+        ./codecov.exe -f 'RubberduckCodeAnalysis_Coverage.xml' -X search
 #        choco install gnupg --no-progress --limit-output --confirm --execution-timeout=60
 #        Invoke-WebRequest -Uri https://keybase.io/codecovsecurity/pgp_keys.asc -OutFile codecov.asc
 #        gpg.exe --import codecov.asc
