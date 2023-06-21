@@ -1,37 +1,31 @@
 <!-- ![banner](https://user-images.githubusercontent.com/5751684/113501222-8edfe880-94f1-11eb-99a9-64583e413ef3.png) -->
-[**Installing**](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing) • [Contributing](https://github.com/rubberduck-vba/Rubberduck/blob/next/CONTRIBUTING.md) • [Attributions](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/Attributions.md) • [Blog](https://rubberduckvba.blog) • [Wiki](https://github.com/rubberduck-vba/Rubberduck/wiki) • [rubberduckvba.com](https://rubberduckvba.com)
+
+## Links
+
+- [**Installing**](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing)
+- [Contributing](https://github.com/rubberduck-vba/Rubberduck/blob/next/CONTRIBUTING.md)
+- [Attributions](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/Attributions.md)
+- [Wiki](https://github.com/rubberduck-vba/Rubberduck/wiki)
+- [Website](https://rubberduckvba.com)
+- [Blog](https://rubberduckvba.blog)
+- [Shop](https://ko-fi.com/rubberduckvba/shop)
 
 <a href='https://ko-fi.com/N4N2IWEIG' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Support us on ko-fi.com' /></a>
 
-## Build Status
+## Releases
 
-|Branch     | Build Status | Release notes &amp; Download Links |
-|------------|--------------|-|
-| **main** | ![main branch build status][mainBuildStatus] | [latest release](https://github.com/rubberduck-vba/Rubberduck/releases/latest) |
-| **next**   | ![next branch build status][nextBuildStatus] | [pre-releases](https://github.com/rubberduck-vba/Rubberduck/releases) | 
-
-[nextBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/next?svg=true
-[mainBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/main?svg=true
+- The [latest release](https://github.com/rubberduck-vba/Rubberduck/releases/latest)
+- See [all releases](https://github.com/rubberduck-vba/Rubberduck/releases) including pre-release tags
 
 ---
 
 ## [License (GPLv3)](https://github.com/rubberduck-vba/Rubberduck/blob/next/LICENSE)
 
-Copyright &copy; 2014-2021 Rubberduck project contributors.
+Copyright &copy; 2014-2023 Rubberduck project contributors.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the [GNU General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) for more details.
-
----
-
-## [JetBrains](https://www.jetbrains.com) | [ReSharper](https://www.jetbrains.com/resharper/)
-
-[![JetBrains ReSharper logo](https://cloud.githubusercontent.com/assets/5751684/20271309/616bb740-aa58-11e6-91c9-65287b740985.png)](https://www.jetbrains.com/resharper/)
-
-Since the project's early days, JetBrains' Open-Source team has been supporting Rubberduck with free OSS licenses for all core contributors - and we deeply thank them for that. ReSharper has been not only a tool we couldn't do without; it's been an inspiration, the ultimate level of polished perfection to strive for in our own IDE add-in project. So just like you're missing out if you write VBA and you're not using Rubberduck, you're missing out if you write C# and aren't using ReSharper.
-
-<sub>Note: Rubberduck is not a JetBrains product. JetBrains does not contribute and is not affiliated to the Rubberduck project in any way.</sub>
 
 ---
 
@@ -43,11 +37,11 @@ Read more about contributing here:
 
 [![contribute!](https://user-images.githubusercontent.com/5751684/113513709-071dcc80-9539-11eb-833d-d21532065306.png)](https://github.com/rubberduck-vba/Rubberduck/blob/next/CONTRIBUTING.md)
 
-The add-in has *many* features - below is a quick overview.
+The add-in has *many* features - below is a quick overview. See https://rubberduckvba.com/features for more details.
 
 ### Enhanced Navigation
 
-The Rubberduck *command bar* displays docstring for the current member
+The Rubberduck *command bar* displays docstring for the current member.
 
 ![command bar](https://user-images.githubusercontent.com/5751684/113501975-25fb6f00-94f7-11eb-9189-fcf2a0dd98da.png)
 
@@ -77,7 +71,7 @@ Special comments that become a game changer with Rubberduck processing them: org
 
 ### More?
 
-Of course there's more! There's tooling to help synchronizing the project with files in a folder (for source/version control), some auto-completion features like self-closing parentheses and quotes; there's a regular expression assistant, a replacement for the VBE's *add/remove references* dialog, and so many other things to discover, and yet even more to implement.
+Of course there's more! There's tooling to help synchronizing the project with files in a folder (useful for source/version control!), some auto-completion features like self-closing parentheses and quotes; there's a regular expression assistant, a replacement for the VBE's *add/remove references* dialog, and so many other things to discover, and yet even more to implement.
 
 ---
 
@@ -93,3 +87,25 @@ Rubberduck isn't a lightweight add-in and consumes a large amount of memory. So 
 Join us on our [Discord server](https://discord.gg/5Nbb8j6R) for support, questions, contributions, or just to come and say hi!
 
 For more information please see [Getting Started](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/GettingStarted.md) in the project's wiki, and follow the project's blog for project updates and advanced VBA OOP reading material.
+
+---
+
+## Roadmap
+
+After over two years without an "official" new release, Rubberduck version jumped from 2.5.2 to 2.5.9, adding minor but interesting features to an already impressive array.
+
+### The road ahead
+
+Rubberduck 2.x is now planned to end at 2.5.9.x, perhaps with a number of small revisions and bug fixes, but nothing major should be expected, as the developers' attention is shifting to the 3.0 project:
+
+- Parsing and understanding VBA code is moving to a language (LSP) server
+- We're making a new editor _inside_ (for now) the Visual Basic Editor that will be the LSP client
+- Baseline server-side feature set for 3.0 is everything 2.5.9 does
+- Baseline client-side feature set for 3.0 is the 2.5.x UI (perhaps tweaked a bit/lot) hosted in the Rubberduck Editor
+
+Fully controlling the editor opens Rubberduck to everything we ever dreamed of:
+
+- In-editor syntax and static code analysis reporting and quick-fixing
+- Full editor theming, custom syntax highlighting
+
+See the [Rubberduck3](https://github.com/rubberduck-vba/Rubberduck3) repository for more information.
