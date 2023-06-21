@@ -27,10 +27,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog">
-      <Version>4.5.10</Version>
+      <Version>5.1.1</Version>
     </PackageReference>
     <PackageReference Include="NLog.Schema">
-      <Version>4.5.10</Version>
+      <Version>5.1.1</Version>
     </PackageReference>
   </ItemGroup>
 </Project>

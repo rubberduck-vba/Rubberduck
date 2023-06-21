@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <Company>Rubberduck-VBA</Company>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <LangVersion>7.2</LangVersion>
     <SolutionDir>$(MSBuildProjectDirectory)</SolutionDir>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -97,7 +97,9 @@
   </ItemGroup>
   
   <Target Name="EnsureMetaProjectsBuild" BeforeTargets="PrepareForBuild"
-          Condition="!Exists('$(SolutionDir)RubberduckCodeAnalysis\bin\RubberduckCodeAnalysis.dll') OR !Exists('$(SolutionDir)Rubberduck.Deployment.Build\bin\Rubberduck.Deployment.Build.dll') OR !Exists('$(SolutionDir)RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll')">
+          Condition="!Exists('$(SolutionDir)RubberduckCodeAnalysis\bin\RubberduckCodeAnalysis.dll')
+            OR !Exists('$(SolutionDir)Rubberduck.Deployment.Build\bin\Rubberduck.Deployment.Build.dll')
+            OR !Exists('$(SolutionDir)RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll')">
     <Message Text="Missing the required meta projects. Building the meta projects..." Importance="high" />
     <MSBuild Projects="@(MetaProjects)"
              BuildInParallel="false"

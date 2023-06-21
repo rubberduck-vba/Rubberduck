@@ -36,7 +36,7 @@ cache:
   - '%USERPROFILE%/.gradle/wrapper/dists'
 
 install:
-  set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;C:\Program Files (x86)\Java\jdk1.8.0;%PATH%
+  set PATH=C:\Program Files (x86)\Java\jdk1.8.0;%PATH%
 
 # set up the environment variables used later in the build process
 environment:
@@ -49,23 +49,17 @@ before_build:
   - cinst innosetup --version 6.0.5
   # - cinst codecov
   # - cinst gnupg
-  - cinst opencover.portable
   - nuget restore RubberduckMeta.sln
   - nuget restore Rubberduck.sln
 build_script:
-  - ps: msbuild "C:\projects\rubberduck\Rubberduck.sln" -property:"Version=$env:APPVEYOR_BUILD_VERSION" -verbosity:minimal -logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - ps: dotnet build Rubberduck.sln -property:"Version=$env:APPVEYOR_BUILD_VERSION" -verbosity:minimal
  
-
 # TestScript depends on the build matrix to only contain Release cpu
 # Otherwise we might run tests against artifacts that do not exist
 test_script:
-  # we use -returntargetcode to fail the build if tests fail
   # when using test_script, after_test seems to not be executed
-  # Manually select coverage instrumentation using "-register:Path64" to fix coverage generation
-  # Limit number of visits recorded with threshold to improve performance
   - |
-    OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -threshold:10 -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
-    OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -threshold:10 -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
+    dotnet test Rubberduck.sln /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=Combined_Coverage.xml
 
 on_success:
   - ps: |
@@ -81,9 +75,6 @@ on_success:
 
 #        gpg.exe --verify codecov.exe.SHA256SUM.sig codecov.exe.SHA256SUM
 #        If ($(Compare-Object -ReferenceObject  $(($(certUtil -hashfile codecov.exe SHA256)[1], "codecov.exe") -join "  ") -DifferenceObject $(Get-Content codecov.exe.SHA256SUM)).length -eq 0) { echo "SHASUM verified" } Else {exit 1}
-
-  # codecov -f "Rubberduck_Coverage.xml" -n "Main Project Coverage" --flag unit
-  # codecov -f "RubberduckCodeAnalysis_Coverage.xml" -n "Meta Coverage" --flag meta
 
 # Define the installer-name depending on what branch we're building on
 for:

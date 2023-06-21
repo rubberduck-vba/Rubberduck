@@ -9,6 +9,7 @@
     <RootNamespace>Rubberduck.Parsing</RootNamespace>
     <ProjectGuid>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</ProjectGuid>
     <UnifyOutputPath>true</UnifyOutputPath>
+    <EnableDefaultAntlrItems>true</EnableDefaultAntlrItems>
   </PropertyGroup>
   <PropertyGroup>
     <DocumentationFile>Rubberduck.Parsing.xml</DocumentationFile>
@@ -19,19 +20,25 @@
     <NoWarn>1701;1702;1591;4011;1001;7035;1053</NoWarn>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
-  <PropertyGroup>
-    <Antlr4UseCSharpGenerator>True</Antlr4UseCSharpGenerator>
-  </PropertyGroup>
   <ItemGroup>
-    <Antlr4 Include="Grammar\VBALexer.g4">
+    <Antlr4 Update="Grammar\VBALexer.g4">
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
       <Visitor>false</Visitor>
       <Listener>false</Listener>
     </Antlr4>
-    <Antlr4 Include="Grammar\VBAParser.g4">
+    <Antlr4 Update="Grammar\VBAParser.g4">
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
     </Antlr4>
-    <Antlr4 Include="Preprocessing\*.g4">
+    <Antlr4 Update="Preprocessing\VBAConditionalCompilationParser.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.PreProcessing</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Update="Preprocessing\VBADateParser.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.PreProcessing</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Update="Preprocessing\VBALikeLexer.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.PreProcessing</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Update="Preprocessing\VBALikeParser.g4">
       <CustomToolNamespace>Rubberduck.Parsing.PreProcessing</CustomToolNamespace>
     </Antlr4>
   </ItemGroup>
@@ -44,20 +51,20 @@
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Antlr4">
-      <Version>4.6.4</Version>
+    <PackageReference Include="Antlr4" Version="4.6.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Antlr4.CodeGenerator">
-      <Version>4.6.4</Version>
+    <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Antlr4.Runtime">
-      <Version>4.6.4</Version>
-    </PackageReference>
+    <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
     <PackageReference Include="NLog">
-      <Version>4.5.10</Version>
+      <Version>5.1.1</Version>
     </PackageReference>
     <PackageReference Include="NLog.Schema">
-      <Version>4.5.10</Version>
+      <Version>5.1.1</Version>
     </PackageReference>
     <PackageReference Include="System.ValueTuple">
       <Version>4.5.0</Version>

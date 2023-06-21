@@ -24,6 +24,7 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VbeRuntime;
 using System.IO.Abstractions;
+using Antlr4.Runtime.Misc;
 
 namespace Rubberduck
 {
