@@ -53,34 +53,34 @@
                 </ToolBar.Resources>
 
                 <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Refresh}" Command="{Binding RefreshCommand}">
-                    <Image Source="{StaticResource RefreshImage}" Style="{StaticResource ToolbarImageOpacity}"/>
+                    <Image Source="{DynamicResource RefreshImage}" Style="{DynamicResource ToolbarImageOpacity}"/>
                 </Button>
 
                 <Separator />
 
                 <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Remove}" Command="{Binding RemoveCommand}">
-                    <Image Source="{StaticResource DeleteImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                    <Image Source="{DynamicResource DeleteImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Separator />
 
                 <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" />
 
-                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByMarker}"
-                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupByMarkerConverter}, ConverterParameter={x:Static toDoItems:ToDoItemGrouping.Marker}}">
-                    <Image Source="{StaticResource GroupByMarkerImage}" />
+                              IsChecked="{Binding Path=Grouping, Converter={DynamicResource GroupByMarkerConverter}, ConverterParameter={x:Static toDoItems:ToDoItemGrouping.Marker}}">
+                    <Image Source="{DynamicResource GroupByMarkerImage}" />
                 </ToggleButton>
 
-                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}"
-                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupByLocationConverter}, ConverterParameter={x:Static toDoItems:ToDoItemGrouping.Location}}">
-                    <Image Source="{StaticResource GroupByLocationImage}" />
+                              IsChecked="{Binding Path=Grouping, Converter={DynamicResource GroupByLocationConverter}, ConverterParameter={x:Static toDoItems:ToDoItemGrouping.Location}}">
+                    <Image Source="{DynamicResource GroupByLocationImage}" />
                 </ToggleButton>
 
                 <Separator />
 
-                <Image Source="{StaticResource FilterImage}" />
+                <Image Source="{DynamicResource FilterImage}" />
 
                 <Label Content="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=FilterLabel}" />
                 <controls:SearchBox Width="100"
@@ -89,24 +89,24 @@
                 <Separator />
                 <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}"
                         ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=CollapseAll}">
-                    <Image Source="{StaticResource CollapseAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                    <Image Source="{DynamicResource CollapseAllImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Button Name="ExpandAll" Command="{Binding ExpandAllCommand}"
                         ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=ExpandAll}">
-                    <Image Source="{StaticResource ExpandAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                    <Image Source="{DynamicResource ExpandAllImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Separator />
                 <Button Command="{Binding CopyResultsCommand}">
-                    <Image Source="{StaticResource CopyResultsImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                    <Image Source="{DynamicResource CopyResultsImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=ToDoExplorer_CopyToolTip}" />
                     </Button.ToolTip>
                 </Button>
                 <Separator />
                 <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Settings}" Command="{Binding OpenTodoSettingsCommand}">
-                    <Image Source="{StaticResource SettingsImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                    <Image Source="{DynamicResource SettingsImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                 </Button>
             </ToolBar>
         </ToolBarTray>

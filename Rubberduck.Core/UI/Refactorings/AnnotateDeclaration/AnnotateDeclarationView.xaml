@@ -26,7 +26,7 @@
     <Grid>
         <Grid.Resources>
             <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentSingleTypeTemplate">
-                <TextBlock Text="{Binding ArgumentType, Converter={StaticResource AnnotationArgumentTypeToStringConverter}}"/>
+                <TextBlock Text="{Binding ArgumentType, Converter={DynamicResource AnnotationArgumentTypeToStringConverter}}"/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentMultiTypeTemplate">
                 <ComboBox ItemsSource="{Binding Path=ApplicableArgumentTypes}"
@@ -34,7 +34,7 @@
                           IsSynchronizedWithCurrentItem="True">                    
                     <ComboBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type annotations:AnnotationArgumentType}">
-                            <TextBlock Text="{Binding Path=., Converter={StaticResource AnnotationArgumentTypeToStringConverter}}"/>
+                            <TextBlock Text="{Binding Path=., Converter={DynamicResource AnnotationArgumentTypeToStringConverter}}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
@@ -43,29 +43,29 @@
                 <annotations:AnnotationArgumentType>Boolean</annotations:AnnotationArgumentType>
                 <annotations:AnnotationArgumentType>Inspection</annotations:AnnotationArgumentType>
             </x:Array>
-            <converters:SpecificValuesToVisibilityConverter SpecialValues="{StaticResource NonDefaultInputArgumentTypes}" CollapseSpecialValues="True" x:Key="DefaultArgumentVisibilityConverter"/>
+            <converters:SpecificValuesToVisibilityConverter SpecialValues="{DynamicResource NonDefaultInputArgumentTypes}" CollapseSpecialValues="True" x:Key="DefaultArgumentVisibilityConverter"/>
             <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Boolean}" CollapseSpecialValue="False" x:Key="BooleanArgumentVisibilityConverter"/>
             <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Inspection}" CollapseSpecialValue="False" x:Key="InspectionArgumentVisibilityConverter"/>
             <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentValueTemplate">
                 <StackPanel VerticalAlignment="Center">
                     <TextBox Text="{Binding ArgumentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                             Style="{StaticResource TextBoxErrorStyle}"
+                             Style="{DynamicResource TextBoxErrorStyle}"
                              HorizontalAlignment="Stretch"
                              VerticalAlignment="Stretch"
-                             Visibility="{Binding ArgumentType, Converter={StaticResource DefaultArgumentVisibilityConverter}}">
+                             Visibility="{Binding ArgumentType, Converter={DynamicResource DefaultArgumentVisibilityConverter}}">
                     </TextBox>
-                    <ComboBox Visibility="{Binding ArgumentType, Converter={StaticResource BooleanArgumentVisibilityConverter}}"
+                    <ComboBox Visibility="{Binding ArgumentType, Converter={DynamicResource BooleanArgumentVisibilityConverter}}"
                               ItemsSource="{Binding Path=BooleanValues}"
                               SelectedItem="{Binding Path=ArgumentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch">
                     </ComboBox>
-                    <ComboBox Visibility="{Binding ArgumentType, Converter={StaticResource InspectionArgumentVisibilityConverter}}"
+                    <ComboBox Visibility="{Binding ArgumentType, Converter={DynamicResource InspectionArgumentVisibilityConverter}}"
                               ItemsSource="{Binding Path=InspectionNames}"
                               SelectedItem="{Binding Path=ArgumentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=., Converter={StaticResource InspectionToLocalizedNameConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                <TextBlock Text="{Binding Path=., Converter={DynamicResource InspectionToLocalizedNameConverter}, UpdateSourceTrigger=PropertyChanged}"
                                            HorizontalAlignment="Stretch"
                                            VerticalAlignment="Stretch"/>
                             </DataTemplate>
@@ -82,13 +82,13 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <StackPanel Background="{StaticResource BackgroundLightBrush}">
+        <StackPanel Background="{DynamicResource BackgroundLightBrush}">
             <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_TitleText}" FontWeight="Bold"/>
             <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_Instructions}" Margin="5,0,0,10" TextWrapping="Wrap" />
         </StackPanel>
         <StackPanel Grid.Row="1">
             <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_DeclarationLabel}" FontWeight="DemiBold" />
-            <TextBlock Text="{Binding Model.Target, Converter={StaticResource DeclarationToQualifiedNameConverter}}" Margin="5,0,0,5" FontWeight="Regular" />
+            <TextBlock Text="{Binding Model.Target, Converter={DynamicResource DeclarationToQualifiedNameConverter}}" Margin="5,0,0,5" FontWeight="Regular" />
             <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_AnnotationLabel}" FontWeight="DemiBold" />
             <ComboBox ItemsSource="{Binding ApplicableAnnotations}"
                       SelectedItem="{Binding Annotation}"
@@ -96,13 +96,13 @@
                       Margin="5,0,5,5">
                 <ComboBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type annotations:IAnnotation}">
-                        <TextBlock Text="{Binding Path=., Converter={StaticResource AnnotationToCodeStringConverter}}"/>
+                        <TextBlock Text="{Binding Path=., Converter={DynamicResource AnnotationToCodeStringConverter}}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
             <CheckBox Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_AdjustAttributeLabel}"
                       IsChecked="{Binding AdjustAttribute}"
-                      Visibility="{Binding ShowAdjustAttributeOption, Converter={StaticResource AdjustAttributeVisibilityConverter}}"
+                      Visibility="{Binding ShowAdjustAttributeOption, Converter={DynamicResource AdjustAttributeVisibilityConverter}}"
                       Margin="10,0,10,-5"
                       VerticalContentAlignment="Center">
                 <CheckBox.LayoutTransform>
@@ -141,12 +141,12 @@
                   Margin="5,0,5,5">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_ArgumentTypeHeader}"
-                                        CellTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}"
-                                        CellEditingTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}"
+                                        CellTemplateSelector="{DynamicResource AnnotationArgumentTypeCellDataTemplateSelector}"
+                                        CellEditingTemplateSelector="{DynamicResource AnnotationArgumentTypeCellDataTemplateSelector}"
                                         Width="Auto"/>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_ArgumentValueHeader}"
-                                        CellTemplate="{StaticResource ArgumentValueTemplate}"
-                                        CellEditingTemplate="{StaticResource ArgumentValueTemplate}"
+                                        CellTemplate="{DynamicResource ArgumentValueTemplate}"
+                                        CellEditingTemplate="{DynamicResource ArgumentValueTemplate}"
                                         Width="*"/>
             </DataGrid.Columns>
         </DataGrid>

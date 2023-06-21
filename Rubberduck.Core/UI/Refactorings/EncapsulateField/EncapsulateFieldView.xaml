@@ -17,7 +17,7 @@
 	        <converters:BoolToVisibleVisibilityConverter x:Key="BoolToVisibleVisibility" />
 	        <BitmapImage x:Key="InvalidNameImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
 	        <Style TargetType="Image" x:Key="InvalidNameIconStyle">
-	            <Setter Property="Source" Value="{StaticResource InvalidNameImage}" />
+	            <Setter Property="Source" Value="{DynamicResource InvalidNameImage}" />
 	            <Setter Property="Height" Value="16" />
 	            <Setter Property="Margin" Value="0,0,-8,0" />
 	            <Setter Property="HorizontalAlignment" Value="Right" />
@@ -36,7 +36,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Background="{StaticResource BackgroundLightBrush}">
+        <StackPanel Grid.Row="0" Background="{DynamicResource BackgroundLightBrush}">
             <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=EncapsulateField_TitleText}"
                    FontWeight="Bold" />
             <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=EncapsulateField_InstructionText}"
@@ -67,7 +67,7 @@
                                 HorizontalAlignment="Left"
                                 DisplayMemberPath="FieldDeclarationBlock"
                                 SelectedItem="{Binding SelectedObjectStateUDT, Mode=TwoWay}"
-                                Visibility="{Binding ShowStateUDTSelections, Converter={StaticResource BoolToVisibleVisibility}}">
+                                Visibility="{Binding ShowStateUDTSelections, Converter={DynamicResource BoolToVisibleVisibility}}">
                     </ComboBox>
                 </StackPanel>
             <Grid Grid.Row="1" Margin="5">
@@ -84,10 +84,10 @@
                         <TextBlock Grid.Column="0" Margin="0,5"
                                    Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ExtractInterface_MembersGroupBox}" />
                         <StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal">
-                            <Button Style="{StaticResource CommandButtonStyle}" TabIndex="2"
+                            <Button Style="{DynamicResource CommandButtonStyle}" TabIndex="2"
                                     Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SelectAll_Button}"
                                     Command="{Binding SelectAllCommand}" />
-                            <Button Style="{StaticResource CommandButtonStyle}" TabIndex="3"
+                            <Button Style="{DynamicResource CommandButtonStyle}" TabIndex="3"
                                     Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=DeselectAll_Button}"
                                     Command="{Binding DeselectAllCommand}">
                             </Button>
@@ -112,21 +112,21 @@
                                             Text="{Binding TargetDeclarationExpression, Mode=OneWay}"
                                             FontWeight="Bold">
                                     </TextBlock>
-                                    <Image Style="{StaticResource InvalidNameIconStyle}"
-                                           Visibility="{Binding Path=HasValidEncapsulationAttributes, Converter={StaticResource BoolToHiddenVisibility}}" />
+                                    <Image Style="{DynamicResource InvalidNameIconStyle}"
+                                           Visibility="{Binding Path=HasValidEncapsulationAttributes, Converter={DynamicResource BoolToHiddenVisibility}}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </StackPanel>
             </Grid>
-            <Grid Grid.Row="2" Margin="5" Visibility="{Binding Path=SelectedFieldIsNotFlagged, Converter={StaticResource BoolToHiddenVisibility}}">
+            <Grid Grid.Row="2" Margin="5" Visibility="{Binding Path=SelectedFieldIsNotFlagged, Converter={DynamicResource BoolToHiddenVisibility}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <StackPanel>
-                    <GroupBox Visibility="{Binding Path=IsEmptyList, Converter={StaticResource BoolToHiddenVisibility}}"
+                    <GroupBox Visibility="{Binding Path=IsEmptyList, Converter={DynamicResource BoolToHiddenVisibility}}"
                               Margin="5">
                         <GroupBox.Header>
                             <TextBlock Text="{Binding Path=GroupBoxHeaderContent}" FontWeight="Bold" />
@@ -137,17 +137,17 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" Visibility="{Binding Path=SelectedFieldIsPrivateUDT, Converter={StaticResource BoolToVisibleVisibility}}"
+                                <TextBlock Grid.Row="0" Visibility="{Binding Path=SelectedFieldIsPrivateUDT, Converter={DynamicResource BoolToVisibleVisibility}}"
                                            Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=EncapsulateField_PrivateUDTPropertyText}"
                                            Margin="10,5" />
-                                <TextBox Grid.Row="1" Visibility="{Binding Path=SelectedFieldHasEditablePropertyName, Converter={StaticResource BoolToVisibleVisibility}}"
+                                <TextBox Grid.Row="1" Visibility="{Binding Path=SelectedFieldHasEditablePropertyName, Converter={DynamicResource BoolToVisibleVisibility}}"
                                          Text="{Binding Path=PropertyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                          TabIndex="1" Margin="10,5"
                                          VerticalAlignment="Center" 
                                          VerticalContentAlignment="Center"
                                          Height="22" />
-                                <Image Grid.Row="1" Style="{StaticResource InvalidNameIconStyle}"
-                                       Visibility="{Binding Path=SelectionHasValidEncapsulationAttributes, Converter={StaticResource BoolToHiddenVisibility}}" />
+                                <Image Grid.Row="1" Style="{DynamicResource InvalidNameIconStyle}"
+                                       Visibility="{Binding Path=SelectionHasValidEncapsulationAttributes, Converter={DynamicResource BoolToHiddenVisibility}}" />
                             </Grid>
                             <CheckBox IsChecked="{Binding Path=IsReadOnly, Mode=TwoWay}"
                                 IsEnabled="{Binding Path=EnableReadOnlyOption}"
@@ -168,8 +168,8 @@
             <StackPanel Grid.Row="3" Margin="10,5" Orientation="Horizontal">
                     <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=EncapsulateField_Preview}" 
                                FontSize="14" FontWeight="Bold" />
-                    <Image Style="{StaticResource InvalidNameIconStyle}" Margin="0,-4"
-                           Visibility="{Binding Path=HasValidNames, Converter={StaticResource BoolToHiddenVisibility}}" />
+                    <Image Style="{DynamicResource InvalidNameIconStyle}" Margin="0,-4"
+                           Visibility="{Binding Path=HasValidNames, Converter={DynamicResource BoolToHiddenVisibility}}" />
             </StackPanel>
             <controls:BindableTextEditor Grid.Row="4" Margin="10" BorderThickness="1"
                 FontFamily="Courier New "
@@ -188,12 +188,12 @@
                 </Grid.ColumnDefinitions>
                 <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
                         Grid.Column="0"
-                        Style="{StaticResource CommandButtonStyle}"
+                        Style="{DynamicResource CommandButtonStyle}"
                         IsEnabled="{Binding IsValidInterfaceName}"
                         Command="{Binding OkButtonCommand}" />
                 <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}"
                         Grid.Column="1"
-                        Style="{StaticResource CommandButtonStyle}"
+                        Style="{DynamicResource CommandButtonStyle}"
                         Command="{Binding CancelButtonCommand}"/>
             </Grid>
         </Grid>

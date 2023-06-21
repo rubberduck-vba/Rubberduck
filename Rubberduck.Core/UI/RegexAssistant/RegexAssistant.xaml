@@ -19,14 +19,14 @@
                 <Setter Property="Margin" Value="2" />
                 <Style.Triggers>
                     <Trigger Property="IsSelected" Value="True">
-                        <Setter Property="BorderBrush" Value="{StaticResource HighlightBorderActiveBrush}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource HighlightBorderActiveBrush}"/>
                     </Trigger>
                     <MultiTrigger>
                         <MultiTrigger.Conditions>
                             <Condition Property="IsSelected" Value="True"/>
                             <Condition Property="IsSelectionActive" Value="False"/>
                         </MultiTrigger.Conditions>
-                        <Setter Property="BorderBrush" Value="{StaticResource HighlightInactiveBorderBrush}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource HighlightInactiveBorderBrush}"/>
                     </MultiTrigger>
                 </Style.Triggers>
                 <Style.Resources>
@@ -39,7 +39,7 @@
             <HierarchicalDataTemplate
             x:Key="RecursiveData" 
             DataType="TreeViewItem"
-            ItemContainerStyle="{StaticResource ShinyTreeView}"
+            ItemContainerStyle="{DynamicResource ShinyTreeView}"
             ItemsSource="{Binding Items}">
             </HierarchicalDataTemplate>
         </ResourceDictionary>
@@ -86,8 +86,8 @@
             <TreeView Margin="5" 
                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      ItemTemplate="{StaticResource RecursiveData}" 
-                      ItemContainerStyle="{StaticResource ShinyTreeView}"
+                      ItemTemplate="{DynamicResource RecursiveData}" 
+                      ItemContainerStyle="{DynamicResource ShinyTreeView}"
                       ItemsSource="{Binding ResultItems}"/>
         </GroupBox>
     </Grid>

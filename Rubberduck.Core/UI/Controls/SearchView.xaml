@@ -31,12 +31,12 @@
                                            SelectedItem="{Binding SelectedItem}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SearchResults_MemberName}" Binding="{Binding ParentScope.IdentifierName}" />
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SearchResults_MemberType}" Binding="{Binding ParentScope.DeclarationType, Converter={StaticResource DeclarationTypeToString}}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SearchResults_MemberType}" Binding="{Binding ParentScope.DeclarationType, Converter={DynamicResource DeclarationTypeToString}}" />
                             <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SearchResults_Location}" Binding="{Binding Selection}" />
                             <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SearchResults_Context}" Width="*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <ContentControl Content="{Binding Converter={StaticResource SearchResultConverter}}" />
+                                        <ContentControl Content="{Binding Converter={DynamicResource SearchResultConverter}}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
