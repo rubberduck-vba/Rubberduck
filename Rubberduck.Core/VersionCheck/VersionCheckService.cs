@@ -24,26 +24,22 @@ namespace Rubberduck.VersionCheck
         private Version _latestVersion;
         public async Task<Version> GetLatestVersionAsync(GeneralSettings settings, CancellationToken token = default)
         {
-            if (_latestVersion != default) { return _latestVersion; }
-
-            try
+            if (_latestVersion != default) 
             {
-                using (var client = new PublicApiClient())
-                {
-                    var tags = await client.GetLatestTagsAsync(token);
-                    var next = tags.Single(e => e.IsPreRelease).Name;
-                    var main = tags.Single(e => !e.IsPreRelease).Name;
-
-                    var version = settings.IncludePreRelease
-                        ? next.Substring("Prerelease-v".Length)
-                        : main.Substring("v".Length);
-
-                    _latestVersion = new Version(version);
-                    return _latestVersion;
-                }
+                return _latestVersion; 
             }
-            catch
+
+            using (var client = new PublicApiClient())
             {
+                var tags = await client.GetLatestTagsAsync(token);
+                var next = tags.Single(e => e.IsPreRelease).Name;
+                var main = tags.Single(e => !e.IsPreRelease).Name;
+
+                var version = settings.IncludePreRelease
+                    ? next.Substring("Prerelease-v".Length)
+                    : main.Substring("v".Length);
+
+                _latestVersion = new Version(version);
                 return _latestVersion;
             }
         }
