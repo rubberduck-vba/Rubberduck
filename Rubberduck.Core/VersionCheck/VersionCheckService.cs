@@ -4,8 +4,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Octokit;
-using System.Net;
 
 namespace Rubberduck.VersionCheck
 {
@@ -30,11 +28,19 @@ namespace Rubberduck.VersionCheck
 
             try
             {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                using (var client = new PublicApiClient())
+                {
+                    var tags = await client.GetLatestTagsAsync();
+                    var next = tags.Single(e => e.IsPreRelease).Name;
+                    var main = tags.Single(e => !e.IsPreRelease).Name;
 
-                return settings.IncludePreRelease 
-                    ? await GetGitHubNext() 
-                    : await GetGitHubMain();
+                    var version = settings.IncludePreRelease
+                        ? next.Substring("Prerelease-v".Length)
+                        : main.Substring("v".Length);
+
+                    _latestVersion = new Version(version);
+                    return _latestVersion;
+                }
             }
             catch
             {
@@ -45,28 +51,5 @@ namespace Rubberduck.VersionCheck
         public Version CurrentVersion { get; }
         public bool IsDebugBuild { get; }
         public string VersionString { get; }
-
-        private const string GitHubOrgName = "rubberduck-vba";
-        private const string GitHubRepoName = "Rubberduck";
-        private const string UserAgentProductName = "Rubberduck";
-        private GitHubClient GetGitHubClient() => new GitHubClient(new ProductHeaderValue(UserAgentProductName, CurrentVersion.ToString(3)));
-
-        private async Task<Version> GetGitHubMain()
-        {
-            var client = GetGitHubClient();
-            var response = await client.Repository.Release.GetLatest(GitHubOrgName, GitHubRepoName);
-            var tagName = response.TagName;
-
-            return new Version(tagName.Substring("v".Length));
-        }
-
-        private async Task<Version> GetGitHubNext()
-        {
-            var client = GetGitHubClient();
-            var response = await client.Repository.Release.GetAll(GitHubOrgName, GitHubRepoName);
-            var tagName = response.FirstOrDefault()?.TagName ?? "Prerelease-v0.0.0";
-
-            return new Version(tagName.Substring("Prerelease-v".Length));
-        }
     }
 }

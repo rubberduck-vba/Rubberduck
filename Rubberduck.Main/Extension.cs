@@ -24,6 +24,7 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VbeRuntime;
 using System.IO.Abstractions;
+using Rubberduck.VersionCheck;
 
 namespace Rubberduck
 {
@@ -193,7 +194,7 @@ namespace Rubberduck
 
                 if (_initialSettings?.CanShowSplash ?? false)
                 {
-                    splash = new Splash2021(new VersionCheck.VersionCheckService(typeof(Splash2021).Assembly.GetName().Version, new PublicApiClient()));
+                    splash = new Splash2021(new VersionCheckService(typeof(Splash2021).Assembly.GetName().Version));
                     splash.Show();
                     splash.Refresh();
                 }

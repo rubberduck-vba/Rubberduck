@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Reflection;
 using Rubberduck.Interaction;
 using Rubberduck.VersionCheck;
 using Rubberduck.Resources;
@@ -49,6 +48,12 @@ namespace Rubberduck.UI.Command
                 .GetLatestVersionAsync(settings)
                 .ContinueWith(t =>
                 {
+                    if (t.IsFaulted)
+                    {
+                        Logger.Warn(t.Exception);
+                        return;
+                    }
+
                     if (_versionCheck.CurrentVersion < t.Result)
                     {
                         var proceed = true;
