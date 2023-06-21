@@ -30,7 +30,7 @@ namespace Rubberduck.VersionCheck
             {
                 using (var client = new PublicApiClient())
                 {
-                    var tags = await client.GetLatestTagsAsync();
+                    var tags = await client.GetLatestTagsAsync(token);
                     var next = tags.Single(e => e.IsPreRelease).Name;
                     var main = tags.Single(e => !e.IsPreRelease).Name;
 

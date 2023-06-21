@@ -11,12 +11,9 @@ namespace Rubberduck.VersionCheck
     {
         private static readonly string PublicTagsEndPoint = "public/tags";
 
-        public async Task<IEnumerable<Tag>> GetLatestTagsAsync()
+        public async Task<IEnumerable<Tag>> GetLatestTagsAsync(CancellationToken token)
         {
-            var tokenSource = new CancellationTokenSource();
-            tokenSource.CancelAfter(TimeSpan.FromSeconds(5));
-
-            return await GetResponse<Tag[]>(PublicTagsEndPoint, tokenSource.Token);
+            return await GetResponse<Tag[]>(PublicTagsEndPoint, token);
         }
     }
 }

@@ -5,6 +5,7 @@ using Rubberduck.VersionCheck;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Settings;
+using System.Threading;
 
 namespace Rubberduck.UI.Command
 {
@@ -44,8 +45,10 @@ namespace Rubberduck.UI.Command
         {
             var settings = _config.Read().UserSettings.GeneralSettings;
             Logger.Info("Executing version check...");
+
+            var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
             await _versionCheck
-                .GetLatestVersionAsync(settings)
+                .GetLatestVersionAsync(settings, tokenSource.Token)
                 .ContinueWith(t =>
                 {
                     if (t.IsFaulted)
