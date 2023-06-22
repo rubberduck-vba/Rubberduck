@@ -84,8 +84,8 @@
                       Margin="5,0,0,5"
                       Width="210"
                       HorizontalAlignment="Left"
-                      ItemsSource="{Binding Source={DynamicResource BindingMode}, Converter={DynamicResource BindingModeToText}, UpdateSourceTrigger=PropertyChanged}"
-                      SelectedItem="{Binding BindingMode, Converter={DynamicResource BindingModeValueToText}}" />
+                      ItemsSource="{Binding Source={DynamicResource BindingMode}, Converter={StaticResource BindingModeToText}, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedItem="{Binding BindingMode, Converter={StaticResource BindingModeValueToText}}" />
 
             <Label Content="{Resx ResxName=Rubberduck.Resources.Settings.UnitTestingPage, Key=UnitTestSettings_AssertMode}"
                    Target="{Binding ElementName=typeSafety}"
@@ -94,8 +94,8 @@
                       Margin="5,0,0,5"
                       Width="210"
                       HorizontalAlignment="Left"
-                      ItemsSource="{Binding Source={DynamicResource AssertMode}, Converter={DynamicResource AssertModeToText}, UpdateSourceTrigger=PropertyChanged}"
-                      SelectedItem="{Binding AssertMode, Converter={DynamicResource AssertModeValueToText}}" />
+                      ItemsSource="{Binding Source={DynamicResource AssertMode}, Converter={StaticResource AssertModeToText}, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedItem="{Binding AssertMode, Converter={StaticResource AssertModeValueToText}}" />
 
             <Label Content="{Resx ResxName=Rubberduck.Resources.Settings.UnitTestingPage, Key=UnitTestSettings_TestModuleTemplateHeader}"
                    FontWeight="SemiBold" />

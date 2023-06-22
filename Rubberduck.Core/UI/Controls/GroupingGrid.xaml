@@ -42,7 +42,7 @@
     									VerticalAlignment="Center" 
     									Text="{Binding ItemCount, StringFormat=(\{0\})}" 
     									TextWrapping="NoWrap"
-    									Visibility="{Binding ShowGroupingItemCount, Converter={DynamicResource BooleanToVisibilityConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GroupingGrid}}}"/>
+    									Visibility="{Binding ShowGroupingItemCount, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GroupingGrid}}}"/>
                                     </StackPanel>
                                 </Expander.Header>
                                 <ItemsPresenter Margin="25,0,0,0" />

@@ -40,10 +40,10 @@
 
             <Image Grid.Row="0" Grid.Column="0" VerticalAlignment="Top"
                    Style="{DynamicResource IconStyle}" 
-                   Source="{Binding NavigateCommandParameter, Converter={DynamicResource DeclarationToIcon}, Mode=OneWay}" />
+                   Source="{Binding NavigateCommandParameter, Converter={StaticResource DeclarationToIcon}, Mode=OneWay}" />
             <Image Grid.Row="0" Grid.Column="0" VerticalAlignment="Top"
                    Style="{DynamicResource IconStyle}" 
-                   Source="{Binding Target.Accessibility, Converter={DynamicResource AccessibilityToIcon}, Mode=OneWay}" />
+                   Source="{Binding Target.Accessibility, Converter={StaticResource AccessibilityToIcon}, Mode=OneWay}" />
 
             <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
                        Text="{Binding Target.IdentifierName}" 

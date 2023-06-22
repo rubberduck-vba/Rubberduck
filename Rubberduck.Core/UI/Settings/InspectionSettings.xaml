@@ -130,7 +130,7 @@
                             </DataGridTemplateColumn>
                             <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SeverityLabelText}"
                                                     Width="*"
-                                                    ItemsSource="{Binding Source={DynamicResource Severities}, Converter={DynamicResource CodeInspectionSeverityEnumToText}, UpdateSourceTrigger=PropertyChanged}"
+                                                    ItemsSource="{Binding Source={DynamicResource Severities}, Converter={StaticResource CodeInspectionSeverityEnumToText}, UpdateSourceTrigger=PropertyChanged}"
                                                     SelectedItemBinding="{Binding Path=SeverityLabel}" />
                         </controls:GroupingGrid.Columns>
                     </controls:GroupingGrid>
@@ -174,7 +174,7 @@
                                 CommandParameter="{Binding ElementName=WhitelistedIdentifiersGrid, Path=CurrentItem}"
                                 BorderThickness="0"
                                 Background="Transparent"
-                                IsEnabled="{Binding ElementName=WhitelistedIdentifiersGrid, Path=SelectedItem, Converter={DynamicResource HasSelectedItems}}">
+                                IsEnabled="{Binding ElementName=WhitelistedIdentifiersGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="{DynamicResource DeleteImage}" />
                                 <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Remove}"

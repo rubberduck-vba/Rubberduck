@@ -68,13 +68,13 @@
 
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByMarker}"
-                              IsChecked="{Binding Path=Grouping, Converter={DynamicResource GroupByMarkerConverter}, ConverterParameter={x:Static toDoItems:ToDoItemGrouping.Marker}}">
+                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupByMarkerConverter}, ConverterParameter={x:Static toDoItems:ToDoItemGrouping.Marker}}">
                     <Image Source="{DynamicResource GroupByMarkerImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}"
-                              IsChecked="{Binding Path=Grouping, Converter={DynamicResource GroupByLocationConverter}, ConverterParameter={x:Static toDoItems:ToDoItemGrouping.Location}}">
+                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupByLocationConverter}, ConverterParameter={x:Static toDoItems:ToDoItemGrouping.Location}}">
                     <Image Source="{DynamicResource GroupByLocationImage}" />
                 </ToggleButton>
 

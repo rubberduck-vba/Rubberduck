@@ -60,7 +60,7 @@
             <Image VerticalAlignment="Center" HorizontalAlignment="Center"  
                    Width="16" Height="16" 
                    Source="{Binding Text, ElementName=ValueContainer, 
-                            Converter={DynamicResource SearchToIcon}, 
+                            Converter={StaticResource SearchToIcon}, 
                             UpdateSourceTrigger=PropertyChanged}" />
             <i:Interaction.Behaviors>
                 <local:FocusElementAfterClickBehavior FocusElement="{x:Reference ValueContainer}"/>

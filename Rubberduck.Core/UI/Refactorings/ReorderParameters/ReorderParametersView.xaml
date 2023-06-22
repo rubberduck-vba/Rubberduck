@@ -69,7 +69,7 @@
                         Margin="5,5,5,0"
                         Padding="5,0"
                         HorizontalContentAlignment="Left"
-                        IsEnabled="{Binding ElementName=ParameterGrid, Path=SelectedIndex, Converter={DynamicResource IndexIsNotZero}}"
+                        IsEnabled="{Binding ElementName=ParameterGrid, Path=SelectedIndex, Converter={StaticResource IndexIsNotZero}}"
                         Command="{Binding MoveParameterUpCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
