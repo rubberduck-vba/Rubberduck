@@ -25,7 +25,7 @@
             <codeInspections:QuickFixCommandParametersToTupleConverter x:Key="QuickFixCommandParametersToTupleConverter" />
             
             <Style TargetType="MenuItem" x:Key="QuickFixCommandStyle">
-                <Setter Property="Header" Value="{Binding Key, Converter={DynamicResource InspectionsUIResourceConverter}}" />
+                <Setter Property="Header" Value="{Binding Key, Converter={StaticResource InspectionsUIResourceConverter}}" />
                 <Setter Property="CommandParameter">
                     <Setter.Value>
                         <MultiBinding Converter="{DynamicResource QuickFixCommandParametersToTupleConverter}">
@@ -37,14 +37,14 @@
                     </Setter.Value>
                 </Setter>
                 <Setter Property="Command" Value="{Binding Command}"/>
-                <Setter Property="Visibility" Value="{Binding IsVisible, Converter={DynamicResource BoolToVisibility}}"/>
+                <Setter Property="Visibility" Value="{Binding IsVisible, Converter={StaticResource BoolToVisibility}}"/>
             </Style>
 
             <Style TargetType="MenuItem" x:Key="QuickFixItemStyle">
                 <Setter Property="Header" Value="{Binding Description}"/>
                 <Setter Property="Icon">
                     <Setter.Value>
-                        <Image Source="{Binding Fix, Converter={DynamicResource QuickFixIconConverter}}" />
+                        <Image Source="{Binding Fix, Converter={StaticResource QuickFixIconConverter}}" />
                     </Setter.Value>
                 </Setter>
                 <Setter Property="ItemsSource" Value="{Binding Commands}" />
@@ -125,25 +125,25 @@
 
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByInspectionType}"
-                              IsChecked="{Binding Path=Grouping, Converter={DynamicResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Type}}">
+                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Type}}">
                     <Image Source="{DynamicResource GroupByInspectionTypeImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByName}"
-                              IsChecked="{Binding Path=Grouping, Converter={DynamicResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Name}}">
+                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Name}}">
                     <Image Source="{DynamicResource GroupByInspectionImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}"
-                              IsChecked="{Binding Path=Grouping, Converter={DynamicResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Location}}">
+                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Location}}">
                     <Image Source="{DynamicResource GroupByLocationImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_BySeverity}"
-                              IsChecked="{Binding Path=Grouping, Converter={DynamicResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Severity}}">
+                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Severity}}">
                     <Image Source="{DynamicResource GroupBySeverityImage}" />
                 </ToggleButton>
 
@@ -160,25 +160,25 @@
 
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=FilterByError}"
-                              IsChecked="{Binding Path=SelectedFilters, Converter={DynamicResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Error}}">
+                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Error}}">
                     <Image Source="{DynamicResource FilterByErrorImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=FilterByWarning}"
-                              IsChecked="{Binding Path=SelectedFilters, Converter={DynamicResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Warning}}">
+                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Warning}}">
                     <Image Source="{DynamicResource FilterByWarningImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=FilterBySuggestion}"
-                              IsChecked="{Binding Path=SelectedFilters, Converter={DynamicResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Suggestion}}">
+                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Suggestion}}">
                     <Image Source="{DynamicResource FilterBySuggestionImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=FilterByHint}"
-                              IsChecked="{Binding Path=SelectedFilters, Converter={DynamicResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Hint}}">
+                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Hint}}">
                     <Image Source="{DynamicResource FilterByHintImage}" />
                 </ToggleButton>
 
@@ -235,12 +235,12 @@
                             <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionResults_Type}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate DataType="inspections:IInspectionResult">
-                                        <Image Source="{Binding Inspection, Converter={DynamicResource InspectionIconConverter}, Mode=OneTime}" Width="16" Height="16" />
+                                        <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}, Mode=OneTime}" Width="16" Height="16" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                             <DataGridTextColumn Header="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description, Mode=OneTime}" />
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime, Converter={DynamicResource GroupingGridLocationConverter}}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime, Converter={StaticResource GroupingGridLocationConverter}}" />
                         </DataGrid.Columns>
                         <DataGrid.ContextMenu>
                             <ContextMenu ItemsSource="{Binding PlacementTarget.DataContext.QuickFixes, RelativeSource={RelativeSource Self}}"
@@ -251,8 +251,8 @@
                         </i:Interaction.Behaviors>
                     </controls:GroupingGrid>
                 </ScrollViewer>
-                <controls:EmptyUIRefresh Visibility="{Binding Unparsed, Converter={DynamicResource BoolToVisibility}}" />
-                <controls:BusyIndicator Width="120" Height="120" Visibility="{Binding IsBusy, Converter={DynamicResource BoolToVisibility}}" />
+                <controls:EmptyUIRefresh Visibility="{Binding Unparsed, Converter={StaticResource BoolToVisibility}}" />
+                <controls:BusyIndicator Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
             </Grid>
         </Border>
 
@@ -267,7 +267,7 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Image Style="{DynamicResource IconMargin}" VerticalAlignment="Top" Grid.Column="0"
-                           Source="{Binding SelectedInspection.Severity, Converter={DynamicResource SeverityIconConverter}}"/>
+                           Source="{Binding SelectedInspection.Severity, Converter={StaticResource SeverityIconConverter}}"/>
                         <TextBlock Grid.Column="1" Margin="4" Text="{Binding SelectedInspection.Description}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
                     </Grid>
 
@@ -275,7 +275,7 @@
                     <TextBlock Margin="8" Text="{Binding SelectedInspection.QualifiedSelection}" FontSize="10" TextWrapping="WrapWithOverflow" />
 
                     <controls:LinkButton Margin="4"
-                        Visibility="{Binding CanDisableInspection, Converter={DynamicResource BoolToVisibility}}"
+                        Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
                         Command="{Binding DisableInspectionCommand}"
                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=DisableThisInspection}" />
 

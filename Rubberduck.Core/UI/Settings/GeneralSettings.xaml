@@ -118,7 +118,7 @@
                     <DockPanel>
                         <Label DockPanel.Dock="Left" Content="{Resx ResxName=Rubberduck.UI.Settings.GeneralSettingsUI, Key=HotkeysLabel}" FontWeight="SemiBold" />
                         <Label DockPanel.Dock="Right" Content="{Resx ResxName=Rubberduck.UI.Settings.GeneralSettingsUI, Key=HotkeyRestrictionLabel}"
-                               Visibility="{Binding ShouldDisplayHotkeyModificationLabel, Converter={DynamicResource BoolToVisibility}}"
+                               Visibility="{Binding ShouldDisplayHotkeyModificationLabel, Converter={StaticResource BoolToVisibility}}"
                                Foreground="{DynamicResource CaptionErrorBrush}"
                                FontWeight="Bold"/>
                     </DockPanel>
@@ -161,7 +161,7 @@
                                 Width="Auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Label Visibility="{Binding IsValid, Converter={DynamicResource BoolToHiddenVisibility}}"
+                                        <Label Visibility="{Binding IsValid, Converter={StaticResource BoolToHiddenVisibility}}"
                                                HorizontalContentAlignment="Center">
                                             <Image Source="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=exclamation}"
                                                    ToolTip="{Resx ResxName=Rubberduck.UI.Settings.GeneralSettingsUI, Key=HotkeyRestrictionToolTip}"/>
@@ -187,7 +187,7 @@
                         SortMemberPath="KeyDisplaySymbol">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBox Text="{Binding Key1, Converter={DynamicResource HotkeyDisplay}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        <TextBox Text="{Binding Key1, Converter={StaticResource HotkeyDisplay}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

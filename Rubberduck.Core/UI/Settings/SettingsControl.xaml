@@ -54,7 +54,7 @@
                  Margin="5,5,0,5" />
         <Frame Grid.Row="1"
                Grid.Column="1"
-               Content="{Binding ElementName=ListBox, Path=SelectedValue, Converter={DynamicResource SettingsViewToPage}}"
+               Content="{Binding ElementName=ListBox, Path=SelectedValue, Converter={StaticResource SettingsViewToPage}}"
                NavigationUIVisibility="Hidden"
                Margin="0,0,0,5" />
         <Border Grid.Row="2"

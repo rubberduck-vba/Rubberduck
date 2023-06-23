@@ -371,7 +371,7 @@
                 <ControlTemplate TargetType="{x:Type ToolBar}">
                     <Grid x:Name="Grid" Margin="3,1,1,1" SnapsToDevicePixels="true">
                         <Grid x:Name="OverflowGrid" HorizontalAlignment="Right">
-                            <ToggleButton x:Name="OverflowButton" ClickMode="Press" FocusVisualStyle="{x:Null}" IsChecked="{Binding IsOverflowOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" IsEnabled="{TemplateBinding HasOverflowItems}" Style="{DynamicResource ToolBarHorizontalOverflowButtonStyle}" Visibility="{Binding ElementName=OverflowButton, Path=IsEnabled, Converter={DynamicResource BoolToVisibility}}"/>
+                            <ToggleButton x:Name="OverflowButton" ClickMode="Press" FocusVisualStyle="{x:Null}" IsChecked="{Binding IsOverflowOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" IsEnabled="{TemplateBinding HasOverflowItems}" Style="{DynamicResource ToolBarHorizontalOverflowButtonStyle}" Visibility="{Binding ElementName=OverflowButton, Path=IsEnabled, Converter={StaticResource BoolToVisibility}}"/>
                             <Popup x:Name="OverflowPopup" AllowsTransparency="true" Focusable="false" IsOpen="{Binding IsOverflowOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom" StaysOpen="false">
                                 <themes:SystemDropShadowChrome x:Name="Shdw" Color="Transparent">
                                     <Border x:Name="ToolBarSubMenuBorder" BorderBrush="{DynamicResource ToolBarMenuBorderBrush}" BorderThickness="1" Background="{DynamicResource ToolBarSubMenuBackgroundBrush}" RenderOptions.ClearTypeHint="Enabled">
@@ -455,7 +455,7 @@
         <Setter Property="ToolTip" Value="{Binding ToolTip}" />
         <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-        <Setter Property="Foreground" Value="{Binding IsDimmed, Mode=OneWay, Converter={DynamicResource BooleanToDimmed}}" />
+        <Setter Property="Foreground" Value="{Binding IsDimmed, Mode=OneWay, Converter={StaticResource BooleanToDimmed}}" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsObsolete}" Value="True">
                 <Setter Property="Foreground" Value="{DynamicResource CaptionDisabledColor}" />

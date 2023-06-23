@@ -50,7 +50,7 @@
                             <Setter Property="BorderThickness" Value="1.5"/>
                             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWay}" />
-                            <Setter Property="Visibility" Value="{Binding Filtered, Mode=OneWay, Converter={DynamicResource BoolToHiddenVisibility}}" />
+                            <Setter Property="Visibility" Value="{Binding Filtered, Mode=OneWay, Converter={StaticResource BoolToHiddenVisibility}}" />
                             <Setter Property="HorizontalAlignment" Value="Left" />
                             <Style.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
@@ -89,7 +89,7 @@
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>
-                            <Image Source="{Binding Declaration, Converter={DynamicResource AccessibilityToIcon}}" Style="{DynamicResource ToolbarIconStyle}" />
+                            <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{DynamicResource ToolbarIconStyle}" />
                         </Grid>
                         <TextBlock Style="{DynamicResource TreeViewItemStyleModified}" />
                     </StackPanel>
@@ -129,9 +129,9 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <controls:EmptyUIRefresh Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Visibility="{Binding Unparsed, Converter={DynamicResource BoolToVisibility}}" />
+        <controls:EmptyUIRefresh Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Visibility="{Binding Unparsed, Converter={StaticResource BoolToVisibility}}" />
 
-        <controls:BusyIndicator Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={DynamicResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </UserControl>
 

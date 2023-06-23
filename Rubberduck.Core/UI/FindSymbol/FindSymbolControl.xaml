@@ -55,11 +55,11 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Image Grid.Column="0" Style="{DynamicResource ToolbarIconStyle}" HorizontalAlignment="Center"
-                               Source="{Binding Declaration, Converter={DynamicResource IconConverter}, Mode=OneTime}" 
-                               ToolTip="{Binding Declaration, Converter={DynamicResource DeclarationTypeConverter}, Mode=OneTime}" />
+                               Source="{Binding Declaration, Converter={StaticResource IconConverter}, Mode=OneTime}" 
+                               ToolTip="{Binding Declaration, Converter={StaticResource DeclarationTypeConverter}, Mode=OneTime}" />
                         <Image Grid.Column="0" Style="{DynamicResource ToolbarIconStyle}" HorizontalAlignment="Center"
-                               Source="{Binding Declaration, Converter={DynamicResource AccessibilityToIcon}}"
-                               ToolTip="{Binding Declaration, Converter={DynamicResource DeclarationTypeConverter}, Mode=OneTime}" />
+                               Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}"
+                               ToolTip="{Binding Declaration, Converter={StaticResource DeclarationTypeConverter}, Mode=OneTime}" />
                         <TextBlock Grid.Column="1" Text="{Binding IdentifierName}" FontWeight="Bold" FontFamily="Consolas" MinWidth="160" VerticalAlignment="Center" />
                         <TextBlock Grid.Column="2" Text="{Binding Location}" Margin="20,0" Foreground="DimGray" FontStyle="Italic" VerticalAlignment="Center" HorizontalAlignment="Right" />
                     </Grid>

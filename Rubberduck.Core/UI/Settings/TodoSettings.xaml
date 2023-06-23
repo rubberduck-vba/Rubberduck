@@ -84,7 +84,7 @@
                             CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=CurrentItem}"
                             BorderThickness="0"
                             Background="Transparent"
-                            IsEnabled="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem, Converter={DynamicResource HasSelectedItems}}">
+                            IsEnabled="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{DynamicResource DeleteImage}" />
                             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Remove}"

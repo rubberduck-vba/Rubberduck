@@ -212,14 +212,14 @@
                                 <ComboBox Margin="5,0,0,5"
                                              Width="210"
                                              HorizontalAlignment="Left"
-                                             ItemsSource="{Binding Source={DynamicResource CommentStyles},Converter={DynamicResource LocalizedEndOfLineCommentStyles},UpdateSourceTrigger=PropertyChanged}"
-                                             SelectedItem="{Binding EndOfLineCommentStyle,Mode=TwoWay,Converter={DynamicResource EndOfLineCommentStyleTextToEnumValue},UpdateSourceTrigger=PropertyChanged}"/>
+                                             ItemsSource="{Binding Source={DynamicResource CommentStyles},Converter={StaticResource LocalizedEndOfLineCommentStyles},UpdateSourceTrigger=PropertyChanged}"
+                                             SelectedItem="{Binding EndOfLineCommentStyle,Mode=TwoWay,Converter={StaticResource EndOfLineCommentStyleTextToEnumValue},UpdateSourceTrigger=PropertyChanged}"/>
                                 <controls:NumberPicker Margin="0,-4,0,0"
                                              HorizontalAlignment="Left"
                                              MinNumber="0"
                                              MaxNumber="{x:Static smartIndenter:IndenterSettings.MaximumEndOfLineCommentColumnSpaceAlignment}"
                                              NumValue="{Binding EndOfLineCommentColumnSpaceAlignment,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                             Visibility="{Binding EndOfLineCommentStyle,Converter={DynamicResource EndOfLineCommentStyleToVisibility}}"/>
+                                             Visibility="{Binding EndOfLineCommentStyle,Converter={StaticResource EndOfLineCommentStyleToVisibility}}"/>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
@@ -275,8 +275,8 @@
                                Content="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=EmptyLineHeading}" />
                         <ComboBox Margin="5,0,0,5"
                                   HorizontalAlignment="Left"
-                                  ItemsSource="{Binding Source={DynamicResource EmptyLineOptions},Converter={DynamicResource LocalizedEmptyLineHandlers},UpdateSourceTrigger=PropertyChanged}"
-                                  SelectedItem="{Binding EmptyLineHandlingMethod,Mode=TwoWay,Converter={DynamicResource EmptyLineHandlingValueTextToEnumValue},UpdateSourceTrigger=PropertyChanged}"/>
+                                  ItemsSource="{Binding Source={DynamicResource EmptyLineOptions},Converter={StaticResource LocalizedEmptyLineHandlers},UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedItem="{Binding EmptyLineHandlingMethod,Mode=TwoWay,Converter={StaticResource EmptyLineHandlingValueTextToEnumValue},UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                 </Expander>
                 <Expander Grid.Row="3"

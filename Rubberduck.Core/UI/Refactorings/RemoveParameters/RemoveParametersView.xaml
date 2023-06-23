@@ -54,7 +54,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Name}"
-                                   TextDecorations="{Binding IsRemoved, Converter={DynamicResource ParameterTextDecoration}}" />
+                                   TextDecorations="{Binding IsRemoved, Converter={StaticResource ParameterTextDecoration}}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
@@ -80,7 +80,7 @@
                     </Style>
                 </Grid.Resources>
                 <Button Grid.Row="0"
-                        IsEnabled="{Binding ElementName=ParameterGrid, Path=SelectedItem.IsRemoved, Converter={DynamicResource InvertedBool}}"
+                        IsEnabled="{Binding ElementName=ParameterGrid, Path=SelectedItem.IsRemoved, Converter={StaticResource InvertedBool}}"
                         Command="{Binding RemoveParameterCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">

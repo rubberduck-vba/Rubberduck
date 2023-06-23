@@ -89,7 +89,7 @@
                 <Menu Background="Transparent">
                     <MenuItem VerticalAlignment="Center"
                               HeaderTemplate="{DynamicResource MenuItemHeaderDropdownIndicatorTemplate}"
-                              IsEnabled="{Binding Model.IsBusy, Converter={DynamicResource InvertBoolValue}}">
+                              IsEnabled="{Binding Model.IsBusy, Converter={StaticResource InvertBoolValue}}">
                         <MenuItem.Icon>
                             <Image Source="{DynamicResource RunImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
@@ -158,7 +158,7 @@
                 <Menu Background="Transparent">
                     <MenuItem VerticalAlignment="Center"
                               HeaderTemplate="{DynamicResource MenuItemHeaderDropdownIndicatorTemplate}"
-                              IsEnabled="{Binding Model.IsBusy, Converter={DynamicResource InvertBoolValue}}">
+                              IsEnabled="{Binding Model.IsBusy, Converter={StaticResource InvertBoolValue}}">
                         <MenuItem.Icon>
                             <Image Source="{DynamicResource AddIcon}" Style="{DynamicResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
@@ -187,19 +187,19 @@
 
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByOutcome}"
-                              IsChecked="{Binding Path=TestGrouping, Converter={DynamicResource OutcomeConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Outcome}}">
+                              IsChecked="{Binding Path=TestGrouping, Converter={StaticResource OutcomeConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Outcome}}">
                     <Image Source="{DynamicResource GroupByOutcomeImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}"
-                              IsChecked="{Binding Path=TestGrouping, Converter={DynamicResource LocationConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Location}}">
+                              IsChecked="{Binding Path=TestGrouping, Converter={StaticResource LocationConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Location}}">
                     <Image Source="{DynamicResource GroupByLocationImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByCategory}"
-                              IsChecked="{Binding Path=TestGrouping, Converter={DynamicResource CategoryConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Category}}">
+                              IsChecked="{Binding Path=TestGrouping, Converter={StaticResource CategoryConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Category}}">
                     <Image Source="{DynamicResource GroupByCategoryImage}" />
                 </ToggleButton>
 
@@ -214,27 +214,27 @@
                 <Label Content="{Resx Key=TestExplorer_Outcome, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Unknown}"
-                              IsChecked="{Binding Path=OutcomeFilter, Converter={DynamicResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Unknown}}" >
+                              IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Unknown}}" >
                     <Image Source="{DynamicResource OutcomeUnknown}" />
                 </ToggleButton>
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Fail}"
-                              IsChecked="{Binding Path=OutcomeFilter, Converter={DynamicResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Fail}}" >
+                              IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Fail}}" >
                     <Image Source="{DynamicResource OutcomeFail}" />
                 </ToggleButton>
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Inconclusive}"
-                              IsChecked="{Binding Path=OutcomeFilter, Converter={DynamicResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Inconclusive}}" >
+                              IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Inconclusive}}" >
                     <Image Source="{DynamicResource OutcomeInconclusive}" />
                 </ToggleButton>
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Succeeded}"
-                              IsChecked="{Binding Path=OutcomeFilter, Converter={DynamicResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Succeeded}}" >
+                              IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Succeeded}}" >
                     <Image Source="{DynamicResource OutcomeSucceeded}" />
                 </ToggleButton>
                 <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Ignored}"
-                              IsChecked="{Binding Path=OutcomeFilter, Converter={DynamicResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Ignored}}">
+                              IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Ignored}}">
                     <Image Source="{DynamicResource OutcomeIgnored}" />
                 </ToggleButton>
 
@@ -300,28 +300,28 @@
                 <TextBlock Margin="2" Padding="4,2,4,2" FontWeight="Bold" VerticalAlignment="Center"
                            Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_SummaryCaption}"/>
                 <TextBlock Style="{DynamicResource ResultsTestOutcomeStyle}" Text="{Binding Model.LastTestRunSummary, Mode=OneWay}"/>
-                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestFailedCount, Mode=OneWay, Converter={DynamicResource NonZeroToVisibility}}" >
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestFailedCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}" >
                     <Image Style="{DynamicResource TestOutcomeIconStyle}" Source="{DynamicResource RunFailedTestsImage}" Margin="4,0,4,0"/>
                     <TextBlock Style="{DynamicResource ResultsTestOutcomeStyle}">
                         <Run Text="{Binding Model.LastTestFailedCount, Mode=OneWay}"/>
                         <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Failed}"/>
                     </TextBlock>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestIgnoredCount, Mode=OneWay, Converter={DynamicResource NonZeroToVisibility}}">
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestIgnoredCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}">
                     <Image Style="{DynamicResource TestOutcomeIconStyle}" Source="{DynamicResource IgnoredTestImage}" />
                     <TextBlock Style="{DynamicResource ResultsTestOutcomeStyle}">
                         <Run Text="{Binding Model.LastTestIgnoredCount, Mode=OneWay}"/>
                         <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Ignored}"/>
                     </TextBlock>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestInconclusiveCount, Mode=OneWay, Converter={DynamicResource NonZeroToVisibility}}">
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestInconclusiveCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}">
                     <Image Style="{DynamicResource TestOutcomeIconStyle}" Source="{DynamicResource InconclusiveTestImage}" />
                     <TextBlock Style="{DynamicResource ResultsTestOutcomeStyle}">
                         <Run Text="{Binding Model.LastTestInconclusiveCount, Mode=OneWay}" />
                         <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Inconclusive}"/>
                     </TextBlock>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestSucceededCount, Mode=OneWay, Converter={DynamicResource NonZeroToVisibility}}">
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestSucceededCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}">
                     <Image Style="{DynamicResource TestOutcomeIconStyle}" Source="{DynamicResource RunPassedTestsImage}" />
                     <TextBlock Style="{DynamicResource ResultsTestOutcomeStyle}">
                         <Run Text="{Binding Model.LastTestSucceededCount, Mode=OneWay}"/>
@@ -395,7 +395,7 @@
 	                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Duration}">
 	                            <DataGridTemplateColumn.CellTemplate>
 	                                <DataTemplate DataType="vm:TestMethodViewModel">
-	                                    <TextBlock Text="{Binding Result.Duration, Converter={DynamicResource FormattedTime}}" TextAlignment="Right" Margin="0,0,4,0" />
+	                                    <TextBlock Text="{Binding Result.Duration, Converter={StaticResource FormattedTime}}" TextAlignment="Right" Margin="0,0,4,0" />
 	                                </DataTemplate>
 	                            </DataGridTemplateColumn.CellTemplate>
 	                        </DataGridTemplateColumn>
@@ -480,6 +480,6 @@
 				</ScrollViewer>
 			</Grid>
         </Border>
-        <controls:BusyIndicator Grid.Row="3" Width="120" Height="120" Visibility="{Binding Model.IsRefreshing, Converter={DynamicResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="3" Width="120" Height="120" Visibility="{Binding Model.IsRefreshing, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </UserControl>
