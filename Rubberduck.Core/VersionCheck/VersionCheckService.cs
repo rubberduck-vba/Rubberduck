@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using NLog;
 using Rubberduck.Settings;
 using System;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace Rubberduck.VersionCheck
 {
     public class VersionCheckService : IVersionCheckService
     {
+        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+
         /// <param name="version">That would be the version of the assembly for the <c>_Extension</c> class.</param>
         public VersionCheckService(Version version)
         {
@@ -32,14 +35,14 @@ namespace Rubberduck.VersionCheck
             using (var client = new PublicApiClient())
             {
                 var tags = await client.GetLatestTagsAsync(token);
-                var next = tags.Single(e => e.IsPreRelease).Name;
-                var main = tags.Single(e => !e.IsPreRelease).Name;
 
-                var version = settings.IncludePreRelease
-                    ? next.Substring("Prerelease-v".Length)
-                    : main.Substring("v".Length);
+                var next = tags.Single(e => e.IsPreRelease);
+                var main = tags.Single(e => !e.IsPreRelease);
+                _logger.Info($"Main: v{main.Version.ToString(3)}; Next: v{next.Version.ToString(4)}");
 
-                _latestVersion = new Version(version);
+                _latestVersion = settings.IncludePreRelease ? next.Version : main.Version;
+                _logger.Info($"Check prerelease: {settings.IncludePreRelease}; latest: v{_latestVersion.ToString(4)}");
+
                 return _latestVersion;
             }
         }

@@ -44,6 +44,12 @@ namespace Rubberduck.UI.Command
         protected override async void OnExecute(object parameter)
         {
             var settings = _config.Read().UserSettings.GeneralSettings;
+            if (_versionCheck.IsDebugBuild)
+            {
+                Logger.Info("Version check skipped for debug build.");
+                return;
+            }
+
             Logger.Info("Executing version check...");
 
             var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
@@ -71,6 +77,14 @@ namespace Rubberduck.UI.Command
                         {
                             PromptAndBrowse(t.Result, settings.IncludePreRelease);
                         }
+                        else
+                        {
+                            Logger.Info("Version check skips notification of an existing newer version available.");
+                        }
+                    }
+                    else
+                    {
+                        Logger.Info("Version check completed: running current latest.");
                     }
                 });
         }
