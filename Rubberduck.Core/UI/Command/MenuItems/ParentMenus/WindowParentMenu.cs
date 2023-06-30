@@ -10,18 +10,14 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         {
         }
 
-        public override int DisplayOrder => (int)RubberduckMenuItemDisplayOrder.Windows;
+        public override int DisplayOrder => (int)RubberduckMenuItemDisplayOrder.Tools;
     }
 
     public enum WindowMenuItemDisplayOrder
     {
-        CodeExplorer,
-        CodeInspections,
-        CodeMetrics,
-        FindSymbol,
-        FindAllReferences,
-        FindAllImplementations ,
-        TestExplorer,
-        ToDoExplorer
+         TestExplorer,
+         CodeExplorer,
+         CodeMetrics,
+         ToDoExplorer
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Reflection;
 using Rubberduck.Interaction;
 using Rubberduck.VersionCheck;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Settings;
+using System.Threading;
 
 namespace Rubberduck.UI.Command
 {
@@ -44,11 +44,25 @@ namespace Rubberduck.UI.Command
         protected override async void OnExecute(object parameter)
         {
             var settings = _config.Read().UserSettings.GeneralSettings;
+            if (_versionCheck.IsDebugBuild)
+            {
+                Logger.Info("Version check skipped for debug build.");
+                return;
+            }
+
             Logger.Info("Executing version check...");
+
+            var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
             await _versionCheck
-                .GetLatestVersionAsync(settings)
+                .GetLatestVersionAsync(settings, tokenSource.Token)
                 .ContinueWith(t =>
                 {
+                    if (t.IsFaulted)
+                    {
+                        Logger.Warn(t.Exception);
+                        return;
+                    }
+
                     if (_versionCheck.CurrentVersion < t.Result)
                     {
                         var proceed = true;
@@ -63,6 +77,14 @@ namespace Rubberduck.UI.Command
                         {
                             PromptAndBrowse(t.Result, settings.IncludePreRelease);
                         }
+                        else
+                        {
+                            Logger.Info("Version check skips notification of an existing newer version available.");
+                        }
+                    }
+                    else
+                    {
+                        Logger.Info("Version check completed: running current latest.");
                     }
                 });
         }

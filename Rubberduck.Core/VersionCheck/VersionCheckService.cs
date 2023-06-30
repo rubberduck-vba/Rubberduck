@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
+using NLog;
 using Rubberduck.Settings;
 using System;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,6 +10,8 @@ namespace Rubberduck.VersionCheck
 {
     public class VersionCheckService : IVersionCheckService
     {
+        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+
         /// <param name="version">That would be the version of the assembly for the <c>_Extension</c> class.</param>
         public VersionCheckService(Version version)
         {
@@ -25,16 +27,22 @@ namespace Rubberduck.VersionCheck
         private Version _latestVersion;
         public async Task<Version> GetLatestVersionAsync(GeneralSettings settings, CancellationToken token = default)
         {
-            if (_latestVersion != default) { return _latestVersion; }
-
-            try
+            if (_latestVersion != default) 
             {
-                return settings.IncludePreRelease 
-                    ? await GetGitHubNext() 
-                    : await GetGitHubMain();
+                return _latestVersion; 
             }
-            catch
+
+            using (var client = new PublicApiClient())
             {
+                var tags = await client.GetLatestTagsAsync(token);
+
+                var next = tags.Single(e => e.IsPreRelease);
+                var main = tags.Single(e => !e.IsPreRelease);
+                _logger.Info($"Main: v{main.Version.ToString(3)}; Next: v{next.Version.ToString(4)}");
+
+                _latestVersion = settings.IncludePreRelease ? next.Version : main.Version;
+                _logger.Info($"Check prerelease: {settings.IncludePreRelease}; latest: v{_latestVersion.ToString(4)}");
+
                 return _latestVersion;
             }
         }
@@ -42,39 +50,5 @@ namespace Rubberduck.VersionCheck
         public Version CurrentVersion { get; }
         public bool IsDebugBuild { get; }
         public string VersionString { get; }
-
-        private async Task<Version> GetGitHubMain()
-        {
-            var url = new Uri("https://github.com/repos/rubberduck-vba/Rubberduck/releases/latest");
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("rubberduck.version-check"));
-                using (var response = await client.GetAsync(url))
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var tagName = (string)JsonConvert.DeserializeObject<dynamic>(content).tag_name;
-
-                    // assumes a tag name like "v2.5.3.0"
-                    return new Version(tagName.Substring("v".Length));
-                }
-            }
-        }
-
-        private async Task<Version> GetGitHubNext()
-        {
-            var url = new Uri("https://github.com/repos/rubberduck-vba/Rubberduck/releases");
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("rubberduck.version-check"));
-                using (var response = await client.GetAsync(url))
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var tagName = (string)JsonConvert.DeserializeObject<dynamic>(content)[0].tag_name;
-
-                    // assumes a tag name like "Prerelease-v2.5.2.1234"
-                    return new Version(tagName.Substring("Prerelease-v".Length));
-                }
-            }
-        }
     }
 }

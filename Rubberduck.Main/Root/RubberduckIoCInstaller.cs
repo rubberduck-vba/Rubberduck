@@ -814,14 +814,10 @@ namespace Rubberduck.Root
         {
             var items = new List<Type>
             {
-                typeof(WindowsCodeExplorerCommandMenuItem),
-                typeof(WindowsInspectionResultsCommandMenuItem),
-                typeof(WindowsCodeMetricsCommandMenuItem),
-                typeof(WindowsFindSymbolCommandMenuItem),
-                typeof(WindowsFindAllReferencesCommandMenuItem),
-                typeof(WindowsFindAllImplementationsCommandMenuItem),
-                typeof(WindowsTestExplorerCommandMenuItem),
-                typeof(WindowsToDoExplorerCommandMenuItem)
+                typeof(TestExplorerCommandMenuItem),
+                typeof(CodeExplorerCommandMenuItem),
+                typeof(CodeMetricsCommandMenuItem),
+                typeof(ToDoExplorerCommandMenuItem)
             };
 
             return items.ToArray();

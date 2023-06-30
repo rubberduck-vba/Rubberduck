@@ -463,18 +463,18 @@ namespace Rubberduck.Parsing.VBA
                 Monitor.Enter(ParsingRunSyncObject, ref lockTaken);
                 
                 watch = Stopwatch.StartNew();
-                Logger.Debug("Parsing run started. (thread {0}).", Thread.CurrentThread.ManagedThreadId);
+                Logger.Debug("Parsing run started on thread {0}.", Thread.CurrentThread.ManagedThreadId);
                 
                 ParseAllInternal(requestor, token);
             }
             catch (OperationCanceledException)
             {
                 //This is the point to which the cancellation should break.
-                Logger.Debug("Parsing run got canceled. (thread {0}).", Thread.CurrentThread.ManagedThreadId);
+                Logger.Debug("Parsing run was cancelled on thread {0}.", Thread.CurrentThread.ManagedThreadId);
             }
             catch (Exception exception)
             {
-                Logger.Error(exception, "Unexpected exception thrown in parsing run. (thread {0}).", Thread.CurrentThread.ManagedThreadId);
+                Logger.Error(exception, "Unexpected exception thrown in parsing run on thread {0}.", Thread.CurrentThread.ManagedThreadId);
                 if (_parserStateManager.OverallParserState != ParserState.UnexpectedError)
                 {
                     _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.UnexpectedError, token);
@@ -489,7 +489,7 @@ namespace Rubberduck.Parsing.VBA
                     ParsingSuspendLock.ExitReadLock();
                 }
             }
-            if (watch != null) Logger.Info("Parsing run finished after {0}s. (thread {1}).", watch.Elapsed.TotalSeconds, Thread.CurrentThread.ManagedThreadId);
+            if (watch != null) Logger.Info("Parsing run on thread {0} completed in {1}ms.", Thread.CurrentThread.ManagedThreadId, watch.ElapsedMilliseconds);
         }
 
         protected void ParseAllInternal(object requestor, CancellationToken token)

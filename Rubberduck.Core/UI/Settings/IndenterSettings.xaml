@@ -212,7 +212,7 @@
                                 <ComboBox Margin="5,0,0,5"
                                              Width="210"
                                              HorizontalAlignment="Left"
-                                             ItemsSource="{Binding Source={DynamicResource CommentStyles},Converter={StaticResource LocalizedEndOfLineCommentStyles},UpdateSourceTrigger=PropertyChanged}"
+                                             ItemsSource="{Binding Source={StaticResource CommentStyles},Converter={StaticResource LocalizedEndOfLineCommentStyles},UpdateSourceTrigger=PropertyChanged}"
                                              SelectedItem="{Binding EndOfLineCommentStyle,Mode=TwoWay,Converter={StaticResource EndOfLineCommentStyleTextToEnumValue},UpdateSourceTrigger=PropertyChanged}"/>
                                 <controls:NumberPicker Margin="0,-4,0,0"
                                              HorizontalAlignment="Left"
@@ -275,7 +275,7 @@
                                Content="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=EmptyLineHeading}" />
                         <ComboBox Margin="5,0,0,5"
                                   HorizontalAlignment="Left"
-                                  ItemsSource="{Binding Source={DynamicResource EmptyLineOptions},Converter={StaticResource LocalizedEmptyLineHandlers},UpdateSourceTrigger=PropertyChanged}"
+                                  ItemsSource="{Binding Source={StaticResource EmptyLineOptions},Converter={StaticResource LocalizedEmptyLineHandlers},UpdateSourceTrigger=PropertyChanged}"
                                   SelectedItem="{Binding EmptyLineHandlingMethod,Mode=TwoWay,Converter={StaticResource EmptyLineHandlingValueTextToEnumValue},UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                 </Expander>

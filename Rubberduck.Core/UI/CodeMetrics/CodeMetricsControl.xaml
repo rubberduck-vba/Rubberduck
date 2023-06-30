@@ -72,7 +72,7 @@
                         </Style>
                     </HierarchicalDataTemplate.ItemContainerStyle>
                     <HierarchicalDataTemplate.Resources>
-                        <Style x:Key="TreeViewItemStyleModified" TargetType="{x:Type TextBlock}" BasedOn="{DynamicResource TreeViewItemStyle}">
+                        <Style x:Key="TreeViewItemStyleModified" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TreeViewItemStyle}">
                             <Setter Property="Text" Value="{Binding NameWithSignature}" />
                         </Style>
                     </HierarchicalDataTemplate.Resources>
@@ -80,7 +80,7 @@
                         <Grid>
                             <Image Style="{DynamicResource ToolbarIconStyle}">
                                 <Image.Source>
-                                    <MultiBinding Converter="{DynamicResource NodeToIcon}">
+                                    <MultiBinding Converter="{StaticResource NodeToIcon}">
                                         <MultiBinding.Bindings>
                                             <Binding RelativeSource="{RelativeSource Self}" Path="DataContext"/>
                                             <Binding Path="Declaration" />

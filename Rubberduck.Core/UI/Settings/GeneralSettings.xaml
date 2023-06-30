@@ -137,7 +137,7 @@
                               HeadersVisibility="Column"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Hidden"
-                              ItemContainerStyle="{DynamicResource PrettifyRow}"
+                              ItemContainerStyle="{StaticResource PrettifyRow}"
                               ColumnHeaderHeight="22"
                               BorderThickness="0">
                         <DataGrid.CellStyle>

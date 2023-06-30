@@ -28,7 +28,7 @@
                 <Setter Property="Header" Value="{Binding Key, Converter={StaticResource InspectionsUIResourceConverter}}" />
                 <Setter Property="CommandParameter">
                     <Setter.Value>
-                        <MultiBinding Converter="{DynamicResource QuickFixCommandParametersToTupleConverter}">
+                        <MultiBinding Converter="{StaticResource QuickFixCommandParametersToTupleConverter}">
                             <Binding Path="Fix" />
                             <Binding ElementName="InspectionResultsGrid"  Path="SelectedItems" />
                             <!-- This is a hack to deal with the fact that a named element on the control cannot be accessed from the context menu of the element by name. -->
@@ -109,7 +109,7 @@
                               HeaderTemplate="{DynamicResource MenuItemHeaderDropdownIndicatorTemplate}"
                               ItemsSource="{Binding QuickFixes}" 
                               Background="Transparent"
-                              ItemContainerStyle="{DynamicResource QuickFixItemStyle}">
+                              ItemContainerStyle="{StaticResource QuickFixItemStyle}">
                         <MenuItem.Icon>
                             <Image Source="{DynamicResource FixImage}" />
                         </MenuItem.Icon>
@@ -244,7 +244,7 @@
                         </DataGrid.Columns>
                         <DataGrid.ContextMenu>
                             <ContextMenu ItemsSource="{Binding PlacementTarget.DataContext.QuickFixes, RelativeSource={RelativeSource Self}}"
-                                         ItemContainerStyle="{DynamicResource QuickFixItemStyle}" />
+                                         ItemContainerStyle="{StaticResource QuickFixItemStyle}" />
                         </DataGrid.ContextMenu>
                         <i:Interaction.Behaviors>
                             <controls:GroupItemExpandedBehavior ExpandedState="{Binding ExpandedState, Mode=TwoWay}" />

@@ -45,7 +45,7 @@
                      SelectedIndex="0"
                      Name="ParameterGrid"
                      AllowDrop="True"
-                     ItemContainerStyle="{DynamicResource PrettyListBoxItem}"
+                     ItemContainerStyle="{StaticResource PrettyListBoxItem}"
                      Drop="ParameterGrid_Drop"
                      DragEnter="ParameterGrid_DragEnter"
                      PreviewMouseMove="ParameterGrid_PreviewMouseMove"
@@ -88,7 +88,7 @@
                         <Style TargetType="Button">
                             <Setter Property="IsEnabled">
                                 <Setter.Value>
-                                    <MultiBinding Converter="{DynamicResource IndexIsNotLast}">
+                                    <MultiBinding Converter="{StaticResource IndexIsNotLast}">
                                         <Binding ElementName="ParameterGrid" Path="SelectedIndex" />
                                         <Binding Path="Parameters.Count" />
                                     </MultiBinding>

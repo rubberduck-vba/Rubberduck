@@ -20,7 +20,7 @@
             <BitmapImage x:Key="RemoveParameterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-script.png" />
             <BitmapImage x:Key="RestoreParameterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-return-180-left.png" />
 
-            <Style x:Key="PrettyListBoxItemModified" TargetType="{x:Type ListBoxItem}" BasedOn="{DynamicResource PrettyListBoxItem}">
+            <Style x:Key="PrettyListBoxItemModified" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource PrettyListBoxItem}">
                 <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
             </Style>
         </ResourceDictionary>
@@ -49,7 +49,7 @@
                      ItemsSource="{Binding Parameters, UpdateSourceTrigger=PropertyChanged}"
                      SelectedIndex="0"
                      Name="ParameterGrid"
-                     ItemContainerStyle="{DynamicResource PrettyListBoxItemModified}"
+                     ItemContainerStyle="{StaticResource PrettyListBoxItemModified}"
                      AlternationCount="2">
                 <ListBox.ItemTemplate>
                     <DataTemplate>

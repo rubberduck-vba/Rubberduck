@@ -342,7 +342,7 @@ namespace Rubberduck.Parsing.VBA
         {
             Interlocked.Increment(ref _stateChangedInvocations);
 
-            Logger.Info($"{nameof(RubberduckParserState)} ({_stateChangedInvocations}) is invoking {nameof(StateChanged)} ({Status})");
+            Logger.Info($"{nameof(RubberduckParserState)}.{nameof(StateChanged)} invocation {_stateChangedInvocations} sets status to '{Status}'.");
 
             var highPriorityHandler = StateChangedHighPriority;
             if (highPriorityHandler != null && !token.IsCancellationRequested)
@@ -423,7 +423,7 @@ namespace Rubberduck.Parsing.VBA
 
             _moduleStates.AddOrUpdate(module, new ModuleState(state), (c, e) => e.SetState(state));
             _moduleStates.AddOrUpdate(module, new ModuleState(parserError), (c, e) => e.SetModuleException(parserError));
-            Logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", module.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
+            Logger.Debug("Thread {0} is changing state of module '{1}' to '{2}'.", Thread.CurrentThread.ManagedThreadId, module.ComponentName, state);
             OnModuleStateChanged(module, state, oldState, token);
             if (evaluateOverallState)
             {

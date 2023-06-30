@@ -18,7 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
             <converters:SettingsViewToPageConverter x:Key="SettingsViewToPage" />
 
-            <Style x:Key="PrettyListBoxItemModified" TargetType="{x:Type ListBoxItem}" BasedOn="{DynamicResource PrettyListBoxItem}">
+            <Style x:Key="PrettyListBoxItemModified" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource PrettyListBoxItem}">
                 <Setter Property="BorderBrush" Value="Transparent"/>
                 <Setter Property="BorderThickness" Value="0"/>
             </Style>
@@ -47,7 +47,7 @@
         <ListBox Name="ListBox"
                  Grid.Row="1"
                  Grid.Column="0"
-                 ItemContainerStyle="{DynamicResource PrettyListBoxItemModified}"
+                 ItemContainerStyle="{StaticResource PrettyListBoxItemModified}"
                  ItemsSource="{Binding SettingsViews}"
                  DisplayMemberPath="Label"
                  SelectedItem="{Binding SelectedSettingsView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

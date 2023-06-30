@@ -1,8 +1,8 @@
-version: '2.5.2.{build}'
+version: '2.5.9.{build}'
 
 # enforce crlf fixing
 init:
-  git config --global core.autocrlf true
+  - git config --global core.autocrlf true
 
 # history limited to 15 commits, since we ran into trouble with a limit of 3
 # the limit can be rather generous
@@ -36,7 +36,7 @@ cache:
   - '%USERPROFILE%/.gradle/wrapper/dists'
 
 install:
-  set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;C:\Program Files (x86)\Java\jdk1.8.0;%PATH%
+  - set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;C:\Program Files (x86)\Java\jdk1.8.0;%PATH%
 
 # set up the environment variables used later in the build process
 environment:
