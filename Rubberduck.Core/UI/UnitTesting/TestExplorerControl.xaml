@@ -351,7 +351,7 @@
 	                                    <Grid>
 	                                        <Image Height="16" Width="16">
 	                                            <Image.Source>
-	                                                <MultiBinding Converter="{DynamicResource OutcomeIconConverter}">
+	                                                <MultiBinding Converter="{StaticResource OutcomeIconConverter}">
 	                                                    <MultiBinding.Bindings>
 	                                                        <Binding RelativeSource="{RelativeSource Self}" Path="DataContext"/>
 	                                                        <Binding Path="Result.Outcome" />

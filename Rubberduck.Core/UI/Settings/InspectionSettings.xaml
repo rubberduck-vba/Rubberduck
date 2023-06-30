@@ -55,7 +55,7 @@
                                 Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI,Key=CodeInspectionSettingsPage_InspectionSeveritySettingsLabel}" Margin="5,5,0,5" Width="127" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                 <StackPanel.Resources>
-                                    <Style BasedOn="{DynamicResource HeaderText}" TargetType="Label">
+                                    <Style BasedOn="{StaticResource HeaderText}" TargetType="Label">
                                         <Setter Property="Margin" Value="0,5" />
                                     </Style>
                                 </StackPanel.Resources>
@@ -130,7 +130,7 @@
                             </DataGridTemplateColumn>
                             <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SeverityLabelText}"
                                                     Width="*"
-                                                    ItemsSource="{Binding Source={DynamicResource Severities}, Converter={StaticResource CodeInspectionSeverityEnumToText}, UpdateSourceTrigger=PropertyChanged}"
+                                                    ItemsSource="{Binding Source={StaticResource Severities}, Converter={StaticResource CodeInspectionSeverityEnumToText}, UpdateSourceTrigger=PropertyChanged}"
                                                     SelectedItemBinding="{Binding Path=SeverityLabel}" />
                         </controls:GroupingGrid.Columns>
                     </controls:GroupingGrid>
@@ -196,7 +196,7 @@
                               VerticalGridLinesBrush="Transparent"
                               HeadersVisibility="None"
                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                              ItemContainerStyle="{DynamicResource PrettifyRow}"
+                              ItemContainerStyle="{StaticResource PrettifyRow}"
                               ColumnHeaderHeight="22"
                               BorderThickness="0"
                               Height="200"

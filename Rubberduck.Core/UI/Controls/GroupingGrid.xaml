@@ -16,7 +16,7 @@
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-            <Style x:Key="PrettifyRowModified" TargetType="{x:Type DataGridRow}" BasedOn="{DynamicResource PrettifyRow}">
+            <Style x:Key="PrettifyRowModified" TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource PrettifyRow}">
                 <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
                 <Setter Property="Height" Value="Auto" />
                 <Setter Property="MinHeight" Value="26" />
@@ -57,7 +57,7 @@
         </ResourceDictionary>
     </DataGrid.Resources>
     <DataGrid.GroupStyle>
-        <GroupStyle ContainerStyle="{DynamicResource GroupHeaderStyle}">
+        <GroupStyle ContainerStyle="{StaticResource GroupHeaderStyle}">
             <GroupStyle.Panel>
                 <ItemsPanelTemplate>
                     <DataGridRowsPresenter/>

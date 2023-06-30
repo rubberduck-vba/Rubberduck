@@ -148,8 +148,8 @@
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddTemplatesSubMenu}" IsEnabled="{Binding AnyTemplatesCanExecute}">
                     <MenuItem.ItemsSource>
                         <CompositeCollection>
-                            <CollectionContainer Collection="{Binding Source={DynamicResource BuiltInTemplatesViewSource}}" />
-                            <CollectionContainer Collection="{Binding Source={DynamicResource UserDefinedTemplatesViewSource}, Mode=OneWay}" />
+                            <CollectionContainer Collection="{Binding Source={StaticResource BuiltInTemplatesViewSource}}" />
+                            <CollectionContainer Collection="{Binding Source={StaticResource UserDefinedTemplatesViewSource}, Mode=OneWay}" />
                         </CompositeCollection>
                     </MenuItem.ItemsSource>
                     <MenuItem.ItemContainerStyle>
@@ -159,7 +159,7 @@
                             <Setter Property="ToolTip" Value="{Binding Description}" />
                             <Setter Property="CommandParameter">
                                 <Setter.Value>
-                                    <MultiBinding Converter="{DynamicResource TemplateCommandParameterToTuple}">
+                                    <MultiBinding Converter="{StaticResource TemplateCommandParameterToTuple}">
                                         <Binding Path="Name" />
                                         <Binding Path="DataContext.SelectedItem" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
                                     </MultiBinding>
@@ -182,7 +182,7 @@
                 <Setter Property="BorderThickness" Value="0" />
             </Style>
 
-            <Style x:Key="ToolbarImageOpacity" TargetType="Image" BasedOn="{DynamicResource ToolbarIconStyle}">
+            <Style x:Key="ToolbarImageOpacity" TargetType="Image" BasedOn="{StaticResource ToolbarIconStyle}">
                 <Setter Property="Margin" Value="0" />
                 <Style.Triggers>
                     <Trigger Property="IsEnabled"  Value="False">
@@ -355,27 +355,27 @@
                         <MenuItem.Items>
                             <MenuItem IsCheckable="True" Header="8" Style="{DynamicResource MenuItemStyle}">
                                 <MenuItem.IsChecked>
-                                    <Binding Path="FontSize" Converter="{DynamicResource BoolToDouble}" Mode="TwoWay" ConverterParameter="8" />
+                                    <Binding Path="FontSize" Converter="{StaticResource BoolToDouble}" Mode="TwoWay" ConverterParameter="8" />
                                 </MenuItem.IsChecked>
                             </MenuItem>
                             <MenuItem IsCheckable="True" Header="10" Style="{DynamicResource MenuItemStyle}">
                                 <MenuItem.IsChecked>
-                                    <Binding Path="FontSize" Converter="{DynamicResource BoolToDouble}" Mode="TwoWay" ConverterParameter="10" />
+                                    <Binding Path="FontSize" Converter="{StaticResource BoolToDouble}" Mode="TwoWay" ConverterParameter="10" />
                                 </MenuItem.IsChecked>
                             </MenuItem>
                             <MenuItem IsCheckable="True" Header="12" Style="{DynamicResource MenuItemStyle}">
                                 <MenuItem.IsChecked>
-                                    <Binding Path="FontSize" Converter="{DynamicResource BoolToDouble}" Mode="TwoWay" ConverterParameter="12" />
+                                    <Binding Path="FontSize" Converter="{StaticResource BoolToDouble}" Mode="TwoWay" ConverterParameter="12" />
                                 </MenuItem.IsChecked>
                             </MenuItem>
                             <MenuItem IsCheckable="True" Header="14" Style="{DynamicResource MenuItemStyle}">
                                 <MenuItem.IsChecked>
-                                    <Binding Path="FontSize" Converter="{DynamicResource BoolToDouble}" Mode="TwoWay" ConverterParameter="14" />
+                                    <Binding Path="FontSize" Converter="{StaticResource BoolToDouble}" Mode="TwoWay" ConverterParameter="14" />
                                 </MenuItem.IsChecked>
                             </MenuItem>
                             <MenuItem IsCheckable="True" Header="16" Style="{DynamicResource MenuItemStyle}">
                                 <MenuItem.IsChecked>
-                                    <Binding Path="FontSize" Converter="{DynamicResource BoolToDouble}" Mode="TwoWay" ConverterParameter="16" />
+                                    <Binding Path="FontSize" Converter="{StaticResource BoolToDouble}" Mode="TwoWay" ConverterParameter="16" />
                                 </MenuItem.IsChecked>
                             </MenuItem>
                         </MenuItem.Items>
@@ -419,7 +419,7 @@
                   Background="{DynamicResource BackgroundWhiteBrush}"
                   HorizontalContentAlignment="Stretch"
                   ItemsSource="{Binding Projects}"
-                  ItemContainerStyle="{DynamicResource TreeViewContainerStyle}"
+                  ItemContainerStyle="{StaticResource TreeViewContainerStyle}"
                   FontSize="{Binding FontSize, Mode=OneWay}"
                   BorderThickness="0,1"
                   VirtualizingPanel.IsVirtualizing="False"
@@ -455,7 +455,7 @@
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Annotate}" IsEnabled="{Binding CanBeAnnotated}">
                         <MenuItem.ItemsSource>
                             <CompositeCollection>
-                                <CollectionContainer Collection="{Binding Source={DynamicResource AnnotationsViewSource}}" />
+                                <CollectionContainer Collection="{Binding Source={StaticResource AnnotationsViewSource}}" />
                             </CompositeCollection>
                         </MenuItem.ItemsSource>
                         <MenuItem.ItemContainerStyle>
@@ -464,7 +464,7 @@
                                 <Setter Property="Header" Value="{Binding Path=., Converter={StaticResource AnnotationToCodeString}}" />
                                 <Setter Property="CommandParameter">
                                     <Setter.Value>
-                                        <MultiBinding Converter="{DynamicResource AnnotateDeclarationCommandParameterToTuple}">
+                                        <MultiBinding Converter="{StaticResource AnnotateDeclarationCommandParameterToTuple}">
                                             <Binding Path="." />
                                             <Binding Path="DataContext.SelectedItem" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
                                         </MultiBinding>
@@ -472,7 +472,7 @@
                                 </Setter>
                                 <Setter Property="Visibility">
                                     <Setter.Value>
-                                        <MultiBinding Converter ="{DynamicResource AnnotateDeclarationCommandVisibility}">
+                                        <MultiBinding Converter="{StaticResource AnnotateDeclarationCommandVisibility}">
                                             <Binding Path="." />
                                             <Binding Path="DataContext.SelectedItem" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
                                         </MultiBinding>
@@ -595,9 +595,9 @@
                 </ContextMenu>
             </TreeView.ContextMenu>
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="codeExplorer:ICodeExplorerNode" ItemsSource="{Binding Children}" ItemContainerStyle="{DynamicResource TreeViewContainerStyle}">
+                <HierarchicalDataTemplate DataType="codeExplorer:ICodeExplorerNode" ItemsSource="{Binding Children}" ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
                     <HierarchicalDataTemplate.Resources>
-                        <Style x:Key="TreeViewItemStyleModified" TargetType="{x:Type TextBlock}" BasedOn="{DynamicResource TreeViewItemStyle}">
+                        <Style x:Key="TreeViewItemStyleModified" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TreeViewItemStyle}">
                             <Setter Property="Text" Value="{Binding Name}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ElementName=DisplaySignatures, Path=IsChecked}" Value="True">
@@ -611,7 +611,7 @@
                             <Image Style="{DynamicResource ToolbarIconStyle}" 
                                    ToolTip="{Binding Converter={StaticResource DeclarationTypeNameConverter}}">
                                 <Image.Source>
-                                    <MultiBinding Converter="{DynamicResource NodeToIcon}">
+                                    <MultiBinding Converter="{StaticResource NodeToIcon}">
                                         <MultiBinding.Bindings>
                                             <Binding RelativeSource="{RelativeSource Self}" Path="DataContext"/>
                                             <Binding Path="Declaration" />
@@ -650,7 +650,7 @@
                         </Grid.ColumnDefinitions>
                         <Image Grid.Column="0" Style="{DynamicResource ToolbarIconStyle}">
                             <Image.Source>
-                                <MultiBinding Converter="{DynamicResource NodeToIcon}">
+                                <MultiBinding Converter="{StaticResource NodeToIcon}">
                                     <MultiBinding.Bindings>
                                         <Binding Path="SelectedItem"/>
                                         <Binding Path="SelectedItem.Declaration" />

@@ -39,7 +39,7 @@
             <HierarchicalDataTemplate
             x:Key="RecursiveData" 
             DataType="TreeViewItem"
-            ItemContainerStyle="{DynamicResource ShinyTreeView}"
+            ItemContainerStyle="{StaticResource ShinyTreeView}"
             ItemsSource="{Binding Items}">
             </HierarchicalDataTemplate>
         </ResourceDictionary>
@@ -87,7 +87,7 @@
                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                       ItemTemplate="{DynamicResource RecursiveData}" 
-                      ItemContainerStyle="{DynamicResource ShinyTreeView}"
+                      ItemContainerStyle="{StaticResource ShinyTreeView}"
                       ItemsSource="{Binding ResultItems}"/>
         </GroupBox>
     </Grid>

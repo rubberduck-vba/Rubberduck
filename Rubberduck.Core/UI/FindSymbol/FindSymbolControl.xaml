@@ -41,7 +41,7 @@
                 <KeyBinding Command="{Binding GoCommand}" Key="Return" />
             </ComboBox.InputBindings>
             <ComboBox.Text>
-                <MultiBinding Converter="{DynamicResource SearchBoxTextConverter}">
+                <MultiBinding Converter="{StaticResource SearchBoxTextConverter}">
                     <Binding Path="SearchString" Mode="OneWayToSource" UpdateSourceTrigger="PropertyChanged" />
                     <Binding Path="SelectedItem.IdentifierName" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" />
                 </MultiBinding>
