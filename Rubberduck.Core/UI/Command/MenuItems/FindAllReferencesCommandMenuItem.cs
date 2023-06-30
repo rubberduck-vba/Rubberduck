@@ -37,15 +37,4 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override int DisplayOrder => (int)ProjectExplorerContextMenuItemDisplayOrder.FindAllReferences;
     }
-
-
-    public class WindowsFindAllReferencesCommandMenuItem : FindAllReferencesCommandMenuItemBase
-    {
-        public WindowsFindAllReferencesCommandMenuItem(ProjectExplorerFindAllReferencesCommand command)
-            : base(command)
-        { }
-
-        public override int DisplayOrder => (int)WindowMenuItemDisplayOrder.FindAllReferences;
-    }
-
 }
