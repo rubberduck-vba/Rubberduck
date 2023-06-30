@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Resources;
+using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings
 {
@@ -20,15 +20,15 @@ namespace Rubberduck.UI.Refactorings
 
         private void InitializeCaptions(string identifierName, string targetDeclarationType)
         {
-            Text = RubberduckUI.AssignedByValParamQFixDialog_Caption;
+            Text = RefactoringsUI.AssignedByValParamQFixDialog_Caption;
             OkButton.Text = RubberduckUI.OK;
             CancelDialogButton.Text = RubberduckUI.CancelButtonText;
-            TitleLabel.Text = RubberduckUI.AssignedByValParamQFixDialog_TitleText;
+            TitleLabel.Text = RefactoringsUI.AssignedByValParamQFixDialog_TitleText;
             NameLabel.Text = RubberduckUI.NameLabelText;
 
             var declarationType =
-            RubberduckUI.ResourceManager.GetString("DeclarationType_" + targetDeclarationType, Settings.Settings.Culture);
-            InstructionsLabel.Text = string.Format(RubberduckUI.AssignedByValParamQFixDialog_InstructionsLabelText, declarationType,
+                RubberduckUI.ResourceManager.GetString("DeclarationType_" + targetDeclarationType, Settings.Settings.Culture);
+            InstructionsLabel.Text = string.Format(RefactoringsUI.AssignedByValParamQFixDialog_InstructionsLabelText, declarationType,
                 identifierName);
         }
 
@@ -39,7 +39,7 @@ namespace Rubberduck.UI.Refactorings
 
         public string NewName
         {
-            get { return NewNameBox.Text; }
+            get => NewNameBox.Text;
             set
             {
                 NewNameBox.Text = value;
@@ -57,7 +57,7 @@ namespace Rubberduck.UI.Refactorings
 
             if (_isConflictingName(NewName))
             {
-                return string.Format(RubberduckUI.AssignedByValDialog_NewNameAlreadyUsedFormat, NewName);
+                return string.Format(RefactoringsUI.AssignedByValDialog_NewNameAlreadyUsedFormat, NewName);
             }
 
             if (VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(NewName, DeclarationType.Variable, out var invalidMessage))
@@ -67,7 +67,7 @@ namespace Rubberduck.UI.Refactorings
 
             if (VBAIdentifierValidator.TryMatchMeaninglessIdentifierCriteria(NewName, out var meaninglessNameMessage))
             {
-                return string.Format(RubberduckUI.AssignedByValDialog_MeaninglessNameFormat, meaninglessNameMessage);
+                return string.Format(RefactoringsUI.AssignedByValDialog_MeaninglessNameFormat, meaninglessNameMessage);
             }
 
             return string.Empty;

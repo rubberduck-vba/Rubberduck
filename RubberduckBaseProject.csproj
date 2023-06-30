@@ -1,4 +1,4 @@
-<Project Skd="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <!--
     We're specifying the Sdk here to make sure appveyor correctly recognizes this as a .NET Core project
     Unfortunately this generates the warning MSB4011, because the including projects already define an Sdk
@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <Company>Rubberduck-VBA</Company>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>net462</TargetFramework>
     <LangVersion>7.2</LangVersion>
     <SolutionDir>$(MSBuildProjectDirectory)</SolutionDir>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -20,7 +20,7 @@
     <!-- Ignore VisualStudio whining about the CodeAnalysis assembly changing (IDE1001) -->
     <DisabledWarnings>$(DisabledWarnings);4011;1001;1591</DisabledWarnings>
     <!-- Declare a Version if it's not already declared as a global property through MSBuild invocation -->
-    <Version Condition=" '$(Version)' == '' ">2.5.2</Version>
+    <Version Condition=" '$(Version)' == '' ">2.5.9</Version>
     <!-- all other relevant version numbers are computed from Version automagically -->
   </PropertyGroup>
 
@@ -63,7 +63,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
     <Optimize>true</Optimize>
     <DefineConstants>RELEASE</DefineConstants>
   </PropertyGroup>

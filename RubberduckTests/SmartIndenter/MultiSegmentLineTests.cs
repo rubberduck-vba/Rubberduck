@@ -83,6 +83,7 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
+        // https://github.com/rubberduck-vba/Rubberduck/issues/5929
         [Test]        // Broken in VB6 SmartIndenter.
         [Category("Indenter")]
         public void IfThenElseOnSameLineWorks()
@@ -90,18 +91,16 @@ namespace RubberduckTests.SmartIndenter
             var code = new[]
             {
                 "Public Sub Test()",
-                "If Foo = 42 Then: Bar = Foo: Else",
+                "If Foo = 42 Then: Bar = Foo: Else Baz = Bar",
                 "Baz = Foo",
-                "End If",
                 "End Sub"
             };
 
             var expected = new[]
             {
                 "Public Sub Test()",
-                "    If Foo = 42 Then: Bar = Foo: Else",
-                "        Baz = Foo",
-                "    End If",
+                "    If Foo = 42 Then: Bar = Foo: Else Baz = Bar",
+                "    Baz = Foo",
                 "End Sub"
             };
 
@@ -176,6 +175,32 @@ namespace RubberduckTests.SmartIndenter
                 s.IndentCase = true;
                 return s;
             });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        // https://github.com/rubberduck-vba/Rubberduck/issues/6007
+        [Test]
+        [Category("Indenter")]
+        public void CommentWithColon()
+        {
+            var code = new[]
+            {
+                "Sub foo()",
+                "   ' : loop",
+                "' bar",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub foo()",
+                "    ' : loop",
+                "    ' bar",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings()); 
             var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }

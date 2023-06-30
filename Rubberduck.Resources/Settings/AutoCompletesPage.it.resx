@@ -133,7 +133,7 @@
     <value>Configura quali autocompletamenti di Rubberduck sono abilitati.</value>
   </data>
   <data name="ConcatVbNewLine" xml:space="preserve">
-    <value>Concatena 'vbNewLine' al Ctrl + Invio.</value>
+    <value>Concatena 'vbNewLine' al Ctrl + Invio</value>
   </data>
   <data name="EnableAutocompleteLabel" xml:space="preserve">
     <value>Abilita le funzionalità di completamento automatico</value>

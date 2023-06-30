@@ -26,9 +26,9 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <StackPanel Background="{StaticResource BackgroundLightBrush}">
-            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ReorderParamsDialog_TitleText}" FontWeight="Bold" />
-            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ReorderParamsDialog_InstructionsLabelText}"
+        <StackPanel Background="{DynamicResource BackgroundLightBrush}">
+            <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ReorderParamsDialog_TitleText}" FontWeight="Bold" />
+            <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ReorderParamsDialog_InstructionsLabelText}"
                        Margin="5,0" />
         </StackPanel>
         <Grid Grid.Row="1" Grid.IsSharedSizeScope="True">
@@ -73,8 +73,8 @@
                         Command="{Binding MoveParameterUpCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="{StaticResource MoveUpImage}" />
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ReorderParamsDialog_MoveUpButtonText}" />
+                        <Image Source="{DynamicResource MoveUpImage}" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ReorderParamsDialog_MoveUpButtonText}" />
                     </StackPanel>
                 </Button>
                 <Button Grid.Row="1"
@@ -97,8 +97,8 @@
                         </Style>
                     </Button.Style>
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="{StaticResource MoveDownImage}" />
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ReorderParamsDialog_MoveDownButtonText}" />
+                        <Image Source="{DynamicResource MoveDownImage}" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ReorderParamsDialog_MoveDownButtonText}" />
                     </StackPanel>
                 </Button>
             </Grid>
@@ -106,8 +106,8 @@
             <Expander Grid.Row="1"
                       Grid.ColumnSpan="2"
                       IsExpanded="True"
-                      Background="{StaticResource ExpanderBackgroundBrush}"
-                      BorderBrush="{StaticResource ExpanderBorderBrush}"
+                      Background="{DynamicResource ExpanderBackgroundBrush}"
+                      BorderBrush="{DynamicResource ExpanderBorderBrush}"
                       Margin="5,0,5,5">
                 <Expander.Header>
                     <Label FontWeight="SemiBold">

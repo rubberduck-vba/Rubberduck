@@ -68,7 +68,7 @@ namespace Rubberduck.UI
                         {
                             using (var pane = VbeNativeServices.GetCodePaneFromHwnd(e.Hwnd))
                             {
-                                var selection = pane.GetQualifiedSelection();
+                                var selection = pane?.GetQualifiedSelection();
                                 if (!selection.HasValue)
                                 {
                                     return;

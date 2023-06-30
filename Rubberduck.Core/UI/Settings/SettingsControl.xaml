@@ -37,9 +37,9 @@
         <Border Grid.ColumnSpan="2"
                 Height="50"
                 VerticalAlignment="Top"
-                BorderBrush="{StaticResource BlackBrush}"
+                BorderBrush="{DynamicResource BlackBrush}"
                 BorderThickness="0, 1">
-            <StackPanel Background="{StaticResource BackgroundLightBrush}">
+            <StackPanel Background="{DynamicResource BackgroundLightBrush}">
                 <Label Content="{Binding ElementName=ListBox, Path=SelectedItem.Label}" FontWeight="Bold" />
                 <TextBlock Text="{Binding ElementName=ListBox, Path=SelectedItem.Instructions}" Margin="10, 0" />
             </StackPanel>
@@ -62,7 +62,7 @@
                 Grid.ColumnSpan="2"
                 Height="40"
                 VerticalAlignment="Bottom"
-                BorderBrush="{StaticResource BlackBrush}"
+                BorderBrush="{DynamicResource BlackBrush}"
                 BorderThickness="0, 1, 0, 0">
             <DockPanel VerticalAlignment="Center"
                        Height="40"

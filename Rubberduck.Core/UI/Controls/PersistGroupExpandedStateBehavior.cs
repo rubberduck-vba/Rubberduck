@@ -47,10 +47,7 @@ namespace Rubberduck.UI.Controls
             var states = GetExpandedStateStore();
             var expanded = !states.ContainsKey(GroupName ?? string.Empty) ? (bool?)null : states[GroupName ?? string.Empty];
 
-            if (expanded != null)
-            {
-                AssociatedObject.IsExpanded = InitialExpandedState;
-            }
+            AssociatedObject.IsExpanded = expanded ?? InitialExpandedState;
 
             AssociatedObject.Expanded += OnExpanded;
             AssociatedObject.Collapsed += OnCollapsed;

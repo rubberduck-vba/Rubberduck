@@ -120,4 +120,10 @@
   <data name="ImplementInterface_TODO" xml:space="preserve">
     <value>'TODO Schnittstellenelement implementieren</value>
   </data>
+  <data name="CodeBuilder_DefaultPropertyImplementation" xml:space="preserve">
+    <value>'TODO Implementieren der Methode</value>
+  </data>
+  <data name="CommentVerification_TODO" xml:space="preserve">
+    <value>'TODO ist dieser Kommentar immer noch gültig? =&gt;</value>
+  </data>
 </root>

@@ -168,9 +168,6 @@
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
     <value>El parámetro '{0}' se puede pasar por valor.</value>
   </data>
-  <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>El parámetro '{0}' nunca se usa.</value>
-  </data>
   <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
     <value>El procedimiento '{0}' se puede escribir como una función.</value>
   </data>
@@ -242,9 +239,6 @@
   </data>
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>El componente '{0}' usa 'Option Base 0'.</value>
-  </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>La anotación '{0}' es ilegal en este contexto.</value>
   </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>El módulo o miembro '{0}' tiene una anotación '{1}', pero no tiene el atributo correspondiente.</value>

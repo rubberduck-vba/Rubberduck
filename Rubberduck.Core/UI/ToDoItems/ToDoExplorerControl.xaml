@@ -23,6 +23,7 @@
             <BitmapImage x:Key="DeleteImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/todo-completed.png" />
             <BitmapImage x:Key="GroupByMarkerImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/sticky-note-pin.png" />
             <BitmapImage x:Key="GroupByLocationImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectClass.png" />
+            <BitmapImage x:Key="FilterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/Funnel.png" />
             <BitmapImage x:Key="SettingsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/gear.png" />
             <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
             <BitmapImage x:Key="ExpandAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/expand-all.png" />
@@ -46,56 +47,66 @@
                     <Style TargetType="Image">
                         <Setter Property="Height" Value="16" />
                     </Style>
+                    <Style TargetType="Label">
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                    </Style>
                 </ToolBar.Resources>
 
                 <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Refresh}" Command="{Binding RefreshCommand}">
-                    <Image Source="{StaticResource RefreshImage}" Style="{StaticResource ToolbarImageOpacity}"/>
+                    <Image Source="{DynamicResource RefreshImage}" Style="{DynamicResource ToolbarImageOpacity}"/>
                 </Button>
 
                 <Separator />
 
                 <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Remove}" Command="{Binding RemoveCommand}">
-                    <Image Source="{StaticResource DeleteImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                    <Image Source="{DynamicResource DeleteImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Separator />
 
-                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" VerticalContentAlignment="Center" />
+                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" />
 
-                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByMarker}"
                               IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupByMarkerConverter}, ConverterParameter={x:Static toDoItems:ToDoItemGrouping.Marker}}">
-                    <Image Source="{StaticResource GroupByMarkerImage}" />
+                    <Image Source="{DynamicResource GroupByMarkerImage}" />
                 </ToggleButton>
 
-                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}"
                               IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupByLocationConverter}, ConverterParameter={x:Static toDoItems:ToDoItemGrouping.Location}}">
-                    <Image Source="{StaticResource GroupByLocationImage}" />
+                    <Image Source="{DynamicResource GroupByLocationImage}" />
                 </ToggleButton>
 
                 <Separator />
 
+                <Image Source="{DynamicResource FilterImage}" />
+
+                <Label Content="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=FilterLabel}" />
+                <controls:SearchBox Width="100"
+                                    Text="{Binding ToDoFilter, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
+
+                <Separator />
                 <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}"
-                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_CollapseAll}">
-                    <Image Source="{StaticResource CollapseAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                        ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=CollapseAll}">
+                    <Image Source="{DynamicResource CollapseAllImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Button Name="ExpandAll" Command="{Binding ExpandAllCommand}"
-                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_ExpandAll}">
-                    <Image Source="{StaticResource ExpandAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                        ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=ExpandAll}">
+                    <Image Source="{DynamicResource ExpandAllImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Separator />
                 <Button Command="{Binding CopyResultsCommand}">
-                    <Image Source="{StaticResource CopyResultsImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                    <Image Source="{DynamicResource CopyResultsImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=ToDoExplorer_CopyToolTip}" />
                     </Button.ToolTip>
                 </Button>
                 <Separator />
                 <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Settings}" Command="{Binding OpenTodoSettingsCommand}">
-                    <Image Source="{StaticResource SettingsImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                    <Image Source="{DynamicResource SettingsImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                 </Button>
             </ToolBar>
         </ToolBarTray>

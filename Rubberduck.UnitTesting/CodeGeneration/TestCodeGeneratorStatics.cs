@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UnitTesting.CodeGeneration
@@ -44,14 +44,17 @@ Private Sub {{0}}() {RenameTestTodoComment}
     On Error GoTo {TestFailLabel}
     
     {ArrangeComment}
-
+    
     {ActComment}
-
+    
     '{AssertLabel}:
     Assert.Succeed
 
 {TestExitLabel}:
-    Exit Sub
+'@Ignore UnhandledOnErrorResumeNext
+    On Error Resume Next
+    
+Exit Sub
 {TestFailLabel}:
     Assert.Fail ""{TestErrorMessage}"" & Err.Number & "" - "" & Err.Description
     Resume {TestExitLabel}
@@ -64,9 +67,9 @@ Private Sub {{0}}() {RenameTestTodoComment}
     On Error GoTo {TestFailLabel}
     
     {ArrangeComment}
-
+    
     {ActComment}
-
+    
 {AssertLabel}:
     Assert.Fail ""{ExpectedErrorFailMessage}""
 
@@ -113,11 +116,12 @@ $@"#If {LateBindConstName} Then
 #End If";
 
         private static string TestModuleTemplate =>
-$@"{{0}}Option Explicit
-Option Private Module
-
-'@TestModule
+$@"'@TestModule
 '@Folder(""{DefaultTestFolder}"")
+
+{{0}}
+Option Explicit
+Option Private Module
 
 {{1}}
 

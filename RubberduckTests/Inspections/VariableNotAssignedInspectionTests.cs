@@ -12,7 +12,7 @@ namespace RubberduckTests.Inspections
     {
         [Test]
         [Category("Inspections")]
-        public void VariableNotAssigned_ReturnsResult()
+        public void VariableNotAssigned_ReturnsResult_Local()
         {
             const string inputCode =
                 @"Sub Foo()
@@ -20,6 +20,45 @@ namespace RubberduckTests.Inspections
 End Sub";
 
             Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("Public")]
+        [TestCase("Private")]
+        public void VariableNotAssigned_ReturnsResult_Module(string scopeIdentifier)
+        {
+            var inputCode =
+$@"
+    {scopeIdentifier} Bar As Variant
+";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void VariableNotAssigned_ReturnsResult_Module_Exposed_Private()
+        {
+            var inputCode =
+$@"
+Attribute VB_Exposed = True
+
+    Private Bar As Variant
+";
+            Assert.AreEqual(1, InspectionResultsForModules(("Class1", inputCode, ComponentType.ClassModule)).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void VariableNotAssigned_DoesNotReturnResult_Module_Exposed_Public()
+        {
+            var inputCode =
+$@"
+Attribute VB_Exposed = True
+
+    Public Bar As Variant
+";
+            Assert.AreEqual(0, InspectionResultsForModules(("Class1", inputCode, ComponentType.ClassModule)).Count());
         }
 
         [Test]
@@ -37,13 +76,31 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void UnassignedVariable_DoesNotReturnResult()
+        public void AssignedVariable_DoesNotReturnResult()
         {
             const string inputCode =
                 @"Function Foo() As Boolean
     Dim var1 as String
     var1 = ""test""
 End Function";
+
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("Public")]
+        [TestCase("Private")]
+        public void AssignedVariable_DoesNotReturnResult_Module(string scopeIdentifier)
+        {
+            var inputCode =
+$@"
+    {scopeIdentifier} Bar As Variant
+
+Sub Foo()
+    Bar = ""test""
+End Sub
+";
 
             Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
@@ -377,6 +434,47 @@ End Sub
                 ("TestClass", classModuleCode, ComponentType.ClassModule),
                 ("TestModule", moduleCode, ComponentType.StandardModule)
             ).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void VariableNotAssigned_ArrayWithElementAssignment_DoesNotReturnResult()
+        {
+            const string inputCode = @"
+Public Sub Foo()
+    Dim arr(0 To 0) As Variant
+    arr(0) = 42
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void VariableNotAssigned_ReDimDeclaredArrayWithElementAssignment_DoesNotReturnResult()
+        {
+            const string inputCode = @"
+Public Sub Foo()
+    ReDim arr(0 To 0) As Variant
+    arr(0) = 42
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        //See issue #5845 at https://github.com/rubberduck-vba/Rubberduck/issues/5845
+        public void VariableNotAssigned_VariantUsedAsArrayWithElementAssignment_DoesNotReturnResult()
+        {
+            const string inputCode = @"
+Public Sub Foo()
+    Dim arr As Variant
+    ReDim arr(0 To 0) As Variant
+    arr(0) = 42
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]

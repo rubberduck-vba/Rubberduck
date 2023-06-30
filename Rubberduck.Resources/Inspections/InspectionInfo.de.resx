@@ -457,4 +457,25 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="InvalidAnnotationInspection" xml:space="preserve">
     <value>Die Annotation konnte keinem Ziel zugewiesen werden. Eine Annotation für die Modulebene kann nicht verwendet werden, um Elemente zu annotieren. Eine Annotation für Elemente kann auf Modulebene nicht verwendet werden. Modul- und Elementannotationen sollten nur einmal spezifiziert werden.</value>
   </data>
+  <data name="UDTMemberNotUsedInspection" xml:space="preserve">
+    <value>Ein UDT (User Defined Type) Element ist deklariert, das allerdings nicht verwendet wird. Es sollte überlegt werden, die Deklaration des UDT Elementes zu löschen.</value>
+  </data>
+  <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
+    <value>Das Standard (Public) Interface einer Modul-Klasse sollte nicht die Implementierung anderer Interfaces oder Ereignishandler offenlegen.</value>
+  </data>
+  <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
+    <value>Das Kopieren eines Arbeitsblattes, das eine öffentliche Enumerationsdeklartion enthält, wird auch eine Kopie der Enumerationsdeklaration anlegen. Diese Kopie wird einen 'Ambiguous name detected'-Kompiler-Fehler auslösen. Die Deklaration von Enumerationen in Standard- oder Klassenmodulen vermeidet ungewollte Duplikate einer Enumerationsdeklaration.</value>
+  </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>MS Forms legt UserForms-Steuerelemente als öffentliche Felder an. Der Zugriff auf diese Felder außerhalb der UserForm-Klasse bricht die Kapselung und verursacht unnötigen Code mit speziellen Formularsteuerelementen. Überlege, die gewünschten Werte in eigene 'Modell-Klassen' zu kapseln und Ereignishandler innerhalb des Formulars zu verwenden, um diese 'Modelleigenschaften' zu ändern. Der Code kann dann die gekapselten Werte anfragen anstatt der Formularsteuerelemente.</value>
+  </data>
+  <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
+    <value>Obwohl eine zustandsorientierte (stateful) Standardinstanz eventuell gewünscht ist, ist diese eine beliebte Quelle von Fehlern und sollte vermieden werden. Nutze die 'Me'-Auszeichnung, um die aktuelle Instanz explizit anzusprechen und Zweideutigkeiten zu vermeiden.</value>
+  </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>Normalerweise fängt der VBE Editor diesen Fehlertyp und bricht das Kompilieren ab. Allerdings gibt es einige wenige Szenarien, in denen dieser Fehler übergangen und ein Laufzeitfehler ausgelöst wird. Um den Laufzeitfehler zu vermeiden, sollte die fehlende Property oder Subroutine implementiert werden.</value>
+  </data>
+  <data name="IIfSideEffectInspection" xml:space="preserve">
+    <value>Alle Argumente eines Funktions-/Prozeduraufrufes werden immer evaluiert, bevor die Funktion aufgerufen wird, so dass ihre Werte als Parameter übergeben werden. Allerdings führt die 'IIf'-Funktion manchmal zu einer Fehlinterpretation, dass entweder nur der 'Wahr-Teil' oder nur der 'Falsch-Teil' auf der Basis des ersten Argumentes ausgewertet wird. Somit kann die 'IIf'-Funktion eine Quelle von unvorhergesehen Nebeneffekten und Fehlern sein, wenn der Nutzer den Umstand nicht vor Augen hat, dass immer beide Argumente, 'Wahr-Teil' und 'Falsch-Teil', ausgewertet werden.</value>
+  </data>
 </root>

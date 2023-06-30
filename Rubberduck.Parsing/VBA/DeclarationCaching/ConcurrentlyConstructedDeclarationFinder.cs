@@ -13,12 +13,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
     {
         private const int _maxDegreeOfConstructionParallelism = -1;
         
-        public ConcurrentlyConstructedDeclarationFinder(
-            IReadOnlyList<Declaration> declarations, 
-            IEnumerable<IParseTreeAnnotation> annotations, 
+        public ConcurrentlyConstructedDeclarationFinder(IReadOnlyList<Declaration> declarations,
+            IEnumerable<IParseTreeAnnotation> annotations,
+            IReadOnlyDictionary<QualifiedModuleName, LogicalLineStore> logicalLines,
             IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> failedResolutionStores,
             IHostApplication hostApp = null) 
-            :base(declarations, annotations, failedResolutionStores, hostApp)
+            :base(declarations, annotations, logicalLines, failedResolutionStores, hostApp)
         {}
 
         protected override void ExecuteCollectionConstructionActions(List<Action> collectionConstructionActions)

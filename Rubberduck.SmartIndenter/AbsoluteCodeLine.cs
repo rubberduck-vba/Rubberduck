@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Rubberduck.SmartIndenter
 {
-    internal class AbsoluteCodeLine
+    public class AbsoluteCodeLine
     {
         private const string StupidLineEnding = ": _";
         private static readonly Regex LineNumberRegex = new Regex(@"^(?<number>(-?\d+)|(&H[0-9A-F]{1,8}))(?<separator>:)?\s+(?<code>.*)", RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);
@@ -16,7 +16,7 @@ namespace Rubberduck.SmartIndenter
         
         private static readonly Regex PropertyStartRegex = new Regex(@"^(Public\s|Private\s|Friend\s)?(Static\s)?(Property\s(Let|Get|Set))\s", RegexOptions.IgnoreCase);
 
-        private static readonly Regex ProcedureStartIgnoreRegex = new Regex(@"^[LR]?Set\s|^Let\s|^(Public|Private)\sDeclare\s(Function|Sub)", RegexOptions.IgnoreCase);
+        private static readonly Regex ProcedureStartIgnoreRegex = new Regex(@"^[LR]?Set\s|^Let\s|^(Public\s|Private\s)?Declare\s(PtrSafe\s)?(Function|Sub)", RegexOptions.IgnoreCase);
         private static readonly Regex ProcedureEndRegex = new Regex(@"^End\s(Sub|Function|Property)", RegexOptions.IgnoreCase);
         private static readonly Regex TypeEnumStartRegex = new Regex(@"^(Public\s|Private\s)?(Enum\s|Type\s)", RegexOptions.IgnoreCase);
         private static readonly Regex TypeEnumEndRegex = new Regex(@"^End\s(Enum|Type)", RegexOptions.IgnoreCase);
@@ -26,6 +26,7 @@ namespace Rubberduck.SmartIndenter
         private static readonly Regex PrecompilerInRegex = new Regex(@"^#(Else)?If\s.+Then$|^#Else$", RegexOptions.IgnoreCase);
         private static readonly Regex PrecompilerOutRegex = new Regex(@"^#ElseIf\s.+Then|^#Else$|#End\sIf$", RegexOptions.IgnoreCase);
         private static readonly Regex SingleLineElseIfRegex = new Regex(@"^ElseIf\s.*\sThen\s.*", RegexOptions.IgnoreCase);
+        private static readonly Regex IfThenWithColonNoElseRegex = new Regex(@"If\s.*\sThen:\s(?!.*:\sElse(If)?)", RegexOptions.IgnoreCase);
 
         private readonly IIndenterSettings _settings;
         private int _lineNumber;
@@ -191,6 +192,8 @@ namespace Rubberduck.SmartIndenter
         }
 
         public bool IsEmpty => Original.Trim().Length == 0;
+
+        public bool ContainsIfThenWithColonNoElse => IfThenWithColonNoElseRegex.IsMatch(_code);
 
         public int NextLineIndents
         {

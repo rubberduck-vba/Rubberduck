@@ -98,6 +98,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             // interface class must have members to be implementable
             var hasMembers = state.AllUserDeclarations.Any(item =>
                 item.DeclarationType.HasFlag(DeclarationType.Member)
+                && item.Accessibility != Accessibility.Private
                 && item.ParentDeclaration != null
                 && item.ParentDeclaration.Equals(interfaceClass));
 
@@ -106,12 +107,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 return false;
             }
 
-            var parseTree = state.GetParseTree(interfaceClass.QualifiedName.QualifiedModuleName);
-            var context = ((Antlr4.Runtime.ParserRuleContext)parseTree).GetDescendents<VBAParser.ImplementsStmtContext>();
-
             // true if active code pane is for a class/document/form module
-            return !context.Any()
-                   && !state.IsNewOrModified(interfaceClass.QualifiedModuleName)
+            return !state.IsNewOrModified(interfaceClass.QualifiedModuleName)
                    && !state.IsNewOrModified(qualifiedName);
         }
     }

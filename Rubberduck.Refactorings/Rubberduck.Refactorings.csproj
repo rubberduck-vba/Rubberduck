@@ -4,7 +4,7 @@
     <ProjectGuid>{D4B6A510-14E1-420A-A8D5-6A09890FD7D8}</ProjectGuid>
     <RootNamespace>Rubberduck.Refactorings</RootNamespace>
     <AssemblyName>Rubberduck.Refactorings</AssemblyName>
-    <Copyright>Copyright © 2018-2019</Copyright>
+    <Copyright>Copyright © 2018-2023</Copyright>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <NoWarn>1701;1702;1591;4011;1001;7035;1053</NoWarn>
@@ -22,5 +22,18 @@
     <PackageReference Include="Antlr4.Runtime">
       <Version>4.6.4</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="RefactoringsUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RefactoringsUI.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="RefactoringsUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RefactoringsUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

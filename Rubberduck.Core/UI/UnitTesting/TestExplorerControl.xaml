@@ -65,10 +65,10 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Grid.RowSpan="3" Background="{StaticResource ToolBarBackgroundBrush}" />
+        <Border Grid.Row="0" Grid.RowSpan="3" Background="{DynamicResource ToolBarBackgroundBrush}" />
 
         <ToolBarTray Grid.Row="0" IsLocked="True">
-            <ToolBar Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
+            <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
                 <ToolBar.Resources>
                     <local:TestExplorerGroupingBooleanConverter x:Key="OutcomeConverter" />
                     <local:TestExplorerGroupingBooleanConverter x:Key="LocationConverter" />
@@ -81,58 +81,58 @@
                 </ToolBar.Resources>
 
                 <Button Command="{Binding RefreshCommand}" >
-                    <Image Source="{StaticResource RefreshImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                    <Image Source="{DynamicResource RefreshImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Separator />
 
                 <Menu Background="Transparent">
                     <MenuItem VerticalAlignment="Center"
-                              HeaderTemplate="{StaticResource MenuItemHeaderDropdownIndicatorTemplate}"
+                              HeaderTemplate="{DynamicResource MenuItemHeaderDropdownIndicatorTemplate}"
                               IsEnabled="{Binding Model.IsBusy, Converter={StaticResource InvertBoolValue}}">
                         <MenuItem.Icon>
-                            <Image Source="{StaticResource RunImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                            <Image Source="{DynamicResource RunImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuButtonText}" />
                         </MenuItem.Header>
                         <MenuItem Command="{Binding RunAllTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuAllTests}">
                             <MenuItem.Icon>
-                                <Image Source="{StaticResource RunAllTestsImage}" />
+                                <Image Source="{DynamicResource RunAllTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
                         <MenuItem Command="{Binding RunNotExecutedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuNotRunTests}" >
                             <MenuItem.Icon>
-                                <Image Source="{StaticResource RunNotRunTestsImage}" />
+                                <Image Source="{DynamicResource RunNotRunTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Command="{Binding RunSelectedTestsCommand}" 
                                   CommandParameter="{Binding ElementName=TestGrid, Path=SelectedItems}"
                                   Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer ,Key=TestExplorer_RunMenuSelectedTests}" >
                             <MenuItem.Icon>
-                                <Image Source="{StaticResource RunSelectedTestImage}" />
+                                <Image Source="{DynamicResource RunSelectedTestImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Command="{Binding RunInconclusiveTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuInconclusiveTests}" >
                             <MenuItem.Icon>
-                                <Image Source="{StaticResource RunInconclusiveTestsImage}" />
+                                <Image Source="{DynamicResource RunInconclusiveTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Command="{Binding RunPassedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuPassedTests}" >
                             <MenuItem.Icon>
-                                <Image Source="{StaticResource RunPassedTestsImage}" />
+                                <Image Source="{DynamicResource RunPassedTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Command="{Binding RunFailedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuFailedTests}">
                             <MenuItem.Icon>
-                                <Image Source="{StaticResource RunFailedTestsImage}" />
+                                <Image Source="{DynamicResource RunFailedTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
                         <MenuItem Command="{Binding RepeatLastRunCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuLastRunTests}">
                             <MenuItem.Icon>
-                                <Image Source="{StaticResource RepeatLastRunImage}" />
+                                <Image Source="{DynamicResource RepeatLastRunImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
@@ -141,13 +141,13 @@
                 <Separator />
 
                 <Button Command="{Binding CancelTestRunCommand}" >
-                    <Image Source="{StaticResource StopImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                    <Image Source="{DynamicResource StopImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Separator />
 
                 <Button Command="{Binding ResetResultsCommand}" >
-                    <Image Source="{StaticResource ResetResultsImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                    <Image Source="{DynamicResource ResetResultsImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ResetButtonTooltip}" />
                     </Button.ToolTip>
@@ -157,10 +157,10 @@
 
                 <Menu Background="Transparent">
                     <MenuItem VerticalAlignment="Center"
-                              HeaderTemplate="{StaticResource MenuItemHeaderDropdownIndicatorTemplate}"
+                              HeaderTemplate="{DynamicResource MenuItemHeaderDropdownIndicatorTemplate}"
                               IsEnabled="{Binding Model.IsBusy, Converter={StaticResource InvertBoolValue}}">
                         <MenuItem.Icon>
-                            <Image Source="{StaticResource AddIcon}" Style="{StaticResource ToolbarImageOpacity}" />
+                            <Image Source="{DynamicResource AddIcon}" Style="{DynamicResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Add}" />
@@ -170,12 +170,12 @@
                         <Separator />
                         <MenuItem Command="{Binding AddTestMethodCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_AddTestMethod}">
                             <MenuItem.Icon>
-                                <Image Source="{StaticResource AddTestMethodIcon}" />
+                                <Image Source="{DynamicResource AddTestMethodIcon}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Command="{Binding AddErrorTestMethodCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_AddExpectedErrorTestMethod}">
                             <MenuItem.Icon>
-                                <Image Source="{StaticResource AddErrorTestMethodIcon}" />
+                                <Image Source="{DynamicResource AddErrorTestMethodIcon}" />
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
@@ -185,75 +185,75 @@
 
                 <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" VerticalContentAlignment="Center" />
 
-                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByOutcome}"
                               IsChecked="{Binding Path=TestGrouping, Converter={StaticResource OutcomeConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Outcome}}">
-                    <Image Source="{StaticResource GroupByOutcomeImage}" />
+                    <Image Source="{DynamicResource GroupByOutcomeImage}" />
                 </ToggleButton>
 
-                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}"
                               IsChecked="{Binding Path=TestGrouping, Converter={StaticResource LocationConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Location}}">
-                    <Image Source="{StaticResource GroupByLocationImage}" />
+                    <Image Source="{DynamicResource GroupByLocationImage}" />
                 </ToggleButton>
 
-                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByCategory}"
                               IsChecked="{Binding Path=TestGrouping, Converter={StaticResource CategoryConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Category}}">
-                    <Image Source="{StaticResource GroupByCategoryImage}" />
+                    <Image Source="{DynamicResource GroupByCategoryImage}" />
                 </ToggleButton>
 
                 <Separator />
 
-                <Image Source="{StaticResource FilterImage}" />
+                <Image Source="{DynamicResource FilterImage}" />
 
                 <Label Content="{Resx Key=TestExplorer_Filter, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
                 <controls:SearchBox Width="100"
                                     Text="{Binding TestNameFilter, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
 
                 <Label Content="{Resx Key=TestExplorer_Outcome, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
-                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Unknown}"
+                <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Unknown}"
                               IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Unknown}}" >
-                    <Image Source="{StaticResource OutcomeUnknown}" />
+                    <Image Source="{DynamicResource OutcomeUnknown}" />
                 </ToggleButton>
-                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Fail}"
+                <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Fail}"
                               IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Fail}}" >
-                    <Image Source="{StaticResource OutcomeFail}" />
+                    <Image Source="{DynamicResource OutcomeFail}" />
                 </ToggleButton>
-                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Inconclusive}"
+                <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Inconclusive}"
                               IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Inconclusive}}" >
-                    <Image Source="{StaticResource OutcomeInconclusive}" />
+                    <Image Source="{DynamicResource OutcomeInconclusive}" />
                 </ToggleButton>
-                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Succeeded}"
+                <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Succeeded}"
                               IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Succeeded}}" >
-                    <Image Source="{StaticResource OutcomeSucceeded}" />
+                    <Image Source="{DynamicResource OutcomeSucceeded}" />
                 </ToggleButton>
-                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
-                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Ignored}"
+                <ToggleButton Style="{DynamicResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Ignored}"
                               IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Ignored}}">
-                    <Image Source="{StaticResource OutcomeIgnored}" />
+                    <Image Source="{DynamicResource OutcomeIgnored}" />
                 </ToggleButton>
 
                 <Separator />
 
                 <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}" Margin="2"
-                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_CollapseAll}">
-                    <Image Source="{StaticResource CollapseAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                        ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=CollapseAll}">
+                    <Image Source="{DynamicResource CollapseAllImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Button Name="ExpandAll" Command="{Binding ExpandAllCommand}" Margin="2"
-                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_ExpandAll}">
-                    <Image Source="{StaticResource ExpandAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                        ToolTip="{Resx ResxName=Rubberduck.UI.Inspections.InspectionResultsUI, Key=ExpandAll}">
+                    <Image Source="{DynamicResource ExpandAllImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Separator />
 
                 <Button Command="{Binding CopyResultsCommand}">
-                    <Image Source="{StaticResource CopyResultsImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                    <Image Source="{DynamicResource CopyResultsImage}" Style="{DynamicResource ToolbarImageOpacity}" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_CopyToolTip}" />
                     </Button.ToolTip>
@@ -262,7 +262,7 @@
                 <Separator />
 
                 <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Settings}" Command="{Binding OpenTestSettingsCommand}" BorderThickness="0" Background="Transparent">
-                    <Image Source="{StaticResource SettingsImage}" />
+                    <Image Source="{DynamicResource SettingsImage}" />
                 </Button>
             </ToolBar>
         </ToolBarTray>
@@ -270,7 +270,7 @@
         <ProgressBar Height="6"
                      Grid.Row="1"
                      Margin="2"
-                     Background="{StaticResource GrayBrush}" 
+                     Background="{DynamicResource GrayBrush}" 
                      Maximum="{Binding Model.CurrentRunTestCount, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                      Value="{Binding Model.ExecutedCount, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
             <ProgressBar.Foreground>
@@ -299,31 +299,31 @@
                 </StackPanel.Resources>
                 <TextBlock Margin="2" Padding="4,2,4,2" FontWeight="Bold" VerticalAlignment="Center"
                            Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_SummaryCaption}"/>
-                <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}" Text="{Binding Model.LastTestRunSummary, Mode=OneWay}"/>
+                <TextBlock Style="{DynamicResource ResultsTestOutcomeStyle}" Text="{Binding Model.LastTestRunSummary, Mode=OneWay}"/>
                 <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestFailedCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}" >
-                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource RunFailedTestsImage}" Margin="4,0,4,0"/>
-                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
+                    <Image Style="{DynamicResource TestOutcomeIconStyle}" Source="{DynamicResource RunFailedTestsImage}" Margin="4,0,4,0"/>
+                    <TextBlock Style="{DynamicResource ResultsTestOutcomeStyle}">
                         <Run Text="{Binding Model.LastTestFailedCount, Mode=OneWay}"/>
                         <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Failed}"/>
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestIgnoredCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}">
-                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource IgnoredTestImage}" />
-                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
+                    <Image Style="{DynamicResource TestOutcomeIconStyle}" Source="{DynamicResource IgnoredTestImage}" />
+                    <TextBlock Style="{DynamicResource ResultsTestOutcomeStyle}">
                         <Run Text="{Binding Model.LastTestIgnoredCount, Mode=OneWay}"/>
                         <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Ignored}"/>
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestInconclusiveCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}">
-                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource InconclusiveTestImage}" />
-                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
+                    <Image Style="{DynamicResource TestOutcomeIconStyle}" Source="{DynamicResource InconclusiveTestImage}" />
+                    <TextBlock Style="{DynamicResource ResultsTestOutcomeStyle}">
                         <Run Text="{Binding Model.LastTestInconclusiveCount, Mode=OneWay}" />
                         <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Inconclusive}"/>
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestSucceededCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}">
-                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource RunPassedTestsImage}" />
-                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
+                    <Image Style="{DynamicResource TestOutcomeIconStyle}" Source="{DynamicResource RunPassedTestsImage}" />
+                    <TextBlock Style="{DynamicResource ResultsTestOutcomeStyle}">
                         <Run Text="{Binding Model.LastTestSucceededCount, Mode=OneWay}"/>
                         <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Succeeded}"/>
                     </TextBlock>
@@ -405,26 +405,26 @@
 	                            <MenuItem Command="{Binding RunSingleTestCommand}" 
 	                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuRunSingle}">
 	                                <MenuItem.Icon>
-	                                    <Image Source="{StaticResource RunSingleTestImage}" />
+	                                    <Image Source="{DynamicResource RunSingleTestImage}" />
 	                                </MenuItem.Icon>
 	                            </MenuItem>
 	                            <MenuItem CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItems}"
 	                                      Command="{Binding RunSelectedTestsCommand}" 
 	                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuRunSelected}">
 	                                <MenuItem.Icon>
-	                                    <Image Source="{StaticResource RunSelectedTestImage}" />
+	                                    <Image Source="{DynamicResource RunSelectedTestImage}" />
 	                                </MenuItem.Icon>
 	                            </MenuItem>
 	                            <MenuItem Command="{Binding RunSelectedGroupCommand}" 
 	                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuRunGroup}">
 	                                <MenuItem.Icon>
-	                                    <Image Source="{StaticResource RunSelectedGroupImage}" />
+	                                    <Image Source="{DynamicResource RunSelectedGroupImage}" />
 	                                </MenuItem.Icon>
 	                            </MenuItem>
 	                            <MenuItem Command="{Binding RunAllTestsCommand}" 
 	                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuRunAll}">
 	                                <MenuItem.Icon>
-	                                    <Image Source="{StaticResource RunAllTestsImage}" />
+	                                    <Image Source="{DynamicResource RunAllTestsImage}" />
 	                                </MenuItem.Icon>
 	                            </MenuItem>
 
@@ -433,13 +433,13 @@
 	                            <MenuItem Command="{Binding IgnoreTestCommand}"
 	                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_TestToggle_Ignore}" >
 	                                <MenuItem.Icon>
-	                                    <Image Source="{StaticResource IgnoreTestImage}" />
+	                                    <Image Source="{DynamicResource IgnoreTestImage}" />
 	                                </MenuItem.Icon>
 	                            </MenuItem>
 	                            <MenuItem Command="{Binding UnignoreTestCommand}"
 	                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_TestToggle_Unignore}" >
 	                                <MenuItem.Icon>
-	                                    <Image Source="{StaticResource UnignoreTestImage}" />
+	                                    <Image Source="{DynamicResource UnignoreTestImage}" />
 	                                </MenuItem.Icon>
 	                            </MenuItem>
 
@@ -447,27 +447,27 @@
 		                                  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItems}"
 		                                  Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuIgnoreSelectedTests}" >
 			                        <MenuItem.Icon>
-				                        <Image Source="{StaticResource IgnoreTestImage}" />
+				                        <Image Source="{DynamicResource IgnoreTestImage}" />
 			                        </MenuItem.Icon>
 		                        </MenuItem>
 		                        <MenuItem Command="{Binding UnignoreSelectedTestsCommand}"
 		                                  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItems}"
 		                                  Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuUnignoreSelectedTests}" >
 			                        <MenuItem.Icon>
-				                        <Image Source="{StaticResource UnignoreTestImage}" />
+				                        <Image Source="{DynamicResource UnignoreTestImage}" />
 			                        </MenuItem.Icon>
 		                        </MenuItem>
 
 								<MenuItem Command="{Binding IgnoreGroupCommand}"
 	                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuIgnoreGroup}" >
 									<MenuItem.Icon>
-	                                    <Image Source="{StaticResource IgnoreTestImage}" />
+	                                    <Image Source="{DynamicResource IgnoreTestImage}" />
 	                                </MenuItem.Icon>
 	                            </MenuItem>
 								<MenuItem Command="{Binding UnignoreGroupCommand}"
 	                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuUnignoreGroup}" >
 									<MenuItem.Icon>
-										<Image Source="{StaticResource UnignoreTestImage}" />
+										<Image Source="{DynamicResource UnignoreTestImage}" />
 									</MenuItem.Icon>
 								</MenuItem>
 							</ContextMenu>

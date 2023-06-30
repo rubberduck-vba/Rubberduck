@@ -69,7 +69,8 @@ End Sub";
         {
             const string inputCode =
                 @"Public Sub Foo()
-    Const const1 As Integer = 9
+    Dim str As String
+    str = """"
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
@@ -77,14 +78,15 @@ End Sub";
             using (state)
             {
 
-                var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+                var inspection = new EmptyStringLiteralInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
                 var failureNotifier = new Mock<IQuickFixFailureNotifier>().Object;
-                var quickFixProvider = new QuickFixProvider(rewritingManager, failureNotifier, new IQuickFix[] { new RemoveUnusedDeclarationQuickFix() });
+                var quickFixProvider = new QuickFixProvider(rewritingManager, failureNotifier, new IQuickFix[] { new ReplaceEmptyStringLiteralStatementQuickFix() });
 
                 var result = inspectionResults.First();
-                result.DisabledQuickFixes.Add(nameof(RemoveUnusedDeclarationQuickFix));
+                result.DisabledQuickFixes.Add(nameof(ReplaceEmptyStringLiteralStatementQuickFix));
 
                 Assert.AreEqual(0, quickFixProvider.QuickFixes(result).Count());
             }

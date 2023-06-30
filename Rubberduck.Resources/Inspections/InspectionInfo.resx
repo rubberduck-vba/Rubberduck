@@ -457,4 +457,25 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
     <value>A comment was parsed as a syntactically valid annotation, but not recognized as a supported annotation type.</value>
   </data>
+  <data name="IIfSideEffectInspection" xml:space="preserve">
+    <value>All arguments of any function/procedure call are always evaluated before the function is invoked so that their respective values can be passed as parameters. Even so, the IIf Function's behavior is sometimes mis-interpreted to expect that ONLY the 'TruePart' or ONLY the 'FalsePart' expression will be evaluated based on the result of the first argument expression. Consequently, the IIf Function can be a source of unanticipated side-effects and errors if the user does not account for the fact that both the TruePart and FalsePart arguments are always evaluated.</value>
+  </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>In general, the VBE editor catches this type of error and will not compile. However, there are a few scenarios where the error is overlooked by the compiler and an error is generated at runtime. To avoid a runtime error, implement the missing Property or Subroutine. </value>
+  </data>
+  <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
+    <value>While a stateful default instance might be intentional, it is a common source of bugs and should be avoided. Use the 'Me' qualifier to explicitly refer to the current instance and eliminate any ambiguity.</value>
+  </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>MSForms exposes UserForm controls as public fields; accessing these fields outside the UserForm class breaks encapsulation and needlessly couples code with specific form controls. Consider encapsulating the desired values into their own 'model' class, making event handlers in the form manipulate these 'model' properties, and then the calling code can query this encapsulated state instead of querying form controls.</value>
+  </data>
+  <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
+    <value>Copying a worksheet which contains a public Enum declaration will also create a copy of the Enum declaration. The copied declaration will result in an 'Ambiguous name detected' compiler error. Declaring Enumerations in Standard or Class modules avoids unintentional duplication of an Enum declaration.</value>
+  </data>
+  <data name="UDTMemberNotUsedInspection" xml:space="preserve">
+    <value>A User Defined Type (UDT) member is declared but not used. Consider removing the UDT member declaration.</value>
+  </data>
+  <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
+    <value>The default (Public) interface of a class module should not expose the implementation of other interfaces or event handler procedures.</value>
+  </data>
 </root>

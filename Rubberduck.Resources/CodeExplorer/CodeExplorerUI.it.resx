@@ -169,7 +169,7 @@
     <value>Raggruppa tutto</value>
   </data>
   <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
-    <value>Copia negli appunti</value>
+    <value>Copia i risultati dell'ispezione negli appunti</value>
   </data>
   <data name="CodeExplorer_Delete" xml:space="preserve">
     <value>Cancella</value>
@@ -330,5 +330,50 @@ Continuare?</value>
   </data>
   <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
     <value>Mostra / nascondi cartelle</value>
+  </data>
+  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+    <value>Naviga</value>
+  </data>
+  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>Per il file '{0}', i(l)  file(s) binari(o) necessari(o) '{1}' è/sono mancanti/e e il componente di destinazione '{2}' non esiste ancora.
+
+Importazione annullata.</value>
+    <comment>{0} nomefile, {1} binari, {2} nome del modulo</comment>
+  </data>
+  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>Per il file '{0}', i(l)  file(s) binari(o) necessari(o) '{1}' è/sono mancanti/e.
+
+Importazione annullata.</value>
+    <comment>{0} nomefile, {1} binari</comment>
+  </data>
+  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
+    <value>Non ci sono documenti modulo con nome '{0}'; il file '{1}' non può essere importato.
+
+Importazione annullata.</value>
+    <comment>{0} nome del modulo; {1} nomefile</comment>
+  </data>
+  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
+    <value>Più file contengono il codice per il componente '{0}'.
+
+Importazione annullata.</value>
+    <comment>{0} nome del modulo</comment>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
+    <value>Tutti i file</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
+    <value>VB File</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
+    <value>Importa File Sorgente</value>
+  </data>
+  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
+    <value>L'estensione del file '{0}' non è supportata.
+
+Importazione annullata.</value>
+    <comment>{0} nomefile di file non supportato</comment>
+  </data>
+  <data name="CodeExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>_Explorer del Codice</value>
   </data>
 </root>

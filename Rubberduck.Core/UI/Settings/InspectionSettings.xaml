@@ -35,11 +35,11 @@
             </ObjectDataProvider>
 
             <Style x:Key="HeaderText" TargetType="Label">
-                <Setter Property="Foreground" Value="{StaticResource CaptionLightBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource CaptionLightBrush}"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
             </Style>
             <Style x:Key="BorderHeader" TargetType="Border">
-                <Setter Property="Background" Value="{StaticResource HeaderBackgroundDarkBrush}"/>
+                <Setter Property="Background" Value="{DynamicResource HeaderBackgroundDarkBrush}"/>
                 <Setter Property="CornerRadius" Value="5"/>
             </Style>
         </ResourceDictionary>
@@ -47,12 +47,12 @@
     <Grid>
         <ScrollViewer x:Name="ScrollViewer">
             <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <Border Style="{StaticResource BorderHeader}"
+                <Border Style="{DynamicResource BorderHeader}"
                        Margin="0,0,0,3" Height="36">
                     <DockPanel FlowDirection="LeftToRight">
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                            <Label Style="{StaticResource HeaderText}"
-                                Content="{Resx Key=CodeInspectionSettings_InspectionSeveritySettingsLabel, ResxName=Rubberduck.Resources.RubberduckUI}" Margin="5,5,0,5" Width="127" />
+                            <Label Style="{DynamicResource HeaderText}"
+                                Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI,Key=CodeInspectionSettingsPage_InspectionSeveritySettingsLabel}" Margin="5,5,0,5" Width="127" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                 <StackPanel.Resources>
                                     <Style BasedOn="{StaticResource HeaderText}" TargetType="Label">
@@ -60,13 +60,18 @@
                                     </Style>
                                 </StackPanel.Resources>
                                 <Label Content="-" />
-                                <Image Source="{StaticResource FilterImage}" Width="19" />
-                                <Label Content="{Resx Key=InspectionSettings_FilterByDescription, ResxName=Rubberduck.Resources.RubberduckUI}" />
-                                <controls:SearchBox Width="100"
-                                                    Text="{Binding InspectionSettingsDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="26" />
+                                <Image Source="{DynamicResource FilterImage}" Width="19" />
+                                <Label Target="{Binding ElementName=searchBox, Path=ValueContainerInput}"
+                                       Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_FilterByDescription}" />
+                                <controls:SearchBox x:Name="searchBox"
+                                                    Width="100"
+                                                    Text="{Binding InspectionSettingsDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" Height="26" />
                                 <Border Width="10" />
-                                <Label Content="{Resx Key=InspectionSettings_FilterBySeverity, ResxName=Rubberduck.Resources.RubberduckUI}" />
-                                <ComboBox Width="100"
+                                <Label Target="{Binding ElementName=severity}"
+                                       Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_FilterBySeverity}" />
+                                <ComboBox x:Name="severity"
+                                          Width="100"
+                                          VerticalContentAlignment="Center"
                                           ItemsSource="{Binding SeverityFilters, UpdateSourceTrigger=PropertyChanged}"
                                           SelectedItem="{Binding SelectedSeverityFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </StackPanel>
@@ -84,7 +89,7 @@
                         </StackPanel>
                     </DockPanel>
                 </Border>
-                <Border BorderBrush="{StaticResource HeaderBackgroundDarkBrush}" BorderThickness="1" CornerRadius="2">
+                <Border BorderBrush="{DynamicResource HeaderBackgroundDarkBrush}" BorderThickness="1" CornerRadius="2">
                     <controls:GroupingGrid ItemsSource="{Binding InspectionSettings}"
                                            AutoGenerateColumns="False"
                                            CanUserReorderColumns="False"
@@ -131,25 +136,25 @@
                     </controls:GroupingGrid>
                 </Border>
 
-                <Border Style="{StaticResource BorderHeader}"
+                <Border Style="{DynamicResource BorderHeader}"
                         Margin="0,15,0,5">
-                    <Label Style="{StaticResource HeaderText}"
-                           Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_Misc}">
+                    <Label Style="{DynamicResource HeaderText}"
+                           Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_Misc}">
                     </Label>
                 </Border>
 
                 <StackPanel>
                     <CheckBox IsChecked="{Binding RunInspectionsOnSuccessfulParse}" 
-                              Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse}" />
+                              Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_Misc_RunInspectionsOnSuccessfulParse}" />
                 </StackPanel>
 
-                <Border Style="{StaticResource BorderHeader}"
+                <Border Style="{DynamicResource BorderHeader}"
                         Margin="0,15,0,5">
-                    <Label Style="{StaticResource HeaderText}"
-                           Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_WhitelistedIdentifiersLabel}" />
+                    <Label Style="{DynamicResource HeaderText}"
+                           Content="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_WhitelistedIdentifiersLabel}" />
                 </Border>
 
-                <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_WhitelistedIdentifiersDescription}" />
+                <TextBlock Text="{Resx ResxName=Rubberduck.CodeAnalysis.CodeAnalysisUI, Key=CodeInspectionSettingsPage_WhitelistedIdentifiersDescription}" />
                 <ToolBarTray IsLocked="True"
                              Background="Transparent">
                     <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}"
@@ -159,7 +164,7 @@
                                 BorderThickness="0"
                                 Background="Transparent">
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="{StaticResource AddImage}" />
+                                <Image Source="{DynamicResource AddImage}" />
                                 <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Add}"
                                            Margin="2,0" />
                             </StackPanel>
@@ -171,14 +176,14 @@
                                 Background="Transparent"
                                 IsEnabled="{Binding ElementName=WhitelistedIdentifiersGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="{StaticResource DeleteImage}" />
+                                <Image Source="{DynamicResource DeleteImage}" />
                                 <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Remove}"
                                            Margin="2,0" />
                             </StackPanel>
                         </Button>
                     </ToolBar>
                 </ToolBarTray>
-                <Border BorderBrush="{StaticResource HeaderBackgroundDarkBrush}" BorderThickness="1" CornerRadius="2">
+                <Border BorderBrush="{DynamicResource HeaderBackgroundDarkBrush}" BorderThickness="1" CornerRadius="2">
                     <DataGrid Name="WhitelistedIdentifiersGrid"
                               ItemsSource="{Binding WhitelistedIdentifierSettings}"
                               AutoGenerateColumns="False"

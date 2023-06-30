@@ -134,6 +134,17 @@
   &lt;CommandTypeName&gt;TestExplorerCommand&lt;/CommandTypeName&gt;
 &lt;/HotkeySetting&gt;</Value>
     </Setting>
+    <Setting Name="DefaultHotkey_PeekDefinitionCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+        &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+        &lt;Key1&gt;D&lt;/Key1&gt;
+        &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
+        &lt;HasShiftModifier&gt;true&lt;/HasShiftModifier&gt;
+        &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;
+        &lt;HasCtrlModifier&gt;true&lt;/HasCtrlModifier&gt;
+        &lt;CommandTypeName&gt;PeekDefinitionCommand&lt;/CommandTypeName&gt;
+        &lt;/HotkeySetting&gt;</Value>
+    </Setting>
     <Setting Name="ToDoMarker_ToDo" Type="Rubberduck.Settings.ToDoMarker" Scope="Application">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ToDoMarker xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Text="TODO" /&gt;</Value>

@@ -272,6 +272,7 @@ namespace Rubberduck.UnitTesting
                     return;
                 }
                 AssertHandler.OnAssertSucceeded();
+                return;
             }
 
             for (var rank = 0; rank < expected.Rank; rank++)
@@ -287,6 +288,7 @@ namespace Rubberduck.UnitTesting
                         return;
                     }
                     AssertHandler.OnAssertSucceeded();
+                    return;
                 }
 
                 expectedBound = expected.GetUpperBound(rank);
@@ -300,6 +302,7 @@ namespace Rubberduck.UnitTesting
                         return;
                     }
                     AssertHandler.OnAssertSucceeded();
+                    return;
                 }
             }
 

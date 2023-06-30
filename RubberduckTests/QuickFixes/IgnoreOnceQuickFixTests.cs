@@ -347,7 +347,6 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
-        [Ignore("With the current annotation scoping rules, this test makes no sense since the Ignore annotation will not attach to the offending context.")]
         public void MultilineParameter_IgnoreQuickFixWorks()
         {
             const string inputCode =

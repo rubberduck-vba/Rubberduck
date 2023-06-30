@@ -25,7 +25,8 @@ namespace Rubberduck.UnitTesting
             TrackUsage("driveletter", driveletterArg, Tokens.String);
             if (PassThrough)
             {
-                VbeProvider.VbeNativeApi.ChangeDrive(driveletter);
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<ChDriveDelegate>(NativeFunctionAddress);
+                nativeCall(driveletter);
             }
         }
     }

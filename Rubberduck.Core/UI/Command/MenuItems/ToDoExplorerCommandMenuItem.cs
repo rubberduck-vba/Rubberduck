@@ -13,4 +13,14 @@ namespace Rubberduck.UI.Command.MenuItems
         public override string Key => "ToolsMenu_TodoItems";
         public override int DisplayOrder => (int)ToolsMenuItemDisplayOrder.ToDoExplorer;
     }
+
+    public class WindowsToDoExplorerCommandMenuItem : ToDoExplorerCommandMenuItem
+    {
+        public WindowsToDoExplorerCommandMenuItem(ToDoExplorerCommand command)
+            : base(command)
+        {
+        }
+
+        public override int DisplayOrder => (int)WindowMenuItemDisplayOrder.ToDoExplorer;
+    }
 }

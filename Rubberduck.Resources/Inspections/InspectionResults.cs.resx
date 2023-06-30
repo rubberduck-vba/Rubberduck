@@ -123,9 +123,6 @@
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
     <value>Parametr '{0}' může být předán jako hodnota.</value>
   </data>
-  <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Parametr '{0}' není nikde použit.</value>
-  </data>
   <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
     <value>Procedura '{0}' může být přepsána jako funkce.</value>
   </data>
@@ -242,9 +239,6 @@
   </data>
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>Komponenta '{0}' používá 'Option Base 1'.</value>
-  </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Anotace '{0}' je v tomto kontextu ilegální.</value>
   </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Modul nebo člen '{0}' má '{1}' anotaci, ale žádný korespondující atribut.</value>

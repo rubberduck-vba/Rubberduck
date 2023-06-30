@@ -322,6 +322,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All arguments of any function/procedure call are always evaluated before the function is invoked so that their respective values can be passed as parameters. Even so, the IIf Function&apos;s behavior is sometimes mis-interpreted to expect that ONLY the &apos;TruePart&apos; or ONLY the &apos;FalsePart&apos; expression will be evaluated based on the result of the first argument expression. Consequently, the IIf Function can be a source of unanticipated side-effects and errors if the user does not account for the fact that both the Tr [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string IIfSideEffectInspection {
+            get {
+                return ResourceManager.GetString("IIfSideEffectInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A class module that is meant to be used as interface for concrete classes should generally be abstracted of any implementations. If it is your intention to use this class module as a concrete type, you can safely ignore this inspection result..
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
@@ -835,6 +844,42 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MSForms exposes UserForm controls as public fields; accessing these fields outside the UserForm class breaks encapsulation and needlessly couples code with specific form controls. Consider encapsulating the desired values into their own &apos;model&apos; class, making event handlers in the form manipulate these &apos;model&apos; properties, and then the calling code can query this encapsulated state instead of querying form controls..
+        /// </summary>
+        public static string PublicControlFieldAccessInspection {
+            get {
+                return ResourceManager.GetString("PublicControlFieldAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copying a worksheet which contains a public Enum declaration will also create a copy of the Enum declaration.  The copied declaration will result in an &apos;Ambiguous name detected&apos; compiler error.  Declaring Enumerations in Standard or Class modules avoids unintentional duplication of an Enum declaration..
+        /// </summary>
+        public static string PublicEnumerationDeclaredInWorksheetInspection {
+            get {
+                return ResourceManager.GetString("PublicEnumerationDeclaredInWorksheetInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The default (Public) interface of a class module should not expose the implementation of other interfaces or event handler procedures..
+        /// </summary>
+        public static string PublicImplementationShouldBePrivateInspection {
+            get {
+                return ResourceManager.GetString("PublicImplementationShouldBePrivateInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In general, the VBE editor catches this type of error and will not compile.  However, there are a few scenarios where the error is overlooked by the compiler and an error is generated at runtime.  To avoid a runtime error, implement the missing Property or Subroutine. .
+        /// </summary>
+        public static string ReadOnlyPropertyAssignmentInspection {
+            get {
+                return ResourceManager.GetString("ReadOnlyPropertyAssignmentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By default, all parameters are passed by reference, so it is not necessary to include the &apos;ByRef&apos; modifier..
         /// </summary>
         public static string RedundantByRefModifierInspection {
@@ -930,6 +975,24 @@ namespace Rubberduck.Resources.Inspections {
         public static string SuspiciousLetAssignmentInspection {
             get {
                 return ResourceManager.GetString("SuspiciousLetAssignmentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to While a stateful default instance might be intentional, it is a common source of bugs and should be avoided. Use the &apos;Me&apos; qualifier to explicitly refer to the current instance and eliminate any ambiguity..
+        /// </summary>
+        public static string SuspiciousPredeclaredInstanceAccessInspection {
+            get {
+                return ResourceManager.GetString("SuspiciousPredeclaredInstanceAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A User Defined Type (UDT) member is declared but not used.  Consider removing the UDT member declaration..
+        /// </summary>
+        public static string UDTMemberNotUsedInspection {
+            get {
+                return ResourceManager.GetString("UDTMemberNotUsedInspection", resourceCulture);
             }
         }
         

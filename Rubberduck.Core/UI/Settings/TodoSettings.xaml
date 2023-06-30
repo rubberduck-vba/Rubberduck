@@ -28,7 +28,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Margin="5,5,5,0">
-            <Label Background="{StaticResource HeaderBackgroundDarkBrush}"
+            <Label Background="{DynamicResource HeaderBackgroundDarkBrush}"
                        HorizontalContentAlignment="Stretch"
                        Margin="0,0,0,3">
                 <Label.Style>
@@ -40,9 +40,9 @@
                         </Style.Resources>
                     </Style>
                 </Label.Style>
-                <DockPanel Background="{StaticResource HeaderBackgroundDarkBrush}" FlowDirection="LeftToRight">
+                <DockPanel Background="{DynamicResource HeaderBackgroundDarkBrush}" FlowDirection="LeftToRight">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                        <Label Foreground="{StaticResource CaptionLightBrush}"
+                        <Label Foreground="{DynamicResource CaptionLightBrush}"
                                    FontWeight="SemiBold" 
                                    Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=PageHeader_TodoSettings}">
                         </Label>
@@ -74,7 +74,7 @@
                             BorderThickness="0"
                             Background="Transparent">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="{StaticResource AddImage}" />
+                            <Image Source="{DynamicResource AddImage}" />
                             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Add}"
                                        Margin="2,0" />
                         </StackPanel>
@@ -86,7 +86,7 @@
                             Background="Transparent"
                             IsEnabled="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="{StaticResource DeleteImage}" />
+                            <Image Source="{DynamicResource DeleteImage}" />
                             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Remove}"
                                        Margin="2,0" />
                         </StackPanel>

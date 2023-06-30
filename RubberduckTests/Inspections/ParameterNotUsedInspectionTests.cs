@@ -50,6 +50,19 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        //See issue #5336 at https://github.com/rubberduck-vba/Rubberduck/issues/5336
+        public void ParameterWithBuiltInTypeNameUsed_DoesNotReturnResult()
+        {
+            const string inputCode =
+                @"Public Function Foo(Object As Object) As Object
+Set Foo = Object
+End Function";
+
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ParameterNotUsed_ReturnsResult_SomeParamsUsed()
         {
             const string inputCode =

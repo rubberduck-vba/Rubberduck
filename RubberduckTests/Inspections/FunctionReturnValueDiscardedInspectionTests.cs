@@ -189,6 +189,24 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
+        public void FunctionReturnValueDiscarded_DoesNotReturnResult_WithStatement()
+        {
+            const string code = @"
+Public Function Foo() As Object
+End Function
+
+Public Sub Baz()
+    With Foo
+        'Do Whatever
+    End With
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
         public void FunctionReturnValueDiscarded_DoesNotReturnResult_WhileStatement()
         {
             const string code = @"
@@ -374,6 +392,22 @@ End Sub";
             Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
+        public void ChainedParameterlessMemberAccess_ReturnsNoResult()
+        {
+            const string inputCode = @"
+Public Function GetIt() As Object
+End Function
+
+Public Sub Baz()
+    GetIt.Select
+End Sub";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
@@ -453,6 +487,58 @@ End Function
             {
                 ("IFoo", interfaceCode, ComponentType.ClassModule),
                 ("Bar", implementationCode, ComponentType.ClassModule)
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
+        //See issue #5853 at https://github.com/rubberduck-vba/Rubberduck/issues/5853
+        public void CallToMemberOfFunctionReturnValueInBody_NoResult()
+        {
+            const string returnTypeClassCode = @"
+Public Sub Bar(ByVal arg As String)
+End Sub
+";
+            const string moduleCode =
+                @"
+Public Function Foo() As Class1
+    Set Foo = New Class1
+    Foo.Bar ""SomeArgument""
+End Function
+";
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("Class1", returnTypeClassCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule)
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
+        //See issue #5853 at https://github.com/rubberduck-vba/Rubberduck/issues/5853
+        public void ExplicitCallToMemberOfFunctionReturnValueInBody_NoResult()
+        {
+            const string returnTypeClassCode = @"
+Public Sub Bar(ByVal arg As String)
+End Sub
+";
+            const string moduleCode =
+                @"
+Public Function Foo() As Class1
+    Set Foo = New Class1
+    Call Foo.Bar(""SomeArgument"")
+End Function
+";
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("Class1", returnTypeClassCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule)
             };
 
             Assert.AreEqual(0, InspectionResultsForModules(modules).Count());

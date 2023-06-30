@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using System.Windows.Forms;
+using Rubberduck.VersionCheck;
 
 namespace Rubberduck.UI
 {
@@ -15,11 +9,11 @@ namespace Rubberduck.UI
         public Splash2021()
         {
             InitializeComponent();
-#if DEBUG
-            VersionLabel.Text = $"Version {GetType().Assembly.GetName().Version} (debug)";
-#else
-            VersionLabel.Text = $"Version {GetType().Assembly.GetName().Version}";
-#endif
+        }
+
+        public Splash2021(IVersionCheckService versionCheck) : this()
+        {
+            VersionLabel.Text = string.Format(Resources.RubberduckUI.Rubberduck_AboutBuild, versionCheck.VersionString);
             VersionLabel.Parent = pictureBox1;
             VersionLabel.BackColor = Color.Transparent;
         }

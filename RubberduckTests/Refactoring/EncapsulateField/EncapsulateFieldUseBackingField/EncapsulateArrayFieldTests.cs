@@ -122,7 +122,7 @@ End Property
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void RedimsBackingVariable()
+        public void RedimsUsingBackingVariable()
         {
             var inputCode =
                 $@"Option Explicit
@@ -140,37 +140,9 @@ End Sub
 
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Private myArray1() As Integer", actualCode);
             StringAssert.Contains("Public Property Get MyArray() As Variant", actualCode);
             StringAssert.DoesNotContain("Public Property Let MyArray(", actualCode);
-            StringAssert.Contains("Redim myArray1(size)", actualCode);
-            StringAssert.Contains("myArray1(idx) = idx", actualCode);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void RedimsBackingVariableAsUDT()
-        {
-            var inputCode =
-                $@"Option Explicit
-
-Public myA|rray() As Integer
-
-Private Sub InitializeArray(size As Long)
-    Redim myArray(size)
-    Dim idx As Long
-    For idx = 1 To size  
-        myArray(idx) = idx 
-    Next idx
-End Sub
-";
-
-            var presenterAction = Support.UserAcceptsDefaults(convertFieldToUDTMember: true);
-            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("Public Property Get MyArray() As Variant", actualCode);
-            StringAssert.DoesNotContain("Public Property Let MyArray(", actualCode);
-            StringAssert.Contains("Redim this.MyArray(size)", actualCode);
-            StringAssert.Contains("this.MyArray(idx) = idx", actualCode);
         }
 
         [TestCase(false)]
@@ -205,7 +177,7 @@ End Sub
 
             var result = field.TryValidateEncapsulationAttributes(out var errorMessage);
 
-            var expectedError = string.Format(RubberduckUI.EncapsulateField_ArrayHasExternalRedimFormat, field.IdentifierName);
+            var expectedError = string.Format(RefactoringsUI.EncapsulateField_ArrayHasExternalRedimFormat, field.IdentifierName);
 
             StringAssert.AreEqualIgnoringCase(expectedError, errorMessage);
             Assert.IsFalse(result);

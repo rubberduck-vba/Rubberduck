@@ -25,7 +25,8 @@ namespace Rubberduck.UnitTesting
             TrackUsage("path", pathArg, Tokens.String);
             if (PassThrough)
             {
-                VbeProvider.VbeNativeApi.ChangeDir(path);
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<ChDirDelegate>(NativeFunctionAddress);
+                nativeCall(path);
             }
         }
     }

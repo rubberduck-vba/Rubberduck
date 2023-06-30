@@ -11,17 +11,6 @@
     <UserControl.Resources>
         <controls:DeclarationTypeToStringConverter x:Key="DeclarationTypeToString" />
         <converters:SearchResultToXamlConverter x:Key="SearchResultConverter" />
-        <Style x:Key="CloseButton" TargetType="Button">
-            <Setter Property="OverridesDefaultStyle" Value="True" />
-            <Setter Property="Margin" Value="5,0,0,0" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-button.png" Height="16" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>            
-        </Style>
     </UserControl.Resources>
     
     <Grid>
@@ -30,9 +19,8 @@
                 <DataTemplate>
                     <DockPanel MinWidth="75">
                         <TextBlock Text="{Binding Header}" VerticalAlignment="Center" />
-                        <Button DockPanel.Dock="Right"
-                                Command="{Binding CloseCommand}"
-                                Style="{StaticResource CloseButton}" />
+                        <controls:CloseButton DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="0,0,-4,0"
+                                Command="{Binding CloseCommand}" />
                     </DockPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>

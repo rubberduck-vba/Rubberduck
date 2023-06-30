@@ -46,13 +46,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands.Abstract
             _state = state;
             _failureNotifier = failureNotifier;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
-        private bool SpecialEvaluateCanExecute(object parameter)
-        {
-            return _parserStatusProvider.Status == ParserState.Ready;
-        }
+        private bool EvaluateCanExecute(object parameter) => 
+            _parserStatusProvider.Status == ParserState.Ready;
 
         protected abstract ICodeExplorerNode NodeFromParameter(object parameter);
         protected abstract MoveMultipleFoldersModel ModifiedFolderModel(MoveMultipleFoldersModel model, object parameter);

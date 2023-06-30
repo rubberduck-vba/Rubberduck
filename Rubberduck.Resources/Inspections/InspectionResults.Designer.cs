@@ -322,6 +322,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; invoked by &apos;IIf&apos; Function.
+        /// </summary>
+        public static string IIfSideEffectInspection {
+            get {
+                return ResourceManager.GetString("IIfSideEffectInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Interface class module &apos;{2}&apos; contains a concrete implementation for {0} &apos;{1}&apos;..
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
@@ -835,7 +844,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is never used..
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is not used..
         /// </summary>
         public static string ParameterNotUsedInspection {
             get {
@@ -867,6 +876,42 @@ namespace Rubberduck.Resources.Inspections {
         public static string ProcedureShouldBeFunctionInspection {
             get {
                 return ResourceManager.GetString("ProcedureShouldBeFunctionInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Control &apos;{0}.{1}&apos; is being accessed from outside its parent form..
+        /// </summary>
+        public static string PublicControlFieldAccessInspection {
+            get {
+                return ResourceManager.GetString("PublicControlFieldAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The public enumeration &apos;{0}&apos; should be declared within a Standard or Class module.
+        /// </summary>
+        public static string PublicEnumerationDeclaredInWorksheetInspection {
+            get {
+                return ResourceManager.GetString("PublicEnumerationDeclaredInWorksheetInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; should be Private.
+        /// </summary>
+        public static string PublicImplementationShouldBePrivateInspection {
+            get {
+                return ResourceManager.GetString("PublicImplementationShouldBePrivateInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attempt to assign Read-Only Property &apos;{0}&apos;.
+        /// </summary>
+        public static string ReadOnlyPropertyAssignmentInspection {
+            get {
+                return ResourceManager.GetString("ReadOnlyPropertyAssignmentInspection", resourceCulture);
             }
         }
         
@@ -966,6 +1011,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string SuspiciousLetAssignmentInspection {
             get {
                 return ResourceManager.GetString("SuspiciousLetAssignmentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identifier &apos;{0}&apos; in &apos;{1}&apos; is suspiciously referring to the default instance of that class type..
+        /// </summary>
+        public static string SuspiciousPredeclaredInstanceAccessInspection {
+            get {
+                return ResourceManager.GetString("SuspiciousPredeclaredInstanceAccessInspection", resourceCulture);
             }
         }
         

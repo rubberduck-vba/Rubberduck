@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Title>Rubberduck.InternalApi</Title>
     <Product>Rubberduck.InternalApi</Product>
-    <Copyright>Copyright © 2019</Copyright>
+    <Copyright>Copyright © 2019-2023</Copyright>
     <ProjectGuid>{D7A3F7A3-BD90-4845-B098-AC3AFBF0E16F}</ProjectGuid>
     <RootNamespace>Rubberduck.InternalApi</RootNamespace>
     <TargetFramework>net46</TargetFramework>

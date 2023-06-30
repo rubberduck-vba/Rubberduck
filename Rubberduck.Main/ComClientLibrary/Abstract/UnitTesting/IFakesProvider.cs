@@ -13,11 +13,11 @@ namespace Rubberduck.UnitTesting
     public interface IFakesProvider
     {
         [DispId(1)]
-        [Description("Configures VBA.Interactions.MsgBox calls.")]
+        [Description("Configures VBA.Interaction.MsgBox calls.")]
         IFake MsgBox { get; }
 
         [DispId(2)]
-        [Description("Configures VBA.Interactions.InputBox calls.")]
+        [Description("Configures VBA.Interaction.InputBox calls.")]
         IFake InputBox { get; }
 
         [DispId(3)]
@@ -79,5 +79,66 @@ namespace Rubberduck.UnitTesting
         [DispId(17)]
         [Description("Configures VBA.DateTime.Date calls.")]
         IFake Date { get; }
+
+        [DispId(18)]
+        [Description("Configures VBA.Math.Rnd calls.")]
+        IFake Rnd { get; }
+
+        [DispId(19)]
+        [Description("Configures VBA.Interaction.DeleteSetting calls.")]
+        IStub DeleteSetting { get; }
+
+        [DispId(20)]
+        [Description("Configures VBA.Interaction.SaveSetting calls.")]
+        IStub SaveSetting { get; }
+
+        [DispId(21)]
+        [Description("Configures VBA.Interaction.GetSetting calls.")]
+        IFake GetSetting { get; }
+
+        [DispId(22)]
+        [Description("Configures VBA.Math.Randomize calls.")]
+        IStub Randomize { get; }
+
+        [DispId(23)]
+        [Description("Configures VBA.Interaction.GetAllSettings calls.")]
+        IFake GetAllSettings { get; }
+
+        [DispId(24)]
+        [Description("Configures VBA.FileSystem.SetAttr calls.")]
+        IStub SetAttr { get; }
+
+        [DispId(25)]
+        [Description("Configures VBA.FileSystem.GetAttr calls.")]
+        IFake GetAttr { get; }
+
+        [DispId(26)]
+        [Description("Configures VBA.FileSystem.FileLen calls.")]
+        IFake FileLen { get; }
+
+        [DispId(27)]
+        [Description("Configures VBA.FileSystem.FileDateTime calls.")]
+        IFake FileDateTime { get; }
+
+        [DispId(28)]
+        [Description("Configures VBA.FileSystem.FreeFile calls.")]
+        IFake FreeFile { get; }
+
+        [DispId(29)]
+        [Description("Configures VBA.Information.IMEStatus calls.")]
+        IFake IMEStatus { get; }
+
+        [DispId(30)]
+        [Description("Configures VBA.FileSystem.Dir calls.")]
+        IFake Dir { get; }
+
+        [DispId(31)]
+        [Description("Configures VBA.FileSystem.FileCopy calls.")]
+        IStub FileCopy { get; }
+
+
+        [DispId(255)]
+        [Description("Gets an interface exposing the parameter names for all parameterized fakes.")]
+        IParams Params { get; }
     }
 }

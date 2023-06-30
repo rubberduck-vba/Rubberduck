@@ -16,6 +16,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
     public enum ProjectExplorerContextMenuItemDisplayOrder
     {
         RenameIdentifier,
+        PeekDefinition,
         FindSymbol,
         FindAllReferences,
         FindAllImplementations,

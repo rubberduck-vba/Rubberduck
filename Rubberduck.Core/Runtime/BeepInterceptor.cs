@@ -15,6 +15,7 @@ namespace Rubberduck.Runtime
     {
         void SuppressBeep(double millisecondsToSuppress);
         event EventHandler<BeepEventArgs> Beep;
+        void NativeCall();
     }
 
     public sealed class BeepInterceptor : IBeepInterceptor
@@ -24,6 +25,7 @@ namespace Rubberduck.Runtime
         private readonly IVbeNativeApi _vbeApi;
         private readonly LocalHook _hook;
         private readonly Timer _timer;
+        private VbaBeepDelegate nativeCall;
 
         public BeepInterceptor(IVbeNativeApi vbeApi)
         {
@@ -40,12 +42,19 @@ namespace Rubberduck.Runtime
             _timer.Enabled = true;
         }
 
+        public void NativeCall()
+        {
+            nativeCall();
+        }
+
         private LocalHook HookVbaBeep()
         {
             var processAddress = LocalHook.GetProcAddress(_vbeApi.DllName, "rtcBeep");
             var callbackDelegate = new VbaBeepDelegate(VbaBeepCallback);
             var hook = LocalHook.Create(processAddress, callbackDelegate, null);
             hook.ThreadACL.SetInclusiveACL(new[] { 0 });
+            var nativeFunctionAddress = hook.HookBypassAddress;
+            nativeCall = Marshal.GetDelegateForFunctionPointer<VbaBeepDelegate>(nativeFunctionAddress);
             return hook;
         }
 
@@ -65,7 +74,7 @@ namespace Rubberduck.Runtime
 
             if (!e.Handled)
             {
-                _vbeApi.Beep();
+                nativeCall();
             }
         }
 

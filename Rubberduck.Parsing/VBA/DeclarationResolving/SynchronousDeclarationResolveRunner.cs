@@ -34,7 +34,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             {
                 foreach(var module in modules)
                 {
-                    ResolveDeclarations(module, _state.ParseTrees.Find(s => s.Key == module).Value, projects, token);
+                    ResolveDeclarations(
+                        module, 
+                        _state.GetParseTree(module),
+                        _state.GetLogicalLines(module),
+                        projects,
+                        token);
                     var declaration = _state.DeclarationFinder.ModuleDeclaration(module);
                     if (declaration is DocumentModuleDeclaration document)
                     {

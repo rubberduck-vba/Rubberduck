@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.ReplaceReferences;
 using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.Refactorings.Rename
@@ -18,15 +19,18 @@ namespace Rubberduck.Refactorings.Rename
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IProjectsProvider _projectsProvider;
         private readonly IDictionary<DeclarationType, Action<RenameModel, IRewriteSession>> _renameActions;
+        private readonly ReplaceReferencesRefactoringAction _replaceReferencesRefactoringAction;
 
         public RenameCodeDefinedIdentifierRefactoringAction(
             IDeclarationFinderProvider declarationFinderProvider,
+            ReplaceReferencesRefactoringAction replaceReferencesRefactoringAction,
             IProjectsProvider projectsProvider,
             IRewritingManager rewritingManager)
             : base(rewritingManager)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _projectsProvider = projectsProvider;
+            _replaceReferencesRefactoringAction = replaceReferencesRefactoringAction;
 
             _renameActions = new Dictionary<DeclarationType, Action<RenameModel, IRewriteSession>>
             {
@@ -172,21 +176,17 @@ namespace Rubberduck.Refactorings.Rename
 
         private void RenameReferences(Declaration target, string newName, IRewriteSession rewriteSession)
         {
-            var modules = target.References
-                .Where(reference =>
-                    reference.Context.GetText() != "Me"
-                    && !reference.IsArrayAccess
-                    && !reference.IsDefaultMemberAccess)
-                .GroupBy(r => r.QualifiedModuleName);
-
-            foreach (var grouping in modules)
+            var replaceReferencesModel = new ReplaceReferencesModel()
             {
-                var rewriter = rewriteSession.CheckOutModuleRewriter(grouping.Key);
-                foreach (var reference in grouping)
-                {
-                    rewriter.Replace(reference.Context, newName);
-                }
+                ModuleQualifyExternalReferences = true
+            };
+
+            foreach (var reference in target.References)
+            {
+                replaceReferencesModel.AssignReferenceReplacementExpression(reference, newName);
             }
+
+            _replaceReferencesRefactoringAction.Refactor(replaceReferencesModel, rewriteSession);
         }
 
         private void RenameDeclaration(Declaration target, string newName, IRewriteSession rewriteSession)

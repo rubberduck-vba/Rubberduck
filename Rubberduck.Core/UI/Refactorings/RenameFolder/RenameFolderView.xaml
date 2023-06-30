@@ -19,8 +19,8 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <StackPanel Background="{StaticResource BackgroundLightBrush}">
-            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RenameDialog_TitleText_Folder}" FontWeight="Bold" />
+        <StackPanel Background="{DynamicResource BackgroundLightBrush}">
+            <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=RenameDialog_TitleText_Folder}" FontWeight="Bold" />
             <TextBlock Text="{Binding Instructions}" Margin="5,0" />
         </StackPanel>
         <Grid Grid.Row="1" Margin="5,10,10,5">
@@ -28,12 +28,12 @@
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RenameDialog_FolderLabel}"
+            <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=RenameDialog_FolderLabel}"
                        VerticalAlignment="Center"
                        Margin="0,0,5,0" />
             <TextBox Name="RenameFolderTextBox"
                      Grid.Column="1"
-                     Style="{StaticResource TextBoxErrorStyle}"
+                     Style="{DynamicResource TextBoxErrorStyle}"
                      Text="{Binding NewFolderName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      Height="22"
                      VerticalAlignment="Center"
@@ -43,7 +43,7 @@
         <StackPanel Grid.Row="2"
                     Margin="5,10,10,5"
                     Orientation="Horizontal">
-            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RenameDialog_FullNewFolderLabel}"
+            <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=RenameDialog_FullNewFolderLabel}"
                        VerticalAlignment="Top"
                        Margin="0,0,5,0" />
             <TextBlock Text="{Binding FullNewFolderName}"

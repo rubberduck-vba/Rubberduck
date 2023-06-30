@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Title>Rubberduck.SettingsProvider</Title>
     <Product>Rubberduck.SettingsProvider</Product>
-    <Copyright>Copyright © 2016-2019</Copyright>
+    <Copyright>Copyright © 2016-2023</Copyright>
     <ProjectGuid>{E85E1253-86D6-45EE-968B-F37348D44132}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

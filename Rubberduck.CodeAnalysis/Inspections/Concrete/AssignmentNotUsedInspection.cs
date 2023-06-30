@@ -83,8 +83,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            return !(IsAssignmentOfNothing(reference)
-                        || IsPotentiallyUsedViaJump(reference, finder));
+            return !(IsAssignmentOfNothing(reference) || IsPotentiallyUsedViaJump(reference, finder));
         }
 
         protected override string ResultDescription(IdentifierReference reference)
@@ -115,8 +114,11 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                         ? FindUnusedAssignmentNodes(tree, localVariable, allAssignmentsAndReferences)
                         : allAssignmentsAndReferences.OfType<AssignmentNode>();
 
-            return unusedAssignmentNodes.Where(n => !IsDescendentOfNeverFlagNode(n))
-                                        .Select(n => n.Reference);
+            var results = unusedAssignmentNodes
+                .Where(n => !IsDescendentOfNeverFlagNode(n))
+                .Select(n => n.Reference);
+
+            return results;
         }
 
         private static IEnumerable<AssignmentNode> FindUnusedAssignmentNodes(INode node, Declaration localVariable, IEnumerable<INode> allAssignmentsAndReferences)
@@ -136,7 +138,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                     ? assignmentExprNodes.TakeWhile(n => n != assignmentExprNodesWithReference.LastOrDefault())
                                                 ?.LastOrDefault()
                                                 ?.Nodes(new[] { typeof(AssignmentNode) })
-                    : allAssignmentsAndReferences.TakeWhile(n => n != refNode)
+                    : allAssignmentsAndReferences.TakeWhile(n => n != refNode && !IsDescendentOfNeverFlagNode(n))
                         .OfType<AssignmentNode>();
 
                 if (assignmentsPrecedingReference?.Any() ?? false)
@@ -148,7 +150,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return allAssignmentsAndReferences.OfType<AssignmentNode>().Except(usedAssignments);
         }
 
-        private static bool IsDescendentOfNeverFlagNode(AssignmentNode assignment)
+        private static bool IsDescendentOfNeverFlagNode(INode assignment)
         {
             return assignment.TryGetAncestorNode<BranchNode>(out _)
                 || assignment.TryGetAncestorNode<LoopNode>(out _);

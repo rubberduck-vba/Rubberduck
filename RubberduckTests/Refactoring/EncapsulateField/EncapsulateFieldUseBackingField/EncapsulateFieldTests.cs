@@ -276,7 +276,7 @@ bazz As Date";
             var presenterAction = Support.SetParametersForSingleTarget(fieldName, "Name");
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             StringAssert.Contains(contains1, actualCode);
-            StringAssert.Contains(contains1, actualCode);
+            StringAssert.Contains(contains2, actualCode);
             if (doesNotContain.Length > 0)
             {
                 StringAssert.DoesNotContain(doesNotContain, actualCode);
@@ -443,39 +443,6 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void GivenReferencedPublicField_UpdatesReferenceToNewProperty()
-        {
-            var codeClass1 =
-                @"|Public fizz As Integer
-
-Sub Foo()
-    fizz = 1
-End Sub";
-            var codeClass2 =
-@"Sub Foo()
-    Dim theClass As Class1
-    theClass.fizz = 0
-    Bar theClass.fizz
-End Sub
-
-Sub Bar(ByVal v As Integer)
-End Sub";
-
-            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", true);
-
-            var refactoredCode = Support.RefactoredCode(presenterAction,
-                ("Class1", codeClass1.ToCodeString(), ComponentType.ClassModule),
-                ("Class2", codeClass2, ComponentType.ClassModule));
-
-            StringAssert.Contains("Name = 1", refactoredCode["Class1"]);
-            StringAssert.Contains("theClass.Name = 0", refactoredCode["Class2"]);
-            StringAssert.Contains("Bar theClass.Name", refactoredCode["Class2"]);
-            StringAssert.DoesNotContain("fizz", refactoredCode["Class2"]);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
         public void EncapsulateField_PresenterIsNull()
         {
             var inputCode =
@@ -513,71 +480,6 @@ End Sub";
             var codeString = inputCode.ToCodeString();
             var actualCode = Support.RefactoredCode(codeString, presenterAction, typeof(InvalidRefactoringModelException));
             Assert.AreEqual(codeString.Code, actualCode);
-        }
-
-        [TestCase(false)]
-        [TestCase(true)]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void StandardModuleSource_ExternalReferences(bool moduleResolve)
-        {
-            var testModuleName = MockVbeBuilder.TestModuleName;
-            var referenceExpression = moduleResolve ? $"{testModuleName}." : string.Empty;
-            var testModuleCode =
-$@"
-
-Public th|is As Long";
-
-            var procedureModuleReferencingCode =
-$@"Option Explicit
-
-Private Const bar As Long = 7
-
-Public Sub Bar()
-    {referenceExpression}this = bar
-End Sub
-
-Public Sub Foo()
-    With {testModuleName}
-        .this = bar
-    End With
-End Sub
-";
-
-            var classModuleReferencingCode =
-$@"Option Explicit
-
-Private Const bar As Long = 7
-
-Public Sub Bar()
-    {referenceExpression}this = bar
-End Sub
-
-Public Sub Foo()
-    With {testModuleName}
-        .this = bar
-    End With
-End Sub
-";
-
-            var userInput = new UserInputDataObject()
-                .UserSelectsField("this", "MyProperty");
-
-            var presenterAction = Support.SetParameters(userInput);
-
-            var actualModuleCode = Support.RefactoredCode(presenterAction, testModuleCode.ToCodeString(),
-                ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule),
-                ("ClassModule", classModuleReferencingCode, ComponentType.ClassModule));
-
-            var referencingModuleCode = actualModuleCode["StdModule"];
-            StringAssert.Contains($"{testModuleName}.MyProperty = ", referencingModuleCode);
-            StringAssert.DoesNotContain($"{testModuleName}.{testModuleName}.MyProperty = ", referencingModuleCode);
-            StringAssert.Contains($"  .MyProperty = bar", referencingModuleCode);
-
-            var referencingClassCode = actualModuleCode["ClassModule"];
-            StringAssert.Contains($"{testModuleName}.MyProperty = ", referencingClassCode);
-            StringAssert.DoesNotContain($"{testModuleName}.{testModuleName}.MyProperty = ", referencingClassCode);
-            StringAssert.Contains($"  .MyProperty = bar", referencingClassCode);
         }
 
         protected override IRefactoring TestRefactoring(

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Path = System.IO.Path;
 using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.UI.AddRemoveReferences;
 
 namespace Rubberduck.AddRemoveReferences
 {
@@ -24,7 +25,7 @@ namespace Rubberduck.AddRemoveReferences
     {
         private static readonly Dictionary<int, string> NativeLocaleNames = new Dictionary<int, string>
         {
-            { 0, Resources.RubberduckUI.References_DefaultLocale }
+            { 0, AddRemoveReferencesUI.DefaultLocale }
         };
 
         public RegisteredLibraryKey UniqueId { get; }
@@ -54,8 +55,8 @@ namespace Rubberduck.AddRemoveReferences
                 }
                 catch
                 {
-                    NativeLocaleNames.Add(LocaleId, Resources.RubberduckUI.References_DefaultLocale);
-                    return Resources.RubberduckUI.References_DefaultLocale;
+                    NativeLocaleNames.Add(LocaleId, AddRemoveReferencesUI.DefaultLocale);
+                    return AddRemoveReferencesUI.DefaultLocale;
                 }
             }
         }

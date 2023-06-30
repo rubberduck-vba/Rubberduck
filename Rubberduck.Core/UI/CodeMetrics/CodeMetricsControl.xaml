@@ -38,7 +38,7 @@
 
         <TreeView x:Name="ProjectTree"
                   Grid.RowSpan="2" Grid.Column="0"
-                  Background="{StaticResource BackgroundLightBrush}"
+                  Background="{DynamicResource BackgroundLightBrush}"
                   HorizontalContentAlignment="Stretch"
                   ItemsSource="{Binding Projects}"
                   BorderThickness="0,1"
@@ -54,14 +54,14 @@
                             <Setter Property="HorizontalAlignment" Value="Left" />
                             <Style.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="BorderBrush" Value="{StaticResource HighlightBorderActiveBrush}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource HighlightBorderActiveBrush}"/>
                                 </Trigger>
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
                                         <Condition Property="IsSelected" Value="True"/>
                                         <Condition Property="IsSelectionActive" Value="False"/>
                                     </MultiTrigger.Conditions>
-                                    <Setter Property="BorderBrush" Value="{StaticResource HighlightInactiveBorderBrush}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource HighlightInactiveBorderBrush}"/>
                                 </MultiTrigger>
                             </Style.Triggers>
                             <Style.Resources>
@@ -78,7 +78,7 @@
                     </HierarchicalDataTemplate.Resources>
                     <StackPanel Orientation="Horizontal">
                         <Grid>
-                            <Image Style="{StaticResource ToolbarIconStyle}">
+                            <Image Style="{DynamicResource ToolbarIconStyle}">
                                 <Image.Source>
                                     <MultiBinding Converter="{StaticResource NodeToIcon}">
                                         <MultiBinding.Bindings>
@@ -89,9 +89,9 @@
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>
-                            <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}" />
+                            <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{DynamicResource ToolbarIconStyle}" />
                         </Grid>
-                        <TextBlock Style="{StaticResource TreeViewItemStyleModified}" />
+                        <TextBlock Style="{DynamicResource TreeViewItemStyleModified}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>

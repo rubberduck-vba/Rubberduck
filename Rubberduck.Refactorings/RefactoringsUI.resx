@@ -1,0 +1,677 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AnnotateDeclarationDialog_AddArgumentButtonLabel" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_AdjustAttributeLabel" xml:space="preserve">
+    <value>Add/Adjust attribute</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentsLabel" xml:space="preserve">
+    <value>Annotation Arguments:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentTypeHeader" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_ArgumentValueHeader" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Annotate Declaration</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_DeclarationLabel" xml:space="preserve">
+    <value>Declaration to Annotate:</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_Instructions" xml:space="preserve">
+    <value>Select an annotation (and values) to add to the declaration.</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_RemoveArgumentButtonLabel" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_TitleText" xml:space="preserve">
+    <value>Annotate Declaration</value>
+  </data>
+  <data name="AnnotateDeclarationDialog_AnnotationLabel" xml:space="preserve">
+    <value>Annotation to Add:</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_AttributeNameStart" xml:space="preserve">
+    <value>Annotation arguments of type 'Attribute Name' have to start with 'VB_'.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_EmptyArgument" xml:space="preserve">
+    <value>Annotation arguments cannot be empty.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_InspectionName" xml:space="preserve">
+    <value>Annotation arguments of type 'Inspection Name' have to be the name of an existing inspection.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_Newline" xml:space="preserve">
+    <value>Annotation arguments can only contain a single line.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotABoolean" xml:space="preserve">
+    <value>Annotation arguments of type 'Boolean' have to either be 'True' or 'False'.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_SpecialCharacters" xml:space="preserve">
+    <value>Annotation arguments must not contain control characters.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_TooLong" xml:space="preserve">
+    <value>Annotation arguments cannot be longer than {0} characters.</value>
+    <comment>{0} max allowed characters</comment>
+  </data>
+  <data name="AnnotationArgument_ValidationError_WhitespaceInAttribute" xml:space="preserve">
+    <value>Annotation arguments of type 'Attribute Name' cannot contain whitespace.</value>
+  </data>
+  <data name="AnnotationArgumentType_Inspection" xml:space="preserve">
+    <value>Inspection Name</value>
+  </data>
+  <data name="AnnotationArgumentType_Attribute" xml:space="preserve">
+    <value>Attribute</value>
+  </data>
+  <data name="AnnotationArgumentType_Boolean" xml:space="preserve">
+    <value>Boolean</value>
+  </data>
+  <data name="AnnotationArgumentType_Number" xml:space="preserve">
+    <value>Number</value>
+  </data>
+  <data name="AnnotationArgumentType_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
+    <value>'{0}' is already accessible to this scope.</value>
+    <comment>{0} = proposed variable name.</comment>
+  </data>
+  <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
+    <value>{0} Consider choosing a different name.</value>
+    <comment>{0} = Meaningless name message</comment>
+  </data>
+  <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
+    <value>Assigned ByVal parameter QuickFix - Make Local Copy</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify a name to use for the local copy of ByVal {0} '{1}'.</value>
+    <comment>0: DeclarationType; 1: IdentifierName</comment>
+  </data>
+  <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
+    <value>Specify Local Copy Variable Name</value>
+  </data>
+  <data name="EncapsulateField_InstructionText" xml:space="preserve">
+    <value>Select one or more fields to encapsulate.  Accept the default values or edit property names.</value>
+  </data>
+  <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
+    <value>Wrap Fields in Private Type</value>
+  </data>
+  <data name="EncapsulateField_TitleText" xml:space="preserve">
+    <value>Encapsulate Field</value>
+  </data>
+  <data name="EncapsulateField_SetterType" xml:space="preserve">
+    <value>Setter Type:</value>
+  </data>
+  <data name="EncapsulateField_ReadOnlyCheckBoxContent" xml:space="preserve">
+    <value>Read Only</value>
+  </data>
+  <data name="EncapsulateField_PropertyName" xml:space="preserve">
+    <value>Property Name:</value>
+  </data>
+  <data name="EncapsulateField_PrivateUDTPropertyText" xml:space="preserve">
+    <value>Creates a property for each UDT Member</value>
+  </data>
+  <data name="EncapsulateField_PreviewMarker" xml:space="preserve">
+    <value>'&lt;===== Property and declaration changes above this line =====&gt;</value>
+  </data>
+  <data name="EncapsulateField_Preview" xml:space="preserve">
+    <value>Preview:</value>
+  </data>
+  <data name="EncapsulateField_ParameterName" xml:space="preserve">
+    <value>Parameter Name:</value>
+  </data>
+  <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
+    <value>Name conflict</value>
+  </data>
+  <data name="EncapsulateField_Caption" xml:space="preserve">
+    <value>Rubberduck - Encapsulate Field</value>
+  </data>
+  <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
+    <value>Unable to encapsulate '{0}'. ReDim({0}) statement(s) exist in other modules.</value>
+    <comment>{0} = selected field IdentifierName</comment>
+  </data>
+  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
+    <value>The implementing class is 'Public' mandating the interface be public as well.
+If you require a 'Private' interface, change the classes instancing to private as well.
+A private class can still implement a public interface.</value>
+  </data>
+  <data name="ExtractInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Extract Interface</value>
+  </data>
+  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
+    <value>Instancing</value>
+  </data>
+  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
+    <value>Please specify interface name and members.</value>
+  </data>
+  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
+    <value>Members</value>
+  </data>
+  <data name="ExtractInterface_Private" xml:space="preserve">
+    <value>Private</value>
+    <comment>keyword.. no translations.</comment>
+  </data>
+  <data name="ExtractInterface_Public" xml:space="preserve">
+    <value>Public</value>
+    <comment>keyword.. no translation.</comment>
+  </data>
+  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
+    <value>Extract Interface</value>
+  </data>
+  <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
+    <value>Parameters:</value>
+  </data>
+  <data name="ExtractMethod_AccessibilityLabel" xml:space="preserve">
+    <value>Accessibility:</value>
+  </data>
+  <data name="ExtractMethod_Caption" xml:space="preserve">
+    <value>Rubberduck - Extract Method</value>
+  </data>
+  <data name="ExtractMethod_InstructionsText" xml:space="preserve">
+    <value>Please specify method name, return type and/or parameters (if applicable), and other options.</value>
+  </data>
+  <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
+    <value>The current selection is not valid:
+{0}</value>
+    <comment>0: Specific reason for not being valid</comment>
+  </data>
+  <data name="ExtractMethod_NoneSelected" xml:space="preserve">
+    <value>(none)</value>
+  </data>
+  <data name="ExtractMethod_PreviewLabel" xml:space="preserve">
+    <value>Preview:</value>
+  </data>
+  <data name="ExtractMethod_ReturnLabel" xml:space="preserve">
+    <value>Return:</value>
+  </data>
+  <data name="ExtractMethod_SetBoxLabel" xml:space="preserve">
+    <value>Set</value>
+  </data>
+  <data name="ExtractMethod_TitleText" xml:space="preserve">
+    <value>Extract method</value>
+  </data>
+  <data name="ImplementInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Implement Interface</value>
+  </data>
+  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
+    <value>No implements selected.</value>
+  </data>
+  <data name="IntroduceField_Caption" xml:space="preserve">
+    <value>Rubberduck - Introduce Field</value>
+  </data>
+  <data name="PromoteToParameter_PromptIfTargetIsInterface" xml:space="preserve">
+    <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (Will propagate to all implementations.)</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
+  </data>
+  <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
+    <value>The target '{0}' is already a field.</value>
+    <comment>{0}: name of target</comment>
+  </data>
+  <data name="PromoteToParameter_Caption" xml:space="preserve">
+    <value>Rubberduck - Promote to Parameter</value>
+  </data>
+  <data name="PromoteToParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
+    <value>The target '{0}' is not contained in a method.</value>
+    <comment>{0}: name of target</comment>
+  </data>
+  <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">
+    <value>VBA Identifiers cannot be null or zero-length.</value>
+  </data>
+  <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
+    <value>'{0}' does not start with a letter.</value>
+    <comment>{0} = code element name</comment>
+  </data>
+  <data name="InvalidNameCriteria_ExceedsMaximumLengthFormat" xml:space="preserve">
+    <value>'{0}' exceeds the maximum allowed string length.</value>
+    <comment>{0} = code element name</comment>
+  </data>
+  <data name="InvalidNameCriteria_InvalidCharactersFormat" xml:space="preserve">
+    <value>'{0}' contains special character(s) other than underscores.</value>
+    <comment>{0} = code element name</comment>
+  </data>
+  <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
+    <value>'{0}' is a reserved keyword.</value>
+    <comment>{0} = code element name</comment>
+  </data>
+  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
+    <value>Rubberduck - Move Closer To Usage</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
+    <value>Invalid Selection.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+    <value>The method using '{0}' already has the declaration '{1}' of the same name in scope.</value>
+    <comment>{0}: Variable Name; {1}: name of conflicting declaration</comment>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
+    <value>'{0}' is not used anywhere.</value>
+    <comment>{0}: Variable Name</comment>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
+    <value>'{0}' is not defined in the same project it is used.</value>
+    <comment>{0}: Variable Name</comment>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
+    <value>'{0}' is defined neither in the component component it is used nor in a standard module.</value>
+    <comment>{0}: Variable Name</comment>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+    <value>'{0}' is a public member of of a class, form or document.</value>
+    <comment>{0}: Variable Name</comment>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
+    <value>'{0}' is built-in.</value>
+    <comment>{0}: Variable Name</comment>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
+    <value>'{0}' has references in multiple methods.</value>
+    <comment>{0}: Variable Name</comment>
+  </data>
+  <data name="MoveFolders_SameNameSubfolder" xml:space="preserve">
+    <value>The target folder '{0}' already contains a subfolder '{1}'. Moving the folder will merge it with the existing folder.
+Do you want to proceed?</value>
+    <comment>{0} target folder; {1} subfolder</comment>
+  </data>
+  <data name="MoveFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify a new parent folder for the subfolder '{0}' of '{1}'.</value>
+    <comment>{0} folder; {1} parent folder</comment>
+  </data>
+  <data name="MoveFolders_ControlCharacter" xml:space="preserve">
+    <value>Folder names cannot contain control characters like e.g. new lines.</value>
+  </data>
+  <data name="MoveFolders_EmptyFolderName" xml:space="preserve">
+    <value>A folder name cannot be empty.</value>
+  </data>
+  <data name="MoveFolders_EmptySubfolderName" xml:space="preserve">
+    <value>The names of individual subfolders cannot be empty.</value>
+  </data>
+  <data name="MoveFolders_SameNameSourceFolders" xml:space="preserve">
+    <value>Several folders with the same name are being moved. This will merge them.
+Do you want to proceed?</value>
+  </data>
+  <data name="MoveFolders_SameNameSubfolders" xml:space="preserve">
+    <value>The target folder '{0}' already contains subfolders {1}. Moving the folders will merge them with the existing folders with corresponding names.
+Do you want to proceed?</value>
+    <comment>{0} target folder; {1} subfolder</comment>
+  </data>
+  <data name="MoveFoldersDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Move Folders</value>
+  </data>
+  <data name="MoveFoldersDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify a new parent folder for the folders.</value>
+  </data>
+  <data name="MoveFoldersDialog_TitleText" xml:space="preserve">
+    <value>Move Folders</value>
+  </data>
+  <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify new folder for the components.</value>
+  </data>
+  <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify a new parent folder for the folder '{0}'.</value>
+    <comment>{0} folder</comment>
+  </data>
+  <data name="MoveToFolderDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Move to Folder</value>
+  </data>
+  <data name="MoveToFolderDialog_FolderLabelText" xml:space="preserve">
+    <value>Folder:</value>
+  </data>
+  <data name="MoveToFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify a new folder for {0} '{1}' in folder '{2}'.</value>
+    <comment>{0} DeclarationType; {1} IdentifierName; {2} current folder</comment>
+  </data>
+  <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
+    <value>Move to Folder</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
+    <value>Declaration type of target '{0}' is '{1}' instead of one of the expected '{2}'.</value>
+    <comment>{0}: name of target; {1}: actual declaration type; {2}: expected declaration types</comment>
+  </data>
+  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (Will propagate to all implementations.)</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
+  </data>
+  <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
+    <value>The component '{0}' would have been affected by the refactoring, but its state in Rubberduck's memory is stale. Please refresh Rubberduck and try again.</value>
+    <comment>{0} stale module</comment>
+  </data>
+  <data name="RefactoringFailure_AnnotateDeclaration_InvalidType" xml:space="preserve">
+    <value>The refactoring can only annotate components, members and variables, but the target had type '{0}'.</value>
+    <comment>{0} declaration type</comment>
+  </data>
+  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
+    <value>Refactoring failed.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
+    <value>Declaration type of target '{0}' is '{1}' instead of the expected '{2}'.</value>
+    <comment>{0}: name of target; {1}: actual declaration type; {2}: expected declaration type</comment>
+  </data>
+  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
+    <value>There is no active selection.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
+    <value>No viable target selected.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
+    <value>No target has been specified.</value>
+  </data>
+  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
+    <value>Unable to suspend the Parser to perform the refactoring operation.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
+    <value>The target is not user-defined.</value>
+    <comment>{0}: name of target</comment>
+  </data>
+  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
+    <value>Target declaration is null.</value>
+  </data>
+  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
+    <value>Cannot remove last parameter from setter or letter.</value>
+  </data>
+  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Remove Parameters</value>
+  </data>
+  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Select a parameter and double-click it or use buttons to remove or restore it.</value>
+  </data>
+  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
+    <value>Remove parameters</value>
+  </data>
+  <data name="Rename_DeclarationType" xml:space="preserve">
+    <value>Rename {0}</value>
+  </data>
+  <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
+    <value>Please ensure that exactly 1 control is selected before renaming.</value>
+  </data>
+  <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
+    <value>{0} {1} cannot be changed.</value>
+    <comment>0: DeclarationType; 1: IdentifierName</comment>
+  </data>
+  <data name="RenameDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Rename</value>
+  </data>
+  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
+    <value>'{0}' conflicts with the name of the existing declaration '{1}'. Renaming '{2}' to '{0}' may result in uncompilable  code or a change in logic.
+Do you want to proceed with this rename?</value>
+    <comment>{0}: NewName {1}: conflicting declaration {2}: CurrentName</comment>
+  </data>
+  <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
+    <value>Could not rename {0}.</value>
+  </data>
+  <data name="RenameDialog_Folder" xml:space="preserve">
+    <value>folder</value>
+  </data>
+  <data name="RenameDialog_FolderAlreadyExists" xml:space="preserve">
+    <value>The folder '{0}' already exists. Renaming '{1}' to '{2}' will lead to a merge with the existing folder.
+Do you want to proceed?</value>
+    <comment>{0} new full folder name; {1} folder part to rename; {2} new folder part name</comment>
+  </data>
+  <data name="RenameDialog_FolderLabel" xml:space="preserve">
+    <value>Folder:</value>
+  </data>
+  <data name="RenameDialog_FullNewFolderLabel" xml:space="preserve">
+    <value>Full new folder:</value>
+  </data>
+  <data name="RenameDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify new name for {0} '{1}'.</value>
+    <comment>0: DeclarationType; 1: IdentifierName</comment>
+  </data>
+  <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
+    <value>Could not rename Interface Member {0}.</value>
+  </data>
+  <data name="RenameDialog_OnlyCasingDifferent" xml:space="preserve">
+    <value>It is not possible to change only the case of an identifier in VBA (language is case-insensitive).</value>
+  </data>
+  <data name="RenameDialog_TitleText" xml:space="preserve">
+    <value>Rename identifier</value>
+  </data>
+  <data name="RenameDialog_TitleText_Folder" xml:space="preserve">
+    <value>Rename folder</value>
+  </data>
+  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
+    <value>Target '{0}' is a standard event handler, which cannot be renamed.</value>
+    <comment>{0}: name of target</comment>
+  </data>
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
+    <value>Target control '{0}' not found.</value>
+    <comment>{0}: name of control</comment>
+  </data>
+  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
+    <value>No code module found for the target module '{0}'.</value>
+    <comment>{0}: name of module</comment>
+  </data>
+  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
+    <value>Method '{0}' is an EventHandler for control '{1}'.  Only the control can be renamed.  Rename '{1}' instead?</value>
+    <comment>0: Selected target Identifier; 1: Control Name</comment>
+  </data>
+  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
+    <value>Method '{0}' is an implementation of event '{1}.{2}'.  Rename event '{2}' instead?</value>
+    <comment>0: Selected target Identifier; 1: Event Parent; 2: Event name</comment>
+  </data>
+  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Method '{0}' implements '{1}.{2}'. Rename the interface member?</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
+  </data>
+  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
+    <value>No parameters in method '{0}'.</value>
+    <comment>0: Selected target</comment>
+  </data>
+  <data name="ReorderParamsDialog_MoveUpButtonText" xml:space="preserve">
+    <value>Move up</value>
+  </data>
+  <data name="ReorderParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Reorder Parameters</value>
+  </data>
+  <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Select a parameter and drag it or use buttons to move it up or down.</value>
+  </data>
+  <data name="ReorderParamsDialog_MoveDownButtonText" xml:space="preserve">
+    <value>Move down</value>
+  </data>
+  <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
+    <value>Reorder parameters</value>
+  </data>
+  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
+    <value>Less than two parameters in method '{0}'.</value>
+    <comment>0: Selected target</comment>
+  </data>
+  <data name="ExtractInterface_ImplementationOptionsGroupBox" xml:space="preserve">
+    <value>Implementation Options:</value>
+  </data>
+  <data name="ExtractInterface_OptionAddEmptyImplementation" xml:space="preserve">
+    <value>Add Empty Implementation</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToInterfaceMembers" xml:space="preserve">
+    <value>Forward Object Member Calls to Interface Members</value>
+  </data>
+  <data name="ExtractInterface_OptionForwardToObjectMembers" xml:space="preserve">
+    <value>Forward Interface Member Calls to Object Members</value>
+  </data>
+  <data name="ExtractInterface_OptionReplaceMembersWithInterfaceMembers" xml:space="preserve">
+    <value>Replace Members with Interface Members</value>
+  </data>
+  <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
+    <value>Optional parameters must be specified at the end of the parameter list.</value>
+  </data>
+  <data name="AnnotationArgument_ValidationError_NotANumber" xml:space="preserve">
+    <value>Annotation arguments of type 'Number' have to be a valid number in integer or floating point format.</value>
+  </data>
+  <data name="MoveCloserToUsageDialog_TitleText" xml:space="preserve">
+    <value>Select Declaration Statement</value>
+  </data>
+  <data name="MoveCloserToUsageDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Select the new Type of Declaration Statement for '{0}'.</value>
+    <comment>0: Selected target</comment>
+  </data>
+  <data name="ExtractMethod_CompilationDirectivesWarning" xml:space="preserve">
+    <value>Selected code contains compiler directives. Extracting this code may cause breaking changes.</value>
+  </data>
+  <data name="ExtractMethod_ReturnTypeSelection" xml:space="preserve">
+    <value>Select variable to use as return value of new function. Select None to make a sub.</value>
+  </data>
+  <data name="ExtractMethod_CodePreviewCaption" xml:space="preserve">
+    <value>Preview of method extracted from '{0}'</value>
+    <comment>0: Source method</comment>
+  </data>
+  <data name="ExtractMethod_DefaultNewMethodName" xml:space="preserve">
+    <value>NewMethod</value>
+  </data>
+  <data name="ExtractParameterNewType_ByRefParameter" xml:space="preserve">
+    <value>Parameter passed by reference</value>
+  </data>
+  <data name="ExtractParameterNewType_ByValParameter" xml:space="preserve">
+    <value>Parameter passed by value</value>
+  </data>
+  <data name="ExtractMethod_ParameterAssignmentTypeColumnHeader" xml:space="preserve">
+    <value>Pass by type</value>
+  </data>
+  <data name="ExtractMethod_ParameterDataTypeColumnHeader" xml:space="preserve">
+    <value>Data type</value>
+  </data>
+  <data name="ExtractMethod_ParameterNameColumnHeader" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ExtractMethod_UnableToMoveVariableDeclarationMessage" xml:space="preserve">
+    <value>Unable to move variable declaration</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionEndsOutsideProcedure" xml:space="preserve">
+    <value>Selection does not end inside a recognised procedure</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionHasUnsupportedStatement" xml:space="preserve">
+    <value>Extract method cannot extract code that contains '{0}' statements.</value>
+    <comment>0: statement type that cannot be refactored</comment>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionModifiesParentFunctionReturn" xml:space="preserve">
+    <value>The selected code modifies the return value of the function it is in</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionMoreThanSingleProcedure" xml:space="preserve">
+    <value>Selection covers more than a single procedure</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionNotInRecognisedProcedure" xml:space="preserve">
+    <value>Selection is not in a recognised procedure type</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionNotSetOfCompleteStatements" xml:space="preserve">
+    <value>Extract method must contain selection that represents a set of complete statements. It cannot extract a part of a statement.</value>
+  </data>
+  <data name="ExtractMethod_InvalidMessageSelectionStartsOutsideProcedure" xml:space="preserve">
+    <value>Selection does not start inside a recognised procedure</value>
+  </data>
+</root>

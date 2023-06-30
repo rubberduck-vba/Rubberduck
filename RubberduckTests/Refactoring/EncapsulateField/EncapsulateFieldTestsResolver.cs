@@ -2,8 +2,6 @@
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.Refactorings.ReplaceReferences;
-using Rubberduck.Refactorings.ReplacePrivateUDTMemberReferences;
 using Rubberduck.Refactorings.ReplaceDeclarationIdentifier;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingUDTMember;
 using Rubberduck.Refactorings.EncapsulateFieldUseBackingField;
@@ -22,6 +20,7 @@ using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.Interaction;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Castle.MicroKernel.SubSystems.Configuration;
+using Rubberduck.Refactorings.DeleteDeclarations;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -85,20 +84,20 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         private void RegisterInstances(IWindsorContainer container)
         {
-            container.Kernel.Register(Component.For<IDeclarationFinderProvider, RubberduckParserState>().Instance(_declarationFinderProvider));
-            container.Kernel.Register(Component.For<IIndenter>().Instance(_testIndenter));
-            container.Kernel.Register(Component.For<ICodeBuilder>().Instance(_codeBuilder));
+            container.Register(Component.For<IDeclarationFinderProvider, RubberduckParserState>().Instance(_declarationFinderProvider));
+            container.Register(Component.For<IIndenter>().Instance(_testIndenter));
+            container.Register(Component.For<ICodeBuilder>().Instance(_codeBuilder));
             if (_rewritingManager != null)
             {
-                container.Kernel.Register(Component.For<IRewritingManager>().Instance(_rewritingManager));
+                container.Register(Component.For<IRewritingManager>().Instance(_rewritingManager));
             }
             if (_selectionService != null)
             {
-                container.Kernel.Register(Component.For<ISelectionProvider>().Instance(_selectionService));
+                container.Register(Component.For<ISelectionProvider>().Instance(_selectionService));
             }
-            container.Kernel.Register(Component.For<IUiDispatcher>().Instance(_uiDispatcher));
-            container.Kernel.Register(Component.For<IRefactoringPresenterFactory>().Instance(_presenterFactory));
-            container.Kernel.Register(Component.For<IMessageBox>().Instance(_messageBox));
+            container.Register(Component.For<IUiDispatcher>().Instance(_uiDispatcher));
+            container.Register(Component.For<IRefactoringPresenterFactory>().Instance(_presenterFactory));
+            container.Register(Component.For<IMessageBox>().Instance(_messageBox));
         }
 
         private static void RegisterSingletonObjects(IWindsorContainer container)
@@ -107,11 +106,14 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             container.Kernel.Register(Component.For<EncapsulateFieldRefactoringAction>());
             container.Kernel.Register(Component.For<EncapsulateFieldUseBackingUDTMemberRefactoringAction>());
             container.Kernel.Register(Component.For<EncapsulateFieldUseBackingFieldRefactoringAction>());
-            container.Kernel.Register(Component.For<ReplacePrivateUDTMemberReferencesRefactoringAction>());
             container.Kernel.Register(Component.For<EncapsulateFieldInsertNewCodeRefactoringAction>());
             container.Kernel.Register(Component.For<ModifyUserDefinedTypeRefactoringAction>());
-            container.Kernel.Register(Component.For<ReplaceReferencesRefactoringAction>());
             container.Kernel.Register(Component.For<ReplaceDeclarationIdentifierRefactoringAction>());
+            container.Kernel.Register(Component.For<DeleteDeclarationsRefactoringAction>());
+            container.Kernel.Register(Component.For<DeleteModuleElementsRefactoringAction>());
+            container.Kernel.Register(Component.For<DeleteProcedureScopeElementsRefactoringAction>());
+            container.Kernel.Register(Component.For<DeleteUDTMembersRefactoringAction>());
+            container.Kernel.Register(Component.For<DeleteEnumMembersRefactoringAction>());
             container.Kernel.Register(Component.For<EncapsulateFieldPreviewProvider>());
             container.Kernel.Register(Component.For<EncapsulateFieldUseBackingFieldPreviewProvider>());
             container.Kernel.Register(Component.For<EncapsulateFieldUseBackingUDTMemberPreviewProvider>());
@@ -122,46 +124,57 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         private static void RegisterInterfaceToImplementationPairsSingleton(IWindsorContainer container)
         {
-            container.Kernel.Register(Component.For<ISelectedDeclarationProvider>()
+            container.Register(Component.For<ISelectedDeclarationProvider>()
                 .ImplementedBy<SelectedDeclarationProvider>());
 
-            container.Kernel.Register(Component.For<IEncapsulateFieldModelFactory>()
+            container.Register(Component.For<IEncapsulateFieldModelFactory>()
                 .ImplementedBy<EncapsulateFieldModelFactory>());
 
-            container.Kernel.Register(Component.For<IEncapsulateFieldUseBackingUDTMemberModelFactory>()
+            container.Register(Component.For<IEncapsulateFieldUseBackingUDTMemberModelFactory>()
                 .ImplementedBy<EncapsulateFieldUseBackingUDTMemberModelFactory>());
 
-            container.Kernel.Register(Component.For<IEncapsulateFieldUseBackingFieldModelFactory>()
+            container.Register(Component.For<IEncapsulateFieldUseBackingFieldModelFactory>()
                 .ImplementedBy<EncapsulateFieldUseBackingFieldModelFactory>());
 
-            container.Kernel.Register(Component.For<IEncapsulateFieldCandidateFactory>()
+            container.Register(Component.For<IEncapsulateFieldCandidateFactory>()
                 .ImplementedBy<EncapsulateFieldCandidateFactory>());
 
-            container.Kernel.Register(Component.For<IPropertyAttributeSetsGenerator>()
+            container.Register(Component.For<IPropertyAttributeSetsGenerator>()
                 .ImplementedBy<PropertyAttributeSetsGenerator>());
 
-            container.Kernel.Register(Component.For<IEncapsulateFieldCodeBuilder>()
+            container.Register(Component.For<IEncapsulateFieldCodeBuilder>()
                .ImplementedBy<EncapsulateFieldCodeBuilder>());
 
-            container.Kernel.Register(Component.For<IEncapsulateFieldRefactoringActionsProvider>()
+            container.Register(Component.For<IEncapsulateFieldRefactoringActionsProvider>()
                .ImplementedBy<EncapsulateFieldRefactoringActionsProvider>());
 
-            container.Kernel.Register(Component.For<IReplacePrivateUDTMemberReferencesModelFactory>()
-                .ImplementedBy<ReplacePrivateUDTMemberReferencesModelFactory>());
+            container.Kernel.Register(Component.For<IDeclarationDeletionTargetFactory>()
+                .ImplementedBy<DeclarationDeletionTargetFactory>());
+            
+            container.Register(Component.For<IEncapsulateFieldReferenceReplacerFactory>()
+                .ImplementedBy<EncapsulateFieldReferenceReplacerFactory>());
         }
 
         private static void RegisterInterfaceToImplementationPairsTransient(IWindsorContainer container)
         {
-            container.Kernel.Register(Component.For<INewContentAggregator>()
+            container.Register(Component.For<INewContentAggregator>()
                 .ImplementedBy<NewContentAggregator>()
                 .LifestyleTransient());
 
-            container.Kernel.Register(Component.For<IEncapsulateFieldConflictFinder>()
+            container.Register(Component.For<IEncapsulateFieldConflictFinder>()
                 .ImplementedBy<EncapsulateFieldConflictFinder>()
                 .LifestyleTransient());
 
-            container.Kernel.Register(Component.For<IEncapsulateFieldCandidateSetsProvider>()
+            container.Register(Component.For<IEncapsulateFieldCandidateSetsProvider>()
                 .ImplementedBy<EncapsulateFieldCandidateSetsProvider>()
+                .LifestyleTransient());
+
+            container.Register(Component.For<IEncapsulateFieldReferenceReplacer>()
+                .ImplementedBy<EncapsulateFieldReferenceReplacer>()
+                .LifestyleTransient());
+
+            container.Register(Component.For<IUDTMemberReferenceProvider>()
+                .ImplementedBy<UDTMemberReferenceProvider>()
                 .LifestyleTransient());
         }
 
@@ -171,6 +184,16 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             container.Kernel.Register(Component.For<IEncapsulateFieldCandidateSetsProviderFactory>().AsFactory().LifestyleSingleton());
             container.Kernel.Register(Component.For<IEncapsulateFieldConflictFinderFactory>().AsFactory().LifestyleSingleton());
             container.Kernel.Register(Component.For<INewContentAggregatorFactory>().AsFactory().LifestyleSingleton());
+
+            container.Kernel.Register(
+                Component.For<IDeclarationDeletionGroup>()
+                    .ImplementedBy<DeclarationDeletionGroup>().LifestyleTransient(),
+                Component.For<IDeclarationDeletionGroupFactory>().AsFactory().LifestyleSingleton());
+
+            container.Kernel.Register(
+                Component.For<IDeclarationDeletionGroupsGenerator>()
+                    .ImplementedBy<DeletionGroupsGenerator>().LifestyleTransient(),
+                Component.For<IDeclarationDeletionGroupsGeneratorFactory>().AsFactory().LifestyleSingleton());
         }
     }
 }

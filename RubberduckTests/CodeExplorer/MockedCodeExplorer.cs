@@ -182,8 +182,9 @@ namespace RubberduckTests.CodeExplorer
 
             var exportCommand = new ExportCommand(BrowserFactory.Object, MessageBox.Object, State.ProjectsProvider, Vbe.Object);
             var removeCommand = new RemoveCommand(exportCommand, ProjectsRepository.Object, MessageBox.Object, Vbe.Object, vbeEvents.Object);
+            var peekNavCommand = new PeekDefinitionNavigateCommand(null, vbeEvents.Object);
 
-            ViewModel = new CodeExplorerViewModel(State, removeCommand,
+            ViewModel = new CodeExplorerViewModel(State, removeCommand, peekNavCommand,
                 _generalSettingsProvider.Object,
                 _windowSettingsProvider.Object,
                 _uiDispatcher.Object, Vbe.Object,
@@ -456,7 +457,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementExportAllCommand()
         {
-            ViewModel.ExportAllCommand = new ExportAllCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State.ProjectsProvider);
+            ViewModel.ExportAllCommand = new ExportAllCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State.ProjectsProvider, new ProjectToExportFolderMap());
             return this;
         }
 

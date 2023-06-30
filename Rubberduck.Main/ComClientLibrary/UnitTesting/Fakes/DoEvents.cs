@@ -29,7 +29,8 @@ namespace Rubberduck.UnitTesting.Fakes
 
             if (PassThrough)
             {
-                return VbeProvider.VbeNativeApi.DoEvents();
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<DoEventsDelegate>(NativeFunctionAddress);
+                return nativeCall();
             }
             return (int)(ReturnValue ?? 0);
         }

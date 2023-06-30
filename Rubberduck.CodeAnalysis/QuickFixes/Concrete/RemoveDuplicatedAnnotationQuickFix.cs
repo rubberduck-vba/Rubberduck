@@ -63,8 +63,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             _annotationUpdater.RemoveAnnotations(rewriteSession, duplicateAnnotations);
         }
 
-        public override string Description(IInspectionResult result) =>
-            Resources.Inspections.QuickFixes.RemoveDuplicatedAnnotationQuickFix;
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveDuplicatedAnnotationQuickFix;
 
         public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => true;

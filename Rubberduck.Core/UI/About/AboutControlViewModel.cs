@@ -12,10 +12,10 @@ namespace Rubberduck.UI.About
 {
     public class AboutControlViewModel
     {
-        private readonly IVersionCheck _version;
+        private readonly IVersionCheckService _version;
         private readonly IWebNavigator _web;
 
-        public AboutControlViewModel(IVersionCheck version, IWebNavigator web)
+        public AboutControlViewModel(IVersionCheckService version, IWebNavigator web)
         {
             _version = version;
             _web = web;
@@ -24,7 +24,7 @@ namespace Rubberduck.UI.About
             ViewLogCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteViewLog);
         }
 
-        public string Version => string.Format(Resources.RubberduckUI.Rubberduck_AboutBuild, _version.CurrentVersion);
+        public string Version => string.Format(Resources.RubberduckUI.Rubberduck_AboutBuild, _version.VersionString);
 
         public string OperatingSystem => 
             string.Format(AboutUI.AboutWindow_OperatingSystem, Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86");

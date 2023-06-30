@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -22,40 +23,27 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
             "_Global", "_Application", "Global", "Application", "_Workbook", "Workbook"
         };
 
-        private IReadOnlyList<ModuleDeclaration> _relevantClasses;
-        private IReadOnlyList<PropertyGetDeclaration> _relevantProperties;
-
-        protected Declaration Excel { get; private set; }
+        protected Declaration Excel(DeclarationFinder finder)
+        {
+            return finder.BuiltInDeclarations(DeclarationType.Project)
+                .FirstOrDefault(project => project.IdentifierName.Equals("Excel", StringComparison.InvariantCultureIgnoreCase));
+        } 
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            if (Excel == null)
-            {
-                if (!finder.TryFindProjectDeclaration("Excel", out var excel))
-                {
-                    return Enumerable.Empty<Declaration>();
-                }
-                Excel = excel;
-            }
+            var excel = Excel(finder);
+            var relevantClasses = InterestingClasses
+                .Select(className => finder.FindClassModule(className, excel, true))
+                .OfType<ModuleDeclaration>()
+                .ToList();
 
-            if (_relevantClasses == null)
-            {
-                _relevantClasses = InterestingClasses
-                    .Select(className => finder.FindClassModule(className, Excel, true))
-                    .OfType<ModuleDeclaration>()
-                    .ToList();
-            }
+            var relevantProperties = relevantClasses
+                .SelectMany(classDeclaration => classDeclaration.Members)
+                .OfType<PropertyGetDeclaration>()
+                .Where(member => InterestingMembers.Contains(member.IdentifierName))
+                .ToList();
 
-            if (_relevantProperties == null)
-            {
-                _relevantProperties = _relevantClasses
-                    .SelectMany(classDeclaration => classDeclaration.Members)
-                    .OfType<PropertyGetDeclaration>()
-                    .Where(member => InterestingMembers.Contains(member.IdentifierName))
-                    .ToList();
-            }
-
-            return _relevantProperties;
+            return relevantProperties;
         }
     }
 }

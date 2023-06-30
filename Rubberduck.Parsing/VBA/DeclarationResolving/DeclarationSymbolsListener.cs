@@ -19,23 +19,24 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
         private Declaration _parentDeclaration;
 
         private readonly IDictionary<int, List<IParseTreeAnnotation>> _annotations;
+        private readonly LogicalLineStore _logicalLines;
         private readonly IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> _attributes;
         private readonly IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> _membersAllowingAttributes;
 
         private readonly List<Declaration> _createdDeclarations = new List<Declaration>();
         public IReadOnlyList<Declaration> CreatedDeclarations => _createdDeclarations;
 
-        public DeclarationSymbolsListener(
-            Declaration moduleDeclaration,
+        public DeclarationSymbolsListener(Declaration moduleDeclaration,
             IDictionary<int, List<IParseTreeAnnotation>> annotations,
-            IDictionary<(string scopeIdentifier, DeclarationType scopeType),
-            Attributes> attributes,
-            IDictionary<(string scopeIdentifier, DeclarationType scopeType),
-                ParserRuleContext> membersAllowingAttributes)
+            LogicalLineStore logicalLines,
+            IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> attributes,
+            IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext>
+                membersAllowingAttributes)
         {
             _moduleDeclaration = moduleDeclaration;
             _qualifiedModuleName = moduleDeclaration.QualifiedModuleName;
             _annotations = annotations;
+            _logicalLines = logicalLines;
             _attributes = attributes;
             _membersAllowingAttributes = membersAllowingAttributes;
 
@@ -54,7 +55,13 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 return null;
             }
 
-            if (_annotations.TryGetValue(firstLine, out var scopedAnnotations))
+            var firstLineOfLogicalLine = _logicalLines.StartOfContainingLogicalLine(firstLine);
+            if (!firstLineOfLogicalLine.HasValue)
+            {
+                return null;
+            }
+
+            if (_annotations.TryGetValue(firstLineOfLogicalLine.Value, out var scopedAnnotations))
             {
                 return scopedAnnotations.Where(annotation => annotation.Annotation.Target.HasFlag(requiredTarget));
             }
@@ -681,7 +688,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 : SymbolList.TypeHintToTypeName[typeHint];
             var withEvents = context.WITHEVENTS() != null;
             var isAutoObject = asTypeClause != null && asTypeClause.NEW() != null;
-            bool isArray = context.LPAREN() != null;
+            bool isArray = context.arrayDim() != null;
             AddDeclaration(
                 CreateDeclaration(
                     name,
@@ -714,6 +721,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             var value = context.expression().GetText();
             var constStmt = (VBAParser.ConstStmtContext)context.Parent;
 
+            var key = (name, DeclarationType.Constant);
+            _attributes.TryGetValue(key, out var attributes);
+            _membersAllowingAttributes.TryGetValue(key, out var attributesPassContext);
+
             var declaration = new ValuedDeclaration(
                 new QualifiedMemberName(_qualifiedModuleName, name),
                 _parentDeclaration,
@@ -726,7 +737,9 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 DeclarationType.Constant,
                 value,
                 context,
-                identifier.GetSelection());
+                identifier.GetSelection(),
+                attributesPassContext: attributesPassContext,
+                attributes: attributes);
 
             AddDeclaration(declaration);
         }

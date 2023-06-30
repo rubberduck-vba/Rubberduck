@@ -62,6 +62,9 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.UI.Refactorings.AnnotateDeclaration;
 using Rubberduck.Refactoring.ParseTreeValue;
 using System.IO.Abstractions;
+using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.VBEditor.ComManagement.NonDisposalDecorators;
 
 namespace Rubberduck.Root
 {
@@ -147,11 +150,16 @@ namespace Rubberduck.Root
                     Dependency.OnComponent("attributesComponentSourceCodeProvider", typeof(SourceFileHandlerComponentSourceCodeHandlerAdapter)))
                 .LifestyleSingleton());
 
+            container.Register(Component.For<CodeExplorerViewModel>()
+                .Forward<IPeekDefinitionPopupProvider>()
+                .LifestyleSingleton());
+
             container.Register(Component.For<TestExplorerModel>()
                 .LifestyleSingleton());
             container.Register(Component.For<IVBEInteraction>()
                 .ImplementedBy<VBEInteraction>()
                 .LifestyleSingleton());
+
 
             RegisterSettingsViewModel(container);
             RegisterRefactoringPreviewProviders(container);
@@ -165,6 +173,9 @@ namespace Rubberduck.Root
             
             RegisterDockablePresenters(container);
             RegisterDockableUserControls(container);
+
+            container.Register(Component.For<ProjectToExportFolderMap>()
+                .LifestyleSingleton());
 
             RegisterCommands(container);
             RegisterCommandMenuItems(container);
@@ -383,13 +394,11 @@ namespace Rubberduck.Root
                 .ImplementedBy<AnnotationArgumentViewModelFactory>()
                 .LifestyleSingleton());
 
-            container.Register(Component.For<IReplacePrivateUDTMemberReferencesModelFactory>()
-                .ImplementedBy<ReplacePrivateUDTMemberReferencesModelFactory>()
-                .LifestyleSingleton());
-
             RegisterUnreachableCaseFactories(container);
 
             RegisterEncapsulateFieldRefactoringFactories(container);
+
+            RegisterDeleteDeclarationsRefactoringActionFactories(container);
         }
 
         private void RegisterUnreachableCaseFactories(IWindsorContainer container)
@@ -413,6 +422,25 @@ namespace Rubberduck.Root
             container.Register(Component.For<IEncapsulateFieldModelFactory>()
                 .ImplementedBy<EncapsulateFieldModelFactory>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IEncapsulateFieldReferenceReplacerFactory>()
+                .ImplementedBy<EncapsulateFieldReferenceReplacerFactory>()
+                 .LifestyleSingleton());
+        }
+
+        private void RegisterDeleteDeclarationsRefactoringActionFactories(IWindsorContainer container)
+        {
+            container.Kernel.Register(Component.For<IDeclarationDeletionTargetFactory>()
+                .ImplementedBy<DeclarationDeletionTargetFactory>());
+
+            container.Kernel.Register(
+                Component.For<IDeclarationDeletionGroup>()
+                    .ImplementedBy<DeclarationDeletionGroup>().LifestyleTransient(),
+                Component.For<IDeclarationDeletionGroupFactory>().AsFactory().LifestyleSingleton());
+
+            container.Kernel.Register(
+                Component.For<IDeclarationDeletionGroupsGenerator>()
+                    .ImplementedBy<DeletionGroupsGenerator>().LifestyleTransient(),
+                Component.For<IDeclarationDeletionGroupsGeneratorFactory>().AsFactory().LifestyleSingleton());
         }
 
         private void RegisterQuickFixes(IWindsorContainer container, Assembly[] assembliesToRegister)
@@ -503,6 +531,7 @@ namespace Rubberduck.Root
                 typeof(UnitTestingParentMenu),
                 typeof(SmartIndenterParentMenu),
                 typeof(ToolsParentMenu),
+                typeof(WindowParentMenu),
                 typeof(RefactoringsParentMenu),
                 typeof(NavigateParentMenu)
             };
@@ -572,6 +601,7 @@ namespace Rubberduck.Root
                 typeof(CodePaneRefactoringsParentMenu),
                 typeof(AnnotateParentMenu),
                 typeof(SmartIndenterParentMenu),
+                typeof(PeekDefinitionCommandMenuItem),
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
                 typeof(FindAllImplementationsCommandMenuItem),
@@ -639,6 +669,7 @@ namespace Rubberduck.Root
             return new[]
             {
                 typeof(ProjectExplorerRefactorRenameCommandMenuItem),
+                typeof(ProjectExplorerPeekDefinitionCommandMenuItem),
                 typeof(ProjectExplorerFindSymbolCommandMenuItem),
                 typeof(ProjectExplorerFindAllReferencesCommandMenuItem),
                 typeof(ProjectExplorerFindAllImplementationsCommandMenuItem),
@@ -687,6 +718,7 @@ namespace Rubberduck.Root
             RegisterParentMenu<SmartIndenterParentMenu>(container, SmartIndenterMenuItems());
             RegisterParentMenu<AnnotateParentMenu>(container, AnnotateMenuItems());
             RegisterParentMenu<ToolsParentMenu>(container, ToolsMenuItems());
+            RegisterParentMenu<WindowParentMenu>(container, WindowMenuItems());
         }
 
         private void RegisterParentMenu<TParentMenu>(IWindsorContainer container, Type[] menuItemTypes) where TParentMenu : IParentMenuItem
@@ -718,7 +750,7 @@ namespace Rubberduck.Root
                 typeof(RefactorExtractMethodCommandMenuItem),
                 typeof(RefactorReorderParametersCommandMenuItem),
                 typeof(RefactorRemoveParametersCommandMenuItem),
-                typeof(RefactorIntroduceParameterCommandMenuItem),
+                typeof(RefactorPromoteToParameterCommandMenuItem),
                 typeof(RefactorIntroduceFieldCommandMenuItem),
                 typeof(RefactorEncapsulateFieldCommandMenuItem),
                 typeof(RefactorMoveCloserToUsageCommandMenuItem),
@@ -735,6 +767,7 @@ namespace Rubberduck.Root
             {
                 typeof(CodeExplorerCommandMenuItem),
                 typeof(RegexSearchReplaceCommandMenuItem),               
+                //typeof(PeekDefinitionCommandMenuItem),
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
                 typeof(FindAllImplementationsCommandMenuItem)
@@ -773,6 +806,20 @@ namespace Rubberduck.Root
                 typeof(ToolMenuAddRemoveReferencesCommandMenuItem)
             };
             
+            return items.ToArray();
+        }
+
+
+        private Type[] WindowMenuItems()
+        {
+            var items = new List<Type>
+            {
+                typeof(TestExplorerCommandMenuItem),
+                typeof(CodeExplorerCommandMenuItem),
+                typeof(CodeMetricsCommandMenuItem),
+                typeof(ToDoExplorerCommandMenuItem)
+            };
+
             return items.ToArray();
         }
 
@@ -1147,16 +1194,24 @@ namespace Rubberduck.Root
 
         private void RegisterInstances(IWindsorContainer container)
         {
-            container.Register(Component.For<IVBE>().Instance(_vbe));
-            container.Register(Component.For<IAddIn>().Instance(_addin));
-            //note: This registration makes Castle Windsor inject _vbe_CommandBars in all ICommandBars Parent properties.
-            container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars));
+            RegisterComWrapperInstances(container);
+
             container.Register(Component.For<IUiContextProvider>().Instance(UiContextProvider.Instance()).LifestyleSingleton());
             container.Register(Component.For<IVbeEvents>().Instance(VbeEvents.Initialize(_vbe)).LifestyleSingleton());
             container.Register(Component.For<ITempSourceFileHandler>().Instance(_vbe.TempSourceFileHandler).LifestyleSingleton());
             container.Register(Component.For<IPersistencePathProvider>().Instance(PersistencePathProvider.Instance).LifestyleSingleton());
             container.Register(Component.For<IVbeNativeApi>().Instance(_vbeNativeApi).LifestyleSingleton());
             container.Register(Component.For<IBeepInterceptor>().Instance(_beepInterceptor).LifestyleSingleton());
+        }
+
+        private void RegisterComWrapperInstances(IWindsorContainer container)
+        {
+            //note: We register safe com wrappers inside non-disposal decorators to ensure that the disposal is not executed by CW on some random thread.
+            //Instead, the disposal will happen via the ComSafe on the thread executing the add in termination.
+            container.Register(Component.For<IVBE>().Instance(new VbeNonDisposalDecorator<IVBE>(_vbe)));
+            container.Register(Component.For<IAddIn>().Instance(new AddInNonDisposalDecorator<IAddIn>(_addin)));
+            //note: This registration makes Castle Windsor inject _vbe_CommandBars in all ICommandBars Parent properties.
+            container.Register(Component.For<ICommandBars>().Instance(new CommandBarsNonDisposalDecorator<ICommandBars>(_vbe.CommandBars)));
         }
     }
 }

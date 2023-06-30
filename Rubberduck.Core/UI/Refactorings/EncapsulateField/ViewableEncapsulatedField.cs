@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Refactorings.EncapsulateField;
+using System.Linq;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
@@ -10,9 +11,10 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         bool IsReadOnly { set; get; }
         bool CanBeReadWrite { get; }
         bool HasValidEncapsulationAttributes { get; }
-        string TargetDeclarationExpression { set; get; }
+        string TargetDeclarationExpression { get; }
         bool IsPrivateUserDefinedType { get; }
         bool IsRequiredToBeReadOnly { get; }
+        bool IsRequiredToBeReadWrite { get; }
         string ValidationErrorMessage { get; }
         bool TryValidateEncapsulationAttributes(out string errorMessage);
     }
@@ -69,6 +71,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
         public bool CanBeReadWrite => _efd.CanBeReadWrite;
 
+        public bool IsAssignedExternally => _efd.IsAssignedExternally;
         public string PropertyName { get => _efd.PropertyIdentifier; set => _efd.PropertyIdentifier = value; }
 
         public bool EncapsulateFlag { get => _efd.EncapsulateFlag; set => _efd.EncapsulateFlag = value; }
@@ -77,11 +80,8 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
         public bool IsRequiredToBeReadOnly => !_efd.CanBeReadWrite;
 
-        private string _targetDeclarationExpressions;
-        public string TargetDeclarationExpression
-        {
-            set => _targetDeclarationExpressions = value;
-            get => $"{_efd.Declaration.Accessibility} {_efd.Declaration.Context.GetText()}";
-        }
+        public bool IsRequiredToBeReadWrite => _efd.IsAssignedExternally;
+
+        public string TargetDeclarationExpression => $"{_efd.Declaration.Accessibility} {_efd.Declaration.Context.GetText()}";
     }
 }

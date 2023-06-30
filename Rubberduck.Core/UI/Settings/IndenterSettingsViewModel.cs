@@ -38,6 +38,7 @@ namespace Rubberduck.UI.Settings
             _spaceProcedures = config.UserSettings.IndenterSettings.VerticallySpaceProcedures;
             _procedureSpacing = config.UserSettings.IndenterSettings.LinesBetweenProcedures;
             _groupRelatedProperties = config.UserSettings.IndenterSettings.GroupRelatedProperties;
+            _emptyLineHandlingMethod = config.UserSettings.IndenterSettings.EmptyLineHandlingMethod;
 
             PropertyChanged += IndenterSettingsViewModel_PropertyChanged;
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings(GetCurrentSettings()));
@@ -418,7 +419,7 @@ namespace Rubberduck.UI.Settings
             {
                 var indenter = new Indenter(null, GetCurrentSettings);
 
-                var lines = RubberduckUI.IndenterSettings_PreviewCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                var lines = IndenterSettingsUI.PreviewCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
                 lines = indenter.Indent(lines).ToArray();
                 return string.Join(Environment.NewLine, lines);
             }

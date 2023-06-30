@@ -17,7 +17,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
     /// </summary>
     /// <inspections>
     /// <inspection name="NonReturningFunctionInspection" />
-    /// <inspection name="FunctionReturnValueNotUsedInspection" />
+    /// <inspection name="FunctionReturnValueAlwaysDiscardedInspection" />
     /// </inspections>
     /// <canfix multiple="true" procedure="false" module="true" project="false" all="false" />
     /// <example>
@@ -180,14 +180,6 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             }
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.ConvertFunctionToProcedureQuickFix;
-
-        public override bool CanFixMultiple => true;
-        public override bool CanFixInProcedure => false;
-        public override bool CanFixInModule => true;
-        public override bool CanFixInProject => false;
-        public override bool CanFixAll => false;
-
         private IEnumerable<ParserRuleContext> GetReturnStatements(Declaration declaration)
         {
             return declaration.References
@@ -200,5 +192,13 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
         {
             return assignment.ParentScoping.Equals(declaration) && assignment.Declaration.Equals(declaration);
         }
+
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.ConvertFunctionToProcedureQuickFix;
+
+        public override bool CanFixMultiple => true;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => false;
+        public override bool CanFixAll => false;
     }
 }

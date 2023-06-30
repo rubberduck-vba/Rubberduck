@@ -120,9 +120,6 @@
   <data name="AssignedByValParameterInspection" xml:space="preserve">
     <value>ByVal Parameter ist zugewiesen</value>
   </data>
-  <data name="ConstantNotUsedInspection" xml:space="preserve">
-    <value>Konstante wird nicht verwendet</value>
-  </data>
   <data name="DefaultProjectNameInspection" xml:space="preserve">
     <value>Das Projekt hat den Standard-Projektnamen</value>
   </data>
@@ -180,12 +177,6 @@
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
     <value>Parameter kann als Wert übergeben werden.</value>
   </data>
-  <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Der Parameter wird nicht genutzt.</value>
-  </data>
-  <data name="ProcedureNotUsedInspection" xml:space="preserve">
-    <value>Die Prozedur wird nicht genutzt.</value>
-  </data>
   <data name="UnassignedVariableUsageInspection" xml:space="preserve">
     <value>Variable wird genutzt ohne das ihr ein Wert zugewiesen wurde.</value>
   </data>
@@ -197,9 +188,6 @@
   </data>
   <data name="VariableNotAssignedInspection" xml:space="preserve">
     <value>Der Variable wird kein Wert zugewiesen.</value>
-  </data>
-  <data name="VariableNotUsedInspection" xml:space="preserve">
-    <value>Die Variable wird nicht referenziert.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>Variable ist implizit 'Variant'</value>
@@ -242,9 +230,6 @@
   </data>
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>'Option Base 0' ist redundant</value>
-  </data>
-  <data name="LineLabelNotUsedInspection" xml:space="preserve">
-    <value>Zeilenbezeichnung wird nicht referenziert</value>
   </data>
   <data name="EmptyIfBlockInspection" xml:space="preserve">
     <value>Leerer 'If'-Block</value>
@@ -455,5 +440,41 @@
   </data>
   <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
     <value>Unbekannte Annotation</value>
+  </data>
+  <data name="ConstantNotUsedInspection" xml:space="preserve">
+    <value>Konstante wird nicht verwendet</value>
+  </data>
+  <data name="IIfSideEffectInspection" xml:space="preserve">
+    <value>Mögliche Nebeneffekte der 'IIf'-Funktion</value>
+  </data>
+  <data name="LineLabelNotUsedInspection" xml:space="preserve">
+    <value>Zeilenbezeichnung wird nicht verwendet</value>
+  </data>
+  <data name="VariableNotUsedInspection" xml:space="preserve">
+    <value>Variable wird nicht verwendet.</value>
+  </data>
+  <data name="ProcedureNotUsedInspection" xml:space="preserve">
+    <value>Prozedur/Funktion/Eigenschaft wird nicht benutzt.</value>
+  </data>
+  <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
+    <value>Implementierungen von Interfaces und Ereignis-Handlern sollten Private sein.</value>
+  </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>Schreibgeschützt-Eigenschaftzuweisung</value>
+  </data>
+  <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
+    <value>Public Enumerations Deklaration innerhalb eines Arbeitsblattes</value>
+  </data>
+  <data name="ParameterNotUsedInspection" xml:space="preserve">
+    <value>Parameter wird nicht genutzt.</value>
+  </data>
+  <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
+    <value>Verdächtiger Zugriff auf eine vordefinierte Instanz.</value>
+  </data>
+  <data name="UDTMemberNotUsedInspection" xml:space="preserve">
+    <value>Benutzerdefinierter Typ wird nicht verwendet</value>
+  </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>Öffentlicher Steuerelementzugriff</value>
   </data>
 </root>

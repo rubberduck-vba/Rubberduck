@@ -106,10 +106,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return Resources.Inspections.QuickFixes.AccessSheetUsingCodeNameQuickFix;
-        }
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.AccessSheetUsingCodeNameQuickFix;
 
         public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => true;

@@ -219,7 +219,7 @@
   <data name="RefactorMenu_IntroduceField" xml:space="preserve">
     <value>Introduce &amp;Field</value>
   </data>
-  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
+  <data name="RefactorMenu_PromoteToParameter" xml:space="preserve">
     <value>Introduce &amp;Parameter</value>
   </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
@@ -270,5 +270,11 @@
   </data>
   <data name="ProjectExplorer_UnignoreProject" xml:space="preserve">
     <value>Unignore Project</value>
+  </data>
+  <data name="ContextMenu_PeekDefinition" xml:space="preserve">
+    <value>Peek definition</value>
+  </data>
+  <data name="WindowMenu" xml:space="preserve">
+    <value>&amp;Windows</value>
   </data>
 </root>

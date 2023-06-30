@@ -184,10 +184,10 @@
     <value>Parameter can be passed by value.</value>
   </data>
   <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>Parameter is not referred to.</value>
+    <value>Parameter is not used.</value>
   </data>
   <data name="ProcedureNotUsedInspection" xml:space="preserve">
-    <value>Procedure is not referred to.</value>
+    <value>Procedure/Function/Property is not used.</value>
   </data>
   <data name="UnassignedVariableUsageInspection" xml:space="preserve">
     <value>Variable is used but not assigned.</value>
@@ -202,7 +202,7 @@
     <value>Variable is not assigned.</value>
   </data>
   <data name="VariableNotUsedInspection" xml:space="preserve">
-    <value>Variable is not referred to.</value>
+    <value>Variable is not used.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>Implicitly 'Variant' variable</value>
@@ -451,10 +451,31 @@
   <data name="MisleadingByRefParameterInspection" xml:space="preserve">
     <value>Misleading ByRef parameter modifier</value>
   </data>
+  <data name="PublicEnumerationDeclaredInWorksheetInspection" xml:space="preserve">
+    <value>Public enumeration declared within worksheet</value>
+  </data>
   <data name="AnnotationInIncompatibleComponentTypeInspection" xml:space="preserve">
     <value>Annotation in component with incompatible type</value>
   </data>
   <data name="UnrecognizedAnnotationInspection" xml:space="preserve">
     <value>Unrecognized annotation</value>
+  </data>
+  <data name="IIfSideEffectInspection" xml:space="preserve">
+    <value>Potential 'IIf' Function side effects</value>
+  </data>
+  <data name="ReadOnlyPropertyAssignmentInspection" xml:space="preserve">
+    <value>Read-Only Property assignment</value>
+  </data>
+  <data name="SuspiciousPredeclaredInstanceAccessInspection" xml:space="preserve">
+    <value>Suspicious access to a predeclared instance</value>
+  </data>
+  <data name="PublicControlFieldAccessInspection" xml:space="preserve">
+    <value>Public control field access</value>
+  </data>
+  <data name="UDTMemberNotUsedInspection" xml:space="preserve">
+    <value>User Defined Type member is not used</value>
+  </data>
+  <data name="PublicImplementationShouldBePrivateInspection" xml:space="preserve">
+    <value>Implementations of interfaces and event handlers should be Private</value>
   </data>
 </root>

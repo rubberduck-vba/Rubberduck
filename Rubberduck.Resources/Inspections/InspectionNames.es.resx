@@ -120,9 +120,6 @@
   <data name="AssignedByValParameterInspection" xml:space="preserve">
     <value>Se asigna el parámetro ByVal</value>
   </data>
-  <data name="ConstantNotUsedInspection" xml:space="preserve">
-    <value>La constante no se usa</value>
-  </data>
   <data name="DefaultProjectNameInspection" xml:space="preserve">
     <value>No se especifica el nombre del proyecto</value>
   </data>
@@ -183,12 +180,6 @@
   <data name="ParameterCanBeByValInspection" xml:space="preserve">
     <value>El parámetro se puede pasar por valor.</value>
   </data>
-  <data name="ParameterNotUsedInspection" xml:space="preserve">
-    <value>No se hace referencia al parámetro.</value>
-  </data>
-  <data name="ProcedureNotUsedInspection" xml:space="preserve">
-    <value>No se hace referencia al procedimiento.</value>
-  </data>
   <data name="UnassignedVariableUsageInspection" xml:space="preserve">
     <value>La variable se usa pero no se asigna.</value>
   </data>
@@ -200,9 +191,6 @@
   </data>
   <data name="VariableNotAssignedInspection" xml:space="preserve">
     <value>La variable no esta asignada.</value>
-  </data>
-  <data name="VariableNotUsedInspection" xml:space="preserve">
-    <value>La variable no es referida.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>Variable 'Variant' implicita</value>
@@ -243,9 +231,6 @@
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>'Option Base 0' es redundante</value>
   </data>
-  <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>Anotación ilegal</value>
-  </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Falta atributo</value>
   </data>
@@ -257,9 +242,6 @@
   </data>
   <data name="RedundantByRefModifierInspection" xml:space="preserve">
     <value>Modificador 'ByRef' redundante</value>
-  </data>
-  <data name="LineLabelNotUsedInspection" xml:space="preserve">
-    <value>No se usa la etiqueta de línea</value>
   </data>
   <data name="EmptyElseBlockInspection" xml:space="preserve">
     <value>Bloque 'Else' vacío</value>

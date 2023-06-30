@@ -487,6 +487,25 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void VariableAnnotationOnConstant_NoResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+'@VariableDescription ""Test""
+Private Const Test As String = ""TestTestTest""
+
+Public Sub Test2()
+End Sub
+";
+
+            var inspectionResults = InspectionResultsForStandardModule(inputCode);
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void VariableOnOrAboveNonWhitespaceAboveFirstVariable_OneResultEach()
         {
             const string inputCode = @"'@Obsolete 

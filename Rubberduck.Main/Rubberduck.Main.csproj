@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Rubberduck</RootNamespace>
     <AssemblyName>Rubberduck</AssemblyName>
-    <Copyright>Copyright © 2014-2018</Copyright>
+    <Copyright>Copyright © 2014-2023</Copyright>
     <Description>Rubberduck AddIn</Description>
     <ProjectGuid>{E8AB5D93-2D0F-423D-BC15-5EE118673E48}</ProjectGuid>
     <!-- Disable "Missing XML documentation" warning (CS1591) -->
@@ -35,10 +35,6 @@
     <Content Include="Ducky.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="extensibility">
-      <HintPath>$(MSBuildProgramFiles32)\Common Files\microsoft shared\MSEnv\PublicAssemblies\extensibility.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Windows.Forms" />
@@ -74,6 +70,7 @@
     <PackageReference Include="EasyHook">
       <Version>2.7.6684</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Interop" Version="17.0.31723.112" />
     <PackageReference Include="NLog">
       <Version>4.5.10</Version>
     </PackageReference>

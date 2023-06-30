@@ -2,15 +2,15 @@
 using NLog;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.Rename
 {
     internal class RenamePresenter : RefactoringPresenterBase<RenameModel>, IRenamePresenter
     {
-        private static readonly DialogData DialogData = DialogData.Create(RubberduckUI.RenameDialog_Caption, 164, 684);
+        private static readonly DialogData DialogData = DialogData.Create(RefactoringsUI.RenameDialog_Caption, 164, 684);
 
         private readonly IMessageBox _messageBox;
 
@@ -57,19 +57,19 @@ namespace Rubberduck.UI.Refactorings.Rename
 
             if (model.IsControlEventHandlerRename)
             {
-                var message = string.Format(RubberduckUI.RenamePresenter_TargetIsControlEventHandler, initialTarget.IdentifierName, newTarget.IdentifierName);
+                var message = string.Format(RefactoringsUI.RenamePresenter_TargetIsControlEventHandler, initialTarget.IdentifierName, newTarget.IdentifierName);
                 return UserConfirmsRenameOfResolvedTarget(message);
             }
 
             if (model.IsUserEventHandlerRename)
             {
-                var message = string.Format(RubberduckUI.RenamePresenter_TargetIsEventHandlerImplementation, initialTarget.IdentifierName, newTarget.ComponentName, newTarget.IdentifierName);
+                var message = string.Format(RefactoringsUI.RenamePresenter_TargetIsEventHandlerImplementation, initialTarget.IdentifierName, newTarget.ComponentName, newTarget.IdentifierName);
                 return UserConfirmsRenameOfResolvedTarget(message);
             }
 
             if (model.IsInterfaceMemberRename)
             {
-                var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, initialTarget.IdentifierName, newTarget.ComponentName, newTarget.IdentifierName);
+                var message = string.Format(RefactoringsUI.RenamePresenter_TargetIsInterfaceMemberImplementation, initialTarget.IdentifierName, newTarget.ComponentName, newTarget.IdentifierName);
                 return UserConfirmsRenameOfResolvedTarget(message);
             }
 
@@ -80,7 +80,7 @@ namespace Rubberduck.UI.Refactorings.Rename
 
         private bool UserConfirmsRenameOfResolvedTarget(string message)
         {
-            return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_TitleText) ?? false;
+            return _messageBox?.ConfirmYesNo(message, RefactoringsUI.RenameDialog_TitleText) ?? false;
         }
     }
 }

@@ -133,19 +133,19 @@
     <value>Block Completion</value>
   </data>
   <data name="ConcatVbNewLine" xml:space="preserve">
-    <value>Concatenate 'vbNewLine' on Ctrl+Enter.</value>
+    <value>Concatenate 'vb_NewLine' on Ctrl+Enter</value>
   </data>
   <data name="EnableAutocompleteLabel" xml:space="preserve">
-    <value>Enable autocompletion features</value>
+    <value>Enable _autocompletion features</value>
   </data>
   <data name="EnableBlockCompletion" xml:space="preserve">
     <value>Enable block completion</value>
   </data>
   <data name="EnableSelfClosingPairs" xml:space="preserve">
-    <value>Enable self-closing pairs</value>
+    <value>Enable _self-closing pairs</value>
   </data>
   <data name="EnableSmartConcat" xml:space="preserve">
-    <value>Enable smart-concatenation</value>
+    <value>Enable smart-_concatenation</value>
   </data>
   <data name="SelfClosingPairs" xml:space="preserve">
     <value>Self-Closing Pairs</value>
@@ -154,6 +154,6 @@
     <value>Smart-Concatenation</value>
   </data>
   <data name="MaxConcatLines" xml:space="preserve">
-    <value>Maximum Lines</value>
+    <value>Maximum _Lines</value>
   </data>
 </root>

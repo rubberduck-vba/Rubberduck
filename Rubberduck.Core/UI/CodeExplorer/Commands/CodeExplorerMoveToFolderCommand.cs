@@ -31,12 +31,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _moveFoldersInteraction = moveFoldersInteraction;
             _moveToFolderInteraction = moveToFolderInteraction;
 
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(EvaluateCanExecute);
         }
 
         public override IEnumerable<Type> ApplicableNodeTypes => ApplicableBaseNodes;
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool EvaluateCanExecute(object parameter)
         {
             return parameter is CodeExplorerCustomFolderViewModel
                     || parameter is CodeExplorerComponentViewModel componentViewModel

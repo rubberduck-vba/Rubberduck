@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Rubberduck.Refactorings;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources;
 using Rubberduck.Refactorings.MoveToFolder;
+using Rubberduck.CodeAnalysis;
 
 namespace Rubberduck.UI.Refactorings.MoveToFolder
 {
@@ -29,12 +31,12 @@ namespace Rubberduck.UI.Refactorings.MoveToFolder
                 {
                     var target = Targets.First();
                     var moduleName = target.IdentifierName;
-                    var declarationType = RubberduckUI.ResourceManager.GetString("DeclarationType_" + target.DeclarationType, CultureInfo.CurrentUICulture);
+                    var declarationType = CodeAnalysisUI.ResourceManager.GetString("DeclarationType_" + target.DeclarationType, CultureInfo.CurrentUICulture);
                     var currentFolder = target.CustomFolder;
-                    return string.Format(RubberduckUI.MoveToFolderDialog_InstructionsLabelText, declarationType, moduleName, currentFolder);
+                    return string.Format(RefactoringsUI.MoveToFolderDialog_InstructionsLabelText, declarationType, moduleName, currentFolder);
                 }
 
-                return string.Format(RubberduckUI.MoveMultipleToFolderDialog_InstructionsLabelText);
+                return string.Format(RefactoringsUI.MoveMultipleToFolderDialog_InstructionsLabelText);
             }
         }
 
@@ -56,18 +58,18 @@ namespace Rubberduck.UI.Refactorings.MoveToFolder
             
             if (string.IsNullOrEmpty(NewFolder))
             {
-                errors.Add(RubberduckUI.MoveFolders_EmptyFolderName);
+                errors.Add(RefactoringsUI.MoveFolders_EmptyFolderName);
             }
             else
             {
                 if (NewFolder.Any(char.IsControl))
                 {
-                    errors.Add(RubberduckUI.MoveFolders_ControlCharacter);
+                    errors.Add(RefactoringsUI.MoveFolders_ControlCharacter);
                 }
 
                 if (NewFolder.Split(FolderExtensions.FolderDelimiter).Any(string.IsNullOrEmpty))
                 {
-                    errors.Add(RubberduckUI.MoveFolders_EmptySubfolderName);
+                    errors.Add(RefactoringsUI.MoveFolders_EmptySubfolderName);
                 }
             }
 

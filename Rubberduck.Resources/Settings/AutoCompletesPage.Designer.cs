@@ -88,7 +88,7 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Concatenate &apos;vbNewLine&apos; on Ctrl+Enter..
+        ///   Looks up a localized string similar to Concatenate &apos;vb_NewLine&apos; on Ctrl+Enter.
         /// </summary>
         public static string ConcatVbNewLine {
             get {
@@ -97,7 +97,7 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable autocompletion features.
+        ///   Looks up a localized string similar to Enable _autocompletion features.
         /// </summary>
         public static string EnableAutocompleteLabel {
             get {
@@ -115,7 +115,7 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable self-closing pairs.
+        ///   Looks up a localized string similar to Enable _self-closing pairs.
         /// </summary>
         public static string EnableSelfClosingPairs {
             get {
@@ -124,7 +124,7 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable smart-concatenation.
+        ///   Looks up a localized string similar to Enable smart-_concatenation.
         /// </summary>
         public static string EnableSmartConcat {
             get {
@@ -133,7 +133,7 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Maximum Lines.
+        ///   Looks up a localized string similar to Maximum _Lines.
         /// </summary>
         public static string MaxConcatLines {
             get {

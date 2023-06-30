@@ -37,6 +37,30 @@ namespace Rubberduck.UnitTesting
             CodeIsUnderTest = true;
         }
 
+        public static void SuspendFake(Type type)
+        {
+            foreach (var fake in ActiveFakes.Values)
+            {
+                if (fake.GetType() == type)
+                {
+                    fake.DisableHook();
+                    return;
+                }
+            }
+        }
+
+        public static void ResumeFake(Type type)
+        {
+            foreach (var fake in ActiveFakes.Values)
+            {
+                if (fake.GetType() == type)
+                {
+                    fake.EnableHook();
+                    return;
+                }
+            }
+        }
+
         public void StopTest()
         {           
             foreach (var fake in ActiveFakes.Values)
@@ -86,7 +110,22 @@ namespace Rubberduck.UnitTesting
         public IFake Now => RetrieveOrCreateFunction<Now>();
         public IFake Time => RetrieveOrCreateFunction<Time>();
         public IFake Date => RetrieveOrCreateFunction<Date>();
-
+        public IFake Rnd => RetrieveOrCreateFunction<Rnd>();
+        public IStub DeleteSetting => RetrieveOrCreateFunction<DeleteSetting>();
+        public IStub SaveSetting => RetrieveOrCreateFunction<SaveSetting>();
+        public IFake GetSetting => RetrieveOrCreateFunction<GetSetting>();
+        public IStub Randomize => RetrieveOrCreateFunction<Randomize>();
+        public IFake GetAllSettings => RetrieveOrCreateFunction<GetAllSettings>();
+        public IStub SetAttr => RetrieveOrCreateFunction<SetAttr>();
+        public IFake GetAttr => RetrieveOrCreateFunction<GetAttr>();
+        public IFake FileLen => RetrieveOrCreateFunction<FileLen>();
+        public IFake FileDateTime => RetrieveOrCreateFunction<FileDateTime>();
+        public IFake FreeFile => RetrieveOrCreateFunction<FreeFile>();
+        public IFake IMEStatus => RetrieveOrCreateFunction<IMEStatus>();
+        public IFake Dir => RetrieveOrCreateFunction<Dir>();
+        public IStub FileCopy => RetrieveOrCreateFunction<FileCopy>();
         #endregion
+
+        public IParams Params { get; } = new Params();
     }
 }

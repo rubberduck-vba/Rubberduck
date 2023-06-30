@@ -4,11 +4,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using NLog;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
 
-namespace Rubberduck.UI.Refactorings
+namespace Rubberduck.UI.Refactorings // Todo: Correct Namespace
 {
     public class ExtractInterfaceViewModel : RefactoringViewModelBase<ExtractInterfaceModel>
     {
@@ -18,10 +19,10 @@ namespace Rubberduck.UI.Refactorings
         {
             _implementationOptions  = new ObservableCollection<KeyValuePair<ExtractInterfaceImplementationOption, string>>()
             {
-                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface, Resources.RubberduckUI.ExtractInterface_OptionForwardToInterfaceMembers),
-                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers, Resources.RubberduckUI.ExtractInterface_OptionForwardToObjectMembers),
-                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.NoInterfaceImplementation, Resources.RubberduckUI.ExtractInterface_OptionAddEmptyImplementation),
-                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface, Resources.RubberduckUI.ExtractInterface_OptionReplaceMembersWithInterfaceMembers)
+                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ForwardObjectMembersToInterface, RefactoringsUI.ExtractInterface_OptionForwardToInterfaceMembers),
+                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ForwardInterfaceToObjectMembers, RefactoringsUI.ExtractInterface_OptionForwardToObjectMembers),
+                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.NoInterfaceImplementation, RefactoringsUI.ExtractInterface_OptionAddEmptyImplementation),
+                new KeyValuePair<ExtractInterfaceImplementationOption, string>(ExtractInterfaceImplementationOption.ReplaceObjectMembersWithInterface, RefactoringsUI.ExtractInterface_OptionReplaceMembersWithInterfaceMembers)
             };
 
             SelectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(true));

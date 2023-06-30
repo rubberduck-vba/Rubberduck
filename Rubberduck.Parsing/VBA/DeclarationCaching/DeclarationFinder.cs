@@ -33,6 +33,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private readonly ConcurrentDictionary<(QualifiedMemberName memberName, DeclarationType declarationType), ConcurrentBag<Declaration>> _newUndeclared;
 
         private IDictionary<QualifiedModuleName,IDictionary<int, List<IParseTreeAnnotation>>> _annotations;
+        private readonly IReadOnlyDictionary<QualifiedModuleName, LogicalLineStore> _logicalLines;
         private IDictionary<Declaration, List<ParameterDeclaration>> _parametersByParent;
         private IDictionary<DeclarationType, List<Declaration>> _userDeclarationsByType;
        
@@ -68,14 +69,15 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 : declaration.QualifiedSelection;
         }
         
-        public DeclarationFinder(
-            IReadOnlyList<Declaration> declarations, 
-            IEnumerable<IParseTreeAnnotation> annotations, 
+        public DeclarationFinder(IReadOnlyList<Declaration> declarations,
+            IEnumerable<IParseTreeAnnotation> annotations,
+            IReadOnlyDictionary<QualifiedModuleName, LogicalLineStore> logicalLines,
             IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> failedResolutionStores,
             IHostApplication hostApp = null)
         {
             _hostApp = hostApp;
             _failedResolutionStores = failedResolutionStores;
+            _logicalLines = logicalLines;
 
             _newFailedResolutionStores = new ConcurrentDictionary<QualifiedModuleName, IMutableFailedResolutionStore>();
             _newUndeclared = new ConcurrentDictionary<(QualifiedMemberName memberName, DeclarationType declarationType), ConcurrentBag<Declaration>>();
@@ -279,7 +281,51 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         //This does not need a lock because enumerators over a ConcurrentBag uses a snapshot.    
         public IEnumerable<Declaration> FreshUndeclared => _newUndeclared.AllValues();
-        public IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> FreshFailedResolutionStores => _newFailedResolutionStores.ToDictionary(kvp => kvp.Key, kvp => (IFailedResolutionStore)new FailedResolutionStore(kvp.Value));  
+        public IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> FreshFailedResolutionStores => _newFailedResolutionStores.ToDictionary(kvp => kvp.Key, kvp => (IFailedResolutionStore)new FailedResolutionStore(kvp.Value));
+
+        public int? LogicalLine(QualifiedModuleName module, int physicalLine)
+        {
+            return _logicalLines.TryGetValue(module, out var lineStore)
+                ? lineStore.LogicalLineNumber(physicalLine)
+                : null;
+        }
+
+        public int? PhysicalStartLine(QualifiedModuleName module, int logicalLine)
+        {
+            return _logicalLines.TryGetValue(module, out var lineStore)
+                ? lineStore.PhysicalStartLineNumber(logicalLine)
+                : null;
+        }
+
+        public int? PhysicalEndLine(QualifiedModuleName module, int logicalLine)
+        {
+            return _logicalLines.TryGetValue(module, out var lineStore)
+                ? lineStore.PhysicalEndLineNumber(logicalLine)
+                : null;
+        }
+
+        public int? NumberOfLogicalLines(QualifiedModuleName module)
+        {
+            if (!_logicalLines.TryGetValue(module, out var lineStore))
+            {
+                return null;
+            }
+            return lineStore.NumberOfLogicalLines();
+        }
+
+        public int? StartOfContainingLogicalLine(QualifiedModuleName module, int physicalLine)
+        {
+            return _logicalLines.TryGetValue(module, out var lineStore)
+                ? lineStore.StartOfContainingLogicalLine(physicalLine)
+                : null;
+        }
+
+        public int? EndOfContainingLogicalLine(QualifiedModuleName module, int physicalLine)
+        {
+            return _logicalLines.TryGetValue(module, out var lineStore)
+                ? lineStore.EndOfContainingLogicalLine(physicalLine)
+                : null;
+        }
 
         public IEnumerable<Declaration> Members(Declaration module)
         {
@@ -533,12 +579,18 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public IEnumerable<IParseTreeAnnotation> FindAnnotations(QualifiedModuleName module, int annotatedLine)
         {
-            if(!_annotations.TryGetValue(module, out var annotationsByLineInModule))
+            if (!_annotations.TryGetValue(module, out var annotationsByLineInModule))
             {
                 return Enumerable.Empty<IParseTreeAnnotation>();
             }
 
-            return annotationsByLineInModule.TryGetValue(annotatedLine, out var result) 
+            var firstLineOfAnnotatedLogicalLine = StartOfContainingLogicalLine(module, annotatedLine);
+            if (!firstLineOfAnnotatedLogicalLine.HasValue)
+            {
+                return Enumerable.Empty<IParseTreeAnnotation>();
+            }
+
+            return annotationsByLineInModule.TryGetValue(firstLineOfAnnotatedLogicalLine.Value, out var result) 
                 ? result 
                 : Enumerable.Empty<IParseTreeAnnotation>();
         }
@@ -1428,7 +1480,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 )
                 .Concat(_handlersByWithEventsField.Value.AllValues())
                 .Concat(FindFormControlEventHandlers())
-                .Concat(FindFormEventHandlers());
+                .Concat(FindFormEventHandlers())
+                .Concat(FindAllDocumentEventHandlers());
             return handlers.ToHashSet();
 
             // Local functions to help break up the complex logic in finding built-in handlers
@@ -1438,7 +1491,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                            item.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase) ||
                            item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase));
             }
-
+            
             bool IsHostSpecificHandler(Declaration item)
             {
                 return _hostApp?.AutoMacroIdentifiers.Any(i =>
@@ -1450,10 +1503,30 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
         }
 
+        private HashSet<Declaration> FindAllDocumentEventHandlers()
+        {
+            var documents = DeclarationsWithType(DeclarationType.Document).OfType<DocumentModuleDeclaration>();
+            var documentTypes = documents.SelectMany(doc => doc.Supertypes).ToHashSet();
+            var events = BuiltInDeclarations(DeclarationType.Event).OfType<EventDeclaration>().Where(e => documentTypes.Contains(e.ParentDeclaration));
+            var handlerNames = events.Select(e => (Event:e, HandlerName:$"{e.QualifiedModuleName.ComponentName}_{e.IdentifierName}".ToLowerInvariant())).ToHashSet();
+
+            var procedures = UserDeclarations(DeclarationType.Procedure)
+                .Where(procedure => procedure.ParentDeclaration is DocumentModuleDeclaration);
+
+            var candidates = procedures.Where(procedure => handlerNames.Select(e => e.HandlerName).Contains(procedure.IdentifierName.ToLowerInvariant()))
+                .Select(c => (CandidateHandler: c as SubroutineDeclaration, Event: handlerNames.Single(h => h.HandlerName.EndsWith(c.IdentifierName)).Event));
+
+            var handlers = candidates.Where(candidate => candidate.CandidateHandler.Parameters.Count == candidate.Event.Parameters.Count
+                && Enumerable.SequenceEqual(candidate.CandidateHandler.Parameters.Select(p => p.FullAsTypeName), 
+                                            candidate.Event.Parameters.Select(p => p.FullAsTypeName)));
+            
+            return handlers.Select(h => h.CandidateHandler).Cast<Declaration>().ToHashSet();
+        }
+
         private HashSet<Declaration> FindAllFormEventHandlers()
         {
-            var forms = DeclarationsWithType(DeclarationType.ClassModule).
-                Where(declaration => declaration.QualifiedModuleName.ComponentType == ComponentType.UserForm);
+            var forms = DeclarationsWithType(DeclarationType.ClassModule)
+                .Where(declaration => declaration.QualifiedModuleName.ComponentType == ComponentType.UserForm);
             var formScopes = forms
                 .Select(form => form.Scope)
                 .ToHashSet();

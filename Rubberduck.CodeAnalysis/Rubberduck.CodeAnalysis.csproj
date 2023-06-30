@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Product>Rubberduck.CodeAnalysis</Product>
     <Description>Assembly Containing the Code Analysis features exposed by Rubberduck</Description>
-    <Copyright>Copyright © 2017-2019</Copyright>
+    <Copyright>Copyright © 2017-2023</Copyright>
     <AssemblyName>Rubberduck.CodeAnalysis</AssemblyName>
     <Title>Rubberduck.CodeAnalysis</Title>
     <RootNamespace>Rubberduck.CodeAnalysis</RootNamespace>
@@ -61,11 +61,23 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="CodeAnalysisUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CodeAnalysisUI.resx</DependentUpon>
+    </Compile>
     <Compile Update="Properties\CodeInspectionDefaults.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>CodeInspectionDefaults.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="CodeAnalysisUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CodeAnalysisUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Update="Properties\CodeInspectionDefaults.settings">

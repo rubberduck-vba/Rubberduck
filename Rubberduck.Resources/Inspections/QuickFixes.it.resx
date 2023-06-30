@@ -309,4 +309,13 @@
   <data name="AnnotateEntryPointQuickFix" xml:space="preserve">
     <value>Aggiungi un'annotazione @EntryPoint</value>
   </data>
+  <data name="RemoveRedundantOptionStatementQuickFix" xml:space="preserve">
+    <value>Rimuovi istruzione '{0}'</value>
+  </data>
+  <data name="ReplaceQualifierWithMeQuickFix" xml:space="preserve">
+    <value>Sostituire il qualificatore con 'Me'</value>
+  </data>
+  <data name="RenameDeclarationQuickFix" xml:space="preserve">
+    <value>Rinomina {0}</value>
+  </data>
 </root>

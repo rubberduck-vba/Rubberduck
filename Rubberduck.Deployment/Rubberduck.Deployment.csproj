@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Product>Rubberduck.Deployment</Product>
-    <Copyright>Copyright © 2018-2019</Copyright>
+    <Copyright>Copyright © 2018-2023</Copyright>
     <ProjectGuid>{4B9BD3FE-DDC8-4842-BC3D-B8EF43011F0C}</ProjectGuid>
     <RootNamespace>Rubberduck.Deployment</RootNamespace>
     <AssemblyName>Rubberduck.Deployment</AssemblyName>
@@ -57,7 +57,7 @@
     <CreateProperty Value="$(ProjectDir)$(OutputPath)$(TargetFileName)">
       <Output TaskParameter="Value" PropertyName="TargetAssembly" />
     </CreateProperty>
-    <RubberduckPostBuildTask Config="$(ConfigurationName)" NetToolsDir="$(SdkPath)bin\NETFX 4.6.1 Tools\" WixToolsDir="$(ProjectDir)WixToolset\" SourceDir="$(TargetDir)" TargetDir="$(TargetDir)" ProjectDir="$(ProjectDir)" IncludeDir="$(ProjectDir)InnoSetup\Includes\" FilesToExtract="Rubberduck.dll" />
+    <RubberduckPostBuildTask Config="$(ConfigurationName)" NetToolsDir="$(SdkPath)bin\NETFX 4.6.2 Tools\" WixToolsDir="$(ProjectDir)WixToolset\" SourceDir="$(TargetDir)" TargetDir="$(TargetDir)" ProjectDir="$(ProjectDir)" IncludeDir="$(ProjectDir)InnoSetup\Includes\" FilesToExtract="Rubberduck.dll" />
     <Message Text="Ran Rubberduck postbuild task" Importance="normal" />
   </Target>
 </Project>

@@ -8,7 +8,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Parsing.Annotations.Concrete;
 
 namespace Rubberduck.Parsing.Symbols
@@ -365,7 +364,7 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public void AddReference(
+        public IdentifierReference AddReference(
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent,
@@ -382,7 +381,9 @@ namespace Rubberduck.Parsing.Symbols
             int defaultMemberRecursionDepth = 0,
             bool isArrayAccess = false,
             bool isProcedureCoercion = false,
-            bool isInnerRecursiveDefaultMemberAccess = false
+            bool isInnerRecursiveDefaultMemberAccess = false,
+            IdentifierReference qualifyingReference = null,
+            bool isReDim = false
             )
         {
             var oldReference = _references.FirstOrDefault(r =>
@@ -415,8 +416,11 @@ namespace Rubberduck.Parsing.Symbols
                 defaultMemberRecursionDepth,
                 isArrayAccess,
                 isProcedureCoercion,
-                isInnerRecursiveDefaultMemberAccess);
+                isInnerRecursiveDefaultMemberAccess,
+                qualifyingReference,
+                isReDim);
             _references.AddOrUpdate(newReference, 1, (key, value) => 1);
+            return newReference;
         }
 
         /// <summary>
@@ -525,7 +529,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 _asTypeDeclaration = value;
                 IsSelfAssigned = IsSelfAssigned || (DeclarationType == DeclarationType.Variable &&
-                                 AsTypeDeclaration.DeclarationType == DeclarationType.UserDefinedType);
+                                 AsTypeDeclaration?.DeclarationType == DeclarationType.UserDefinedType);
             }
         }
 

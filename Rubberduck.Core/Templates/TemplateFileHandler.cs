@@ -14,25 +14,21 @@ namespace Rubberduck.Templates
 
     public class TemplateFileHandlerProvider : ITemplateFileHandlerProvider
     {
-        private readonly string _rootPath;
+        private readonly Lazy<string> _rootPath;
         private readonly IFileSystem _filesystem;
 
         public TemplateFileHandlerProvider(
             IPersistencePathProvider pathProvider,
             IFileSystem fileSystem)
         {
-            _rootPath = pathProvider.DataFolderPath("Templates");
+            _rootPath = new Lazy<string>(() => pathProvider.DataFolderPath("Templates"));
             _filesystem = fileSystem;
         }
 
         public ITemplateFileHandler CreateTemplateFileHandler(string templateName)
         {
-            if (!_filesystem.Directory.Exists(_rootPath))
-            {
-                _filesystem.Directory.CreateDirectory(_rootPath);
-            }
-
-            var fullPath = _filesystem.Path.Combine(_rootPath, templateName);
+            EnsureRootPathExists();
+            var fullPath = _filesystem.Path.Combine(_rootPath.Value, templateName);
             if (!_filesystem.Directory.Exists(_filesystem.Path.GetDirectoryName(fullPath)))
             {
                 throw new InvalidOperationException("Cannot provide a path for where the parent directory do not exist");
@@ -42,8 +38,17 @@ namespace Rubberduck.Templates
 
         public IEnumerable<string> GetTemplateNames()
         {
-            var info = _filesystem.DirectoryInfo.FromDirectoryName(_rootPath);
+            EnsureRootPathExists();
+            var info = _filesystem.DirectoryInfo.FromDirectoryName(_rootPath.Value);
             return info.GetFiles().Select(file => file.Name).ToList();
+        }
+
+        private void EnsureRootPathExists()
+        {
+            if (!_filesystem.Directory.Exists(_rootPath.Value))
+            {
+                _filesystem.Directory.CreateDirectory(_rootPath.Value);
+            }
         }
     }
 

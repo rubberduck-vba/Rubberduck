@@ -126,15 +126,6 @@
   <data name="TodoExplorer_LineNumber" xml:space="preserve">
     <value>Zeilennummer</value>
   </data>
-  <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>Markierungstext:</value>
-  </data>
-  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>Markierungen:</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Text</value>
-  </data>
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>In die Zwischenablage kopieren</value>
   </data>
@@ -148,5 +139,20 @@
   <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
     <value>Rubberduck TODO Markierungen - {0}
 {1} Markierungen gefunden.</value>
+  </data>
+  <data name="ToDoExplorerWindowSettings_AccessKey" xml:space="preserve">
+    <value>T_oDo Liste</value>
+  </data>
+  <data name="FilterLabel" xml:space="preserve">
+    <value>Filter:</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="TodoSettings_TokenLabel" xml:space="preserve">
+    <value>Tokentext:</value>
+  </data>
+  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
+    <value>Tokenliste:</value>
   </data>
 </root>

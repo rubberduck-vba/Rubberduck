@@ -62,6 +62,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => WrappedCandidate.IsReadOnly;
         }
 
+        public bool IsAssignedExternally => WrappedCandidate.IsAssignedExternally;
+
         private bool _encapsulateFlag;
         public bool EncapsulateFlag
         {

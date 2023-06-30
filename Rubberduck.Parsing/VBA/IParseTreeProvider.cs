@@ -10,5 +10,6 @@ namespace Rubberduck.Parsing.VBA
         List<KeyValuePair<QualifiedModuleName, IParseTree>> ParseTrees { get; }
         List<KeyValuePair<QualifiedModuleName, IParseTree>> AttributeParseTrees { get; }
         IParseTree GetParseTree(QualifiedModuleName module, CodeKind codeKind);
+        LogicalLineStore GetLogicalLines(QualifiedModuleName module);
     }
 }

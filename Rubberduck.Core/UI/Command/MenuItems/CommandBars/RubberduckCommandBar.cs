@@ -79,7 +79,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 var source = _tokenSources.GetOrAdd(nameof(OnSelectionChange), k => new CancellationTokenSource());
                 var token = source.Token;
 
-                await Task.Run(async () =>
+                Task.Run(async () =>
                     {
                         var caption = await _formatter.FormatAsync(e.Declaration, e.MultipleControlsSelected, token);
                         token.ThrowIfCancellationRequested();

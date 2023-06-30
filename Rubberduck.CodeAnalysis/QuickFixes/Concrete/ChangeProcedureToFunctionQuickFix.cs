@@ -66,8 +66,6 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             }
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.ProcedureShouldBeFunctionInspectionQuickFix;
-
         private void UpdateSignature(Declaration target, ParameterDeclaration arg, IRewriteSession rewriteSession)
         {
             var subStmt = (VBAParser.SubStmtContext) target.Context;
@@ -106,6 +104,8 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             rewriter.Replace(callStmtContext.whiteSpace(), "(");
             rewriter.InsertAfter(argListContext.Stop.TokenIndex, ")");
         }
+
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.ProcedureShouldBeFunctionInspectionQuickFix;
 
         public override bool CanFixMultiple => true;
         public override bool CanFixInProcedure => false;

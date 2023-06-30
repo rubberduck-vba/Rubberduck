@@ -15,4 +15,14 @@ namespace Rubberduck.UI.Command.MenuItems
         public override string Key => "RubberduckMenu_CodeMetrics";
         public override int DisplayOrder => (int)ToolsMenuItemDisplayOrder.CodeMetrics;
     }
+
+    public class WindowsCodeMetricsCommandMenuItem : CodeMetricsCommandMenuItem
+    {
+        public WindowsCodeMetricsCommandMenuItem(CodeMetricsCommand command)
+            : base(command)
+        {
+        }
+
+        public override int DisplayOrder => (int)WindowMenuItemDisplayOrder.CodeMetrics;
+    }
 }

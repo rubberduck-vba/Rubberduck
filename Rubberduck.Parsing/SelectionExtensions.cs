@@ -59,5 +59,26 @@ namespace Rubberduck.Parsing
         {
             return context.GetSelection().Contains(selection);
         }
+
+        /// <summary>
+        /// Determines whether two selections overlaps each other. This is useful for validating whether a required selection is wholly contained within a given selection.
+        /// </summary>
+        /// <param name="thisSelection">Target selection, usually representing user's selection</param>
+        /// <param name="selection">The selection that might overlaps the target selection</param>
+        /// <returns>Boolean with true indicating that the selections overlaps</returns>
+        public static bool Overlaps(this Selection thisSelection, Selection selection)
+        {
+            var startFirstSelection = new Selection(thisSelection.StartLine, thisSelection.StartColumn);
+            var endFirstSelection = new Selection(thisSelection.EndLine, thisSelection.EndColumn);
+            if (selection.Contains(startFirstSelection) || selection.Contains(endFirstSelection))
+                return true;
+
+            var startSecondSelection = new Selection(selection.StartLine, selection.StartColumn);
+            var endSecondSelection = new Selection(selection.EndLine, selection.EndColumn);
+            if (thisSelection.Contains(startSecondSelection) || thisSelection.Contains(endSecondSelection))
+                return true;
+
+            return false;
+        }
     }
 }

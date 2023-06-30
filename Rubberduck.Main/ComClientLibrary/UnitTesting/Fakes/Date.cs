@@ -18,15 +18,16 @@ namespace Rubberduck.UnitTesting.Fakes
         public void DateCallback(IntPtr retVal)
         {
             OnCallBack(true);
-            if (!TrySetReturnValue())                          // specific invocation
+            if (!TrySetReturnValue())
             {
-                TrySetReturnValue(true);                       // any invocation
+                TrySetReturnValue(true);
             }
             if (PassThrough)
             {
-                object result;
-                VbeProvider.VbeNativeApi.GetDateVar(out result);
-                Marshal.GetNativeVariantForObject(result, retVal);
+                FakesProvider.SuspendFake(typeof(Now));
+                var nativeCall = Marshal.GetDelegateForFunctionPointer<DateDelegate>(NativeFunctionAddress);
+                nativeCall(retVal);
+                FakesProvider.ResumeFake(typeof(Now));
                 return;
             }
             Marshal.GetNativeVariantForObject(ReturnValue ?? 0, retVal);

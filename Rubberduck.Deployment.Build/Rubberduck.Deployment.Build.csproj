@@ -8,6 +8,27 @@
     <AssemblyName>Rubberduck.Deployment.Build</AssemblyName>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseMetaProject.csproj" />
+  <UsingTask TaskName="GetMSBuildBitness" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Bitness ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.Runtime.InteropServices" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+IntPtr ptr = IntPtr.Zero;
+
+if(Marshal.SizeOf(ptr) == 8)
+	Bitness = "x64";
+else if(Marshal.SizeOf(ptr) == 4)
+	Bitness = "x32";
+else
+	Bitness = "Unknown";
+]]>        
+      </Code>
+    </Task>
+  </UsingTask>
   <ItemGroup>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Tasks.v4.0" />
@@ -17,11 +38,27 @@
     <Reference Include="Microsoft.VisualStudio.Setup.Configuration.Interop">
       <HintPath>VisualStudioSetup\Microsoft.VisualStudio.Setup.Configuration.Interop.dll</HintPath>
     </Reference>
-    <Reference Include="olewoo">
-      <HintPath>OleWoo\olewoo.dll</HintPath>
-    </Reference>
-    <Reference Include="olewoo_interop">
-      <HintPath>OleWoo\olewoo_interop.dll</HintPath>
-    </Reference>
+  </ItemGroup>
+  <Target Name="BeforeBuild">
+    <GetMSBuildBitness>
+      <Output PropertyName="MSBuildBitness" TaskParameter="Bitness" />
+    </GetMSBuildBitness>
+	  <Message Text="Resolved MSBuild Bitness: $(MSBuildBitness)" Importance="high" />
+    <ItemGroup>
+      <Reference Remove="olewoo" />
+      <Reference Remove="olewoo_interop" />
+    </ItemGroup>
+    <ItemGroup Condition="'x64'=='$(MSBuildBitness)'">
+      <Reference Include="OleWoo\x64\olewoo.dll" />
+      <Reference Include="OleWoo\x64\olewoo_interop.dll" />
+    </ItemGroup>
+    <ItemGroup Condition="'x32'=='$(MSBuildBitness)'">
+      <Reference Include="OleWoo\x32\olewoo.dll" />
+      <Reference Include="OleWoo\x32\olewoo_interop.dll" />
+    </ItemGroup>
+  </Target>
+  <ItemGroup>
+    <Folder Include="OleWoo\x64\" />
+    <Folder Include="OleWoo\x32\" />
   </ItemGroup>
 </Project>

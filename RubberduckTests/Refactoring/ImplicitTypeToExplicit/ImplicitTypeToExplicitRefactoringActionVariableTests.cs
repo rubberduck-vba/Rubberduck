@@ -464,7 +464,6 @@ $@"
 Private Sub Fizz()
     mTest = ACONST
 End Sub
-
 ";
             var vbe = MockVbeBuilder.BuildFromStdModules((MockVbeBuilder.TestModuleName, inputCode),
                 ("AssigningModule", assigningModuleCode));
@@ -605,7 +604,6 @@ End Sub
 Sub Test2()
     mTest = mTest2
 End Sub
-
 ";
 
             var refactoredCode = RefactoredCode(inputCode,
@@ -876,6 +874,265 @@ End {procedureType}
 
             var refactoredCode = RefactoredCode(inputCode, NameAndDeclarationTypeTuple(targetName));
             StringAssert.Contains($"{targetName}{arrayDimensionExpression} As {expectedType}", refactoredCode);
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/5907
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void StringConcatOpWithLineContinuation()
+        {
+            var targetName = "testValue";
+            var expectedType = "String";
+            var inputCode =
+$@"
+Private Sub Test()
+    Dim testValue
+    testValue = ""Hello "" & _
+        ""World""
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromStdModules((MockVbeBuilder.TestModuleName, inputCode));
+
+            var refactoredCode = RefactoredCode(vbe.Object,
+                state => TestModel(state, NameAndDeclarationTypeTuple(targetName), (model) => model));
+
+            StringAssert.Contains($"{targetName} As {expectedType}", refactoredCode[MockVbeBuilder.TestModuleName]);
+        }
+
+        [TestCase(@"""Literal1 "" & ""Literal2""", "String")]
+        [TestCase(@"""Literal1 "" & 5", "String")]
+        [TestCase(@"""Literal1 "" & 5 & "" Literal2""", "String")]
+        [TestCase(@"""Literal1 "" & declaredVariant & "" Literal2""", "Variant")]
+        [TestCase(@"""Literal1 "" & GetAString() & "" Literal2""", "String")]
+        [TestCase(@"GetAString() & ""Literal1 ""  & "" Literal2""", "String")]
+        [TestCase(@"GetALong() & ""Literal1 ""  & "" Literal2""", "String")]
+        [TestCase(@"doubleVal & ""Literal1 ""  & "" Literal2""", "String")]
+        [TestCase(@"PI & ""Literal1 ""  & "" Literal2""", "String")]
+        [TestCase(@"implicitVar & ""Literal1 ""  & "" Literal2""", "Variant")]
+        [TestCase(@"PI & GetAString()  & GetALong() & doubleVal & ""Literal1""", "String")]
+        [TestCase(@"PI & GetAString()  & GetALong() & doubleVal & implicitVar & ""Literal1""", "Variant")]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void ConcatOpContext(string expression, string expectedType)
+        {
+            var targetName = "testValue";
+            var inputCode =
+$@"
+
+Private Const PI As Single = 3.14
+
+Private Sub Test()
+    Dim testValue, implicitVar
+    Dim declaredVariant As Variant
+    declaredVariant = ""I'm a Variant""
+
+    Dim doubleVal As Double
+
+    testValue = {expression}
+End Sub
+
+Private Function GetAString() As String
+    GetAString = ""Rubberduck""
+End Function
+
+Private Function GetALong() As Long
+    GetALong = 2022
+End Function
+";
+            var vbe = MockVbeBuilder.BuildFromStdModules((MockVbeBuilder.TestModuleName, inputCode));
+
+            var refactoredCode = RefactoredCode(vbe.Object,
+                state => TestModel(state, NameAndDeclarationTypeTuple(targetName), (model) => model));
+
+            StringAssert.Contains($"{targetName} As {expectedType}", refactoredCode[MockVbeBuilder.TestModuleName]);
+        }
+
+        [TestCase(@"GetAValue() & ""Literal""", "GetAValue() As Long", "GetAValue() As Variant", "String")]
+        [TestCase(@"GetAValue() & ""Literal""", "GetAValue() As Variant", "GetAValue() As Long", "Variant")]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void ConcatOpContextUsesCorrectFunctionDeclaration(string expression, string sameNameFunction, 
+            string otherModuleDeclaration, string expectedType)
+        {
+            var targetName = "testValue";
+            var inputCode =
+$@"
+Private Sub Test()
+    Dim testValue
+
+    testValue = {expression}
+End Sub
+
+Private Function {sameNameFunction}
+    GetAValue = 2022
+End Function
+";
+
+            //Create another module with identical declaration identifiers but a different
+            //AsTypeName for the function.  The refactoring targetName is changed to allow
+            //NameAndDeclarationTypeTuple to succeed.
+            var otherModuleCode = inputCode.Replace(sameNameFunction, otherModuleDeclaration);
+            
+            otherModuleCode = otherModuleCode.Replace(targetName, "testValue2");
+
+            var vbe = MockVbeBuilder.BuildFromStdModules((MockVbeBuilder.TestModuleName, inputCode),
+                ("OtherModule", otherModuleCode));
+
+            var refactoredCode = RefactoredCode(vbe.Object,
+                state => TestModel(state, NameAndDeclarationTypeTuple(targetName), (model) => model));
+
+            StringAssert.Contains($"{targetName} As {expectedType}", refactoredCode[MockVbeBuilder.TestModuleName]);
+        }
+
+        [TestCase(@"PI & "" Literal""", "Const PI As Single = 3.14", "Const PI As Variant = 3.14", "String")]
+        [TestCase(@"PI & "" Literal""", "Const PI As Variant = 3.14", "Const PI As Single = 3.14", "Variant")]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void ConcatOpContextUsesCorrectConstantDeclaration(string expression, string sameNameConst, 
+            string otherModuleConst, string expectedType)
+        {
+            var targetName = "testValue";
+            var inputCode =
+$@"
+Private {sameNameConst}
+
+Private Sub Test()
+    Dim testValue
+
+    testValue = {expression}
+End Sub
+";
+
+            //Create another module with identical declaration identifiers but a different
+            //AsTypeName for the constant.  The refactoring targetName is changed to allow
+            //NameAndDeclarationTypeTuple to succeed.
+            var otherModuleCode = inputCode.Replace(sameNameConst, otherModuleConst);
+            
+            otherModuleCode = otherModuleCode.Replace(targetName, "testValue2");
+
+            var vbe = MockVbeBuilder.BuildFromStdModules((MockVbeBuilder.TestModuleName, inputCode),
+                ("OtherModule", otherModuleCode));
+
+            var refactoredCode = RefactoredCode(vbe.Object,
+                state => TestModel(state, NameAndDeclarationTypeTuple(targetName), (model) => model));
+
+            StringAssert.Contains($"{targetName} As {expectedType}", refactoredCode[MockVbeBuilder.TestModuleName]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void ConcatExpressionEdgeCase()
+        {
+            var targetName = "testValue";
+            //TODO: Once an expression evaluation capability is added, 
+            //expectedType should be 'String'
+            var expectedType = "Variant";
+            var inputCode =
+$@"
+Private Sub Test()
+    Dim testValue
+
+    testValue = 5 & Null & Null & 5
+End Sub
+";
+
+            var refactoredCode = RefactoredCode(inputCode,
+                state => TestModel(state, NameAndDeclarationTypeTuple(targetName), (model) => model));
+
+            StringAssert.Contains($"{targetName} As {expectedType}", refactoredCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void ConcatExpressionContainsNonLExprOrLiteralContext()
+        {
+            var targetName = "testValue";
+            //TODO: Once an expression evaluation capability is added, 
+            //expectedType should be 'String'
+            var expectedType = "Variant";
+            var inputCode =
+$@"
+Private Sub Test()
+    Dim testValue
+    testValue = ""Literal"" & 55 + 20
+End Sub
+";
+
+            var refactoredCode = RefactoredCode(inputCode,
+                state => TestModel(state, NameAndDeclarationTypeTuple(targetName), (model) => model));
+
+            StringAssert.Contains($"{targetName} As {expectedType}", refactoredCode);
+        }
+
+        [TestCase("Variant", "Variant")]
+        [TestCase("Long", "String")]
+        [TestCase("Double", "String")]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void MultipleConcatOpExpressions(string typeName, string expectedType)
+        {
+            var targetName = "mTestValue";
+            var inputCode =
+$@"
+Private mTestValue
+
+Private Sub Test1()
+    mTestValue = 5 & Null
+End Sub
+
+Private Sub Test2()
+    Dim xVar As {typeName}
+    xVar = 5
+    mTestValue = xVar & ""Test2""
+End Sub
+
+Private Sub Test3()
+    Dim xVar As Long
+    xVar = 5
+    mTestValue = xVar & ""Test3""
+End Sub
+";
+
+            var refactoredCode = RefactoredCode(inputCode,
+                state => TestModel(state, NameAndDeclarationTypeTuple(targetName), (model) => model));
+
+            StringAssert.Contains($"{targetName} As {expectedType}", refactoredCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category(nameof(ImplicitTypeToExplicitRefactoringAction))]
+        public void ObjectWithinConcatExpressions()
+        {
+            var targetName = "mTestValue";
+            var expectedType = "Variant";
+            var inputCode =
+@"
+Private mTestValue
+
+Private Sub Test1()
+    Dim obj As TestClass
+    set obj = new TestClass
+    mTestValue = 5 & obj
+End Sub
+";
+
+            var testClassCode =
+$@"
+Public mVal As String
+";
+
+            var vbe = TestVbe(("TestModule", inputCode, ComponentType.StandardModule),
+                ("TestClass", testClassCode, ComponentType.ClassModule));
+
+
+            var refactoredCode = RefactoredCode(vbe,
+                state => TestModel(state, NameAndDeclarationTypeTuple(targetName), (model) => model));
+
+            StringAssert.Contains($"{targetName} As {expectedType}", refactoredCode["TestModule"]);
         }
 
         private static (string, DeclarationType) NameAndDeclarationTypeTuple(string name)

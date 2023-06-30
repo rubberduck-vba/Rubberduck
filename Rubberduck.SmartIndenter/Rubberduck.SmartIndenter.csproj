@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Title>Rubberduck.SmartIndenter</Title>
     <Product>Rubberduck.SmartIndenter</Product>
-    <Copyright>Copyright © 2015-2019</Copyright>
+    <Copyright>Copyright © 2015-2023</Copyright>
     <ProjectGuid>{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

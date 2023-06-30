@@ -40,7 +40,7 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel Margin="5,5,5,0">
-            <Label Background="{StaticResource HeaderBackgroundDarkBrush}"
+            <Label Background="{DynamicResource HeaderBackgroundDarkBrush}"
                        HorizontalContentAlignment="Stretch"
                        Margin="0,0,0,3">
                 <Label.Style>
@@ -52,9 +52,9 @@
                         </Style.Resources>
                     </Style>
                 </Label.Style>
-                <DockPanel Background="{StaticResource HeaderBackgroundDarkBrush}" FlowDirection="LeftToRight">
+                <DockPanel Background="{DynamicResource HeaderBackgroundDarkBrush}" FlowDirection="LeftToRight">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                        <Label Foreground="{StaticResource CaptionLightBrush}"
+                        <Label Foreground="{DynamicResource CaptionLightBrush}"
                                    FontWeight="SemiBold" 
                                    Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=PageHeader_UnitTestSettings}">
                         </Label>
@@ -78,16 +78,20 @@
                 </DockPanel>
             </Label>
             <Label Content="{Resx ResxName=Rubberduck.Resources.Settings.UnitTestingPage, Key=UnitTestSettings_BindingMode}"
+                   Target="{Binding ElementName=bindingMode}"
                    FontWeight="SemiBold" />
-            <ComboBox Margin="5,0,0,5"
+            <ComboBox x:Name="bindingMode"
+                      Margin="5,0,0,5"
                       Width="210"
                       HorizontalAlignment="Left"
                       ItemsSource="{Binding Source={StaticResource BindingMode}, Converter={StaticResource BindingModeToText}, UpdateSourceTrigger=PropertyChanged}"
                       SelectedItem="{Binding BindingMode, Converter={StaticResource BindingModeValueToText}}" />
 
             <Label Content="{Resx ResxName=Rubberduck.Resources.Settings.UnitTestingPage, Key=UnitTestSettings_AssertMode}"
+                   Target="{Binding ElementName=typeSafety}"
                    FontWeight="SemiBold" />
-            <ComboBox Margin="5,0,0,5"
+            <ComboBox x:Name="typeSafety"
+                      Margin="5,0,0,5"
                       Width="210"
                       HorizontalAlignment="Left"
                       ItemsSource="{Binding Source={StaticResource AssertMode}, Converter={StaticResource AssertModeToText}, UpdateSourceTrigger=PropertyChanged}"

@@ -18,6 +18,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         Refactorings,
         Navigate,
         Tools,
+        Windows,
         CodeInspections,
         Settings,
         About,

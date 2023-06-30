@@ -121,13 +121,18 @@ namespace Rubberduck.Common
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
-            if (sender is IHotkey hotkey 
-                && hotkey.Command.CanExecute(null))
+            if (sender is IHotkey hotkey)
             {
-                hotkey.Command.Execute(null);
-                return;
+                if (hotkey.Command.CanExecute(null))
+                {
+                    hotkey.Command.Execute(null);
+                    return;
+                }
+                else
+                {
+                    Console.Beep();
+                }
             }
-            
             OnMessageReceived(sender, e);
         }
 

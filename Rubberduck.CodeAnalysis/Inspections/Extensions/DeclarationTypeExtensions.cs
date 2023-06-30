@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Extensions
 {
@@ -9,7 +8,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Extensions
         //ToDo: Move this to resources. (This will require moving resource lookups to Core.)
         public static string ToLocalizedString(this DeclarationType type)
         {
-            return RubberduckUI.ResourceManager.GetString("DeclarationType_" + type, CultureInfo.CurrentUICulture);
+            return CodeAnalysisUI.ResourceManager.GetString("DeclarationType_" + type, CultureInfo.CurrentUICulture);
         }
     }
 }

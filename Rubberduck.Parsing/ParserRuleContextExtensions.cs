@@ -31,11 +31,25 @@ namespace Rubberduck.Parsing
         }
 
         /// <summary>
+        ///  Returns whether the other context from the same parse tree is wholly contained in the current context
+        /// </summary>
+        public static bool Contains(this ParserRuleContext context, ParserRuleContext otherContextInSameParseTree)
+        {
+            if (context is null || otherContextInSameParseTree is null)
+            {
+                return false;
+            }
+
+            return context.start.TokenIndex <= otherContextInSameParseTree.start.TokenIndex
+                   && context.stop.TokenIndex >= otherContextInSameParseTree.stop.TokenIndex;
+        }
+
+        /// <summary>
         ///  Gets the tokens belonging to the context from the token stream.
         /// </summary>
         public static IEnumerable<IToken> GetTokens(this ParserRuleContext context, CommonTokenStream tokenStream)
         {
-            var sourceInterval = context.SourceInterval;
+            var sourceInterval = context?.SourceInterval ?? Interval.Invalid;
             if (sourceInterval.Equals(Interval.Invalid) || sourceInterval.b < sourceInterval.a)
             {
                 return new List<IToken>();
@@ -49,7 +63,7 @@ namespace Rubberduck.Parsing
         public static string GetText(this ParserRuleContext context, ICharStream stream)
         {
             // Can be null if the input is empty it seems.
-            if (context.Stop == null)
+            if (context?.Stop == null)
             {
                 return string.Empty;
             }
@@ -77,7 +91,7 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Determines if any of the context's ancestors are the generic Type.
         /// </summary>
-        public static bool IsDescendentOf<TContext>(this ParserRuleContext context)
+        public static bool IsDescendentOf<TContext>(this ParserRuleContext context) where TContext: ParserRuleContext
         {
             if (context == null)
             {
@@ -120,7 +134,7 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Returns the context's first ancestor of the generic Type.
         /// </summary>
-        public static TContext GetAncestor<TContext>(this ParserRuleContext context)
+        public static TContext GetAncestor<TContext>(this ParserRuleContext context) where TContext: ParserRuleContext
         {
             switch (context)
             {
@@ -136,13 +150,13 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Tries to return the context's first ancestor of the generic Type.
         /// </summary>
-        public static bool TryGetAncestor<TContext>(this ParserRuleContext context, out TContext ancestor)
+        public static bool TryGetAncestor<TContext>(this ParserRuleContext context, out TContext ancestor) where TContext : ParserRuleContext
         {
             ancestor = context.GetAncestor<TContext>();
             return ancestor != null;
         }
 
-        private static TContext GetAncestor_Recursive<TContext>(ParserRuleContext context)
+        private static TContext GetAncestor_Recursive<TContext>(ParserRuleContext context) where TContext: ParserRuleContext
         {
             switch (context)
             {
@@ -249,7 +263,7 @@ namespace Rubberduck.Parsing
         public static VBAParser.EndOfLineContext GetFirstEndOfLine(this VBAParser.EndOfStatementContext endOfStatement)
         {
             //This dedicated method exists for performance reasons on hot-paths.
-            var individualEndOfStatements = endOfStatement.individualNonEOFEndOfStatement();
+            var individualEndOfStatements = endOfStatement?.individualNonEOFEndOfStatement();
 
             if (individualEndOfStatements == null)
             {

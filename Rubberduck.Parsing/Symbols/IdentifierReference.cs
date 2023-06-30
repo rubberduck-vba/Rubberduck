@@ -30,7 +30,9 @@ namespace Rubberduck.Parsing.Symbols
             int defaultMemberRecursionDepth = 0,
             bool isArrayAccess = false,
             bool isProcedureCoercion = false,
-            bool isInnerRecursiveDefaultMemberAccess = false)
+            bool isInnerRecursiveDefaultMemberAccess = false,
+            IdentifierReference qualifyingReference = null,
+            bool isReDim = false)
         {
             ParentScoping = parentScopingDeclaration;
             ParentNonScoping = parentNonScopingDeclaration;
@@ -48,6 +50,8 @@ namespace Rubberduck.Parsing.Symbols
             IsProcedureCoercion = isProcedureCoercion;
             Annotations = annotations ?? new List<IParseTreeAnnotation>();
             IsInnerRecursiveDefaultMemberAccess = isInnerRecursiveDefaultMemberAccess;
+            QualifyingReference = qualifyingReference;
+            IsReDim = isReDim;
         }
 
         public QualifiedSelection QualifiedSelection { get; }
@@ -68,6 +72,8 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public Declaration ParentNonScoping { get; }
 
+        public IdentifierReference QualifyingReference { get; }
+
         public bool IsAssignment { get; }
 
         public bool IsSetAssignment { get; }
@@ -80,6 +86,7 @@ namespace Rubberduck.Parsing.Symbols
         public int DefaultMemberRecursionDepth { get; }
 
         public bool IsArrayAccess { get; }
+        public bool IsReDim { get; }
 
         public ParserRuleContext Context { get; }
 

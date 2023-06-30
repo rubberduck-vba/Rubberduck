@@ -121,4 +121,12 @@
     <value>'TODO implementare il membro di interfaccia</value>
     <comment>Codice VBA (commento)</comment>
   </data>
+  <data name="CommentVerification_TODO" xml:space="preserve">
+    <value>'TODO Questo commento è ancora valido? =&gt; </value>
+    <comment>Codice VBA (commento)</comment>
+  </data>
+  <data name="CodeBuilder_DefaultPropertyImplementation" xml:space="preserve">
+    <value>'TODO implementare il membro</value>
+    <comment>Codice VBA (commento)</comment>
+  </data>
 </root>

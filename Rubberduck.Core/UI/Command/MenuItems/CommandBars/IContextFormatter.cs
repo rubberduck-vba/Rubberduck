@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
+using Rubberduck.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars
@@ -58,7 +59,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         {
             token.ThrowIfCancellationRequested();
             var moduleName = declaration.QualifiedName.QualifiedModuleName;
-            var declarationType = RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, Settings.Settings.Culture);
+            var declarationType = CodeAnalysisUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, Settings.Settings.Culture);
 
             var typeName = TypeName(declaration, multipleControls, declarationType);
             var formattedDeclaration = await FormattedDeclarationAsync(declaration, typeName, moduleName, declarationType, token);

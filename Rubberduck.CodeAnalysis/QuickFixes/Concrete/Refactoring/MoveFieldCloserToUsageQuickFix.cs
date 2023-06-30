@@ -50,7 +50,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete.Refactoring
 
         public override string Description(IInspectionResult result)
         {
-            return string.Format(InspectionResults.MoveFieldCloserToUsageInspection, result.Target.IdentifierName);
+            return string.Format(Resources.Inspections.InspectionResults.MoveFieldCloserToUsageInspection, result.Target.IdentifierName);
         }
     }
 }

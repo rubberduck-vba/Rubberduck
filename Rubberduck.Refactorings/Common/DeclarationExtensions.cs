@@ -41,5 +41,9 @@ namespace Rubberduck.Refactorings.Common
             return declaration.Context.TryGetAncestor<VBAParser.VariableListStmtContext>(out var varList)
                             && varList.ChildCount > 1;
         }
+
+        public static bool IsMutatorProperty(this Declaration declaration)
+            => declaration.DeclarationType.HasFlag(DeclarationType.PropertyLet)
+            || declaration.DeclarationType.HasFlag(DeclarationType.PropertySet);
     }
 }
