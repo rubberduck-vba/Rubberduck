@@ -39,10 +39,10 @@
             <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" BorderBrush="Black" BorderThickness="1px" />
 
             <Image Grid.Row="0" Grid.Column="0" VerticalAlignment="Top"
-                   Style="{StaticResource IconStyle}" 
+                   Style="{DynamicResource IconStyle}" 
                    Source="{Binding NavigateCommandParameter, Converter={StaticResource DeclarationToIcon}, Mode=OneWay}" />
             <Image Grid.Row="0" Grid.Column="0" VerticalAlignment="Top"
-                   Style="{StaticResource IconStyle}" 
+                   Style="{DynamicResource IconStyle}" 
                    Source="{Binding Target.Accessibility, Converter={StaticResource AccessibilityToIcon}, Mode=OneWay}" />
 
             <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"

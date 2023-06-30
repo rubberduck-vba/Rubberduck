@@ -20,7 +20,7 @@
             <BitmapImage x:Key="RemoveParameterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-script.png" />
             <BitmapImage x:Key="RestoreParameterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-return-180-left.png" />
 
-            <Style x:Key="PrettyListBoxItemModified" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource PrettyListBoxItem}">
+            <Style x:Key="PrettyListBoxItemModified" TargetType="{x:Type ListBoxItem}" BasedOn="{DynamicResource PrettyListBoxItem}">
                 <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
             </Style>
         </ResourceDictionary>
@@ -31,7 +31,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <StackPanel Background="{StaticResource BackgroundLightBrush}">
+        <StackPanel Background="{DynamicResource BackgroundLightBrush}">
             <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=RemoveParamsDialog_TitleText}" FontWeight="Bold" />
             <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=RemoveParamsDialog_InstructionsLabelText}"
                        Margin="5,0" />
@@ -49,7 +49,7 @@
                      ItemsSource="{Binding Parameters, UpdateSourceTrigger=PropertyChanged}"
                      SelectedIndex="0"
                      Name="ParameterGrid"
-                     ItemContainerStyle="{StaticResource PrettyListBoxItemModified}"
+                     ItemContainerStyle="{DynamicResource PrettyListBoxItemModified}"
                      AlternationCount="2">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -84,7 +84,7 @@
                         Command="{Binding RemoveParameterCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="{StaticResource RemoveParameterImage}" />
+                        <Image Source="{DynamicResource RemoveParameterImage}" />
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Remove}" />
                     </StackPanel>
                 </Button>
@@ -93,7 +93,7 @@
                         Command="{Binding RestoreParameterCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="{StaticResource RestoreParameterImage}" />
+                        <Image Source="{DynamicResource RestoreParameterImage}" />
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Restore}" />
                     </StackPanel>
                 </Button>
@@ -102,8 +102,8 @@
             <Expander Grid.Row="1"
                       Grid.ColumnSpan="2"
                       IsExpanded="True"
-                      Background="{StaticResource ExpanderBackgroundBrush}"
-                      BorderBrush="{StaticResource ExpanderBorderBrush}"
+                      Background="{DynamicResource ExpanderBackgroundBrush}"
+                      BorderBrush="{DynamicResource ExpanderBorderBrush}"
                       Margin="5,0,5,5">
                 <Expander.Header>
                     <Label FontWeight="SemiBold">

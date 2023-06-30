@@ -71,7 +71,8 @@ on_success:
   - ps: |
         $ProgressPreference = 'SilentlyContinue'
         Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
-        ./codecov.exe -f '*_Coverage.xml'
+        ./codecov.exe -f 'Rubberduck_Coverage.xml' -X search
+        ./codecov.exe -f 'RubberduckCodeAnalysis_Coverage.xml' -X search
 #        choco install gnupg --no-progress --limit-output --confirm --execution-timeout=60
 #        Invoke-WebRequest -Uri https://keybase.io/codecovsecurity/pgp_keys.asc -OutFile codecov.asc
 #        gpg.exe --import codecov.asc
@@ -143,7 +144,7 @@ deploy:
     prerelease: false
     description: "Built with :heart: by AppVeyor CI on [$(appveyor_repo_branch)] - $(appveyor_url)/project/$(appveyor_account_name)/$(appveyor_project_slug)/build/$(appveyor_build_version)"
     auth_token:
-      secure: wL1Ncx68Q2+vTT8/Gkhvrbc/eLERlYsLUFEhwwlTGhSI9qfa8P6x+NOz0LoWENKh
+      secure: IRR2uX59Hi0xgKot4wexASeI2sIb459g9OD55nKpaqvsVGWF85y286q+RU6TaPBK
     artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
     on: 
       branch: main
@@ -154,7 +155,7 @@ deploy:
     prerelease: true
     description: "AppVeyor build on [$(appveyor_repo_branch)] - $(appveyor_url)/project/$(appveyor_account_name)/$(appveyor_project_slug)/build/$(appveyor_build_version)"
     auth_token:
-      secure: wL1Ncx68Q2+vTT8/Gkhvrbc/eLERlYsLUFEhwwlTGhSI9qfa8P6x+NOz0LoWENKh
+      secure: IRR2uX59Hi0xgKot4wexASeI2sIb459g9OD55nKpaqvsVGWF85y286q+RU6TaPBK
     artifact: Rubberduck, InspectionDocs, AnnotationDocs, InstallerHashes
     on: 
       branch: next
@@ -162,7 +163,7 @@ deploy:
 notifications:
   - provider: GitHubPullRequest
     auth_token:
-      secure: wL1Ncx68Q2+vTT8/Gkhvrbc/eLERlYsLUFEhwwlTGhSI9qfa8P6x+NOz0LoWENKh
+      secure: IRR2uX59Hi0xgKot4wexASeI2sIb459g9OD55nKpaqvsVGWF85y286q+RU6TaPBK
     template: "{{#passed}}:white_check_mark:{{/passed}}{{#failed}}:x:{{/failed}} [Build {{&projectName}} {{buildVersion}} {{status}}]({{buildUrl}}) (commit {{commitUrl}} by @{{&commitAuthorUsername}})"
     on_build_success: true
     on_build_failure: true

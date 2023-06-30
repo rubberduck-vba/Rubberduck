@@ -35,7 +35,7 @@
         <ScrollViewer x:Name="ScrollViewer">
             <Grid>
                 <StackPanel Grid.Row="0" Margin="5,5,5,0">
-                    <Label Background="{StaticResource HeaderBackgroundDarkBrush}"
+                    <Label Background="{DynamicResource HeaderBackgroundDarkBrush}"
                        HorizontalContentAlignment="Stretch"
                        Margin="0,0,0,3">
                         <Label.Style>
@@ -47,9 +47,9 @@
                                 </Style.Resources>
                             </Style>
                         </Label.Style>
-                        <DockPanel Background="{StaticResource HeaderBackgroundDarkBrush}" FlowDirection="LeftToRight">
+                        <DockPanel Background="{DynamicResource HeaderBackgroundDarkBrush}" FlowDirection="LeftToRight">
                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                                <Label Foreground="{StaticResource CaptionLightBrush}"
+                                <Label Foreground="{DynamicResource CaptionLightBrush}"
                                    FontWeight="SemiBold" 
                                    Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=PageHeader_GeneralSettings}">
                                 </Label>
@@ -119,7 +119,7 @@
                         <Label DockPanel.Dock="Left" Content="{Resx ResxName=Rubberduck.UI.Settings.GeneralSettingsUI, Key=HotkeysLabel}" FontWeight="SemiBold" />
                         <Label DockPanel.Dock="Right" Content="{Resx ResxName=Rubberduck.UI.Settings.GeneralSettingsUI, Key=HotkeyRestrictionLabel}"
                                Visibility="{Binding ShouldDisplayHotkeyModificationLabel, Converter={StaticResource BoolToVisibility}}"
-                               Foreground="{StaticResource CaptionErrorBrush}"
+                               Foreground="{DynamicResource CaptionErrorBrush}"
                                FontWeight="Bold"/>
                     </DockPanel>
 
@@ -137,7 +137,7 @@
                               HeadersVisibility="Column"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Hidden"
-                              ItemContainerStyle="{StaticResource PrettifyRow}"
+                              ItemContainerStyle="{DynamicResource PrettifyRow}"
                               ColumnHeaderHeight="22"
                               BorderThickness="0">
                         <DataGrid.CellStyle>

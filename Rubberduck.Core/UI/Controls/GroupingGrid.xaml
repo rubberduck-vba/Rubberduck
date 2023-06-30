@@ -16,7 +16,7 @@
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-            <Style x:Key="PrettifyRowModified" TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource PrettifyRow}">
+            <Style x:Key="PrettifyRowModified" TargetType="{x:Type DataGridRow}" BasedOn="{DynamicResource PrettifyRow}">
                 <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
                 <Setter Property="Height" Value="Auto" />
                 <Setter Property="MinHeight" Value="26" />
@@ -29,7 +29,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate>
-                            <Expander Background="{StaticResource BackgroundLightBrush}" Foreground="{StaticResource CaptionDarkBrush}" FontWeight="SemiBold" 
+                            <Expander Background="{DynamicResource BackgroundLightBrush}" Foreground="{DynamicResource CaptionDarkBrush}" FontWeight="SemiBold" 
                                   IsExpanded="{Binding InitialExpandedState, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GroupingGrid}}}">
                                 <Expander.Header>
                                     <StackPanel Orientation="Horizontal">
@@ -57,7 +57,7 @@
         </ResourceDictionary>
     </DataGrid.Resources>
     <DataGrid.GroupStyle>
-        <GroupStyle ContainerStyle="{StaticResource GroupHeaderStyle}">
+        <GroupStyle ContainerStyle="{DynamicResource GroupHeaderStyle}">
             <GroupStyle.Panel>
                 <ItemsPanelTemplate>
                     <DataGridRowsPresenter/>
@@ -79,7 +79,7 @@
             <Setter Property="VerticalGridLinesBrush" Value="Transparent" />
             <Setter Property="HeadersVisibility" Value="Column" />
             <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
-            <Setter Property="ItemContainerStyle" Value="{StaticResource PrettifyRowModified}" />
+            <Setter Property="ItemContainerStyle" Value="{DynamicResource PrettifyRowModified}" />
             <Setter Property="ColumnHeaderHeight" Value="22" />
         </Style>
     </DataGrid.Style>

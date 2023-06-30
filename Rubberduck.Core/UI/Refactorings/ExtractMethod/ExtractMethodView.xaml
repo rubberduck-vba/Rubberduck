@@ -94,7 +94,7 @@
                         <ColumnDefinition Width="25" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Image Source="{StaticResource WarningIcon}"
+                    <Image Source="{DynamicResource WarningIcon}"
                            Height="16"
                            Margin="5"
                            VerticalAlignment="Top" />
@@ -167,7 +167,7 @@
                             HorizontalScrollBarVisibility="Auto"
                             HorizontalGridLinesBrush="Transparent"
                             VerticalGridLinesBrush="Transparent"
-                            ItemContainerStyle="{StaticResource PrettifyRow}"
+                            ItemContainerStyle="{DynamicResource PrettifyRow}"
                             ColumnHeaderHeight="22"
                             BorderThickness="0">
                         <DataGrid.CellStyle>

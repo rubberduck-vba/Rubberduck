@@ -40,7 +40,7 @@
     </UserControl.Resources>
     <ScrollViewer Margin="0,0,10,0">
         <StackPanel Margin="5">
-            <Label Background="{StaticResource BackgroundDarkBrush}"
+            <Label Background="{DynamicResource BackgroundDarkBrush}"
                      HorizontalContentAlignment="Stretch"
                      Margin="0,0,0,5">
                 <Label.Style>
@@ -52,9 +52,9 @@
                         </Style.Resources>
                     </Style>
                 </Label.Style>
-                <DockPanel Background="{StaticResource BackgroundDarkBrush}" FlowDirection="LeftToRight">
+                <DockPanel Background="{DynamicResource BackgroundDarkBrush}" FlowDirection="LeftToRight">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                        <Label Foreground="{StaticResource CaptionLightBrush}" FontWeight="SemiBold">
+                        <Label Foreground="{DynamicResource CaptionLightBrush}" FontWeight="SemiBold">
                             <Resx ResxName="Rubberduck.Resources.Settings.SettingsUI" Key="PageHeader_IndenterSettings"/>
                         </Label>
                     </StackPanel>
@@ -94,8 +94,8 @@
                 </Grid.RowDefinitions>
                 <Expander Grid.Row="0"
                          IsExpanded="False"
-                         Background="{StaticResource ExpanderBackgroundBrush}"
-                         BorderBrush="{StaticResource ExpanderBorderBrush}"
+                         Background="{DynamicResource ExpanderBackgroundBrush}"
+                         BorderBrush="{DynamicResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold"
@@ -162,8 +162,8 @@
                 </Expander>
                 <Expander Grid.Row="1"
                          IsExpanded="False"
-                         Background="{StaticResource ExpanderBackgroundBrush}"
-                         BorderBrush="{StaticResource ExpanderBorderBrush}"
+                         Background="{DynamicResource ExpanderBackgroundBrush}"
+                         BorderBrush="{DynamicResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold"
@@ -212,7 +212,7 @@
                                 <ComboBox Margin="5,0,0,5"
                                              Width="210"
                                              HorizontalAlignment="Left"
-                                             ItemsSource="{Binding Source={StaticResource CommentStyles},Converter={StaticResource LocalizedEndOfLineCommentStyles},UpdateSourceTrigger=PropertyChanged}"
+                                             ItemsSource="{Binding Source={DynamicResource CommentStyles},Converter={StaticResource LocalizedEndOfLineCommentStyles},UpdateSourceTrigger=PropertyChanged}"
                                              SelectedItem="{Binding EndOfLineCommentStyle,Mode=TwoWay,Converter={StaticResource EndOfLineCommentStyleTextToEnumValue},UpdateSourceTrigger=PropertyChanged}"/>
                                 <controls:NumberPicker Margin="0,-4,0,0"
                                              HorizontalAlignment="Left"
@@ -226,8 +226,8 @@
                 </Expander>
                 <Expander Grid.Row="2"
                          IsExpanded="False"
-                         Background="{StaticResource ExpanderBackgroundBrush}"
-                         BorderBrush="{StaticResource ExpanderBorderBrush}"
+                         Background="{DynamicResource ExpanderBackgroundBrush}"
+                         BorderBrush="{DynamicResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold"
@@ -275,14 +275,14 @@
                                Content="{Resx ResxName=Rubberduck.UI.Settings.IndenterSettingsUI, Key=EmptyLineHeading}" />
                         <ComboBox Margin="5,0,0,5"
                                   HorizontalAlignment="Left"
-                                  ItemsSource="{Binding Source={StaticResource EmptyLineOptions},Converter={StaticResource LocalizedEmptyLineHandlers},UpdateSourceTrigger=PropertyChanged}"
+                                  ItemsSource="{Binding Source={DynamicResource EmptyLineOptions},Converter={StaticResource LocalizedEmptyLineHandlers},UpdateSourceTrigger=PropertyChanged}"
                                   SelectedItem="{Binding EmptyLineHandlingMethod,Mode=TwoWay,Converter={StaticResource EmptyLineHandlingValueTextToEnumValue},UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                 </Expander>
                 <Expander Grid.Row="3"
                          IsExpanded="False"
-                         Background="{StaticResource ExpanderBackgroundBrush}"
-                         BorderBrush="{StaticResource ExpanderBorderBrush}"
+                         Background="{DynamicResource ExpanderBackgroundBrush}"
+                         BorderBrush="{DynamicResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold"
@@ -321,8 +321,8 @@
                 </Expander>
                 <Expander Grid.Row="4"
                          IsExpanded="True"
-                         Background="{StaticResource ExpanderBackgroundBrush}"
-                         BorderBrush="{StaticResource ExpanderBorderBrush}"
+                         Background="{DynamicResource ExpanderBackgroundBrush}"
+                         BorderBrush="{DynamicResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold"
