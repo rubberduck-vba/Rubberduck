@@ -83,8 +83,14 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
                 .Where(ir => !ir.IsIgnoringInspectionResult(finder))
                 .ToList();
             stopwatch.Stop();
-            Logger.Trace("Intercepted invocation of '{0}.{1}' returned {2} objects.", GetType().Name, nameof(DoGetInspectionResults), result.Count);
-            Logger.Trace("Intercepted invocation of '{0}.{1}' ran for {2}ms", GetType().Name, nameof(DoGetInspectionResults), stopwatch.ElapsedMilliseconds);
+            if (result.Count > 0)
+            {
+                Logger.Trace("'Returned {2} results, completed in {3}ms.", result.Count, stopwatch.ElapsedMilliseconds);
+            }
+            else
+            {
+                Logger.Trace("Completed in {2}ms", stopwatch.ElapsedMilliseconds);
+            }
             return result;
         }
 
@@ -103,8 +109,14 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
                 .Where(ir => !ir.IsIgnoringInspectionResult(finder))
                 .ToList();
             stopwatch.Stop();
-            Logger.Trace("Intercepted invocation of '{0}.{1}' returned {2} objects.", GetType().Name, nameof(DoGetInspectionResults), result.Count);
-            Logger.Trace("Intercepted invocation of '{0}.{1}' ran for {2}ms", GetType().Name, nameof(DoGetInspectionResults), stopwatch.ElapsedMilliseconds);
+            if (result.Count > 0)
+            {
+                Logger.Trace("'Returned {2} results, completed in {3}ms.", result.Count, stopwatch.ElapsedMilliseconds);
+            }
+            else
+            {
+                Logger.Trace("Completed in {2}ms", stopwatch.ElapsedMilliseconds);
+            }
             return result;
         }
 

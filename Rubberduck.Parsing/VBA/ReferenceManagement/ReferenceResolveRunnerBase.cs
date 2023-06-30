@@ -182,7 +182,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         {
             token.ThrowIfCancellationRequested();
 
-            Logger.Debug("Resolving identifier references in '{0}'... (thread {1})", module.Name, Thread.CurrentThread.ManagedThreadId);
+            Logger.Debug("Thread {0} is resolving identifier references in component '{1}'.", Thread.CurrentThread.ManagedThreadId, module.Name);
 
             var resolver = new IdentifierReferenceResolver(module, finder);
             var listener = new IdentifierReferenceListener(resolver);
@@ -195,8 +195,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     var watch = Stopwatch.StartNew();
                     walker.Walk(listener, tree);
                     watch.Stop();
-                    Logger.Debug("Binding resolution done for component '{0}' in {1}ms (thread {2})", module.Name,
-                        watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+                    Logger.Debug("Thread {0} completed binding resolution for component '{1}' in {2}ms", Thread.CurrentThread.ManagedThreadId, module.Name, watch.ElapsedMilliseconds);
 
                     //Evaluation of the overall status has to be deferred to allow processing of undeclared variables before setting the ready state.
                     _parserStateManager.SetModuleState(module, ParserState.Ready, token, false);
