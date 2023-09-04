@@ -40,7 +40,7 @@
     </UserControl.Resources>
     <ScrollViewer Margin="0,0,10,0">
         <StackPanel Margin="5">
-            <Label Background="{DynamicResource BackgroundDarkBrush}"
+            <Label Background="{StaticResource BackgroundDarkBrush}"
                      HorizontalContentAlignment="Stretch"
                      Margin="0,0,0,5">
                 <Label.Style>
@@ -52,9 +52,9 @@
                         </Style.Resources>
                     </Style>
                 </Label.Style>
-                <DockPanel Background="{DynamicResource BackgroundDarkBrush}" FlowDirection="LeftToRight">
+                <DockPanel Background="{StaticResource BackgroundDarkBrush}" FlowDirection="LeftToRight">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                        <Label Foreground="{DynamicResource CaptionLightBrush}" FontWeight="SemiBold">
+                        <Label Foreground="{StaticResource CaptionLightBrush}" FontWeight="SemiBold">
                             <Resx ResxName="Rubberduck.Resources.Settings.SettingsUI" Key="PageHeader_IndenterSettings"/>
                         </Label>
                     </StackPanel>
@@ -94,8 +94,8 @@
                 </Grid.RowDefinitions>
                 <Expander Grid.Row="0"
                          IsExpanded="False"
-                         Background="{DynamicResource ExpanderBackgroundBrush}"
-                         BorderBrush="{DynamicResource ExpanderBorderBrush}"
+                         Background="{StaticResource ExpanderBackgroundBrush}"
+                         BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold"
@@ -162,8 +162,8 @@
                 </Expander>
                 <Expander Grid.Row="1"
                          IsExpanded="False"
-                         Background="{DynamicResource ExpanderBackgroundBrush}"
-                         BorderBrush="{DynamicResource ExpanderBorderBrush}"
+                         Background="{StaticResource ExpanderBackgroundBrush}"
+                         BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold"
@@ -226,8 +226,8 @@
                 </Expander>
                 <Expander Grid.Row="2"
                          IsExpanded="False"
-                         Background="{DynamicResource ExpanderBackgroundBrush}"
-                         BorderBrush="{DynamicResource ExpanderBorderBrush}"
+                         Background="{StaticResource ExpanderBackgroundBrush}"
+                         BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold"
@@ -281,8 +281,8 @@
                 </Expander>
                 <Expander Grid.Row="3"
                          IsExpanded="False"
-                         Background="{DynamicResource ExpanderBackgroundBrush}"
-                         BorderBrush="{DynamicResource ExpanderBorderBrush}"
+                         Background="{StaticResource ExpanderBackgroundBrush}"
+                         BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold"
@@ -321,8 +321,8 @@
                 </Expander>
                 <Expander Grid.Row="4"
                          IsExpanded="True"
-                         Background="{DynamicResource ExpanderBackgroundBrush}"
-                         BorderBrush="{DynamicResource ExpanderBorderBrush}"
+                         Background="{StaticResource ExpanderBackgroundBrush}"
+                         BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold"
