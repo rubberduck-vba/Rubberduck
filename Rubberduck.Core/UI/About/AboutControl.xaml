@@ -91,7 +91,7 @@
                     <ColumnDefinition Width="*" MinWidth="250"/>
                     <ColumnDefinition Width="*" MinWidth="250"/>
                 </Grid.ColumnDefinitions>
-                    
+
                 <StackPanel MinHeight="100" MinWidth="250" VerticalAlignment="Top">
                     <TextBlock x:Name="Version" Text="{Binding Version}" Style="{StaticResource HeadingLabel}" HorizontalAlignment="Center" Margin="5" />
                     <TextBlock x:Name="OperatingSystem" Text="{Binding OperatingSystem}" Style="{StaticResource NormalLabel}" HorizontalAlignment="Center"/>
@@ -110,7 +110,7 @@
                     </TextBlock>
                 </StackPanel>
 
-            <TextBlock Grid.Column="0" Grid.Row="2" TextAlignment="Center">
+                <TextBlock Grid.Column="0" Grid.Row="2" TextAlignment="Center">
                 <StackPanel Orientation="Vertical" Margin="10">
                     <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_FoundAnIssue}"
                                Style="{StaticResource HeadingLabel}"/>
@@ -169,6 +169,7 @@
                     </TextBlock>
                 </StackPanel>
             </TextBlock>
+            </Grid>
         </Border>
         <Border Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Style="{StaticResource SectionBorder}">
             <ScrollViewer Margin="5" Height="360" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible">
@@ -178,24 +179,21 @@
                     <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_AttributionList}"
                                Style="{StaticResource NormalLabel}" Margin="5" />
 
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_SpecialThanksLabel}"
-                    Style="{StaticResource HeadingLabel}" Margin="0,5" />
-                        <StackPanel Margin="5,0,0,0">
-                            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_CommunityHeader}"
-                        Style="{StaticResource NormalLabel}" FontWeight="Bold" />
-                            <TextBlock Style="{StaticResource NormalLabel}" Margin="5,0"
-                        xml:space="preserve">Code Review (Stack Exchange)
+                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_SpecialThanksLabel}"
+                               Style="{StaticResource HeadingLabel}" Margin="0,5" />
+                    <StackPanel Margin="5,0,0,0">
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_CommunityHeader}"
+                                    Style="{StaticResource NormalLabel}" FontWeight="Bold" />
+                        <TextBlock Style="{StaticResource NormalLabel}" Margin="5,0" xml:space="preserve">Code Review (Stack Exchange)
 Stack Overflow
 Digital Ocean Hacktoberfest
 JetBrains ReSharper Community Team
 Microsoft MVP Award Program
-                            </TextBlock>
+</TextBlock>
 
                             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_ContributorsHeader}"
-                        Style="{StaticResource NormalLabel}" FontWeight="Bold" />
-                            <TextBlock Style="{StaticResource NormalLabel}"
-                        Margin="5,0"
-                        xml:space="preserve">Abraham Hosch
+                                       Style="{StaticResource NormalLabel}" FontWeight="Bold" />
+                            <TextBlock Style="{StaticResource NormalLabel}" Margin="5,0" xml:space="preserve">Abraham Hosch
 Andrew Jackson
 Andrew Zschetzsche
 Andrew Mansell
@@ -241,13 +239,11 @@ Wayne Phillips (vbWatchdog, twinBASIC)
                                 FontSize="10"
                                 HorizontalAlignment="Left"
                                 TextWrapping="WrapWithOverflow"
-                                Margin="15,0,0,0"/>
+                                Margin="15,0,0,0" />
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
-            </Grid>
         </Border>
-        
         <!-- bottom copyright notice -->
         <TextBlock Grid.Row="2" Text="{Binding AboutCopyright}" Style="{StaticResource SubtleLabel}" Margin="0,15" HorizontalAlignment="Center" />
 
