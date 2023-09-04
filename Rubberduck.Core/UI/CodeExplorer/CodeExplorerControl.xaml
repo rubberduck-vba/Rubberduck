@@ -72,7 +72,7 @@
                                   CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                                   Visibility="{Binding VB6Visibility}">
                     <MenuItem.Icon>
-                        <Image Source="{DynamicResource AddTestModuleImage}" />
+                        <Image Source="{StaticResource AddTestModuleImage}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddMDIFormText}"
@@ -80,7 +80,7 @@
                                   CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                                   Visibility="{Binding VB6Visibility}">
                     <MenuItem.Icon>
-                        <Image Source="{DynamicResource AddMdiFormImage}" />
+                        <Image Source="{StaticResource AddMdiFormImage}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddFormText}"
@@ -88,21 +88,21 @@
                                   CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                                   Visibility="{Binding VBAVisibility}">
                     <MenuItem.Icon>
-                        <Image  Source="{DynamicResource AddUserFormImage}" />
+                        <Image  Source="{StaticResource AddUserFormImage}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddStdModuleText}"
                                   Command="{Binding AddStdModuleCommand}"
                                   CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                     <MenuItem.Icon>
-                        <Image Source="{DynamicResource AddStdModuleImage}" />
+                        <Image Source="{StaticResource AddStdModuleImage}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddClassModuleText}"
                                   Command="{Binding AddClassModuleCommand}"
                                   CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                     <MenuItem.Icon>
-                        <Image Source="{DynamicResource AddClassModuleImage}" />
+                        <Image Source="{StaticResource AddClassModuleImage}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddUserControlText}"
@@ -110,7 +110,7 @@
                                   CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                                   Visibility="{Binding VB6Visibility}">
                     <MenuItem.Icon>
-                        <Image Source="{DynamicResource AddUserControlImage}" />
+                        <Image Source="{StaticResource AddUserControlImage}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddPropertyPageText}"
@@ -118,7 +118,7 @@
                                   CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                                   Visibility="{Binding VB6Visibility}">
                     <MenuItem.Icon>
-                        <Image Source="{DynamicResource AddPropertyPageImage}" />
+                        <Image Source="{StaticResource AddPropertyPageImage}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddUserDocumentText}"
@@ -126,7 +126,7 @@
                                   CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                                   Visibility="{Binding VB6Visibility}">
                     <MenuItem.Icon>
-                        <Image Source="{DynamicResource AddUserDocumentImage}" />
+                        <Image Source="{StaticResource AddUserDocumentImage}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
@@ -134,14 +134,14 @@
                                   Command="{Binding AddTestModuleCommand}"
                                   CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                     <MenuItem.Icon>
-                        <Image Source="{DynamicResource AddTestModuleImage}" />
+                        <Image Source="{StaticResource AddTestModuleImage}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddTestModuleWithStubsText}"
                                   Command="{Binding AddTestModuleWithStubsCommand}"
                                   CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                     <MenuItem.Icon>
-                        <Image Source="{DynamicResource AddTestModuleImage}" />
+                        <Image Source="{StaticResource AddTestModuleImage}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
@@ -168,7 +168,7 @@
                         </Style>
                     </MenuItem.ItemContainerStyle>
                     <MenuItem.Icon>
-                        <Image Height="16" Source="{DynamicResource AddClassModuleImage}" />
+                        <Image Height="16" Source="{StaticResource AddClassModuleImage}" />
                     </MenuItem.Icon>
                 </MenuItem>
             </CompositeCollection>
@@ -178,7 +178,7 @@
                 <Setter Property="IsReadOnly" Value="True" />
                 <Setter Property="Margin" Value="4" />
                 <Setter Property="TextWrapping" Value="WrapWithOverflow" />
-                <Setter Property="Background" Value="{DynamicResource BackgroundLightBrush}" />
+                <Setter Property="Background" Value="{StaticResource BackgroundLightBrush}" />
                 <Setter Property="BorderThickness" Value="0" />
             </Style>
 
@@ -196,7 +196,7 @@
                 <Setter Property="IsReadOnly" Value="True" />
                 <Setter Property="Margin" Value="4" />
                 <Setter Property="TextWrapping" Value="WrapWithOverflow" />
-                <Setter Property="Background" Value="{DynamicResource BackgroundLightBrush}" />
+                <Setter Property="Background" Value="{StaticResource BackgroundLightBrush}" />
                 <Setter Property="BorderThickness" Value="0" />
             </Style>
 
@@ -227,14 +227,14 @@
 
                 <Style.Triggers>
                     <Trigger Property="IsSelected" Value="True">
-                        <Setter Property="BorderBrush" Value="{DynamicResource HighlightBorderActiveBrush}"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource HighlightBorderActiveBrush}"/>
                     </Trigger>
                     <MultiTrigger>
                         <MultiTrigger.Conditions>
                             <Condition Property="IsSelected" Value="True"/>
                             <Condition Property="IsSelectionActive" Value="False"/>
                         </MultiTrigger.Conditions>
-                        <Setter Property="BorderBrush" Value="{DynamicResource HighlightInactiveBorderBrush}"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource HighlightInactiveBorderBrush}"/>
                     </MultiTrigger>
                 </Style.Triggers>
                 <Style.Resources>
@@ -258,7 +258,7 @@
         <ToolBarTray Grid.Row="0" IsLocked="True">
             <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
                 <Button Command="{Binding RefreshCommand}">
-                    <Image Source="{DynamicResource RefreshImage}" Style="{DynamicResource ToolbarImageOpacity}" />
+                    <Image Source="{StaticResource RefreshImage}" Style="{StaticResource ToolbarImageOpacity}" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Refresh}" />
                     </Button.ToolTip>
@@ -267,11 +267,11 @@
                 <Separator />
 
                 <Menu VerticalContentAlignment="Center" Background="Transparent" >
-                    <MenuItem ItemsSource="{DynamicResource AddModuleCommands}" 
+                    <MenuItem ItemsSource="{StaticResource AddModuleCommands}" 
                               VerticalContentAlignment="Center"
-                              HeaderTemplate="{DynamicResource MenuItemHeaderDropdownIndicatorTemplate}">
+                              HeaderTemplate="{StaticResource MenuItemHeaderDropdownIndicatorTemplate}">
                         <MenuItem.Header>
-                            <Image Style="{DynamicResource ToolbarIconStyle}" Source="{DynamicResource AddModuleImage}" />
+                            <Image Style="{StaticResource ToolbarIconStyle}" Source="{StaticResource AddModuleImage}" />
                         </MenuItem.Header>
                         <MenuItem.ToolTip>
                             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Add}" />
@@ -289,7 +289,7 @@
                     </Menu.Resources>
                     <MenuItem IsEnabled="{Binding IsBusy, Converter={StaticResource NotBool}}" VerticalAlignment="Center" >
                         <MenuItem.Header>
-                            <Image Style="{DynamicResource DisablingIconStyle}" Source="{DynamicResource SortImage}" />
+                            <Image Style="{StaticResource DisablingIconStyle}" Source="{StaticResource SortImage}" />
                         </MenuItem.Header>
                         <MenuItem.ToolTip>
                             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Sort}" />
@@ -312,13 +312,13 @@
                 <Separator />
 
                 <ToggleButton Name="DisplaySignatures" ToolTip="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_ShowSignaturesToolTip}" IsChecked="True">
-                    <Image Style="{DynamicResource ToolbarIconStyle}" Source="{DynamicResource ShowSignaturesImage}" />
+                    <Image Style="{StaticResource ToolbarIconStyle}" Source="{StaticResource ShowSignaturesImage}" />
                 </ToggleButton>
 
                 <Separator />
 
                 <Button Command="{Binding OpenDesignerCommand}" CommandParameter="{Binding SelectedItem, Mode=OneWay}">
-                    <Image Source="{DynamicResource OpenDesignerImage}" Style="{DynamicResource ToolbarImageOpacity}" />
+                    <Image Source="{StaticResource OpenDesignerImage}" Style="{StaticResource ToolbarImageOpacity}" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_ShowDesignerToolTip}" />
                     </Button.ToolTip>
@@ -327,7 +327,7 @@
                 <Separator />
 
                 <Button Command="{Binding SyncCodePaneCommand}">
-                    <Image Source="{DynamicResource SyncImage}" Style="{DynamicResource ToolbarImageOpacity}" />
+                    <Image Source="{StaticResource SyncImage}" Style="{StaticResource ToolbarImageOpacity}" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SyncCodePaneToolTip}" />
                     </Button.ToolTip>
@@ -336,7 +336,7 @@
                 <Separator />
 
                 <Button Command="{Binding CopyResultsCommand}" CommandParameter="{Binding ElementName=ProjectTree}">
-                    <Image Source="{DynamicResource CopyResultsImage}" Style="{DynamicResource ToolbarImageOpacity}" />
+                    <Image Source="{StaticResource CopyResultsImage}" Style="{StaticResource ToolbarImageOpacity}" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_CopyToolTip}" />
                     </Button.ToolTip>
@@ -345,9 +345,9 @@
                 <Separator />
 
                 <Menu VerticalContentAlignment="Center" Background="Transparent">
-                    <MenuItem HeaderTemplate="{DynamicResource MenuItemHeaderDropdownIndicatorTemplate}">
+                    <MenuItem HeaderTemplate="{StaticResource MenuItemHeaderDropdownIndicatorTemplate}">
                         <MenuItem.Header>
-                            <Image Style="{DynamicResource ToolbarIconStyle}" Source="{DynamicResource FontSizeImage}" />
+                            <Image Style="{StaticResource ToolbarIconStyle}" Source="{StaticResource FontSizeImage}" />
                         </MenuItem.Header>
                         <MenuItem.ToolTip>
                             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_FontSizeToolTip}" />
@@ -389,12 +389,12 @@
 
                 <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}" Margin="2"
                         ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_CollapseAll}">
-                    <Image Source="{DynamicResource CollapseAllImage}" Style="{DynamicResource ToolbarImageOpacity}" />
+                    <Image Source="{StaticResource CollapseAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
                 </Button>
                 
                 <Button Name="ExpandAll" Command="{Binding ExpandAllCommand}" Margin="2"
                         ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_ExpandAll}">
-                    <Image Source="{DynamicResource ExpandAllImage}" Style="{DynamicResource ToolbarImageOpacity}" />
+                    <Image Source="{StaticResource ExpandAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
                 </Button>
                 
             </ToolBar>
@@ -416,7 +416,7 @@
 
         <TreeView x:Name="ProjectTree"
                   Grid.Row="2"
-                  Background="{DynamicResource BackgroundWhiteBrush}"
+                  Background="{StaticResource BackgroundWhiteBrush}"
                   HorizontalContentAlignment="Stretch"
                   ItemsSource="{Binding Projects}"
                   ItemContainerStyle="{StaticResource TreeViewContainerStyle}"
@@ -436,14 +436,14 @@
                       CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                       Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
                         <MenuItem.Icon>
-                            <Image Style="{DynamicResource ToolbarIconStyle}" Source="{DynamicResource OpenDesignerImage}" />
+                            <Image Style="{StaticResource ToolbarIconStyle}" Source="{StaticResource OpenDesignerImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Refresh}"
                       Command="{Binding RefreshCommand}">
                         <MenuItem.Icon>
-                            <Image Source="{DynamicResource RefreshImage}" />
+                            <Image Source="{StaticResource RefreshImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Rename}"
@@ -472,7 +472,7 @@
                                 </Setter>
                                 <Setter Property="Visibility">
                                     <Setter.Value>
-                                        <MultiBinding Converter="{StaticResource AnnotateDeclarationCommandVisibility}">
+                                        <MultiBinding Converter ="{StaticResource AnnotateDeclarationCommandVisibility}">
                                             <Binding Path="." />
                                             <Binding Path="DataContext.SelectedItem" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
                                         </MultiBinding>
@@ -485,7 +485,7 @@
                           Command="{Binding CodeExplorerExtractInterfaceCommand}"
                           CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                         <MenuItem.Icon>
-                            <Image Source="{DynamicResource ExtractInterfaceImage}" />
+                            <Image Source="{StaticResource ExtractInterfaceImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
@@ -493,7 +493,7 @@
                           Command="{Binding AddRemoveReferencesCommand}"
                           CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                         <MenuItem.Icon>
-                            <Image Source="{DynamicResource AddRemoveReferencesImage}" />
+                            <Image Source="{StaticResource AddRemoveReferencesImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SetAsStartupProject}"
@@ -506,7 +506,7 @@
                     <Separator />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=SyncProject}">
                         <MenuItem.Icon>
-                            <Image Source="{DynamicResource SyncImage}" />
+                            <Image Source="{StaticResource SyncImage}" />
                         </MenuItem.Icon>
                         <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=UpdateFromFiles}"
                                   Command="{Binding UpdateFromFilesCommand}"
@@ -517,9 +517,9 @@
                                   Visibility="{Binding VBAVisibility}" />
                     </MenuItem>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddModule}"
-                          ItemsSource="{DynamicResource AddModuleCommands}">
+                          ItemsSource="{StaticResource AddModuleCommands}">
                         <MenuItem.Icon>
-                            <Image Source="{DynamicResource AddModuleImage}" />
+                            <Image Source="{StaticResource AddModuleImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Export}"
@@ -535,7 +535,7 @@
                               CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                               Visibility="{Binding VBAVisibility}">
                         <MenuItem.Icon>
-                            <Image Source="{DynamicResource RemoveImage}" Style="{DynamicResource ToolbarImageOpacity}" />
+                            <Image Source="{StaticResource RemoveImage}" Style="{StaticResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Exclude}"
@@ -548,13 +548,13 @@
                               CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                               Visibility="{Binding VB6Visibility}">
                         <MenuItem.Icon>
-                            <Image Source="{DynamicResource RemoveImage}" Style="{DynamicResource ToolbarImageOpacity}" />
+                            <Image Source="{StaticResource RemoveImage}" Style="{StaticResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Find}">
                         <MenuItem.Icon>
-                            <Image Source="{DynamicResource FindImage}" />
+                            <Image Source="{StaticResource FindImage}" />
                         </MenuItem.Icon>
                         <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_FindAllReferencesText}"
                                   Command="{Binding FindAllReferencesCommand}"
@@ -574,14 +574,14 @@
                               Command="{Binding ExpandAllSubnodesCommand}"
                               CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                         <MenuItem.Icon>
-                            <Image Source="{DynamicResource ExpandNodesImage}" />
+                            <Image Source="{StaticResource ExpandNodesImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_CollapseSubnodesToolTip}"
                               Command="{Binding CollapseAllSubnodesCommand}"
                               CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                         <MenuItem.Icon>
-                            <Image Source="{DynamicResource CollapseNodesImage}" />
+                            <Image Source="{StaticResource CollapseNodesImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
@@ -589,7 +589,7 @@
                       Command="{Binding PrintCommand}"
                       CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                         <MenuItem.Icon>
-                            <Image Source="{DynamicResource PrintImage}" Style="{DynamicResource ToolbarImageOpacity}" />
+                            <Image Source="{StaticResource PrintImage}" Style="{StaticResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
@@ -608,7 +608,7 @@
                     </HierarchicalDataTemplate.Resources>
                     <StackPanel Orientation="Horizontal">
                         <Grid>
-                            <Image Style="{DynamicResource ToolbarIconStyle}" 
+                            <Image Style="{StaticResource ToolbarIconStyle}" 
                                    ToolTip="{Binding Converter={StaticResource DeclarationTypeNameConverter}}">
                                 <Image.Source>
                                     <MultiBinding Converter="{StaticResource NodeToIcon}">
@@ -621,10 +621,10 @@
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>
-                            <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{DynamicResource ToolbarIconStyle}"
+                            <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}"
                                    ToolTip="{Binding Converter={StaticResource DeclarationTypeNameConverter}}"/>
                         </Grid>
-                        <TextBlock Style="{DynamicResource TreeViewItemStyleModified}" />
+                        <TextBlock Style="{StaticResource TreeViewItemStyleModified}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
@@ -640,15 +640,15 @@
 
         <GridSplitter Grid.Row="3" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 
-        <Border Grid.Row="4" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderWireBrush}">
-            <ScrollViewer Background="{DynamicResource BackgroundLightBrush}" VerticalScrollBarVisibility="Auto">
+        <Border Grid.Row="4" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderWireBrush}">
+            <ScrollViewer Background="{StaticResource BackgroundLightBrush}" VerticalScrollBarVisibility="Auto">
                 <WrapPanel Orientation="Vertical" MinHeight="70" >
                     <Grid Margin="4" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="20" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Image Grid.Column="0" Style="{DynamicResource ToolbarIconStyle}">
+                        <Image Grid.Column="0" Style="{StaticResource ToolbarIconStyle}">
                             <Image.Source>
                                 <MultiBinding Converter="{StaticResource NodeToIcon}">
                                     <MultiBinding.Bindings>
@@ -660,10 +660,10 @@
                                 </MultiBinding>
                             </Image.Source>
                         </Image>
-                        <Image Grid.Column="0" Source="{Binding SelectedItem.Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{DynamicResource ToolbarIconStyle}" />
-                        <TextBox Style="{DynamicResource FooterTextBoxStyle}" Grid.Column="1" Text="{Binding SelectedItem.PanelTitle, Mode=OneWay}" FontWeight="Bold" />
+                        <Image Grid.Column="0" Source="{Binding SelectedItem.Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}" />
+                        <TextBox Style="{StaticResource FooterTextBoxStyle}" Grid.Column="1" Text="{Binding SelectedItem.PanelTitle, Mode=OneWay}" FontWeight="Bold" />
                     </Grid>
-                    <TextBox Style="{DynamicResource FooterTextBoxStyle}" Text="{Binding SelectedItem.Description, Mode=OneWay}" />
+                    <TextBox Style="{StaticResource FooterTextBoxStyle}" Text="{Binding SelectedItem.Description, Mode=OneWay}" />
                     <WrapPanel>
                         <controls:LinkButton Margin="4" FontSize="{Binding FontSize, Mode=OneWay}"
                             Command="{Binding IndenterCommand}" CommandParameter="{Binding SelectedItem, Mode=OneWay}"
