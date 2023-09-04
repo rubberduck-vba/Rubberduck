@@ -35,7 +35,7 @@
         <ScrollViewer x:Name="ScrollViewer">
             <Grid>
                 <StackPanel Grid.Row="0" Margin="5,5,5,0">
-                    <Label Background="{DynamicResource HeaderBackgroundDarkBrush}"
+                    <Label Background="{StaticResource HeaderBackgroundDarkBrush}"
                        HorizontalContentAlignment="Stretch"
                        Margin="0,0,0,3">
                         <Label.Style>
@@ -47,9 +47,9 @@
                                 </Style.Resources>
                             </Style>
                         </Label.Style>
-                        <DockPanel Background="{DynamicResource HeaderBackgroundDarkBrush}" FlowDirection="LeftToRight">
+                        <DockPanel Background="{StaticResource HeaderBackgroundDarkBrush}" FlowDirection="LeftToRight">
                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                                <Label Foreground="{DynamicResource CaptionLightBrush}"
+                                <Label Foreground="{StaticResource CaptionLightBrush}"
                                    FontWeight="SemiBold" 
                                    Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=PageHeader_GeneralSettings}">
                                 </Label>
@@ -119,7 +119,7 @@
                         <Label DockPanel.Dock="Left" Content="{Resx ResxName=Rubberduck.UI.Settings.GeneralSettingsUI, Key=HotkeysLabel}" FontWeight="SemiBold" />
                         <Label DockPanel.Dock="Right" Content="{Resx ResxName=Rubberduck.UI.Settings.GeneralSettingsUI, Key=HotkeyRestrictionLabel}"
                                Visibility="{Binding ShouldDisplayHotkeyModificationLabel, Converter={StaticResource BoolToVisibility}}"
-                               Foreground="{DynamicResource CaptionErrorBrush}"
+                               Foreground="{StaticResource CaptionErrorBrush}"
                                FontWeight="Bold"/>
                     </DockPanel>
 

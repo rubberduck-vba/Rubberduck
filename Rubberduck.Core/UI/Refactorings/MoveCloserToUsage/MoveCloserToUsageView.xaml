@@ -19,7 +19,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
-        <StackPanel Background="{DynamicResource BackgroundLightBrush}">
+        <StackPanel Background="{StaticResource BackgroundLightBrush}">
             <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=MoveCloserToUsageDialog_TitleText}" FontWeight="Bold" />
             <TextBlock Text="{Binding Instructions}" Margin="5,0" />
         </StackPanel>

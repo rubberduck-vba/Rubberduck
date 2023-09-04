@@ -94,7 +94,7 @@
                         <ColumnDefinition Width="25" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Image Source="{DynamicResource WarningIcon}"
+                    <Image Source="{StaticResource WarningIcon}"
                            Height="16"
                            Margin="5"
                            VerticalAlignment="Top" />

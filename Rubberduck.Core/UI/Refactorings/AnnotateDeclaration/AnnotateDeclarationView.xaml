@@ -43,13 +43,13 @@
                 <annotations:AnnotationArgumentType>Boolean</annotations:AnnotationArgumentType>
                 <annotations:AnnotationArgumentType>Inspection</annotations:AnnotationArgumentType>
             </x:Array>
-            <converters:SpecificValuesToVisibilityConverter SpecialValues="{DynamicResource NonDefaultInputArgumentTypes}" CollapseSpecialValues="True" x:Key="DefaultArgumentVisibilityConverter"/>
+            <converters:SpecificValuesToVisibilityConverter SpecialValues="{StaticResource NonDefaultInputArgumentTypes}" CollapseSpecialValues="True" x:Key="DefaultArgumentVisibilityConverter"/>
             <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Boolean}" CollapseSpecialValue="False" x:Key="BooleanArgumentVisibilityConverter"/>
             <converters:SpecificValueToVisibilityConverter SpecialValue="{x:Static annotations:AnnotationArgumentType.Inspection}" CollapseSpecialValue="False" x:Key="InspectionArgumentVisibilityConverter"/>
             <DataTemplate DataType="{x:Type local:IAnnotationArgumentViewModel}" x:Key="ArgumentValueTemplate">
                 <StackPanel VerticalAlignment="Center">
                     <TextBox Text="{Binding ArgumentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                             Style="{DynamicResource TextBoxErrorStyle}"
+                             Style="{StaticResource TextBoxErrorStyle}"
                              HorizontalAlignment="Stretch"
                              VerticalAlignment="Stretch"
                              Visibility="{Binding ArgumentType, Converter={StaticResource DefaultArgumentVisibilityConverter}}">
@@ -82,7 +82,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <StackPanel Background="{DynamicResource BackgroundLightBrush}">
+        <StackPanel Background="{StaticResource BackgroundLightBrush}">
             <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_TitleText}" FontWeight="Bold"/>
             <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_Instructions}" Margin="5,0,0,10" TextWrapping="Wrap" />
         </StackPanel>
@@ -141,12 +141,12 @@
                   Margin="5,0,5,5">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_ArgumentTypeHeader}"
-                                        CellTemplateSelector="{DynamicResource AnnotationArgumentTypeCellDataTemplateSelector}"
-                                        CellEditingTemplateSelector="{DynamicResource AnnotationArgumentTypeCellDataTemplateSelector}"
+                                        CellTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}"
+                                        CellEditingTemplateSelector="{StaticResource AnnotationArgumentTypeCellDataTemplateSelector}"
                                         Width="Auto"/>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=AnnotateDeclarationDialog_ArgumentValueHeader}"
-                                        CellTemplate="{DynamicResource ArgumentValueTemplate}"
-                                        CellEditingTemplate="{DynamicResource ArgumentValueTemplate}"
+                                        CellTemplate="{StaticResource ArgumentValueTemplate}"
+                                        CellEditingTemplate="{StaticResource ArgumentValueTemplate}"
                                         Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
