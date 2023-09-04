@@ -50,73 +50,73 @@
     <Color x:Key="ToolBarMenuBorderColor">#FFB6BDC5</Color>
     <Color x:Key="ToolBarSubMenuBackgroundColor">#FFEEF5FD</Color>
 
-    <SolidColorBrush x:Key="HighlightGradientStartBrush" Color="{DynamicResource HighlightGradientStartColor}"/>
-    <SolidColorBrush x:Key="HighlightGradientEndBrush" Color="{DynamicResource HighlightGradientEndColor}"/>
-    <SolidColorBrush x:Key="ControlGradientStartBrush" Color="{DynamicResource ControlGradientStartColor}"/>
-    <SolidColorBrush x:Key="ControlGradientEndBrush" Color="{DynamicResource ControlGradientEndColor}"/>
-    <SolidColorBrush x:Key="ButtonFaceBrush" Color="{DynamicResource ButtonFaceColor}"/>
-    <SolidColorBrush x:Key="BorderWireBrush" Color="{DynamicResource BorderWireColor}"/>
-    <SolidColorBrush x:Key="GlyphPanelBrush" Color="{DynamicResource GlyphPanelColor}"/>
-    <SolidColorBrush x:Key="GlyphPanelTemplateBrush" Color="{DynamicResource GlyphPanelTemplateColor}"/>
-    <SolidColorBrush x:Key="GlyphPanelBorderBrush" Color="{DynamicResource GlyphPanelBorderColor}"/>
-    <SolidColorBrush x:Key="GreenButtonBrush" Color="{DynamicResource GreenButtonColor}"/>
-    <SolidColorBrush x:Key="GreenButtonBorderBrush" Color="{DynamicResource GreenButtonBorderColor}"/>
-    <SolidColorBrush x:Key="GreenButtonMouseOverBrush" Color="{DynamicResource GreenButtonMouseOverColor}"/>
-    <SolidColorBrush x:Key="HighlightBorderBrush" Color="{DynamicResource HighlightBorderColor}"/>
-    <SolidColorBrush x:Key="HighlightBorderActiveBrush" Color="{DynamicResource HighlightBorderActiveColor}"/>
-    <SolidColorBrush x:Key="HighlightBackgroundBrush" Color="{DynamicResource HighlightBackgroundColor}"/>
-    <SolidColorBrush x:Key="HighlightInactiveBorderBrush" Color="{DynamicResource HighlightInactiveBorderColor}"/>
-    <SolidColorBrush x:Key="GlyphPanelHighlightBorderBrush" Color="{DynamicResource HighlightBorderColor}"/>
-    <SolidColorBrush x:Key="GlyphPanelHighlightBackgroundBrush" Color="{DynamicResource HighlightBackgroundColor}"/>
-    <SolidColorBrush x:Key="MouseOverBackgroundBrush" Color="{DynamicResource MouseOverBackgroundColor}"/>
-    <SolidColorBrush x:Key="MouseOverBorderBrush" Color="{DynamicResource MouseOverBorderColor}"/>
-    <SolidColorBrush x:Key="ExpanderBackgroundBrush" Color="{DynamicResource ExpanderBackgroundColor}"/>
-    <SolidColorBrush x:Key="ExpanderBorderBrush" Color="{DynamicResource ExpanderBorderColor}"/>
-    <SolidColorBrush x:Key="CaptionLightBrush" Color="{DynamicResource CaptionLightColor}"/>
-    <SolidColorBrush x:Key="CaptionDarkBrush" Color="{DynamicResource CaptionDarkColor}"/>
-    <SolidColorBrush x:Key="CaptionErrorBrush" Color="{DynamicResource CaptionErrorColor}"/>
-    <SolidColorBrush x:Key="CaptionDisabledBrush" Color="{DynamicResource CaptionDisabledColor}"/>
-    <SolidColorBrush x:Key="CaptionHyperlinkBrush" Color="{DynamicResource CaptionHyperlinkColor}"/>
-    <SolidColorBrush x:Key="CaptionHyperlinkVisitedBrush" Color="{DynamicResource CaptionHyperlinkVisitedColor}"/>
-    <SolidColorBrush x:Key="BackgroundDarkBrush" Color="{DynamicResource BackgroundDarkColor}"/>
-    <SolidColorBrush x:Key="BackgroundLightBrush" Color="{DynamicResource BackgroundLightColor}"/>
-    <SolidColorBrush x:Key="BackgroundWhiteBrush" Color="{DynamicResource BackgroundWhiteColor}"/>
-    <SolidColorBrush x:Key="BackgroundSoftBrush" Color="{DynamicResource BackgroundSoftColor}"/>
-    <SolidColorBrush x:Key="HeaderBackgroundDarkBrush" Color="{DynamicResource HeaderBackgroundDarkColor}"/>
-    <SolidColorBrush x:Key="TabSelectionUnderlineBrush" Color="{DynamicResource TabSelectionUnderlineColor}"/>
-    <SolidColorBrush x:Key="GrayBrush" Color="{DynamicResource GrayColor}"/>
-    <SolidColorBrush x:Key="BlackBrush" Color="{DynamicResource BlackColor}"/>
-    <SolidColorBrush x:Key="WhiteBrush" Color="{DynamicResource WhiteColor}"/>
-    <SolidColorBrush x:Key="BusyIndicatorFillBrush" Color="{DynamicResource BusyIndicatorFillColor}"/>
+    <SolidColorBrush x:Key="HighlightGradientStartBrush" Color="{StaticResource HighlightGradientStartColor}"/>
+    <SolidColorBrush x:Key="HighlightGradientEndBrush" Color="{StaticResource HighlightGradientEndColor}"/>
+    <SolidColorBrush x:Key="ControlGradientStartBrush" Color="{StaticResource ControlGradientStartColor}"/>
+    <SolidColorBrush x:Key="ControlGradientEndBrush" Color="{StaticResource ControlGradientEndColor}"/>
+    <SolidColorBrush x:Key="ButtonFaceBrush" Color="{StaticResource ButtonFaceColor}"/>
+    <SolidColorBrush x:Key="BorderWireBrush" Color="{StaticResource BorderWireColor}"/>
+    <SolidColorBrush x:Key="GlyphPanelBrush" Color="{StaticResource GlyphPanelColor}"/>
+    <SolidColorBrush x:Key="GlyphPanelTemplateBrush" Color="{StaticResource GlyphPanelTemplateColor}"/>
+    <SolidColorBrush x:Key="GlyphPanelBorderBrush" Color="{StaticResource GlyphPanelBorderColor}"/>
+    <SolidColorBrush x:Key="GreenButtonBrush" Color="{StaticResource GreenButtonColor}"/>
+    <SolidColorBrush x:Key="GreenButtonBorderBrush" Color="{StaticResource GreenButtonBorderColor}"/>
+    <SolidColorBrush x:Key="GreenButtonMouseOverBrush" Color="{StaticResource GreenButtonMouseOverColor}"/>
+    <SolidColorBrush x:Key="HighlightBorderBrush" Color="{StaticResource HighlightBorderColor}"/>
+    <SolidColorBrush x:Key="HighlightBorderActiveBrush" Color="{StaticResource HighlightBorderActiveColor}"/>
+    <SolidColorBrush x:Key="HighlightBackgroundBrush" Color="{StaticResource HighlightBackgroundColor}"/>
+    <SolidColorBrush x:Key="HighlightInactiveBorderBrush" Color="{StaticResource HighlightInactiveBorderColor}"/>
+    <SolidColorBrush x:Key="GlyphPanelHighlightBorderBrush" Color="{StaticResource HighlightBorderColor}"/>
+    <SolidColorBrush x:Key="GlyphPanelHighlightBackgroundBrush" Color="{StaticResource HighlightBackgroundColor}"/>
+    <SolidColorBrush x:Key="MouseOverBackgroundBrush" Color="{StaticResource MouseOverBackgroundColor}"/>
+    <SolidColorBrush x:Key="MouseOverBorderBrush" Color="{StaticResource MouseOverBorderColor}"/>
+    <SolidColorBrush x:Key="ExpanderBackgroundBrush" Color="{StaticResource ExpanderBackgroundColor}"/>
+    <SolidColorBrush x:Key="ExpanderBorderBrush" Color="{StaticResource ExpanderBorderColor}"/>
+    <SolidColorBrush x:Key="CaptionLightBrush" Color="{StaticResource CaptionLightColor}"/>
+    <SolidColorBrush x:Key="CaptionDarkBrush" Color="{StaticResource CaptionDarkColor}"/>
+    <SolidColorBrush x:Key="CaptionErrorBrush" Color="{StaticResource CaptionErrorColor}"/>
+    <SolidColorBrush x:Key="CaptionDisabledBrush" Color="{StaticResource CaptionDisabledColor}"/>
+    <SolidColorBrush x:Key="CaptionHyperlinkBrush" Color="{StaticResource CaptionHyperlinkColor}"/>
+    <SolidColorBrush x:Key="CaptionHyperlinkVisitedBrush" Color="{StaticResource CaptionHyperlinkVisitedColor}"/>
+    <SolidColorBrush x:Key="BackgroundDarkBrush" Color="{StaticResource BackgroundDarkColor}"/>
+    <SolidColorBrush x:Key="BackgroundLightBrush" Color="{StaticResource BackgroundLightColor}"/>
+    <SolidColorBrush x:Key="BackgroundWhiteBrush" Color="{StaticResource BackgroundWhiteColor}"/>
+    <SolidColorBrush x:Key="BackgroundSoftBrush" Color="{StaticResource BackgroundSoftColor}"/>
+    <SolidColorBrush x:Key="HeaderBackgroundDarkBrush" Color="{StaticResource HeaderBackgroundDarkColor}"/>
+    <SolidColorBrush x:Key="TabSelectionUnderlineBrush" Color="{StaticResource TabSelectionUnderlineColor}"/>
+    <SolidColorBrush x:Key="GrayBrush" Color="{StaticResource GrayColor}"/>
+    <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource BlackColor}"/>
+    <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource WhiteColor}"/>
+    <SolidColorBrush x:Key="BusyIndicatorFillBrush" Color="{StaticResource BusyIndicatorFillColor}"/>
 
-    <SolidColorBrush x:Key="ToolBarButtonHoverBrush" Color="{DynamicResource ToolBarButtonHoverColor}"/>
-    <SolidColorBrush x:Key="ToolBarGripperBrush" Color="{DynamicResource ToolBarGripperColor}"/>
-    <SolidColorBrush x:Key="ToolBarBackgroundBrush" Color="{DynamicResource ToolBarBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarVerticalBackgroundBrush" Color="{DynamicResource ToolBarVerticalBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarHorizontalBackgroundBrush" Color="{DynamicResource ToolBarHorizontalBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackgroundBrush" Color="{DynamicResource ToolBarToggleButtonVerticalBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarToggleButtonHorizontalBackgroundBrush" Color="{DynamicResource ToolBarToggleButtonHorizontalBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarMenuBorderBrush" Color="{DynamicResource ToolBarMenuBorderColor}"/>
-    <SolidColorBrush x:Key="ToolBarSubMenuBackgroundBrush" Color="{DynamicResource ToolBarSubMenuBackgroundColor}"/>
+    <SolidColorBrush x:Key="ToolBarButtonHoverBrush" Color="{StaticResource ToolBarButtonHoverColor}"/>
+    <SolidColorBrush x:Key="ToolBarGripperBrush" Color="{StaticResource ToolBarGripperColor}"/>
+    <SolidColorBrush x:Key="ToolBarBackgroundBrush" Color="{StaticResource ToolBarBackgroundColor}"/>
+    <SolidColorBrush x:Key="ToolBarVerticalBackgroundBrush" Color="{StaticResource ToolBarVerticalBackgroundColor}"/>
+    <SolidColorBrush x:Key="ToolBarHorizontalBackgroundBrush" Color="{StaticResource ToolBarHorizontalBackgroundColor}"/>
+    <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackgroundBrush" Color="{StaticResource ToolBarToggleButtonVerticalBackgroundColor}"/>
+    <SolidColorBrush x:Key="ToolBarToggleButtonHorizontalBackgroundBrush" Color="{StaticResource ToolBarToggleButtonHorizontalBackgroundColor}"/>
+    <SolidColorBrush x:Key="ToolBarMenuBorderBrush" Color="{StaticResource ToolBarMenuBorderColor}"/>
+    <SolidColorBrush x:Key="ToolBarSubMenuBackgroundBrush" Color="{StaticResource ToolBarSubMenuBackgroundColor}"/>
 
-    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{DynamicResource WhiteColor}" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="{DynamicResource WhiteColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{StaticResource WhiteColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="{StaticResource WhiteColor}" />
 
     <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
-        <GradientStop Color="{DynamicResource HighlightGradientStartColor}" Offset="0"/>
-        <GradientStop Color="{DynamicResource HighlightGradientEndColor}" Offset="1"/>
+        <GradientStop Color="{StaticResource HighlightGradientStartColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource HighlightGradientEndColor}" Offset="1"/>
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="{x:Static SystemColors.ControlBrushKey}" EndPoint="0,1" StartPoint="0,0">
-        <GradientStop Color="{DynamicResource ControlGradientStartColor}" Offset="0"/>
-        <GradientStop Color="{DynamicResource ControlGradientEndColor}" Offset="1"/>
+        <GradientStop Color="{StaticResource ControlGradientStartColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource ControlGradientEndColor}" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Item.SelectedActive.Background" EndPoint="0,1" StartPoint="0,0">
-        <GradientStop Color="{DynamicResource HighlightGradientStartColor}" Offset="0"/>
-        <GradientStop Color="{DynamicResource HighlightGradientEndColor}" Offset="1"/>
+        <GradientStop Color="{StaticResource HighlightGradientStartColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource HighlightGradientEndColor}" Offset="1"/>
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="Item.SelectedInactive.Background" EndPoint="0,1" StartPoint="0,0">
-        <GradientStop Color="{DynamicResource ControlGradientStartColor}" Offset="0"/>
-        <GradientStop Color="{DynamicResource ControlGradientEndColor}" Offset="1"/>
+        <GradientStop Color="{StaticResource ControlGradientStartColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource ControlGradientEndColor}" Offset="1"/>
     </LinearGradientBrush>
 </ResourceDictionary>
