@@ -36,15 +36,22 @@ namespace Rubberduck.VersionCheck
                 return _latestVersion; 
             }
 
-            var tags = await _client.GetLatestTagsAsync(token);
+            try
+            {
+                var tags = await _client.GetLatestTagsAsync(token);
 
-            var next = tags.Single(e => e.IsPreRelease);
-            var main = tags.Single(e => !e.IsPreRelease);
-            _logger.Info($"Main: v{main.Version.ToString(3)}; Next: v{next.Version.ToString(4)}");
+                var next = tags.Single(e => e.IsPreRelease);
+                var main = tags.Single(e => !e.IsPreRelease);
+                _logger.Info($"Main: v{main.Version.ToString(3)}; Next: v{next.Version.ToString(4)}");
 
-            _latestVersion = settings.IncludePreRelease ? next.Version : main.Version;
-            _logger.Info($"Check prerelease: {settings.IncludePreRelease}; latest: v{_latestVersion.ToString(4)}");
+                _latestVersion = settings.IncludePreRelease ? next.Version : main.Version;
+                _logger.Info($"Check prerelease: {settings.IncludePreRelease}; latest: v{_latestVersion.ToString(4)}");
+            }
+            catch ( Exception ex )
+            {
+                _logger.Warn(ex, "Version check failed.");
 
+            }
             return _latestVersion;
         }
 

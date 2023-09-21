@@ -24,9 +24,9 @@ namespace RubberduckTests
             
             var sut = new VersionCheckService(appVersion, apiClient.Object);
             
-            await sut.GetLatestVersionAsync(new GeneralSettings(), CancellationToken.None);
+            var result = await sut.GetLatestVersionAsync(new GeneralSettings(), CancellationToken.None);
 
-            Assert.IsTrue(true); // if we make it here, service isn't throwing.
+            Assert.IsNull(result);
         }
     }
 
