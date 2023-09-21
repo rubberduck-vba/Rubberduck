@@ -11,11 +11,15 @@ namespace Rubberduck.VersionCheck
     public class VersionCheckService : IVersionCheckService
     {
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        private readonly IPublicApiClient _client;
 
         /// <param name="version">That would be the version of the assembly for the <c>_Extension</c> class.</param>
-        public VersionCheckService(Version version)
+        /// <param name="client"></param>
+        public VersionCheckService(Version version, IPublicApiClient client)
         {
             CurrentVersion = version;
+            _client = client;
+
 #if DEBUG
             IsDebugBuild = true;
 #endif
@@ -32,19 +36,16 @@ namespace Rubberduck.VersionCheck
                 return _latestVersion; 
             }
 
-            using (var client = new PublicApiClient())
-            {
-                var tags = await client.GetLatestTagsAsync(token);
+            var tags = await _client.GetLatestTagsAsync(token);
 
-                var next = tags.Single(e => e.IsPreRelease);
-                var main = tags.Single(e => !e.IsPreRelease);
-                _logger.Info($"Main: v{main.Version.ToString(3)}; Next: v{next.Version.ToString(4)}");
+            var next = tags.Single(e => e.IsPreRelease);
+            var main = tags.Single(e => !e.IsPreRelease);
+            _logger.Info($"Main: v{main.Version.ToString(3)}; Next: v{next.Version.ToString(4)}");
 
-                _latestVersion = settings.IncludePreRelease ? next.Version : main.Version;
-                _logger.Info($"Check prerelease: {settings.IncludePreRelease}; latest: v{_latestVersion.ToString(4)}");
+            _latestVersion = settings.IncludePreRelease ? next.Version : main.Version;
+            _logger.Info($"Check prerelease: {settings.IncludePreRelease}; latest: v{_latestVersion.ToString(4)}");
 
-                return _latestVersion;
-            }
+            return _latestVersion;
         }
 
         public Version CurrentVersion { get; }
