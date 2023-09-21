@@ -53,16 +53,7 @@ namespace Rubberduck.UI.Command
             Logger.Info("Executing version check...");
 
             var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-            Version latest = default;
-
-            try
-            {
-                latest = await _versionCheck.GetLatestVersionAsync(settings, tokenSource.Token);
-            }
-            catch(Exception e)
-            {
-                Logger.Warn(e, "Version check failed.");
-            }
+            var latest = await _versionCheck.GetLatestVersionAsync(settings, tokenSource.Token);
 
             if (_versionCheck.CurrentVersion < latest)
             {
