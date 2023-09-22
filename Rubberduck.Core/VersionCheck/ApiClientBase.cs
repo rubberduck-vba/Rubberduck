@@ -15,11 +15,11 @@ namespace Rubberduck.Client.Abstract
         HttpClient GetClient();
     }
 
-    public sealed class ApiHttpClientProvider : IHttpClientProvider, IDisposable
+    public sealed class HttpClientProvider : IHttpClientProvider, IDisposable
     {
         private readonly Lazy<HttpClient> _client;
 
-        public ApiHttpClientProvider(Func<HttpClient> getClient)
+        public HttpClientProvider(Func<HttpClient> getClient)
         {
             _client = new Lazy<HttpClient>(getClient);
         }
