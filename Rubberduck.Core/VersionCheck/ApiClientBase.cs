@@ -51,7 +51,7 @@ namespace Rubberduck.Client.Abstract
         protected ApiClientBase(IGeneralSettings settings, IHttpClientProvider clientProvider)
         {
             _clientProvider = clientProvider;
-            _baseUrl = string.IsNullOrWhiteSpace(settings.ApiBaseUrl) ? "https://api.rubberduckvba.com" : settings.ApiBaseUrl;
+            _baseUrl = string.IsNullOrWhiteSpace(settings.ApiBaseUrl) ? "https://api.rubberduckvba.com/api/v1/" : settings.ApiBaseUrl;
         }
 
         protected HttpClient GetClient()
