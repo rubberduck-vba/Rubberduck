@@ -53,40 +53,31 @@ namespace Rubberduck.UI.Command
             Logger.Info("Executing version check...");
 
             var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-            await _versionCheck
-                .GetLatestVersionAsync(settings, tokenSource.Token)
-                .ContinueWith(t =>
+            var latest = await _versionCheck.GetLatestVersionAsync(settings, tokenSource.Token);
+
+            if (_versionCheck.CurrentVersion < latest)
+            {
+                var proceed = true;
+                if (_versionCheck.IsDebugBuild || !settings.IncludePreRelease)
                 {
-                    if (t.IsFaulted)
-                    {
-                        Logger.Warn(t.Exception);
-                        return;
-                    }
+                    // if the latest version has a revision number and isn't a pre-release build,
+                    // avoid prompting since we can't know if the build already includes the latest version.
+                    proceed = latest.Revision == 0;
+                }
 
-                    if (_versionCheck.CurrentVersion < t.Result)
-                    {
-                        var proceed = true;
-                        if (_versionCheck.IsDebugBuild || !settings.IncludePreRelease)
-                        {
-                            // if the latest version has a revision number and isn't a pre-release build,
-                            // avoid prompting since we can't know if the build already includes the latest version.
-                            proceed = t.Result.Revision == 0;
-                        }
-
-                        if (proceed)
-                        {
-                            PromptAndBrowse(t.Result, settings.IncludePreRelease);
-                        }
-                        else
-                        {
-                            Logger.Info("Version check skips notification of an existing newer version available.");
-                        }
-                    }
-                    else
-                    {
-                        Logger.Info("Version check completed: running current latest.");
-                    }
-                });
+                if (proceed)
+                {
+                    PromptAndBrowse(latest, settings.IncludePreRelease);
+                }
+                else
+                {
+                    Logger.Info("Version check skips notification of an existing newer version available.");
+                }
+            }
+            else if (latest != default)
+            {
+                Logger.Info("Version check completed: running current latest.");
+            }
         }
 
         private void PromptAndBrowse(Version latestVersion, bool includePreRelease)

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Rubberduck.Settings;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -9,40 +10,69 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Client.Abstract
 {
-    public abstract class ApiClientBase : IDisposable
+    public interface IHttpClientProvider
+    {
+        HttpClient GetClient();
+    }
+
+    public sealed class HttpClientProvider : IHttpClientProvider, IDisposable
+    {
+        private readonly Lazy<HttpClient> _client;
+
+        public HttpClientProvider(Func<HttpClient> getClient)
+        {
+            _client = new Lazy<HttpClient>(getClient);
+        }
+
+        public HttpClient GetClient()
+        {
+            return _client.Value;
+        }
+
+        public void Dispose()
+        {
+            if (_client.IsValueCreated)
+            {
+                _client.Value.Dispose();
+            }
+        }
+    }
+
+    public abstract class ApiClientBase
     {
         protected static readonly string UserAgentName = "Rubberduck";
-        protected static readonly string BaseUrl = "https://api.rubberduckvba.com/api/v1/";
         protected static readonly string ContentTypeApplicationJson = "application/json";
         protected static readonly int MaxAttempts = 3;
         protected static readonly TimeSpan RetryCooldownDelay = TimeSpan.FromSeconds(1);
 
-        protected readonly Lazy<HttpClient> _client;
+        protected readonly IHttpClientProvider _clientProvider;
+        protected readonly string _baseUrl;
 
-        protected ApiClientBase()
+        protected ApiClientBase(IGeneralSettings settings, IHttpClientProvider clientProvider)
         {
-            _client = new Lazy<HttpClient>(() => GetClient());
+            _clientProvider = clientProvider;
+            _baseUrl = string.IsNullOrWhiteSpace(settings.ApiBaseUrl) ? "https://api.rubberduckvba.com/api/v1/" : settings.ApiBaseUrl;
         }
 
         protected HttpClient GetClient()
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            var client = new HttpClient();
-            return ConfigureClient(client);
+            var client = _clientProvider.GetClient();
+            ConfigureClient(client);
+            return client;
         }
 
-        protected virtual HttpClient ConfigureClient(HttpClient client)
+        protected virtual void ConfigureClient(HttpClient client)
         {
             var userAgentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
             var userAgentHeader = new ProductInfoHeaderValue(UserAgentName, userAgentVersion);
 
             client.DefaultRequestHeaders.UserAgent.Add(userAgentHeader);
-            return client;
         }
 
         protected virtual async Task<TResult> GetResponse<TResult>(string route, CancellationToken? cancellationToken = null)
         {
-            var uri = new Uri($"{BaseUrl}{route}");
+            var uri = new Uri($"{_baseUrl}{route}");
 
             var attempt = 0;
             var token = cancellationToken ?? CancellationToken.None;
@@ -102,7 +132,7 @@ namespace Rubberduck.Client.Abstract
 
         protected virtual async Task<TResult> Post<TArgs, TResult>(string route, TArgs args, CancellationToken? cancellationToken = null)
         {
-            var uri = new Uri($"{BaseUrl}{route}");
+            var uri = new Uri($"{_baseUrl}{route}");
             string json;
             try
             {
@@ -165,14 +195,6 @@ namespace Rubberduck.Client.Abstract
             catch
             {
                 return default;
-            }
-        }
-
-        public void Dispose()
-        {
-            if (_client.IsValueCreated)
-            {
-                _client.Value.Dispose();
             }
         }
     }

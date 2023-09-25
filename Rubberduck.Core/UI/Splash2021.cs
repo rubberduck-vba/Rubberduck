@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-using Rubberduck.VersionCheck;
 
 namespace Rubberduck.UI
 {
@@ -11,9 +10,9 @@ namespace Rubberduck.UI
             InitializeComponent();
         }
 
-        public Splash2021(IVersionCheckService versionCheck) : this()
+        public Splash2021(string versionString) : this()
         {
-            VersionLabel.Text = string.Format(Resources.RubberduckUI.Rubberduck_AboutBuild, versionCheck.VersionString);
+            VersionLabel.Text = string.Format(Resources.RubberduckUI.Rubberduck_AboutBuild, versionString);
             VersionLabel.Parent = pictureBox1;
             VersionLabel.BackColor = Color.Transparent;
         }

@@ -194,7 +194,7 @@ namespace Rubberduck
 
                 if (_initialSettings?.CanShowSplash ?? false)
                 {
-                    splash = new Splash2021(new VersionCheckService(typeof(Splash2021).Assembly.GetName().Version));
+                    splash = new Splash2021(string.Format(RubberduckUI.Rubberduck_AboutBuild, Assembly.GetExecutingAssembly().GetName().Version.ToString(3)));
                     splash.Show();
                     splash.Refresh();
                 }

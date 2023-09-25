@@ -13,6 +13,7 @@ namespace Rubberduck.Settings
         DisplayLanguageSetting Language { get; set; }
         bool CanShowSplash { get; set; }
         bool CanCheckVersion { get; set; }
+        string ApiBaseUrl { get; set; }
         bool IncludePreRelease { get; set; }
         bool CompileBeforeParse { get; set; }
         bool IsSmartIndenterPrompted { get; set; }
@@ -45,6 +46,7 @@ namespace Rubberduck.Settings
 
         public bool CanShowSplash { get; set; }
         public bool CanCheckVersion { get; set; }
+        public string ApiBaseUrl { get; set; }
         public bool IncludePreRelease { get; set; }
         public bool CompileBeforeParse { get; set; }
         public bool IsSmartIndenterPrompted { get; set; }
@@ -103,7 +105,8 @@ namespace Rubberduck.Settings
                    EnableExperimentalFeatures.Count == other.EnableExperimentalFeatures.Count &&
                    EnableExperimentalFeatures.All(other.EnableExperimentalFeatures.Contains) &&
                    SetDpiUnaware == other.SetDpiUnaware &&
-                   EnableFolderDragAndDrop == other.EnableFolderDragAndDrop;
+                   EnableFolderDragAndDrop == other.EnableFolderDragAndDrop &&
+                   ApiBaseUrl == other.ApiBaseUrl;
         }
     }
 }
