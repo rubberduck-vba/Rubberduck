@@ -154,8 +154,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                             }
                             catch (Exception exception)
                             {
-                                value.IsEnabled = false;
                                 Logger.Error(exception, "Could not evaluate availability of commmand menu item {0}.", value.Tag ?? "{Unknown}");
+                                value.IsEnabled = false;
                             }
                         });
                         break;

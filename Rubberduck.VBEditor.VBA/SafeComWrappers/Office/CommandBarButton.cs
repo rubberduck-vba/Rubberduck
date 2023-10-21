@@ -15,14 +15,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
 
         public const bool AddCommandBarControlsTemporarily = false;
 
-        public CommandBarButton(MSO.CommandBarButton target, bool rewrapping = false) 
+        public CommandBarButton(MSO.CommandBarButton target, bool rewrapping = false)
             : base(target, rewrapping)
         {
             _control = new CommandBarControl(target, true);
         }
-        
+
         private MSO.CommandBarButton Button => Target;
-        
+
         public bool IsBuiltInFace
         {
             get => !IsWrappingNullReference && Button.BuiltInFace;
@@ -35,7 +35,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
             }
         }
 
-        public int FaceId 
+        public int FaceId
         {
             get => IsWrappingNullReference ? 0 : Button.FaceId;
             set
@@ -183,13 +183,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
         public string DescriptionText
         {
             get => _control.DescriptionText;
-            set => _control.DescriptionText=value;
+            set => _control.DescriptionText = value;
         }
 
         public bool IsEnabled
         {
-            get => _control.IsEnabled;
-            set=> _control.IsEnabled = value;
+            get
+            {
+                if (HasBeenReleased)
+                {
+                    _logger.Warn($"Getting IsEnabled of already release CommandBarButton.");
+                    return false;
+                }
+                else
+                {
+                    return _control.IsEnabled;
+                }
+            }
+            set 
+            {
+                if (!HasBeenReleased) {
+                    _control.IsEnabled = value;
+                } else {
+                    _logger.Warn($"Setting IsEnabled on already release CommandBarButton.");
+                }
+            }
         }
 
         public int Height
@@ -226,8 +244,28 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
 
         public string Tag
         {
-            get => _control.Tag;
-            set => _control.Tag = value;
+            get 
+            {
+                if (HasBeenReleased)
+                {
+                    _logger.Warn($"Getting Tag of already release CommandBarButton.");
+                    return null;
+                } else
+                {
+                    return _control.Tag;
+                }
+            }
+            set
+            {
+                if (!HasBeenReleased)
+                {
+                    _control.Tag = value;
+                }
+                else
+                {
+                    _logger.Warn($"Setting Tag on already release CommandBarButton.");
+                }
+            }
         }
 
         public string TooltipText
@@ -242,8 +280,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
 
         public bool IsVisible
         {
-            get => _control.IsVisible;
-            set => _control.IsVisible = value;
+            get
+            {
+                if (HasBeenReleased)
+                {
+                    _logger.Warn($"Getting IsVisible of already release CommandBarButton.");
+                    return false;
+                }
+                else
+                {
+                    return _control.IsVisible;
+                }
+            }
+            set
+            {
+                if (!HasBeenReleased)
+                {
+                    _control.IsVisible = value;
+                }
+                else
+                {
+                    _logger.Warn($"Setting IsVisible on already release CommandBarButton.");
+                }
+            }
         }
 
         public int Width
