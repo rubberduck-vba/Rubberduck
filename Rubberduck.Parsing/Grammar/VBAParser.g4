@@ -687,13 +687,13 @@ variantLiteralIdentifier : EMPTY | NULL;
 
 lExpression :
     lExpression LPAREN whiteSpace? argumentList? whiteSpace? RPAREN                                                 # indexExpr
-    | lExpression mandatoryLineContinuation? DOT mandatoryLineContinuation? printMethod (whiteSpace outputList)?    # objectPrintExpr
-    | lExpression mandatoryLineContinuation? DOT mandatoryLineContinuation? unrestrictedIdentifier                  # memberAccessExpr
-    | lExpression mandatoryLineContinuation? dictionaryAccess mandatoryLineContinuation? unrestrictedIdentifier     # dictionaryAccessExpr
+    | lExpression mandatoryLineContinuation* DOT mandatoryLineContinuation* printMethod (whiteSpace outputList)?                                  # objectPrintExpr
+    | lExpression mandatoryLineContinuation* DOT mandatoryLineContinuation* unrestrictedIdentifier                                                # memberAccessExpr
+    | lExpression mandatoryLineContinuation* dictionaryAccess mandatoryLineContinuation* unrestrictedIdentifier                                   # dictionaryAccessExpr
     | ME                                                                                                            # instanceExpr
     | identifier                                                                                                    # simpleNameExpr
-    | DOT mandatoryLineContinuation? unrestrictedIdentifier                                                         # withMemberAccessExpr
-    | dictionaryAccess mandatoryLineContinuation? unrestrictedIdentifier                                            # withDictionaryAccessExpr
+    | DOT whiteSpace? unrestrictedIdentifier                                                                        # withMemberAccessExpr
+    | dictionaryAccess whiteSpace? unrestrictedIdentifier                                                           # withDictionaryAccessExpr
     | lExpression mandatoryLineContinuation whiteSpace? LPAREN whiteSpace? argumentList? whiteSpace? RPAREN         # whitespaceIndexExpr
 ;
 
