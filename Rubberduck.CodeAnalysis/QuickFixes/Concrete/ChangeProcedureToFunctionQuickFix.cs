@@ -59,23 +59,31 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             var arg = parameterizedDeclaration.Parameters.First(p => p.IsByRef || p.IsImplicitByRef);
             var argIndex = parameterizedDeclaration.Parameters.IndexOf(arg);
             
-            UpdateSignature(result.Target, arg, rewriteSession);
+            UpdateProcedure(result.Target, arg, rewriteSession);
             foreach (var reference in result.Target.References.Where(reference => !reference.IsDefaultMemberAccess))
             {
                 UpdateCall(reference, argIndex, rewriteSession);
             }
         }
 
-        private void UpdateSignature(Declaration target, ParameterDeclaration arg, IRewriteSession rewriteSession)
+        private void UpdateProcedure(Declaration target, ParameterDeclaration arg, IRewriteSession rewriteSession)
         {
             var subStmt = (VBAParser.SubStmtContext) target.Context;
             var argContext = (VBAParser.ArgContext)arg.Context;
-
+            var argName = argContext.unrestrictedIdentifier().GetText();
             var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
+            UpdateSignature(subStmt, arg, rewriter);
+            AddReturnStatement(subStmt, argName, rewriter);
+            ReplaceExitSubs(subStmt, argName, rewriter);
+        }
+
+        private void UpdateSignature(VBAParser.SubStmtContext subStmt, ParameterDeclaration arg, IModuleRewriter rewriter)
+        {
             rewriter.Replace(subStmt.SUB(), Tokens.Function);
             rewriter.Replace(subStmt.END_SUB(), "End Function");
 
+            var argContext = (VBAParser.ArgContext)arg.Context;
             rewriter.InsertAfter(subStmt.argList().Stop.TokenIndex, $" As {arg.AsTypeName}");
 
             if (arg.IsByRef)
@@ -86,10 +94,25 @@ namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
             {
                 rewriter.InsertBefore(argContext.unrestrictedIdentifier().Start.TokenIndex, Tokens.ByVal);
             }
+        }
 
-            var returnStmt = $"    {subStmt.subroutineName().GetText()} = {argContext.unrestrictedIdentifier().GetText()}{Environment.NewLine}";
+        private void AddReturnStatement(VBAParser.SubStmtContext subStmt, string argName, IModuleRewriter rewriter)
+        {
+            var returnStmt = $"    {subStmt.subroutineName().GetText()} = {argName}{Environment.NewLine}";
+            // This exploits that the VBE will realign the End Function statement automatically. 
             rewriter.InsertBefore(subStmt.END_SUB().Symbol.TokenIndex, returnStmt);
         }
+
+        private void ReplaceExitSubs(VBAParser.SubStmtContext subStmt, string argName, IModuleRewriter rewriter)
+        {
+            // We use a statement separator here to be able to deal with single line if statments without too much issues.
+            var exitFunctionCode = $"{subStmt.subroutineName().GetText()} = {argName}: Exit Function";
+            foreach (var exitSub in subStmt.GetDescendents<VBAParser.ExitStmtContext>())
+            {
+                rewriter.Replace(exitSub, exitFunctionCode);
+            }
+        }
+
 
         private void UpdateCall(IdentifierReference reference, int argIndex, IRewriteSession rewriteSession)
         {
