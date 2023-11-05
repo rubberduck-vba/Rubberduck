@@ -20,7 +20,7 @@
     <!-- Ignore VisualStudio whining about the CodeAnalysis assembly changing (IDE1001) -->
     <DisabledWarnings>$(DisabledWarnings);4011;1001;1591</DisabledWarnings>
     <!-- Declare a Version if it's not already declared as a global property through MSBuild invocation -->
-    <Version Condition=" '$(Version)' == '' ">2.5.9</Version>
+    <Version Condition=" '$(Version)' == '' ">2.5.9.1</Version>
     <!-- all other relevant version numbers are computed from Version automagically -->
   </PropertyGroup>
 
