@@ -148,7 +148,7 @@ namespace Rubberduck.Parsing.VBA.Extensions
             var literal = string.Empty;
             foreach (var character in managed.ToCharArray())
             {
-                var unicode = Convert.ToInt16(character) > byte.MaxValue;
+                var unicode = Convert.ToInt32(character) > byte.MaxValue;
                 var specialCased = VbCharacterConstants.ContainsKey(character);
                 if (specialCased || char.IsControl(character) && !unicode)
                 {
