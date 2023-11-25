@@ -46,7 +46,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 endLine -= 1;
                 using (var codeModule = CodeModule)
                 {
-                    endColumn = codeModule.GetLines(endLine, 1).Length;
+                    endColumn = codeModule.GetLines(endLine, 1).Length + 1;
                 }
             }
 
