@@ -1,5 +1,7 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
 using Moq;
 using NUnit.Framework;
 using Rubberduck.Interaction;
@@ -10,6 +12,24 @@ using Rubberduck.VersionCheck;
 
 namespace RubberduckTests
 {
+    [TestFixture]
+    public class VersionCheckServiceTests
+    {
+        [Test]
+        public async Task GetLatestVersionThrowsHttpException_IsHandled()
+        {
+            var appVersion = new Version();
+            var apiClient = new Mock<IPublicApiClient>();
+            apiClient.Setup(m => m.GetLatestTagsAsync(It.IsAny<CancellationToken>())).Throws<HttpException>();
+            
+            var sut = new VersionCheckService(appVersion, apiClient.Object);
+            
+            var result = await sut.GetLatestVersionAsync(new GeneralSettings(), CancellationToken.None);
+
+            Assert.IsNull(result);
+        }
+    }
+
     [TestFixture]
     public class VersionCheckTests
     {
@@ -34,12 +54,12 @@ namespace RubberduckTests
             mockConfig.Setup(m => m.Read()).Returns(() => config);
 
             mockService = new Mock<IVersionCheckService>();
-            
+
             mockService.Setup(m => m.CurrentVersion)
                        .Returns(() => currentVersion);
 
             mockService.Setup(m => m.GetLatestVersionAsync(It.IsAny<GeneralSettings>(), It.IsAny<CancellationToken>()))
-                       .ReturnsAsync(() => latestVersion);
+                        .ReturnsAsync(() => latestVersion);
 
             return new VersionCheckCommand(mockService.Object, mockPrompt.Object, mockProcess.Object, mockConfig.Object);
         }

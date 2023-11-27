@@ -19,7 +19,7 @@
                     <Setter Property="FontFamily" Value="Segoe UI" />
                     <Setter Property="FontSize" Value="11" />
                     <Setter Property="FontWeight" Value="Normal" />
-                    <Setter Property="Foreground" Value="{ DynamicResource {x:Static SystemColors.ControlTextBrush}}" />
+                    <Setter Property="Foreground" Value="{x:Static SystemColors.ControlTextBrush}" />
                 </Style.Setters>
             </Style>
             <Style x:Key="SubtleLabel" TargetType="TextBlock">
@@ -27,7 +27,7 @@
                     <Setter Property="FontFamily" Value="Segoe UI" />
                     <Setter Property="FontSize" Value="11" />
                     <Setter Property="FontWeight" Value="Thin" />
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrush}}" />
+                    <Setter Property="Foreground" Value="{x:Static SystemColors.GrayTextBrush}" />
                 </Style.Setters>
             </Style>
             <Style x:Key="HeadingLabel" TargetType="TextBlock">
@@ -35,14 +35,14 @@
                     <Setter Property="FontFamily" Value="Segoe UI" />
                     <Setter Property="FontSize" Value="14" />
                     <Setter Property="FontWeight" Value="Bold" />
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrush}}" />
+                    <Setter Property="Foreground" Value="{x:Static SystemColors.ControlTextBrush}" />
                 </Style.Setters>
             </Style>
             <Style x:Key="SectionBorder" TargetType="Border">
                 <Style.Setters>
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrush}}" />
-                    <Setter Property="BorderBrush" Value="Black" />
-                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="Background" Value="{x:Static SystemColors.ControlBrush}" />
+                    <Setter Property="BorderBrush" Value="{x:Static SystemColors.HighlightBrush}" />
+                    <Setter Property="BorderThickness" Value="2" />
                     <Setter Property="CornerRadius" Value="8" />
                     <Setter Property="Margin" Value="10,0" />
                     <Setter Property="Padding" Value="2" />
@@ -64,8 +64,11 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    <Grid>
+    <Grid Background="{x:Static SystemColors.WindowBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="250"/>
+            <ColumnDefinition Width="*" MinWidth="250"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -88,7 +91,7 @@
                     <ColumnDefinition Width="*" MinWidth="250"/>
                     <ColumnDefinition Width="*" MinWidth="250"/>
                 </Grid.ColumnDefinitions>
-                    
+
                 <StackPanel MinHeight="100" MinWidth="250" VerticalAlignment="Top">
                     <TextBlock x:Name="Version" Text="{Binding Version}" Style="{StaticResource HeadingLabel}" HorizontalAlignment="Center" Margin="5" />
                     <TextBlock x:Name="OperatingSystem" Text="{Binding OperatingSystem}" Style="{StaticResource NormalLabel}" HorizontalAlignment="Center"/>
@@ -107,57 +110,90 @@
                     </TextBlock>
                 </StackPanel>
 
-                <TextBlock Grid.Row="1" TextAlignment="Center">
-                    <StackPanel Orientation="Vertical" Margin="10">
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_FoundAnIssue}"
-                                    Style="{StaticResource HeadingLabel}"/>
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_HelpImproveRubberduck}"
-                                    Style="{StaticResource NormalLabel}"/>
-                        <Border Style="{StaticResource ReportButtonBorder}">
-                            <TextBlock>
-                                <Hyperlink Name="GitHubIssueUrl" NavigateUri="https://github.com/rubberduck-vba/Rubberduck/issues/new/choose" TextDecorations="{x:Null}"
-                                            Command="{Binding UriCommand}" CommandParameter="{Binding ElementName=GitHubIssueUrl, Path=NavigateUri}">
-                                    <Label Height="40" Foreground="{StaticResource CaptionLightBrush}" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
-                                            VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
-                                            Content="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_ReportAnIssue}"/>
-                                </Hyperlink>
-                            </TextBlock>
-                        </Border>
-                        <TextBlock HorizontalAlignment="Center" Style="{StaticResource SubtleLabel}">
-                            <Hyperlink Name="WebpageHyperlink"
-                                        Command="{Binding UriCommand}"
-                                        CommandParameter="{Binding ElementName=WebpageHyperlink, Path=NavigateUri}"
-                                        NavigateUri="http://rubberduckvba.com/">rubberduckvba.com
+                <TextBlock Grid.Column="0" Grid.Row="2" TextAlignment="Center">
+                <StackPanel Orientation="Vertical" Margin="10">
+                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_FoundAnIssue}"
+                               Style="{StaticResource HeadingLabel}"/>
+                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_HelpImproveRubberduck}"
+                               Style="{StaticResource NormalLabel}"/>
+                    <Border Style="{StaticResource ReportButtonBorder}">
+                        <TextBlock>
+                            <Hyperlink Name="GitHubIssueUrl"
+                                       NavigateUri="https://github.com/rubberduck-vba/Rubberduck/issues/new/choose"
+                                       TextDecorations="{x:Null}"
+                                       Command="{Binding UriCommand}" CommandParameter="{Binding ElementName=GitHubIssueUrl, Path=NavigateUri}">
+                                <Label Height="40" Foreground="{StaticResource CaptionLightBrush}" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
+                                       VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                       Content="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_ReportAnIssue}"/>
                             </Hyperlink>
                         </TextBlock>
+                    </Border>
+                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_FindRubberduckAt}"
+                               Style="{StaticResource NormalLabel}" Margin="0,5"/>
+                    <StackPanel HorizontalAlignment="Center" 
+                                Orientation="Horizontal">
+                        <!-- Circle logos created with Ai->XAML Export Plug-In Version 0.2 (PC/64) -->
+                        <!-- By Mike Swanson (http://blog.mikeswanson.com/)           -->
+                        <TextBlock Margin="10,5" TextAlignment="Center" HorizontalAlignment="Center">
+                                <Hyperlink Name="GitHubUrl"
+                                           NavigateUri="https://github.com/rubberduck-vba/Rubberduck"
+                                           Command="{Binding UriCommand}"
+                                           CommandParameter="{Binding ElementName=GitHubUrl, Path=NavigateUri}"
+                                           TextDecorations="{x:Null}">
+                                    <Border Background="Transparent">
+                                        <Path Stretch="Fill" Fill="{x:Static SystemColors.ControlDarkDarkBrush}" Width="25" Height="25"
+                                              Data=" M 59.996,0.000 C 26.866,0.000 0.000,26.863 0.000,60.003 C 0.000,86.510 17.190,108.999 41.035,116.934 C 44.035,117.484 45.130,115.632 45.130,114.041 C 45.130,112.617 45.078,108.844 45.049,103.837 C 28.359,107.463 24.837,95.794 24.837,95.794 C 22.109,88.862 18.175,87.017 18.175,87.017 C 12.728,83.294 18.588,83.370 18.588,83.370 C 24.609,83.794 27.778,89.553 27.778,89.553 C 33.130,98.722 41.821,96.074 45.240,94.539 C 45.785,90.661 47.335,88.017 49.049,86.517 C 35.725,85.003 21.719,79.856 21.719,56.863 C 21.719,50.313 24.057,44.957 27.895,40.763 C 27.278,39.245 25.219,33.145 28.483,24.884 C 28.483,24.884 33.521,23.271 44.982,31.035 C 49.768,29.704 54.901,29.039 60.003,29.016 C 65.099,29.039 70.232,29.704 75.025,31.035 C 86.479,23.271 91.508,24.884 91.508,24.884 C 94.781,33.145 92.722,39.245 92.105,40.763 C 95.950,44.957 98.272,50.313 98.272,56.863 C 98.272,79.913 84.244,84.985 70.877,86.471 C 73.032,88.323 74.951,91.985 74.951,97.582 C 74.951,105.603 74.877,112.074 74.877,114.041 C 74.877,115.646 75.958,117.513 79.003,116.927 C 102.824,108.977 120.000,86.503 120.000,60.003 C 120.000,26.863 93.134,0.000 59.996,0.000 Z"/>
+                                    </Border>
+                                </Hyperlink>
+                        </TextBlock>
+                        <!--<TextBlock Text="GitHub" FontSize="9" TextAlignment="Center" />-->
+                        <TextBlock Margin="10,5" TextAlignment="Center" HorizontalAlignment="Center">
+                                <Hyperlink Name="TwitterUrl"
+                                           NavigateUri="http://www.twitter.com/rubberduckvba"
+                                           Command="{Binding UriCommand}"
+                                           CommandParameter="{Binding ElementName=TwitterUrl, Path=NavigateUri}"
+                                           TextDecorations="{x:Null}">
+                                    <Border Background="Transparent">
+                                        <Path Stretch="Fill" Fill="{x:Static SystemColors.ControlDarkDarkBrush}" Width="25" Height="25"
+                                              Data="F1 M 92.670,42.747 C 92.702,43.460 92.718,44.177 92.718,44.897 C 92.718,66.860 76.001,92.185 45.431,92.185 C 36.045,92.185 27.310,89.433 19.954,84.718 C 21.255,84.871 22.577,84.950 23.919,84.950 C 31.706,84.950 38.872,82.293 44.560,77.836 C 37.287,77.701 31.149,72.896 29.034,66.293 C 30.049,66.487 31.090,66.591 32.161,66.591 C 33.677,66.591 35.145,66.388 36.540,66.009 C 28.937,64.482 23.208,57.765 23.208,49.712 C 23.208,49.642 23.208,49.572 23.209,49.503 C 25.450,50.748 28.013,51.496 30.737,51.582 C 26.278,48.601 23.344,43.514 23.344,37.748 C 23.344,34.703 24.163,31.848 25.594,29.393 C 33.791,39.448 46.037,46.065 59.850,46.758 C 59.567,45.541 59.420,44.273 59.420,42.970 C 59.420,33.792 66.861,26.351 76.040,26.351 C 80.820,26.351 85.139,28.369 88.171,31.599 C 91.957,30.854 95.514,29.471 98.725,27.566 C 97.484,31.447 94.849,34.704 91.417,36.761 C 94.779,36.359 97.982,35.466 100.963,34.144 C 98.735,37.477 95.917,40.404 92.670,42.747 Z M 60.000,0.000 C 26.863,0.000 0.000,26.863 0.000,60.000 C 0.000,93.137 26.863,120.000 60.000,120.000 C 93.137,120.000 120.000,93.137 120.000,60.000 C 120.000,26.863 93.137,0.000 60.000,0.000 Z"/>
+                                    </Border>
+                                </Hyperlink>
+                        </TextBlock>
+                        <!--<TextBlock Text="Twitter" FontSize="9" TextAlignment="Center" />-->
                     </StackPanel>
-                </TextBlock>
+                    <TextBlock HorizontalAlignment="Center" Style="{StaticResource SubtleLabel}">
+                        <Hyperlink Name="WebpageHyperlink"
+                                   Command="{Binding UriCommand}"
+                                   CommandParameter="{Binding ElementName=WebpageHyperlink, Path=NavigateUri}"
+                                   NavigateUri="http://rubberduckvba.com/">rubberduckvba.com</Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </TextBlock>
+            </Grid>
+        </Border>
+        <Border Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Style="{StaticResource SectionBorder}">
+            <ScrollViewer Margin="5" Height="360" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible">
+                <StackPanel VerticalAlignment="Top">
+                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_AttributionsLabel}"
+                               Style="{StaticResource HeadingLabel}" />
+                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_AttributionList}"
+                               Style="{StaticResource NormalLabel}" Margin="5" />
 
-                <ScrollViewer Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Margin="5" Height="360" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible">
-                    <StackPanel VerticalAlignment="Top">
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_AttributionsLabel}"
-                    Style="{StaticResource HeadingLabel}" />
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_AttributionList}"
-                    Style="{StaticResource NormalLabel}" Margin="5" />
-
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_SpecialThanksLabel}"
-                    Style="{StaticResource HeadingLabel}" Margin="0,5" />
-                        <StackPanel Margin="5,0,0,0">
-                            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_CommunityHeader}"
-                        Style="{StaticResource NormalLabel}" FontWeight="Bold" />
-                            <TextBlock Style="{StaticResource NormalLabel}" Margin="5,0"
-                        xml:space="preserve">Code Review (Stack Exchange)
+                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_SpecialThanksLabel}"
+                               Style="{StaticResource HeadingLabel}" Margin="0,5" />
+                    <StackPanel Margin="5,0,0,0">
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_CommunityHeader}"
+                                    Style="{StaticResource NormalLabel}" FontWeight="Bold" />
+                        <TextBlock Style="{StaticResource NormalLabel}" Margin="5,0" xml:space="preserve">Code Review (Stack Exchange)
 Stack Overflow
 Digital Ocean Hacktoberfest
 JetBrains ReSharper Community Team
 Microsoft MVP Award Program
-                            </TextBlock>
+</TextBlock>
 
                             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_ContributorsHeader}"
-                        Style="{StaticResource NormalLabel}" FontWeight="Bold" />
-                            <TextBlock Style="{StaticResource NormalLabel}"
-                        Margin="5,0"
-                        xml:space="preserve">Abraham Hosch
+                                       Style="{StaticResource NormalLabel}" FontWeight="Bold" />
+                            <TextBlock Style="{StaticResource NormalLabel}" Margin="5,0" xml:space="preserve">Abraham Hosch
 Andrew Jackson
 Andrew Zschetzsche
 Andrew Mansell
@@ -203,13 +239,11 @@ Wayne Phillips (vbWatchdog, twinBASIC)
                                 FontSize="10"
                                 HorizontalAlignment="Left"
                                 TextWrapping="WrapWithOverflow"
-                                Margin="15,0,0,0"/>
+                                Margin="15,0,0,0" />
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
-            </Grid>
         </Border>
-        
         <!-- bottom copyright notice -->
         <TextBlock Grid.Row="2" Text="{Binding AboutCopyright}" Style="{StaticResource SubtleLabel}" Margin="0,15" HorizontalAlignment="Center" />
 

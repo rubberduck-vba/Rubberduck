@@ -201,6 +201,120 @@ End Sub";
             Assert.AreEqual(expectedCode, actualCode);
         }
 
+        // Based on issue #6139 at https://github.com/rubberduck-vba/Rubberduck/issues/6139
+        [Test]
+        [Category("QuickFixes")]
+        public void ProcedureShouldBeFunction_QuickFixWorks_ExitSub()
+        {
+            const string inputCode =
+                @"Private Sub Foo(ByRef arg1 As Integer)
+    If condition Then 
+        Exit Sub
+    End If
+
+    arg1 = 42
+End Sub
+
+Sub Goo(ByVal a As Integer)
+    Dim fizz As Integer
+    Foo fizz
+End Sub";
+
+            const string expectedCode =
+                @"Private Function Foo(ByVal arg1 As Integer) As Integer
+    If condition Then 
+        Foo = arg1: Exit Function
+    End If
+
+    arg1 = 42
+    Foo = arg1
+End Function
+
+Sub Goo(ByVal a As Integer)
+    Dim fizz As Integer
+    fizz = Foo(fizz)
+End Sub";
+
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ProcedureCanBeWrittenAsFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void ProcedureShouldBeFunction_QuickFixWorks_ExitSubIndentationRespected()
+        {
+            const string inputCode =
+                @"Private Sub Foo(ByRef arg1 As Integer)
+    If condition Then
+        If otherCondition Then
+             Exit Sub
+        End If
+    End If
+
+    arg1 = 42
+End Sub
+
+Sub Goo(ByVal a As Integer)
+    Dim fizz As Integer
+    Foo fizz
+End Sub";
+
+            const string expectedCode =
+                @"Private Function Foo(ByVal arg1 As Integer) As Integer
+    If condition Then
+        If otherCondition Then
+             Foo = arg1: Exit Function
+        End If
+    End If
+
+    arg1 = 42
+    Foo = arg1
+End Function
+
+Sub Goo(ByVal a As Integer)
+    Dim fizz As Integer
+    fizz = Foo(fizz)
+End Sub";
+
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ProcedureCanBeWrittenAsFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void ProcedureShouldBeFunction_QuickFixWorks_ExitSub_InSingleLineIf()
+        {
+            const string inputCode =
+                @"Private Sub Foo(ByRef arg1 As Integer)
+    If condition Then Exit Sub
+    If otherContirion Then: Else Exit Sub 
+
+    arg1 = 42
+End Sub
+
+Sub Goo(ByVal a As Integer)
+    Dim fizz As Integer
+    Foo fizz
+End Sub";
+
+            const string expectedCode =
+                @"Private Function Foo(ByVal arg1 As Integer) As Integer
+    If condition Then Foo = arg1: Exit Function
+    If otherContirion Then: Else Foo = arg1: Exit Function 
+
+    arg1 = 42
+    Foo = arg1
+End Function
+
+Sub Goo(ByVal a As Integer)
+    Dim fizz As Integer
+    fizz = Foo(fizz)
+End Sub";
+
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ProcedureCanBeWrittenAsFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {

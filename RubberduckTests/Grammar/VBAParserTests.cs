@@ -3989,6 +3989,50 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
         }
 
+
+        // Adapted from opened issue https://github.com/rubberduck-vba/Rubberduck/issues/6164
+        [Test]
+        [TestCase(@"b _
+  _
+     . _
+     c")]
+        [TestCase(@"b _
+      . _
+  _
+     c")]
+        [TestCase(@"b _
+  _
+      . _
+  _
+     c")]
+        public void ParserCanDealWithMultiplyLineContinuedMemberAccess(string lineContinuedMemberAccess)
+        {
+            string code = $"Sub Test()\r\n     a = {lineContinuedMemberAccess}\r\nEnd Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression", matches => matches.Count == 3);
+        }
+
+
+        // Adapted from opened issue https://github.com/rubberduck-vba/Rubberduck/issues/6163
+        [Test]
+        [TestCase(@"If True Then:")]
+        [TestCase(@"If True Then: ")]
+        [TestCase(@"If True Then: 
+")]
+        [TestCase(@"         If True Then::::::::::::: _
+             :::::::::::::::: _
+             :::")]
+        [TestCase(@"         If True Then::::::::::::: _
+             :::::::::::::::: _
+             :::Else")]
+        public void ParserCanDealWithStatementSeparateorsInOneLineIfStatements(string oneLineIfStatement)
+        {
+            string code = $"Sub Test()\r\n {oneLineIfStatement}\r\nEnd Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt", matches => matches.Count == 1);
+        }
+
+
         // Adapted from opened issue https://github.com/rubberduck-vba/Rubberduck/issues/4875
         [Test]
         [TestCase("form.Line (0, 0)-(12, 12), RGB(255, 255, 0), B")]

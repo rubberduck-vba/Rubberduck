@@ -26,7 +26,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <StackPanel Background="{DynamicResource BackgroundLightBrush}">
+        <StackPanel Background="{StaticResource BackgroundLightBrush}">
             <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ReorderParamsDialog_TitleText}" FontWeight="Bold" />
             <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ReorderParamsDialog_InstructionsLabelText}"
                        Margin="5,0" />
@@ -73,7 +73,7 @@
                         Command="{Binding MoveParameterUpCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="{DynamicResource MoveUpImage}" />
+                        <Image Source="{StaticResource MoveUpImage}" />
                         <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ReorderParamsDialog_MoveUpButtonText}" />
                     </StackPanel>
                 </Button>
@@ -97,7 +97,7 @@
                         </Style>
                     </Button.Style>
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="{DynamicResource MoveDownImage}" />
+                        <Image Source="{StaticResource MoveDownImage}" />
                         <TextBlock Text="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=ReorderParamsDialog_MoveDownButtonText}" />
                     </StackPanel>
                 </Button>
@@ -106,8 +106,8 @@
             <Expander Grid.Row="1"
                       Grid.ColumnSpan="2"
                       IsExpanded="True"
-                      Background="{DynamicResource ExpanderBackgroundBrush}"
-                      BorderBrush="{DynamicResource ExpanderBorderBrush}"
+                      Background="{StaticResource ExpanderBackgroundBrush}"
+                      BorderBrush="{StaticResource ExpanderBorderBrush}"
                       Margin="5,0,5,5">
                 <Expander.Header>
                     <Label FontWeight="SemiBold">

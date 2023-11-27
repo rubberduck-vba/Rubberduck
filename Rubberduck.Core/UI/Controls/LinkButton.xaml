@@ -32,14 +32,14 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Setter Property="Foreground" Value="{DynamicResource CaptionHyperlinkBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource CaptionHyperlinkBrush}" />
             <Setter Property="Cursor" Value="Hand" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="true">
-                    <Setter Property="Foreground" Value="{DynamicResource CaptionHyperlinkVisitedBrush}" />
+                    <Setter Property="Foreground" Value="{StaticResource CaptionHyperlinkVisitedBrush}" />
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="false">
-                    <Setter Property="Foreground" Value="{DynamicResource CaptionDisabledBrush}" />
+                    <Setter Property="Foreground" Value="{StaticResource CaptionDisabledBrush}" />
                 </Trigger>
             </Style.Triggers>
         </Style>

@@ -92,7 +92,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             }
         }
 
-        private bool HasBeenReleased => _rcwReferenceCount <= 0;
+        protected bool HasBeenReleased => _rcwReferenceCount <= 0;
 
         public bool IsWrappingNullReference => Target == null;
         object INullObjectWrapper.Target => Target;

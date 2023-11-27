@@ -29,7 +29,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate>
-                            <Expander Background="{DynamicResource BackgroundLightBrush}" Foreground="{DynamicResource CaptionDarkBrush}" FontWeight="SemiBold" 
+                            <Expander Background="{StaticResource BackgroundLightBrush}" Foreground="{StaticResource CaptionDarkBrush}" FontWeight="SemiBold" 
                                   IsExpanded="{Binding InitialExpandedState, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GroupingGrid}}}">
                                 <Expander.Header>
                                     <StackPanel Orientation="Horizontal">
@@ -79,7 +79,7 @@
             <Setter Property="VerticalGridLinesBrush" Value="Transparent" />
             <Setter Property="HeadersVisibility" Value="Column" />
             <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
-            <Setter Property="ItemContainerStyle" Value="{DynamicResource PrettifyRowModified}" />
+            <Setter Property="ItemContainerStyle" Value="{StaticResource PrettifyRowModified}" />
             <Setter Property="ColumnHeaderHeight" Value="22" />
         </Style>
     </DataGrid.Style>

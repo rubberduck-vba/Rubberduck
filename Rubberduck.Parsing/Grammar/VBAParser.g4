@@ -421,7 +421,7 @@ elseBlock :
 // 5.4.2.9 Single-line If Statement
 singleLineIfStmt : ifWithNonEmptyThen | ifWithEmptyThen;
 ifWithNonEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN whiteSpace? listOrLabel (whiteSpace singleLineElseClause)?;
-ifWithEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN whiteSpace? emptyThenStatement? singleLineElseClause;
+ifWithEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN whiteSpace? emptyThenStatement? singleLineElseClause?;
 singleLineElseClause : ELSE whiteSpace? listOrLabel?;
 
 // lineNumberLabel should actually be "statement-label" according to MS VBAL but they only allow lineNumberLabels:
@@ -687,13 +687,13 @@ variantLiteralIdentifier : EMPTY | NULL;
 
 lExpression :
     lExpression LPAREN whiteSpace? argumentList? whiteSpace? RPAREN                                                 # indexExpr
-    | lExpression mandatoryLineContinuation? DOT mandatoryLineContinuation? printMethod (whiteSpace outputList)?    # objectPrintExpr
-    | lExpression mandatoryLineContinuation? DOT mandatoryLineContinuation? unrestrictedIdentifier                  # memberAccessExpr
-    | lExpression mandatoryLineContinuation? dictionaryAccess mandatoryLineContinuation? unrestrictedIdentifier     # dictionaryAccessExpr
+    | lExpression mandatoryLineContinuation* DOT mandatoryLineContinuation* printMethod (whiteSpace outputList)?                                  # objectPrintExpr
+    | lExpression mandatoryLineContinuation* DOT mandatoryLineContinuation* unrestrictedIdentifier                                                # memberAccessExpr
+    | lExpression mandatoryLineContinuation* dictionaryAccess mandatoryLineContinuation* unrestrictedIdentifier                                   # dictionaryAccessExpr
     | ME                                                                                                            # instanceExpr
     | identifier                                                                                                    # simpleNameExpr
-    | DOT mandatoryLineContinuation? unrestrictedIdentifier                                                         # withMemberAccessExpr
-    | dictionaryAccess mandatoryLineContinuation? unrestrictedIdentifier                                            # withDictionaryAccessExpr
+    | DOT whiteSpace? unrestrictedIdentifier                                                                        # withMemberAccessExpr
+    | dictionaryAccess whiteSpace? unrestrictedIdentifier                                                           # withDictionaryAccessExpr
     | lExpression mandatoryLineContinuation whiteSpace? LPAREN whiteSpace? argumentList? whiteSpace? RPAREN         # whitespaceIndexExpr
 ;
 

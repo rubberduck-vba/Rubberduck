@@ -19,7 +19,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <StackPanel Background="{DynamicResource BackgroundLightBrush}">
+        <StackPanel Background="{StaticResource BackgroundLightBrush}">
             <Label Content="{Resx ResxName=Rubberduck.Refactorings.RefactoringsUI, Key=RenameDialog_TitleText}" FontWeight="Bold" />
             <TextBlock Text="{Binding Instructions}" Margin="5,0" />
         </StackPanel>
@@ -32,7 +32,7 @@
                        VerticalAlignment="Top"
                        Margin="0,0,5,0" />
             <TextBox Name="RenameTextBox"
-                     Style="{DynamicResource TextBoxErrorStyle}"
+                     Style="{StaticResource TextBoxErrorStyle}"
                      Grid.Column="1"
                      Text="{Binding NewName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      Height="22"
