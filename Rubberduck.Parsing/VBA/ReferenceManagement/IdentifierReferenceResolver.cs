@@ -321,7 +321,10 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             if (context.ifWithEmptyThen() != null)
             {
                 ResolveDefault(context.ifWithEmptyThen().booleanExpression());
-                ResolveListOrLabel(context.ifWithEmptyThen().singleLineElseClause().listOrLabel());
+                if (context.ifWithEmptyThen().singleLineElseClause() != null)
+                {
+                    ResolveListOrLabel(context.ifWithEmptyThen().singleLineElseClause().listOrLabel());
+                }
             }
             else
             {
