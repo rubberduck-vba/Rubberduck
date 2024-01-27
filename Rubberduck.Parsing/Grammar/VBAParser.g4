@@ -543,6 +543,7 @@ subroutineName : identifier;
 
 // 5.2.3.3 User Defined Type Declarations
 // member list includes trailing endOfStatement
+// To support actual VBA behaviour, had to change optionalArrayClause to allow a standalone arrayDim without the asTypeClause - see issue #6194
 udtDeclaration : (visibility whiteSpace)? TYPE whiteSpace untypedIdentifier endOfStatement udtMemberList END_TYPE;  
 udtMemberList : (udtMember endOfStatement)+; 
 udtMember : reservedNameMemberDeclaration | untypedNameMemberDeclaration;
