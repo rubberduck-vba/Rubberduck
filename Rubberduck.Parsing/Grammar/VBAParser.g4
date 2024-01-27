@@ -548,7 +548,7 @@ udtMemberList : (udtMember endOfStatement)+;
 udtMember : reservedNameMemberDeclaration | untypedNameMemberDeclaration;
 untypedNameMemberDeclaration : untypedIdentifier whiteSpace? optionalArrayClause;
 reservedNameMemberDeclaration : unrestrictedIdentifier whiteSpace asTypeClause;
-optionalArrayClause : (arrayDim whiteSpace)? asTypeClause;
+optionalArrayClause : ((arrayDim whiteSpace)? asTypeClause | arrayDim);
 
 // 5.2.3.1.3 Array Dimensions and Bounds
 arrayDim : LPAREN whiteSpace? boundsList? whiteSpace? RPAREN;
