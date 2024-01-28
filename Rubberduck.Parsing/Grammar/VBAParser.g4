@@ -421,7 +421,7 @@ elseBlock :
 // 5.4.2.9 Single-line If Statement
 singleLineIfStmt : ifWithNonEmptyThen | ifWithEmptyThen;
 ifWithNonEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN whiteSpace? listOrLabel (whiteSpace singleLineElseClause)?;
-ifWithEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN whiteSpace? emptyThenStatement? singleLineElseClause?;
+ifWithEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN whiteSpace? (emptyThenStatement singleLineElseClause? | singleLineElseClause);
 singleLineElseClause : ELSE whiteSpace? listOrLabel?;
 
 // lineNumberLabel should actually be "statement-label" according to MS VBAL but they only allow lineNumberLabels:
@@ -543,12 +543,13 @@ subroutineName : identifier;
 
 // 5.2.3.3 User Defined Type Declarations
 // member list includes trailing endOfStatement
+// To support actual VBA behaviour, had to change optionalArrayClause to allow a standalone arrayDim without the asTypeClause - see issue #6194
 udtDeclaration : (visibility whiteSpace)? TYPE whiteSpace untypedIdentifier endOfStatement udtMemberList END_TYPE;  
 udtMemberList : (udtMember endOfStatement)+; 
 udtMember : reservedNameMemberDeclaration | untypedNameMemberDeclaration;
 untypedNameMemberDeclaration : untypedIdentifier whiteSpace? optionalArrayClause;
 reservedNameMemberDeclaration : unrestrictedIdentifier whiteSpace asTypeClause;
-optionalArrayClause : (arrayDim whiteSpace)? asTypeClause;
+optionalArrayClause : ((arrayDim whiteSpace)? asTypeClause | arrayDim);
 
 // 5.2.3.1.3 Array Dimensions and Bounds
 arrayDim : LPAREN whiteSpace? boundsList? whiteSpace? RPAREN;

@@ -4032,6 +4032,32 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt", matches => matches.Count == 1);
         }
 
+        // Adapted from opened issue https://github.com/rubberduck-vba/Rubberduck/issues/6187
+        [Test]
+        public void OneLineIfStatementNotMistakenForIfStatement()
+        {
+            string code = @"
+Sub Test()
+    If True Then: A = 1
+    If False Then
+        A = 5
+    End If
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt", matches => matches.Count == 1);
+        }
+
+        // Adapted from opened issue https://github.com/rubberduck-vba/Rubberduck/issues/6194
+        [Test]
+        public void UDTMemberCanHaveArrayWithoutType()
+        {
+            string code = @"
+Type Test
+    A(0 To 2)
+End Type";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//untypedNameMemberDeclaration", matches => matches.Count == 1);
+        }
 
         // Adapted from opened issue https://github.com/rubberduck-vba/Rubberduck/issues/4875
         [Test]
