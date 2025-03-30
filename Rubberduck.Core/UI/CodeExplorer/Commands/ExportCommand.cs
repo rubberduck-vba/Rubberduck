@@ -101,7 +101,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 var component = ProjectsProvider.Component(qualifiedModule);
                 try
                 {
-                    //var path = Path.GetDirectoryName(dialog.FileName);
                     var path = dialog.FileName; // This makes it that the file is named not as the module name, but as the file name the user provided in the explorer.
                     component.ExportAsSourceFile(path, false, true); // skipped optional parameters interfere with mock setup
                 }
