@@ -1858,7 +1858,8 @@ namespace RubberduckTests.CodeExplorer
             {
                 explorer.VbComponent.Setup(c => c.ExportAsSourceFile(folder, It.IsAny<bool>(), It.IsAny<bool>()));
                 explorer.ExecuteExportCommand();
-                explorer.VbComponent.Verify(c => c.ExportAsSourceFile(folder, false, true), Times.Once);
+                // Expected: ExportAsSourceFile will now be called with the full path, because the default filename was appended.
+                explorer.VbComponent.Verify(c => c.ExportAsSourceFile(path, false, true), Times.Once);
             }
         }
 

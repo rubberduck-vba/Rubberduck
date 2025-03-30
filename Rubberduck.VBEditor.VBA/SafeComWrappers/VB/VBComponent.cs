@@ -107,18 +107,27 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// <param name="folder">Destination folder for the resulting source file.</param>
         /// <param name="isTempFile">True if a unique temp file name should be generated. WARNING: filenames generated with this flag are not persisted.</param>
         /// <param name="specialCaseDocumentModules">If reimport of a document file is required later, it has to receive special treatment.</param>
-        public string ExportAsSourceFile(string folder, bool isTempFile = false, bool specialCaseDocumentModules = true)
+        public string ExportAsSourceFile(string folderOrPath, bool isTempFile = false, bool specialCaseDocumentModules = true)
         {
             //TODO: this entire thign needs to be reworked. IO is not the class' concern.
             //We probably need to leverage IPersistancePathProvider? ITempSourceFileHandler? 
             //Just not here.
-            var fullPath = isTempFile
-                ? _fileSystem.Path.Combine(folder, _fileSystem.Path.GetRandomFileName())
-                : _fileSystem.Path.Combine(folder, SafeName + Type.FileExtension());
-
-            if (!_fileSystem.Directory.Exists(folder))
+            string fullPath;
+            if (_fileSystem.Path.HasExtension(folderOrPath))
             {
-                _fileSystem.Directory.CreateDirectory(folder);
+                fullPath = folderOrPath;
+            }
+            else
+            {
+                fullPath = isTempFile
+                    ? _fileSystem.Path.Combine(folderOrPath, _fileSystem.Path.GetRandomFileName())
+                    : _fileSystem.Path.Combine(folderOrPath, SafeName + Type.FileExtension());
+            }
+
+            var dir = _fileSystem.Path.GetDirectoryName(fullPath);
+            if (!_fileSystem.Directory.Exists(dir))
+            {
+                _fileSystem.Directory.CreateDirectory(dir);
             }
 
             switch (Type)
