@@ -45,8 +45,7 @@ namespace Rubberduck.UI.Controls
             base.OnAttached();
 
             // Ensure the visual tree is fully loaded before trying to access parents
-            AssociatedObject.Dispatcher.BeginInvoke(new System.Action(() =>
-            {
+            AssociatedObject.Dispatcher.InvokeAsync(() => {
                 var states = GetExpandedStateStore();
                 var expanded = !states.ContainsKey(GroupName ?? string.Empty) ? (bool?)null : states[GroupName ?? string.Empty];
 
@@ -54,7 +53,7 @@ namespace Rubberduck.UI.Controls
 
                 AssociatedObject.Expanded += OnExpanded;
                 AssociatedObject.Collapsed += OnCollapsed;
-            }));
+            });
         }
 
 
