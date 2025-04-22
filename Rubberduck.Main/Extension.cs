@@ -9,6 +9,7 @@ using Rubberduck.Runtime;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI;
+using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.Events;
@@ -96,7 +97,7 @@ namespace Rubberduck
         private void SetAddInObject()
         {
             // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
-            _addin.Object = new VBETypeLibsAPI_Object(_vbe);
+            _addin.Object = new VBETypeLibsAPI_Object(_vbe, _container.Resolve<ITestEngine>());
         }
 
         private Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)

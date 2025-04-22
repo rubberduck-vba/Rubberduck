@@ -54,6 +54,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void DocumentAllSaveAs(string filePath);
         [DispId(11)]
         string TestGetCLRTypeFromVBAComponent(string projectName, string componentName, int inheritenceLevel = 0);
+        [DispId(12)]
+        string RunAllTestsAndGetResults();
     }
 
     [
@@ -68,11 +70,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     {
         private IVBE _ide;
         private readonly VBETypeLibsAPI _api;
+        private object _testEngine;
 
-        public VBETypeLibsAPI_Object(IVBE ide)
+        public VBETypeLibsAPI_Object(IVBE ide, object testEngine)
         {
             _ide = ide;
             _api = new VBETypeLibsAPI();
+            _testEngine = testEngine;
         }
 
         public bool CompileProject(string projectName)
@@ -99,6 +103,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             => _api.DocumentAllSaveAs(_ide, filePath);
         public string TestGetCLRTypeFromVBAComponent(string projectName, string componentName, int inheritenceLevel = 0)
             => _api.TestGetCLRTypeFromVBAComponent(_ide, projectName, componentName, inheritenceLevel);
+        public string RunAllTestsAndGetResults()
+            => _api.RunAllTestsAndGetResults(_ide, _testEngine);
     }
 
     /// <summary>
@@ -1123,5 +1129,33 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 return clrType.ToString();
             }
         }
+
+        /// <summary>
+        /// Runs all unit tests and returns the results as a formatted string.
+        /// </summary>
+        /// <param name="ide">Safe-com wrapper representing the VBE</param>
+        /// <returns>A string containing the test results.</returns>
+        public string RunAllTestsAndGetResults(IVBE ide, dynamic testEngine)
+        {
+
+            // No additional changes are required in the method itself as the issue is related to missing references.
+            if (!testEngine.CanRun)
+            {
+                return "Test engine is not ready to run tests.";
+            }
+
+            var results = testEngine.RunWithResults(testEngine.Tests);
+
+            // Format the results into a string
+            var resultBuilder = new StringLineBuilder();
+            foreach (var result in results)
+            {
+                resultBuilder.AppendLine($"{result.TestName}: {result.Outcome}");
+            }
+
+            return resultBuilder.ToString();
+        }
+
+
     }
 }

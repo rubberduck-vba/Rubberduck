@@ -142,7 +142,6 @@ namespace Rubberduck.UnitTesting
             // This call is safe - OnTestCompleted cannot be called from outside RD's context.
             _uiDispatcher.FlushMessageQueue();
         }
-
         public void Run(IEnumerable<TestMethod> tests)
         {
             var queued = tests.ToList();
@@ -157,6 +156,228 @@ namespace Rubberduck.UnitTesting
                 OnTestRunStarted(queued);
                 RunInternal(queued);
             });
+        }
+        public IEnumerable<TestResult> RunWithResults(IEnumerable<TestMethod> tests)
+        {
+            var queued = tests.ToList();
+            var results = new List<TestResult>();
+
+            foreach (var test in queued.Where(item => _knownOutcomes.ContainsKey(item)))
+            {
+                _knownOutcomes.Remove(test);
+            }
+
+            Task.Run(() =>
+            {
+                var suspensionResult = _state.OnSuspendParser(this, AllowedRunStates, () =>
+                {
+                    results.AddRange(RunWhileSuspendedWithResults(tests));
+                });
+
+                switch (suspensionResult.Outcome)
+                {
+                    case SuspensionOutcome.Completed:
+                        break;
+                    case SuspensionOutcome.Canceled:
+                        Logger.Debug("Test execution canceled.");
+                        break;
+                    default:
+                        Logger.Warn($"Test execution failed with suspension outcome {suspensionResult.Outcome}.");
+                        if (suspensionResult.EncounteredException != null)
+                        {
+                            Logger.Error(suspensionResult.EncounteredException);
+                        }
+                        break;
+                }
+            }).GetAwaiter().GetResult(); // Ensure the task completes before returning results.
+
+
+            return results;
+        }
+
+        private IEnumerable<TestResult> RunInternalWithResults(IEnumerable<TestMethod> tests)
+        {
+            var results = new List<TestResult>();
+
+            if (!CanRun)
+            {
+                return results;
+            }
+
+            Task.Run(() =>
+            {
+                var suspensionResult = _state.OnSuspendParser(this, AllowedRunStates, () =>
+                {
+                    results.AddRange(RunWhileSuspendedWithResults(tests));
+                });
+
+                switch (suspensionResult.Outcome)
+                {
+                    case SuspensionOutcome.Completed:
+                        break;
+                    case SuspensionOutcome.Canceled:
+                        Logger.Debug("Test execution canceled.");
+                        break;
+                    default:
+                        Logger.Warn($"Test execution failed with suspension outcome {suspensionResult.Outcome}.");
+                        if (suspensionResult.EncounteredException != null)
+                        {
+                            Logger.Error(suspensionResult.EncounteredException);
+                        }
+                        break;
+                }
+            }).Wait(); // Ensure the task completes before returning results.
+
+            return results;
+        }
+
+        private IEnumerable<TestResult> RunWhileSuspendedWithResults(IEnumerable<TestMethod> tests)
+        {
+            var results = new List<TestResult>();
+
+            var testTask = _uiDispatcher.StartTask(() =>
+            {
+                results.AddRange(RunWhileSuspendedOnUiThreadWithResults(tests));
+            });
+            testTask.Wait();
+
+            return results;
+        }
+
+        private IEnumerable<TestResult> RunWhileSuspendedOnUiThreadWithResults(IEnumerable<TestMethod> tests)
+        {
+            var results = new List<TestResult>();
+            var testMethods = tests as IList<TestMethod> ?? tests.ToList();
+
+            if (!testMethods.Any())
+            {
+                return results;
+            }
+
+            _lastRun.Clear();
+
+            try
+            {
+                EnsureRubberduckIsReferencedForEarlyBoundTests();
+            }
+            catch (InvalidOperationException e)
+            {
+                Logger.Warn(e);
+                foreach (var test in testMethods)
+                {
+                    var result = new TestResult(TestOutcome.Failed, AssertMessages.Prerequisite_EarlyBindingReferenceMissing);
+                    OnTestCompleted(test, result);
+                    results.Add(result);
+                }
+                return results;
+            }
+
+            var overallTime = new Stopwatch();
+            overallTime.Start();
+
+            try
+            {
+                var testsByModule = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName)
+                    .ToDictionary(grouping => grouping.Key, grouping => grouping.ToList());
+
+                foreach (var moduleName in testsByModule.Keys)
+                {
+                    var testInitialize = TestDiscovery.FindTestInitializeMethods(moduleName, _state).ToList();
+                    var testCleanup = TestDiscovery.FindTestCleanupMethods(moduleName, _state).ToList();
+
+                    var moduleTestMethods = testsByModule[moduleName];
+
+                    var fakes = _fakesFactory.Create();
+                    using (var typeLibWrapper = _wrapperProvider.TypeLibWrapperFromProject(moduleName.ProjectId))
+                    {
+                        try
+                        {
+                            _declarationRunner.RunDeclarations(typeLibWrapper, TestDiscovery.FindModuleInitializeMethods(moduleName, _state));
+                        }
+                        catch (COMException ex)
+                        {
+                            Logger.Error(ex, "Unexpected COM exception while initializing tests for module {0}. The module will be skipped.", moduleName.Name);
+                            foreach (var method in moduleTestMethods)
+                            {
+                                var result = new TestResult(TestOutcome.Unknown, AssertMessages.TestRunner_ModuleInitializeFailure);
+                                OnTestCompleted(method, result);
+                                results.Add(result);
+                            }
+                            continue;
+                        }
+
+                        foreach (var test in moduleTestMethods)
+                        {
+                            OnTestStarted(test);
+
+                            if (test.Declaration.Annotations.Any(a => a.Annotation is IgnoreTestAnnotation))
+                            {
+                                var result = new TestResult(TestOutcome.Ignored);
+                                OnTestCompleted(test, result);
+                                results.Add(result);
+                                continue;
+                            }
+
+                            try
+                            {
+                                fakes.StartTest();
+                                try
+                                {
+                                    _declarationRunner.RunDeclarations(typeLibWrapper, testInitialize);
+                                }
+                                catch (COMException trace)
+                                {
+                                    var newResult = new TestResult(TestOutcome.Inconclusive, AssertMessages.TestRunner_TestInitializeFailure);
+                                    OnTestCompleted(test, newResult);
+                                    results.Add(newResult);
+                                    Logger.Trace(trace, "Unexpected COMException when running TestInitialize");
+                                    continue;
+                                }
+
+                                _uiDispatcher.FlushMessageQueue();
+
+                                if (CancellationRequested)
+                                {
+                                    RunTestCleanup(typeLibWrapper, testCleanup);
+                                    fakes.StopTest();
+                                    break;
+                                }
+
+                                var result = RunTestMethod(typeLibWrapper, test);
+                                OnTestCompleted(test, result);
+                                results.Add(result);
+
+                                RunTestCleanup(typeLibWrapper, testCleanup);
+                            }
+                            finally
+                            {
+                                fakes.StopTest();
+                            }
+                        }
+
+                        try
+                        {
+                            _declarationRunner.RunDeclarations(typeLibWrapper, TestDiscovery.FindModuleCleanupMethods(moduleName, _state));
+                        }
+                        catch (COMException ex)
+                        {
+                            Logger.Error(ex, "Unexpected COM exception while cleaning up tests for module {0}. Aborting any further unit tests", moduleName.Name);
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Unexpected exception while running unit tests; unit tests will be aborted");
+            }
+
+            CancellationRequested = false;
+            overallTime.Stop();
+
+            TestRunCompleted?.Invoke(this, new TestRunCompletedEventArgs(overallTime.ElapsedMilliseconds));
+
+            return results;
         }
 
         public void RunByOutcome(TestOutcome outcome)
