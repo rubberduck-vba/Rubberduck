@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.Resources.Registration;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
@@ -55,7 +56,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         [DispId(11)]
         string TestGetCLRTypeFromVBAComponent(string projectName, string componentName, int inheritenceLevel = 0);
         [DispId(12)]
-        string RunAllTestsAndGetResults();
+        string RunAllTestsAndGetResults(string filePath);
     }
 
     [
@@ -72,11 +73,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private readonly VBETypeLibsAPI _api;
         private object _testEngine;
 
-        public VBETypeLibsAPI_Object(IVBE ide, object TestEngineProvider)
+        public VBETypeLibsAPI_Object(IVBE ide, object testEngineProvider)
         {
             _ide = ide;
             _api = new VBETypeLibsAPI();
-            _testEngine = TestEngineProvider;
+            _testEngine = testEngineProvider;
         }
 
         public bool CompileProject(string projectName)
@@ -103,8 +104,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             => _api.DocumentAllSaveAs(_ide, filePath);
         public string TestGetCLRTypeFromVBAComponent(string projectName, string componentName, int inheritenceLevel = 0)
             => _api.TestGetCLRTypeFromVBAComponent(_ide, projectName, componentName, inheritenceLevel);
-        public string RunAllTestsAndGetResults()
-            => _api.RunAllTestsAndGetResults(_ide, _testEngine);
+        public string RunAllTestsAndGetResults(string filePath)
+            => _api.RunAllTestsAndGetResults(_ide, _testEngine, filePath);
     }
 
     /// <summary>
@@ -1135,30 +1136,49 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// </summary>
         /// <param name="ide">Safe-com wrapper representing the VBE</param>
         /// <returns>A string containing the test results.</returns>
-        public string RunAllTestsAndGetResults(IVBE ide, dynamic TestEngineProvider)
+        public string RunAllTestsAndGetResults(IVBE ide, dynamic testEngineProvider, string logPath)
         {
 
-            TestEngineProvider.SetTestEngine();
-            var testEngine = TestEngineProvider.GetTestEngine();
+            testEngineProvider.SetTestEngine();
+            dynamic testEngine = testEngineProvider.GetTestEngine();
 
-            // No additional changes are required in the method itself as the issue is related to missing references.
-            if (!testEngine.CanRun)
+            // We can't use CanRun because we are triggering the test via VBA and it automatically sets DesignMode = false when you run a macro.
+            //// No additional changes are required in the method itself as the issue is related to missing references.
+            //// Use reflection to check for the CanRun property dynamically
+            //var canRunProperty = testEngine.GetType().GetProperty("CanRun");
+            //if (canRunProperty == null || !(bool)canRunProperty.GetValue(testEngine))
+            //{
+            //    return "Test engine is not ready to run tests.";
+            //}
+
+            // Use reflection to check for the RunWithResults method dynamically
+            var runWithResultsMethod = testEngine.GetType().GetMethod("RunWithResults");
+            if (runWithResultsMethod == null)
             {
-                return "Test engine is not ready to run tests.";
+                return "Test engine does not support running tests with results.";
             }
 
-            var results = testEngine.RunWithResults(testEngine.Tests);
-
-            // Format the results into a string
-            var resultBuilder = new StringLineBuilder();
-            foreach (var result in results)
+            var testsProperty = testEngine.GetType().GetProperty("Tests");
+            if (testsProperty == null)
             {
-                resultBuilder.AppendLine($"{result.TestName}: {result.Outcome}");
+                return "Test engine does not have a Tests property.";
             }
 
-            return resultBuilder.ToString();
+            // Create a Task to run the tests asynchronously
+            var task = Task.Run(() => {
+                var output = runWithResultsMethod.Invoke(testEngine, new object[] { testsProperty.GetValue(testEngine) });
+                if (!string.IsNullOrEmpty(logPath))
+                {
+                    FileSystemProvider.FileSystem.File.WriteAllText(logPath, output.ToString());
+                }
+            });
+
+            return "Task started to run tests asynchronously. Check the log file for results.";
+
         }
 
-
     }
+
+
+
 }

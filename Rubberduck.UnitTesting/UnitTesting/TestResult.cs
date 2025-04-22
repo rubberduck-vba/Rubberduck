@@ -24,4 +24,23 @@ namespace Rubberduck.UnitTesting
                     && Output == other.Output;
         }
     }
-}
+
+    public readonly struct TestInfo
+    {
+        public TestInfo(string testName, TestResult result)
+        {
+            TestName = testName;
+            Result = result;
+        }
+        public string TestName { get; }
+        public TestResult Result { get; }
+        public override int GetHashCode() => HashCode.Compute(TestName, Result);
+        public override bool Equals(object obj)
+        {
+            return obj is TestInfo other
+                    && TestName == other.TestName
+                    && Result.Equals(other.Result);
+        }
+
+    }
+    }

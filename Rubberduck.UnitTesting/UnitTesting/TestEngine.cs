@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 using NLog;
 using Rubberduck.InternalApi.Extensions;
@@ -157,10 +158,34 @@ namespace Rubberduck.UnitTesting
                 RunInternal(queued);
             });
         }
-        public IEnumerable<TestResult> RunWithResults(IEnumerable<TestMethod> tests)
+        public string RunWithResults(IEnumerable<TestMethod> tests)
         {
+            if (tests == null)
+            {
+                // Trigger the ParseRequest programmatically
+                var parseCompletion = new TaskCompletionSource<bool>();
+                EventHandler<ParserStateEventArgs> parseCompletedHandler = null;
+
+                parseCompletedHandler = (sender, args) =>
+                {
+                    if (args.State == ParserState.Ready) // Ensure parsing is complete
+                    {
+                        _state.StateChanged -= parseCompletedHandler; // Unsubscribe from the event
+                        parseCompletion.SetResult(true); // Signal that parsing is complete
+                    }
+                };
+
+                _state.StateChanged += parseCompletedHandler; // Subscribe to the StateChanged event
+                _state.OnParseRequested(this); // Trigger the parse request
+
+                // Wait for the parsing process to complete
+                parseCompletion.Task.Wait();
+
+                tests = Tests;
+            }
+
             var queued = tests.ToList();
-            var results = new List<TestResult>();
+            var results = new List<TestInfo>();
 
             foreach (var test in queued.Where(item => _knownOutcomes.ContainsKey(item)))
             {
@@ -171,7 +196,7 @@ namespace Rubberduck.UnitTesting
             {
                 var suspensionResult = _state.OnSuspendParser(this, AllowedRunStates, () =>
                 {
-                    results.AddRange(RunWhileSuspendedWithResults(tests));
+                    results.AddRange(RunWhileSuspendedWithResults2(tests));
                 });
 
                 switch (suspensionResult.Outcome)
@@ -191,8 +216,17 @@ namespace Rubberduck.UnitTesting
                 }
             }).GetAwaiter().GetResult(); // Ensure the task completes before returning results.
 
+            // Format the results into a string
+            var resultBuilder = new StringLineBuilder();
+            foreach (var result in results)
+            {
+                // Get TestName but stop at the first \r\n In Excel I would use the formula LEFT(A1, FIND(CHAR(10), A1)-1)
+                int index = result.TestName.IndexOf("\r\n");
+                var signature = index >= 0 ? result.TestName.Substring(0, index) : result.TestName;
+                resultBuilder.AppendLine($"{result.Result.Outcome}: {signature}");
+            }
 
-            return results;
+            return resultBuilder.ToString();
         }
 
         private IEnumerable<TestResult> RunInternalWithResults(IEnumerable<TestMethod> tests)
@@ -237,16 +271,45 @@ namespace Rubberduck.UnitTesting
 
             var testTask = _uiDispatcher.StartTask(() =>
             {
-                results.AddRange(RunWhileSuspendedOnUiThreadWithResults(tests));
+                results.AddRange(RunWhileSuspendedOnUiThreadWithResults<TestResult>(tests));
             });
             testTask.Wait();
 
             return results;
         }
 
-        private IEnumerable<TestResult> RunWhileSuspendedOnUiThreadWithResults(IEnumerable<TestMethod> tests)
+        private IEnumerable<TestInfo> RunWhileSuspendedWithResults2(IEnumerable<TestMethod> tests)
         {
-            var results = new List<TestResult>();
+            var results = new List<TestInfo>();
+
+            var testTask = _uiDispatcher.StartTask(() =>
+            {
+                results.AddRange(RunWhileSuspendedOnUiThreadWithResults<TestInfo>(tests));
+            });
+            testTask.Wait();
+
+            return results;
+        }
+
+        private T TestResultOrTestInfo<T>(TestMethod test, TestResult testResult)
+        {
+            if (typeof(T) == typeof(TestResult))
+            {
+                return (T)(object)testResult;
+            }
+            else if (typeof(T) == typeof(TestInfo))
+            {
+                return (T)(object)new TestInfo(test.TestCode, testResult);
+            }
+            else
+            {
+                throw new InvalidOperationException("Unsupported type for test result.");
+            }
+        }
+
+        private IEnumerable<T> RunWhileSuspendedOnUiThreadWithResults<T>(IEnumerable<TestMethod> tests)
+        {
+            var results = new List<T>();
             var testMethods = tests as IList<TestMethod> ?? tests.ToList();
 
             if (!testMethods.Any())
@@ -265,8 +328,22 @@ namespace Rubberduck.UnitTesting
                 Logger.Warn(e);
                 foreach (var test in testMethods)
                 {
-                    var result = new TestResult(TestOutcome.Failed, AssertMessages.Prerequisite_EarlyBindingReferenceMissing);
-                    OnTestCompleted(test, result);
+                    var testResult = new TestResult(TestOutcome.Failed, AssertMessages.Prerequisite_EarlyBindingReferenceMissing);
+                    T result;
+                    if (typeof(T) == typeof(TestResult))
+                    {
+                        result = (T)(object)testResult;
+                    }
+                    else if (typeof(T) == typeof(TestInfo))
+                    {
+                        result = (T)(object)new TestInfo(test.TestCode, testResult);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Unsupported type for test result.");
+                    }
+
+                    OnTestCompleted(test, testResult);
                     results.Add(result);
                 }
                 return results;
@@ -301,7 +378,7 @@ namespace Rubberduck.UnitTesting
                             {
                                 var result = new TestResult(TestOutcome.Unknown, AssertMessages.TestRunner_ModuleInitializeFailure);
                                 OnTestCompleted(method, result);
-                                results.Add(result);
+                                results.Add(TestResultOrTestInfo<T>(method, result));
                             }
                             continue;
                         }
@@ -314,7 +391,7 @@ namespace Rubberduck.UnitTesting
                             {
                                 var result = new TestResult(TestOutcome.Ignored);
                                 OnTestCompleted(test, result);
-                                results.Add(result);
+                                results.Add(TestResultOrTestInfo<T>(test, result));
                                 continue;
                             }
 
@@ -329,7 +406,7 @@ namespace Rubberduck.UnitTesting
                                 {
                                     var newResult = new TestResult(TestOutcome.Inconclusive, AssertMessages.TestRunner_TestInitializeFailure);
                                     OnTestCompleted(test, newResult);
-                                    results.Add(newResult);
+                                    results.Add(TestResultOrTestInfo<T>(test, newResult));
                                     Logger.Trace(trace, "Unexpected COMException when running TestInitialize");
                                     continue;
                                 }
@@ -345,7 +422,7 @@ namespace Rubberduck.UnitTesting
 
                                 var result = RunTestMethod(typeLibWrapper, test);
                                 OnTestCompleted(test, result);
-                                results.Add(result);
+                                results.Add(TestResultOrTestInfo<T>(test, result));
 
                                 RunTestCleanup(typeLibWrapper, testCleanup);
                             }
@@ -630,5 +707,18 @@ namespace Rubberduck.UnitTesting
 
             return new TestResult(result.Outcome, result.Message, duration);
         }
+    }
+
+    internal class StringLineBuilder
+    {
+        private readonly StringBuilder _document = new StringBuilder();
+
+        public override string ToString() => _document.ToString();
+
+        public void AppendLine(string value = "")
+            => _document.Append(value + "\r\n");
+
+        public void AppendLineNoNullChars(string value)
+            => AppendLine(value.Replace("\0", string.Empty));
     }
 }
