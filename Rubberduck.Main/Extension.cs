@@ -59,6 +59,8 @@ namespace Rubberduck
 
         public void OnAddInsUpdate(ref Array custom) { }
 
+        public ITestEngine testEngine;
+
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
         {
@@ -97,7 +99,7 @@ namespace Rubberduck
         private void SetAddInObject()
         {
             // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
-            _addin.Object = new VBETypeLibsAPI_Object(_vbe, _container.Resolve<ITestEngine>());
+            _addin.Object = new VBETypeLibsAPI_Object(_vbe, new TestEngineProvider(this));
         }
 
         private Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
@@ -235,7 +237,7 @@ namespace Rubberduck
                 currentDomain.UnhandledException += HandleAppDomainException;
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
-                _container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings, _vbeNativeApi, _beepInterceptor));
+                    _container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings, _vbeNativeApi, _beepInterceptor));
                 _container.Resolve<InstanceProvider>();
                 _app = _container.Resolve<App>();
                 _app.Startup();
@@ -331,4 +333,31 @@ namespace Rubberduck
             }
         }
     }
+
+    public class TestEngineProvider
+    {
+        //private readonly ITestEngine _testEngine;
+        private _Extension _extension;
+        private ITestEngine _testEngine;
+        public TestEngineProvider(_Extension extension)
+        {
+            _extension = extension;
+        }
+
+        public void SetTestEngine()
+        {
+            _testEngine = _extension.testEngine;
+        }
+
+        public void GetTestEngine()
+        {
+            _testEngine = _extension.testEngine;
+        }
+
+        public void RunWithResults()
+        {
+            _testEngine.RunWithResults(_testEngine.Tests);
+        }
+    }
+
 }

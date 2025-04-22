@@ -72,11 +72,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private readonly VBETypeLibsAPI _api;
         private object _testEngine;
 
-        public VBETypeLibsAPI_Object(IVBE ide, object testEngine)
+        public VBETypeLibsAPI_Object(IVBE ide, object TestEngineProvider)
         {
             _ide = ide;
             _api = new VBETypeLibsAPI();
-            _testEngine = testEngine;
+            _testEngine = TestEngineProvider;
         }
 
         public bool CompileProject(string projectName)
@@ -1135,8 +1135,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// </summary>
         /// <param name="ide">Safe-com wrapper representing the VBE</param>
         /// <returns>A string containing the test results.</returns>
-        public string RunAllTestsAndGetResults(IVBE ide, dynamic testEngine)
+        public string RunAllTestsAndGetResults(IVBE ide, dynamic TestEngineProvider)
         {
+
+            TestEngineProvider.SetTestEngine();
+            var testEngine = TestEngineProvider.GetTestEngine();
 
             // No additional changes are required in the method itself as the issue is related to missing references.
             if (!testEngine.CanRun)
