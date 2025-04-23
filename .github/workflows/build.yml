@@ -1,0 +1,43 @@
+# Build Rubberduck in GitHub Actions using windows-2019
+# For now we don't run the tests, but might add it in the future.
+# This is a simple build script that builds the Rubberduck project using MSBuild.
+# It uses the latest version of Visual Studio 2019 and the .NET Framework 4.6.2
+
+name: Build Rubberduck
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2019
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+      
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.1.1
+      
+    - name: Restore NuGet packages
+      run: | 
+        nuget RubberduckMeta.sln  
+        nuget restore Rubberduck.sln
+      
+    - name: Build Solution (Debug)
+      run: msbuild Rubberduck.sln /p:Configuration=DEBUG /p:Platform="Any CPU" /p:TargetFrameworkVersion=v4.6.2 /verbosity:minimal
+      
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: rubberduck-Debug
+        path: |
+          Rubberduck/bin/Debug/
+          !Rubberduck/bin/Debug/Rubberduck.*.xml
+          !**/*.pdb
+        if-no-files-found: error
+
