@@ -94,11 +94,9 @@ namespace Rubberduck
                 Console.WriteLine(e);
             }
         }
-
-        [Conditional("DEBUG")]
         private void SetAddInObject()
         {
-            // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
+            // FOR DEBUGGING/DEVELOPMENT/CLI PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
             _addin.Object = new VBETypeLibsAPI_Object(_vbe, new TestEngineProvider(this));
         }
 

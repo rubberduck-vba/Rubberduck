@@ -28,16 +28,14 @@ jobs:
         nuget RubberduckMeta.sln  
         nuget restore Rubberduck.sln
       
-    - name: Build Solution (Debug)
-      run: msbuild Rubberduck.sln /p:Configuration=DEBUG /p:Platform="Any CPU" /p:TargetFrameworkVersion=v4.6.2 /verbosity:minimal
+    - name: Build Solution (Release)
+      run: msbuild Rubberduck.sln /p:Configuration=Release /p:Platform="Any CPU" /p:TargetFrameworkVersion=v4.6.2 /verbosity:minimal
       
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: rubberduck-Debug
+        name: rubberduck-Release
         path: |
-          Rubberduck/bin/Debug/
-          !Rubberduck/bin/Debug/Rubberduck.*.xml
-          !**/*.pdb
+          Rubberduck.Main/bin/Release/net462/
         if-no-files-found: error
 
