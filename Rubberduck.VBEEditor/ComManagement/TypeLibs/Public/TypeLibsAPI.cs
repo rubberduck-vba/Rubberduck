@@ -15,7 +15,7 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
     /// <summary>
-    /// FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
+    /// FOR DEBUGGING/DEVELOPMENT/CLI PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
     /// </summary>
     /// <remarks>
     /// VBA Usage example:
@@ -71,13 +71,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     {
         private IVBE _ide;
         private readonly VBETypeLibsAPI _api;
-        private object _testEngine;
+        private object _testEngineProvider;
 
         public VBETypeLibsAPI_Object(IVBE ide, object testEngineProvider)
         {
             _ide = ide;
             _api = new VBETypeLibsAPI();
-            _testEngine = testEngineProvider;
+            _testEngineProvider = testEngineProvider;
         }
 
         public bool CompileProject(string projectName)
@@ -105,7 +105,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public string TestGetCLRTypeFromVBAComponent(string projectName, string componentName, int inheritenceLevel = 0)
             => _api.TestGetCLRTypeFromVBAComponent(_ide, projectName, componentName, inheritenceLevel);
         public string RunAllTestsAndGetResults(string filePath)
-            => _api.RunAllTestsAndGetResults(_ide, _testEngine, filePath);
+            => _api.RunAllTestsAndGetResults(_testEngineProvider, filePath);
     }
 
     /// <summary>
@@ -1134,24 +1134,16 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// <summary>
         /// Runs all unit tests and returns the results as a formatted string.
         /// </summary>
-        /// <param name="ide">Safe-com wrapper representing the VBE</param>
         /// <returns>A string containing the test results.</returns>
-        public string RunAllTestsAndGetResults(IVBE ide, dynamic testEngineProvider, string logPath)
+        public string RunAllTestsAndGetResults(dynamic testEngineProvider, string logPath)
         {
-
             testEngineProvider.SetTestEngine();
-            dynamic testEngine = testEngineProvider.GetTestEngine();
+            // We the test engine from the provider dynamically, since we can't get the type at compile time due to cyclic references
+            dynamic testEngine = testEngineProvider.TestEngine;
 
-            // We can't use CanRun because we are triggering the test via VBA and it automatically sets DesignMode = false when you run a macro.
-            //// No additional changes are required in the method itself as the issue is related to missing references.
-            //// Use reflection to check for the CanRun property dynamically
-            //var canRunProperty = testEngine.GetType().GetProperty("CanRun");
-            //if (canRunProperty == null || !(bool)canRunProperty.GetValue(testEngine))
-            //{
-            //    return "Test engine is not ready to run tests.";
-            //}
+            // Note that we can't use CanRun in case we are triggering the test via VBA and it automatically sets DesignMode = false when you run a macro
+            // and CanRun interprets this as "not ready to run tests".
 
-            // Use reflection to check for the RunWithResults method dynamically
             var runWithResultsMethod = testEngine.GetType().GetMethod("RunWithResults");
             if (runWithResultsMethod == null)
             {
@@ -1164,7 +1156,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 return "Test engine does not have a Tests property.";
             }
 
-            // Create a Task to run the tests asynchronously
             var task = Task.Run(() => {
                 var output = runWithResultsMethod.Invoke(testEngine, new object[] { testsProperty.GetValue(testEngine) });
                 if (!string.IsNullOrEmpty(logPath))
@@ -1178,7 +1169,4 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
 
     }
-
-
-
 }

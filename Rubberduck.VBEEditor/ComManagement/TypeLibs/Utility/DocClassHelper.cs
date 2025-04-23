@@ -4,22 +4,6 @@ using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Utility
 {
     /// <summary>
-    /// Extension to StringBuilder to allow adding text line by line.
-    /// </summary>
-    internal class StringLineBuilder
-    {
-        private readonly StringBuilder _document = new StringBuilder();
-
-        public override string ToString() => _document.ToString();
-
-        public void AppendLine(string value = "")
-            => _document.Append(value + "\r\n");
-
-        public void AppendLineNoNullChars(string value)
-            => AppendLine(value.Replace("\0", string.Empty));
-    }
-
-    /// <summary>
     /// An enumeration used for identifying the type of a VBA document class
     /// </summary>
     public enum DocClassType

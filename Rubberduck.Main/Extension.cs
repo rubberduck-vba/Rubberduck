@@ -57,9 +57,9 @@ namespace Rubberduck
         private App _app;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public void OnAddInsUpdate(ref Array custom) { }
+        public ITestEngine TestEngine;
 
-        public ITestEngine testEngine;
+        public void OnAddInsUpdate(ref Array custom) { }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
@@ -240,7 +240,7 @@ namespace Rubberduck
                 _app = _container.Resolve<App>();
                 _app.Startup();
 
-                testEngine = _container.Resolve<ITestEngine>();
+                TestEngine = _container.Resolve<ITestEngine>();
 
                 _isInitialized = true;
             }
@@ -333,31 +333,4 @@ namespace Rubberduck
             }
         }
     }
-
-    public class TestEngineProvider
-    {
-        //private readonly ITestEngine _testEngine;
-        private _Extension _extension;
-        private ITestEngine _testEngine;
-        public TestEngineProvider(_Extension extension)
-        {
-            _extension = extension;
-        }
-
-        public void SetTestEngine()
-        {
-            _testEngine = _extension.testEngine;
-        }
-
-        public ITestEngine GetTestEngine()
-        {
-            return _extension.testEngine;
-        }
-
-        public void RunWithResults()
-        {
-            _testEngine.RunWithResults(_testEngine.Tests);
-        }
-    }
-
 }

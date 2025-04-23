@@ -1,4 +1,5 @@
 ﻿using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+using Rubberduck.InternalApi.Common;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Utility
 {

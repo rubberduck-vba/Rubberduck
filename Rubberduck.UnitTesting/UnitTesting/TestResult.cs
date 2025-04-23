@@ -43,4 +43,4 @@ namespace Rubberduck.UnitTesting
         }
 
     }
-    }
+}
