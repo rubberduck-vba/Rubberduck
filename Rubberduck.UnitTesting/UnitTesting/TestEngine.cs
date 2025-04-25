@@ -235,7 +235,7 @@ namespace Rubberduck.UnitTesting
 
             var testTask = _uiDispatcher.StartTask(() =>
             {
-                results.AddRange(RunWhileSuspendedOnUiThreadWithResults<T>(tests));
+                results.AddRange(RunWhileSuspendedOnUiThread<T>(tests));
             });
             testTask.Wait();
 
@@ -256,143 +256,6 @@ namespace Rubberduck.UnitTesting
             {
                 throw new InvalidOperationException("Unsupported type for test result.");
             }
-        }
-
-        private IEnumerable<T> RunWhileSuspendedOnUiThreadWithResults<T>(IEnumerable<TestMethod> tests)
-        {
-            var results = new List<T>();
-            var testMethods = tests as IList<TestMethod> ?? tests.ToList();
-
-            if (!testMethods.Any())
-            {
-                return results;
-            }
-
-            _lastRun.Clear();
-
-            try
-            {
-                EnsureRubberduckIsReferencedForEarlyBoundTests();
-            }
-            catch (InvalidOperationException e)
-            {
-                Logger.Warn(e);
-                foreach (var test in testMethods)
-                {
-                    var testResult = new TestResult(TestOutcome.Failed, AssertMessages.Prerequisite_EarlyBindingReferenceMissing);
-                    var result = TestResultOrTestInfo<T>(test, testResult);
-                    OnTestCompleted(test, testResult);
-                    results.Add(result);
-                }
-                return results;
-            }
-
-            var overallTime = new Stopwatch();
-            overallTime.Start();
-
-            try
-            {
-                var testsByModule = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName)
-                    .ToDictionary(grouping => grouping.Key, grouping => grouping.ToList());
-
-                foreach (var moduleName in testsByModule.Keys)
-                {
-                    var testInitialize = TestDiscovery.FindTestInitializeMethods(moduleName, _state).ToList();
-                    var testCleanup = TestDiscovery.FindTestCleanupMethods(moduleName, _state).ToList();
-
-                    var moduleTestMethods = testsByModule[moduleName];
-
-                    var fakes = _fakesFactory.Create();
-                    using (var typeLibWrapper = _wrapperProvider.TypeLibWrapperFromProject(moduleName.ProjectId))
-                    {
-                        try
-                        {
-                            _declarationRunner.RunDeclarations(typeLibWrapper, TestDiscovery.FindModuleInitializeMethods(moduleName, _state));
-                        }
-                        catch (COMException ex)
-                        {
-                            Logger.Error(ex, "Unexpected COM exception while initializing tests for module {0}. The module will be skipped.", moduleName.Name);
-                            foreach (var method in moduleTestMethods)
-                            {
-                                var result = new TestResult(TestOutcome.Unknown, AssertMessages.TestRunner_ModuleInitializeFailure);
-                                OnTestCompleted(method, result);
-                                results.Add(TestResultOrTestInfo<T>(method, result));
-                            }
-                            continue;
-                        }
-
-                        foreach (var test in moduleTestMethods)
-                        {
-                            OnTestStarted(test);
-
-                            if (test.Declaration.Annotations.Any(a => a.Annotation is IgnoreTestAnnotation))
-                            {
-                                var result = new TestResult(TestOutcome.Ignored);
-                                OnTestCompleted(test, result);
-                                results.Add(TestResultOrTestInfo<T>(test, result));
-                                continue;
-                            }
-
-                            try
-                            {
-                                fakes.StartTest();
-                                try
-                                {
-                                    _declarationRunner.RunDeclarations(typeLibWrapper, testInitialize);
-                                }
-                                catch (COMException trace)
-                                {
-                                    var newResult = new TestResult(TestOutcome.Inconclusive, AssertMessages.TestRunner_TestInitializeFailure);
-                                    OnTestCompleted(test, newResult);
-                                    results.Add(TestResultOrTestInfo<T>(test, newResult));
-                                    Logger.Trace(trace, "Unexpected COMException when running TestInitialize");
-                                    continue;
-                                }
-
-                                _uiDispatcher.FlushMessageQueue();
-
-                                if (CancellationRequested)
-                                {
-                                    RunTestCleanup(typeLibWrapper, testCleanup);
-                                    fakes.StopTest();
-                                    break;
-                                }
-
-                                var result = RunTestMethod(typeLibWrapper, test);
-                                OnTestCompleted(test, result);
-                                results.Add(TestResultOrTestInfo<T>(test, result));
-
-                                RunTestCleanup(typeLibWrapper, testCleanup);
-                            }
-                            finally
-                            {
-                                fakes.StopTest();
-                            }
-                        }
-
-                        try
-                        {
-                            _declarationRunner.RunDeclarations(typeLibWrapper, TestDiscovery.FindModuleCleanupMethods(moduleName, _state));
-                        }
-                        catch (COMException ex)
-                        {
-                            Logger.Error(ex, "Unexpected COM exception while cleaning up tests for module {0}. Aborting any further unit tests", moduleName.Name);
-                            break;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Unexpected exception while running unit tests; unit tests will be aborted");
-            }
-
-            CancellationRequested = false;
-            overallTime.Stop();
-
-            TestRunCompleted?.Invoke(this, new TestRunCompletedEventArgs(overallTime.ElapsedMilliseconds));
-
-            return results;
         }
 
         public void RunByOutcome(TestOutcome outcome)
@@ -465,16 +328,17 @@ namespace Rubberduck.UnitTesting
         {
             //Running the tests has to be done on the UI thread, so we push the task to it from within suspension of the parser.
             //We have to wait for the completion to make sure that the suspension only ends after tests have been completed.
-            var testTask = _uiDispatcher.StartTask(() => RunWhileSuspendedOnUiThread(tests));
+            var testTask = _uiDispatcher.StartTask(() => RunWhileSuspendedOnUiThread<TestResult>(tests));
             testTask.Wait();
         }
 
-        private void RunWhileSuspendedOnUiThread(IEnumerable<TestMethod> tests)
+        private IEnumerable<T> RunWhileSuspendedOnUiThread<T>(IEnumerable<TestMethod> tests) 
         {
+            var results = new List<T>();
             var testMethods = tests as IList<TestMethod> ?? tests.ToList();
             if (!testMethods.Any())
             {
-                return;
+                return results;
             }
 
             _lastRun.Clear();
@@ -488,9 +352,12 @@ namespace Rubberduck.UnitTesting
                 Logger.Warn(e);
                 foreach (var test in testMethods)
                 {
-                    OnTestCompleted(test, new TestResult(TestOutcome.Failed, AssertMessages.Prerequisite_EarlyBindingReferenceMissing));
+                    var testResult = new TestResult(TestOutcome.Failed, AssertMessages.Prerequisite_EarlyBindingReferenceMissing);
+                    var result = TestResultOrTestInfo<T>(test, testResult);
+                    OnTestCompleted(test, testResult);
+                    results.Add(result);
                 }
-                return;
+                return results;
             }
 
             var overallTime = new Stopwatch();
@@ -519,7 +386,9 @@ namespace Rubberduck.UnitTesting
                             Logger.Error(ex, "Unexpected COM exception while initializing tests for module {0}. The module will be skipped.", moduleName.Name);
                             foreach (var method in moduleTestMethods)
                             {
-                                OnTestCompleted(method, new TestResult(TestOutcome.Unknown, AssertMessages.TestRunner_ModuleInitializeFailure));
+                                var result = new TestResult(TestOutcome.Unknown, AssertMessages.TestRunner_ModuleInitializeFailure);
+                                OnTestCompleted(method, result);
+                                results.Add(TestResultOrTestInfo<T>(method, result));
                             }
                             continue;
                         }
@@ -530,7 +399,9 @@ namespace Rubberduck.UnitTesting
                             // no need to run setup/teardown for ignored tests
                             if (test.Declaration.Annotations.Any(a => a.Annotation is IgnoreTestAnnotation))
                             {
-                                OnTestCompleted(test, new TestResult(TestOutcome.Ignored));
+                                var result = new TestResult(TestOutcome.Ignored);
+                                OnTestCompleted(test, result);
+                                results.Add(TestResultOrTestInfo<T>(test, result));
                                 continue;
                             }
 
@@ -543,7 +414,9 @@ namespace Rubberduck.UnitTesting
                                 }
                                 catch (COMException trace)
                                 {
-                                    OnTestCompleted(test, new TestResult(TestOutcome.Inconclusive, AssertMessages.TestRunner_TestInitializeFailure));
+                                    var newResult = new TestResult(TestOutcome.Inconclusive, AssertMessages.TestRunner_TestInitializeFailure);
+                                    OnTestCompleted(test, newResult);
+                                    results.Add(TestResultOrTestInfo<T>(test, newResult));
                                     Logger.Trace(trace, "Unexpected COMException when running TestInitialize");
                                     continue;
                                 }
@@ -564,6 +437,7 @@ namespace Rubberduck.UnitTesting
 
                                 // we can trigger this event, because cleanup can fail without affecting the result
                                 OnTestCompleted(test, result);
+                                results.Add(TestResultOrTestInfo<T>(test, result));
 
                                 RunTestCleanup(typeLibWrapper, testCleanup);
                             }
@@ -580,7 +454,7 @@ namespace Rubberduck.UnitTesting
                         {
                             // FIXME somehow notify the user of this mess
                             Logger.Error(ex,
-                                "Unexpected COM exception while cleaning up tests for module {0}. Aborting any further unit tests",
+                                "Unexpected COM expection while cleaning up tests for module {0}. Aborting any further unit tests",
                                 moduleName.Name);
                             break;
                         }
@@ -597,6 +471,8 @@ namespace Rubberduck.UnitTesting
             overallTime.Stop();
 
             TestRunCompleted?.Invoke(this, new TestRunCompletedEventArgs(overallTime.ElapsedMilliseconds));
+
+            return results;
         }
 
         private void RunTestCleanup(ITypeLibWrapper wrapper, List<Declaration> cleanupMethods)
