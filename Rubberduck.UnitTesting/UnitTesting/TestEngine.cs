@@ -328,8 +328,13 @@ namespace Rubberduck.UnitTesting
         {
             //Running the tests has to be done on the UI thread, so we push the task to it from within suspension of the parser.
             //We have to wait for the completion to make sure that the suspension only ends after tests have been completed.
-            var testTask = _uiDispatcher.StartTask(() => RunWhileSuspendedOnUiThread<TestResult>(tests));
+            var testTask = _uiDispatcher.StartTask(() => RunWhileSuspendedOnUiThread(tests));
             testTask.Wait();
+        }
+
+        private void RunWhileSuspendedOnUiThread(IEnumerable<TestMethod> tests)
+        {
+            RunWhileSuspendedOnUiThread<TestInfo>(tests);
         }
 
         private IEnumerable<T> RunWhileSuspendedOnUiThread<T>(IEnumerable<TestMethod> tests) 
