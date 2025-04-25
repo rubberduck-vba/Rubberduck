@@ -459,7 +459,7 @@ namespace Rubberduck.UnitTesting
                         {
                             // FIXME somehow notify the user of this mess
                             Logger.Error(ex,
-                                "Unexpected COM expection while cleaning up tests for module {0}. Aborting any further unit tests",
+                                "Unexpected COM exception while cleaning up tests for module {0}. Aborting any further unit tests",
                                 moduleName.Name);
                             break;
                         }
@@ -469,7 +469,7 @@ namespace Rubberduck.UnitTesting
             catch (Exception ex)
             {
                 // FIXME somehow notify the user of this mess
-                Logger.Error(ex, "Unexpected expection while running unit tests; unit tests will be aborted");
+                Logger.Error(ex, "Unexpected exception while running unit tests; unit tests will be aborted");
             }
 
             CancellationRequested = false;
