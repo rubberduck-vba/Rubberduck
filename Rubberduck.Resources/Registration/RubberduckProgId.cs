@@ -50,5 +50,8 @@
         public const string TimesProgId = BaseNamespace + "Times";
 
         public const string DebugAddinObject = BaseNamespace + "VBETypeLibsAPI";
+        
+        public const string ExternalAPIObject = BaseNamespace + "ExternalAPI";
+        public const string TestEngineAPIProgId = BaseNamespace + "TestEngineAPI";
     }
 }

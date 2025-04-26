@@ -2,6 +2,7 @@
 using Extensibility;
 using NLog;
 using Rubberduck.Common.WinAPI;
+using Rubberduck.ExternalApi;
 using Rubberduck.Resources;
 using Rubberduck.Resources.Registration;
 using Rubberduck.Root;
@@ -51,13 +52,15 @@ namespace Rubberduck
         private bool _isInitialized;
         private bool _isBeginShutdownExecuted;
 
+        private IExternalAPI _externalAPI;
+
         private GeneralSettings _initialSettings;
 
         private IWindsorContainer _container;
         private App _app;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ITestEngine TestEngine;
+        
 
         public void OnAddInsUpdate(ref Array custom) { }
 
@@ -96,8 +99,8 @@ namespace Rubberduck
         }
         private void SetAddInObject()
         {
-            // FOR DEBUGGING/DEVELOPMENT/CLI PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
-            _addin.Object = new VBETypeLibsAPI_Object(_vbe, new TestEngineProvider(this));
+            _externalAPI = new ExternalAPI(new VBETypeLibsAPI_Object(_vbe));
+            _addin.Object = _externalAPI;
         }
 
         private Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
@@ -240,7 +243,7 @@ namespace Rubberduck
                 _app = _container.Resolve<App>();
                 _app.Startup();
 
-                TestEngine = _container.Resolve<ITestEngine>();
+                InitializeExternalAPI();
 
                 _isInitialized = true;
             }
@@ -249,6 +252,11 @@ namespace Rubberduck
                 _logger.Fatal(e, "Startup sequence threw an unexpected exception.");
                 throw new Exception("Rubberduck's startup sequence threw an unexpected exception. Please check the Rubberduck logs for more information and report an issue if necessary", e);
             }
+        }
+
+        private void InitializeExternalAPI()
+        {
+            _externalAPI.InitializeAPIs(_container.Resolve<ITestEngine>());
         }
 
         private void HandleAppDomainException(object sender, UnhandledExceptionEventArgs e)

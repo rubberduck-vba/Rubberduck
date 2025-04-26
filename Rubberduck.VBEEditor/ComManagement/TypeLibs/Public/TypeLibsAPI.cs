@@ -15,7 +15,7 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
     /// <summary>
-    /// FOR DEBUGGING/DEVELOPMENT/CLI PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
+    /// FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
     /// </summary>
     /// <remarks>
     /// VBA Usage example:
@@ -55,8 +55,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void DocumentAllSaveAs(string filePath);
         [DispId(11)]
         string TestGetCLRTypeFromVBAComponent(string projectName, string componentName, int inheritenceLevel = 0);
-        [DispId(12)]
-        string RunAllTestsAndGetResults(string filePath);
     }
 
     [
@@ -73,11 +71,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private readonly VBETypeLibsAPI _api;
         private object _testEngineProvider;
 
-        public VBETypeLibsAPI_Object(IVBE ide, object testEngineProvider)
+        public VBETypeLibsAPI_Object(IVBE ide)
         {
             _ide = ide;
             _api = new VBETypeLibsAPI();
-            _testEngineProvider = testEngineProvider;
         }
 
         public bool CompileProject(string projectName)
@@ -104,8 +101,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             => _api.DocumentAllSaveAs(_ide, filePath);
         public string TestGetCLRTypeFromVBAComponent(string projectName, string componentName, int inheritenceLevel = 0)
             => _api.TestGetCLRTypeFromVBAComponent(_ide, projectName, componentName, inheritenceLevel);
-        public string RunAllTestsAndGetResults(string filePath)
-            => _api.RunAllTestsAndGetResults(_testEngineProvider, filePath);
     }
 
     /// <summary>
@@ -1130,43 +1125,5 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 return clrType.ToString();
             }
         }
-
-        /// <summary>
-        /// Runs all unit tests and returns the results as a formatted string.
-        /// </summary>
-        /// <returns>A string containing the test results.</returns>
-        public string RunAllTestsAndGetResults(dynamic testEngineProvider, string logPath)
-        {
-            testEngineProvider.SetTestEngine();
-            // We the test engine from the provider dynamically, since we can't get the type at compile time due to cyclic references
-            dynamic testEngine = testEngineProvider.TestEngine;
-
-            // Note that we can't use CanRun in case we are triggering the test via VBA and it automatically sets DesignMode = false when you run a macro
-            // and CanRun interprets this as "not ready to run tests".
-
-            var runWithResultsMethod = testEngine.GetType().GetMethod("RunWithResults");
-            if (runWithResultsMethod == null)
-            {
-                return "Test engine does not support running tests with results.";
-            }
-
-            var testsProperty = testEngine.GetType().GetProperty("Tests");
-            if (testsProperty == null)
-            {
-                return "Test engine does not have a Tests property.";
-            }
-
-            var task = Task.Run(() => {
-                var output = runWithResultsMethod.Invoke(testEngine, new object[] { testsProperty.GetValue(testEngine) });
-                if (!string.IsNullOrEmpty(logPath))
-                {
-                    FileSystemProvider.FileSystem.File.WriteAllText(logPath, output.ToString());
-                }
-            });
-
-            return "Task started to run tests asynchronously. Check the log file for results.";
-
-        }
-
     }
 }

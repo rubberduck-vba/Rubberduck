@@ -71,7 +71,7 @@
         public const string ITimesGuid = UnitTestingGuidspace + "EE" + GuidSuffix;
         public const string TimesGuid = UnitTestingGuidspace + "EF" + GuidSuffix;
 
-        // Rubberduck API Guids:
+        // Rubberduck Internal API Guids:
         private const string ApiGuidspace = "69E0F7";
         public const string IDeclarationGuid = ApiGuidspace + "81" + GuidSuffix;
         public const string DeclarationClassGuid = ApiGuidspace + "82" + GuidSuffix;
@@ -86,6 +86,12 @@
         public const string ApiProviderClassGuid = ApiGuidspace + "8B" + GuidSuffix;
         public const string IIdentifierReferencesGuid = ApiGuidspace + "8C" + GuidSuffix;
         public const string IdentifierReferencesClassGuid = ApiGuidspace + "8D" + GuidSuffix;
+
+        // Rubberduck External API Guids:
+        public const string ExternalAPIObjectGuid = ApiGuidspace + "A0" + GuidSuffix;
+        public const string IExternalAPIInterfaceGuid = ApiGuidspace + "A1" + GuidSuffix;
+        public const string TestEngineAPIObjectGuid = ApiGuidspace + "A2" + GuidSuffix;
+        public const string ITestEngineAPIInterfaceGuid = ApiGuidspace + "A3" + GuidSuffix;
 
         // Enum Guids:
         private const string RecordGuidspace = "69E100";
