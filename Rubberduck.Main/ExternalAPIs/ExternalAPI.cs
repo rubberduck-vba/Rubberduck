@@ -12,14 +12,19 @@ using System.Threading.Tasks;
 namespace Rubberduck.ExternalApi
 {
     [
-    ComVisible(true),
-    Guid(RubberduckGuid.IExternalAPIInterfaceGuid),
-    InterfaceType(ComInterfaceType.InterfaceIsDual),
-    EditorBrowsable(EditorBrowsableState.Always)
-]
+        ComVisible(true),
+        Guid(RubberduckGuid.IExternalAPIInterfaceGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsDual),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
     public interface IExternalAPI
     {
+        [DispId(1)]
         void InitializeAPIs(ITestEngine testEngine);
+        [DispId(2)]
+        ITestEngineAPI TestEngineAPI { get; }
+        [DispId(3)]
+        IVBETypeLibsAPI_Object VBETypeLibsAPI { get; }
     }
 
     [
@@ -29,7 +34,7 @@ namespace Rubberduck.ExternalApi
     ClassInterface(ClassInterfaceType.None),
     ComDefaultInterface(typeof(IExternalAPI)),
     EditorBrowsable(EditorBrowsableState.Always)
-]
+    ]
     public class ExternalAPI : IExternalAPI
     {
         private readonly IVBETypeLibsAPI_Object _vbeTypeLibsAPI_Object;
