@@ -10,13 +10,11 @@ using Rubberduck.Runtime;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI;
-using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VbeRuntime;
-using Rubberduck.VersionCheck;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -60,7 +58,7 @@ namespace Rubberduck
         private App _app;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        
+
 
         public void OnAddInsUpdate(ref Array custom) { }
 
@@ -97,9 +95,17 @@ namespace Rubberduck
                 Console.WriteLine(e);
             }
         }
+
+
+        private IVBETypeLibsAPI_Object _vbeTypeLibsAPI;
+        private ITestEngineAPI _testEngineAPI;
+
+
         private void SetAddInObject()
         {
-            _externalAPI = new ExternalAPI(new VBETypeLibsAPI_Object(_vbe));
+            _vbeTypeLibsAPI = new VBETypeLibsAPI_Object(_vbe);
+
+            _externalAPI = new ExternalAPI(() => _vbeTypeLibsAPI, () => _testEngineAPI);
             _addin.Object = _externalAPI;
         }
 
@@ -243,7 +249,7 @@ namespace Rubberduck
                 _app = _container.Resolve<App>();
                 _app.Startup();
 
-                InitializeExternalAPI();
+                _testEngineAPI = _container.Resolve<ITestEngineAPI>();
 
                 _isInitialized = true;
             }
@@ -252,11 +258,6 @@ namespace Rubberduck
                 _logger.Fatal(e, "Startup sequence threw an unexpected exception.");
                 throw new Exception("Rubberduck's startup sequence threw an unexpected exception. Please check the Rubberduck logs for more information and report an issue if necessary", e);
             }
-        }
-
-        private void InitializeExternalAPI()
-        {
-            _externalAPI.InitializeAPIs(_container.Resolve<ITestEngine>());
         }
 
         private void HandleAppDomainException(object sender, UnhandledExceptionEventArgs e)

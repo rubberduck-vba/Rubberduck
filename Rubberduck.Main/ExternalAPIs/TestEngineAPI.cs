@@ -2,11 +2,8 @@
 using Rubberduck.Resources.Registration;
 using Rubberduck.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Rubberduck.ExternalApi
@@ -19,8 +16,9 @@ namespace Rubberduck.ExternalApi
     ]
     public interface ITestEngineAPI
     {
+        [Description("Runs all tests asynchronously and outputs the results to a file at the specified path")]
         [DispId(1)]
-        string RunAllTestsAndGetResults(string filePath);
+        void RunAllTestsAsync(string outputPath);
     }
 
     [
@@ -35,31 +33,27 @@ namespace Rubberduck.ExternalApi
     {
         private readonly ITestEngine _testEngine;
 
-        public TestEngineAPI(ITestEngine testEngine) 
+        public TestEngineAPI(ITestEngine testEngine)
         {
             _testEngine = testEngine;
         }
 
         /// <summary>
-        /// Runs all unit tests and returns the results as a formatted string.
+        /// Runs all unit tests writes the results to a file at the specified path.
         /// </summary>
-        /// <returns>A string containing the test results.</returns>
-        public string RunAllTestsAndGetResults(string logPath)
+        public void RunAllTestsAsync(string outputPath)
         {
-
             // Note that we can't use CanRun in case we are triggering the test via VBA since DesignMode is always set to false when you run a macro.
             // and CanRun interprets this as "not ready to run tests".
 
-            var task = Task.Run(() => {
+            Task.Run(() =>
+            {
                 var output = _testEngine.RunWithResults(_testEngine.Tests);
-                if (!string.IsNullOrEmpty(logPath))
+                if (!string.IsNullOrEmpty(outputPath))
                 {
-                    FileSystemProvider.FileSystem.File.WriteAllText(logPath, output.ToString());
+                    FileSystemProvider.FileSystem.File.WriteAllText(outputPath, output.ToString());
                 }
             });
-
-            return "Task started to run tests asynchronously. Check the log file for results.";
-
         }
     }
 

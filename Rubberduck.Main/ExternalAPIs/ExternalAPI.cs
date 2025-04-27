@@ -1,13 +1,8 @@
 ﻿using Rubberduck.Resources.Registration;
-using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.ExternalApi
 {
@@ -20,11 +15,10 @@ namespace Rubberduck.ExternalApi
     public interface IExternalAPI
     {
         [DispId(1)]
-        void InitializeAPIs(ITestEngine testEngine);
+        IVBETypeLibsAPI_Object VBETypeLibsAPI { get; }
+
         [DispId(2)]
         ITestEngineAPI TestEngineAPI { get; }
-        [DispId(3)]
-        IVBETypeLibsAPI_Object VBETypeLibsAPI { get; }
     }
 
     [
@@ -37,30 +31,16 @@ namespace Rubberduck.ExternalApi
     ]
     public class ExternalAPI : IExternalAPI
     {
-        private readonly IVBETypeLibsAPI_Object _vbeTypeLibsAPI_Object;
-        private ITestEngineAPI _testEngineAPI;
+        private readonly Func<IVBETypeLibsAPI_Object> _vbeTypeLibProvider;
+        private readonly Func<ITestEngineAPI> _testEngineProvider;
 
-        public ExternalAPI(IVBETypeLibsAPI_Object vbeTypeLibsAPI_Object)
+        public ExternalAPI(Func<IVBETypeLibsAPI_Object> vbeTypeLibProvider, Func<ITestEngineAPI> testEngineProvider)
         {
-            _vbeTypeLibsAPI_Object = vbeTypeLibsAPI_Object;
+            _vbeTypeLibProvider = vbeTypeLibProvider;
+            _testEngineProvider = testEngineProvider;
         }
 
-        public void InitializeAPIs(ITestEngine testEngine)
-        {
-            _testEngineAPI = new TestEngineAPI(testEngine);
-        }
-
-        public IVBETypeLibsAPI_Object VBETypeLibsAPI { get => _vbeTypeLibsAPI_Object; }
-        public ITestEngineAPI TestEngineAPI
-        {
-            get
-            {
-                if (_testEngineAPI == null)
-                {
-                    throw new InvalidOperationException("TestEngineAPI is not initialized.");
-                }
-                return _testEngineAPI;
-            }
-        }
+        public IVBETypeLibsAPI_Object VBETypeLibsAPI => _vbeTypeLibProvider();
+        public ITestEngineAPI TestEngineAPI => _testEngineProvider();
     }
 }
