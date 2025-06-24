@@ -130,6 +130,17 @@ namespace RubberduckTests.Symbols
 
         [Test]
         [Category("String Extensions")]
+        public void UnicodeOverMaxInt16UsesChrWCallWithHexNotation()
+        {
+            var managed = "耀";
+            var expected = "ChrW$(&H8000)";
+            var actual = managed.ToVbExpression();
+
+            Assert.AreEqual(expected, actual, "Expected {0}, actual was {1}", expected, actual);
+        }
+        
+        [Test]
+        [Category("String Extensions")]
         public void MixedAsciiAndUnicodeUsesChrAndChrWConstFlagOff()
         {
             var managed = "•\tBullet\x00";
