@@ -170,7 +170,7 @@ namespace Rubberduck.Parsing.VBA.Extensions
                         tokens.Add($"\"{literal}\"");
                         literal = string.Empty;
                     }
-                    tokens.Add($"ChrW$(&H{Convert.ToInt16(character):X})");
+                    tokens.Add($"ChrW$(&H{Convert.ToInt32(character):X})");
                 }
 
             }
